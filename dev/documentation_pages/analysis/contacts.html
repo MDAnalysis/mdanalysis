@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.2. Native contacts analysis — MDAnalysis.analysis.contacts &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -281,17 +282,17 @@ using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#
 <p>The cutoff can either be a float or a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of the same
 shape as <cite>r</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r</strong> (<em>ndarray</em>) – distance matrix</p></li>
 <li><p><strong>cutoff</strong> (<em>ndarray</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – cut off value to count distances. Can either be a float of a ndarray of
 the same size as distances</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Q</strong> – fraction of contacts</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -310,7 +311,7 @@ the same size as distances</p></li>
 <li><p><em>Coarse Grained</em>: <cite>lambda_constant = 1.5</cite> (unitless)</p></li>
 </ul>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r</strong> (<em>array</em>) – Contact distances at time t</p></li>
 <li><p><strong>r0</strong> (<em>array</em>) – Contact distances at time t=0, reference distances</p></li>
@@ -318,20 +319,20 @@ the same size as distances</p></li>
 <li><p><strong>lambda_constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>default 1.8</em><em>, </em><em>unitless</em><em>)</em>) – Reference distance tolerance</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Q</strong> – fraction of native contacts</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 <p class="rubric">References</p>
 <div class="docutils container" id="id4">
-<div class="citation" id="id11" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Best2013</a><span class="fn-bracket">]</span></span>
-<p>Robert B. Best, Gerhard Hummer, and William A. Eaton. Native contacts determine protein folding mechanisms in atomistic simulations. <em>Proceedings of the National Academy of Sciences</em>, 110(44):17874–17879, 2013. <a class="reference external" href="https://doi.org/10.1073/pnas.1311599110">doi:10.1073/pnas.1311599110</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id11"><span class="brackets"><a class="fn-backref" href="#id3">Best2013</a></span></dt>
+<dd><p>Robert B. Best, Gerhard Hummer, and William A. Eaton. Native contacts determine protein folding mechanisms in atomistic simulations. <em>Proceedings of the National Academy of Sciences</em>, 110(44):17874–17879, 2013. <a class="reference external" href="https://doi.org/10.1073/pnas.1311599110">doi:10.1073/pnas.1311599110</a>.</p>
+</dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -340,28 +341,27 @@ the same size as distances</p></li>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.contacts.</span></span><span class="sig-name descname"><span class="pre">radius_cut_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#radius_cut_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.radius_cut_q" title="Permalink to this definition"></a></dt>
 <dd><p>calculate native contacts <em>Q</em> based on the single distance radius.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r</strong> (<em>ndarray</em>) – distance array between atoms</p></li>
 <li><p><strong>r0</strong> (<em>ndarray</em>) – unused to fullfill <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a> API</p></li>
 <li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Distance between atoms at which a contact is formed</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>Q</strong> – fraction of contacts</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 <p class="rubric">References</p>
 <div class="docutils container" id="id71">
-<div class="citation" id="id89" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Franklin2007<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id138">3</a>)</span>
-<p>Joel Franklin, Patrice Koehl, Sebastian Doniach, and Marc Delarue. MinActionPath: maximum likelihood trajectory for large-scale structural transitions in a coarse-grained locally harmonic energy landscape. <em>Nucleic Acids Research</em>, 35(suppl_2):W477–W482, 2007. <a class="reference external" href="https://doi.org/10.1093/nar/gkm342">doi:10.1093/nar/gkm342</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id89"><span class="brackets">Franklin2007</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id138">3</a>)</span></dt>
+<dd><p>Joel Franklin, Patrice Koehl, Sebastian Doniach, and Marc Delarue. MinActionPath: maximum likelihood trajectory for large-scale structural transitions in a coarse-grained locally harmonic energy landscape. <em>Nucleic Acids Research</em>, 35(suppl_2):W477–W482, 2007. <a class="reference external" href="https://doi.org/10.1093/nar/gkm342">doi:10.1093/nar/gkm342</a>.</p>
+</dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -370,7 +370,7 @@ the same size as distances</p></li>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.contacts.</span></span><span class="sig-name descname"><span class="pre">contact_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#contact_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.contact_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>calculate contacts from distance matrix</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>d</strong> (<em>array-like</em>) – distance matrix</p></li>
 <li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – distance below which a contact is formed.</p></li>
@@ -379,10 +379,10 @@ shape then it is filled instead of allocating a new one in
 order to increase performance.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>contacts</strong> – boolean array of formed contacts</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
@@ -395,17 +395,17 @@ order to increase performance.</p></li>
 <p>Compares native contacts between the starting structure and final structure
 of a trajectory <span id="id138">[<a class="reference internal" href="#id89" title="Joel Franklin, Patrice Koehl, Sebastian Doniach, and Marc Delarue. MinActionPath: maximum likelihood trajectory for large-scale structural transitions in a coarse-grained locally harmonic energy landscape. Nucleic Acids Research, 35(suppl_2):W477-W482, 2007. doi:10.1093/nar/gkm342.">Franklin2007</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe with a trajectory</p></li>
 <li><p><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – atoms to do analysis on</p></li>
 <li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – distance at which contact is formed</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>contacts</strong> – Contact Analysis that is set up for a q1-q2 analysis</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a></p>
 </dd>
 </dl>
@@ -436,7 +436,7 @@ argument <cite>method</cite>.</p>
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">timeseries</span></span><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts.results.timeseries" title="Permalink to this definition"></a></dt>
 <dd><p>2D array containing <em>Q</em> for all refgroup pairs and analyzed frames</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -451,7 +451,7 @@ argument <cite>method</cite>.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts.results.timeseries" title="MDAnalysis.analysis.contacts.Contacts.results.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.timeseries</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -472,7 +472,7 @@ argument <cite>method</cite>.</p>
 <p><span class="versionmodified changed">Changed in version 2.2.0: </span><a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a> accepts both AtomGroup and string for <cite>select</cite></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – trajectory</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>(</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>, </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>) </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em>(</em><em>string</em><em>, </em><em>string</em><em>)</em>) – two contacting groups that change over time</p></li>

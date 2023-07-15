@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.26. Guessing unknown Topology information — MDAnalysis.topology.guessers &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -220,11 +221,11 @@ in the following manner:</p>
 <p>Works by assuming that if atoms 1 &amp; 2 are bonded, and 2 &amp; 3 are bonded,
 then (1,2,3) must be an angle.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>List of tuples defining the angles.
 Suitable for use in u._topology</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of tuples</p>
 </dd>
 </dl>
@@ -239,13 +240,13 @@ Suitable for use in u._topology</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_aromaticities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_aromaticities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_aromaticities" title="Permalink to this definition"></a></dt>
 <dd><p>Guess aromaticity of atoms using RDKit</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>atomgroup</strong> (<em>mda.core.groups.AtomGroup</em>) – Atoms for which the aromaticity will be guessed</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>aromaticities</strong> – Array of boolean values for the aromaticity of each atom</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -313,7 +314,7 @@ guessed by <a class="reference internal" href="#MDAnalysis.topology.guessers.gue
 of the atoms and <span class="math notranslate nohighlight">\(f\)</span> is an ad-hoc <em>fudge_factor</em>. This is
 the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html">same algorithm that VMD uses</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atoms for which bonds should be guessed</p></li>
 <li><p><strong>coords</strong> (<em>array</em>) – coordinates of the atoms (i.e., <cite>AtomGroup.positions)</cite>)</p></li>
@@ -333,10 +334,10 @@ given, periodic boundary conditions will be considered in the distance
 search. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>List of tuples suitable for use in Universe topology building.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>
@@ -346,7 +347,7 @@ search. [<code class="docutils literal notranslate"><span class="pre">None</span
 structure is correct. This is wrong and will burn somebody.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – </p>
 </dd>
 </dl>
@@ -368,7 +369,7 @@ rather than replacing entirely.</p>
 <p>Works by assuming that if (1,2,3) is an angle, and 3 &amp; 4 are bonded,
 then (1,2,3,4) must be a dihedral.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><em>list of tuples</em> – List of tuples defining the dihedrals.
 Suitable for use in u._topology</p></li>
@@ -384,13 +385,13 @@ Suitable for use in u._topology</p></li>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_gasteiger_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_gasteiger_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_gasteiger_charges" title="Permalink to this definition"></a></dt>
 <dd><p>Guess Gasteiger partial charges using RDKit</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>atomgroup</strong> (<em>mda.core.groups.AtomGroup</em>) – Atoms for which the charges will be guessed</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>charges</strong> – Array of float values representing the charge of each atom</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -409,7 +410,7 @@ then (2, 1, 3, 4) must be an improper dihedral.
 ie the improper dihedral is the angle between the planes formed by
 (1, 2, 3) and (1, 3, 4)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><em>List of tuples defining the improper dihedrals.</em></p></li>
 <li><p><em>Suitable for use in u._topology</em></p></li>
@@ -424,13 +425,13 @@ ie the improper dihedral is the angle between the planes formed by
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_masses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_masses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_masses" title="Permalink to this definition"></a></dt>
 <dd><p>Guess the mass of many atoms based upon their type</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>atom_types</strong> – Type of each atom</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>atom_masses</strong></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray dtype float64</p>
 </dd>
 </dl>
@@ -441,13 +442,13 @@ ie the improper dihedral is the angle between the planes formed by
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_types" title="Permalink to this definition"></a></dt>
 <dd><p>Guess the atom type of many atoms based on atom name</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>atom_names</strong> – Name of each atom</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>atom_types</strong></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray dtype object</p>
 </dd>
 </dl>
@@ -458,10 +459,10 @@ ie the improper dihedral is the angle between the planes formed by
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">validate_atom_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#validate_atom_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.validate_atom_types" title="Permalink to this definition"></a></dt>
 <dd><p>Vaildates the atom types based on whether they are available in our tables</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>atom_types</strong> – Type of each atom</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>None</em></p></li>
 <li><p><em>.. versionchanged:: 0.20.0</em> – Try uppercase atom type name as well</p></li>

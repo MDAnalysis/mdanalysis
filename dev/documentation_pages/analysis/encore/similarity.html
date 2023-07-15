@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -129,7 +130,7 @@
   <span class="target" id="module-MDAnalysis.analysis.encore.similarity"></span><section id="ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity">
 <h1><span class="section-number">4.2.7.1.1. </span>Ensemble Similarity Calculations — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.similarity" title="MDAnalysis.analysis.encore.similarity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.similarity</span></code></a><a class="headerlink" href="#ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
 </dd>
 </dl>
@@ -160,16 +161,14 @@ between ensembles implemented in individual functions:</p>
 <p>When using this module in published work please cite <span id="id3">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <p class="rubric">References</p>
 <div class="docutils container" id="id4">
-<div class="citation" id="id33" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">ᵇLindorff-Larsen2009</a><span class="fn-bracket">]</span></span>
-<p>Kresten Lindorff-Larsen and Jesper Ferkinghoff-Borg. Similarity measures for protein ensembles. <em>PLOS ONE</em>, 4(1):1–13, 01 2009. <a class="reference external" href="https://doi.org/10.1371/journal.pone.0004203">doi:10.1371/journal.pone.0004203</a>.</p>
-</div>
-<div class="citation" id="id51" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>ᵇTiberti2015<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>,<a role="doc-backlink" href="#id71">3</a>,<a role="doc-backlink" href="#id72">4</a>,<a role="doc-backlink" href="#id73">5</a>,<a role="doc-backlink" href="#id74">6</a>,<a role="doc-backlink" href="#id75">7</a>,<a role="doc-backlink" href="#id76">8</a>,<a role="doc-backlink" href="#id77">9</a>)</span>
-<p>Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. <em>PLOS Computational Biology</em>, 11(10):1–16, 10 2015. <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1004415">doi:10.1371/journal.pcbi.1004415</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id33"><span class="brackets"><a class="fn-backref" href="#id1">ᵇLindorff-Larsen2009</a></span></dt>
+<dd><p>Kresten Lindorff-Larsen and Jesper Ferkinghoff-Borg. Similarity measures for protein ensembles. <em>PLOS ONE</em>, 4(1):1–13, 01 2009. <a class="reference external" href="https://doi.org/10.1371/journal.pone.0004203">doi:10.1371/journal.pone.0004203</a>.</p>
+</dd>
+<dt class="label" id="id51"><span class="brackets">ᵇTiberti2015</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id3">2</a>,<a href="#id71">3</a>,<a href="#id72">4</a>,<a href="#id73">5</a>,<a href="#id74">6</a>,<a href="#id75">7</a>,<a href="#id76">8</a>,<a href="#id77">9</a>)</span></dt>
+<dd><p>Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. <em>PLOS Computational Biology</em>, 11(10):1–16, 10 2015. <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1004415">doi:10.1371/journal.pcbi.1004415</a>.</p>
+</dd>
+</dl>
 </div>
 <p class="rubric" id="examples">Examples</p>
 <p>The examples show how to use ENCORE to calculate a similarity measurement
@@ -261,7 +260,7 @@ a symmetrized version of the Kullback-Leibler divergence, which is unbounded.</p
 <p>The HES is calculated with the symmetrized version of Kullback-Leibler
 divergence as described in <span id="id71">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of Universe objects for similarity measurements.</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
@@ -280,11 +279,11 @@ is 100), only if estimate_error is True.</p></li>
 If this is False (default), 0.0 will be used instead.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>hes, details</strong> – Harmonic similarity measurements between each pair of ensembles,
 and dict containing mean and covariance matrix for each ensemble</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array, dictionary</p>
 </dd>
 </dl>
@@ -358,7 +357,7 @@ the details of the calculation instead, in the form of a dictionary</p>
 using the Jensen-Shannon divergence as described in
 <span id="id72">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of ensemble objects for similarity measurements</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
@@ -382,7 +381,7 @@ If this is False (default), 0.0 will be used instead.</p></li>
 into just the value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p><strong>ces, details</strong> – ces contains the similarity values, arranged in a numpy.array.
 If only one clustering_method is provided the output will be a
 2-dimensional square symmetrical numpy.array. The order of the matrix
@@ -400,7 +399,7 @@ symmetrical similarity matrix.</p>
 each cluster, the centroids and the frames associated with each cluster.</p>
 </p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array, numpy.array</p>
 </dd>
 </dl>
@@ -454,7 +453,7 @@ Here the simplest case of just two instances of <code class="xref py py-class do
 ensembles using the Jensen-Shannon divergence as described in
 <span id="id73">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of ensemble objects for similarity measurements</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
@@ -479,7 +478,7 @@ If this is False (default), 0.0 will be used instead.</p></li>
 into just the value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p><strong>dres, details</strong> – dres contains the similarity values, arranged in numpy.array.
 If one number of dimensions is provided as an integer,
 the output will be a 2-dimensional square symmetrical numpy.array.
@@ -497,7 +496,7 @@ symmetrical similarity matrix.</p>
 <p>details provide an array of the reduced_coordinates.</p>
 </p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array, numpy.array</p>
 </dd>
 </dl>
@@ -554,7 +553,7 @@ reduction can easily be visualized, see the <code class="docutils literal notran
 using the Jensen-Shannon divergence as described in
 <span id="id74">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of ensemble objects for similarity measurements</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
@@ -578,7 +577,7 @@ If this is False (default), 0.0 will be used instead.</p></li>
 into just the value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p><strong>ces, details</strong> – ces contains the similarity values, arranged in a numpy.array.
 If only one clustering_method is provided the output will be a
 2-dimensional square symmetrical numpy.array. The order of the matrix
@@ -596,7 +595,7 @@ symmetrical similarity matrix.</p>
 each cluster, the centroids and the frames associated with each cluster.</p>
 </p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array, numpy.array</p>
 </dd>
 </dl>
@@ -654,7 +653,7 @@ the value reach zero will be indicative of how much the trajectory
 keeps on resampling the same regions of the conformational space, and
 therefore of convergence.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</p></li>
 <li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Size of window to be used, in number of frames</p></li>
@@ -666,10 +665,10 @@ clustering class.</p></li>
 <li><p><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>out</strong> – array of shape (number_of_frames / window_size, preference_values).</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
@@ -707,7 +706,7 @@ splitting the trajectory into a window_size of 10 frames:</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cc</strong> (<em>encore.clustering.ClustersCollection</em>) – Collection from cluster calculated by a clustering algorithm
 (e.g. Affinity propagation)</p></li>
@@ -718,11 +717,11 @@ splitting the trajectory into a window_size of 10 frames:</p>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>djs</strong> – Jensen-Shannon divergence between the two ensembles, as calculated by
 the clustering ensemble similarity method</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -739,7 +738,7 @@ by their ensembles id: one of the two joined ensembles will comprise all
 the ensembles with id [ens1_id_min, ens1_id], and the other ensembles will
 comprise all the ensembles with id [ens2_id_min, ens2_id].</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cc</strong> (<em>encore.ClustersCollection</em>) – Collection from cluster calculated by a clustering algorithm
 (e.g. Affinity propagation)</p></li>
@@ -749,11 +748,11 @@ metadata</p></li>
 metadata</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>djs</strong> – Jensen-Shannon divergence between the two ensembles, as
 calculated by the clustering ensemble similarity method</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -767,7 +766,7 @@ elaborate the coordinates for later use. However, consider more than
 one ensemble as the space on which the KDE will be generated. In
 particular, will use ensembles with ID [ens_id_min, ens_id_max].</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>embedded_space</strong> (<em>numpy.array</em>) – Array containing the coordinates of the embedded space</p></li>
 <li><p><strong>ensemble_assignment</strong> (<em>numpy.array</em>) – array containing one int per ensemble conformation. These allow
@@ -785,7 +784,7 @@ it will be set to the maximum possible value given the number of
 ensembles.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>kdes</strong> (<em>scipy.stats.gaussian_kde</em>) – KDEs calculated from ensembles</p></li>
 <li><p><strong>resamples</strong> (<em>list of numpy.array</em>) – For each KDE, draw samples according to the probability
@@ -818,7 +817,7 @@ expectation values:</p>
 <div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}\langle{}log(P(x))\rangle{}_P\\\langle{}log(Q(x))\rangle{}_Q\\\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P\\\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q\end{aligned}\end{align} \]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kde1</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html#scipy.stats.gaussian_kde" title="(in SciPy v1.11.1)"><em>scipy.stats.gaussian_kde</em></a>) – Kernel density estimation for ensemble 1</p></li>
 <li><p><strong>resamples1</strong> (<em>numpy.array</em>) – Samples drawn according do kde1. Will be used as samples to
@@ -838,11 +837,11 @@ if <code class="docutils literal notranslate"><span class="pre">None</span></cod
 if <code class="docutils literal notranslate"><span class="pre">None</span></code>, calculate it instead</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>djs</strong> – Jensen-Shannon divergence calculated according to the dimensionality
 reduction method</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -853,16 +852,16 @@ reduction method</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">discrete_jensen_shannon_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#discrete_jensen_shannon_divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence" title="Permalink to this definition"></a></dt>
 <dd><p>Jensen-Shannon divergence between discrete probability distributions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pA</strong> (<em>iterable</em><em> of </em><em>floats</em>) – First discrete probability density function</p></li>
 <li><p><strong>pB</strong> (<em>iterable</em><em> of </em><em>floats</em>) – Second discrete probability density function</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>djs</strong> – Discrete Jensen-Shannon divergence</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -875,16 +874,16 @@ reduction method</p>
 Notice that since this measure is not symmetric ::
 <span class="math notranslate nohighlight">\(d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)\)</span></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pA</strong> (<em>iterable</em><em> of </em><em>floats</em>) – First discrete probability density function</p></li>
 <li><p><strong>pB</strong> (<em>iterable</em><em> of </em><em>floats</em>) – Second discrete probability density function</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>dkl</strong> – Discrete Kullback-Liebler divergence</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -897,7 +896,7 @@ Notice that since this measure is not symmetric ::
 ensembles using the Jensen-Shannon divergence as described in
 <span id="id75">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of ensemble objects for similarity measurements</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
@@ -922,7 +921,7 @@ If this is False (default), 0.0 will be used instead.</p></li>
 into just the value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p><strong>dres, details</strong> – dres contains the similarity values, arranged in numpy.array.
 If one number of dimensions is provided as an integer,
 the output will be a 2-dimensional square symmetrical numpy.array.
@@ -940,7 +939,7 @@ symmetrical similarity matrix.</p>
 <p>details provide an array of the reduced_coordinates.</p>
 </p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array, numpy.array</p>
 </dd>
 </dl>
@@ -996,7 +995,7 @@ the value reach zero will be indicative of how much the trajectory
 keeps on resampling the same ares of the conformational space, and
 therefore of convergence.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</p></li>
 <li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Size of window to be used, in number of frames</p></li>
@@ -1010,10 +1009,10 @@ This is akin to the nsamples parameter of dres().</p></li>
 <li><p><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>out</strong> – array of shape (number_of_frames / window_size, preference_values).</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
@@ -1042,7 +1041,7 @@ space, and therefore of convergence.</p>
 <dd><p>Generate Kernel Density Estimates (KDE) from embedded spaces and
 elaborate the coordinates for later use.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>embedded_space</strong> (<em>numpy.array</em>) – Array containing the coordinates of the embedded space</p></li>
 <li><p><strong>ensemble_assignment</strong> (<em>numpy.array</em>) – Array containing one int per ensemble conformation. These allow to
@@ -1055,7 +1054,7 @@ to ensemble 1 and the last two to ensemble 2</p></li>
 a later stage in order to calculate dJS.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>kdes</strong> (<em>scipy.stats.gaussian_kde</em>) – KDEs calculated from ensembles</p></li>
 <li><p><strong>resamples</strong> (<em>list of numpy.array</em>) – For each KDE, draw samples according to the probability distribution
@@ -1074,7 +1073,7 @@ embedded space belonging to a certain ensemble</p></li>
 <dd><p>Calculate the harmonic ensemble similarity measure
 as defined in <span id="id76">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sigma1</strong> (<em>numpy.array</em>) – Covariance matrix for the first ensemble.</p></li>
 <li><p><strong>sigma2</strong> (<em>numpy.array</em>) – Covariance matrix for the second ensemble.</p></li>
@@ -1084,10 +1083,10 @@ ensemble.</p></li>
 ensemble.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>dhes</strong> – harmonic similarity measure</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -1100,7 +1099,7 @@ ensemble.</p></li>
 <p>The HES is calculated with the symmetrized version of Kullback-Leibler
 divergence as described in <span id="id77">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of Universe objects for similarity measurements.</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
@@ -1119,11 +1118,11 @@ is 100), only if estimate_error is True.</p></li>
 If this is False (default), 0.0 will be used instead.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>hes, details</strong> – Harmonic similarity measurements between each pair of ensembles,
 and dict containing mean and covariance matrix for each ensemble</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array, dictionary</p>
 </dd>
 </dl>
@@ -1197,20 +1196,20 @@ the details of the calculation instead, in the form of a dictionary</p>
 from a single ensemble. Basically, the different slices the algorithm
 needs are generated here.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – Input ensemble</p></li>
 <li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of the window (in number of frames) to be used</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The original ensemble is divided into different ensembles, each being
 a window_size-long slice of the original ensemble. The last
 ensemble will be bigger if the length of the input ensemble
 is not exactly divisible by window_size.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>tmp_ensembles</p>
 </dd>
 </dl>
@@ -1221,7 +1220,7 @@ is not exactly divisible by window_size.</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">write_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dat'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#write_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.write_output" title="Permalink to this definition"></a></dt>
 <dd><p>Write output matrix with a nice format, to stdout and optionally a file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>matrix</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix"><em>encore.utils.TriangularMatrix</em></a>) – Matrix containing the values to be printed</p></li>
 <li><p><strong>base_fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Basic filename for output. If None, no files will be written, and

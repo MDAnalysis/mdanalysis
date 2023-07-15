@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.9.2. Principal Component Analysis (PCA) — MDAnalysis.analysis.pca &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -122,13 +123,13 @@
   <span class="target" id="module-MDAnalysis.analysis.pca"></span><section id="principal-component-analysis-pca-mdanalysis-analysis-pca">
 <h1><span class="section-number">4.9.2. </span>Principal Component Analysis (PCA) — <a class="reference internal" href="#module-MDAnalysis.analysis.pca" title="MDAnalysis.analysis.pca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a><a class="headerlink" href="#principal-component-analysis-pca-mdanalysis-analysis-pca" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Authors<span class="colon">:</span></dt>
+<dt class="field-odd">Authors</dt>
 <dd class="field-odd"><p>John Detlefs</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2016</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -211,7 +212,7 @@ then transforms those atomgroup coordinates by the direction of those
 variances. Please refer to the <a class="reference internal" href="#pca-tutorial"><span class="std std-ref">PCA Tutorial</span></a> for more detailed
 instructions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe</p></li>
 <li><p><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – A valid selection statement for choosing a subset of atoms from
@@ -237,7 +238,7 @@ corresponding to the variance[i].</p>
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array, (n_atoms * 3, n_components)</p>
 </dd>
 </dl>
@@ -252,7 +253,7 @@ corresponding to the variance[i].</p>
 <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.p_components" title="MDAnalysis.analysis.pca.PCA.results.p_components"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.p_components</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array, (n_atoms * 3, n_components)</p>
 </dd>
 </dl>
@@ -267,7 +268,7 @@ matrix.</p>
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array (n_components, )</p>
 </dd>
 </dl>
@@ -282,7 +283,7 @@ matrix.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.variance" title="MDAnalysis.analysis.pca.PCA.results.variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.variance</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array (n_components, )</p>
 </dd>
 </dl>
@@ -299,7 +300,7 @@ to 1.</p>
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array, (n_components, )</p>
 </dd>
 </dl>
@@ -314,7 +315,7 @@ to 1.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cumulated_variance</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array, (n_components, )</p>
 </dd>
 </dl>
@@ -350,7 +351,7 @@ are now stored in a <a class="reference internal" href="base.html#MDAnalysis.ana
 the chosen vector in this instance, in the <code class="docutils literal notranslate"><span class="pre">other</span></code> subspace.</p>
 <p>Please cite <a class="reference internal" href="../references.html#yang2008" id="id2"><span>[Yang2008]</span></a> if you use this function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA" title="MDAnalysis.analysis.pca.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a>) – Another PCA class. This must have already been run.</p></li>
 <li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The index of eigenvector to be analysed.</p></li>
@@ -358,12 +359,12 @@ the chosen vector in this instance, in the <code class="docutils literal notrans
 <code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Cumulative overlap of the chosen vector in this instance to
 the <code class="docutils literal notranslate"><span class="pre">other</span></code> subspace. 0 indicates that they are mutually
 orthogonal, whereas 1 indicates that they are identical.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -384,7 +385,7 @@ orthogonal, whereas 1 indicates that they are identical.</p>
 Optionally, calculates one displacement vector per residue
 to extrapolate the transform to atoms not in the PCA atomgroup.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>array</em><em>, </em><em>optional</em>) – Components to be projected onto.
 The default <code class="docutils literal notranslate"><span class="pre">None</span></code> maps onto all components.</p></li>
@@ -401,7 +402,7 @@ The default <code class="docutils literal notranslate"><span class="pre">None</s
 to non-PCA atoms.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p>The resulting function f(ts) takes as input a
 <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> ts,
 and returns ts with the projected structure</p>
@@ -416,7 +417,7 @@ currently not checked.</p>
 </div>
 </p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>function</p>
 </dd>
 </dl>
@@ -492,19 +493,19 @@ both instances. The RMSIP effectively measures how
 correlated the vectors of this instance are to those of <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
 <p>Please cite <a class="reference internal" href="../references.html#amadei1999" id="id3"><span>[Amadei1999]</span></a> and <a class="reference internal" href="../references.html#leo-macias2004" id="id4"><span>[Leo-Macias2004]</span></a> if you use this function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA" title="MDAnalysis.analysis.pca.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a>) – Another PCA class. This must have already been run.</p></li>
 <li><p><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em> of </em><em>ints</em><em>, </em><em>optional</em>) – number of components to compute for the inner products.
 <code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Root mean square inner product of the selected subspaces.
 0 indicates that they are mutually orthogonal, whereas 1 indicates
 that they are identical.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -534,7 +535,7 @@ For example, to compare similarity within the top three principal components:</p
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -568,7 +569,7 @@ allowing to modify description, position etc of tqdm progressbars</p>
 <span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.transform" title="Permalink to this definition"></a></dt>
 <dd><p>Apply the dimensionality reduction on a trajectory</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – The AtomGroup or Universe containing atoms to be PCA transformed.</p></li>
 <li><p><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The number of components to be projected onto. The default
@@ -584,10 +585,10 @@ trajectory would be read until the end.</p></li>
 <code class="docutils literal notranslate"><span class="pre">step=1</span></code>).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>pca_space</strong></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array, shape (n_frames, n_components)</p>
 </dd>
 </dl>
@@ -608,13 +609,13 @@ simulation is converged. Values close to 1 are an indicator that the
 simulation isn’t converged. For values below 0.7 no statement can be made.
 If you use this function please cite <span id="id5">[<a class="reference internal" href="#id12" title="Berk Hess. Convergence of sampling in protein simulations. Phys. Rev. E, 65:031910, Mar 2002. doi:10.1103/PhysRevE.65.031910.">Hess2002</a>]</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pca_space</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>number</em><em> of </em><em>frames</em><em>, </em><em>number</em><em> of </em><em>components</em><em>)</em>) – The PCA space to be analyzed.</p></li>
 <li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The index of the pca_component projection to be analyzed.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>A float reflecting the cosine content of the ith projection in the PCA</em></p></li>
 <li><p><em>space. The output is bounded by 0 and 1, with 1 reflecting an agreement</em></p></li>
@@ -625,11 +626,11 @@ If you use this function please cite <span id="id5">[<a class="reference interna
 </dl>
 <p class="rubric">References</p>
 <div class="docutils container" id="id6">
-<div class="citation" id="id12" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">Hess2002</a><span class="fn-bracket">]</span></span>
-<p>Berk Hess. Convergence of sampling in protein simulations. <em>Phys. Rev. E</em>, 65:031910, Mar 2002. <a class="reference external" href="https://doi.org/10.1103/PhysRevE.65.031910">doi:10.1103/PhysRevE.65.031910</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id12"><span class="brackets"><a class="fn-backref" href="#id5">Hess2002</a></span></dt>
+<dd><p>Berk Hess. Convergence of sampling in protein simulations. <em>Phys. Rev. E</em>, 65:031910, Mar 2002. <a class="reference external" href="https://doi.org/10.1103/PhysRevE.65.031910">doi:10.1103/PhysRevE.65.031910</a>.</p>
+</dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -642,7 +643,7 @@ If you use this function please cite <span id="id5">[<a class="reference interna
 correlated the vectors of <code class="docutils literal notranslate"><span class="pre">a</span></code> are to those of <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
 <p>Please cite <a class="reference internal" href="../references.html#amadei1999" id="id73"><span>[Amadei1999]</span></a> and <a class="reference internal" href="../references.html#leo-macias2004" id="id74"><span>[Leo-Macias2004]</span></a> if you use this function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n_components</em><em>, </em><em>n_features</em><em>)</em>) – The first subspace. Must have the same number of features as <code class="docutils literal notranslate"><span class="pre">b</span></code>.
 If you are using the results of <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA" title="MDAnalysis.analysis.pca.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a>,
@@ -654,12 +655,12 @@ this is the TRANSPOSE of <code class="docutils literal notranslate"><span class=
 <code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Root mean square inner product of the selected subspaces.
 0 indicates that they are mutually orthogonal, whereas 1 indicates
 that they are identical.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -692,7 +693,7 @@ For example, to compare similarity within the top three principal components:</p
 the chosen vector in <code class="docutils literal notranslate"><span class="pre">a</span></code>, in the <code class="docutils literal notranslate"><span class="pre">b</span></code> subspace.</p>
 <p>Please cite <a class="reference internal" href="../references.html#yang2008" id="id75"><span>[Yang2008]</span></a> if you use this function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n_components</em><em>, </em><em>n_features</em><em>) or </em><em>vector</em><em>, </em><em>length n_features</em>) – The first subspace containing the vector of interest. Alternatively,
 the actual vector. Must have the same number of features as <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p></li>
@@ -702,12 +703,12 @@ the actual vector. Must have the same number of features as <code class="docutil
 <code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Cumulative overlap of the chosen vector in <code class="docutils literal notranslate"><span class="pre">a</span></code> to the <code class="docutils literal notranslate"><span class="pre">b</span></code> subspace.
 0 indicates that they are mutually orthogonal, whereas 1 indicates
 that they are identical.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>

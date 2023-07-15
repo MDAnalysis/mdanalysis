@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -125,13 +126,13 @@
   <span class="target" id="module-MDAnalysis.analysis.density"></span><section id="generating-densities-from-trajectories-mdanalysis-analysis-density">
 <h1><span class="section-number">4.8.1. </span>Generating densities from trajectories — <a class="reference internal" href="#module-MDAnalysis.analysis.density" title="MDAnalysis.analysis.density"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a><a class="headerlink" href="#generating-densities-from-trajectories-mdanalysis-analysis-density" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Oliver Beckstein</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2011</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -155,17 +156,17 @@ reference frame of the protein.</p>
 <ol class="arabic simple">
 <li><p>have been centered on the protein of interest;</p></li>
 <li><p>have all molecules made whole that have been broken across periodic
-boundaries <a class="footnote-reference brackets" href="#pbc" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>;</p></li>
+boundaries <a class="footnote-reference brackets" href="#pbc" id="id1">1</a>;</p></li>
 <li><p>have the solvent molecules remapped so that they are closest to the
 solute (this is important when using triclinic unit cells such as
-a dodecahedron or a truncated octahedron) <a class="footnote-reference brackets" href="#pbc" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p></li>
+a dodecahedron or a truncated octahedron) <a class="footnote-reference brackets" href="#pbc" id="id2">1</a>.</p></li>
 <li><p>have a fixed frame of reference; for instance, by superimposing a protein
 on a reference structure so that one can study the solvent density around
-it <a class="footnote-reference brackets" href="#fit" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p></li>
+it <a class="footnote-reference brackets" href="#fit" id="id3">2</a>.</p></li>
 </ol>
 <p>To generate the density of water molecules around a protein (assuming that the
 trajectory is already appropriately treated for periodic boundary artifacts and
-is suitably superimposed to provide a fixed reference frame) <a class="footnote-reference brackets" href="#testraj" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
+is suitably superimposed to provide a fixed reference frame) <a class="footnote-reference brackets" href="#testraj" id="id4">3</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.density</span> <span class="kn">import</span> <span class="n">DensityAnalysis</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 <span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
@@ -199,7 +200,7 @@ atomgroup.</p>
 <p>The trajectory is read, frame by frame, and the atoms in <cite>atomgroup</cite> are
 histogrammed on a 3D grid with spacing <cite>delta</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><em>UpdatingAtomGroup</em></a>) – Group of atoms (such as all the water oxygen atoms) being analyzed.
 This can be an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> for
@@ -226,7 +227,7 @@ the resulting density is stored in the <code class="xref py py-attr docutils lit
 attribute as a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance. Note: this replaces the
 now deprecated <code class="xref py py-attr docutils literal notranslate"><span class="pre">density</span></code> attribute.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
 </dd>
 </dl>
@@ -241,14 +242,14 @@ now deprecated <code class="xref py py-attr docutils literal notranslate"><span 
 <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.results.density" title="MDAnalysis.analysis.density.DensityAnalysis.results.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.density</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if AtomGroup is empty and no user defined grid is provided, or
     if the user defined grid is not or incorrectly provided</p></li>
@@ -291,19 +292,19 @@ solvent will appear in the reference frame of the protein.</p>
 <ol class="arabic simple">
 <li><p>have been centered on the protein of interest;</p></li>
 <li><p>have all molecules made whole that have been broken across periodic
-boundaries <a class="footnote-reference brackets" href="#pbc" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>;</p></li>
+boundaries <a class="footnote-reference brackets" href="#pbc" id="id5">1</a>;</p></li>
 <li><p>have the solvent molecules remapped so that they are closest to the
 solute (this is important when using triclinic unit cells such as
-a dodecahedron or a truncated octahedron) <a class="footnote-reference brackets" href="#pbc" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>;</p></li>
+a dodecahedron or a truncated octahedron) <a class="footnote-reference brackets" href="#pbc" id="id6">1</a>;</p></li>
 <li><p>have a fixed frame of reference; for instance, by superimposing a
 protein on a reference structure so that one can study the solvent
-density around it <a class="footnote-reference brackets" href="#fit" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p></li>
+density around it <a class="footnote-reference brackets" href="#fit" id="id7">2</a>.</p></li>
 </ol>
 <p class="rubric">Generate the density</p>
 <p>To generate the density of water molecules around a protein (assuming that
 the trajectory is already appropriately treated for periodic boundary
 artifacts and is suitably superimposed to provide a fixed reference frame)
-<a class="footnote-reference brackets" href="#testraj" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, first  create the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> object by
+<a class="footnote-reference brackets" href="#testraj" id="id8">3</a>, first  create the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> object by
 supplying an AtomGroup, then use  the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="MDAnalysis.analysis.density.DensityAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">density</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
@@ -406,7 +407,7 @@ defined grid is assigned).</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_set_user_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gridcenter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#DensityAnalysis._set_user_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis._set_user_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Helper function to set the grid dimensions to user defined values</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em>) – 3 element ndarray containing the x, y and z coordinates of the
 grid box center</p></li>
@@ -417,7 +418,7 @@ grid box center</p></li>
 <li><p><strong>smax</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em>) – Maximum x,y,z coordinates for the input selection</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>umin</strong> (<em>numpy ndarray, float32</em>) – Minimum x,y,z coordinates of the user defined grid</p></li>
 <li><p><strong>umax</strong> (<em>numpy ndarray, float32</em>) – Maximum x,y,z coordinates of the user defined grid</p></li>
@@ -435,7 +436,7 @@ grid box center</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -478,7 +479,7 @@ instance, which is derived from a <a class="reference external" href="https://ww
 <dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Class representing a density on a regular cartesian grid.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p></li>
 <li><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – list of arrays, the lower and upper bin edges along the axes</p></li>
@@ -515,7 +516,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <span class="sig-name descname"><span class="pre">grid</span></span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.grid" title="Permalink to this definition"></a></dt>
 <dd><p>counts or density</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array</p>
 </dd>
 </dl>
@@ -527,7 +528,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <dd><p>The boundaries of each cell in <cite>grid</cite> along all axes (equivalent
 to what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.25)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of 1d-arrays</p>
 </dd>
 </dl>
@@ -538,7 +539,7 @@ to what <a class="reference external" href="https://numpy.org/doc/stable/referen
 <span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.delta" title="Permalink to this definition"></a></dt>
 <dd><p>Cell size in each dimension.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array</p>
 </dd>
 </dl>
@@ -550,7 +551,7 @@ to what <a class="reference external" href="https://numpy.org/doc/stable/referen
 <dd><p>Coordinates of the <em>center</em> of the cell at index <cite>grid[0, 0, 0, …,
 0]</cite>, which is considered to be the front lower left corner.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>array</p>
 </dd>
 </dl>
@@ -562,7 +563,7 @@ to what <a class="reference external" href="https://numpy.org/doc/stable/referen
 <dd><p>The units for lengths and density; change units with the method
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_length" title="MDAnalysis.analysis.density.Density.convert_length"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_length()</span></code></a> or <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_density" title="MDAnalysis.analysis.density.Density.convert_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_density()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
@@ -665,11 +666,11 @@ that the length- and the density unit correspond to each other.</p>
 <p>In order to make <cite>other</cite> compatible, resample it on the same
 grid as this one using <a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resample()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>other</strong> (<em>Grid</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Another object to be used for standard arithmetic
 operations with this <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – if not compatible</p>
 </dd>
 </dl>
@@ -684,10 +685,14 @@ operations with this <code class="xref py py-class docutils literal notranslate"
 <span class="sig-name descname"><span class="pre">convert_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Angstrom'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density.convert_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_density" title="Permalink to this definition"></a></dt>
 <dd><p>Convert the density to the physical units given by <cite>unit</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The target unit that the density should be converted to.</p>
 <p><cite>unit</cite> can be one of the following:</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 83%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>name</p></th>
 <th class="head"><p>description of the unit</p></th>
@@ -719,7 +724,7 @@ operations with this <code class="xref py py-class docutils literal notranslate"
 </table>
 </p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the density does not have a unit associated with it to begin
     with (i.e., is not a density) then no conversion can take place.</p></li>
@@ -741,7 +746,7 @@ and floating point artifacts for multiple conversions.</p></li>
 <span class="sig-name descname"><span class="pre">convert_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Angstrom'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density.convert_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_length" title="Permalink to this definition"></a></dt>
 <dd><p>Convert Grid object to the new <cite>unit</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – unit that the grid should be converted to: one of
 “Angstrom”, “nm”</p>
 </dd>
@@ -776,7 +781,7 @@ is simpler than <code class="docutils literal notranslate"><span class="pre">exp
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of the output file</p></li>
 <li><p><strong>file_format</strong> (<em>{'dx'</em><em>, </em><em>'pickle'</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – output file format, the default is “dx”</p></li>
@@ -885,15 +890,15 @@ order of the interpolation is set by
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Grid.interpolation_spline_order</span></code>: change the value
 <em>before</em> calling <a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resample()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em> of </em><em>arrays</em><em> or </em><em>Grid</em>) – edges of the new grid or a <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code> instance that
 provides <code class="xref py py-attr docutils literal notranslate"><span class="pre">Grid.edges</span></code></p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a new <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code> with the data interpolated over the
 new grid cells</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Grid</p>
 </dd>
 </dl>
@@ -916,17 +921,17 @@ the argument for this method</p>
 <span class="sig-name descname"><span class="pre">resample_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.resample_factor" title="Permalink to this definition"></a></dt>
 <dd><p>Resample to a new regular grid.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – The number of grid cells are scaled with <cite>factor</cite> in each
 dimension, i.e., <code class="docutils literal notranslate"><span class="pre">factor</span> <span class="pre">*</span> <span class="pre">N_i</span></code> cells along each
 dimension i. Must be positive, and cannot result in fewer
 than 2 cells along a dimension.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>interpolated grid</strong> – The resampled data are represented on a <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code> with the new
 grid cell sizes.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Grid</p>
 </dd>
 </dl>
@@ -964,32 +969,26 @@ is a better alternative for portability.</p>
 </dd></dl>
 
 <p class="rubric">Footnotes</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="pbc" role="note">
-<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id5">3</a>,<a role="doc-backlink" href="#id6">4</a>)</span>
-<p>Making molecules whole can be accomplished with the
+<dl class="footnote brackets">
+<dt class="label" id="pbc"><span class="brackets">1</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id5">3</a>,<a href="#id6">4</a>)</span></dt>
+<dd><p>Making molecules whole can be accomplished with the
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.wrap" title="MDAnalysis.core.groups.AtomGroup.wrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.wrap()</span></code></a> of
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms</span></code> (use <code class="docutils literal notranslate"><span class="pre">compound=&quot;fragments&quot;</span></code>).  or the
 PBC-wrapping transformations in
 <a class="reference internal" href="../transformations/wrap.html#module-MDAnalysis.transformations.wrap" title="MDAnalysis.transformations.wrap"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a>.</p>
-</aside>
-<aside class="footnote brackets" id="fit" role="note">
-<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id7">2</a>)</span>
-<p>Superposition can be performed with
+</dd>
+<dt class="label" id="fit"><span class="brackets">2</span><span class="fn-backref">(<a href="#id3">1</a>,<a href="#id7">2</a>)</span></dt>
+<dd><p>Superposition can be performed with
 <a class="reference internal" href="align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align.AlignTraj</span></code></a> or the fitting
 transformations in <a class="reference internal" href="../transformations/fit.html#module-MDAnalysis.transformations.fit" title="MDAnalysis.transformations.fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a>.</p>
-</aside>
-<aside class="footnote brackets" id="testraj" role="note">
-<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id8">2</a>)</span>
-<p>Note that the trajectory in the example (<cite>XTC</cite>) is <em>not</em>
+</dd>
+<dt class="label" id="testraj"><span class="brackets">3</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id8">2</a>)</span></dt>
+<dd><p>Note that the trajectory in the example (<cite>XTC</cite>) is <em>not</em>
 properly made whole and fitted to a reference structure;
 these steps were omitted to clearly show the steps necessary
 for the actual density calculation.</p>
-</aside>
-</aside>
+</dd>
+</dl>
 </section>
 </section>
 

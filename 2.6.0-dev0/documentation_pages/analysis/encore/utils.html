@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7.1.7. Utility functions for ENCORE &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
@@ -138,7 +139,7 @@ arguments to functions and kwargs to functions.</p>
 <dd><p>Number of cores to be used for parallel calculation. If -1 use all
 available cores.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
@@ -149,7 +150,7 @@ available cores.</p>
 <span class="sig-name descname"><span class="pre">function</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="Permalink to this definition"></a></dt>
 <dd><p>Function to be run in parallel.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>callable object</p>
 </dd>
 </dl>
@@ -163,7 +164,7 @@ function(). This means that a call to function() is performed for
 each tuple. function is called as function(*args, **kwargs). Runs
 are distributed on the requested numbers of cores.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of tuples</p>
 </dd>
 </dl>
@@ -175,7 +176,7 @@ are distributed on the requested numbers of cores.</p>
 <dd><p>Each tuple contains the named arguments that will be passed to
 function, similarly as described for the args attribute.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of dicts</p>
 </dd>
 </dl>
@@ -187,14 +188,14 @@ function, similarly as described for the args attribute.</p>
 <dd><p>Number of runs to be performed. Must be equal to len(args) and
 len(kwargs).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of cores to be used for parallel calculation. If -1 use all
 available cores.</p></li>
@@ -211,13 +212,13 @@ class description.</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.run" title="Permalink to this definition"></a></dt>
 <dd><p>Run parallel calculation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>results</strong> – int is the number of the calculation corresponding to a
 certain argument in the args list, and object is the result of
 corresponding calculation. For instance, in (3, output), output
 is the return of function(*args[3], **kwargs[3]).</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a> of ordered tuples (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a>)</p>
 </dd>
 </dl>
@@ -228,7 +229,7 @@ is the return of function(*args[3], **kwargs[3]).</p>
 <span class="sig-name descname"><span class="pre">worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation.worker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.worker" title="Permalink to this definition"></a></dt>
 <dd><p>Generic worker. Will run function with the prescribed args and kwargs.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>q</strong> (<em>multiprocessing.Manager.Queue object</em>) – work queue, from which the worker fetches arguments and
 messages</p></li>
@@ -252,7 +253,7 @@ facilities to conveniently load/write a matrix from/to file. It can be
 accessed using the [] and () operators, similarly to a normal numpy array.</p>
 <p>Class constructor.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>size</strong> (<em>int / array_like</em>) – Size of the matrix (number of rows or columns). If an
 array is provided instead, the size of the triangular matrix
@@ -276,7 +277,7 @@ ignored); size has to be provided though.</p></li>
 <span class="sig-name descname"><span class="pre">loadz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix.loadz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix.loadz" title="Permalink to this definition"></a></dt>
 <dd><p>Load matrix from the npz compressed numpy format.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Name of the file to be loaded.</p>
 </dd>
 </dl>
@@ -288,7 +289,7 @@ ignored); size has to be provided though.</p></li>
 <dd><p>Save matrix in the npz compressed numpy format. Save metadata and
 data as well.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Name of the file to be saved.</p>
 </dd>
 </dl>
@@ -301,10 +302,10 @@ data as well.</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">merge_universes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#merge_universes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.merge_universes" title="Permalink to this definition"></a></dt>
 <dd><p>Merge list of universes into one</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>universes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>Universe objects</em>) – </p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Universe object</p>
 </dd>
 </dl>
@@ -318,7 +319,7 @@ The matrix size is automatically determined from the number of elements.
 For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
 (2,1).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>(</em><em>int i</em><em>, </em><em>int j</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – starting matrix element.</p></li>
 <li><p><strong>b</strong> (<em>(</em><em>int i</em><em>, </em><em>int j</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – final matrix element.</p></li>
@@ -333,7 +334,7 @@ For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
 <dd><p>generate (i,j) indeces of a triangular matrix of n rows (or columns),
 with diagonal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Matrix size</p>
 </dd>
 </dl>
@@ -345,7 +346,7 @@ with diagonal</p>
 <dd><p>generate (i,j) indeces of a triangular matrix of n rows (or columns),
 without diagonal (e.g. no elements (0,0),(1,1),…,(n,n))</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Matrix size</p>
 </dd>
 </dl>

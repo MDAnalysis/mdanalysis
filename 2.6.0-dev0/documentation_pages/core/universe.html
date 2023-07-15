@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>11.2.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -147,7 +148,7 @@ information <em>and</em> coordinates (such as XYZ, PDB, GRO or CRD, see
 <a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a>) then the coordinates are immediately
 loaded from the “topology” file unless a trajectory is supplied.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><em>Topology</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><em>numpy.ndarray</em></a><em>, </em><em>None</em>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
 define the list of atoms. If the file includes bond information,
@@ -206,7 +207,7 @@ trajectory.</p></li>
 <dd><p>currently loaded trajectory reader; readers are described in
 <a class="reference internal" href="../coordinates_modules.html#coordinates"><span class="std std-ref">Coordinates modules</span></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase">base.ReaderBase</a> or <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.SingleFrameReaderBase" title="MDAnalysis.coordinates.base.SingleFrameReaderBase">base.SingleFrameReaderBase</a></p>
 </dd>
 </dl>
@@ -221,7 +222,7 @@ trajectory) at the <em>current time step</em>
 The unit cell can be set for the current time step (but the change is
 not permanent unless written to a file).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -233,7 +234,7 @@ not permanent unless written to a file).</p>
 <dd><p>all particles (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) in the system,
 as read from the <cite>topology</cite> file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></p>
 </dd>
 </dl>
@@ -244,7 +245,7 @@ as read from the <cite>topology</cite> file</p>
 <span class="sig-name descname"><span class="pre">residues</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.residues" title="Permalink to this definition"></a></dt>
 <dd><p>all residues (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>) in the system</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup">ResidueGroup</a></p>
 </dd>
 </dl>
@@ -255,7 +256,7 @@ as read from the <cite>topology</cite> file</p>
 <span class="sig-name descname"><span class="pre">segments</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.segments" title="Permalink to this definition"></a></dt>
 <dd><p>all segments (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>) in the system</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="groups.html#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup">SegmentGroup</a></p>
 </dd>
 </dl>
@@ -267,7 +268,7 @@ as read from the <cite>topology</cite> file</p>
 <dd><p>all bonds (if defined in the <cite>topology</cite>) as provided by
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.bonds</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds">topologyattrs.Bonds</a></p>
 </dd>
 </dl>
@@ -279,7 +280,7 @@ as read from the <cite>topology</cite> file</p>
 <dd><p>all angles (if defined in the <cite>topology</cite>), same as
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.angles</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Angles" title="MDAnalysis.core.topologyattrs.Angles">topologyattrs.Angles</a></p>
 </dd>
 </dl>
@@ -291,7 +292,7 @@ as read from the <cite>topology</cite> file</p>
 <dd><p>all dihedral angles (if defined in the <cite>topology</cite>), same as
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.dihedrals</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Dihedrals" title="MDAnalysis.core.topologyattrs.Dihedrals">topologyattrs.Dihedrals</a></p>
 </dd>
 </dl>
@@ -303,7 +304,7 @@ as read from the <cite>topology</cite> file</p>
 <dd><p>all improper dihedral angles (if defined in the <cite>topology</cite>), same as
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.impropers</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Impropers" title="MDAnalysis.core.topologyattrs.Impropers">topologyattrs.Impropers</a></p>
 </dd>
 </dl>
@@ -346,7 +347,7 @@ Removed instant selectors.</p>
 as per usual.  If the Universe contains multiple segments, this must
 be specified as a keyword.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>segment</strong> (<em>MDAnalysis.Segment</em>) – If there are multiple segments, then the Segment that the new
 Residue will belong in must be specified.</p></li>
@@ -354,10 +355,10 @@ Residue will belong in must be specified.</p></li>
 specified</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>A reference to the new Residue</p>
 </dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If any information was missing.  This happens before any changes have
     been made, ie the change is rolled back.</p>
 </dd>
@@ -380,14 +381,14 @@ specified</p></li>
 <span class="sig-name descname"><span class="pre">add_Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Segment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Segment" title="Permalink to this definition"></a></dt>
 <dd><p>Add a new Segment to this Universe</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – For each Segment attribute as a key, give the value in the new
 Segment</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>A reference to the new Segment</p>
 </dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If any attributes were not specified as a keyword.</p>
 </dd>
 </dl>
@@ -400,7 +401,7 @@ Segment</p>
 <p>Adding a TopologyAttribute to the Universe makes it available to
 all AtomGroups etc throughout the Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><em>string</em>) – Either a MDAnalysis TopologyAttr object or the name of a possible
 topology attribute.</p></li>
@@ -440,7 +441,7 @@ they will be aliases of the same attribute.</p>
 <span class="sig-name descname"><span class="pre">add_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_angles" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Angles to this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Angles;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,
 or Angles. If every value is a Angle, all
@@ -460,7 +461,7 @@ they <em>must</em> be from the same Universe.</p></li>
 <span class="sig-name descname"><span class="pre">add_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_bonds" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Bonds to this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Bonds;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,
 or Bonds. If every value is a Bond, all
@@ -505,7 +506,7 @@ them to indices first.</p>
 <span class="sig-name descname"><span class="pre">add_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_dihedrals" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Dihedrals to this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Dihedrals;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
 or Dihedrals. If every value is a Dihedral, all
@@ -527,7 +528,7 @@ they <em>must</em> be from the same Universe.</p></li>
 <span class="sig-name descname"><span class="pre">add_impropers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_impropers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_impropers" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Impropers to this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Impropers;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
 or Impropers. If every value is an Improper, all
@@ -574,7 +575,7 @@ the Universe as a numpy array: <code class="xref py py-meth docutils literal not
 <p>Removing a TopologyAttribute from the Universe makes it unavailable to
 all AtomGroups etc throughout the Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><em>string</em>) – Either a MDAnalysis TopologyAttr object or the name of a possible
 topology attribute.</p>
 </dd>
@@ -603,7 +604,7 @@ topology attribute.</p>
 <span class="sig-name descname"><span class="pre">delete_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_angles" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Angles from this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Angles;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,
 or Angles.
 If AtomGroups, Angles, or a TopologyGroup are passed,
@@ -620,7 +621,7 @@ they <em>must</em> be from the same Universe.</p>
 <span class="sig-name descname"><span class="pre">delete_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_bonds" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Bonds from this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Bonds;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,
 or Bonds.
 If AtomGroups, Bonds, or a TopologyGroup are passed,
@@ -656,7 +657,7 @@ delete bonds from another Universe, convert them to indices first.</p>
 <span class="sig-name descname"><span class="pre">delete_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_dihedrals" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Dihedrals from this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Dihedrals;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
 or Dihedrals.
 If AtomGroups, Dihedrals, or a TopologyGroup are passed,
@@ -673,7 +674,7 @@ they <em>must</em> be from the same Universe.</p>
 <span class="sig-name descname"><span class="pre">delete_impropers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_impropers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_impropers" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Impropers from this Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>values</strong> (<em>iterable</em><em> of </em><em>tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Impropers;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
 or Impropers.
 If AtomGroups, Angles, or a TopologyGroup are passed,
@@ -695,7 +696,7 @@ for example for system building.</p>
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> will be
 attached to the Universe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of Atoms in the Universe</p></li>
 <li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Residues in the Universe, defaults to 1</p></li>
@@ -714,11 +715,11 @@ coordinates to be set and written.</p></li>
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> instance with dummy
 values for atoms and undefined coordinates/velocities/forces</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe">Universe</a></p>
 </dd>
 </dl>
@@ -748,7 +749,7 @@ positions for the atoms and a mass attribute:</p>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_smiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sanitize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addHs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numConfs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdkit_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.from_smiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.from_smiles" title="Permalink to this definition"></a></dt>
 <dd><p>Create a Universe from a SMILES string with rdkit</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>smiles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – SMILES string</p></li>
 <li><p><strong>sanitize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Toggle the sanitization of the molecule</p></li>
@@ -763,12 +764,12 @@ function</p></li>
 <li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – Parameters passed on Universe creation</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>universe</strong> – contains atom names and topology information (bonds) derived from
 the input SMILES string; coordinates are included if
 <cite>generate_coordinates</cite> was set to <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe">Universe</a></p>
 </dd>
 </dl>
@@ -809,7 +810,7 @@ or can be explicitly set with the <cite>format</cite> keyword. A sequence of fil
 can be read as a single virtual trajectory by providing a list of
 filenames.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the coordinate file (single frame or trajectory) <em>or</em> a list of
 filenames, which are read one after another.</p></li>
@@ -830,13 +831,13 @@ reader to be used on the trajectory file.</p></li>
 advanced use)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>universe</strong></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe">Universe</a></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – if trajectory format can not be determined or no appropriate
     trajectory reader found</p>
 </dd>
@@ -867,7 +868,7 @@ and detected file type.</p>
 topology (eg residue identity) can change between different models,
 resulting in a different number of atoms in each model.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>A list of AtomGroups, each representing a single model.</p>
 </dd>
 </dl>
@@ -896,7 +897,7 @@ resulting in a different number of atoms in each model.</p>
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> to support in-place
 editing of coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start reading from the nth frame.</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – read upto and excluding the nth frame.</p></li>
@@ -925,16 +926,16 @@ set to True. Default value is False.</p></li>
 <dd><p>Create a new new <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> from one or more
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instances.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>*args</strong> (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>) – One or more AtomGroups.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>universe</strong></p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – Too few arguments or an AtomGroup is empty and</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – Arguments are not <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances.</p></li>

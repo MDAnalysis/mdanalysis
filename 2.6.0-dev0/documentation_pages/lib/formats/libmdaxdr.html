@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
@@ -141,7 +142,7 @@ own please see the source code in <a class="reference external" href="https://gi
 function will return a frame and all information in it instead of a single
 line. Additionally the context-manager protocoll is supported as well.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
@@ -172,7 +173,7 @@ frame and offsets</p>
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.close" title="Permalink to this definition"></a></dt>
 <dd><p>Close the open XDR file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -194,13 +195,13 @@ frame and offsets</p>
 <dd><p>Open a XDR file</p>
 <p>If another XDR file is currently opened it will be closed</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -211,10 +212,10 @@ frame and offsets</p>
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read" title="Permalink to this definition"></a></dt>
 <dd><p>Read next frame in the TRR file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>frame</strong> – namedtuple with frame information</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>libmdaxdr.TRRFrame</p>
 </dd>
 </dl>
@@ -223,7 +224,7 @@ frame and offsets</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TRRFrame</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XTCFile</span></code></a></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -235,13 +236,13 @@ frame and offsets</p>
 <dd><p>Read next frame in the TRR file with positions read directly into
 a pre-existing array.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>positions</strong> (<em>np.ndarray</em>) – positions array to read positions into</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>frame</strong> – namedtuple with frame information</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>libmdaxdr.TRRFrame</p>
 </dd>
 </dl>
@@ -250,7 +251,7 @@ a pre-existing array.</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TRRFrame</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XTCFile</span></code></a></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -267,10 +268,10 @@ a pre-existing array.</p>
 they haven’t been set before. For large file this means the first seek
 can be very slow. Later seeks will be very fast.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – seek the file to given frame</p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -293,7 +294,7 @@ can be very slow. Later seeks will be very fast.</p>
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.write" title="Permalink to this definition"></a></dt>
 <dd><p>write one frame into TRR file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xyz</strong> (array_like, shape=(<cite>n_atoms</cite>, 3), optional) – cartesion coordinates. Only written if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>velocity</strong> (array_like, shape=(<cite>n_atoms</cite>, 3), optional) – cartesion velocities. Only written if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
@@ -305,7 +306,7 @@ can be very slow. Later seeks will be very fast.</p>
 <li><p><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of atoms in frame</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -321,7 +322,7 @@ can be very slow. Later seeks will be very fast.</p>
 function will return a frame and all information in it instead of a single
 line. Additionally the context-manager protocoll is supported as well.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
@@ -352,7 +353,7 @@ frame and offsets</p>
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.close" title="Permalink to this definition"></a></dt>
 <dd><p>Close the open XDR file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -374,13 +375,13 @@ frame and offsets</p>
 <dd><p>Open a XDR file</p>
 <p>If another XDR file is currently opened it will be closed</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -391,10 +392,10 @@ frame and offsets</p>
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read" title="Permalink to this definition"></a></dt>
 <dd><p>Read next frame in the XTC file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>frame</strong> – namedtuple with frame information</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>libmdaxdr.XTCFrame</p>
 </dd>
 </dl>
@@ -403,7 +404,7 @@ frame and offsets</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XTCFrame</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TRRFile</span></code></a></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -415,13 +416,13 @@ frame and offsets</p>
 <dd><p>Read next frame in the XTC file with positions read directly into
 a pre-existing array.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>positions</strong> (<em>np.ndarray</em>) – positions array to read positions into</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>frame</strong> – namedtuple with frame information</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>libmdaxdr.XTCFrame</p>
 </dd>
 </dl>
@@ -430,7 +431,7 @@ a pre-existing array.</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XTCFrame</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TRRFile</span></code></a></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -447,10 +448,10 @@ a pre-existing array.</p>
 they haven’t been set before. For large file this means the first seek
 can be very slow. Later seeks will be very fast.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – seek the file to given frame</p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
@@ -473,7 +474,7 @@ can be very slow. Later seeks will be very fast.</p>
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.write" title="Permalink to this definition"></a></dt>
 <dd><p>write one frame to the XTC file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xyz</strong> (array_like, shape=(<cite>n_atoms</cite>, 3)) – cartesion coordinates</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – Box vectors for this frame</p></li>
@@ -488,7 +489,7 @@ can be very slow. Later seeks will be very fast.</p>
 will be multiplied by precision and then converted to an integer. This
 means a precision of 1000 yields an accuracy of 3 decimal places.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>8.6.6. No Jump Trajectory Unwrapping — MDAnalysis.transformations.nojump &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -153,21 +154,20 @@ protein dimers together if they are together in the inital timestep. The unwrapp
 also be useful to compute diffusion coefficients via the Einstein relation.
 To reverse the process, wrap the coordinates again.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep">MDAnalysis.coordinates.timestep.Timestep</a></p>
 </dd>
 </dl>
 <p class="rubric">References</p>
 <div class="docutils container" id="id3">
-<div class="citation" id="id69" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Kulke2022<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
-<p>Martin Kulke and Josh V. Vermaas. Reversible unwrapping algorithm for constant-pressure molecular dynamics simulations. <em>Journal of Chemical Theory and Computation</em>, 18(10):6161–6171, 2022. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.2c00327">doi:10.1021/acs.jctc.2c00327</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id69"><span class="brackets">Kulke2022</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p>Martin Kulke and Josh V. Vermaas. Reversible unwrapping algorithm for constant-pressure molecular dynamics simulations. <em>Journal of Chemical Theory and Computation</em>, 18(10):6161–6171, 2022. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.2c00327">doi:10.1021/acs.jctc.2c00327</a>.</p>
+</dd>
+</dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>

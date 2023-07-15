@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.3.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -125,13 +126,13 @@
   <span class="target" id="module-MDAnalysis.analysis.hydrogenbonds.hbond_analysis"></span><section id="hydrogen-bond-analysis-mdanalysis-analysis-hydrogenbonds-hbond-analysis">
 <h1><span class="section-number">4.3.1. </span>Hydrogen Bond Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_analysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a><a class="headerlink" href="#hydrogen-bond-analysis-mdanalysis-analysis-hydrogenbonds-hbond-analysis" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Paul Smith</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2019</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -334,7 +335,7 @@ bonds in a Universe.</p>
 <cite>acceptors_sel</cite> may be achieved with either a <em>resname</em>, atom <em>name</em>
 combination, or when those are absent, with atom <em>type</em> selections.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis Universe object</p></li>
 <li><p><strong>donors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Selection string for the hydrogen bond donor atoms. If the
@@ -408,11 +409,11 @@ bond interactions. See <a class="reference internal" href="#output">Output</a> f
 <span class="sig-name descname"><span class="pre">count_by_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis.count_by_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_ids" title="Permalink to this definition"></a></dt>
 <dd><p>Counts the total number hydrogen bonds formed by unique combinations of donor, hydrogen and acceptor atoms.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>counts</strong> – Each row of the array contains the donor atom id, hydrogen atom id, acceptor atom id and the total number
 of times the hydrogen bond was observed. The array is sorted by frequency of occurrence.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -428,12 +429,12 @@ in a hydrogen bond.</p>
 <span class="sig-name descname"><span class="pre">count_by_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis.count_by_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_time" title="Permalink to this definition"></a></dt>
 <dd><p>Counts the number of hydrogen bonds per timestep.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>counts</strong> – Contains the total number of hydrogen bonds found at each timestep.
 Can be used along with <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.times</span></code> to plot
 the number of hydrogen bonds over time.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -444,12 +445,12 @@ the number of hydrogen bonds over time.</p>
 <span class="sig-name descname"><span class="pre">count_by_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis.count_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_type" title="Permalink to this definition"></a></dt>
 <dd><p>Counts the total number of each unique type of hydrogen bond.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>counts</strong> – Each row of the array contains the donor resname, donor atom type,
 acceptor resname, acceptor atom type and the total number of times
 the hydrogen bond was found.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -467,7 +468,7 @@ resname and atom type of the donor and acceptor atoms in a hydrogen bond.</p>
 <p>Acceptor selections may be achieved with either a resname, atom
 name combination, or when those are absent, atom types.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <a class="reference internal" href="../selections.html#selection-commands-label"><span class="std std-ref">Selection string</span></a> for atom group
 from which acceptors will be identified. (e.g., <code class="docutils literal notranslate"><span class="pre">(resname</span> <span class="pre">X</span> <span class="pre">and</span>
@@ -475,11 +476,11 @@ from which acceptors will be identified. (e.g., <code class="docutils literal no
 <li><p><strong>max_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The charge of an acceptor atom must be less than this value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>potential_acceptors</strong> – String containing the <code class="xref py py-attr docutils literal notranslate"><span class="pre">resname</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">name</span></code> of all atoms
 that potentially capable of forming hydrogen bonds.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
@@ -508,7 +509,7 @@ attribute <code class="xref py py-attr docutils literal notranslate"><span class
 use if the universe topology does not contain bonding information,
 otherwise donor-hydrogen pairs may be incorrectly assigned.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <a class="reference internal" href="../selections.html#selection-commands-label"><span class="std std-ref">Selection string</span></a> for atom group
 from which donors will be identified. (e.g., <code class="docutils literal notranslate"><span class="pre">(resname</span> <span class="pre">X</span> <span class="pre">and</span> <span class="pre">name</span>
@@ -516,11 +517,11 @@ from which donors will be identified. (e.g., <code class="docutils literal notra
 <li><p><strong>max_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The charge of a donor atom must be less than this value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>potential_donors</strong> – String containing the <code class="xref py py-attr docutils literal notranslate"><span class="pre">resname</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">name</span></code> of all atoms
 that are potentially capable of forming hydrogen bonds.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
@@ -549,7 +550,7 @@ attribute <code class="xref py py-attr docutils literal notranslate"><span class
 <span class="sig-name descname"><span class="pre">guess_hydrogens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_charge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis.guess_hydrogens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens" title="Permalink to this definition"></a></dt>
 <dd><p>Guesses which hydrogen atoms should be used in the analysis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <a class="reference internal" href="../selections.html#selection-commands-label"><span class="std std-ref">Selection string</span></a> for atom group
 from which hydrogens will be identified. (e.g., <code class="docutils literal notranslate"><span class="pre">(resname</span> <span class="pre">X</span> <span class="pre">and</span>
@@ -559,11 +560,11 @@ from which hydrogens will be identified. (e.g., <code class="docutils literal no
 <li><p><strong>min_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The charge of a hydrogen atom must be greater than this value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>potential_hydrogens</strong> – String containing the <code class="xref py py-attr docutils literal notranslate"><span class="pre">resname</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">name</span></code> of all
 hydrogen atoms potentially capable of forming hydrogen bonds.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
@@ -604,7 +605,7 @@ hydrogen bond.</p>
 <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations.intermittency()</span></code> functions for more
 details.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The number of frames between each t(0).</p></li>
 <li><p><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Hydrogen bond lifetime is calculated for frames in the range
@@ -619,7 +620,7 @@ be treated as being present at all frames. The default is
 continuous (intermittency=0).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>tau_timeseries</strong> (<em>np.array</em>) – tau from 1 to <cite>tau_max</cite></p></li>
 <li><p><strong>timeseries</strong> (<em>np.array</em>) – autcorrelation value for each value of <cite>tau</cite></p></li>

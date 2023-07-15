@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.11. Correlations utilities — MDAnalysis.lib.correlations &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -123,13 +124,13 @@
   <span class="target" id="module-MDAnalysis.lib.correlations"></span><section id="correlations-utilities-mdanalysis-lib-correlations">
 <h1><span class="section-number">13.2.11. </span>Correlations utilities — <a class="reference internal" href="#module-MDAnalysis.lib.correlations" title="MDAnalysis.lib.correlations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a><a class="headerlink" href="#correlations-utilities-mdanalysis-lib-correlations" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Authors<span class="colon">:</span></dt>
+<dt class="field-odd">Authors</dt>
 <dd class="field-odd"><p>Paul Smith &amp; Mateusz Bieniek</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2020</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v2</p>
 </dd>
 </dl>
@@ -173,21 +174,17 @@ lifetime.</p>
 </div>
 <p class="rubric">References</p>
 <div class="docutils container" id="id4">
-<div class="citation" id="id24" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Gowers2015<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id72">2</a>)</span>
-<p>Richard J. Gowers and Paola Carbone. A multiscale approach to model hydrogen bonding: the case of polyamide. <em>The journal of Chemical Physics</em>, 142(22):224907, 2015. <a class="reference external" href="https://doi.org/10.1063/1.4922445">doi:10.1063/1.4922445</a>.</p>
-</div>
-<div class="citation" id="id9" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Araya-Secchi2014<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id71">3</a>)</span>
-<p>Raul Araya-Secchi, Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martínez, Isaac E. García, Juan C. Sáez, and Ruhong Zhou. Characterization of a novel water pocket inside the human cx26 hemichannel structure. <em>Biophysical Journal</em>, 107(3):599–612, 2014. <a class="reference external" href="https://doi.org/10.1016/j.bpj.2014.05.037">doi:10.1016/j.bpj.2014.05.037</a>.</p>
-</div>
-<div class="citation" id="id27" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Gu2019</a><span class="fn-bracket">]</span></span>
-<p>Ruo-Xu Gu, Svetlana Baoukina, and D. Peter Tieleman. Cholesterol flip-flop in heterogeneous membranes. <em>Journal of Chemical Theory and Computation</em>, 15(3):2064–2070, 2019. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b00933">doi:10.1021/acs.jctc.8b00933</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id24"><span class="brackets">Gowers2015</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id72">2</a>)</span></dt>
+<dd><p>Richard J. Gowers and Paola Carbone. A multiscale approach to model hydrogen bonding: the case of polyamide. <em>The journal of Chemical Physics</em>, 142(22):224907, 2015. <a class="reference external" href="https://doi.org/10.1063/1.4922445">doi:10.1063/1.4922445</a>.</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets">Araya-Secchi2014</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id71">3</a>)</span></dt>
+<dd><p>Raul Araya-Secchi, Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martínez, Isaac E. García, Juan C. Sáez, and Ruhong Zhou. Characterization of a novel water pocket inside the human cx26 hemichannel structure. <em>Biophysical Journal</em>, 107(3):599–612, 2014. <a class="reference external" href="https://doi.org/10.1016/j.bpj.2014.05.037">doi:10.1016/j.bpj.2014.05.037</a>.</p>
+</dd>
+<dt class="label" id="id27"><span class="brackets"><a class="fn-backref" href="#id3">Gu2019</a></span></dt>
+<dd><p>Ruo-Xu Gu, Svetlana Baoukina, and D. Peter Tieleman. Cholesterol flip-flop in heterogeneous membranes. <em>Journal of Chemical Theory and Computation</em>, 15(3):2064–2070, 2019. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b00933">doi:10.1021/acs.jctc.8b00933</a>.</p>
+</dd>
+</dl>
 </div>
 </section>
 <section id="autocorrelation-function">
@@ -222,7 +219,7 @@ this feature is present at every frame from <span class="math notranslate nohigh
 The angular brackets represent an average over all time origins, <span class="math notranslate nohighlight">\(t_0\)</span>.</p>
 <p>See <span id="id71">[<a class="reference internal" href="#id9" title="Raul Araya-Secchi, Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martínez, Isaac E. García, Juan C. Sáez, and Ruhong Zhou. Characterization of a novel water pocket inside the human cx26 hemichannel structure. Biophysical Journal, 107(3):599–612, 2014. doi:10.1016/j.bpj.2014.05.037.">Araya-Secchi2014</a>]</span> for a description survival probability.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of sets. Each set corresponds to data from a single frame. Each element in a set
 may be, for example, an atom id or a tuple of atoms ids. In the case of calculating the
@@ -238,7 +235,7 @@ Default is 1.</p>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>tau_timeseries</strong> (<em>list of int</em>) – the values of tau for which the autocorrelation was calculated</p></li>
 <li><p><strong>timeseries</strong> (<em>list of int</em>) – the autocorelation values for each of the tau values</p></li>
@@ -278,7 +275,7 @@ to calculate the survival probability with a given intermittency.</p>
 calculation of hydrogen bond lifetimes.</p>
 <p># TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
 single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]</p></li>
@@ -287,13 +284,13 @@ changes are made to the data. With the value of <cite>intermittency=2</cite>, al
 consecutive frames will be instead be considered present.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>list_of_sets</strong> – returns a new list with the IDs with added IDs which disappeared for &lt;= <code class="xref py py-attr docutils literal notranslate"><span class="pre">intermittency</span></code>.
 e.g If [{0, 1}, {0}, {0}, {0, 1}] is a list of sets of atom ids present at each frame and <cite>intermittency=2</cite>,
 both atoms will be considered present throughout and thus the returned list of sets will be
 [{0, 1}, {0, 1}, {0, 1}, {0, 1}].</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>

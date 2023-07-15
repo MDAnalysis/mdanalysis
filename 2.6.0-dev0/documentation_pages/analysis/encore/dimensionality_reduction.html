@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7.1.3. Dimensionality reduction &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
@@ -132,7 +133,7 @@
 <p>The module defines a function serving as front-end for various dimensionality
 reduction algorithms, wrapping them to allow them to be used interchangably.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
 </dd>
 </dl>
@@ -150,7 +151,7 @@ dimensionality reduction procedure can work directly on distance matrices,
 so the distance matrices might be ignored for particular choices of
 method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<em>MDAnalysis.Universe</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>list thereof</em>) – The function takes either a single Universe object, a list of Universe
 objects or a list of lists of Universe objects. If given a single
@@ -177,7 +178,7 @@ into just the value (default = True).</p></li>
 <li><p><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>list of coordinate arrays in the reduced dimensions (or potentially a single</em></p></li>
 <li><p><em>coordinate array object if allow_collapsed_result is set to True)</em></p></li>
@@ -236,7 +237,7 @@ of the default dimensionality reduction method</p>
 algorithms. One has been implemented natively, and will always be available,
 while others are available only if scikit-learn is installed</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
 </dd>
 </dl>
@@ -256,7 +257,7 @@ while others are available only if scikit-learn is installed</p>
 <dd><p>Interface to the PCA dimensionality reduction method implemented in
 sklearn.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
 reduced to (default is 3).</p>
 </dd>
@@ -268,7 +269,7 @@ reduced to (default is 3).</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.</span></span><span class="sig-name descname"><span class="pre">StochasticProximityEmbeddingNative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html#StochasticProximityEmbeddingNative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative" title="Permalink to this definition"></a></dt>
 <dd><p>Interface to the natively implemented Affinity propagation procedure.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
 reduced to (default is 3).</p></li>
@@ -289,7 +290,7 @@ available:</p>
 <span class="target" id="module-MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed"></span><p>Cython wrapper for the C implementation of the Stochastic Proximity Embedding
 dimensionality reduction algorithm.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma</p>
 </dd>
 </dl>
@@ -303,7 +304,7 @@ A modified update rule for stochastic proximity embedding
 Journal of Molecular Graphics and Modelling 22 (2003) 133–140</p>
 <p>This class is a Cython wrapper for a C implementation (see spe.c)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>encore.utils.TriangularMatrix object</em>) – Triangular matrix containing the distance values for each pair of
 elements in the original space.</p></li>
@@ -316,7 +317,7 @@ of each cycle, the lerning parameter lambda is updated.</p></li>
 <li><p><strong>nstep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of coordinate update steps for each cycle</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>space</strong> (<em>(float, numpy.array)</em>) – float is the final stress obtained; the array are the coordinates of
 the elements in the embedded space</p></li>

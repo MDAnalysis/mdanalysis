@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.8. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations &mdash; MDAnalysis 2.6.0-dev0 documentation</title>
@@ -13,9 +13,10 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -131,14 +132,14 @@ scaling, shearing, projecting, orthogonalizing, and superimposing arrays of
 Euler angles, and quaternions. Also includes an Arcball control object and
 functions to decompose transformation matrices.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Authors<span class="colon">:</span></dt>
+<dt class="field-odd">Authors</dt>
 <dd class="field-odd"><p><a class="reference external" href="http://www.lfd.uci.edu/~gohlke/">Christoph Gohlke</a>,
 Laboratory for Fluorescence Dynamics, University of California, Irvine</p>
 </dd>
-<dt class="field-even">Version<span class="colon">:</span></dt>
+<dt class="field-even">Version</dt>
 <dd class="field-even"><p>2010.05.10</p>
 </dd>
-<dt class="field-odd">Licence<span class="colon">:</span></dt>
+<dt class="field-odd">Licence</dt>
 <dd class="field-odd"><p>BSD 3-clause</p>
 </dd>
 </dl>
@@ -548,16 +549,16 @@ point, normal, direction, perspective, and pseudo.</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.transformations.</span></span><span class="sig-name descname"><span class="pre">rotaxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#rotaxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.rotaxis" title="Permalink to this definition"></a></dt>
 <dd><p>Return the rotation axis to rotate vector a into b.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array_like</em>) – two vectors</p></li>
 <li><p><strong>b</strong> (<em>array_like</em>) – two vectors</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>c</strong> – vector to rotate a into b</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
