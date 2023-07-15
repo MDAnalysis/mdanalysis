@@ -6,6 +6,7 @@ dependencies:
   - chemfiles>=0.10
   - codecov
   - cython
+  - docutils <0.18
   - fasteners
   - griddataformats
   - gsd
