@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, jaclark5, MohitKumar020291
+??/??/?? IAlibay, jaclark5, MohitKumar020291, ztimol
 
  * 2.6.0
 
@@ -27,6 +27,9 @@ Enhancements
     (Issue #3546)
 
 Changes
+  * Atom ID representation order updated to match that of associated
+    AtomGroup indices.
+    (PR #4191, Issue #4181)
   * Support for GSD is now limited to version 3.0.1 and above. Alongside this
     change, support for schema 1.3 files has been dropped (PR #4153)
   * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
@@ -36,8 +39,6 @@ Changes
   * GSD is no longer a core dependency of MDAnalysis. It must be installed
     independently if you wish to read HOOMD trajectory files.
     (PR #4174, Issue #3819)
-  * Atom ID representation order updated to match that of associated AtomGroup indices.
-    (PR #4191, Issue #4181)
 
 Deprecations
   * The hole2 module is deprecated in favour of the the MDAKit:

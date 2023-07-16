@@ -118,7 +118,7 @@ class TopologyObject(object):
         return hash((self._u, tuple(self.indices)))
 
     def __repr__(self):
-        "Return representation in same order of AtomGroup indices"
+        """Return representation in same order of AtomGroup indices"""
         return "<{cname} between: {conts}>".format(
             cname=self.__class__.__name__,
             conts=", ".join([
