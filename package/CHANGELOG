@@ -38,6 +38,8 @@ Changes
     (PR #4174, Issue #3819)
 
 Deprecations
+  * The hole2 module is deprecated in favour of the the MDAKit:
+    https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
   * MDAnalysis no longer officially supports 32 bit installations (they are
     no longer tested in our continuous integration pipelines). Note: whilst
     no code changes have been made to disable 32 bit, although it is known that
