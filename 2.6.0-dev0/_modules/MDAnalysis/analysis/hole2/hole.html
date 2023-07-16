@@ -130,6 +130,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>
 <span class="kn">from</span> <span class="nn">...exceptions</span> <span class="kn">import</span> <span class="n">ApplicationError</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
 <span class="kn">from</span> <span class="nn">...lib</span> <span class="kn">import</span> <span class="n">util</span>
@@ -143,7 +144,10 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="hole"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole">[docs]</a><span class="k">def</span> <span class="nf">hole</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span>
+<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.6.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+           <span class="n">message</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;This method has been moved to the MDAKit hole2-mdakit: &quot;</span>
+                    <span class="s2">&quot;https://github.com/MDAnalysis/hole2-mdakit&quot;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">hole</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span>
          <span class="n">infile_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">infile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;hole.out&#39;</span><span class="p">,</span>
@@ -370,7 +374,7 @@
             <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
-    <span class="k">return</span> <span class="n">recarrays</span></div>
+    <span class="k">return</span> <span class="n">recarrays</span>
 
 
 <div class="viewcode-block" id="HoleAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HoleAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
@@ -526,6 +530,11 @@
 <span class="sd">        are now stored in a :class:`MDAnalysis.analysis.base.Results`</span>
 <span class="sd">        instance.</span>
 
+<span class="sd">    .. deprecated:: 2.6.0</span>
+<span class="sd">       This class has been moved to the MDAKit</span>
+<span class="sd">       `hole2-mdakit &lt;https://github.com/MDAnalysis/hole2-mdakit&gt;`_ and will</span>
+<span class="sd">       be removed for the core MDAnalysis library in version 3.0</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">input_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{prefix}</span><span class="s1">hole</span><span class="si">{i:03d}</span><span class="s1">.inp&#39;</span>
@@ -575,6 +584,12 @@
                  <span class="n">write_input_files</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">HoleAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
                                            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;This class has been moved to the MDAKit `hole2-mdakit` &quot;</span>
+                <span class="s2">&quot;(https://github.com/MDAnalysis/hole2-mdakit) and will be &quot;</span>
+                <span class="s2">&quot;removed in version 3.0.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">output_level</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;output_level (</span><span class="si">{}</span><span class="s1">) needs to be &lt; 3 in order to extract a HOLE profile!&#39;</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_level</span><span class="p">))</span>
