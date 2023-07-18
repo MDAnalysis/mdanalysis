@@ -63,13 +63,13 @@ class TRCReader(base.ReaderBase):
         root, ext = os.path.splitext(self.filename)
         self.trcfile = util.anyopen(self.filename)
         self.compression = ext[1:] if ext[1:] != "trj" else None
-        
+
+        # Read and calculate some information about the trajectory
+        self.traj_properties = self.read_traj_properties()
+                
         self._cache = {}
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         
-        # Read and calculate some information about the trajectory
-        self.traj_properties = self.read_traj_properties()
-
         self._reopen()
         self.ts.dt = self.traj_properties["dt"]
         
@@ -86,8 +86,8 @@ class TRCReader(base.ReaderBase):
             return 0
 
     def _read_atom_count(self):
-        traj_properties = self.read_traj_properties()
-        n_atoms = traj_properties["n_atoms"] 
+        #traj_properties = self.read_traj_properties()
+        n_atoms = self.traj_properties["n_atoms"] 
         return n_atoms
         
     @property
@@ -100,8 +100,8 @@ class TRCReader(base.ReaderBase):
 
     def _read_frame_count(self):
         #Right now this is always the atom count of the last frame
-        traj_properties = self.read_traj_properties()
-        n_frames = traj_properties["n_frames"] 
+        #traj_properties = self.read_traj_properties()
+        n_frames = self.traj_properties["n_frames"] 
         return n_frames
         
         
@@ -132,17 +132,13 @@ class TRCReader(base.ReaderBase):
     def read_traj_properties(self):
         """
         * Reads the number of atoms per frame (n_atoms)
-        * Reads the number of frames (n_frames)
-        * Startposition of the positionred block for each frame (l_positionred_offset)
-        * Number of lines including spacers of the positionred block (l_positionred_linecount)
-        * Startposition of the genbox block for each frame (l_genbox_offset) 
+        * Reads the number of frames (n_frames) 
         * Startposition of the timestep block for each frame (l_timestep_offset) 
         """
         
         traj_properties = {}
         
         in_positionred_block = False
-        in_genbox_block = False
         in_timestep_block = False
         lastblock_was_timestep = False
         
@@ -150,15 +146,9 @@ class TRCReader(base.ReaderBase):
         atom_len = 0
         frame_counter = 0  
         frame_len = 0   
-        abs_line_counter = 0
-                                
+          
         offset = 0
-        coordblock_start = 0
-
-        l_positionred_offset = []
-        l_positionred_linecount = []
-        
-        l_genbox_offset = []
+ 
         l_timestep_offset = []
         l_timestep_timevalues = []
         
@@ -181,51 +171,34 @@ class TRCReader(base.ReaderBase):
                 
                 if ("END" in line) and (in_timestep_block == True):                
                     in_timestep_block = False 
-                    
+                
+                
                 #
                 # Coordinates-Block
                 #
                 if "POSITIONRED" in line:
                     in_positionred_block = True
-                    coordblock_start = abs_line_counter
+                    #coordblock_start = abs_line_counter
                     frame_counter += 1
-                    l_positionred_offset.append(int(offset) + len(line))  
-                if ("END" in line) and (in_positionred_block == True):
-                    l_positionred_linecount.append(abs_line_counter - coordblock_start - 1)
-                    atom_len = atom_counter
-                    atom_counter = 0
-                    in_positionred_block = False
-                if (in_positionred_block == True) and ("POSITIONRED" not in line) and ("END" not in line) and ('#' not in line): #Count the atoms
-                    atom_counter += 1
-                
-                #
-                # Box-Block
-                #
-                if "GENBOX" in line:
-                    in_genbox_block = True    
-                    l_genbox_offset.append(int(offset) + len(line))            
-                
-                if ("END" in line) and (in_genbox_block == True):                
-                    in_genbox_block = False 
                     
-                # 
-                #   
-                abs_line_counter += 1
+                if (in_positionred_block == True) and (atom_len == 0):
+                    if (len(line.split()) == 3):
+                        atom_counter += 1  
+                
+                if ("END" in line) and (in_positionred_block == True):
+                    atom_len = atom_counter
+                    in_positionred_block = False
+                    
                 offset += len(line)
                 frame_len = frame_counter
-        
+
         traj_properties["n_atoms"] = atom_len
         traj_properties["n_frames"] = frame_len
-        traj_properties["l_positionred_offset"] = l_positionred_offset
-        traj_properties["l_positionred_linecount"] = l_positionred_linecount
-        traj_properties["l_genbox_offset"] = l_genbox_offset
         traj_properties["l_timestep_offset"] = l_timestep_offset
         
         traj_properties["dt"] = l_timestep_timevalues[1] - l_timestep_timevalues[0]
-                
+
         return traj_properties
-
-
 
     
     def read_GROMOS11_trajectory(self, _frame):
@@ -233,13 +206,10 @@ class TRCReader(base.ReaderBase):
         frameDat = {}
         f = self.trcfile
         
-        l_positionred_offset = self.traj_properties["l_positionred_offset"]
-        l_positionred_linecount = self.traj_properties["l_positionred_linecount"]
-        l_genbox_offset = self.traj_properties["l_genbox_offset"]
         l_timestep_offset = self.traj_properties["l_timestep_offset"]
 
         try:
-        
+            
             #
             # Read time
             #           
@@ -247,66 +217,50 @@ class TRCReader(base.ReaderBase):
                 line = f.readline()
                 if (line=='') or (line==b''): break; #EOF
                 if (f.tell() in l_timestep_offset):
-                    break;
-            
-            tmp_step, tmp_time = f.readline().split()
-            frameDat["step"] = int(tmp_step)
-            frameDat["time"] = float(tmp_time)
-       
-            #
-            # Read postitions
-            #
-            while(True):
-                line = f.readline()
-                if (line=='') or (line==b''): break; #EOF
-                if (f.tell() in l_positionred_offset):
-                    break;
-            
-            tmp_buf = []
-            for i in range(l_positionred_linecount[_frame]):
-                coords_str = f.readline()
-                if '#' in coords_str:
-                    continue
-                else:
-                    tmp_buf.append(coords_str.split())
-            
-            if (np.array(tmp_buf).shape[0] == self.n_atoms):
-                #ts.positions = tmp_buf
-                frameDat["positions"] = tmp_buf
-            else:
-                raise ValueError("The trajectory contains the wrong number of atoms!")
-            
-            #
-            # Read box-dimensions
-            # 
-            while(True):
-                line = f.readline()
-                if (line=='') or (line==b''): break; #EOF
-                if (f.tell() in l_genbox_offset):
-                    break;
-            
-            ntb_setting = int(f.readline())
-            if (ntb_setting == 0):
-                #ts.dimensions = None
-                frameDat["dimensions"]=None
-                self.periodic = False
-                                
-            elif (ntb_setting in [-1,1]):  
-                tmp_a, tmp_b, tmp_c = f.readline().split()
-                tmp_alpha, tmp_beta, tmp_gamma = f.readline().split()
-                #ts.dimensions = [float(tmp_a), float(tmp_b), float(tmp_c), float(tmp_alpha), float(tmp_beta), float(tmp_gamma)]
-                frameDat["dimensions"] = [float(tmp_a), float(tmp_b), float(tmp_c), float(tmp_alpha), float(tmp_beta), float(tmp_gamma)]
-                self.periodic = True
-                            
-                line3 = f.readline().split()
-                line4 = f.readline().split()          
-                for v in (line3 + line4):
-                    if(float(v) != 0.0):
-                        raise NotImplementedError("This reader supports neither triclinic and/or (yawed,pitched,rolled) boxes!")
+                    tmp_step, tmp_time = f.readline().split()
+                    frameDat["step"] = int(tmp_step)
+                    frameDat["time"] = float(tmp_time)
+                    
+                elif ("POSITIONRED" in line): 
+                    tmp_buf = []
+                    while(True): #for i in range(l_positionred_linecount[_frame]):
+                        coords_str = f.readline()
+                        if '#' in coords_str:
+                            continue
+                        elif "END" in coords_str:
+                            break;
+                        else:
+                            tmp_buf.append(coords_str.split())
                         
-            else:
-                raise NotImplementedError("This reader does not support this box type!")
 
+                    if (np.array(tmp_buf).shape[0] == self.n_atoms):
+                        frameDat["positions"] = tmp_buf
+                    else:
+                        raise ValueError("The trajectory contains the wrong number of atoms!")                 
+
+                elif ("GENBOX" in line): 
+                    ntb_setting = int(f.readline())
+                    if (ntb_setting == 0):
+                        #ts.dimensions = None
+                        frameDat["dimensions"]=None
+                        self.periodic = False
+                                        
+                    elif (ntb_setting in [-1,1]):  
+                        tmp_a, tmp_b, tmp_c = f.readline().split()
+                        tmp_alpha, tmp_beta, tmp_gamma = f.readline().split()
+                        frameDat["dimensions"] = [float(tmp_a), float(tmp_b), float(tmp_c), float(tmp_alpha), float(tmp_beta), float(tmp_gamma)]
+                        self.periodic = True
+                                    
+                        line3 = f.readline().split()
+                        line4 = f.readline().split()          
+                        for v in (line3 + line4):
+                            if(float(v) != 0.0):
+                                raise NotImplementedError("This reader supports neither triclinic and/or (yawed,pitched,rolled) boxes!")
+                    else:
+                        raise NotImplementedError("This reader does not support this box type!")     
+                                                   
+                    break;
+                            
             return frameDat
             
             
@@ -316,7 +270,7 @@ class TRCReader(base.ReaderBase):
     def _read_frame(self, i):
         """read frame i"""
         self._frame = i - 1
-        
+
         #Move position in file just (-1 step) before the beginning of the block 
         self.trcfile.seek(self.traj_properties["l_timestep_offset"][i]-1, 0)
 
@@ -327,11 +281,10 @@ class TRCReader(base.ReaderBase):
         if ts is None:
             ts = self.ts
         
+        self._frame += 1
         if (self._frame >= self.n_frames):
             raise EOFError('Trying to go over trajectory limit')
 
-            
-        self._frame += 1
         raw_framedata = self.read_GROMOS11_trajectory(self._frame)        
         self._frame_to_ts(raw_framedata, ts)
         self.ts = ts
