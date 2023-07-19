@@ -407,7 +407,7 @@ for invalid dimensions.</p>
 <h2><span class="section-number">13.2.7.2. </span>Connectivity<a class="headerlink" href="#connectivity" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.mdamath.make_whole">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.mdamath.</span></span><span class="sig-name descname"><span class="pre">make_whole</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.make_whole" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.mdamath.</span></span><span class="sig-name descname"><span class="pre">make_whole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_atom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.make_whole" title="Permalink to this definition"></a></dt>
 <dd><p>Move all atoms in a single molecule so that bonds don’t split over
 images.</p>
 <p>This function is most useful when atoms have been packed into the primary
@@ -488,7 +488,7 @@ are returned as a numpy array.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.mdamath.find_fragments">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.mdamath.</span></span><span class="sig-name descname"><span class="pre">find_fragments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.find_fragments" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.mdamath.</span></span><span class="sig-name descname"><span class="pre">find_fragments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bondlist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.find_fragments" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate distinct fragments from nodes (atom indices) and edges (pairs
 of atom indices).</p>
 <dl class="field-list simple">

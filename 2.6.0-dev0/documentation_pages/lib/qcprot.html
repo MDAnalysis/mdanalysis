@@ -181,7 +181,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <p>Users will typically use the <a class="reference internal" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">CalcRMSDRotationalMatrix()</span></code></a> function.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">CalcRMSDRotationalMatrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">CalcRMSDRotationalMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the RMSD &amp; rotational matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -205,7 +205,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.qcprot.InnerProduct">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">InnerProduct</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.InnerProduct" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">InnerProduct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.InnerProduct" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the inner product of two structures.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -238,7 +238,7 @@ function.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">FastCalcRMSDAndRotation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">FastCalcRMSDAndRotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the RMSD, and/or the optimal rotation matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

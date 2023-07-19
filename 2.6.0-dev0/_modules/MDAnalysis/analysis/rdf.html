@@ -222,6 +222,10 @@
 
 <span class="sd">    exclusion_block : tuple</span>
 <span class="sd">        A tuple representing the tile to exclude from the distance array.</span>
+<span class="sd">    exclude_same : str</span>
+<span class="sd">        Will exclude pairs of atoms that share the same &quot;residue&quot;, &quot;segment&quot;, or &quot;chain&quot;.</span>
+<span class="sd">        Those are the only valid values. This is intended to remove atoms that are</span>
+<span class="sd">        spatially correlated due to direct bonded connections.</span>
 <span class="sd">    verbose : bool</span>
 <span class="sd">        Show detailed progress of the calculation if set to `True`</span>
 
@@ -317,6 +321,7 @@
                  <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
                  <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;rdf&quot;</span><span class="p">,</span>
                  <span class="n">exclusion_block</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">exclude_same</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">InterRDF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">g1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">g1</span> <span class="o">=</span> <span class="n">g1</span>
@@ -326,6 +331,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span>
                              <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span> <span class="o">=</span> <span class="n">exclusion_block</span>
+        <span class="k">if</span> <span class="n">exclude_same</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">exclude_same</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;residue&#39;</span><span class="p">,</span> <span class="s1">&#39;segment&#39;</span><span class="p">,</span> <span class="s1">&#39;chain&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The exclude_same argument to InterRDF must be None, &#39;residue&#39;, &#39;segment&#39; &quot;</span>
+                <span class="s2">&quot;or &#39;chain&#39;.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">exclude_same</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">exclusion_block</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The exclude_same argument to InterRDF cannot be used with exclusion_block.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">name_to_attr</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;residue&#39;</span><span class="p">:</span> <span class="s1">&#39;resindices&#39;</span><span class="p">,</span> <span class="s1">&#39;segment&#39;</span><span class="p">:</span> <span class="s1">&#39;segindices&#39;</span><span class="p">,</span> <span class="s1">&#39;chain&#39;</span><span class="p">:</span> <span class="s1">&#39;chainIDs&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exclude_same</span> <span class="o">=</span> <span class="n">name_to_attr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">exclude_same</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;rdf&#39;</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="si">}</span><span class="s2">&#39; is an invalid norm. &quot;</span>
@@ -356,6 +372,13 @@
             <span class="n">idxA</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">idxB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idxA</span> <span class="o">!=</span> <span class="n">idxB</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_same</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Ignore distances between atoms in the same attribute</span>
+            <span class="n">attr_ix_a</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_same</span><span class="p">)[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span>
+            <span class="n">attr_ix_b</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_same</span><span class="p">)[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">attr_ix_a</span> <span class="o">!=</span> <span class="n">attr_ix_b</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
         <span class="n">count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)</span>

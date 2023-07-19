@@ -191,7 +191,7 @@ frame and offsets</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.open" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.open" title="Permalink to this definition"></a></dt>
 <dd><p>Open a XDR file</p>
 <p>If another XDR file is currently opened it will be closed</p>
 <dl class="field-list simple">
@@ -232,7 +232,7 @@ frame and offsets</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.read_direct_xvf">
-<span class="sig-name descname"><span class="pre">read_direct_xvf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read_direct_xvf" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_direct_xvf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read_direct_xvf" title="Permalink to this definition"></a></dt>
 <dd><p>Read next frame in the TRR file with positions read directly into
 a pre-existing array.</p>
 <dl class="field-list simple">
@@ -262,7 +262,7 @@ a pre-existing array.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.seek">
-<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.seek" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.seek" title="Permalink to this definition"></a></dt>
 <dd><p>Seek to Frame.</p>
 <p>Please note that this function will generate internal file offsets if
 they haven’t been set before. For large file this means the first seek
@@ -279,7 +279,7 @@ can be very slow. Later seeks will be very fast.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets">
-<span class="sig-name descname"><span class="pre">set_offsets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets" title="Permalink to this definition"></a></dt>
 <dd><p>set frame offsets</p>
 </dd></dl>
 
@@ -291,7 +291,7 @@ can be very slow. Later seeks will be very fast.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_lambda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.write" title="Permalink to this definition"></a></dt>
 <dd><p>write one frame into TRR file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -371,7 +371,7 @@ frame and offsets</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.open" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.open" title="Permalink to this definition"></a></dt>
 <dd><p>Open a XDR file</p>
 <p>If another XDR file is currently opened it will be closed</p>
 <dl class="field-list simple">
@@ -412,7 +412,7 @@ frame and offsets</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.read_direct_x">
-<span class="sig-name descname"><span class="pre">read_direct_x</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read_direct_x" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_direct_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read_direct_x" title="Permalink to this definition"></a></dt>
 <dd><p>Read next frame in the XTC file with positions read directly into
 a pre-existing array.</p>
 <dl class="field-list simple">
@@ -442,7 +442,7 @@ a pre-existing array.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek">
-<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek" title="Permalink to this definition"></a></dt>
 <dd><p>Seek to Frame.</p>
 <p>Please note that this function will generate internal file offsets if
 they haven’t been set before. For large file this means the first seek
@@ -459,7 +459,7 @@ can be very slow. Later seeks will be very fast.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets">
-<span class="sig-name descname"><span class="pre">set_offsets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets" title="Permalink to this definition"></a></dt>
 <dd><p>set frame offsets</p>
 </dd></dl>
 
@@ -471,7 +471,7 @@ can be very slow. Later seeks will be very fast.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.write" title="Permalink to this definition"></a></dt>
 <dd><p>write one frame to the XTC file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
