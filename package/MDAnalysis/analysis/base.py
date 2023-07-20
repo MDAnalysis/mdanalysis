@@ -132,47 +132,107 @@ from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 from typing import Callable, Iterable
+from importlib import import_module
+
 
 logger = logging.getLogger(__name__)
 
-def localdelayed(obj):
-    """
-    Mock implementation of `dask.delayed.delayed` function
-    with the same semantics
-    """
-    if isinstance(obj, Iterable):
-    
-        class inner:
-            def __init__(self, iterable):
-                self._computations = iterable
+class Client(object):
+    """Class that executes parallel computations for AnalysisBase (but potentially for other purposes)
+    using one of the available backends"""
 
-            def compute(self):
-                return [f.compute() for f in self._computations]
+    @classmethod
+    @property
+    def possible_backends(cls):
+        return ("local", "dask", "multiprocessing")
 
-        return inner(obj)
+    @classmethod
+    @property
+    def possible_schedulers(cls):
+        return ("processes", "threads", "synchronous")
 
-    elif isinstance(obj, Callable):
-    
-        class inner:
-            def __init__(self, *args, **kwargs):
-                self._a = args
-                self._kwa = kwargs
-                self._func = obj
+    def __init__(self, backend: str, n_workers: int, scheduler: str = None, client: object = None):
+        # validate 'client' argument
+        if client is not None and any((param is not None for param in (backend, scheduler))):
+            raise ValueError(
+                (f'Should pass either "client" or "backend" and "scheduler", not both: '
+                f'{backend=}, {scheduler=}, {client=}')
+            )
+        self.client = client
 
-            def compute(self):
-                return self._func(*self._a, **self._kwa)
+        # validate 'backend' argument
+        if backend is not None:
+            if backend not in Client.possible_backends:
+                raise ValueError(
+                    f"Invalid {backend=}: should be one of {Client.possible_backends}"
+                )
+            if backend == "local":
+                pass
+            else:
+                try:
+                    import_module(backend)
+                except ImportError:
+                    raise ValueError("Please install {backend} module to run this")
+        self.backend = backend
 
-        return inner
-    else:
-        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
+        # validate 'n_workers' argument
+        if n_workers < 0:
+            raise ValueError(f"n_workers should be non-negative, got {n_workers=}")
+        self.n_workers = n_workers
 
-def _self_compute_helper(obj, bslice_idx):
+        # validate 'scheduler' argument
+        if backend != "dask" and scheduler is not None:
+            warnings.warn(
+                f"keyword 'scheduler' will be ignored because using {backend=} and not 'dask'"
+            )
+        scheduler = 'processes' if scheduler is None else scheduler
+        if scheduler not in Client.possible_schedulers:
+            raise ValueError(
+                f"Invalid {scheduler=}: should be one of {Client.possible_schedulers}"
+            )
+        self.scheduler = scheduler
+
+    def apply(self, func: Callable, computations: list) -> list:
+        if self.backend == "local":
+            return self._compute_with_local(func, computations)
+        elif self.backend == "multiprocessing":
+            return self._compute_with_multiprocessing(func, computations)
+        elif self.backend == "dask" or self.client is not None:
+            return self._compute_with_dask(func, computations)
+        else:
+            raise ValueError(f"Backend is not set properly: {self.backend=}")
+
+    def _compute_with_local(self, func: Callable, computations: list) -> list:
+        return [func(task) for task in computations]
+
+    def _compute_with_multiprocessing(self, func: Callable, computations: list) -> list:
+        from multiprocessing import Pool
+
+        with Pool(processes=self.n_workers) as pool:
+            results = pool.map(func, computations)
+        print(results)
+        return results
+
+    def _compute_with_dask(self, func: Callable, computations: list) -> list:
+        from dask.delayed import delayed
+
+        computations = delayed([delayed(func)(task) for task in computations])
+        if self.client is None:
+            results = computations.compute(
+                scheduler=self.scheduler, n_workers=self.n_workers
+            )
+        else:
+            results = self.client.compute(computations).result()
+        return results
+
+
+def _self_compute_helper(obj, computation_group_idx):
     """
     Helper function for multiprocessing implementation of parallel analysis.
     Exists due to the fact that non-global functions, such as object methods, 
     can't be pickled with the multiprocessing.
     """
-    return obj._compute(bslice_idx)
+    return obj._compute(computation_group_idx)
 
 
 class Results(UserDict):
@@ -353,6 +413,10 @@ class AnalysisBase(object):
 
     """
 
+    @property
+    def available_backends(cls):
+        return ['local']
+
     def __init__(self, trajectory, verbose=False, **kwargs):
         self._trajectory = trajectory
         self._verbose = verbose
@@ -430,25 +494,16 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def _compute(self, bslice_idx, verbose=None, *, progressbar_kwargs={}):
+    def _compute(self, indexed_frames: np.ndarray, verbose=None, *, progressbar_kwargs={}) -> "AnalysisBase":
         """Perform the calculation on a balanced slice of frames 
-        that have been setup prior to that using _setup_bslices()
+        that have been setup prior to that using _setup_computation_groups()
 
         Parameters
         ----------
-        start : int, optional
-            start frame of analysis
-        stop : int, optional
-            stop frame of analysis
-        step : int, optional
-            number of frames to skip between each analysed frame
-        frames : array_like, optional
-            array of integers or booleans to slice trajectory; `frames` can
-            only be used *instead* of `start`, `stop`, and `step`. Setting
-            *both* `frames` and at least one of `start`, `stop`, `step` to a
-            non-default value will raise a :exc:`ValueError`.
-
-            .. versionadded:: 2.2.0
+        indexed_frames : np.ndarray
+            np.ndarray of (n, 2) shape,
+            where first column is frame iteration indices
+            and second is frame numbers
 
         verbose : bool, optional
             Turn on verbosity
@@ -475,11 +530,10 @@ class AnalysisBase(object):
         logger.info("Starting analysis loop over %d trajectory frames",
                     self.n_frames)
 
-        bslice = self._bslices[bslice_idx]
-        if len(bslice) == 0: # if `frames` were empty in `run` or `stop=0`
+        if len(indexed_frames) == 0: # if `frames` were empty in `run` or `stop=0`
             return self
         
-        frame_indices, frames = bslice[:, 0], bslice[:, 1], 
+        frame_indices, frames = indexed_frames[:, 0], indexed_frames[:, 1], 
         trajectory = self._trajectory[frames]
         for idx, ts in enumerate(ProgressBar(trajectory,
                 verbose=verbose,
@@ -493,9 +547,9 @@ class AnalysisBase(object):
         logger.info("Finishing up")
         return self
 
-    def _setup_bslices(self, start=None, stop=None, step=None, frames=None): 
+    def _setup_computation_groups(self, n_parts: int, start=None, stop=None, step=None, frames=None) -> list[np.ndarray]: 
         """
-        Set the self._bslices (the workload distribution scheme) for the future delayed
+        Set the self._computation_groups (the workload distribution scheme) for the future delayed
         computations.
 
         Parameters
@@ -520,8 +574,7 @@ class AnalysisBase(object):
 
         Returns
         -------
-        bslices : list of (bstart, bstop, bstep, bframes) tuples.
-            Iterator will have size of self._n_bslices.
+        computation_groups : list of (n, 2) shaped np.ndarrays with frame indices and numbers
         """
         if frames is None:
             start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
@@ -529,28 +582,24 @@ class AnalysisBase(object):
         elif not all(opt is None for opt in [start, stop, step]):
             raise ValueError("start/stop/step cannot be combined with frames")
         
-        self.n_frames_total = len(frames)
-        n_bslices = self._n_bslices
-
         if all((isinstance(obj, bool) for obj in frames)):
             arange = np.arange(len(frames))
             frames = arange[frames]
         
         # this numpy thing is similar to list(enumerate(frames))
         enumerated_frames = np.vstack([np.arange(len(frames)), frames]).T
-        slices = np.array_split(enumerated_frames, n_bslices)
 
-        self._bslices = slices
-        return self._bslices
+        self._computation_groups = np.array_split(enumerated_frames, n_parts)
+        return self._computation_groups
 
 
-    def _setup_scheduler(self, scheduler, n_workers):
+    def _configure_client(self, backend: str, n_workers: int, client):
         """
         Configure parameters necessary for running a distributed workload.
 
         Parameters
         ----------
-        scheduler : str, optional 
+        backend : str, optional 
             scheduling type:
               - 'dask' implies `dask` scheduler (need to install MDAnalysis[dask] for that to work)
               - 'multiprocessing' works with standard python multiprocessing module
@@ -558,24 +607,20 @@ class AnalysisBase(object):
         n_workers : int, optional
             number of workers (local or remote processes).
         """
-        if scheduler is None:
-            n_workers = 1
-            kwargs = {}
-        elif scheduler == 'multiprocessing' or scheduler == 'dask':
-            kwargs = {'n_workers':n_workers, 'scheduler':'processes'}
-        else:
-            raise ValueError("`scheduler` should be either 'dask', 'multiprocessing' or None")
-        
-        if n_workers <= 0:
-            raise ValueError("`n_workers` should be a positive integer")
+        if backend is not None and backend not in self.available_backends:
+            raise ValueError(f"{backend=} is not in {self.available_backends=} for class {self.__class__.__name__}")
+        return Client(backend=backend, n_workers=n_workers, client=client)
 
 
-        self._scheduler_kwargs = kwargs
-        self._n_bslices = n_workers
-
-    def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None, n_workers=1, 
-            *, scheduler=None,
+    def run(self, 
+            start: int = None, stop: int = None, step: int = None, 
+            frames: Iterable = None,
+            verbose: bool = None, 
+            n_workers: int = 1, 
+            n_parts: int = 1,
+            backend: str = 'local',
+            *, 
+            client: object = None,
             progressbar_kwargs={},
             ):
         """Perform the calculation
@@ -621,58 +666,31 @@ class AnalysisBase(object):
             Add `progressbar_kwargs` parameter, 
             allowing to modify description, position etc of tqdm progressbars
         """
-        if progressbar_kwargs and scheduler:
-            raise NotImplementedError("Can not display progress if scheduler is not None")
+        if progressbar_kwargs and backend not in (None, 'local'):
+            raise NotImplementedError("Can not display progressbar with non-local backend")
 
+        # validate input parameters
+        n_parts = n_workers if n_parts is None else n_parts
+        
+        # reset backend if there is a pre-configured client available
+        backend = None if client is not None else backend
+
+        # do this as early as possible to check client parameters before any computations occur
+        client = self._configure_client(backend=backend, n_workers=n_workers, client=client)
+
+        # start preparing the run
         self._setup_frames(self._trajectory, start, stop, step, frames)
         self._prepare()
-        self._setup_scheduler(scheduler=scheduler, n_workers=n_workers)
-        self._setup_bslices(start=start, stop=stop, step=step, frames=frames)
 
-
-        if scheduler is None: # fallback to the local scheduler
-            self._compute(bslice_idx=0, verbose=verbose, progressbar_kwargs=progressbar_kwargs)
-        else:
-            if scheduler == 'multiprocessing':
-                import multiprocessing
-
-                delayed = localdelayed
-                computations = [
-                    (self, bslice_idx)
-                    for bslice_idx in range(len(self._bslices))]
-
-                with multiprocessing.Pool(processes=self._scheduler_kwargs['n_workers']) as pool:
-                    results = pool.starmap(_self_compute_helper, computations)
-
-            elif scheduler == 'dask':
-                try:
-                    from dask.delayed import delayed
-                except ImportError:
-                    raise ImportError(
-                        "Please install dask to execute run() in parallel using scheduler='dask'")
-
-                computations = delayed(
-                    [
-                        delayed(self._compute)(bslice_idx=bslice_idx)
-                        for bslice_idx in range(len(self._bslices))
-                    ]
-                )
-                results = computations.compute(**self._scheduler_kwargs)
-
-            else:
-                raise ValueError("scheduler can be 'dask', 'multiprocessing' or None")
-
-            self._remote_results = results
-            self._parallel_conclude()
-
-            self.frames = np.array([obj.frames for obj in self._remote_results]).sum(axis=0)
-            self.times = np.array([obj.times for obj in self._remote_results]).sum(axis=0)
+        computation_groups = self._setup_computation_groups(start=start, stop=stop, step=step, frames=frames, n_parts=n_parts)
+        remote_results: list["AnalysisBase"] = client.apply(self._compute, computation_groups)
+        print(remote_results)
+        self.results = self._parallel_conclude(remote_results=remote_results)
 
         self._conclude()
-
         return self
     
-    def _parallel_conclude(self):
+    def _parallel_conclude(self, remote_results: list['AnalysisBase'], do_raise: bool = False):
         """Aggregation function that gathers together results of workers 
         into .results of the main object. 
         
@@ -688,24 +706,31 @@ class AnalysisBase(object):
             If type of the attribute in results is neither `float`, 
             `np.ndarray` and is not named `timeseries` (which is a special case of ordered iterable)
         """
-        if len(self._remote_results[0].results) == 0:
+        self.frames = np.array([obj.frames for obj in remote_results]).sum(axis=0)
+        self.times = np.array([obj.times for obj in remote_results]).sum(axis=0)
+
+        results = Results()
+        if len(remote_results[0].results) == 0:
             # results are empty
-            self.results = Results()
-        elif isinstance(self._remote_results[0].results, np.ndarray):
-            self.results = np.array([obj.results for obj in self._remote_results]).sum(axis=0)
+            pass
+        elif isinstance(remote_results[0].results, np.ndarray):
+            results = np.array([obj.results for obj in remote_results]).sum(axis=0)
         else:
-            keys, types = zip(*self._remote_results[0].results.items())
+            results = Results()
+            keys, types = zip(*remote_results[0].results.items())
             for k, t in zip(keys, types):
-                results_of_t = [obj.results[k] for obj in self._remote_results]
+                results_of_t = [obj.results[k] for obj in remote_results]
                 if isinstance(t, np.ndarray):
-                    self.results[k] = np.array(results_of_t).sum(axis=0)
+                    results[k] = np.array(results_of_t).sum(axis=0)
                 elif isinstance(t, float):
-                    self.results[k] = np.array(results_of_t).mean()
-                elif k == 'timeseries': # but aggregation function will be suitable for any 'list' attribute
-                    # here we also rely on the fact that frames are ordered in execution order in self._bslices
-                    self.results[k] = [item for sublist in results_of_t for item in sublist]
+                    results[k] = np.array(results_of_t).mean()
+                elif isinstance(t, list): # aggregation function suitable for any 'list' attribute
+                    # here we also rely on the fact that frames are ordered in execution order in self._computation_groups
+                    results[k] = [item for sublist in results_of_t for item in sublist]
                 else:
-                    raise NotImplementedError(f'Attribute {k} of type {type(t)} will not be available in resulting object')
+                    if do_raise:
+                        raise NotImplementedError(f'Attribute {k} of type {type(t)} will not be available in resulting object')
+        return results
 
 
 class AnalysisFromFunction(AnalysisBase):
