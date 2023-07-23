@@ -36,6 +36,39 @@ from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
 
 
+class FrameAnalysis(base.AnalysisBase):
+    """Just grabs frame numbers of frames it goes over"""
+
+    available_backends = ['local', 'dask', 'dask.distributed', 'multiprocessing']
+
+    def __init__(self, reader, **kwargs):
+        super(FrameAnalysis, self).__init__(reader, **kwargs)
+        self.traj = reader
+    
+    def _prepare(self):
+        self.results.found_frames = []
+
+    def _single_frame(self):
+        self.results.found_frames.append(self._ts.frame)
+    
+    def _conclude(self):
+        self.found_frames = list(self.results.found_frames)
+
+class IncompleteAnalysis(base.AnalysisBase):
+    def __init__(self, reader, **kwargs):
+        super(IncompleteAnalysis, self).__init__(reader, **kwargs)
+
+
+class OldAPIAnalysis(base.AnalysisBase):
+    """for version 0.15.0"""
+
+    def __init__(self, reader, **kwargs):
+        self._setup_frames(reader, **kwargs)
+
+    def _single_frame(self):
+        pass
+
+
 class Test_Results:
 
     @pytest.fixture
@@ -147,41 +180,6 @@ class Test_Results:
         assert new_results.data is not results.data
 
 
-class FrameAnalysis(base.AnalysisBase):
-    """Just grabs frame numbers of frames it goes over"""
-
-    def __init__(self, reader, **kwargs):
-        super(FrameAnalysis, self).__init__(reader, **kwargs)
-        self.traj = reader
-    
-    def _prepare(self):
-        self.results.found_frames = []
-
-    def _single_frame(self):
-        self.results.found_frames.append(self._ts.frame)
-    
-    def _parallel_conclude(self):
-        self.results.found_frames = [i for obj in self._remote_results for i in obj.results.found_frames]
-    
-    def _conclude(self):
-        self.found_frames = list(self.results.found_frames)
-
-    
-
-class IncompleteAnalysis(base.AnalysisBase):
-    def __init__(self, reader, **kwargs):
-        super(IncompleteAnalysis, self).__init__(reader, **kwargs)
-
-
-class OldAPIAnalysis(base.AnalysisBase):
-    """for version 0.15.0"""
-
-    def __init__(self, reader, **kwargs):
-        self._setup_frames(reader, **kwargs)
-
-    def _single_frame(self):
-        pass
-
 
 @pytest.fixture(scope='module')
 def u():
@@ -214,9 +212,10 @@ def test_start_stop_step(u, run_kwargs, frames):
     ({'frames': [True, True, False, True, False, True, True, False, True,
                  False]}, (0, 1, 3, 5, 6, 8)),
 ])
-def test_frame_slice(run_kwargs, frames, schedulers_all):
+def test_frame_slice(run_kwargs, frames, client_FrameAnalysis):
+    print(client_FrameAnalysis)
     u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(**schedulers_all, **run_kwargs)
+    an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
@@ -231,31 +230,31 @@ def test_frame_slice(run_kwargs, frames, schedulers_all):
     ({'start': 4, 'step': 2, 'frames': [4, 6, 8]}),
     ({'start': 0, 'stop': 0, 'step': 0, 'frames': [4, 6, 8]}),
 ])
-def test_frame_fail(u, run_kwargs, schedulers_all):
+def test_frame_fail(u, run_kwargs, client_FrameAnalysis):
     an = FrameAnalysis(u.trajectory)
     msg = 'start/stop/step cannot be combined with frames'
     with pytest.raises(ValueError, match=msg):
-        an.run(**schedulers_all, **run_kwargs)
+        an.run(**client_FrameAnalysis, **run_kwargs)
 
 
-def test_frame_bool_fail(schedulers_all):
+def test_frame_bool_fail(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory)
     frames = [True, True, False]
     msg = 'boolean index did not match indexed array along dimension 0'
     with pytest.raises(IndexError, match=msg):
-        an.run(**schedulers_all, frames=frames)
+        an.run(**client_FrameAnalysis, frames=frames)
 
 
-def test_rewind(schedulers_all):
+def test_rewind(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(**schedulers_all, frames=[0, 2, 3, 5, 9])
+    an = FrameAnalysis(u.trajectory).run(**client_FrameAnalysis, frames=[0, 2, 3, 5, 9])
     assert_equal(u.trajectory.ts.frame, 0)
 
 
-def test_frames_times(schedulers_all):
+def test_frames_times(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(start=1, stop=8, step=2, **schedulers_all)
+    an = FrameAnalysis(u.trajectory).run(start=1, stop=8, step=2, **client_FrameAnalysis)
     frames = np.array([1, 3, 5, 7])
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
@@ -290,9 +289,9 @@ def test_verbose_progressbar_run_with_kwargs(u, capsys):
     actual = err.strip().split('\r')[-1]
     assert actual[:30] == expected[:30]
 
-def test_incomplete_defined_analysis(u, schedulers_all):
+def test_incomplete_defined_analysis(u):
     with pytest.raises(NotImplementedError):
-        IncompleteAnalysis(u.trajectory).run(**schedulers_all)
+        IncompleteAnalysis(u.trajectory).run()
 
 
 def test_old_api(u):
@@ -339,15 +338,15 @@ def test_results_type(u):
     (20, 50, 2, 15),
     (20, 50, None, 30)
 ])
-def test_AnalysisFromFunction(u, start, stop, step, nframes, schedulers_all):
+def test_AnalysisFromFunction(u, start, stop, step, nframes, client_AnalysisFromFunction):
     ana1 = base.AnalysisFromFunction(simple_function, mobile=u.atoms)
-    ana1.run(start=start, stop=stop, step=step, **schedulers_all)
+    ana1.run(start=start, stop=stop, step=step, **client_AnalysisFromFunction)
 
     ana2 = base.AnalysisFromFunction(simple_function, u.atoms)
-    ana2.run(start=start, stop=stop, step=step, **schedulers_all)
+    ana2.run(start=start, stop=stop, step=step, **client_AnalysisFromFunction)
 
     ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms)
-    ana3.run(start=start, stop=stop, step=step, **schedulers_all)
+    ana3.run(start=start, stop=stop, step=step, **client_AnalysisFromFunction)
 
     frames = []
     times = []
@@ -374,26 +373,26 @@ def mass_xyz(atomgroup1, atomgroup2, masses):
     return atomgroup1.positions * masses
 
 
-def test_AnalysisFromFunction_args_content(u, schedulers_all):
+def test_AnalysisFromFunction_args_content(u, client_AnalysisFromFunction):
     protein = u.select_atoms('protein')
     masses = protein.masses.reshape(-1, 1)
     another = mda.Universe(TPR, XTC).select_atoms("protein")
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
-    result = np.sum(ans.run(**schedulers_all).results.timeseries)
+    result = np.sum(ans.run(**client_AnalysisFromFunction).results.timeseries)
     assert_almost_equal(result, -317054.67757345125, decimal=6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
 
 
-def test_analysis_class(scheduler_only_current_process):
+def test_analysis_class(client_AnalysisFromFunction):
     ana_class = base.analysis_class(simple_function)
     assert issubclass(ana_class, base.AnalysisBase)
     assert issubclass(ana_class, base.AnalysisFromFunction)
 
     u = mda.Universe(PSF, DCD)
     step = 2
-    ana = ana_class(u.atoms).run(step=step, **scheduler_only_current_process)
+    ana = ana_class(u.atoms).run(step=step, **client_AnalysisFromFunction)
 
     results = []
     for ts in u.trajectory[::step]:
