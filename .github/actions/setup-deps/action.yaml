@@ -85,6 +85,8 @@ inputs:
     default: 'pytest-cov'
   pytest-xdist:
     default: 'pytest-xdist'
+  pytest-timeout:
+    default: 'pytest-timeout'
   trove-classifiers:
     default: 'trove-classifiers'
   # pip-install optional dependencies
