@@ -160,6 +160,7 @@ runs:
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
           ${{ inputs.pytest-xdist }}
+          ${{ inputs.pytest-timeout }}
           ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
