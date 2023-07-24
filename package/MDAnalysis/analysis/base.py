@@ -406,7 +406,7 @@ class AnalysisBase(object):
     @classmethod
     @property
     def available_backends(cls):
-        return ('local')
+        return Client.possible_backends
 
     def __init__(self, trajectory, verbose=False, **kwargs):
         self._trajectory = trajectory
@@ -778,7 +778,12 @@ class AnalysisFromFunction(AnalysisBase):
         Former :attr:`results` are now stored as :attr:`results.timeseries`
     """
 
-    available_backends = ['local', 'dask', 'dask.distributed']
+    
+    @classmethod
+    @property
+    def available_backends(cls): 
+        # multiprocessing won't work because of pickling problems
+        return ('local', 'dask', 'dask.distributed') 
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
         if (trajectory is not None) and (not isinstance(
