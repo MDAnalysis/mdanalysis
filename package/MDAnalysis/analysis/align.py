@@ -541,6 +541,11 @@ class AlignTraj(AnalysisBase):
 
     """
 
+    @classmethod
+    @property
+    def available_backends(cls):
+        return ['local']
+
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
