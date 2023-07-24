@@ -3,6 +3,7 @@ import functools
 import importlib
 import multiprocessing
 from MDAnalysis.analysis.base import Client, AnalysisBase, AnalysisFromFunction
+from MDAnalysis.analysis.align import AverageStructure
 from MDAnalysisTests.analysis.test_base import (
     FrameAnalysis,
     IncompleteAnalysis,
@@ -22,16 +23,6 @@ def is_installed(modulename):
         return True
     except ImportError:
         return False
-
-
-@pytest.fixture
-def list_of_all_subclasses():
-    return [
-        AnalysisBase,
-        FrameAnalysis,
-        IncompleteAnalysis,
-        OldAPIAnalysis,
-    ]
 
 
 def create_fixture_params_for(cls: type):
@@ -95,4 +86,8 @@ def client_IncompleteAnalysis(request):
 
 @pytest.fixture(params=create_fixture_params_for(AnalysisFromFunction))
 def client_AnalysisFromFunction(request):
+    return request.param
+
+@pytest.fixture(params=create_fixture_params_for(AverageStructure))
+def client_AverageStructure(request):
     return request.param
