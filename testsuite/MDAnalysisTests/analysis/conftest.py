@@ -7,6 +7,7 @@ from MDAnalysis.analysis.base import Client, AnalysisBase, AnalysisFromFunction
 from MDAnalysis.analysis.align import AverageStructure
 from MDAnalysis.analysis.atomicdistances import AtomicDistances
 from MDAnalysis.analysis.bat import BAT
+from MDAnalysis.analysis.contacts import Contacts
 
 from MDAnalysisTests.analysis.test_base import (
     FrameAnalysis,
@@ -64,18 +65,24 @@ def dask_client():
     return client
 
 
-@pytest.fixture(scope="session", params=(1, 2, multiprocessing.cpu_count()))
+@pytest.fixture(scope='module', params=(1, 2, min(3, multiprocessing.cpu_count())), autouse=True)
 def setup_dask_distributed(tmpdir_factory, request):
-    import dask
-
-    client = dask.distributed.client._get_global_client()
-    if client is None:
-        with tmpdir_factory.mktemp("dask_cluster").as_cwd():
-            lc = dask.distributed.LocalCluster(n_workers=request.param, processes=True)
-            client = dask.distributed.Client(lc)
-    yield client
-    client.close()
-    lc.close()
+    if is_installed('dask'):
+        import dask
+        client = dask.distributed.client._get_global_client()
+        if client is None:
+            from dask.distributed import Client
+            try:
+                client = Client('localhost:8787', timeout=2)
+            except OSError:
+                with tmpdir_factory.mktemp("dask_cluster").as_cwd():
+                    lc = dask.distributed.LocalCluster(n_workers=request.param, processes=True)
+                    client = dask.distributed.Client(lc)
+        yield client
+        client.close()
+        lc.close()
+    else:
+        yield None
 
 
 @pytest.fixture(params=create_fixture_params_for(FrameAnalysis))
@@ -102,4 +109,8 @@ def client_AtomicDistances(request):
 
 @pytest.fixture(params=create_fixture_params_for(BAT))
 def client_BAT(request):
+    return request.param
+
+@pytest.fixture(params=create_fixture_params_for(Contacts))
+def client_Contacts(request):
     return request.param
