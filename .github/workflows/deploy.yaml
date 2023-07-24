@@ -226,6 +226,8 @@ jobs:
           create-args: >-
             python=${{ matrix.python-version }}
             pip
+          # jaime's shim to avoid pulling down the cudatoolkit
+          # bioconda for clustalw things
           condarc: |
             channels:
               - jaimergp/label/unsupported-cudatoolkit-shim
