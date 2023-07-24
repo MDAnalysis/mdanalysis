@@ -41,16 +41,16 @@ class TestBAT(object):
         return ag
 
     @pytest.fixture()
-    def bat(self, selected_residues, schedulers_all):
+    def bat(self, selected_residues, client_BAT):
         R = BAT(selected_residues)
-        R.run(**schedulers_all)
+        R.run(**client_BAT)
         return R.results.bat
 
     @pytest.fixture
-    def bat_npz(self, tmpdir, selected_residues, scheduler_only_current_process):
+    def bat_npz(self, tmpdir, selected_residues, client_BAT):
         filename = str(tmpdir / 'test_bat_IO.npy')
         R = BAT(selected_residues)
-        R.run(**scheduler_only_current_process)
+        R.run(**client_BAT)
         R.save(filename)
         return filename
 
@@ -72,8 +72,8 @@ class TestBAT(object):
             5,
             err_msg="error: BAT coordinates should match test values")
 
-    def test_bat_coordinates_single_frame(self, selected_residues, schedulers_all):
-        bat = BAT(selected_residues).run(start=1, stop=2, **schedulers_all).results.bat
+    def test_bat_coordinates_single_frame(self, selected_residues, client_BAT):
+        bat = BAT(selected_residues).run(start=1, stop=2, **client_BAT).results.bat
         test_bat = [np.load(BATArray)[1]]
         assert_almost_equal(
             bat,
@@ -88,9 +88,9 @@ class TestBAT(object):
             err_msg="error: Reconstructed Cartesian coordinates " + \
                     "don't match original")
 
-    def test_bat_IO(self, bat_npz, selected_residues, scheduler_only_current_process):
+    def test_bat_IO(self, bat_npz, selected_residues, client_BAT):
         R = BAT(selected_residues)
-        R.run(**scheduler_only_current_process)
+        R.run(**client_BAT)
         bat = R.results.bat
         print(bat_npz)
         R2 = BAT(selected_residues, filename=bat_npz)

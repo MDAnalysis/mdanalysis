@@ -2,9 +2,11 @@ import pytest
 import functools
 import importlib
 import multiprocessing
+
 from MDAnalysis.analysis.base import Client, AnalysisBase, AnalysisFromFunction
 from MDAnalysis.analysis.align import AverageStructure
 from MDAnalysis.analysis.atomicdistances import AtomicDistances
+from MDAnalysis.analysis.bat import BAT
 
 from MDAnalysisTests.analysis.test_base import (
     FrameAnalysis,
@@ -96,4 +98,8 @@ def client_AverageStructure(request):
     
 @pytest.fixture(params=create_fixture_params_for(AtomicDistances))
 def client_AtomicDistances(request):
+    return request.param
+
+@pytest.fixture(params=create_fixture_params_for(BAT))
+def client_BAT(request):
     return request.param
