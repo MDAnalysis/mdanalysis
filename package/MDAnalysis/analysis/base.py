@@ -179,7 +179,7 @@ class Client(object):
         self.backend = backend
 
         # validate 'n_workers' argument
-        if n_workers < 0:
+        if n_workers and n_workers < 0:
             raise ValueError(f"n_workers should be non-negative, got {n_workers=}")
         self.n_workers = n_workers
 
@@ -576,8 +576,8 @@ class AnalysisBase(object):
             used_frames = frames
         
         if all((isinstance(obj, bool) for obj in used_frames)):
-            arange = np.arange(len(frames))
-            used_frames = arange[frames]
+            arange = np.arange(len(used_frames))
+            used_frames = arange[used_frames]
         
         # this numpy thing is similar to list(enumerate(frames))
         enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
