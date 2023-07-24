@@ -133,6 +133,7 @@ jobs:
           create-args: >-
             python=3.9
             pip
+          # using jaime's shim to avoid pulling down the cudatoolkit
           condarc: |
             channels:
               - jaimergp/label/unsupported-cudatoolkit-shim
