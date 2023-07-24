@@ -705,6 +705,8 @@ class AnalysisBase(object):
         if not hasattr(remote_results[0], 'results') or len(remote_results[0].results) == 0:
             # results are empty
             pass
+        elif len(remote_results) == 1: # there was only one worker --> no aggregation needed
+            results = remote_results[0].results
         elif isinstance(remote_results[0].results, np.ndarray):
             results = np.array([obj.results for obj in remote_results]).sum(axis=0)
         else:
