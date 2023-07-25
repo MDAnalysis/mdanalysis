@@ -3,6 +3,9 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
+  pull_request:
+    branches:
+      - develop
 
 concurrency:
   # Probably overly cautious group naming.
@@ -161,7 +164,7 @@ jobs:
 
 
   # Issue 1727
-  pip-only:
+  pip-only-develop:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -196,3 +199,44 @@ jobs:
     - name: run_tests
       run: |
         pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+        
+  # Issue 4208
+  conda-latest-release:
+    # A set of runner to check that the latest conda release works as expected
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+        fail-fast: false
+        matrix:
+          python-version: ["3.9", "3.10", "3.11"]
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: setup_micromamba
+      uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-name: mda
+        create-args: >-
+          python=${{ matrix.python-version }}
+          pip
+        # using jaime's shim to avoid pulling down the cudatoolkit
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
+
+    - name: install_deps
+      uses: ./.github/actions/setup-deps
+      with:
+        micromamba: true
+        full-deps: true
+
+    - name: install_mdanalysis
+      run: |
+          micromamba install mdanalysis mdanalysistests
+
+    - name: run_tests
+      run: |
+          pytest -n auto --pyargs MDAnalysisTests
