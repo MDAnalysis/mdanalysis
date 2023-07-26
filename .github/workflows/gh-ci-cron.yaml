@@ -258,9 +258,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: install_mdanalysis
+      shell: bash
       run: |
           pip install mdanalysis mdanalysistests pytest-xdist
 
     - name: run_tests
+      shell: bash
       run: |
           pytest -n auto --pyargs MDAnalysisTests
