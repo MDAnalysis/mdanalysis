@@ -260,7 +260,7 @@ jobs:
     - name: install_mdanalysis
       shell: bash
       run: |
-          pip install mdanalysis mdanalysistests pytest-xdist
+          pip install mdanalysis mdanalysistests pytest-xdist "gsd<3.0"
 
     - name: run_tests
       shell: bash
