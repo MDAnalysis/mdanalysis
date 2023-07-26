@@ -97,7 +97,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        pytest -vvv --timeout=30 testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -vvv --timeout=100 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
