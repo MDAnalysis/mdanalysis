@@ -204,11 +204,12 @@ jobs:
   conda-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
+          os: [ubuntu-latest, macos-latest, windows-latest]
           python-version: ["3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v3
@@ -244,11 +245,12 @@ jobs:
   pypi-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
+          os: [ubuntu-latest, macos-latest, windows-latest]
           python-version: ["3.9", "3.10", "3.11"]
     steps:
     - uses: actions/setup-python@v4
