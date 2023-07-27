@@ -569,7 +569,7 @@ class AnalysisBase(object):
         """
         if frames is None:
             start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
-            used_frames = list(range(start, stop, step))
+            used_frames = np.arange(start, stop, step)
         elif not all(opt is None for opt in [start, stop, step]):
             raise ValueError("start/stop/step cannot be combined with frames")
         else:
@@ -582,8 +582,7 @@ class AnalysisBase(object):
         # this numpy thing is similar to list(enumerate(frames))
         enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
 
-        self._computation_groups = np.array_split(enumerated_frames, n_parts)
-        return self._computation_groups
+        return np.array_split(enumerated_frames, n_parts)
 
 
     def _configure_client(self, backend: str, n_workers: int, client):
