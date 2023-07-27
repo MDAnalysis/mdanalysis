@@ -34,42 +34,42 @@ class TestDielectric(object):
         u = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC, in_memory=True)
         return u.atoms
 
-    def test_broken_molecules(self, ag, schedulers_all):
+    def test_broken_molecules(self, ag):
         # cut molecules apart
         ag.universe.transfer_to_memory()
         for ts in ag.universe.trajectory:
             ag.wrap()
 
-        eps = DielectricConstant(ag, make_whole=False).run(**schedulers_all)
+        eps = DielectricConstant(ag, make_whole=False).run()
         assert_allclose(eps.results['eps_mean'], 721.711, rtol=1e-03)
 
-    def test_broken_repaired_molecules(self, ag, schedulers_all):
+    def test_broken_repaired_molecules(self, ag):
         # cut molecules apart
         ag.universe.transfer_to_memory()
         for ts in ag.universe.trajectory:
             ag.wrap()
 
-        eps = DielectricConstant(ag, make_whole=True).run(**schedulers_all)
+        eps = DielectricConstant(ag, make_whole=True).run()
         assert_allclose(eps.results['eps_mean'], 5.088, rtol=1e-03)
 
-    def test_temperature(self, ag, schedulers_all):
-        eps = DielectricConstant(ag, temperature=100).run(**schedulers_all)
+    def test_temperature(self, ag):
+        eps = DielectricConstant(ag, temperature=100).run()
         assert_allclose(eps.results['eps_mean'], 9.621, rtol=1e-03)
 
-    def test_non_charges(self, schedulers_all):
+    def test_non_charges(self):
         u = mda.Universe(DCD_TRICLINIC)
         with pytest.raises(NoDataError,
                            match="No charges defined given atomgroup."):
-            DielectricConstant(u.atoms).run(**schedulers_all)
+            DielectricConstant(u.atoms).run()
 
-    def test_non_neutral(self, ag, schedulers_all):
+    def test_non_neutral(self, ag):
         with pytest.raises(NotImplementedError,
                            match="Analysis for non-neutral systems or"):
-            DielectricConstant(ag[:-1]).run(**schedulers_all)
+            DielectricConstant(ag[:-1]).run()
 
-    def test_free_charges(self, ag, schedulers_all):
+    def test_free_charges(self, ag):
         ag.fragments[0].charges += 1
         ag.fragments[1].charges -= 1
 
         with pytest.raises(NotImplementedError):
-            DielectricConstant(ag).run(**schedulers_all)
+            DielectricConstant(ag).run()

@@ -54,8 +54,8 @@ class TestPSAnalysis(object):
         return psa
 
     @pytest.fixture()
-    def hausd_matrix(self, psa, schedulers_all):
-        psa.run(metric='hausdorff', **schedulers_all)
+    def hausd_matrix(self, psa):
+        psa.run(metric='hausdorff')
         return psa.get_pairwise_distances()
 
     @pytest.fixture()
@@ -63,8 +63,8 @@ class TestPSAnalysis(object):
         return hausd_matrix[self.iu1]
 
     @pytest.fixture()
-    def frech_matrix(self, psa, schedulers_all):
-        psa.run(metric='discrete_frechet', **schedulers_all)
+    def frech_matrix(self, psa):
+        psa.run(metric='discrete_frechet')
         return psa.get_pairwise_distances()
 
     @pytest.fixture()
@@ -72,25 +72,25 @@ class TestPSAnalysis(object):
         return frech_matrix[self.iu1]
 
     @pytest.fixture()
-    def plot_data(self, psa, tmpdir, schedulers_all):
-        psa.run(metric='hausdorff', **schedulers_all)
-        psa.run(metric='discrete_frechet', **schedulers_all)
+    def plot_data(self, psa, tmpdir):
+        psa.run(metric='hausdorff')
+        psa.run(metric='discrete_frechet')
         with tmpdir.as_cwd():
             results = psa.plot(filename="distmat.png")
         return results
 
     @pytest.fixture()
-    def plot_annotated_heatmap(self, psa, tmpdir, schedulers_all):
+    def plot_annotated_heatmap(self, psa, tmpdir):
         pytest.importorskip('seaborn')
-        psa.run(metric='hausdorff', **schedulers_all)
+        psa.run(metric='hausdorff')
         with tmpdir.as_cwd():
             results = psa.plot_annotated_heatmap(filename="annotated.png")
         return results
 
     @pytest.fixture()
-    def plot_nearest_neighbors(self, psa, tmpdir, schedulers_all):
+    def plot_nearest_neighbors(self, psa, tmpdir):
         pytest.importorskip('seaborn')
-        psa.run(metric='hausdorff', **schedulers_all)
+        psa.run(metric='hausdorff')
         psa.run_pairs_analysis(neighbors=True)
         with tmpdir.as_cwd():
             results = psa.plot_nearest_neighbors(filename="nn.png")
@@ -110,10 +110,10 @@ class TestPSAnalysis(object):
                    "Hausdorff distances")
         assert_array_less(hausd_dists, frech_dists, err_msg)
 
-    def test_explicit_metric(self, psa, hausd_dists, schedulers_all):
+    def test_explicit_metric(self, psa, hausd_dists):
         """Test whether explicitly specifying Hausdorff metric gives same result
         as specifying Hausdorff metric with string name"""
-        psa.run(metric=PSA.hausdorff, **schedulers_all)
+        psa.run(metric=PSA.hausdorff)
         hausd_matrix_explicit = psa.get_pairwise_distances()
         hausd_explicit_dists = hausd_matrix_explicit[self.iu1]
 

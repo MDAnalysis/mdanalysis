@@ -416,8 +416,3 @@ class EinsteinMSD(AnalysisBase):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
-
-    def _setup_scheduler(self, scheduler, n_workers):
-        super()._setup_scheduler(scheduler, n_workers)
-        if scheduler is not None:
-            raise NotImplementedError("Only 'scheduler=None' is available for this class")

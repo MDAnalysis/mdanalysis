@@ -52,13 +52,6 @@ class TestHydrogenBondAnalysisTIP3P(object):
         'd_h_a_angle_cutoff': 120.0
     }
 
-    def test_fails_with_not_implemented_schedulers(self, universe, schedulers_all):
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
-        if schedulers_all['scheduler'] in ( 'multiprocessing', 'dask'):
-            with pytest.raises(NotImplementedError):
-                h.run(**schedulers_all)
-
-
     @pytest.fixture(scope='class')
     def h(self, universe):
         h = HydrogenBondAnalysis(universe, **self.kwargs)
@@ -357,7 +350,7 @@ class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
         h.run()
         return h
 
-    def test_no_hydrogen_bonds(self, universe, scheduler_only_current_process):
+    def test_no_hydrogen_bonds(self, universe):
         tmp_kwargs = copy.deepcopy(self.kwargs)
         tmp_kwargs["d_h_a_angle_cutoff"] = 50
         hbonds = HydrogenBondAnalysis(universe, **tmp_kwargs)
@@ -366,7 +359,7 @@ class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
                           match=("No hydrogen bonds were found given angle "
                                  "of 50 between Donor, type O, and Acceptor,"
                                  " type O.")):
-            hbonds.run(step=1, **scheduler_only_current_process)
+            hbonds.run(step=1)
 
 
 class TestHydrogenBondAnalysisBetween(object):
@@ -448,10 +441,10 @@ class TestHydrogenBondAnalysisBetween(object):
 
         return u
 
-    def test_between_all(self, universe, scheduler_only_current_process):
+    def test_between_all(self, universe):
         # don't specify groups between which to find hydrogen bonds
         hbonds = HydrogenBondAnalysis(universe, between=None, **self.kwargs)
-        hbonds.run(**scheduler_only_current_process)
+        hbonds.run()
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
@@ -464,14 +457,14 @@ class TestHydrogenBondAnalysisBetween(object):
                            expected_hbond_indices)
         assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
-    def test_between_PW(self, universe, scheduler_only_current_process):
+    def test_between_PW(self, universe):
         # Find only protein-water hydrogen bonds
         hbonds = HydrogenBondAnalysis(
             universe,
             between=["resname PROT", "resname SOL"],
             **self.kwargs
         )
-        hbonds.run(**scheduler_only_current_process)
+        hbonds.run()
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
@@ -482,7 +475,7 @@ class TestHydrogenBondAnalysisBetween(object):
                            expected_hbond_indices)
         assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
-    def test_between_PW_PP(self, universe, scheduler_only_current_process):
+    def test_between_PW_PP(self, universe):
         # Find protein-water and protein-protein hydrogen bonds (not
         # water-water)
         hbonds = HydrogenBondAnalysis(
@@ -493,7 +486,7 @@ class TestHydrogenBondAnalysisBetween(object):
             ],
             **self.kwargs
         )
-        hbonds.run(**scheduler_only_current_process)
+        hbonds.run()
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
@@ -519,7 +512,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         'd_h_a_angle_cutoff': 120.0
     }
 
-    def test_no_hydrogens(self, universe, scheduler_only_current_process):
+    def test_no_hydrogens(self, universe):
         # If no hydrogens are identified at a given frame, check an
         # empty donor atom group is created
         test_kwargs = TestHydrogenBondAnalysisTIP3P.kwargs.copy()
@@ -527,7 +520,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         test_kwargs['hydrogens_sel'] = "name H"  # no atoms have name H
 
         h = HydrogenBondAnalysis(universe, **test_kwargs)
-        h.run(**scheduler_only_current_process)
+        h.run()
 
         assert h._hydrogens.n_atoms == 0
         assert h._donors.n_atoms == 0
@@ -697,11 +690,11 @@ class TestHydrogenBondAnalysisEmptySelections:
         with pytest.warns(UserWarning, match=self.msg.format(seltype)):
             HydrogenBondAnalysis(universe, **sel_kwarg)
 
-    def test_hbond_analysis(self, universe, scheduler_only_current_process):
+    def test_hbond_analysis(self, universe):
 
         h = HydrogenBondAnalysis(universe, donors_sel=' ', hydrogens_sel=' ',
                                  acceptors_sel=' ')
-        h.run(**scheduler_only_current_process)
+        h.run()
 
         assert h.donors_sel == ''
         assert h.hydrogens_sel == ''

@@ -46,58 +46,58 @@ def sels(u):
     return s1, s2
 
 
-def test_nbins(u, schedulers_all):
+def test_nbins(u):
     s1 = u.atoms[:3]
     s2 = u.atoms[3:]
-    rdf = InterRDF(s1, s2, nbins=412).run(**schedulers_all)
+    rdf = InterRDF(s1, s2, nbins=412).run()
 
     assert len(rdf.results.bins) == 412
 
 
-def test_range(u, schedulers_all):
+def test_range(u):
     s1 = u.atoms[:3]
     s2 = u.atoms[3:]
     rmin, rmax = 1.0, 13.0
-    rdf = InterRDF(s1, s2, range=(rmin, rmax)).run(**schedulers_all)
+    rdf = InterRDF(s1, s2, range=(rmin, rmax)).run()
 
     assert rdf.results.edges[0] == rmin
     assert rdf.results.edges[-1] == rmax
 
 
-def test_count_sum(sels, schedulers_all):
+def test_count_sum(sels):
     # OW vs HW
     # should see 8 comparisons in count
     s1, s2 = sels
-    rdf = InterRDF(s1, s2).run(**schedulers_all)
+    rdf = InterRDF(s1, s2).run()
     assert rdf.results.count.sum() == 8
 
 
-def test_count(sels, schedulers_all):
+def test_count(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
-    rdf = InterRDF(s1, s2).run(**schedulers_all)
+    rdf = InterRDF(s1, s2).run()
     assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
-def test_double_run(sels, schedulers_all):
+def test_double_run(sels):
     # running rdf twice should give the same result
     s1, s2 = sels
-    rdf = InterRDF(s1, s2).run(**schedulers_all)
-    rdf.run(**schedulers_all)
+    rdf = InterRDF(s1, s2).run()
+    rdf.run()
     assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
-def test_exclusion(sels, schedulers_all):
+def test_exclusion(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
-    rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run(**schedulers_all)
+    rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run()
     assert rdf.results.count.sum() == 4
 
 
 @pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
-def test_rdf_attr_warning(sels, attr, schedulers_all):
+def test_rdf_attr_warning(sels, attr):
     s1, s2 = sels
-    rdf = InterRDF(s1, s2).run(**schedulers_all)
+    rdf = InterRDF(s1, s2).run()
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(rdf, attr) is rdf.results[attr]
@@ -107,17 +107,17 @@ def test_rdf_attr_warning(sels, attr, schedulers_all):
     ("density", 1.956823),
     ("rdf", 244602.88385),
     ("none", 4)])
-def test_norm(sels, norm, value, schedulers_all):
+def test_norm(sels, norm, value):
     s1, s2 = sels
-    rdf = InterRDF(s1, s2, norm=norm).run(**schedulers_all)
+    rdf = InterRDF(s1, s2, norm=norm).run()
     assert_allclose(max(rdf.results.rdf), value)
 
 
 @pytest.mark.parametrize("norm, norm_required", [
     ("Density", "density"), (None, "none")])
-def test_norm_values(sels, norm, norm_required, schedulers_all):
+def test_norm_values(sels, norm, norm_required):
     s1, s2 = sels
-    rdf = InterRDF(s1, s2, norm=norm).run(**schedulers_all)
+    rdf = InterRDF(s1, s2, norm=norm).run()
     assert rdf.norm == norm_required
 
 

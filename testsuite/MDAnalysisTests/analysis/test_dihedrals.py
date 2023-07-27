@@ -42,36 +42,36 @@ class TestDihedral(object):
         return ag
 
 
-    def test_dihedral(self, atomgroup, scheduler_only_current_process):
-        dihedral = Dihedral([atomgroup]).run(**scheduler_only_current_process)
+    def test_dihedral(self, atomgroup):
+        dihedral = Dihedral([atomgroup]).run()
         test_dihedral = np.load(DihedralArray)
 
         assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_dihedral_single_frame(self, atomgroup, scheduler_only_current_process):
-        dihedral = Dihedral([atomgroup]).run(start=5, stop=6, **scheduler_only_current_process)
+    def test_dihedral_single_frame(self, atomgroup):
+        dihedral = Dihedral([atomgroup]).run(start=5, stop=6)
         test_dihedral = [np.load(DihedralArray)[5]]
 
         assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
                             err_msg="error: dihedral angles should "
                             "match test vales")
 
-    def test_atomgroup_list(self, atomgroup, scheduler_only_current_process):
-        dihedral = Dihedral([atomgroup, atomgroup]).run(**scheduler_only_current_process)
+    def test_atomgroup_list(self, atomgroup):
+        dihedral = Dihedral([atomgroup, atomgroup]).run()
         test_dihedral = np.load(DihedralsArray)
 
         assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_enough_atoms(self, atomgroup, scheduler_only_current_process):
+    def test_enough_atoms(self, atomgroup):
         with pytest.raises(ValueError):
-            dihedral = Dihedral([atomgroup[:2]]).run(**scheduler_only_current_process)
+            dihedral = Dihedral([atomgroup[:2]]).run()
 
-    def test_dihedral_attr_warning(self, atomgroup, scheduler_only_current_process):
-        dihedral = Dihedral([atomgroup]).run(stop=2, **scheduler_only_current_process)
+    def test_dihedral_attr_warning(self, atomgroup):
+        dihedral = Dihedral([atomgroup]).run(stop=2)
 
         wmsg = "The `angle` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -88,42 +88,42 @@ class TestRamachandran(object):
     def rama_ref_array(self):
         return np.load(RamaArray)
 
-    def test_ramachandran(self, universe, rama_ref_array, scheduler_only_current_process):
-        rama = Ramachandran(universe.select_atoms("protein")).run(**scheduler_only_current_process)
+    def test_ramachandran(self, universe, rama_ref_array):
+        rama = Ramachandran(universe.select_atoms("protein")).run()
 
         assert_almost_equal(rama.results.angles, rama_ref_array, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_ramachandran_single_frame(self, universe, rama_ref_array, scheduler_only_current_process):
+    def test_ramachandran_single_frame(self, universe, rama_ref_array):
         rama = Ramachandran(universe.select_atoms("protein")).run(
-            start=5, stop=6, **scheduler_only_current_process)
+            start=5, stop=6)
 
         assert_almost_equal(rama.results.angles[0], rama_ref_array[5], 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_ramachandran_residue_selections(self, universe, scheduler_only_current_process):
-        rama = Ramachandran(universe.select_atoms("resname GLY")).run(**scheduler_only_current_process)
+    def test_ramachandran_residue_selections(self, universe):
+        rama = Ramachandran(universe.select_atoms("resname GLY")).run()
         test_rama = np.load(GLYRamaArray)
 
         assert_almost_equal(rama.results.angles, test_rama, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_outside_protein_length(self, universe, scheduler_only_current_process):
+    def test_outside_protein_length(self, universe):
         with pytest.raises(ValueError):
             rama = Ramachandran(universe.select_atoms("resid 220"),
-                                check_protein=True).run(**scheduler_only_current_process)
+                                check_protein=True).run()
 
-    def test_outside_protein_unchecked(self, universe, scheduler_only_current_process):
+    def test_outside_protein_unchecked(self, universe):
         rama = Ramachandran(universe.select_atoms("resid 220"),
-                            check_protein=False).run(**scheduler_only_current_process)
+                            check_protein=False).run()
 
-    def test_protein_ends(self, universe, scheduler_only_current_process):
+    def test_protein_ends(self, universe):
         with pytest.warns(UserWarning) as record:
             rama = Ramachandran(universe.select_atoms("protein"),
-                                check_protein=True).run(**scheduler_only_current_process)
+                                check_protein=True).run()
         assert len(record) == 1
 
     def test_None_removal(self):
@@ -131,13 +131,13 @@ class TestRamachandran(object):
             u = mda.Universe(PDB_rama)
             rama = Ramachandran(u.select_atoms("protein").residues[1:-1])
 
-    def test_plot(self, universe, scheduler_only_current_process):
-        ax = Ramachandran(universe.select_atoms("resid 5-10")).run(**scheduler_only_current_process).plot(ref=True)
+    def test_plot(self, universe):
+        ax = Ramachandran(universe.select_atoms("resid 5-10")).run().plot(ref=True)
         assert isinstance(ax, matplotlib.axes.Axes), \
             "Ramachandran.plot() did not return and Axes instance"
 
-    def test_ramachandran_attr_warning(self, universe, scheduler_only_current_process):
-        rama = Ramachandran(universe.select_atoms("protein")).run(stop=2, **scheduler_only_current_process)
+    def test_ramachandran_attr_warning(self, universe):
+        rama = Ramachandran(universe.select_atoms("protein")).run(stop=2)
 
         wmsg = "The `angle` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -158,48 +158,43 @@ class TestJanin(object):
     def janin_ref_array(self):
         return np.load(JaninArray)
 
-    def test_fails_with_schedulers(self, universe, janin_ref_array, schedulers_all):
-        if schedulers_all['scheduler'] is not None:
-            with pytest.raises(NotImplementedError):
-                self._test_janin(universe, janin_ref_array, **schedulers_all)
+    def test_janin(self, universe, janin_ref_array):
+        self._test_janin(universe, janin_ref_array)
 
-    def test_janin(self, universe, janin_ref_array, scheduler_only_current_process):
-        self._test_janin(universe, janin_ref_array, **scheduler_only_current_process)
-
-    def test_janin_tpr(self, universe_tpr, janin_ref_array, scheduler_only_current_process):
+    def test_janin_tpr(self, universe_tpr, janin_ref_array):
         """Test that CYSH are filtered (#2898)"""
-        self._test_janin(universe_tpr, janin_ref_array, **scheduler_only_current_process)
+        self._test_janin(universe_tpr, janin_ref_array)
 
-    def _test_janin(self, u, ref_array, **runargs):
-        janin = Janin(u.select_atoms("protein")).run(**runargs)
+    def _test_janin(self, u, ref_array):
+        janin = Janin(u.select_atoms("protein")).run()
 
         # Test precision lowered to account for platform differences with osx
         assert_almost_equal(janin.results.angles, ref_array, 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_janin_single_frame(self, universe, janin_ref_array, scheduler_only_current_process):
-        janin = Janin(universe.select_atoms("protein")).run(start=5, stop=6, **scheduler_only_current_process)
+    def test_janin_single_frame(self, universe, janin_ref_array):
+        janin = Janin(universe.select_atoms("protein")).run(start=5, stop=6)
 
         assert_almost_equal(janin.results.angles[0], janin_ref_array[5], 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_janin_residue_selections(self, universe, scheduler_only_current_process):
-        janin = Janin(universe.select_atoms("resname LYS")).run(**scheduler_only_current_process)
+    def test_janin_residue_selections(self, universe):
+        janin = Janin(universe.select_atoms("resname LYS")).run()
         test_janin = np.load(LYSJaninArray)
 
         assert_almost_equal(janin.results.angles, test_janin, 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_outside_protein_length(self, universe, scheduler_only_current_process):
+    def test_outside_protein_length(self, universe):
         with pytest.raises(ValueError):
-            janin = Janin(universe.select_atoms("resid 220")).run(**scheduler_only_current_process)
+            janin = Janin(universe.select_atoms("resid 220")).run()
 
-    def test_remove_residues(self, universe, scheduler_only_current_process):
+    def test_remove_residues(self, universe):
         with pytest.warns(UserWarning):
-            janin = Janin(universe.select_atoms("protein")).run(**scheduler_only_current_process)
+            janin = Janin(universe.select_atoms("protein")).run()
 
     def test_atom_selection(self):
         with pytest.raises(ValueError):
@@ -207,13 +202,13 @@ class TestJanin(object):
             janin = Janin(u.select_atoms("protein and not resname ALA CYS GLY "
                                          "PRO SER THR VAL"))
 
-    def test_plot(self, universe, scheduler_only_current_process):
-        ax = Janin(universe.select_atoms("resid 5-10")).run(**scheduler_only_current_process).plot(ref=True)
+    def test_plot(self, universe):
+        ax = Janin(universe.select_atoms("resid 5-10")).run().plot(ref=True)
         assert isinstance(ax, matplotlib.axes.Axes), \
             "Ramachandran.plot() did not return and Axes instance"
 
-    def test_janin_attr_warning(self, universe, scheduler_only_current_process):
-        janin = Janin(universe.select_atoms("protein")).run(stop=2, **scheduler_only_current_process)
+    def test_janin_attr_warning(self, universe):
+        janin = Janin(universe.select_atoms("protein")).run(stop=2)
 
         wmsg = "The `angle` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):

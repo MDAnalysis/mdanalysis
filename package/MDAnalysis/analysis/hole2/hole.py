@@ -555,7 +555,7 @@ class HoleAnalysis(AnalysisBase):
         self._input_header = self.hole_header.format(hole_filenames)
 
     def run(self, start=None, stop=None, step=None, verbose=None,
-            random_seed=None, *args, **kwargs):
+            random_seed=None):
         """
         Perform the calculation
 
@@ -582,12 +582,7 @@ class HoleAnalysis(AnalysisBase):
         """
         self.random_seed = random_seed
         return super(HoleAnalysis, self).run(start=start, stop=stop,
-                                             step=step, verbose=verbose, *args, **kwargs)
-
-    def _setup_scheduler(self, scheduler, n_workers):
-        if scheduler is not None:
-            raise NotImplementedError("This method is available only with 'scheduler=None'")
-        return super()._setup_scheduler(scheduler, n_workers)
+                                             step=step, verbose=verbose)
 
     @property
     def sphpdbs(self):

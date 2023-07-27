@@ -488,9 +488,6 @@ class DensityAnalysis(AnalysisBase):
                           parameters={'isDensity': False})
         density.make_density()
         self.results.density = density
-    
-    def _parallel_conclude(self):
-        self._grid = np.array([obj._grid for obj in self._remote_results]).sum(axis=0)
 
     @property
     def density(self):

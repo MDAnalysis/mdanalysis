@@ -34,13 +34,13 @@ def u():
 
 
 @pytest.fixture(scope='module')
-def wc_rna(u, scheduler_only_current_process):
+def wc_rna(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
     strand1 = [strand.residues[0], strand.residues[21]]
     strand2 = [strand.residues[1], strand.residues[22]]
 
     WC = WatsonCrickDist(strand1, strand2)
-    WC.run(**scheduler_only_current_process)
+    WC.run()
     return WC
 
 
@@ -50,16 +50,6 @@ def test_wc_dist_shape(wc_rna):
 
 def test_wc_dist_results_keys(wc_rna):
     assert "pair_distances" in wc_rna.results
-
-def test_failing_other_schedulers(u, schedulers_all):
-    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
-    strand1 = [strand.residues[0], strand.residues[21]]
-    strand2 = [strand.residues[1], strand.residues[22]]
-    WC = WatsonCrickDist(strand1, strand2)
-
-    if schedulers_all['scheduler'] is not None:
-        with pytest.raises(NotImplementedError):
-            WC.run(**schedulers_all)
 
 
 def test_wc_dist(wc_rna):

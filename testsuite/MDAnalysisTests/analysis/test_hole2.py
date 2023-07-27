@@ -316,11 +316,11 @@ class TestHoleAnalysis(BaseTestHole):
         assert_almost_equal(hole.min_radius(), values,
                             err_msg="min_radius() array not correct")
 
-    def test_context_manager(self, universe, tmpdir, scheduler_only_current_process):
+    def test_context_manager(self, universe, tmpdir):
         with tmpdir.as_cwd():
             with hole2.HoleAnalysis(universe) as h:
-                h.run(**scheduler_only_current_process)
-                h.run(**scheduler_only_current_process)  # run again for *.old files
+                h.run()
+                h.run()  # run again for *.old files
                 h.create_vmd_surface(filename='hole.vmd')
 
         sphpdbs = tmpdir.join('*.sph')
@@ -339,12 +339,12 @@ class TestHoleAnalysis(BaseTestHole):
     @pytest.mark.parametrize("start,stop,step", [
         (1, 9, 2), (1, None, 3), (5, -2, None)])
     def test_nonzero_start_surface(self, universe, tmpdir,
-                                   start, stop, step, scheduler_only_current_process,
+                                   start, stop, step,
                                    surface="hole.vmd"):
         # Issue 3476
         with tmpdir.as_cwd():
             h = hole2.HoleAnalysis(universe)
-            h.run(start=start, stop=stop, step=step, **scheduler_only_current_process)
+            h.run(start=start, stop=stop, step=step)
             h.create_vmd_surface(filename=surface)
 
             found_frame_indices = []
@@ -358,18 +358,18 @@ class TestHoleAnalysis(BaseTestHole):
                      np.arange(len(universe.trajectory[start:stop:step])),
                      err_msg="wrong frame indices in VMD surface file")
 
-    def test_output_level(self, tmpdir, universe, scheduler_only_current_process):
+    def test_output_level(self, tmpdir, universe):
         with tmpdir.as_cwd():
             with pytest.warns(UserWarning, match='needs to be < 3'):
                 h = hole2.HoleAnalysis(universe,
                                        output_level=100)
                 h.run(start=self.start,
-                      stop=self.stop, random_seed=self.random_seed, **scheduler_only_current_process)
+                      stop=self.stop, random_seed=self.random_seed)
 
             # no profiles
             assert len(h.results.profiles) == 0
 
-    def test_cpoint_geometry(self, tmpdir, universe, scheduler_only_current_process):
+    def test_cpoint_geometry(self, tmpdir, universe):
         protein = universe.select_atoms('protein')
         cogs = [protein.center_of_geometry() for ts in universe.trajectory]
         with tmpdir.as_cwd():
@@ -378,7 +378,7 @@ class TestHoleAnalysis(BaseTestHole):
                                    cpoint='center_of_geometry',
                                    write_input_files=True)
             h.run(start=self.start,
-                  stop=self.stop, random_seed=self.random_seed, **scheduler_only_current_process)
+                  stop=self.stop, random_seed=self.random_seed)
 
             infiles = sorted(glob.glob(str(tmpdir.join('hole*.inp'))))
             for file, cog in zip(infiles, cogs[self.start:self.stop]):
@@ -469,19 +469,12 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
 
-    def test_none_filename(self, tmpdir, scheduler_only_current_process):
+    def test_none_filename(self, tmpdir):
         universe_none_filename = mda.Universe(PDB_HOLE, in_memory=True)
         universe_none_filename.trajectory.filename = None
         with tmpdir.as_cwd():
             with hole2.HoleAnalysis(universe_none_filename) as h:
-                h.run(**scheduler_only_current_process)
-    
-    def test_other_schedulers_fail(self, universe, tmpdir, schedulers_all):
-        scheduler, n_workers = schedulers_all.get('scheduler'), schedulers_all.get('n_workers')
-        if scheduler is not None:
-            with pytest.raises(NotImplementedError):
-                with tmpdir.as_cwd():
-                    hole2.HoleAnalysis(universe).run(**schedulers_all)
+                h.run()
 
 
 class TestHoleAnalysisLong(BaseTestHole):
@@ -729,7 +722,7 @@ class TestHoleModule(object):
 
     @pytest.mark.skipif(rlimits_missing,
                         reason="Test skipped because platform does not allow setting rlimits")
-    def test_hole_module_fd_closure(self, universe, tmpdir, scheduler_only_current_process):
+    def test_hole_module_fd_closure(self, universe, tmpdir):
         """test open file descriptors are closed (MDAnalysisTests.analysis.test_hole.TestHoleModule): Issue 129"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
         # the system, and cause many other tests to fail as well.
@@ -770,7 +763,7 @@ class TestHoleModule(object):
                 for i in range(2):
                     # will typically get an OSError for too many files being open after
                     # about 2 seconds if issue 129 isn't resolved
-                    H.run(**scheduler_only_current_process)
+                    H.run()
             except OSError as err:
                 if err.errno == errno.EMFILE:
                     raise pytest.fail(

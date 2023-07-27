@@ -391,11 +391,6 @@ class Contacts(AnalysisBase):
        :class:`Contacts` accepts both AtomGroup and string for `select`
     """
 
-    @classmethod
-    @property
-    def available_backends(cls):
-        return ['local', 'dask', 'dask.distributed']
-
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
         """
@@ -489,7 +484,7 @@ class Contacts(AnalysisBase):
             raise TypeError(select_error_message)
 
     def _prepare(self):
-        self.results.timeseries = np.zeros((self.n_frames, len(self.r0)+1))
+        self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
 
     def _single_frame(self):
         self.results.timeseries[self._frame_index][0] = self._ts.frame
@@ -505,11 +500,6 @@ class Contacts(AnalysisBase):
             r0 = r0[initial_contacts]
             q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
             self.results.timeseries[self._frame_index][i] = q
-        
-    def _setup_scheduler(self, scheduler, n_workers):
-        super()._setup_scheduler(scheduler, n_workers)
-        if scheduler == 'multiprocessing':
-            raise NotImplementedError("Use scheduler=None or scheduler='dask' for this class")
 
     @property
     def timeseries(self):

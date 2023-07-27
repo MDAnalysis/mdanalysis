@@ -541,11 +541,6 @@ class AlignTraj(AnalysisBase):
 
     """
 
-    @classmethod
-    @property
-    def available_backends(cls):
-        return ['local']
-
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
@@ -756,11 +751,6 @@ class AverageStructure(AnalysisBase):
 
     """
 
-    @classmethod
-    @property
-    def available_backends(cls):
-        return ['local']
-
     def __init__(self, mobile, reference=None, select='all', filename=None,
                 weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
@@ -953,11 +943,6 @@ class AverageStructure(AnalysisBase):
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
-    
-    def _setup_scheduler(self, scheduler, n_workers):
-        super()._setup_scheduler(scheduler, n_workers)
-        if scheduler is not None:
-            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     @property
     def universe(self):

@@ -352,10 +352,6 @@ class GNMAnalysis(AnalysisBase):
         self.results.eigenvalues = np.asarray(self.results.eigenvalues)
         self.results.eigenvectors = np.asarray(self.results.eigenvectors)
 
-    def _setup_scheduler(self, scheduler, n_workers):
-        super()._setup_scheduler(scheduler, n_workers)
-        if scheduler is not None:
-            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
 class closeContactGNMAnalysis(GNMAnalysis):
     r"""GNMAnalysis only using close contacts.

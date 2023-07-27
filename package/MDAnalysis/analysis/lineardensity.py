@@ -322,10 +322,6 @@ class LinearDensity(AnalysisBase):
             norm = k * self.results[dim]['slice_volume']
             for key in self.keys:
                 self.results[dim][key] /= norm
-    def _setup_scheduler(self, scheduler, n_workers):
-        super()._setup_scheduler(scheduler, n_workers)
-        if scheduler is not None:
-            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     # TODO: Remove in 3.0.0
     @deprecate(release="2.2.0", remove="3.0.0",

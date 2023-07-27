@@ -157,17 +157,14 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
-    @pytest.mark.parametrize('subselection', [
-        'resname ALA and name CA', 
-        mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA')
-        ])
-    def test_subselection_alignto_works(self, universe, reference, subselection):
-        rmsd = align.alignto(universe, reference, subselection=subselection)
-        assert_almost_equal(rmsd[1], 0.0, decimal=9)
+    @pytest.mark.parametrize('subselection, expectation', [
+        ('resname ALA and name CA', does_not_raise()),
+        (mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA'), does_not_raise()),
+        (1234, pytest.raises(TypeError)),
+    ])
+    def test_subselection_alignto(self, universe, reference, subselection, expectation):
 
-    @pytest.mark.parametrize('subselection', [1234])
-    def test_subselection_alignto_fails(self, universe, reference, subselection):
-        with pytest.raises(TypeError):
+        with expectation:
             rmsd = align.alignto(universe, reference, subselection=subselection)
             assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
@@ -420,9 +417,9 @@ class TestAverageStructure(object):
     def reference(self):
         return mda.Universe(PSF, CRD)
 
-    def test_average_structure_deprecated_attrs(self, universe, reference, client_AverageStructure):
+    def test_average_structure_deprecated_attrs(self, universe, reference):
         # Issue #3278 - remove in MDAnalysis 3.0.0
-        avg = align.AverageStructure(universe, reference).run(stop=2, **client_AverageStructure)
+        avg = align.AverageStructure(universe, reference).run(stop=2)
 
         wmsg = "The `universe` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -437,37 +434,37 @@ class TestAverageStructure(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert avg.rmsd == avg.results.rmsd
 
-    def test_average_structure(self, universe, reference, client_AverageStructure):
+    def test_average_structure(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
-        avg = align.AverageStructure(universe, reference).run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, reference).run()
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_mass_weighted(self, universe, reference, client_AverageStructure):
+    def test_average_structure_mass_weighted(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
-        avg = align.AverageStructure(universe, reference, weights='mass').run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, reference, weights='mass').run()
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_select(self, universe, reference, client_AverageStructure):
+    def test_average_structure_select(self, universe, reference):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
-        avg = align.AverageStructure(universe, reference, select=select).run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, reference, select=select).run()
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_no_ref(self, universe, client_AverageStructure):
+    def test_average_structure_no_ref(self, universe):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
-        avg = align.AverageStructure(universe).run(**client_AverageStructure)
+        avg = align.AverageStructure(universe).run()
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_no_msf(self, universe, client_AverageStructure):
-        avg = align.AverageStructure(universe).run(**client_AverageStructure)
+    def test_average_structure_no_msf(self, universe):
+        avg = align.AverageStructure(universe).run()
         assert not hasattr(avg, 'msf')
 
     def test_mismatch_atoms(self, universe):
@@ -475,7 +472,7 @@ class TestAverageStructure(object):
         with pytest.raises(SelectionError):
             align.AverageStructure(universe, u)
 
-    def test_average_structure_ref_frame(self, universe, client_AverageStructure):
+    def test_average_structure_ref_frame(self, universe):
         ref_frame = 3
         u = mda.Merge(universe.atoms)
 
@@ -486,13 +483,13 @@ class TestAverageStructure(object):
         # back to start
         universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
-        avg = align.AverageStructure(universe, ref_frame=ref_frame).run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_in_memory(self, universe, client_AverageStructure):
-        avg = align.AverageStructure(universe, in_memory=True).run(**client_AverageStructure)
+    def test_average_structure_in_memory(self, universe):
+        avg = align.AverageStructure(universe, in_memory=True).run()
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
         assert_almost_equal(avg.results.universe.atoms.positions,
                             reference_coordinates, decimal=4)
