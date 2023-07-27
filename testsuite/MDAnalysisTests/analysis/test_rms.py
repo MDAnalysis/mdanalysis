@@ -182,98 +182,98 @@ class TestRMSD(object):
         return [[0, 1, 0, 0, 0],
                 [49, 50, 4.6997, 1.9154, 2.7139]]
 
-    def test_rmsd(self, universe, correct_values, schedulers_all):
+    def test_rmsd(self, universe, correct_values, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
-        RMSD.run(step=49, **schedulers_all)
+        RMSD.run(step=49, **client_RMSD)
         assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_rmsd_frames(self, universe, correct_values, schedulers_all):
+    def test_rmsd_frames(self, universe, correct_values, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
-        RMSD.run(frames=[0, 49], **schedulers_all)
+        RMSD.run(frames=[0, 49], **client_RMSD)
         assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_rmsd_unicode_selection(self, universe, correct_values, schedulers_all):
+    def test_rmsd_unicode_selection(self, universe, correct_values, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select=u'name CA')
-        RMSD.run(step=49, **schedulers_all)
+        RMSD.run(step=49, **client_RMSD)
         assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_rmsd_atomgroup_selections(self, universe, schedulers_all):
+    def test_rmsd_atomgroup_selections(self, universe, client_RMSD):
         # see Issue #1684
         R1 = MDAnalysis.analysis.rms.RMSD(universe.atoms,
-                                          select="resid 1-30").run(**schedulers_all)
+                                          select="resid 1-30").run(**client_RMSD)
         R2 = MDAnalysis.analysis.rms.RMSD(universe.atoms.select_atoms("name CA"),
-                                          select="resid 1-30").run(**schedulers_all)
+                                          select="resid 1-30").run(**client_RMSD)
         assert not np.allclose(R1.results.rmsd[:, 2], R2.results.rmsd[:, 2])
 
-    def test_rmsd_single_frame(self, universe, schedulers_all):
+    def test_rmsd_single_frame(self, universe, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
-                                            ).run(start=5, stop=6, **schedulers_all)
+                                            ).run(start=5, stop=6, **client_RMSD)
         single_frame = [[5, 6, 0.91544906]]
         assert_almost_equal(RMSD.results.rmsd, single_frame, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_mass_weighted(self, universe, correct_values, schedulers_all):
+    def test_mass_weighted(self, universe, correct_values, client_RMSD):
         # mass weighting the CA should give the same answer as weighing
         # equally because all CA have the same mass
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
-                                            weights='mass').run(step=49, **schedulers_all)
+                                            weights='mass').run(step=49, **client_RMSD)
 
         assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
 
-    def test_custom_weighted(self, universe, correct_values_mass, schedulers_all):
-        RMSD = MDAnalysis.analysis.rms.RMSD(universe, weights="mass").run(step=49, **schedulers_all)
+    def test_custom_weighted(self, universe, correct_values_mass, client_RMSD):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe, weights="mass").run(step=49, **client_RMSD)
 
         assert_almost_equal(RMSD.results.rmsd, correct_values_mass, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
 
-    def test_weights_mass_is_mass_weighted(self, universe, schedulers_all):
+    def test_weights_mass_is_mass_weighted(self, universe, client_RMSD):
         RMSD_mass = MDAnalysis.analysis.rms.RMSD(universe,
-                                                 weights="mass").run(step=49, **schedulers_all)
+                                                 weights="mass").run(step=49, **client_RMSD)
         RMSD_cust = MDAnalysis.analysis.rms.RMSD(universe,
-                                                 weights=universe.atoms.masses).run(step=49, **schedulers_all)
+                                                 weights=universe.atoms.masses).run(step=49, **client_RMSD)
         assert_almost_equal(RMSD_mass.results.rmsd, RMSD_cust.results.rmsd, 4,
                             err_msg="error: rmsd profiles should match for 'mass' "
                             "and universe.atoms.masses")
 
-    def test_custom_weighted_list(self, universe, correct_values_mass, schedulers_all):
+    def test_custom_weighted_list(self, universe, correct_values_mass, client_RMSD):
         weights = universe.atoms.masses
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
-                                            weights=list(weights)).run(step=49, **schedulers_all)
+                                            weights=list(weights)).run(step=49, **client_RMSD)
         assert_almost_equal(RMSD.results.rmsd, correct_values_mass, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_custom_groupselection_weights_applied_1D_array(self, universe, schedulers_all):
+    def test_custom_groupselection_weights_applied_1D_array(self, universe, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                             select='backbone',
                                             groupselections=['name CA and resid 1-5', 'name CA and resid 1'],
                                             weights=None,
                                             weights_groupselections=[[1, 0, 0, 0, 0], None]).run(step=49, 
-                                                                                                 **schedulers_all
+                                                                                                 **client_RMSD
                                                                                                 )
 
         assert_almost_equal(RMSD.results.rmsd.T[3], RMSD.results.rmsd.T[4], 4,
                             err_msg="error: rmsd profile should match "
                             "for applied weight array and selected resid")
 
-    def test_custom_groupselection_weights_applied_mass(self, universe, correct_values_mass, schedulers_all):
+    def test_custom_groupselection_weights_applied_mass(self, universe, correct_values_mass, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                             select='backbone',
                                             groupselections=['all', 'all'],
                                             weights=None,
                                             weights_groupselections=['mass',
                                                                      universe.atoms.masses]).run(step=49, 
-                                                                                                **schedulers_all
+                                                                                                **client_RMSD
                                                                                                 )
 
         assert_almost_equal(RMSD.results.rmsd.T[3], RMSD.results.rmsd.T[4], 4,
@@ -315,23 +315,23 @@ class TestRMSD(object):
                 weights='mass',
                 weights_groupselections=[None])
 
-    def test_rmsd_group_selections(self, universe, correct_values_group, schedulers_all):
+    def test_rmsd_group_selections(self, universe, correct_values_group, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                             groupselections=['backbone', 'name CA']
-                                            ).run(step=49, **schedulers_all)
+                                            ).run(step=49, **client_RMSD)
         assert_almost_equal(RMSD.results.rmsd, correct_values_group, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
 
     def test_rmsd_backbone_and_group_selection(self, universe,
                                                correct_values_backbone_group,
-                                               schedulers_all):
+                                               client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(
             universe,
             reference=universe,
             select="backbone",
             groupselections=['backbone and resid 1:10',
-                             'backbone and resid 10:20']).run(step=49, **schedulers_all)
+                             'backbone and resid 10:20']).run(step=49, **client_RMSD)
         assert_almost_equal(
             RMSD.results.rmsd, correct_values_backbone_group, 4,
             err_msg="error: rmsd profile should match test values")
@@ -350,7 +350,7 @@ class TestRMSD(object):
             RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                                 reference=reference)
 
-    def test_ref_mobile_mass_mismapped(self, universe,correct_values_mass_add_ten, schedulers_all):
+    def test_ref_mobile_mass_mismapped(self, universe,correct_values_mass_add_ten, client_RMSD):
         reference = MDAnalysis.Universe(PSF, DCD)
         universe.atoms.masses = universe.atoms.masses + 10
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
@@ -358,7 +358,7 @@ class TestRMSD(object):
                                                 select='all',
                                                 weights='mass',
                                                 tol_mass=100)
-        RMSD.run(step=49, **schedulers_all)
+        RMSD.run(step=49, **client_RMSD)
         assert_almost_equal(RMSD.results.rmsd, correct_values_mass_add_ten, 4,
                             err_msg="error: rmsd profile should match "
                             "between true values and calculated values")
@@ -371,9 +371,9 @@ class TestRMSD(object):
                                                 reference=reference,
                                                 groupselections=['resname MET', 'type NH3'])
 
-    def test_rmsd_attr_warning(self, universe, schedulers_all):
+    def test_rmsd_attr_warning(self, universe, client_RMSD):
         RMSD = MDAnalysis.analysis.rms.RMSD(
-                universe, select='name CA').run(stop=2, **schedulers_all)
+                universe, select='name CA').run(stop=2, **client_RMSD)
 
         wmsg = "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -385,29 +385,22 @@ class TestRMSF(object):
     def universe(self):
         return mda.Universe(GRO, XTC)
 
-    def test_failing_other_schedulers(self, universe, schedulers_all):
+    def test_rmsf(self, universe, client_RMSF):
         rmsfs = rms.RMSF(universe.select_atoms('name CA'))
-        if schedulers_all['scheduler'] is not None:
-            with pytest.raises(NotImplementedError):
-                rmsfs.run(**schedulers_all)
-
-
-    def test_rmsf(self, universe, scheduler_only_current_process):
-        rmsfs = rms.RMSF(universe.select_atoms('name CA'))
-        rmsfs.run(**scheduler_only_current_process)
+        rmsfs.run(**client_RMSF)
         test_rmsfs = np.load(rmsfArray)
 
         assert_almost_equal(rmsfs.results.rmsf, test_rmsfs, 5,
                             err_msg="error: rmsf profile should match test "
                             "values")
 
-    def test_rmsf_single_frame(self, universe, scheduler_only_current_process):
-        rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(start=5, stop=6, **scheduler_only_current_process)
+    def test_rmsf_single_frame(self, universe, client_RMSF):
+        rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(start=5, stop=6, **client_RMSF)
 
         assert_almost_equal(rmsfs.results.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
 
-    def test_rmsf_identical_frames(self, universe, tmpdir, scheduler_only_current_process):
+    def test_rmsf_identical_frames(self, universe, tmpdir, client_RMSF):
 
         outfile = os.path.join(str(tmpdir), 'rmsf.xtc')
 
@@ -418,12 +411,12 @@ class TestRMSF(object):
 
         universe = mda.Universe(GRO, outfile)
         rmsfs = rms.RMSF(universe.select_atoms('name CA'))
-        rmsfs.run(**scheduler_only_current_process)
+        rmsfs.run(**client_RMSF)
         assert_almost_equal(rmsfs.results.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be 0")
 
-    def test_rmsf_attr_warning(self, universe, scheduler_only_current_process):
-        rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(stop=2, **scheduler_only_current_process)
+    def test_rmsf_attr_warning(self, universe, client_RMSF):
+        rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(stop=2, **client_RMSF)
 
         wmsg = "The `rmsf` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
