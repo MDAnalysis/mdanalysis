@@ -360,6 +360,7 @@ class RMSD(AnalysisBase):
        :class:`MDAnalysis.analysis.base.Results` instance.
 
     """
+
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, weights=None, weights_groupselections=False,
                  tol_mass=0.1, ref_frame=0, **kwargs):
@@ -883,11 +884,6 @@ class RMSF(AnalysisBase):
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
     
-    def _setup_scheduler(self, scheduler, n_workers):
-        super()._setup_scheduler(scheduler, n_workers)
-        if scheduler is not None:
-            raise NotImplementedError("Only 'scheduler=None' is available for this class")
-
     @property
     def rmsf(self):
         wmsg = ("The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and "
