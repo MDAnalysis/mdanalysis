@@ -137,7 +137,7 @@ from functools import partial
 
 logger = logging.getLogger(__name__)
 
-class Client(object):
+class ParallelExecutor(object):
     """Class that executes parallel computations for AnalysisBase (but potentially for other purposes)
     using one of the available backends"""
 
@@ -162,12 +162,13 @@ class Client(object):
 
         # validate 'backend' argument
         if backend is not None:
-            if backend not in Client.possible_backends:
+            if backend not in ParallelExecutor.possible_backends:
                 raise ValueError(
-                    f"Invalid {backend=}: should be one of {Client.possible_backends}"
+                    f"Invalid {backend=}: should be one of {ParallelExecutor.possible_backends}"
                 )
             if backend == "local":
-                pass
+                if n_workers > 1:
+                    raise ValueError("Can be only 1 worker with backend='local', got {n_workers=")
             else:
                 try:
                     import_module(backend)
@@ -192,6 +193,8 @@ class Client(object):
             return self._compute_with_dask(func, computations)
         elif self.client:
             return self._compute_with_client(func, computations)
+        elif self.backend == 'dask.distributed':
+            raise ValueError(f"To use this backend, pre-configure a Client object and pass client=... instead")
         else:
             raise ValueError(f"Backend or client is not set properly: {self.backend=}, {self.client=}")
 
@@ -207,22 +210,19 @@ class Client(object):
 
     def _compute_with_dask(self, func: Callable, computations: list) -> list:
         from dask.delayed import delayed
-        computations = delayed([delayed(func)(task) for task in computations])
-        return computations.compute(n_workers=self.n_workers)
+        import dask
+        from multiprocessing import Pool
+
+        computations = [delayed(func)(task) for task in computations]
+        with Pool(self.n_workers):
+            with dask.config.set(pool=Pool):
+                results = dask.compute(computations)[0]
+        return results
     
     def _compute_with_client(self, func: Callable, computations: list) -> list:
         from dask.delayed import delayed
         computations = delayed([delayed(func)(task) for task in computations])
         return self.client.compute(computations).result()
-
-
-def _self_compute_helper(obj, computation_group_idx):
-    """
-    Helper function for multiprocessing implementation of parallel analysis.
-    Exists due to the fact that non-global functions, such as object methods, 
-    can't be pickled with the multiprocessing.
-    """
-    return obj._compute(computation_group_idx)
 
 
 class Results(UserDict):
@@ -406,7 +406,7 @@ class AnalysisBase(object):
     @classmethod
     @property
     def available_backends(cls):
-        return Client.possible_backends
+        return ParallelExecutor.possible_backends
 
     def __init__(self, trajectory, verbose=False, **kwargs):
         self._trajectory = trajectory
@@ -602,15 +602,15 @@ class AnalysisBase(object):
         """
         if backend is not None and backend not in self.available_backends:
             raise ValueError(f"{backend=} is not in {self.available_backends=} for class {self.__class__.__name__}")
-        return Client(backend=backend, n_workers=n_workers, client=client)
+        return ParallelExecutor(backend=backend, n_workers=n_workers, client=client)
 
 
     def run(self, 
             start: int = None, stop: int = None, step: int = None, 
             frames: Iterable = None,
             verbose: bool = None, 
-            n_workers: int = 1, 
-            n_parts: int = 1,
+            n_workers: int = None, 
+            n_parts: int = None,
             backend: str = 'local',
             *, 
             client: object = None,
@@ -662,6 +662,12 @@ class AnalysisBase(object):
         if progressbar_kwargs and backend not in (None, 'local'):
             raise NotImplementedError("Can not display progressbar with non-local backend")
 
+        if n_workers is None:
+            if client: 
+                n_workers = sum(client.nthreads().values())
+            else:
+                n_workers = 1
+
         # validate input parameters
         n_parts = n_workers if n_parts is None else n_parts
         
@@ -682,7 +688,7 @@ class AnalysisBase(object):
         self._conclude()
         return self
     
-    def _parallel_conclude(self, remote_results: list['AnalysisBase'], do_raise: bool = False):
+    def _parallel_conclude(self, remote_results: list['AnalysisBase'], do_raise: bool = True):
         """Aggregation function that gathers together results of workers 
         into .results of the main object. 
         
