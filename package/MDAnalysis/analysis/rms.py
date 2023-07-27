@@ -740,6 +740,12 @@ class RMSF(AnalysisBase):
     in the array :attr:`RMSF.results.rmsf`.
 
     """
+
+    @classmethod
+    @property
+    def available_backends(cls):
+        return ('local',)
+    
     def __init__(self, atomgroup, **kwargs):
         r"""Parameters
         ----------
