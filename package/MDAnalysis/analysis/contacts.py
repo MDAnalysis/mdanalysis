@@ -391,6 +391,11 @@ class Contacts(AnalysisBase):
        :class:`Contacts` accepts both AtomGroup and string for `select`
     """
 
+    @classmethod
+    @property
+    def available_backends(cls):
+        return ['local', 'dask', 'dask.distributed']
+
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
         """
