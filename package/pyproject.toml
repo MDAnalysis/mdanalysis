@@ -85,6 +85,7 @@ analysis = [
     "seaborn",
     "scikit-learn",
     "tidynamics>=1.0.0",
+    "dask"
 ]
 doc = [
     "sphinx",
