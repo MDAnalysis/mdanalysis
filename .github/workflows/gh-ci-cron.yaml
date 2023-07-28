@@ -3,6 +3,9 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
+  pull_request:
+    branches:
+      - develop
 
 concurrency:
   # Probably overly cautious group naming.
@@ -258,7 +261,7 @@ jobs:
     - name: install_mdanalysis
       shell: bash
       run: |
-          pip install mdanalysis mdanalysistests pytest-xdist "gsd<3.0"
+        pip install --no-binary mdanalysis mdanalysistests pytest-xdist "gsd<3.0"
 
     - name: run_tests
       shell: bash
