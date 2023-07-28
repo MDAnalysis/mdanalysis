@@ -240,6 +240,11 @@ jobs:
       run: |
           micromamba install mdanalysis mdanalysistests
 
+    - name: list_environment
+      run: |
+          micromamba list
+          pip list
+
     - name: run_tests
       run: |
           pytest -n auto --pyargs MDAnalysisTests
@@ -264,7 +269,12 @@ jobs:
       run: |
         pip install -vvv --no-binary mdanalysis mdanalysistests pytest-xdist "gsd<3.0"
 
+    - name: list_environment
+      shell: bash
+      run: |
+        pip list
+
     - name: run_tests
       shell: bash
       run: |
-          pytest -n auto --pyargs MDAnalysisTests
+        pytest -n auto --pyargs MDAnalysisTests
