@@ -261,7 +261,7 @@ jobs:
     - name: install_mdanalysis
       shell: bash
       run: |
-        pip install --no-binary mdanalysis mdanalysistests pytest-xdist "gsd<3.0"
+        pip install -vvv --no-binary mdanalysis mdanalysistests pytest-xdist "gsd<3.0"
 
     - name: run_tests
       shell: bash
