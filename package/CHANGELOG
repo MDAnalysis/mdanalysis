@@ -13,11 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher
+??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen
 
  * 2.6.0
 
 Fixes
+  * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
   * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
     (PR #4163, Issue #4159)
