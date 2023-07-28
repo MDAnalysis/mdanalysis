@@ -14,6 +14,7 @@ networkx
 numpy>=1.22.3
 packaging
 parmed
+pint
 pytest
 scikit-learn
 scipy

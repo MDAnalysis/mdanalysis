@@ -138,7 +138,8 @@ class TestBaseUnits:
                "energy": "kJ/mol",
                "charge": "e",
                "force": "kJ/(mol*A)",
-               "speed": "A/ps"}
+               "speed": "A/ps",
+               "substance": "mol"}
         return ref
 
     def test_MDANALYSIS_BASE_UNITS_correct(self, ref):
