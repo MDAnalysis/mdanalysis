@@ -6,6 +6,7 @@ dependencies:
   - chemfiles>=0.10
   - codecov
   - cython
+  - docutils <0.18
   - fasteners
   - griddataformats
   - gsd
@@ -16,14 +17,14 @@ dependencies:
   - mmtf-python
   - mock
   - networkx
-  - numpy>=1.21
+  - numpy>=1.22.3
   - pytest
   - python==3.9
   - pytng>=0.2.3
   - scikit-learn
   - scipy
   - pip
-  - sphinx
+  - sphinx <7.0
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex

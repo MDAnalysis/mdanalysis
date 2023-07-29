@@ -22,6 +22,7 @@ jobs:
   main_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
@@ -40,7 +41,7 @@ jobs:
               python-version: 3.9
               full-deps: false
               codecov: true
-              numpy: numpy=1.21.0
+              numpy: numpy=1.22.3
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.9
@@ -113,6 +114,7 @@ jobs:
   build_docs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
@@ -135,7 +137,7 @@ jobs:
       with:
         micromamba: true
         full-deps: true
-        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-pip-deps: "docutils<0.18 sphinx<7.0 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
@@ -207,6 +209,7 @@ jobs:
   sdist_check_and_build:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - uses: actions/checkout@v3

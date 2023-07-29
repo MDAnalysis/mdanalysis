@@ -13,17 +13,40 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen
 
  * 2.6.0
 
 Fixes
+  * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
+  * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
+    (PR #4163, Issue #4159)
 
 Enhancements
+  * Added a `exclude_same` kwarg to InterRDF (PR #4161)
+  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
+    (Issue #3546)
 
 Changes
+  * Support for GSD is now limited to version 3.0.1 and above. Alongside this
+    change, support for schema 1.3 files has been dropped (PR #4153)
+  * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
+  * As per NEP29 the minimum supported version has been raised to 1.22. We
+    have opted to pin to a minimum of 1.22.3 to avoid known issues on some
+    platforms.
+  * GSD is no longer a core dependency of MDAnalysis. It must be installed
+    independently if you wish to read HOOMD trajectory files.
+    (PR #4174, Issue #3819)
 
 Deprecations
+  * The hole2 module is deprecated in favour of the the MDAKit:
+    https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
+  * MDAnalysis no longer officially supports 32 bit installations (they are
+    no longer tested in our continuous integration pipelines). Note: whilst
+    no code changes have been made to disable 32 bit, although it is known that
+    new versions of most MDAnalysis core dependencies no longer release
+    32 bit compatible versions. (Issue #3858, PR #4176)
 
 
 05/28/23 IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
@@ -35,6 +58,7 @@ Deprecations
  * 2.5.0
 
 Fixes
+  * Fixed using 'rb' mode inside GSDReader to avoid FutureWarning from GSDFile (Issue #4152)
   * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
     (Issue #3657 #4008 PR #3906)
   * Fix the `heavy` distance_type for water bridge analysis where distance
