@@ -238,7 +238,7 @@ jobs:
 
     - name: install_mdanalysis
       run: |
-          micromamba install mdanalysis mdanalysistests
+          micromamba install "mdanalysis=2.5.0=py310h64d9dca_0" mdanalysistests
 
     - name: list_environment
       run: |
