@@ -8,12 +8,11 @@ requires = [
     # except for more exotic platform (Mac Arm flavors)
     # aarch64, AIX, s390x, and arm64 all support 1.21 so we can safely pin to this
     # Note: MDA does not build with PyPy so we do not support it in the build system
-    "numpy==1.21.0; python_version=='3.9' and platform_python_implementation != 'PyPy'",
     # Scipy: On windows avoid 1.21.6, 1.22.0, and 1.22.1 because they were built on vc142
-    "numpy==1.22.3; python_version=='3.10' and platform_system=='Windows' and platform_python_implementation != 'PyPy'",
-    # As per https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
-    # safest to build at 1.21.6 for all other platforms
-    "numpy==1.21.6; python_version=='3.10' and platform_system !='Windows'and platform_python_implementation != 'PyPy'",
+    # Let's set everything to this version to make things clean, also avoids other issues
+    # on other archs
+    "numpy==1.22.3; python_version=='3.9' and platform_python_implementation != 'PyPy'",
+    "numpy==1.22.3; python_version=='3.10' and platform_python_implementation != 'PyPy'",
     "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
     # For unreleased versions of Python there is currently no known supported
     # NumPy version. In that case we just let it be a bare NumPy install
@@ -47,7 +46,6 @@ dependencies = [
     'threadpoolctl',
     'packaging',
     'fasteners',
-    'gsd>=1.9.3',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
@@ -78,8 +76,11 @@ extra_formats = [
     "netCDF4>=1.0",
     "h5py>=2.10",
     "chemfiles>=0.10",
+    "parmed",
     "pyedr>=0.7.0",
     "pytng>=0.2.3",
+    "gsd>3.0.0",
+    "rdkit>=2020.03.1",
 ]
 analysis = [
     "seaborn",

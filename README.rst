@@ -25,7 +25,7 @@ This project is bound by a `Code of Conduct`_.
 
 |powered_by_MDA|
 
-If you use MDAnalysis_ in your project consider lettting your users and the world know about it by displaying the MDAnalysis_ badge! `Embedding code`_ is available for different markups.
+If you use MDAnalysis_ in your project consider letting your users and the world know about it by displaying the MDAnalysis_ badge! `Embedding code`_ is available for different markups.
 
 Example analysis script
 =======================

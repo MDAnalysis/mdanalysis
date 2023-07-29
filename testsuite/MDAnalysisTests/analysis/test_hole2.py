@@ -110,8 +110,9 @@ class TestHole(object):
 
     def test_correct_input(self, tmpdir):
         with tmpdir.as_cwd():
-            hole2.hole(self.filename, random_seed=self.random_seed,
-                       infile='hole.inp')
+            with pytest.warns(DeprecationWarning, match="to the MDAKit"):
+                hole2.hole(self.filename, random_seed=self.random_seed,
+                           infile='hole.inp')
 
         infile = str(tmpdir.join('hole.inp'))
         with open(infile, 'r') as f:
@@ -135,9 +136,10 @@ class TestHole(object):
         cog = u.select_atoms('protein').center_of_geometry()
 
         with tmpdir.as_cwd():
-            hole2.hole(self.filename, random_seed=self.random_seed,
-                       infile='hole.inp', cpoint=cog,
-                       ignore_residues=[])
+            with pytest.warns(DeprecationWarning, match="to the MDAKit"):
+                hole2.hole(self.filename, random_seed=self.random_seed,
+                           infile='hole.inp', cpoint=cog,
+                           ignore_residues=[])
 
         infile = str(tmpdir.join('hole.inp'))
         with open(infile, 'r') as f:
@@ -159,7 +161,9 @@ class TestHole(object):
 
     def test_correct_profile_values(self, tmpdir):
         with tmpdir.as_cwd():
-            profiles = hole2.hole(self.filename, random_seed=self.random_seed)
+            with pytest.warns(DeprecationWarning, match="to the MDAKit"):
+                profiles = hole2.hole(self.filename,
+                                      random_seed=self.random_seed)
 
         values = list(profiles.values())
         assert_equal(len(values), 1,
@@ -195,11 +199,13 @@ class TestHole(object):
 
     #     assert_equal(len(profiles), int(keep_frames/step))
 
+    @pytest.mark.filterwarnings("ignore: `hole` is deprecated")
     def test_application_error(self, tmpdir):
         with tmpdir.as_cwd():
             with pytest.raises(ApplicationError):
                 hole2.hole(self.filename, dcd=DCD)
 
+    @pytest.mark.filterwarnings("ignore: `hole` is deprecated")
     def test_output_level(self, tmpdir):
         with tmpdir.as_cwd():
             with pytest.warns(UserWarning, match="needs to be < 3"):
@@ -210,9 +216,10 @@ class TestHole(object):
 
     def test_keep_files(self, tmpdir):
         with tmpdir.as_cwd():
-            hole2.hole(self.filename, random_seed=self.random_seed,
-                       infile='hole.inp',
-                       keep_files=False)
+            with pytest.warns(DeprecationWarning, match="to the MDAKit"):
+                hole2.hole(self.filename, random_seed=self.random_seed,
+                           infile='hole.inp',
+                           keep_files=False)
             sphpdbs = tmpdir.join('*.sph')
             assert len(glob.glob(str(sphpdbs))) == 0
             outfiles = tmpdir.join('*.out')
@@ -243,7 +250,8 @@ class BaseTestHole(object):
     @pytest.fixture()
     def hole(self, universe, tmpdir):
         with tmpdir.as_cwd():
-            h = hole2.HoleAnalysis(universe)
+            with pytest.warns(DeprecationWarning, match='This class has been'):
+                h = hole2.HoleAnalysis(universe)
             h.run(start=self.start, stop=self.stop,
                   random_seed=self.random_seed)
         return h
@@ -274,21 +282,25 @@ class TestOSError:
     def universe(self):
         return mda.Universe(MULTIPDB_HOLE)
 
+    @pytest.mark.filterwarnings("ignore: `hole` is deprecated")
     def test_hole_method_oserror(self):
         errmsg = exe_err.format(name='dummy_path', kw='executable')
         with pytest.raises(OSError, match=errmsg):
             h = hole2.hole(PDB_HOLE, executable='dummy_path')
 
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     def test_hole_oserror(self, universe):
         errmsg = exe_err.format(name='dummy_path', kw='executable')
         with pytest.raises(OSError, match=errmsg):
             h = hole2.HoleAnalysis(universe, executable='dummy_path')
 
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     def test_sos_triangle_oserror(self, universe):
         errmsg = exe_err.format(name='dummy_path', kw='sos_triangle')
         with pytest.raises(OSError, match=errmsg):
             h = hole2.HoleAnalysis(universe, sos_triangle='dummy_path')
 
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     def test_sph_process_oserror(self, universe):
         errmsg = exe_err.format(name='dummy_path', kw='sph_process')
         with pytest.raises(OSError, match=errmsg):
@@ -316,6 +328,7 @@ class TestHoleAnalysis(BaseTestHole):
         assert_almost_equal(hole.min_radius(), values,
                             err_msg="min_radius() array not correct")
 
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     def test_context_manager(self, universe, tmpdir):
         with tmpdir.as_cwd():
             with hole2.HoleAnalysis(universe) as h:
@@ -336,6 +349,7 @@ class TestHoleAnalysis(BaseTestHole):
         vmd_file = tmpdir.join('hole.vmd')
         assert len(glob.glob(str(vmd_file))) == 1
 
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     @pytest.mark.parametrize("start,stop,step", [
         (1, 9, 2), (1, None, 3), (5, -2, None)])
     def test_nonzero_start_surface(self, universe, tmpdir,
@@ -343,7 +357,8 @@ class TestHoleAnalysis(BaseTestHole):
                                    surface="hole.vmd"):
         # Issue 3476
         with tmpdir.as_cwd():
-            h = hole2.HoleAnalysis(universe)
+            with pytest.warns(DeprecationWarning, match='This class has been'):
+                h = hole2.HoleAnalysis(universe)
             h.run(start=start, stop=stop, step=step)
             h.create_vmd_surface(filename=surface)
 
@@ -358,6 +373,7 @@ class TestHoleAnalysis(BaseTestHole):
                      np.arange(len(universe.trajectory[start:stop:step])),
                      err_msg="wrong frame indices in VMD surface file")
 
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     def test_output_level(self, tmpdir, universe):
         with tmpdir.as_cwd():
             with pytest.warns(UserWarning, match='needs to be < 3'):
@@ -373,10 +389,11 @@ class TestHoleAnalysis(BaseTestHole):
         protein = universe.select_atoms('protein')
         cogs = [protein.center_of_geometry() for ts in universe.trajectory]
         with tmpdir.as_cwd():
-            h = hole2.HoleAnalysis(universe,
-                                   select='protein',
-                                   cpoint='center_of_geometry',
-                                   write_input_files=True)
+            with pytest.warns(DeprecationWarning, match='This class has been'):
+                h = hole2.HoleAnalysis(universe,
+                                       select='protein',
+                                       cpoint='center_of_geometry',
+                                       write_input_files=True)
             h.run(start=self.start,
                   stop=self.stop, random_seed=self.random_seed)
 
@@ -469,6 +486,7 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
 
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     def test_none_filename(self, tmpdir):
         universe_none_filename = mda.Universe(PDB_HOLE, in_memory=True)
         universe_none_filename.trajectory.filename = None
@@ -722,6 +740,7 @@ class TestHoleModule(object):
 
     @pytest.mark.skipif(rlimits_missing,
                         reason="Test skipped because platform does not allow setting rlimits")
+    @pytest.mark.filterwarnings("ignore: This class has been moved")
     def test_hole_module_fd_closure(self, universe, tmpdir):
         """test open file descriptors are closed (MDAnalysisTests.analysis.test_hole.TestHoleModule): Issue 129"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
