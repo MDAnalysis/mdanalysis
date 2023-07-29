@@ -19,6 +19,7 @@ The rules for this file:
 
 Fixes
   * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
+  * Fix Atom type guessing error (PR #4168, Issue #4167)
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
   * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
     (PR #4163, Issue #4159)
