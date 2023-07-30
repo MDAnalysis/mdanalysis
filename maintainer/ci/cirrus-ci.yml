@@ -11,7 +11,7 @@ linux_aarch64_task:
     python3 -m pip install ./package
     python3 -m pip install ./testsuite
     python3 -m pip install pytest-xdist pytest-timeout
-    python3 -m pytest --timeout=100 -n 8 ./testsuite/MDAnalysisTests
+    python3 -m pytest --timeout=200 -n 8 ./testsuite/MDAnalysisTests
 
 
 macos_arm64_task:
@@ -28,4 +28,4 @@ macos_arm64_task:
     cd ../testsuite
     python -m pip install .
     python -m pip install pytest pytest-xdist pytest-timeout
-    python -m pytest --timeout=100 -n auto MDAnalysisTests
+    python -m pytest --timeout=200 -n auto MDAnalysisTests

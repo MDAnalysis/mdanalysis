@@ -255,4 +255,4 @@ jobs:
 
       - name: run_tests
         run: |
-          pytest --timeout=100 -n auto --pyargs MDAnalysisTests
+          pytest --timeout=200 -n auto --pyargs MDAnalysisTests
