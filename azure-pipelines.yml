@@ -85,6 +85,7 @@ jobs:
       packaging
       pytest
       pytest-cov
+      pytest-timeout
       pytest-xdist
       scikit-learn
       tqdm
@@ -129,7 +130,7 @@ jobs:
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
   - powershell: |
       cd testsuite
-      pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n auto --timeout=100 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash

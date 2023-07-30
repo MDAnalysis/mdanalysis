@@ -83,6 +83,8 @@ inputs:
     default: 'coverage'
   pytest-cov:
     default: 'pytest-cov'
+  pytest-timeout:
+    default: 'pytest-timeout'
   pytest-xdist:
     default: 'pytest-xdist'
   trove-classifiers:
@@ -157,6 +159,7 @@ runs:
         PIP_MIN_DEPS: |
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
+          ${{ inputs.pytest-timeout }}
           ${{ inputs.pytest-xdist }}
           ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |
