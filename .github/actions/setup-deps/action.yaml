@@ -85,8 +85,6 @@ inputs:
     default: 'pytest-cov'
   pytest-xdist:
     default: 'pytest-xdist'
-  pytest-timeout:
-    default: 'pytest-timeout'
   trove-classifiers:
     default: 'trove-classifiers'
   # pip-install optional dependencies
@@ -160,7 +158,6 @@ runs:
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
           ${{ inputs.pytest-xdist }}
-          ${{ inputs.pytest-timeout }}
           ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
