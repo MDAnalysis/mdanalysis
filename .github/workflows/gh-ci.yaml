@@ -97,7 +97,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        pytest -n auto testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n auto --timeout=100 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
@@ -229,7 +229,7 @@ jobs:
     - name: install_deps
       run: |
         python -m pip install -U pip pipx wheel build
-        python -m pip install twine "readme-renderer>=34.0" pytest-xdist
+        python -m pip install twine "readme-renderer>=34.0" pytest-xdist pytest-timeout
 
     - name: build_package_sdist
       run: |
@@ -260,4 +260,4 @@ jobs:
 
     - name: run tests
       working-directory: ./dist
-      run: python -m pytest -n auto --pyargs MDAnalysisTests
+      run: python -m pytest --timeout=100 -n auto --pyargs MDAnalysisTests
