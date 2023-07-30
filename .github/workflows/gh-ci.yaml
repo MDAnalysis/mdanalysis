@@ -22,7 +22,7 @@ jobs:
   main_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 120
+    timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
