@@ -155,7 +155,7 @@ The `User Guide`_ provides more information on how to
 `install the development version`_ of MDAnalysis.
 
 .. _GNU Public Licence, version 3 or any later version:
-   https://www.gnu.org/licenses/gpl-3.0.en.htmla
+   https://www.gnu.org/licenses/gpl-3.0.en.html
 .. _MDAnalysis license file:
    https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
 .. _git: https://git-scm.com/
