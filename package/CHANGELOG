@@ -13,16 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, jaclark5, MohitKumar020291
+??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen
 
  * 2.6.0
 
 Fixes
+  * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
   * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
     (PR #4163, Issue #4159)
 
 Enhancements
+  * Added a `exclude_same` kwarg to InterRDF (PR #4161)
   * LAMMPSDump Reader use of `continuous` option to stitch trajectories
     (Issue #3546)
 
@@ -38,6 +40,8 @@ Changes
     (PR #4174, Issue #3819)
 
 Deprecations
+  * The hole2 module is deprecated in favour of the the MDAKit:
+    https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
   * MDAnalysis no longer officially supports 32 bit installations (they are
     no longer tested in our continuous integration pipelines). Note: whilst
     no code changes have been made to disable 32 bit, although it is known that
