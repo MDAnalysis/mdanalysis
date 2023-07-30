@@ -154,7 +154,7 @@ found in the `MDAnalysis license file`_. Obtain the sources with `git`_.
 The `User Guide`_ provides more information on how to
 `install the development version`_ of MDAnalysis.
 
-.. _GNU Public Licence, version 2 or any later version:
+.. _GNU Public Licence, version 3 or any later version:
    https://www.gnu.org/licenses/gpl-3.0.en.htmla
 .. _MDAnalysis license file:
    https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE

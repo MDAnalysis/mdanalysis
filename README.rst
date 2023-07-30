@@ -76,7 +76,7 @@ described in the `Installation Quick Start`_.
 https://github.com/MDAnalysis/mdanalysis and is packaged under the
 GNU General Public License, version 3 or any later version. Invidiual
 source code components are provided under a mixture of GPLv3+ compatible
-licenses, including LGPLv2.1+ and GPLv2+,. Please see the file LICENSE_
+licenses, including LGPLv2.1+ and GPLv2+. Please see the file LICENSE_
 for more information.
 
 
