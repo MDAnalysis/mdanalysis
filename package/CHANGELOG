@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen
+
+??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen, ztimol
 
  * 2.6.0
 
@@ -29,6 +30,9 @@ Enhancements
     (Issue #3546)
 
 Changes
+  * Atom ID representation order updated to match that of associated
+    AtomGroup indices.
+    (PR #4191, Issue #4181)
   * Package license has been updated to GPLv3+ to better reflect the
     compatibility of GPLv2+ with Apache and GPLv3 licenced codes (PR #4219).
   * All new contributions are now made under LGPLv2.1+ (PR #4219).

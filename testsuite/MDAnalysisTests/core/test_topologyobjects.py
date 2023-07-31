@@ -157,7 +157,7 @@ class TestTopologyObjects(object):
     def test_angle_repr(self, PSFDCD):
         angle = PSFDCD.atoms[[30, 10, 20]].angle
 
-        assert_equal(repr(angle), '<Angle between: Atom 20, Atom 10, Atom 30>')
+        assert_equal(repr(angle), '<Angle between: Atom 30, Atom 10, Atom 20>')
 
     def test_angle_180(self):
         # we edit the coordinates, so make our own universe
@@ -183,7 +183,7 @@ class TestTopologyObjects(object):
         dihedral = PSFDCD.atoms[[4, 7, 8, 1]].dihedral
 
         assert_equal(repr(dihedral),
-                     '<Dihedral between: Atom 1, Atom 8, Atom 7, Atom 4>')
+                     '<Dihedral between: Atom 4, Atom 7, Atom 8, Atom 1>')
 
     # Improper_Dihedral class check
     def test_improper(self, PSFDCD):
@@ -197,12 +197,12 @@ class TestTopologyObjects(object):
 
         assert_equal(
             repr(imp),
-            '<ImproperDihedral between: Atom 1, Atom 8, Atom 7, Atom 4>')
+            '<ImproperDihedral between: Atom 4, Atom 7, Atom 8, Atom 1>')
 
     def test_ureybradley_repr(self, PSFDCD):
         ub = PSFDCD.atoms[[30, 10]].ureybradley
 
-        assert_equal(repr(ub), '<UreyBradley between: Atom 10, Atom 30>')
+        assert_equal(repr(ub), '<UreyBradley between: Atom 30, Atom 10>')
 
     def test_ureybradley_repr_VE(self, PSFDCD):
         with pytest.raises(ValueError):
@@ -221,7 +221,7 @@ class TestTopologyObjects(object):
 
         assert_equal(
             repr(cmap),
-            '<CMap between: Atom 2, Atom 1, Atom 8, Atom 7, Atom 4>')
+            '<CMap between: Atom 4, Atom 7, Atom 8, Atom 1, Atom 2>')
     
     def test_cmap_repr_VE(self, PSFDCD):
         with pytest.raises(ValueError):
