@@ -244,7 +244,7 @@ jobs:
       - name: install_min_deps
         if: "matrix.type == 'MIN'"
         run: |
-          pip install pytest pytest-xdist
+          pip install pytest pytest-xdist pytest-timeout
 
       - name: pip_install_mda
         run: |
@@ -255,4 +255,4 @@ jobs:
 
       - name: run_tests
         run: |
-          pytest -n2 --pyargs MDAnalysisTests
+          pytest --timeout=200 -n auto --pyargs MDAnalysisTests
