@@ -34,14 +34,18 @@ jobs:
         os-type: "ubuntu"
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
-        environment-file: False
         environment-name: mda
-        extra-specs: |
-          python=="3.11"
+        create-args: >-
+          python=3.11
           pip
-        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+        # using jaime's shim to avoid pulling down the cudatoolkit
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
@@ -52,7 +56,7 @@ jobs:
       # overwrite installs by picking up nightly wheels
     - name: nightly_wheels
       run: |
-        pip install --pre -U -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy numpy h5py matplotlib
+        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib
 
     - name: list_deps
       run: |
@@ -68,7 +72,7 @@ jobs:
 
     - name: run_tests
       run: |
-        pytest -n $numprocs testsuite/MDAnalysisTests --durations=50 -W error::FutureWarning
+        pytest -n auto testsuite/MDAnalysisTests --durations=50 -W error::FutureWarning
 
 
   # Issue #3442
@@ -86,14 +90,17 @@ jobs:
         os-type: "ubuntu"
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
-        environment-file: False
         environment-name: mda
-        extra-specs: |
-          python=="3.11"
+        create-args: >-
+          python=3.11
           pip
-        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
@@ -113,7 +120,7 @@ jobs:
 
     - name: run_tests
       run: |
-        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+        pytest -n auto testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
 
 
   old_ubuntu_macos:
@@ -134,14 +141,17 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
-        environment-file: False
         environment-name: mda
-        extra-specs: |
-          python=="3.9"
+        create-args: >-
+          python=3.9
           pip
-        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
@@ -157,7 +167,7 @@ jobs:
 
     - name: run_tests
       run: |
-        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+        pytest -n auto testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
 
 
   # Issue 1727
@@ -195,7 +205,7 @@ jobs:
 
     - name: run_tests
       run: |
-        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+        pytest -n auto testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
         
   # Issue 4208
   conda-latest-release:
