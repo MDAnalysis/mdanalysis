@@ -12,4 +12,4 @@ PR Checklist
  - [ ] Issue raised/referenced?
 
 ## Developers certificate of origin
-- [ ] I certify that this contribution is covered by the LGPLv2.1+ license as defined [here](https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE) and adheres to the [**Developer Certificate of Origin**](https://developercertificate.org/).
+- [ ] I certify that this contribution is covered by the LGPLv2.1+ license as defined in our [LICENSE](https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE) and adheres to the [**Developer Certificate of Origin**](https://developercertificate.org/).
