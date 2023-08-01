@@ -13,9 +13,12 @@ inputs:
   mamba:
     description: 'use mamba instead of conda'
     default: false
+  micromamba:
+    description: 'use micromamba instead of conda'
+    default: false
   # conda-installed min dependencies
   biopython:
-    default: 'biopython'
+    default: 'biopython>=1.80'
   codecov:
     default: 'codecov'
   cython:
@@ -25,7 +28,7 @@ inputs:
   griddataformats:
     default: 'griddataformats'
   gsd:
-    default: 'gsd'
+    default: 'gsd>3.0.0'
   hypothesis:
     default: 'hypothesis'
   matplotlib:
@@ -53,14 +56,20 @@ inputs:
     default: 'chemfiles-python>=0.9'
   clustalw:
     default: 'clustalw=2.1'
+  distopia:
+    default: 'distopia>=0.2.0'
   h5py:
     default: 'h5py>=2.10'
+  hole2:
+    default: 'hole2'
   joblib:
     default: 'joblib>=0.12'
   netcdf4:
     default: 'netcdf4'
   openmm:
     default: 'openmm'
+  pytng:
+    default: 'pytng>=0.2.3'
   rdkit:
     default: 'rdkit>=2020.03.1'
   scikit-learn:
@@ -71,11 +80,15 @@ inputs:
     default: 'tidynamics>=1.0.0'
   # pip-installed min dependencies
   coverage:
-    default: 'coverage<5.0'
+    default: 'coverage'
   pytest-cov:
-    default: 'pytest-cov<=2.10.1'
+    default: 'pytest-cov'
+  pytest-timeout:
+    default: 'pytest-timeout'
   pytest-xdist:
     default: 'pytest-xdist'
+  trove-classifiers:
+    default: 'trove-classifiers'
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
@@ -96,7 +109,6 @@ runs:
           ${{ inputs.cython }}
           ${{ inputs.fasteners }}
           ${{ inputs.griddataformats }}
-          ${{ inputs.gsd }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
           ${{ inputs.mmtf-python }}
@@ -111,10 +123,14 @@ runs:
         CONDA_OPT_DEPS: |
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
+          ${{ inputs.distopia }}
+          ${{ inputs.gsd }}
           ${{ inputs.h5py }}
+          ${{ inputs.hole2 }}
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
           ${{ inputs.openmm }}
+          ${{ inputs.pytng }}
           ${{ inputs.rdkit }}
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
@@ -131,6 +147,8 @@ runs:
         # do the install
         if [ ${{ inputs.mamba }} = "true" ]; then
           mamba install ${CONDA_DEPS}
+        elif [ ${{ inputs.micromamba }} == "true" ]; then
+          micromamba install ${CONDA_DEPS}
         else
           conda install ${CONDA_DEPS}
         fi
@@ -141,7 +159,9 @@ runs:
         PIP_MIN_DEPS: |
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
+          ${{ inputs.pytest-timeout }}
           ${{ inputs.pytest-xdist }}
+          ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}

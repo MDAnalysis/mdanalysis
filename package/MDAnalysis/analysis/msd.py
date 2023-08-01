@@ -184,7 +184,7 @@ is used to demonstrate selection of a MSD segment.
     linear_model = linregress(lagtimes[start_index:end_index],
     				  		  msd[start_index:end_index])
     slope = linear_model.slope
-    error = linear_model.rvalue
+    error = linear_model.stderr
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
     D = slope * 1/(2*MSD.dim_fac)
 
@@ -259,6 +259,7 @@ import logging
 from ..due import due, Doi
 from .base import AnalysisBase
 from ..core import groups
+from tqdm import tqdm
 
 logger = logging.getLogger('MDAnalysis.analysis.msd')
 
@@ -396,7 +397,7 @@ class EinsteinMSD(AnalysisBase):
         """
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
-        for lag in lagtimes:
+        for lag in tqdm(lagtimes):
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
@@ -420,7 +421,7 @@ class EinsteinMSD(AnalysisBase):
                 or set fft=False""")
 
         positions = self._position_array.astype(np.float64)
-        for n in range(self.n_particles):
+        for n in tqdm(range(self.n_particles)):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)

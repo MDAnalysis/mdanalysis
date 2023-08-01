@@ -32,6 +32,7 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import (
     AUX_XVG,
+    AUX_EDR,
     CRD,
     DCD,
     DMS,
@@ -59,6 +60,8 @@ from MDAnalysisTests.datafiles import (
     XYZ_mini,
 )
 from MDAnalysis.coordinates.core import get_reader_for
+from MDAnalysis.coordinates.GSD import HAS_GSD
+from MDAnalysis.auxiliary.EDR import HAS_PYEDR
 
 
 @pytest.fixture(params=[
@@ -87,7 +90,10 @@ from MDAnalysis.coordinates.core import get_reader_for
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
     ('CHAIN', [GRO, GRO, GRO], dict()),
     ('FHIAIMS', FHIAIMS, dict()),
-    ('GSD', GSD, dict()),
+    pytest.param(
+        ('GSD', GSD, dict()),
+        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+    ),
     ('NAMDBIN', NAMDBIN, dict()),
     ('TXYZ', TXYZ, dict()),
 ])
@@ -128,7 +134,10 @@ def ref_reader(request):
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
     ('CHAIN', [GRO, GRO, GRO], dict()),
     ('FHIAIMS', FHIAIMS, dict()),
-    ('GSD', GSD, dict()),
+    pytest.param(
+        ('GSD', GSD, dict()),
+        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+    ),
     ('NAMDBIN', NAMDBIN, dict()),
     ('TXYZ', TXYZ, dict()),
 ])
@@ -177,10 +186,10 @@ def test_reader_copied_extra_attributes(original_and_copy_extra_args):
     # Issue #3664
     original, copy = original_and_copy_extra_args
 
-    # memory and chain readers subclass protoreader directly and
+    # memory reader subclass protoreader directly and
     # therefore don't have convert_units or _ts_kwargs
     if original.__class__.__bases__[0].__name__ != "ProtoReader":
-        assert original.format not in ('MEMORY', 'CHAIN')
+        assert original.format is not 'MEMORY'
         assert original.convert_units is False
         assert copy.convert_units is False
         assert original._ts_kwargs['time_offset'] == 10
@@ -281,12 +290,27 @@ def test_positions_share_memory(original_and_copy):
         assert_equal(original.ts.positions, copy.ts.positions)
 
 
-def test_auxiliary_NIE():
-    # Aux's not implemented, check for sane error message
+@pytest.mark.skipif(HAS_PYEDR, reason="pyedr present")
+def test_copy_with_auxiliary_no_pyedr():
+    # Check that AuxReaders are copied when reader is copied
     u = mda.Universe(XYZ_mini)
+    u.trajectory.add_auxiliary("myaux", AUX_XVG)
+    reader = u.trajectory
+    copy = reader.copy()
+    for auxname in reader._auxs:
+        assert reader._auxs[auxname] == copy._auxs[auxname]
+        assert reader._auxs[auxname] is not copy._auxs[auxname]
 
-    u.trajectory.add_auxiliary('myaux', AUX_XVG)
 
-    with pytest.raises(NotImplementedError) as e:
-        u.trajectory.copy()
-    assert 'Copy not implemented for AuxReader' in str(e.value)
+@pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
+def test_copy_with_auxiliary_pyedr():
+    # Check that AuxReaders are copied when reader is copied
+    u = mda.Universe(XYZ_mini)
+    u.trajectory.add_auxiliary("myaux", AUX_XVG)
+    u.trajectory.add_auxiliary({"1": "Bond", "2": "Angle"}, AUX_EDR)
+
+    reader = u.trajectory
+    copy = reader.copy()
+    for auxname in reader._auxs:
+        assert reader._auxs[auxname] == copy._auxs[auxname]
+        assert reader._auxs[auxname] is not copy._auxs[auxname]

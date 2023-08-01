@@ -338,9 +338,10 @@ def anyopen(datasource, mode='rt', reset=True):
         a file (from :class:`file` or :func:`open`) or a stream (e.g. from
         :func:`urllib2.urlopen` or :class:`io.StringIO`)
     mode: {'r', 'w', 'a'} (optional)
-        Open in r(ead), w(rite) or a(ppen) mode. More complicated
-        modes ('r+', 'w+', ...) are not supported; only the first letter of
-        `mode` is used and thus any additional modifiers are silently ignored.
+        Open in r(ead), w(rite) or a(ppend) mode. This string is directly
+        passed to the file opening handler (either Python's openfe, bz2, or
+        gzip). More complex modes are supported if the file opening handler
+        supports it.
     reset: bool (optional)
         try to read (`mode` 'r') the stream from the start
 
@@ -474,6 +475,8 @@ def greedy_splitext(p):
 
     Example
     -------
+
+    >>> from MDAnalysis.lib.util import greedy_splitext
     >>> greedy_splitext("/home/joe/protein.pdb.bz2")
     ('/home/joe/protein', '.pdb.bz2')
 
@@ -1620,10 +1623,14 @@ def unique_rows(arr, return_index=False):
     --------
     Remove dupicate rows from an array:
 
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import unique_rows
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
-    array([[0, 1], [1, 2], [2, 3]])
+    array([[0, 1],
+           [1, 2],
+           [2, 3]])
 
     See Also
     --------
@@ -1680,6 +1687,8 @@ def blocks_of(a, n, m):
 
     Examples
     --------
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import blocks_of
     >>> arr = np.arange(16).reshape(4, 4)
     >>> view = blocks_of(arr, 2, 2)
     >>> view[:] = 100
@@ -1737,6 +1746,7 @@ def group_same_or_consecutive_integers(arr):
     list of :class:`numpy.ndarray`
 
     Examples
+    >>> import numpy as np
     >>> arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])
     >>> group_same_or_consecutive_integers(arr)
     [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
@@ -1791,6 +1801,7 @@ def ltruncate_int(value, ndigits):
 
     Examples
     --------
+    >>> from MDAnalysis.lib.util import ltruncate_int
     >>> ltruncate_int(123, 2)
     23
     >>> ltruncate_int(1234, 5)
@@ -1840,6 +1851,7 @@ def static_variables(**kwargs):
     Example
     -------
 
+    >>> from MDAnalysis.lib.util import static_variables
     >>> @static_variables(msg='foo calls', calls=0)
     ... def foo():
     ...     foo.calls += 1
@@ -2011,6 +2023,10 @@ def check_coords(*coord_names, **options):
     Example
     -------
 
+    >>> import numpy as np
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    >>> from MDAnalysis.lib.util import check_coords
     >>> @check_coords('coords1', 'coords2', allow_atomgroup=True)
     ... def coordsum(coords1, coords2):
     ...     assert coords1.dtype == np.float32
@@ -2027,12 +2043,18 @@ def check_coords(*coord_names, **options):
     >>>
     >>> # automatic handling of AtomGroups
     >>> u = mda.Universe(PSF, DCD)
-    >>> coordsum(u.atoms, u.select_atoms("index 1 to 10"))
-    ...
+    >>> try:
+    ...     coordsum(u.atoms, u.select_atoms("index 1 to 10"))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].')
     >>>
     >>> # automatic shape checking:
-    >>> coordsum(np.zeros(3), np.ones(6))
-    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
+    >>> try:
+    ...     coordsum(np.zeros(3), np.ones(6))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords2.shape must be (3,) or (n, 3), got (6,)')
 
 
     .. versionadded:: 0.19.0

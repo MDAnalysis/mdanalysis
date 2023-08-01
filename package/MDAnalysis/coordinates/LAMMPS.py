@@ -263,7 +263,7 @@ class DATAWriter(base.WriterBase):
         convert_units : bool, optional
             units are converted to the MDAnalysis base format; [``True``]
         """
-        self.filename = util.filename(filename, ext='data')
+        self.filename = util.filename(filename, ext='data', keep=True)
 
         self.convert_units = convert_units
 
@@ -273,7 +273,7 @@ class DATAWriter(base.WriterBase):
         self.units['velocity'] = kwargs.pop('velocityunit',
                                  self.units['length']+'/'+self.units['time'])
 
-    def _write_atoms(self, atoms):
+    def _write_atoms(self, atoms, data):
         self.f.write('\n')
         self.f.write('Atoms\n')
         self.f.write('\n')
@@ -288,20 +288,23 @@ class DATAWriter(base.WriterBase):
         indices = atoms.indices + 1
         types = atoms.types.astype(np.int32)
 
+        moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
+
         if self.convert_units:
             coordinates = self.convert_pos_to_native(atoms.positions, inplace=False)
 
         if has_charges:
-            for index, atype, charge, coords in zip(indices, types, charges,
-                    coordinates):
-                self.f.write('{i:d} 0 {t:d} {c:f} {x:f} {y:f} {z:f}\n'.format(
-                             i=index, t=atype, c=charge, x=coords[0],
-                             y=coords[1], z=coords[2]))
+            for index, moltag, atype, charge, coords in zip(indices, moltags,
+                    types, charges, coordinates):
+                x, y, z = coords
+                self.f.write(f"{index:d} {moltag:d} {atype:d} {charge:f}"
+                             f" {x:f} {y:f} {z:f}\n")
         else:
-            for index, atype, coords in zip(indices, types, coordinates):
-                self.f.write('{i:d} 0 {t:d} {x:f} {y:f} {z:f}\n'.format(
-                             i=index, t=atype, x=coords[0], y=coords[1],
-                             z=coords[2]))
+            for index, moltag, atype, coords in zip(indices, moltags, types,
+                    coordinates):
+                x, y, z = coords
+                self.f.write(f"{index:d} {moltag:d} {atype:d}"
+                             f" {x:f} {y:f} {z:f}\n")
 
     def _write_velocities(self, atoms):
         self.f.write('\n')
@@ -416,7 +419,7 @@ class DATAWriter(base.WriterBase):
             has_velocities = True
 
         features = {}
-        with util.openany(self.filename, 'w') as self.f:
+        with util.openany(self.filename, 'wt') as self.f:
             self.f.write('LAMMPS data file via MDAnalysis\n')
             self.f.write('\n')
             self.f.write('{:>12d}  atoms\n'.format(len(atoms)))
@@ -441,7 +444,7 @@ class DATAWriter(base.WriterBase):
             self._write_dimensions(atoms.dimensions)
 
             self._write_masses(atoms)
-            self._write_atoms(atoms)
+            self._write_atoms(atoms, u.trajectory.ts.data)
             for attr in features.values():
                 if attr is None or len(attr) == 0:
                     continue
@@ -452,25 +455,51 @@ class DATAWriter(base.WriterBase):
 
 
 class DumpReader(base.ReaderBase):
-    """Reads the default `LAMMPS dump format`_
+    """Reads the default `LAMMPS dump format 
+    <https://docs.lammps.org/dump.html>`__
 
-    Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
-    "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
-    conventions (see https://docs.lammps.org/dump.html for more details).
-    If `lammps_coordinate_convention='auto'` (default),
-    one will be guessed. Guessing checks whether the coordinates fit each convention in the order "unscaled",
-    "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates
-    is detected first will be used. If coordinates are given in the scaled
-    coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
-    (xsu,ysu,zsu) they will automatically be converted from their
-    scaled/fractional representation to their real values.
+    Supports coordinates in various LAMMPS coordinate conventions and both 
+    orthogonal and triclinic simulation box dimensions (for more details see 
+    `documentation <https://docs.lammps.org/Howto_triclinic.html>`__). In 
+    either case, MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*,
+    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the 
+    MDAnalysis length unit (Å), and angles are in degrees.
 
-    Supports both orthogonal and triclinic simulation box dimensions (for more
-    details see https://docs.lammps.org/Howto_triclinic.html). In either case,
-    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
-    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
-    length unit (Å), and angles are in degrees.
+    Parameters
+    ----------
+    filename : str
+        Filename of LAMMPS dump file
+    lammps_coordinate_convention : str (optional) default="auto"
+        Convention used in coordinates, can be one of the following according
+        to the `LAMMPS documentation <https://docs.lammps.org/dump.html>`__:
 
+         - "auto" - Detect coordinate type from file column header. If auto 
+           detection is used, the guessing checks whether the coordinates
+           fit each convention in the order "unscaled", "scaled", "unwrapped", 
+           "scaled_unwrapped" and whichever set of coordinates is detected 
+           first will be used.
+         - "scaled" - Coordinates wrapped in box and scaled by box length (see
+            note below), i.e., xs, ys, zs
+         - "scaled_unwrapped" - Coordinates unwrapped and scaled by box length,
+           (see note below) i.e., xsu, ysu, zsu
+         - "unscaled" - Coordinates wrapped in box, i.e., x, y, z
+         - "unwrapped" - Coordinates unwrapped, i.e., xu, yu, zu
+
+        If coordinates are given in the scaled coordinate convention (xs,ys,zs)
+        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will 
+        automatically be converted from their scaled/fractional representation
+        to their real values.
+    unwrap_images : bool (optional) default=False
+        If `True` and the dump file contains image flags, the coordinates 
+        will be unwrapped. See `read_data 
+        <https://docs.lammps.org/read_data.html>`__  in the lammps 
+        documentation for more information.
+    **kwargs
+       Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
+
+    .. versionchanged:: 2.4.0
+       Now imports velocities and forces, translates the box to the origin,
+       and optionally unwraps trajectories with image flags upon loading.
     .. versionchanged:: 2.2.0
        Triclinic simulation boxes are supported.
        (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__)
@@ -489,7 +518,9 @@ class DumpReader(base.ReaderBase):
     }
 
     @store_init_arguments
-    def __init__(self, filename, lammps_coordinate_convention="auto",
+    def __init__(self, filename, 
+                 lammps_coordinate_convention="auto",
+                 unwrap_images=False,
                  **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
@@ -502,6 +533,8 @@ class DumpReader(base.ReaderBase):
                              f"'{lammps_coordinate_convention}'"
                              " is not a valid option. "
                              f"Please choose one of {option_string}")
+
+        self._unwrap = unwrap_images
 
         self._cache = {}
 
@@ -562,6 +595,7 @@ class DumpReader(base.ReaderBase):
         f.readline()  # ITEM TIMESTEP
         step_num = int(f.readline())
         ts.data['step'] = step_num
+        ts.data['time'] = step_num * ts.dt
 
         f.readline()  # ITEM NUMBER OF ATOMS
         n_atoms = int(f.readline())
@@ -606,9 +640,27 @@ class DumpReader(base.ReaderBase):
         convention_to_col_ix = {}
         for cv_name, cv_col_names in self._coordtype_column_names.items():
             try:
-                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] for x in cv_col_names]
+                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] 
+                    for x in cv_col_names]
             except KeyError:
                 pass
+
+        if self._unwrap:
+            try:
+                image_cols = [attr_to_col_ix[x] for x in ["ix", "iy", "iz"]]
+            except:
+                raise ValueError("Trajectory must have image flag in order "
+                                 "to unwrap.")
+
+        self._has_vels = all(x in attr_to_col_ix for x in ["vx", "vy", "vz"])
+        if self._has_vels:
+            ts.has_velocities = True
+            vel_cols = [attr_to_col_ix[x] for x in ["vx", "vy", "vz"]]
+        self._has_forces = all(x in attr_to_col_ix for x in ["fx", "fy", "fz"])
+        if self._has_forces:
+            ts.has_forces = True
+            force_cols = [attr_to_col_ix[x] for x in ["fx", "fy", "fz"]]
+
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
@@ -620,22 +672,46 @@ class DumpReader(base.ReaderBase):
             except IndexError:
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
-            raise ValueError(f"No coordinates following convention {self.lammps_coordinate_convention} found in timestep")
+            raise ValueError(f"No coordinates following convention "
+                             "{self.lammps_coordinate_convention} found in "
+                             "timestep")
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
+        if self._unwrap:
+            coord_cols.extend(image_cols)
 
         ids = "id" in attr_to_col_ix
         for i in range(self.n_atoms):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
-            ts.positions[i] = [fields[dim] for dim in coord_cols]
+            coords = np.array([fields[dim] for dim in coord_cols], 
+                              dtype=np.float32)
+
+            if self._unwrap:
+                images = coords[3:]
+                coords = coords[:3]
+                coords += images * ts.dimensions[:3]
+            else:
+                coords = coords[:3]
+            ts.positions[i] = coords
+
+            if self._has_vels:
+                ts.velocities[i] = [fields[dim] for dim in vel_cols]
+            if self._has_forces:
+                ts.forces[i] = [fields[dim] for dim in force_cols]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
+        if self._has_vels:
+            ts.velocities = ts.velocities[order]
+        if self._has_forces:
+            ts.forces = ts.forces[order]
         if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
                                                     ts.dimensions)
+        # Transform to origin after transformation of scaled variables
+        ts.positions -= np.array([xlo, ylo, zlo])[None,:]
 
         return ts

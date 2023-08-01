@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - develop
-      - master
   pull_request:
     branches:
       - develop
-      - master
 
 concurrency:
   # Probably overly cautious group naming.
@@ -24,45 +22,30 @@ jobs:
   main_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.8, 3.9, "3.10"]
+          python-version: ["3.9", "3.10", "3.11"]
           full-deps: [true, ]
-          install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: macOS_monterey_py39
+            - name: macOS_monterey_py311
               os: macOS-12
-              python-version: 3.9
+              python-version: "3.11"
               full-deps: true
-              install_hole: true
-              codecov: true
-            - name: macOS_bigsur_py38
-              os: macOS-11
-              python-version: 3.8
-              full-deps: true
-              install_hole: true
-              codecov: false
-            - name: minimal-ubuntu
-              os: ubuntu-latest
-              python-version: 3.8
-              full-deps: false
-              install_hole: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
-              python-version: 3.8
+              python-version: 3.9
               full-deps: false
-              install_hole: false
-              codecov: false
-              numpy: numpy=1.20.0
+              codecov: true
+              numpy: numpy=1.22.3
             - name: asv_check
               os: ubuntu-latest
-              python-version: 3.8
+              python-version: 3.9
               full-deps: true
-              install_hole: false
               codecov: false
               extra-pip-deps: asv
     env:
@@ -77,21 +60,24 @@ jobs:
       with:
         os-type: ${{ matrix.os }}
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/setup-micromamba@v1
       with:
-        python-version: ${{ matrix.python-version }}
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        mamba-version: "*"
-        architecture: x64
+        environment-name: mda
+        create-args: >-
+          python=${{ matrix.python-version }}
+          pip
+        # using jaime's shim to avoid pulling down the cudatoolkit
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: ${{ matrix.full-deps }}
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
@@ -100,7 +86,6 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: ${{ matrix.install_hole }}
         build-tests: true
         build-docs: false
 
@@ -112,7 +97,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        pytest -n $numprocs testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n auto --timeout=200 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
@@ -122,8 +107,9 @@ jobs:
 
     - name: codecov
       if: matrix.codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage.xml
         fail_ci_if_error: True
         verbose: True
@@ -132,6 +118,7 @@ jobs:
   build_docs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
@@ -139,30 +126,38 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/setup-micromamba@v1
       with:
-        python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        architecture: x64
-        mamba-version: "*"
+        environment-name: mda
+        create-args: >-
+          python=3.9
+          pip
+        # using jaime's shim to avoid pulling down the cudatoolkit
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: true
-        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-pip-deps: "docutils<0.18 sphinx<7.0 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: false
-        build-tests: false
+        build-tests: true
         build-docs: true
+
+    - name: doctests
+      if: github.event_name == 'pull_request'
+      continue-on-error: true
+      run: |
+        cd package && sphinx-build -b doctest --keep-going ./doc/sphinx/source ./doc/html
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
@@ -219,67 +214,50 @@ jobs:
         git push -q upstream HEAD:gh-pages
 
 
-  pylint_check:
+  sdist_check_and_build:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        architecture: x64
+        python-version: 3.11
 
-    - name: install
+    - name: install_deps
       run: |
-        which pip
-        which python
-        pip install pylint
+        python -m pip install -U pip pipx wheel build
+        python -m pip install twine "readme-renderer>=34.0" pytest-xdist pytest-timeout
 
-    - name: pylint
-      env:
-        PYLINTRC: package/.pylintrc
+    - name: build_package_sdist
       run: |
-        pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests
+        pipx run build --sdist --outdir dist package
 
-
-  pypi_check:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        # mamba not enabled as install longer than deps install
-        architecture: x64
-
-    - name: install_pip_conda
+    - name: build_testsuite_sdist
       run: |
-        # Issue 3612 - readme_renderer is outdated on conda-forge
-        conda install setuptools cython numpy twine 
-        pip install "readme-renderer>=34.0"
-
-    - name: install_mdanalysis
-      run: |
-        cd package && python setup.py sdist
+        pipx run build --sdist --outdir dist testsuite
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 package/dist/MDAnalysis-*.tar.gz | head -n 1)
-        test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
-        echo "twine check $DISTRIBUTION"
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
         twine check $DISTRIBUTION
+
+    - name: check_testsuite_build
+      run: |
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysisTests-*.tar.gz | head -n1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysisTests-*.tar.gz found"; exit 1; }
+        twine check $DISTRIBUTION
+
+    - name: install sdist
+      working-directory: ./dist
+      run: |
+        ls -a .
+        python -m pip install MDAnalysis-*.tar.gz
+        python -m pip install MDAnalysisTests-*.tar.gz
+
+    - name: run tests
+      working-directory: ./dist
+      run: python -m pytest --timeout=200 -n auto --pyargs MDAnalysisTests

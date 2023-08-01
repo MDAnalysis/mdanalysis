@@ -242,17 +242,21 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
 
     Example
     -------
-    >>> u = Universe(PSF,DCD)
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.analysis.rms import rmsd
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    >>> u = mda.Universe(PSF, DCD)
     >>> bb = u.select_atoms('backbone')
     >>> A = bb.positions.copy()  # coordinates of first frame
-    >>> u.trajectory[-1]         # forward to last frame
+    >>> _ = u.trajectory[-1]  # forward to last frame
     >>> B = bb.positions.copy()  # coordinates of last frame
     >>> rmsd(A, B, center=True)
-    3.9482355416565049
+    6.838544558398293
 
-    .. versionchanged: 0.8.1
+
+    .. versionchanged:: 0.8.1
        *center* keyword added
-    .. versionchanged: 0.14.0
+    .. versionchanged:: 0.14.0
        *superposition* keyword added
 
     """

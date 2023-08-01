@@ -122,16 +122,14 @@ writers share.
    :members:
 
 """
+import abc
 import numpy as np
 import numbers
-import copy
 import warnings
-import weakref
-from typing import Union, Optional, List, Dict
+from typing import Any, Union, Optional, List, Dict
 
 from .timestep import Timestep
 from . import core
-from .. import NoDataError
 from .. import (
     _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
@@ -144,6 +142,7 @@ from ..auxiliary.core import auxreader
 from ..auxiliary.core import get_auxreader_for
 from ..auxiliary import _AUXREADERS
 from ..lib.util import asiterable, Namespace, store_init_arguments
+from ..lib.util import NamedStream
 
 
 class FrameIteratorBase(object):
@@ -614,7 +613,7 @@ class IOBase(object):
         return False  # do not suppress exceptions
 
 
-class _Readermeta(type):
+class _Readermeta(abc.ABCMeta):
     """Automatic Reader registration metaclass
 
     .. versionchanged:: 1.0.0
@@ -622,7 +621,7 @@ class _Readermeta(type):
     """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
+        type.__init__(type, name, bases, classdict)  # pylint: disable=non-parent-init-called
         try:
             fmt = asiterable(classdict['format'])
         except KeyError:
@@ -664,6 +663,10 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
+    _transformations: list
+    _auxs: dict
+    _filename: Any
+    n_frames: int
 
     def __init__(self):
         # initialise list to store added auxiliary readers in
@@ -671,7 +674,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         self._auxs = {}
         self._transformations=[]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.n_frames
 
     @classmethod
@@ -691,7 +694,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         raise NotImplementedError("{} cannot deduce the number of atoms"
                                   "".format(cls.__name__))
 
-    def next(self):
+    def next(self) -> Timestep:
         """Forward one step to next frame."""
         try:
             ts = self._read_next_timestep()
@@ -706,22 +709,22 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         return ts
 
-    def __next__(self):
+    def __next__(self) -> Timestep:
         """Forward one step to next frame when using the `next` builtin."""
         return self.next()
 
-    def rewind(self):
+    def rewind(self) -> Timestep:
         """Position at beginning of trajectory"""
         self._reopen()
         self.next()
 
     @property
-    def dt(self):
+    def dt(self) -> float:
         """Time between two trajectory frames in picoseconds."""
         return self.ts.dt
 
     @property
-    def totaltime(self):
+    def totaltime(self) -> float:
         """Total length of the trajectory
 
         The time is calculated as ``(n_frames - 1) * dt``, i.e., we assume that
@@ -733,7 +736,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return (self.n_frames - 1) * self.dt
 
     @property
-    def frame(self):
+    def frame(self) -> int:
         """Frame number of the current time step.
 
         This is a simple short cut to :attr:`Timestep.frame`.
@@ -781,20 +784,21 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             pass
         return core.writer(filename, **kwargs)
 
-    def _read_next_timestep(self, ts=None):  # pragma: no cover
+    @abc.abstractmethod
+    def _read_next_timestep(self, ts=None):
         # Example from DCDReader:
         #     if ts is None:
         #         ts = self.ts
         #     ts.frame = self._read_next_frame(etc)
         #     return ts
-        raise NotImplementedError(
-            "BUG: Override _read_next_timestep() in the trajectory reader!")
+        ...
 
     def __iter__(self):
         """ Iterate over trajectory frames. """
         self._reopen()
         return self
 
+    @abc.abstractmethod
     def _reopen(self):
         """Should position Reader to just before first frame
 
@@ -980,6 +984,78 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             nframes=self.n_frames,
             natoms=self.n_atoms
         ))
+
+    def timeseries(self, asel: Optional['AtomGroup']=None,
+                   start: Optional[int]=None, stop: Optional[int]=None,
+                   step: Optional[int]=None,
+                   order: Optional[str]='fac') -> np.ndarray:
+        """Return a subset of coordinate data for an AtomGroup
+
+        Parameters
+        ----------
+        asel : AtomGroup (optional)
+            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
+            coordinates from. Defaults to ``None``, in which case the full set
+            of coordinate data is returned.
+        start :  int (optional)
+            Begin reading the trajectory at frame index `start` (where 0 is the
+            index of the first frame in the trajectory); the default
+            ``None`` starts at the beginning.
+        stop : int (optional)
+            End reading the trajectory at frame index `stop`-1, i.e, `stop` is
+            excluded. The trajectory is read to the end with the default
+            ``None``.
+        step : int (optional)
+            Step size for reading; the default ``None`` is equivalent to 1 and
+            means to read every frame.
+        order : str (optional)
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
+
+        See Also
+        --------
+        :class:`MDAnalysis.coordinates.memory`
+
+
+        .. versionadded:: 2.4.0
+        """
+        start, stop, step = self.check_slice_indices(start, stop, step)
+        nframes = len(range(start, stop, step))
+
+        if asel is not None:
+            if len(asel) == 0:
+                raise ValueError(
+                    "Timeseries requires at least one atom to analyze")
+            atom_numbers = asel.indices
+            natoms = len(atom_numbers)
+        else:
+            natoms = self.n_atoms
+            atom_numbers = np.arange(natoms)
+
+        # allocate output array in 'fac' order
+        coordinates = np.empty((nframes, natoms, 3), dtype=np.float32)
+        for i, ts in enumerate(self[start:stop:step]):
+            coordinates[i, :] = ts.positions[atom_numbers]
+
+        # switch axes around
+        default_order = 'fac'
+        if order != default_order:
+            try:
+                newidx = [default_order.index(i) for i in order]
+            except ValueError:
+                raise ValueError(f"Unrecognized order key in {order}, "
+                                 "must be permutation of 'fac'")
+
+            try:
+                coordinates = np.moveaxis(coordinates, newidx, [0, 1, 2])
+            except ValueError:
+                errmsg = ("Repeated or missing keys passed to argument "
+                          f"`order`: {order}, each key must be used once")
+                raise ValueError(errmsg)
+        return coordinates
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,
@@ -1387,7 +1463,10 @@ class ReaderBase(ProtoReader):
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
-        self.filename = filename
+        if isinstance(filename, NamedStream):
+            self.filename = filename
+        else:
+            self.filename = str(filename)
         self.convert_units = convert_units
 
         ts_kwargs = {}
@@ -1628,6 +1707,9 @@ class SingleFrameReaderBase(ProtoReader):
 
     def next(self):
         raise StopIteration(self._err.format(self.__class__.__name__))
+
+    def _read_next_timestep(self, ts=None):
+        raise NotImplementedError(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
         self.rewind()

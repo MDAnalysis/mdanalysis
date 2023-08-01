@@ -50,10 +50,57 @@ case-insensitive):
                                         with OpenMP
    ========== ========================= ======================================
 
+Use of the distopia library
+---------------------------
+
+MDAnalysis has developed a standalone library, `distopia`_ for accelerating
+the distance functions in this module using explicit SIMD vectorisation.
+This can provide many-fold speedups in calculating distances. Distopia is
+under active development and as such only a selection of functions in this
+module are covered. Consult the following table to see if the function
+you wish to use is covered by distopia. For more information see the
+`distopia documentation`_.
+
+.. Table:: Functions available using the `distopia`_ backend.
+    :align: center
+
+    +-------------------------------------+-----------------------------------+
+    | Functions                           | Notes                             |
+    +=====================================+===================================+
+    | MDAnalysis.lib.distances.calc_bonds | Doesn't support triclinic boxes   |
+    +-------------------------------------+-----------------------------------+
+
+If `distopia`_ is installed, the functions in this table will accept the key
+'distopia' for the `backend` keyword argument. If the distopia backend is
+selected the `distopia` library will be used to calculate the distances. Note
+that for functions listed in this table **distopia is not the default backend
+if and must be selected.**
+
+.. Note::
+   Distopia does not currently support triclinic simulation boxes. If you
+   specify `distopia` as the backend and your simulation box is triclinic,
+   the function will fall back to the default `serial` backend.
+
+.. Note::
+    Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
+    intrinsics in distopia via `VCL2`_, the precision of your results may
+    depend on the ISA available on your machine. However, in all tested cases
+    distopia satisfied the accuracy thresholds used to the functions in this
+    module. Please document any issues you encounter with distopia's accuracy
+    in the `relevant distopia issue`_ on the MDAnalysis GitHub repository.
+
+.. _distopia: https://github.com/MDAnalysis/distopia
+.. _distopia documentation: https://www.mdanalysis.org/distopia
+.. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
+.. _VCL2: https://github.com/vectorclass/version2
+.. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915
+
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
    Distance functions can now accept an
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
+.. versionchanged:: 2.5.0
+   Interface to the `distopia`_ package added.
 
 Functions
 ---------
@@ -72,7 +119,7 @@ Functions
 .. autofunction:: minimize_vectors(vectors, box)
 """
 import numpy as np
-from numpy.lib.utils import deprecate
+import numpy.typing as npt
 
 from typing import Union, Optional, Callable
 from typing import TYPE_CHECKING
@@ -83,6 +130,7 @@ from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+from ._distopia import HAS_DISTOPIA
 
 
 # hack to select backend with backend=<backend> kwarg. Note that
@@ -97,8 +145,11 @@ try:
                                           package="MDAnalysis.lib")
 except ImportError:
     pass
-del importlib
 
+if HAS_DISTOPIA:
+    _distances["distopia"] = importlib.import_module("._distopia",
+                             package="MDAnalysis.lib")
+del importlib
 
 def _run(funcname: str, args: Optional[tuple] = None,
          kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
@@ -139,9 +190,8 @@ from .c_distances import (_UINT64_MAX,
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-# typing: numpy
-def _check_result_array(result: Optional[np.ndarray],
-                        shape: tuple) -> np.ndarray:
+def _check_result_array(result: Optional[npt.NDArray],
+                        shape: tuple) -> npt.NDArray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -182,14 +232,13 @@ def _check_result_array(result: Optional[np.ndarray],
     return result
 
 
-# typing: numpy
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
               check_lengths_match=False, allow_atomgroup=True)
-def distance_array(reference: Union[np.ndarray, 'AtomGroup'],
-                   configuration: Union[np.ndarray, 'AtomGroup'],
-                   box: Optional[np.ndarray] = None,
-                   result: Optional[np.ndarray] = None,
-                   backend: str = "serial") -> np.ndarray:
+def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
+                   configuration: Union[npt.NDArray, 'AtomGroup'],
+                   box: Optional[npt.NDArray] = None,
+                   result: Optional[npt.NDArray] = None,
+                   backend: str = "serial") -> npt.NDArray:
     """Calculate all possible distances between a reference set and another
     configuration.
 
@@ -272,12 +321,11 @@ def distance_array(reference: Union[np.ndarray, 'AtomGroup'],
     return distances
 
 
-# typing: numpy
 @check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
-def self_distance_array(reference: Union[np.ndarray, 'AtomGroup'],
-                        box: Optional[np.ndarray] = None,
-                        result: Optional[np.ndarray] = None,
-                        backend: str = "serial") -> np.ndarray:
+def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
+                        box: Optional[npt.NDArray] = None,
+                        result: Optional[npt.NDArray] = None,
+                        backend: str = "serial") -> npt.NDArray:
     """Calculate all possible distances within a configuration `reference`.
 
     If the optional argument `box` is supplied, the minimum image convention is
@@ -359,10 +407,10 @@ def self_distance_array(reference: Union[np.ndarray, 'AtomGroup'],
 @check_coords('reference', 'configuration', enforce_copy=False,
               reduce_result_if_single=False, check_lengths_match=False,
               allow_atomgroup=True)
-def capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
-                    configuration: Union[np.ndarray, 'AtomGroup'],
+def capped_distance(reference: Union[npt.NDArray, 'AtomGroup'],
+                    configuration: Union[npt.NDArray, 'AtomGroup'],
                     max_cutoff: float, min_cutoff: Optional[float] = None,
-                    box: Optional[np.ndarray] = None,
+                    box: Optional[npt.NDArray] = None,
                     method: Optional[str] = None,
                     return_distances: Optional[bool] = True):
     """Calculates pairs of indices corresponding to entries in the `reference`
@@ -455,8 +503,8 @@ def capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
     # The check_coords decorator made sure that reference and configuration
     # are arrays of positions. Mypy does not know about that so we have to
     # tell it.
-    reference_positions: np.ndarray = reference  # type: ignore
-    configuration_positions: np.ndarray = configuration  # type: ignore
+    reference_positions: npt.NDArray = reference  # type: ignore
+    configuration_positions: npt.NDArray = configuration  # type: ignore
     function = _determine_method(reference_positions, configuration_positions,
                                  max_cutoff, min_cutoff=min_cutoff,
                                  box=box, method=method)
@@ -465,9 +513,9 @@ def capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
                     box=box, return_distances=return_distances)
 
 
-def _determine_method(reference: np.ndarray, configuration: np.ndarray,
+def _determine_method(reference: npt.NDArray, configuration: npt.NDArray,
                       max_cutoff: float, min_cutoff: Optional[float] = None,
-                      box: Optional[np.ndarray] = None,
+                      box: Optional[npt.NDArray] = None,
                       method: Optional[str] = None) -> Callable:
     """Guesses the fastest method for capped distance calculations based on the
     size of the coordinate sets and the relative size of the target volume.
@@ -541,10 +589,10 @@ def _determine_method(reference: np.ndarray, configuration: np.ndarray,
 @check_coords('reference', 'configuration', enforce_copy=False,
               reduce_result_if_single=False, check_lengths_match=False,
               allow_atomgroup=True)
-def _bruteforce_capped(reference: Union[np.ndarray, 'AtomGroup'],
-                       configuration: Union[np.ndarray, 'AtomGroup'],
+def _bruteforce_capped(reference: Union[npt.NDArray, 'AtomGroup'],
+                       configuration: Union[npt.NDArray, 'AtomGroup'],
                        max_cutoff: float, min_cutoff: Optional[float] = None,
-                       box: Optional[np.ndarray] = None,
+                       box: Optional[npt.NDArray] = None,
                        return_distances: Optional[bool] = True):
     """Capped distance evaluations using a brute force method.
 
@@ -628,10 +676,10 @@ def _bruteforce_capped(reference: Union[np.ndarray, 'AtomGroup'],
 @check_coords('reference', 'configuration', enforce_copy=False,
               reduce_result_if_single=False, check_lengths_match=False,
               allow_atomgroup=True)
-def _pkdtree_capped(reference: Union[np.ndarray, 'AtomGroup'],
-                    configuration: Union[np.ndarray, 'AtomGroup'],
+def _pkdtree_capped(reference: Union[npt.NDArray, 'AtomGroup'],
+                    configuration: Union[npt.NDArray, 'AtomGroup'],
                     max_cutoff: float, min_cutoff: Optional[float] = None,
-                    box: Optional[np.ndarray] = None,
+                    box: Optional[npt.NDArray] = None,
                     return_distances: Optional[bool] = True):
     """Capped distance evaluations using a KDtree method.
 
@@ -720,10 +768,10 @@ def _pkdtree_capped(reference: Union[np.ndarray, 'AtomGroup'],
 @check_coords('reference', 'configuration', enforce_copy=False,
               reduce_result_if_single=False, check_lengths_match=False,
               allow_atomgroup=True)
-def _nsgrid_capped(reference: Union[np.ndarray, 'AtomGroup'],
-                   configuration: Union[np.ndarray, 'AtomGroup'],
+def _nsgrid_capped(reference: Union[npt.NDArray, 'AtomGroup'],
+                   configuration: Union[npt.NDArray, 'AtomGroup'],
                    max_cutoff: float, min_cutoff: Optional[float] = None,
-                   box: Optional[np.ndarray] = None,
+                   box: Optional[npt.NDArray] = None,
                    return_distances: Optional[bool] = True):
     """Capped distance evaluations using a grid-based search method.
 
@@ -829,10 +877,10 @@ def _nsgrid_capped(reference: Union[np.ndarray, 'AtomGroup'],
 @check_coords('reference', enforce_copy=False,
               reduce_result_if_single=False, check_lengths_match=False,
               allow_atomgroup=True)
-def self_capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
+def self_capped_distance(reference: Union[npt.NDArray, 'AtomGroup'],
                          max_cutoff: float,
                          min_cutoff: Optional[float] = None,
-                         box: Optional[np.ndarray] = None,
+                         box: Optional[npt.NDArray] = None,
                          method: Optional[str] = None,
                          return_distances: Optional[bool] = True):
     """Calculates pairs of indices corresponding to entries in the `reference`
@@ -926,7 +974,7 @@ def self_capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
     # The check_coords decorator made sure that reference is an
     # array of positions. Mypy does not know about that so we have to
     # tell it.
-    reference_positions: np.ndarray = reference  # type: ignore
+    reference_positions: npt.NDArray = reference  # type: ignore
     function = _determine_method_self(reference_positions,
                                       max_cutoff, min_cutoff=min_cutoff,
                                       box=box, method=method)
@@ -934,9 +982,9 @@ def self_capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
                     return_distances=return_distances)
 
 
-def _determine_method_self(reference: np.ndarray, max_cutoff: float,
+def _determine_method_self(reference: npt.NDArray, max_cutoff: float,
                            min_cutoff: Optional[float] = None,
-                           box: Optional[np.ndarray] = None,
+                           box: Optional[npt.NDArray] = None,
                            method: Optional[str] = None):
     """Guesses the fastest method for capped distance calculations based on the
     size of the `reference` coordinate set and the relative size of the target
@@ -1001,10 +1049,10 @@ def _determine_method_self(reference: np.ndarray, max_cutoff: float,
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False,
               allow_atomgroup=True)
-def _bruteforce_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
+def _bruteforce_capped_self(reference: Union[npt.NDArray, 'AtomGroup'],
                             max_cutoff: float,
                             min_cutoff: Optional[float] = None,
-                            box: Optional[np.ndarray] = None,
+                            box: Optional[npt.NDArray] = None,
                             return_distances: Optional[bool] = True):
     """Capped distance evaluations using a brute force method.
 
@@ -1084,10 +1132,10 @@ def _bruteforce_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False,
               allow_atomgroup=True)
-def _pkdtree_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
+def _pkdtree_capped_self(reference: Union[npt.NDArray, 'AtomGroup'],
                          max_cutoff: float,
                          min_cutoff: Optional[float] = None,
-                         box: Optional[np.ndarray] = None,
+                         box: Optional[npt.NDArray] = None,
                          return_distances: Optional[bool] = True):
     """Capped distance evaluations using a KDtree method.
 
@@ -1168,10 +1216,10 @@ def _pkdtree_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False,
               allow_atomgroup=True)
-def _nsgrid_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
+def _nsgrid_capped_self(reference: Union[npt.NDArray, 'AtomGroup'],
                         max_cutoff: float,
                         min_cutoff: Optional[float] = None,
-                        box: Optional[np.ndarray] = None,
+                        box: Optional[npt.NDArray] = None,
                         return_distances: Optional[bool] = True):
     """Capped distance evaluations using a grid-based search method.
 
@@ -1363,13 +1411,12 @@ def transform_StoR(coords, box, backend="serial"):
     return coords
 
 
-# typing: numpy
 @check_coords('coords1', 'coords2', allow_atomgroup=True)
-def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
-               coords2: Union[np.ndarray, 'AtomGroup'],
-               box: Optional[np.ndarray] = None,
-               result: Optional[np.ndarray] = None,
-               backend: str = "serial") -> np.ndarray:
+def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
+               coords2: Union[npt.NDArray, 'AtomGroup'],
+               box: Optional[npt.NDArray] = None,
+               result: Optional[npt.NDArray] = None,
+               backend: str = "serial") -> npt.NDArray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1412,15 +1459,15 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate pairs). Avoids recreating the array in repeated
         function calls.
-    backend : {'serial', 'OpenMP'}, optional
-        Keyword selecting the type of acceleration.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration. Defaults to 'serial'.
 
     Returns
     -------
-    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64
-        Array containing the bond lengths between each pair of coordinates. If
-        two single coordinates were supplied, their distance is returned as a
-        single number instead of an array.
+    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or
+        numpy.float64 Array containing the bond lengths between each pair of
+        coordinates. If two single coordinates were supplied, their distance is
+        returned as a single number instead of an array.
 
 
     .. versionadded:: 0.8
@@ -1432,6 +1479,8 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.5.0
+       Can now optionally use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
@@ -1439,30 +1488,40 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
-            if boxtype == 'ortho':
-                _run("calc_bond_distance_ortho",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+            if boxtype == "ortho":
+                if backend == 'distopia':
+                    bondlengths = bondlengths.astype(np.float32)
+                _run(
+                    "calc_bond_distance_ortho",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend,
+                )
             else:
-                _run("calc_bond_distance_triclinic",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+                _run(
+                    "calc_bond_distance_triclinic",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend,
+                )
         else:
-            _run("calc_bond_distance",
-                 args=(coords1, coords2, bondlengths),
-                 backend=backend)
-
+            if backend == 'distopia':
+                bondlengths = bondlengths.astype(np.float32)
+            _run(
+                "calc_bond_distance",
+                args=(coords1, coords2, bondlengths),
+                backend=backend,
+            )
+    if backend == 'distopia':
+        bondlengths = bondlengths.astype(np.float64)
     return bondlengths
 
 
-# typing: numpy
 @check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
-def calc_angles(coords1: Union[np.ndarray, 'AtomGroup'],
-                coords2: Union[np.ndarray, 'AtomGroup'],
-                coords3: Union[np.ndarray, 'AtomGroup'],
-                box: Optional[np.ndarray] = None,
-                result: Optional[np.ndarray] = None,
-                backend: str = "serial") -> np.ndarray:
+def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
+                coords2: Union[npt.NDArray, 'AtomGroup'],
+                coords3: Union[npt.NDArray, 'AtomGroup'],
+                box: Optional[npt.NDArray] = None,
+                result: Optional[npt.NDArray] = None,
+                backend: str = "serial") -> npt.NDArray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1558,15 +1617,14 @@ def calc_angles(coords1: Union[np.ndarray, 'AtomGroup'],
     return angles
 
 
-# typing: numpy
 @check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
-def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
-                   coords2: Union[np.ndarray, 'AtomGroup'],
-                   coords3: Union[np.ndarray, 'AtomGroup'],
-                   coords4: Union[np.ndarray, 'AtomGroup'],
-                   box: Optional[np.ndarray] = None,
-                   result: Optional[np.ndarray] = None,
-                   backend: str = "serial") -> np.ndarray:
+def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
+                   coords2: Union[npt.NDArray, 'AtomGroup'],
+                   coords3: Union[npt.NDArray, 'AtomGroup'],
+                   coords4: Union[npt.NDArray, 'AtomGroup'],
+                   box: Optional[npt.NDArray] = None,
+                   result: Optional[npt.NDArray] = None,
+                   backend: str = "serial") -> npt.NDArray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
@@ -1636,7 +1694,8 @@ def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
         Array containing the dihedral angles formed by each quadruplet of
         coordinates. Values are returned in radians (rad). If four single
         coordinates were supplied, the dihedral angle is returned as a single
-        number instead of an array.
+        number instead of an array. The range of dihedral angle is 
+        :math:`(-\pi, \pi)`.
 
 
     .. versionadded:: 0.8
@@ -1676,11 +1735,10 @@ def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
     return dihedrals
 
 
-# typing: numpy
 @check_coords('coords', allow_atomgroup=True)
-def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
-              box: Optional[np.ndarray] = None,
-              backend: str = "serial") -> np.ndarray:
+def apply_PBC(coords: Union[npt.NDArray, 'AtomGroup'],
+              box: Optional[npt.NDArray] = None,
+              backend: str = "serial") -> npt.NDArray:
     """Moves coordinates into the primary unit cell.
 
     Parameters
@@ -1716,7 +1774,7 @@ def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
     """
     # coords is an array, the check_coords decorator made sure of that.
     # Mypy, however, is not aware of that so we have to tell it explicitly.
-    coords_array: np.ndarray = coords  # type: ignore
+    coords_array: npt.NDArray = coords  # type: ignore
 
     if len(coords_array) == 0:
         return coords_array
@@ -1729,9 +1787,8 @@ def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
     return coords_array
 
 
-# typing: numpy
 @check_coords('vectors', enforce_copy=False, enforce_dtype=False)
-def minimize_vectors(vectors: np.ndarray, box: np.ndarray) -> np.ndarray:
+def minimize_vectors(vectors: npt.NDArray, box: npt.NDArray) -> npt.NDArray:
     """Apply minimum image convention to an array of vectors
 
     This function is required for calculating the correct vectors between two

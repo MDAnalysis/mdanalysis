@@ -164,7 +164,7 @@ class DielectricConstant(AnalysisBase):
         self.results.fluct = self.results.M2 - self.results.M * self.results.M
 
         self.results.eps = self.results.fluct / (
-              convert(constants["Boltzman_constant"], "kJ/mol", "eV") *
+              convert(constants["Boltzmann_constant"], "kJ/mol", "eV") *
               self.temperature * self.volume * constants["electric_constant"])
 
         self.results.eps_mean = self.results.eps.mean()

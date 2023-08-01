@@ -348,14 +348,6 @@ END
 """
 
 
-def test_PDB_charge_nosign_error():
-    """Test to check if there are missing signs for a given formal charge
-    entry"""
-    errmsg = r"Formal charge 2 is unrecognized"
-    with pytest.raises(ValueError, match=errmsg):
-        u = mda.Universe(StringIO(PDB_charges_nosign), format='PDB')
-
-
 PDB_charges_invertsign = """\
 REMARK Invalid charge format for MG2+
 HETATM    1 CU    CU A   1      03.000  00.000  00.000  1.00 00.00          CU2+
@@ -365,9 +357,17 @@ END
 """
 
 
-def test_PDB_charge_badformat():
-    """Test to trigger an unrecognised formatting for the formal charge
-    entry"""
-    errmsg = r"Unknown formal charge \+2 encountered"
-    with pytest.raises(ValueError, match=errmsg):
-        u = mda.Universe(StringIO(PDB_charges_invertsign), format='PDB')
+@pytest.mark.parametrize('infile,entry', [
+        [PDB_charges_nosign, r'2'],
+        [PDB_charges_invertsign, r'\+2']
+])
+def test_PDB_bad_charges(infile, entry):
+    """
+    Test that checks that a warning is raised and formal charges are not set:
+        * If there are missing signs for a given formal charge entry
+        * If there is an unrecognised formal charge entry
+    """
+    wmsg = f"Unknown entry {entry} encountered in formal charge field."
+    with pytest.warns(UserWarning, match=wmsg):
+        u = mda.Universe(StringIO(infile), format='PDB')
+        assert not hasattr(u, 'formalcharges')
