@@ -23,6 +23,10 @@ def main(ctx):
     if ((env.get("CIRRUS_BASE_BRANCH") == "develop") and (env.get("CIRRUS_PR") != None)):
         return fs.read("maintainer/ci/cirrus-ci.yml")
 
+    # If it's a CRON job named twiceweekly
+    if ((env.get("CIRRUS_CRON") == "twiceweekly") and (env.get("CIRRUS_BRANCH") == "develop")):
+        return fs.read("maintainer/ci/cirrus-ci.yml")
+
     # If you've tagged a package or released something, deploy
     if ((env.get("CIRRUS_TAG") != None) or (env.get("CIRRUS_RELEASE") != None)):
         return fs.read("maintainer/ci/cirrus-deploy.yml")
