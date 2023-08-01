@@ -14,11 +14,16 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen, ztimol
+??/??/?? IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
+         ztimol, orbeckst
+
 
  * 2.6.0
 
 Fixes
+  * Fix AtomGroup.center_of_charge(..., unwrap=True) giving wrong
+    results on Intel macOS by removing `-ffast-math` compiler flag
+    (Issues #3821, #4211)    
   * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
   * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
