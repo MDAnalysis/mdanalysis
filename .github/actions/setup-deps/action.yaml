@@ -28,7 +28,7 @@ inputs:
   griddataformats:
     default: 'griddataformats'
   gsd:
-    default: 'gsd'
+    default: 'gsd>3.0.0'
   hypothesis:
     default: 'hypothesis'
   matplotlib:
@@ -85,6 +85,8 @@ inputs:
     default: 'coverage'
   pytest-cov:
     default: 'pytest-cov'
+  pytest-timeout:
+    default: 'pytest-timeout'
   pytest-xdist:
     default: 'pytest-xdist'
   trove-classifiers:
@@ -109,7 +111,6 @@ runs:
           ${{ inputs.cython }}
           ${{ inputs.fasteners }}
           ${{ inputs.griddataformats }}
-          ${{ inputs.gsd }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
           ${{ inputs.mmtf-python }}
@@ -125,6 +126,7 @@ runs:
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
           ${{ inputs.distopia }}
+          ${{ inputs.gsd }}
           ${{ inputs.h5py }}
           ${{ inputs.hole2 }}
           ${{ inputs.joblib }}
@@ -160,6 +162,7 @@ runs:
         PIP_MIN_DEPS: |
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
+          ${{ inputs.pytest-timeout }}
           ${{ inputs.pytest-xdist }}
           ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |

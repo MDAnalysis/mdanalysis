@@ -573,7 +573,7 @@ if __name__ == '__main__':
         'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
@@ -592,7 +592,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.21.0',
+          'numpy>=1.22.3',
           'biopython>=1.80',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
@@ -604,7 +604,6 @@ if __name__ == '__main__':
           'threadpoolctl',
           'packaging',
           'fasteners',
-          'gsd>=1.9.3',
     ]
 
     setup(name='MDAnalysis',
@@ -627,7 +626,7 @@ if __name__ == '__main__':
                         'Twitter': 'https://twitter.com/mdanalysis',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL-2.0-or-later',
+          license='GPL-3.0-or-later',
           classifiers=CLASSIFIERS,
           provides=['MDAnalysis'],
           packages=find_packages(),
@@ -654,6 +653,9 @@ if __name__ == '__main__':
                   'pytng>=0.2.3',  # TNG
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
+                  'gsd>3.0.0', # GSD
+                  'rdkit>=2020.03.1', # RDKit converter
+                  'parmed', # ParmEd converter
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor

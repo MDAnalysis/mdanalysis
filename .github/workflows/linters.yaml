@@ -19,6 +19,7 @@ jobs:
   darker_lint:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pull-requests: write
     defaults:
@@ -99,6 +100,7 @@ jobs:
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
 
@@ -120,25 +122,30 @@ jobs:
   mypy :
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
 
       - name: setup_micromamba
-        uses: mamba-org/provision-with-micromamba@main
+        uses: mamba-org/setup-micromamba@v1
         with:
-          environment-file: False
           environment-name: mda
-          extra-specs: |
-            python=="3.9"
+          create-args: >-
+            python=3.9
             pip
-          channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+          # using jaime's shim to avoid pulling down the cudatoolkit
+          condarc: |
+            channels:
+              - jaimergp/label/unsupported-cudatoolkit-shim
+              - conda-forge
+              - bioconda
 
       - name: install_deps
         uses: ./.github/actions/setup-deps
         with:
           micromamba: true
           full-deps: true
-          numpy: numpy=1.21.0
+          numpy: numpy=1.22.3
 
       - name: install
         run: |

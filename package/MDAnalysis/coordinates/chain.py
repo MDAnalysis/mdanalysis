@@ -191,7 +191,7 @@ class ChainReader(base.ReaderBase):
         what frames are used with the continuous option.
 
     The default chainreader will read all frames. The continuous option is
-    currently only supported for XTC and TRR files.
+    currently only supported for XTC, TRR, and LAMMPSDUMP files.
 
     Notes
     -----
@@ -299,7 +299,7 @@ class ChainReader(base.ReaderBase):
 
         # calculate new start_frames to have a time continuous trajectory.
         if continuous:
-            check_allowed_filetypes(self.readers, ['XTC', 'TRR'])
+            check_allowed_filetypes(self.readers, ['XTC', 'TRR', "LAMMPSDUMP"])
             if np.any(np.array(n_frames) == 1):
                 raise RuntimeError("ChainReader: Need at least two frames in "
                                    "every trajectory with continuous=True")

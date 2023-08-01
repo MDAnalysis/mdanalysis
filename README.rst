@@ -25,7 +25,7 @@ This project is bound by a `Code of Conduct`_.
 
 |powered_by_MDA|
 
-If you use MDAnalysis_ in your project consider lettting your users and the world know about it by displaying the MDAnalysis_ badge! `Embedding code`_ is available for different markups.
+If you use MDAnalysis_ in your project consider letting your users and the world know about it by displaying the MDAnalysis_ badge! `Embedding code`_ is available for different markups.
 
 Example analysis script
 =======================
@@ -73,8 +73,11 @@ The latest release can be **installed via pip or conda** as
 described in the `Installation Quick Start`_.
 
 **Source code** is hosted in a git repository at
-https://github.com/MDAnalysis/mdanalysis and is available under the
-GNU General Public License, version 2 (see the file LICENSE_).
+https://github.com/MDAnalysis/mdanalysis and is packaged under the
+GNU General Public License, version 3 or any later version. Invidiual
+source code components are provided under a mixture of GPLv3+ compatible
+licenses, including LGPLv2.1+ and GPLv2+. Please see the file LICENSE_
+for more information.
 
 
 Contributing
