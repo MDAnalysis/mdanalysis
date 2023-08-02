@@ -56,6 +56,10 @@ inputs:
     default: 'chemfiles-python>=0.9'
   clustalw:
     default: 'clustalw=2.1'
+  dask:
+    default: 'dask'
+  dask-distributed:
+    default: 'dask[distributed]'
   distopia:
     default: 'distopia>=0.2.0'
   h5py:
@@ -78,8 +82,6 @@ inputs:
     default: 'seaborn>=0.7.0'
   tidynamics:
     default: 'tidynamics>=1.0.0'
-  dask:
-    default: 'dask'
   # pip-installed min dependencies
   coverage:
     default: 'coverage'
@@ -125,6 +127,8 @@ runs:
         CONDA_OPT_DEPS: |
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
+          ${{ inputs.dask }}
+          ${{ inputs.dask-distributed }}
           ${{ inputs.distopia }}
           ${{ inputs.gsd }}
           ${{ inputs.h5py }}
@@ -137,7 +141,6 @@ runs:
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
           ${{ inputs.tidynamics }}
-          ${{ inputs.dask }}
 
       run: |
         # setup full variable
