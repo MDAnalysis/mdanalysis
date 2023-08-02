@@ -21,9 +21,9 @@ The rules for this file:
  * 2.6.0
 
 Fixes
-  * Fix AtomGroup.center_of_charge(..., unwrap=True) giving wrong
-    results on Intel macOS by removing `-ffast-math` compiler flag
-    (Issues #3821, #4211)    
+  * Fix AtomGroup.center_of_charge(..., unwrap=True) giving
+    inconsistent (but scientifically correct) results on Intel macOS
+    (Issue #4211)
   * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
   * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
@@ -35,6 +35,11 @@ Enhancements
     (Issue #3546)
 
 Changes
+  * Removed `-ffast-math` compiler flag to avoid potentially incorrect
+    floating point results in MDAnalysis *and* other codes when
+    MDAnalysis shared libraries are loaded --- see 
+    https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html
+    (Issues #3821, #4211)
   * Atom ID representation order updated to match that of associated
     AtomGroup indices.
     (PR #4191, Issue #4181)
