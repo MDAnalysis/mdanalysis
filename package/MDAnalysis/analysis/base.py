@@ -286,9 +286,7 @@ class ParallelExecutor:
         from multiprocessing import Pool
 
         computations = [delayed(func)(task) for task in computations]
-        with Pool(self.n_workers):
-            with dask.config.set(pool=Pool):
-                results = dask.compute(computations)[0]
+        results = dask.compute(computations, scheduler='processes', chunksize=1, n_workers=self.n_workers)[0]
         return results
 
     def _compute_with_client(self, func: Callable, computations: list) -> list:
@@ -552,6 +550,7 @@ class AnalysisBase(object):
         self.n_frames = len(self._sliced_trajectory)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
+        self.results = Results()
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -827,8 +826,8 @@ class AnalysisBase(object):
             results = np.array([obj.results for obj in remote_results]).sum(axis=0)
         else:
             results = Results()
-            keys, types = zip(*remote_results[0].results.items())
-            for k, t in zip(keys, types):
+            keys, typenames = zip(*remote_results[0].results.items())
+            for k, t in zip(keys, typenames):
                 results_of_t = [obj.results[k] for obj in remote_results]
                 if isinstance(t, np.ndarray):
                     results[k] = np.array(results_of_t).sum(axis=0)
