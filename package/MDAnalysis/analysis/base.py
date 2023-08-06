@@ -131,12 +131,19 @@ import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
+from MDAnalysis.lib.util import is_installed
 from typing import Callable, Iterable
 from importlib import import_module
 from functools import partial
 
 logger = logging.getLogger(__name__)
 
+def is_valid_distributed_client(client: object):
+    try:
+        import dask.distributed as distributed
+    except ImportError:
+        return False
+    return isinstance(client, distributed.Client)
 
 class ParallelExecutor:
     r"""Executor object that abstracts away running parallel computations
@@ -157,53 +164,48 @@ class ParallelExecutor:
         return ("local", "multiprocessing", "dask", "dask.distributed")
 
     def __init__(self, backend: str, n_workers: int, client: object = None):
-        # validate 'client' argument
-        if client is not None and backend is not None:
-            raise ValueError(
-                f"If 'client' is not None, backend is deduced and must be None, but here {backend=}, {client=}"
-            )
-        if client is not None:
-            # assuming it's a dask distributed client
-            from dask.distributed import Client as DistributedClient
+        errors = {
+            f"Should have only one of 'client' and 'backend' as non-None value, got {client=} and {backend=}":
+                sum((val is None for val in (client, backend))) != 1,
+            f"'client' must be dask.distributed.Client instance, got {type(client)=}":
+                client is not None and not is_valid_distributed_client(client),
+            "if using dask.distributed backend, should set 'backend=None' and provide client argument":
+                client is None and backend == 'dask.distributed',
+            f"'backend' should be one of the available backends {self.available_backends=}, got {backend=}":
+                backend not in self.available_backends,
+            f"'n_workers' must be a positive integer, got {n_workers=}":
+                not (isinstance(n_workers, int) and n_workers > 0),
+            f"backend {backend} is not installed, please run 'python3 -m pip install {backend} to fix this":
+                not is_installed(backend, ignore_names=['local', None])
+        }
 
-            if not isinstance(client, DistributedClient):
-                raise ValueError(f"client should be dask.distributed.Client instance, got {type(client)}")
-        self.client = client
+        for message, failing_condition in errors.items():
+            if failing_condition:
+                raise ValueError(message)
 
-        # validate 'backend' argument
-        if backend is not None:
-            if backend not in ParallelExecutor.available_backends:
-                raise ValueError(f"Invalid {backend=}: should be one of {ParallelExecutor.available_backends}")
-            if backend == "local":
-                if n_workers > 1:
-                    warnings.warn("Can be only 1 worker with backend='local', got {n_workers=}")
-            else:
-                try:
-                    import_module(backend)
-                except ImportError:
-                    raise ValueError(
-                        f"Please install {backend} module with 'python3 -m pip install {backend} to run this"
-                    )
+        warns = {
+            f"Can be only 1 worker with backend='local', got {n_workers=}":
+                backend == 'local' and n_workers > 1,
+        }
+        for message, condition in warns.items():
+            if condition:
+                warnings.warn(message)
+
         self.backend = backend
-
-        # validate 'n_workers' argument
-        if n_workers and n_workers < 0:
-            raise ValueError(f"n_workers should be non-negative, got {n_workers=}")
+        self.client = client
         self.n_workers = n_workers
 
     def apply(self, func: Callable, computations: list) -> list:
-        if self.backend == "local":
-            return self._compute_with_local(func, computations)
-        elif self.backend == "multiprocessing":
-            return self._compute_with_multiprocessing(func, computations)
-        elif self.backend == "dask":
-            return self._compute_with_dask(func, computations)
-        elif self.client:
-            return self._compute_with_client(func, computations)
-        elif self.backend == "dask.distributed":
-            raise ValueError("To use this backend, pre-configure a Client object and pass client=... instead")
-        else:
-            raise ValueError(f"Backend or client is not set properly: {self.backend=}, {self.client=}")
+        options = {
+            self._compute_with_local: self.backend == "local",
+            self._compute_with_multiprocessing: self.backend == "multiprocessing",
+            self._compute_with_dask: self.backend == "dask",
+            self._compute_with_client: self.client is not None,
+        }
+        for map_, condition in options.items():
+            if condition:
+                return map_(func, computations)
+        raise ValueError(f"Backend or client is not set properly: {self.backend=}, {self.client=}")
 
     def _compute_with_local(self, func: Callable, computations: list) -> list:
         """Performs all computations within current process, without using any parallel approach.
