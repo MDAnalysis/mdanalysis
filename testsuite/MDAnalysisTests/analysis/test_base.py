@@ -33,8 +33,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
-from MDAnalysisTests.util import no_deprecated_call
-
+from MDAnalysisTests.util import no_deprecated_call, get_running_dask_client
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
@@ -67,6 +66,58 @@ class OldAPIAnalysis(base.AnalysisBase):
 
     def _single_frame(self):
         pass
+
+import pytest
+from MDAnalysis.analysis import base
+from MDAnalysisTests.util import get_running_dask_client
+from contextlib import contextmanager
+
+def square(x: int):
+    return x**2
+
+class FinallyRaised(Exception):
+    pass
+
+class TestParallelExecutor:
+    @pytest.mark.parametrize(
+        "backend,n_workers,client",
+        [
+            (b, n, c)
+            for b in [
+                "local",
+                "multiprocessing",
+                "dask",
+                "dask.distributed",
+                "nonexistent_module_X",
+                None,
+            ]
+            for n in (-1, None, 1, 2, 3)
+            for c in (None, get_running_dask_client(), object)
+        ],
+    )
+    def test_combinations(self, backend, n_workers, client):
+        failing_conditions = [
+            backend not in base.ParallelExecutor.available_backends,
+            backend is None and client is None,
+            backend is not None and client is not None,
+            backend == 'dask.distributed',
+            n_workers is None,
+            isinstance(n_workers, int) and n_workers < 0
+        ]
+        if any(failing_conditions):
+            raised = ValueError
+        else:
+            raised = FinallyRaised
+        with pytest.raises(raised):
+            executor = base.ParallelExecutor(
+                backend=backend, n_workers=n_workers, client=client
+            )
+            func = square
+            arr = list(range(10))
+            correct_results = list(map(func, arr))
+            computed_results = executor.apply(func, arr)
+            assert computed_results == correct_results
+            raise FinallyRaised
 
 
 class Test_Results:
@@ -196,8 +247,8 @@ TIMES_ERR = 'AnalysisBase.times is incorrect'
     ({'stop': 30}, np.arange(30)),
     ({'step': 10}, np.arange(0, 98, 10))
 ])
-def test_start_stop_step(u, run_kwargs, frames):
-    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
+def test_start_stop_step(u, run_kwargs, frames, client_FrameAnalysis):
+    an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
@@ -213,7 +264,6 @@ def test_start_stop_step(u, run_kwargs, frames):
                  False]}, (0, 1, 3, 5, 6, 8)),
 ])
 def test_frame_slice(run_kwargs, frames, client_FrameAnalysis):
-    print(client_FrameAnalysis)
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)
