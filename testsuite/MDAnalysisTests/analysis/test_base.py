@@ -33,7 +33,8 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
-from MDAnalysisTests.util import no_deprecated_call, get_running_dask_client
+from MDAnalysisTests.util import no_deprecated_call, get_running_dask_client 
+from MDAnalysis.lib.util import is_installed
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
@@ -102,7 +103,8 @@ class TestParallelExecutor:
             backend is not None and client is not None,
             backend == 'dask.distributed',
             n_workers is None,
-            isinstance(n_workers, int) and n_workers < 0
+            isinstance(n_workers, int) and n_workers < 0,
+            not is_installed(backend, ignore_names=['local', None])
         ]
         if any(failing_conditions):
             raised = ValueError

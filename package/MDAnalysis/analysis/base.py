@@ -550,7 +550,6 @@ class AnalysisBase(object):
         self.n_frames = len(self._sliced_trajectory)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
-        self.results = Results()
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
