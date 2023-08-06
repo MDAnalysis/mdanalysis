@@ -196,6 +196,25 @@ class ParallelExecutor:
         self.n_workers = n_workers
 
     def apply(self, func: Callable, computations: list) -> list:
+        """Applies function to the list of computations using pre-configured backend or client parameters
+
+        Parameters
+        ----------
+        func : Callable
+            function to be applied
+        computations : list
+            list of computations (single argument only) to apply the function to
+
+        Returns
+        -------
+        list
+            list of results of each computation
+
+        Raises
+        ------
+        ValueError
+            if none of the conditions for applying each computing method is met
+        """
         options = {
             self._compute_with_local: self.backend == "local",
             self._compute_with_multiprocessing: self.backend == "multiprocessing",
