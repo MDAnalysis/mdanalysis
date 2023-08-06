@@ -36,14 +36,6 @@ def create_fixture_params_for(cls: type):
     return params
 
 
-def dask_client():
-    from dask import distributed
-
-    lc = distributed.LocalCluster(n_workers=2, processes=True)
-    client = distributed.Client(lc)
-    return client
-
-
 @pytest.fixture(scope="session", params=(1, 2, min(3, multiprocessing.cpu_count())), autouse=True)
 def setup_dask_distributed(tmpdir_factory, request):
     if is_installed("dask"):
