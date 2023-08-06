@@ -11,19 +11,9 @@ from MDAnalysisTests.analysis.test_base import (
     OldAPIAnalysis,
 )
 
-import importlib
 from MDAnalysis.analysis.base import ParallelExecutor
-
-
-def is_installed(modulename):
-    """Check if modulename is present"""
-    if modulename == "local":
-        return True
-    try:
-        importlib.import_module(modulename)
-        return True
-    except ImportError:
-        return False
+from MDAnalysisTests.util import get_running_dask_client
+from MDAnalysis.lib.util import is_installed
 
 
 def create_fixture_params_for(cls: type):
@@ -46,14 +36,6 @@ def create_fixture_params_for(cls: type):
     return params
 
 
-def get_running_dask_client():
-    # the solution found here: https://stackoverflow.com/questions/59070260/dask-client-detect-local-default-cluster-already-running
-    # note: the used API is non-public and can change any time
-    import dask
-
-    return dask.distributed.client._get_global_client()
-
-
 def dask_client():
     from dask import distributed
 
@@ -62,9 +44,7 @@ def dask_client():
     return client
 
 
-@pytest.fixture(
-    scope="session", params=(1, 2, min(3, multiprocessing.cpu_count())), autouse=True
-)
+@pytest.fixture(scope="session", params=(1, 2, min(3, multiprocessing.cpu_count())), autouse=True)
 def setup_dask_distributed(tmpdir_factory, request):
     if is_installed("dask"):
         import dask
@@ -74,16 +54,10 @@ def setup_dask_distributed(tmpdir_factory, request):
             from dask.distributed import Client
 
             try:
-                client = Client(
-                    "localhost:8787", timeout=2
-                )  # try connecting to client of different process
+                client = Client("localhost:8787", timeout=2)  # try connecting to client of different process
             except OSError:
-                with tmpdir_factory.mktemp(
-                    "dask_cluster"
-                ).as_cwd():  # set up your own client
-                    lc = dask.distributed.LocalCluster(
-                        n_workers=request.param, processes=True
-                    )
+                with tmpdir_factory.mktemp("dask_cluster").as_cwd():  # set up your own client
+                    lc = dask.distributed.LocalCluster(n_workers=request.param, processes=True)
                     client = dask.distributed.Client(lc)
         yield client
         client.close()

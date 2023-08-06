@@ -262,3 +262,10 @@ def get_userid():
         return 1000
     else:
         return os.geteuid()
+
+def get_running_dask_client():
+    # the solution found here: https://stackoverflow.com/questions/59070260/dask-client-detect-local-default-cluster-already-running
+    # note: the used API is non-public and can change any time
+    import dask.distributed
+
+    return dask.distributed.client._get_global_client()

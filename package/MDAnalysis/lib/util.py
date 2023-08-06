@@ -2543,3 +2543,26 @@ def store_init_arguments(func):
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
     return wrapper
+
+def is_installed(modulename, ignore_names=None):
+    """Checks if module is installed
+
+    Parameters
+    ----------
+    modulename : str
+        name of the module to be tested
+    ignore_names : Iterable[str]
+        list of module names to ignore when checking -- will return True
+        if modulename is in ignore_names
+    """
+    if ignore_names is None:
+        ignore_names = []
+    if modulename in ignore_names:
+        return True
+
+    import importlib
+    try:
+        importlib.import_module(modulename)
+    except ImportError:
+        return False
+    return True
