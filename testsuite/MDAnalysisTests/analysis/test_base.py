@@ -33,7 +33,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
-from MDAnalysisTests.util import no_deprecated_call, get_running_dask_client 
+from MDAnalysisTests.util import no_deprecated_call, get_running_dask_client
 from MDAnalysis.lib.util import is_installed
 
 class FrameAnalysis(base.AnalysisBase):
@@ -67,14 +67,6 @@ class OldAPIAnalysis(base.AnalysisBase):
 
     def _single_frame(self):
         pass
-
-import pytest
-from MDAnalysis.analysis import base
-from MDAnalysisTests.util import get_running_dask_client
-from contextlib import contextmanager
-
-def square(x: int):
-    return x**2
 
 class FinallyRaised(Exception):
     pass

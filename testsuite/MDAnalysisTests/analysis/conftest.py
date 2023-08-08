@@ -2,6 +2,7 @@ import pytest
 import functools
 import importlib
 import multiprocessing
+from contextlib import contextmanager
 
 from MDAnalysis.analysis.base import AnalysisBase, AnalysisFromFunction
 from MDAnalysis.analysis.rms import RMSD, RMSF
@@ -12,7 +13,6 @@ from MDAnalysisTests.analysis.test_base import (
 )
 
 from MDAnalysis.analysis.base import ParallelExecutor
-from MDAnalysisTests.util import get_running_dask_client
 from MDAnalysis.lib.util import is_installed
 
 
@@ -31,31 +31,41 @@ def create_fixture_params_for(cls: type):
     params.extend([{"backend": "local"}, {"backend": "local", "n_workers": 1}])
 
     if is_installed("dask.distributed"):
-        params.extend([pytest.param({"client": get_running_dask_client()})])
+        params.extend([pytest.param({"client": dask_client(n_workers=n)}) for n in (1, 2)])
 
     return params
 
 
-@pytest.fixture(scope="session", params=(1, 2, min(3, multiprocessing.cpu_count())), autouse=True)
-def setup_dask_distributed(tmpdir_factory, request):
-    if is_installed("dask"):
-        import dask
+@contextmanager
+def set_tmpdir_as_cwd():
+    import os
+    from pathlib import Path
+    import tempfile
 
-        client = dask.distributed.client._get_global_client()
-        if client is None:  # meaning, in current process there is no active Client
-            from dask.distributed import Client
+    origin = Path().absolute()
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        try:
+            os.chdir(tmpdirname)
+            yield
+        finally:
+            os.chdir(origin)
 
-            try:
-                client = Client("localhost:8787", timeout=2)  # try connecting to client of different process
-            except OSError:
-                with tmpdir_factory.mktemp("dask_cluster").as_cwd():  # set up your own client
-                    lc = dask.distributed.LocalCluster(n_workers=request.param, processes=True)
-                    client = dask.distributed.Client(lc)
-        yield client
-        client.close()
-        lc.close()
-    else:
-        yield None
+
+def dask_client(n_workers: int = None):
+    import socket
+
+    from dask.distributed import Client
+    import dask
+
+    n_workers = 1 if n_workers is None else n_workers
+
+    with socket.socket() as s:
+        s.bind(("", 0))
+        port = s.getsockname()[1]
+        with set_tmpdir_as_cwd():
+            lc = dask.distributed.LocalCluster(n_workers=n_workers, processes=True, port=port)
+            client = dask.distributed.Client(lc)
+            return client
 
 
 @pytest.fixture(params=create_fixture_params_for(FrameAnalysis))
