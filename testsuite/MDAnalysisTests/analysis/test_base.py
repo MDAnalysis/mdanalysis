@@ -71,6 +71,22 @@ class OldAPIAnalysis(base.AnalysisBase):
 class FinallyRaised(Exception):
     pass
 
+def square(x):
+    """Testing function for TestParallelExecutor 
+    added here to avoide pickle problems with multiprocessing
+
+    Parameters
+    ----------
+    x : int
+        number to be squared
+
+    Returns
+    -------
+    int
+        square of the number
+    """
+    return x**2
+
 class TestParallelExecutor:
     @pytest.mark.parametrize(
         "backend,n_workers,client",
