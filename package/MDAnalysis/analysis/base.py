@@ -216,10 +216,10 @@ class ParallelExecutor:
             if none of the conditions for applying each computing method is met
         """
         options = {
-            self._compute_with_local: self.backend == "local",
-            self._compute_with_multiprocessing: self.backend == "multiprocessing",
-            self._compute_with_dask: self.backend == "dask",
             self._compute_with_client: self.client is not None,
+            self._compute_with_dask: self.backend == "dask",
+            self._compute_with_multiprocessing: self.backend == "multiprocessing",
+            self._compute_with_local: self.backend == "local",
         }
         for map_, condition in options.items():
             if condition:
@@ -309,7 +309,7 @@ class ParallelExecutor:
         from dask.delayed import delayed
 
         computations = [delayed(func)(task) for task in computations]
-        return self.client.compute(computations)
+        return [obj.result() for obj in self.client.compute(computations)]
 
 
 class Results(UserDict):
