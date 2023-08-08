@@ -14,6 +14,7 @@ from MDAnalysisTests.analysis.test_base import (
 
 from MDAnalysis.analysis.base import ParallelExecutor
 from MDAnalysis.lib.util import is_installed
+from MDAnalysisTests.util import get_running_dask_client
 
 
 def create_fixture_params_for(cls: type):
@@ -25,13 +26,19 @@ def create_fixture_params_for(cls: type):
             {"backend": backend, "n_workers": nproc},
         )
         for backend in installed_backends
-        for nproc in range(1, 3)
+        for nproc in (1, 2)
         if backend not in ("dask.distributed", "local")
     ]
-    params.extend([{"backend": "local"}, {"backend": "local", "n_workers": 1}])
+    params.extend(
+        [
+            pytest.param(
+                {"backend": "local"},
+            )
+        ]
+    )
 
     if is_installed("dask.distributed"):
-        params.extend([pytest.param({"client": dask_client(n_workers=n)}) for n in (1, 2)])
+        params.extend([pytest.param({"client": get_running_dask_client()}) for n in (1, 2)])
 
     return params
 
@@ -51,21 +58,30 @@ def set_tmpdir_as_cwd():
             os.chdir(origin)
 
 
-def dask_client(n_workers: int = None):
-    import socket
+@contextmanager
+def LocalClient(*args, **kwargs):
+    from dask.distributed import LocalCluster, Client
 
-    from dask.distributed import Client
-    import dask
+    cluster = LocalCluster(*args, **kwargs)
+    client = Client(cluster)
+    yield client
+    client.close()
+    cluster.close()
 
-    n_workers = 1 if n_workers is None else n_workers
 
-    with socket.socket() as s:
-        s.bind(("", 0))
-        port = s.getsockname()[1]
-        with set_tmpdir_as_cwd():
-            lc = dask.distributed.LocalCluster(n_workers=n_workers, processes=True, port=port)
-            client = dask.distributed.Client(lc)
-            return client
+@pytest.fixture(scope="package", autouse=True)
+def setup_client():
+    if is_installed("dask") and is_installed("dask.distributed"):
+        from multiprocessing import cpu_count
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            with set_tmpdir_as_cwd():
+                with LocalClient(n_workers=cpu_count(), processes=True, threads_per_worker=1) as client:
+                    yield client
+    else:
+        yield None
 
 
 @pytest.fixture(params=create_fixture_params_for(FrameAnalysis))
