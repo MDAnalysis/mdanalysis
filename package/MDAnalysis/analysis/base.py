@@ -172,7 +172,7 @@ class ParallelExecutor:
             "if using dask.distributed backend, should set 'backend=None' and provide client argument":
                 client is None and backend == 'dask.distributed',
             f"'backend' should be one of the available backends {self.available_backends=}, got {backend=}":
-                backend not in self.available_backends,
+                backend is not None and backend not in self.available_backends,
             f"'n_workers' must be a positive integer, got {n_workers=}":
                 not (isinstance(n_workers, int) and n_workers > 0),
             f"backend {backend} is not installed, please run 'python3 -m pip install {backend} to fix this":
@@ -309,7 +309,7 @@ class ParallelExecutor:
         from dask.delayed import delayed
 
         computations = [delayed(func)(task) for task in computations]
-        return self.client.compute(computations).result()
+        return self.client.compute(computations)
 
 
 class Results(UserDict):
@@ -709,7 +709,7 @@ class AnalysisBase(object):
         verbose: bool = None,
         n_workers: int = None,
         n_parts: int = None,
-        backend: str = "local",
+        backend: str = None,
         *,
         client: object = None,
         progressbar_kwargs={},
@@ -760,7 +760,10 @@ class AnalysisBase(object):
             Add `progressbar_kwargs` parameter,
             allowing to modify description, position etc of tqdm progressbars
         """
-        if progressbar_kwargs and backend not in (None, "local"):
+        # default to local execution
+        backend = 'local' if backend is None and client is None else backend
+
+        if progressbar_kwargs and ((client is not None) or (backend not in (None, "local"))):
             raise NotImplementedError("Can not display progressbar with non-local backend")
 
         if n_workers is None:
