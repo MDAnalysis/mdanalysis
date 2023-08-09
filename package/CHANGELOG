@@ -57,8 +57,7 @@ Changes
     (PR #4174, Issue #3819)
 
 Deprecations
-  * Fix Boltzmann constant API break by enabling access to old
-    'Boltzman_constant' key with a `DeprecationWarning` in `units.py`
+  * Incorrectly spelt Boltzmann unit entry will be removed in version 2.8.0
     (PR #4230, Issue #4229)
   * The hole2 module is deprecated in favour of the the MDAKit:
     https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
