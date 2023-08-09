@@ -21,9 +21,6 @@ The rules for this file:
  * 2.6.0
 
 Fixes
-  * Fix Boltzmann constant API break by enabling access to old
-    'Boltzman_constant' key with a `DeprecationWarning` in `units.py`
-    (PR #4230, Issue #4229)
   * Fix AtomGroup.center_of_charge(..., unwrap=True) giving
     inconsistent (but scientifically correct) results on Intel macOS
     (Issue #4211)
@@ -60,6 +57,9 @@ Changes
     (PR #4174, Issue #3819)
 
 Deprecations
+  * Fix Boltzmann constant API break by enabling access to old
+    'Boltzman_constant' key with a `DeprecationWarning` in `units.py`
+    (PR #4230, Issue #4229)
   * The hole2 module is deprecated in favour of the the MDAKit:
     https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
   * MDAnalysis no longer officially supports 32 bit installations (they are
