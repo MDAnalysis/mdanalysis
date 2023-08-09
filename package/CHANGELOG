@@ -21,6 +21,9 @@ The rules for this file:
  * 2.6.0
 
 Fixes
+  * Fix Boltzmann constant API break by enabling access to old
+    'Boltzman_constant' key with a `DeprecationWarning` in `units.py`
+    (PR #4230, Issue #4229)
   * Fix AtomGroup.center_of_charge(..., unwrap=True) giving
     inconsistent (but scientifically correct) results on Intel macOS
     (Issue #4211)
