@@ -47,6 +47,7 @@ from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid
 
+
 @pytest.mark.parametrize("filename,kwargs,reference", [
     ("foo.xtc", {}, ".foo.xtc_offsets.npz"),
     ("foo.xtc", {"ending": "npz"}, ".foo.xtc_offsets.npz"),
@@ -55,6 +56,7 @@ from MDAnalysisTests.util import get_userid
 def test_offsets_filename(filename, kwargs, reference):
     fn = XDR.offsets_filename(filename, **kwargs)
     assert fn == reference
+
 
 class _XDRReader_Sub(object):
     @pytest.fixture()
