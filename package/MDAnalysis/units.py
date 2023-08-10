@@ -172,6 +172,23 @@ References and footnotes
 
 """
 
+import warnings
+
+
+# Remove in 2.8.0
+class DeprecatedKeyAccessDict(dict):
+    deprecated_kB = 'Boltzman_constant'
+
+    def __getitem__(self, key):
+        if key == self.deprecated_kB:
+            wmsg = ("Please use 'Boltzmann_constant' henceforth. The key "
+                    "'Boltzman_constant' was a typo and will be removed "
+                    "in MDAnalysis 2.8.0.")
+            warnings.warn(wmsg, DeprecationWarning)
+            key = 'Boltzmann_constant'
+        return super().__getitem__(key)
+
+
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
 #       MUST add an appropriate entry to
@@ -189,13 +206,13 @@ References and footnotes
 #:    http://physics.nist.gov/Pubs/SP811/appenB8.html#C
 #:
 #: .. versionadded:: 0.9.0
-constants = {
+constants = DeprecatedKeyAccessDict({
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As
     'calorie': 4.184,                      # J
     'Boltzmann_constant': 8.314462159e-3,   # KJ (mol K)**-1
     'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
-}
+})
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
