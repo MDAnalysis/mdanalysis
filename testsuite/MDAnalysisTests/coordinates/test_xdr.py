@@ -23,6 +23,7 @@
 import pytest
 from unittest.mock import patch
 
+import re
 import os
 import shutil
 import subprocess
@@ -46,6 +47,14 @@ from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid
 
+@pytest.mark.parametrize("filename,kwargs,reference", [
+    ("foo.xtc", {}, ".foo.xtc_offsets.npz"),
+    ("foo.xtc", {"ending": "npz"}, ".foo.xtc_offsets.npz"),
+    ("bar.0001.trr", {"ending": "npzzzz"}, ".bar.0001.trr_offsets.npzzzz"),
+])
+def test_offsets_filename(filename, kwargs, reference):
+    fn = XDR.offsets_filename(filename, **kwargs)
+    assert fn == reference
 
 class _XDRReader_Sub(object):
     @pytest.fixture()
@@ -212,7 +221,7 @@ class _GromacsReader(object):
 
         with pytest.raises(StopIteration):
             go_beyond_EOF()
-    
+
     def test_read_next_timestep_ts_no_positions(self, universe):
         # primarily tests branching on ts.has_positions in _read_next_timestep
         ts = universe.trajectory[0]
@@ -755,17 +764,21 @@ class _GromacsReader_offsets(object):
         outfile_offsets = XDR.offsets_filename(traj)
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
-            saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
-            assert_equal(saved_offsets, False)
+            with pytest.warns(UserWarning, match=re.escape(
+                    f"Failed to load offsets file {outfile_offsets}")):
+                saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+        assert saved_offsets == False
 
-    def test_nonexistent_offsets_file(self, traj):
+    def test_corrupted_offsets_file(self, traj):
         # assert that a corrupted file returns False during read-in
         # Issue #3230
         outfile_offsets = XDR.offsets_filename(traj)
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = ValueError
-            saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
-            assert_equal(saved_offsets, False)
+            with pytest.warns(UserWarning, match=re.escape(
+                    f"Failed to load offsets file {outfile_offsets}")):
+                saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+        assert saved_offsets == False
 
     def test_reload_offsets_if_offsets_readin_io_fails(self, trajectory):
         # force the np.load call that is called in read_numpy_offsets
@@ -773,7 +786,12 @@ class _GromacsReader_offsets(object):
         # ensure that offsets are then read-in from the trajectory
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
-            trajectory._load_offsets()
+            with pytest.warns(UserWarning) as record:
+                trajectory._load_offsets()
+            assert len(record) == 2
+            assert str(record[0].message).startswith("Failed to load offsets file")
+            assert "reading offsets from trajectory instead" in str(record[1].message)
+
             assert_almost_equal(
                 trajectory._xdr.offsets,
                 self.ref_offsets,
@@ -866,7 +884,8 @@ class _GromacsReader_offsets(object):
         np.savez(fname, **saved_offsets)
 
         # ok as long as this doesn't throw
-        reader = self._reader(traj)
+        with pytest.warns(UserWarning, match="Reload offsets from trajectory"):
+            reader = self._reader(traj)
         reader[idx_frame]
 
     @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
