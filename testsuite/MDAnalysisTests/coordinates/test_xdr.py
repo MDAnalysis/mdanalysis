@@ -781,25 +781,16 @@ class _GromacsReader_offsets(object):
         assert saved_offsets == False
 
     def test_reload_offsets_if_offsets_readin_io_fails(self, trajectory):
-        # expected warning messages
-        warning_messages = ["Failed to load offsets file",
-                            "reading offsets from trajectory instead"]
         # force the np.load call that is called in read_numpy_offsets
         # during _load_offsets to give an IOError
         # ensure that offsets are then read-in from the trajectory
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
-            with pytest.warns(UserWarning) as record:
+            with (pytest.warns(UserWarning,
+                               match="Failed to load offsets file") and
+                  pytest.warns(UserWarning,
+                               match="reading offsets from trajectory instead")):
                 trajectory._load_offsets()
-
-            # check that all warning_messages have shown up
-            assert len(record) >= len(warning_messages)
-            found_messages = [str(r.message) for r in record]
-            # find at least 2 occurences (>= instead of == for robustness)
-            assert sum([ref in msg for msg in found_messages
-                        for ref in warning_messages]) >= 2, (
-                                f"warning messages {warning_messages} "
-                                f"not found in emitted messages {found_messages}")
 
             assert_almost_equal(
                 trajectory._xdr.offsets,
