@@ -553,11 +553,9 @@ class _GromacsWriterIssue117(object):
 
     @pytest.fixture()
     def universe(self):
-        with pytest.warns(UserWarning,
-                          match="ATOMIC_NUMBER record not found"):
-            u = mda.Universe(PRMncdf, NCDF)
-        return u
+        return mda.Universe(PRMncdf, NCDF)
 
+    @pytest.mark.filterwarnings("ignore: ATOMIC_NUMBER record not found")
     def test_write_trajectory(self, universe, tmpdir):
         """Test writing Gromacs trajectories from AMBER NCDF (Issue 117)"""
         outfile = str(tmpdir.join('xdr-writer-issue117' + self.ext))
@@ -565,9 +563,7 @@ class _GromacsWriterIssue117(object):
             for ts in universe.trajectory:
                 W.write(universe)
 
-        with pytest.warns(UserWarning,
-                          match="ATOMIC_NUMBER record not found"):
-            uw = mda.Universe(PRMncdf, outfile)
+        uw = mda.Universe(PRMncdf, outfile)
 
         # check that the coordinates are identical for each time step
         for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
