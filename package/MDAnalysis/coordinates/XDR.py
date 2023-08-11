@@ -220,9 +220,9 @@ class XDRBaseReader(base.ReaderBase):
             data = read_numpy_offsets(fname)
             if not data:
                 warnings.warn(f"Reading offsets from {fname} failed, "
-                              f"reading offsets from trajectory instead.\n"
-                              f"Consider setting 'refresh_offsets=True' "
-                              f"when loading your Universe.")
+                              "reading offsets from trajectory instead.\n"
+                              "Consider setting 'refresh_offsets=True' "
+                              "when loading your Universe.")
                 self._read_offsets(store=True)
                 return
 

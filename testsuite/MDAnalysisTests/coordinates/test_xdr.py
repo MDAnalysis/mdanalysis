@@ -571,7 +571,7 @@ class _GromacsWriterIssue117(object):
                 written_ts._pos,
                 orig_ts._pos,
                 self.prec,
-                err_msg=(f"coordinate mismatch between original and written "
+                err_msg=("coordinate mismatch between original and written "
                          f"trajectory at frame {orig_ts.frame:d} (orig) vs "
                          f"{orig_ts.frame:d} (written)"))
 
