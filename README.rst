@@ -2,7 +2,7 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |cron| |linters| |cov|
+|numfocus| |build| |cron| |cirruscron| |linters| |cov|
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |asv|
 
@@ -174,6 +174,10 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |cron| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci-cron.yaml/badge.svg
    :alt: Github Actions Cron Job Status
    :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci-cron.yaml
+
+.. |cirruscron| image:: https://img.shields.io/cirrus/github/MDAnalysis/mdanalysis/develop
+   :alt: Cirrus CI - Cron job status
+   :target: https://cirrus-ci.com/github/MDAnalysis/mdanalysis/develop
 
 .. |linters| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/linters.yaml/badge.svg
    :alt: Github Actions Linters Status
