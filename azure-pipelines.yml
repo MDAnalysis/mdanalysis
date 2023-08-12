@@ -16,7 +16,7 @@ pr:
 
 jobs:
 - job: Azure_Tests
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/develop'))  # skip for PR merges
   variables:
     MPLBACKEND: agg
   strategy:
