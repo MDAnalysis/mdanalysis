@@ -35,13 +35,13 @@ runs:
       shell: bash -l {0}
       run: |
         # install instead of develop would reduce coverage (for .pyx files)
-        cd package/ && python setup.py develop
+        python -m pip install -e ./package
 
     - name: build_mda_tests
       if: ${{ inputs.build-tests == 'true' }}
       shell: bash -l {0}
       run: |
-        cd testsuite/ && python setup.py install
+        python -m pip install -e ./testsuite
 
     - name: build_docs
       if: ${{ inputs.build-docs == 'true' }}
