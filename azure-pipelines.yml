@@ -123,7 +123,7 @@ jobs:
       python -m pip install ./package
       python -m pip install ./testsuite
     displayName: 'Build MDAnalysis'
-    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal')
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
   - powershell: pip list
     displayName: 'Check installed packages'
   - powershell: |
