@@ -158,6 +158,7 @@ jobs:
       with:
         build-tests: true
         build-docs: true
+        isolation: false
 
     - name: doctests
       if: github.event_name == 'pull_request'
