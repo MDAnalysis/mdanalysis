@@ -43,7 +43,7 @@ runs:
           $BUILD_FLAGS="--no-build-isolation"
         fi
         # install instead of develop would reduce coverage (for .pyx files)
-        python -m pip install --no-build-isolation -v -e ./package
+        python -m pip install ${BUILD_FLAGS} -v -e ./package
 
     - name: build_mda_tests
       if: ${{ inputs.build-tests == 'true' }}
@@ -52,7 +52,7 @@ runs:
         if [ ${{ input.isolation }} == 'true' ]; then
           $BUILD_FLAGS="--no-build-isolation"
         fi
-        python -m pip install --no-build-isolation -v -e ./testsuite
+        python -m pip install ${BUILD_FLAGS} -v -e ./testsuite
 
     - name: build_docs
       if: ${{ inputs.build-docs == 'true' }}
