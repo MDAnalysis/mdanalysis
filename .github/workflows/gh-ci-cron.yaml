@@ -56,7 +56,7 @@ jobs:
       # overwrite installs by picking up nightly wheels
     - name: nightly_wheels
       run: |
-        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib
+        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib pandas
 
     - name: list_deps
       run: |
