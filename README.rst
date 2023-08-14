@@ -73,8 +73,11 @@ The latest release can be **installed via pip or conda** as
 described in the `Installation Quick Start`_.
 
 **Source code** is hosted in a git repository at
-https://github.com/MDAnalysis/mdanalysis and is available under the
-GNU General Public License, version 2 (see the file LICENSE_).
+https://github.com/MDAnalysis/mdanalysis and is packaged under the
+GNU General Public License, version 3 or any later version. Invidiual
+source code components are provided under a mixture of GPLv3+ compatible
+licenses, including LGPLv2.1+ and GPLv2+. Please see the file LICENSE_
+for more information.
 
 
 Contributing
@@ -120,7 +123,7 @@ For citations of included algorithms and sub-modules please see the references_.
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
 .. _MDAnalysis: https://www.mdanalysis.org
 .. _LICENSE:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
+   https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
 .. _`Installation Quick Start`:
    https://www.mdanalysis.org/pages/installation_quick_start/
 .. _`MDAnalysis.analysis`: https://docs.mdanalysis.org/documentation_pages/analysis_modules.html

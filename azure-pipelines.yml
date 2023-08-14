@@ -16,7 +16,7 @@ pr:
 
 jobs:
 - job: Azure_Tests
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/develop'))  # skip for PR merges
   variables:
     MPLBACKEND: agg
   strategy:
@@ -85,6 +85,7 @@ jobs:
       packaging
       pytest
       pytest-cov
+      pytest-timeout
       pytest-xdist
       scikit-learn
       tqdm
@@ -127,7 +128,7 @@ jobs:
     displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
-      pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n auto --timeout=200 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash

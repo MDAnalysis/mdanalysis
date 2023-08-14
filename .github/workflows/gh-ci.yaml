@@ -9,7 +9,7 @@ on:
 
 concurrency:
   # Probably overly cautious group naming.
-  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # Commits to develop will cancel each other, but PRs will only cancel
   # commits within the same PR
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
@@ -61,14 +61,18 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
-        environment-file: False
         environment-name: mda
-        extra-specs: |
-          python==${{ matrix.python-version }}
+        create-args: >-
+          python=${{ matrix.python-version }}
           pip
-        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+        # using jaime's shim to avoid pulling down the cudatoolkit
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
@@ -98,7 +102,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        pytest -n $numprocs testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n auto --timeout=200 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
@@ -128,21 +132,25 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
-        environment-file: False
         environment-name: mda
-        extra-specs: |
-          python=="3.9"
+        create-args: >-
+          python=3.9
           pip
-        channels: conda-forge, bioconda
+        # using jaime's shim to avoid pulling down the cudatoolkit
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
         micromamba: true
         full-deps: true
-        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-pip-deps: "docutils<0.18 sphinx<7.0 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
@@ -226,7 +234,7 @@ jobs:
     - name: install_deps
       run: |
         python -m pip install -U pip pipx wheel build
-        python -m pip install twine "readme-renderer>=34.0" pytest-xdist
+        python -m pip install twine "readme-renderer>=34.0" pytest-xdist pytest-timeout
 
     - name: build_package_sdist
       run: |
@@ -257,4 +265,4 @@ jobs:
 
     - name: run tests
       working-directory: ./dist
-      run: python -m pytest -n auto --pyargs MDAnalysisTests
+      run: python -m pytest --timeout=200 -n auto --pyargs MDAnalysisTests

@@ -6,7 +6,7 @@ on:
 
 concurrency:
   # Probably overly cautious group naming.
-  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # Commits to develop will cancel each other, but PRs will only cancel
   # commits within the same PR
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
@@ -127,14 +127,18 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: setup_micromamba
-        uses: mamba-org/provision-with-micromamba@main
+        uses: mamba-org/setup-micromamba@v1
         with:
-          environment-file: False
           environment-name: mda
-          extra-specs: |
-            python=="3.9"
+          create-args: >-
+            python=3.9
             pip
-          channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+          # using jaime's shim to avoid pulling down the cudatoolkit
+          condarc: |
+            channels:
+              - jaimergp/label/unsupported-cudatoolkit-shim
+              - conda-forge
+              - bioconda
 
       - name: install_deps
         uses: ./.github/actions/setup-deps

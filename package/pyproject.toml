@@ -25,7 +25,7 @@ maintainers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    'numpy>=1.21.0',
+    'numpy>=1.22.3',
     'biopython>=1.80',
     'networkx>=2.0',
     'GridDataFormats>=0.4.0',
@@ -47,7 +47,7 @@ classifiers = [
     'Development Status :: 6 - Mature',
     'Environment :: Console',
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
     'Operating System :: POSIX',
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
