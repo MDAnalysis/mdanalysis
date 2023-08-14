@@ -236,11 +236,6 @@ jobs:
           micromamba: true
           full-deps: true
 
-      - name: install_min_deps
-        if: "matrix.type == 'MIN'"
-        run: |
-          pip install pytest pytest-xdist
-
       - name: pip_install_mda
         run: |
           awk '/__version__ =/ {print $3; exit}' package/MDAnalysis/version.py | tr -d \" > version.dat
@@ -248,6 +243,11 @@ jobs:
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis==$ver
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests==$ver
 
+      - name: install_min_deps
+        if: "matrix.type == 'MIN'"
+        run: |
+          pip install pytest-xdist
+
       - name: run_tests
         run: |
-          pytest -n2 --pyargs MDAnalysisTests
+          pytest -n auto --pyargs MDAnalysisTests

@@ -85,6 +85,11 @@ jobs:
         build-tests: true
         build-docs: false
 
+    - name: check_deps
+      run: |
+        mamba list
+        pip list
+
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
       run: |

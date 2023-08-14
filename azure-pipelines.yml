@@ -119,14 +119,12 @@ jobs:
       pip list
     displayName: 'List of installed dependencies'
   - powershell: |
-      cd package
-      python setup.py install
-      cd ..
-      cd testsuite
-      python setup.py install
-      cd ..
+      python -m pip install ./package
+      python -m pip install ./testsuite
     displayName: 'Build MDAnalysis'
-    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal')
+  - powershell: pip list
+    displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
       pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
