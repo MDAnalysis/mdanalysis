@@ -35,13 +35,13 @@ runs:
       shell: bash -l {0}
       run: |
         # install instead of develop would reduce coverage (for .pyx files)
-        python -m pip install -v -e ./package
+        python -m pip install --no-build-isolation -v -e ./package
 
     - name: build_mda_tests
       if: ${{ inputs.build-tests == 'true' }}
       shell: bash -l {0}
       run: |
-        python -m pip install -v -e ./testsuite
+        python -m pip install --no-build-isolation -v -e ./testsuite
 
     - name: build_docs
       if: ${{ inputs.build-docs == 'true' }}
