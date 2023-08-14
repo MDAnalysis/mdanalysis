@@ -9,6 +9,10 @@ inputs:
     description: 'build MDA docs'
     required: true
     default: false
+  isolation:
+    descriptions: 'use build isolation for pip installs'
+    required: true
+    default: false
 
 
 runs:
@@ -19,6 +23,7 @@ runs:
       run: |
         echo ${{ inputs.build-tests }}
         echo ${{ inputs.build-docs }}
+        echo ${{ inputs.isolation }}
 
     - name: check_setup
       shell: bash -l {0}
@@ -34,6 +39,9 @@ runs:
     - name: build_mda_main
       shell: bash -l {0}
       run: |
+        if [ ${{ input.isolation }} == 'true' ]; then
+          $BUILD_FLAGS="--no-build-isolation"
+        fi
         # install instead of develop would reduce coverage (for .pyx files)
         python -m pip install --no-build-isolation -v -e ./package
 
@@ -41,6 +49,9 @@ runs:
       if: ${{ inputs.build-tests == 'true' }}
       shell: bash -l {0}
       run: |
+        if [ ${{ input.isolation }} == 'true' ]; then
+          $BUILD_FLAGS="--no-build-isolation"
+        fi
         python -m pip install --no-build-isolation -v -e ./testsuite
 
     - name: build_docs
