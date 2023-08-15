@@ -3,6 +3,9 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
+  pull_request:
+    branches:
+      - develop
 
 concurrency:
   # Probably overly cautious group naming.
@@ -211,15 +214,20 @@ jobs:
   conda-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu-latest, macos-latest]
+          os: [ubuntu, macos]
           python-version: ["3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v3
+
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v1
@@ -253,14 +261,22 @@ jobs:
   pypi-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu-latest, macos-latest, windows-latest]
+          os: [ubuntu, macos, windows]
           python-version: ["3.9", "3.10", "3.11"]
+          wheels: ['true', 'false']
     steps:
+    - uses: actions/checkout@v3
+
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: ${{ matrix.os }}
+
     - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
@@ -268,7 +284,10 @@ jobs:
     - name: install_mdanalysis
       shell: bash
       run: |
-          pip install mdanalysis mdanalysistests pytest-xdist pytest-timeout "gsd<3.0"
+          if [ "${{ matrix.wheels }}" == "false" ]; then
+            INSTALL_FLAGS="--no-binary -v"
+          fi
+          pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests pytest-xdist pytest-timeout "gsd<3.0"
 
     - name: run_tests
       shell: bash
