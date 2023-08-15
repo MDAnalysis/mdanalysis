@@ -35,6 +35,9 @@ Enhancements
     (Issue #3546)
 
 Changes
+  * Package builds are now made using NumPy 1.25 or higher. This provides
+    backwards runtime compatibility with older NumPy builds within the limit
+    of NEP29 (PR #4108).
   * Removed `-ffast-math` compiler flag to avoid potentially incorrect
     floating point results in MDAnalysis *and* other codes when
     MDAnalysis shared libraries are loaded --- see 

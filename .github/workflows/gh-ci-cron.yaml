@@ -69,6 +69,7 @@ jobs:
       with:
         build-tests: true
         build-docs: false
+        isolation: false
 
     - name: run_tests
       run: |
@@ -112,11 +113,13 @@ jobs:
       run: |
         sed -i "s/#extra_cflags =/extra_cflags = -march=native -mtune=native/g" package/setup.cfg
         cat package/setup.cfg
+
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
         build-tests: true
         build-docs: false
+        isolation: false
 
     - name: run_tests
       run: |
@@ -164,6 +167,7 @@ jobs:
       with:
         build-tests: true
         build-docs: false
+        isolation: false
 
     - name: run_tests
       run: |
