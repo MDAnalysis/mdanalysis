@@ -40,7 +40,7 @@ runs:
       shell: bash -l {0}
       run: |
         if [ "${{ inputs.isolation }}" == "false" ]; then
-          $BUILD_FLAGS="--no-build-isolation"
+          BUILD_FLAGS="--no-build-isolation"
         fi
         # install instead of develop would reduce coverage (for .pyx files)
         python -m pip install ${BUILD_FLAGS} -v -e ./package
@@ -50,7 +50,7 @@ runs:
       shell: bash -l {0}
       run: |
         if [ "${{ inputs.isolation }}" == "false" ]; then
-          $BUILD_FLAGS="--no-build-isolation"
+          BUILD_FLAGS="--no-build-isolation"
         fi
         python -m pip install ${BUILD_FLAGS} -v -e ./testsuite
 
