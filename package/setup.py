@@ -592,7 +592,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.22.3,<2.0',
+          'numpy>=1.22.3',
           'biopython>=1.80',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
