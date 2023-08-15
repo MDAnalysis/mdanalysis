@@ -123,7 +123,7 @@ For citations of included algorithms and sub-modules please see the references_.
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
 .. _MDAnalysis: https://www.mdanalysis.org
 .. _LICENSE:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
+   https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
 .. _`Installation Quick Start`:
    https://www.mdanalysis.org/pages/installation_quick_start/
 .. _`MDAnalysis.analysis`: https://docs.mdanalysis.org/documentation_pages/analysis_modules.html
