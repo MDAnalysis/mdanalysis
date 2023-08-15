@@ -88,6 +88,9 @@ jobs:
       with:
         build-tests: true
         build-docs: false
+        # If we specifically define an old NumPy version then we isolate the
+        # the build, i.e. make sure that we build with NumPy 1.25+ but we keep
+        # the old version of NumPy as what we use for runtime testing
         isolation: ${{ matrix.numpy != '' }}
 
     - name: check_deps
