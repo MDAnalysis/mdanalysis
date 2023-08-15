@@ -225,6 +225,7 @@ jobs:
           environment-name: mda
           create-args: >-
             python=${{ matrix.python-version }}
+            packaging
             pip
           # jaime's shim to avoid pulling down the cudatoolkit
           # bioconda for clustalw things
