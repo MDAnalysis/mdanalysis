@@ -69,6 +69,12 @@
     "version": "2.5.0",
     "display": "2.5.0",
     "url": "https://docs.mdanalysis.org/2.5.0",
+    "latest": false
+  },
+  {
+    "version": "2.6.0",
+    "display": "2.6.0",
+    "url": "https://docs.mdanalysis.org/2.6.0",
     "latest": true
   },
   {
