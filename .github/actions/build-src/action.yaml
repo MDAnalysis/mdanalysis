@@ -39,7 +39,7 @@ runs:
     - name: build_mda_main
       shell: bash -l {0}
       run: |
-        if [ ${{ inputs.isolation }} == 'true' ]; then
+        if [ "${{ inputs.isolation }}" == "false" ]; then
           $BUILD_FLAGS="--no-build-isolation"
         fi
         # install instead of develop would reduce coverage (for .pyx files)
@@ -49,7 +49,7 @@ runs:
       if: ${{ inputs.build-tests == 'true' }}
       shell: bash -l {0}
       run: |
-        if [ ${{ inputs.isolation }} == 'true' ]; then
+        if [ "${{ inputs.isolation }}" == "false" ]; then
           $BUILD_FLAGS="--no-build-isolation"
         fi
         python -m pip install ${BUILD_FLAGS} -v -e ./testsuite
