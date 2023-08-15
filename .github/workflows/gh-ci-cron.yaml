@@ -270,8 +270,10 @@ jobs:
           python-version: ["3.9", "3.10", "3.11"]
           wheels: ['true', 'false']
     steps:
+      # Checkout to have access to local actions (i.e. setup-os)
     - uses: actions/checkout@v3
 
+      # We need this here in order to make sure we assign the correct compiler (i.e. clang for macos)
     - name: setup_os
       uses: ./.github/actions/setup-os
       with:
@@ -284,6 +286,8 @@ jobs:
     - name: install_mdanalysis
       shell: bash
       run: |
+          # If wheels is False we build directly from source so we use the --no-binary flag
+          # to avoid pulling down wheels for MDAnalysis (which are already precompiled)
           if [ "${{ matrix.wheels }}" == "false" ]; then
             INSTALL_FLAGS="-vvv --no-binary"
           fi
