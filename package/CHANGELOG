@@ -13,11 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope
+??/??/?? IAlibay, hmacdope, pillose
 
  * 2.7.0
 
 Fixes
+  * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
 
