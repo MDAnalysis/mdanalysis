@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, hmacdope
 
  * 2.7.0
 
@@ -22,6 +22,8 @@ Fixes
 Enhancements
 
 Changes
+  * Cython DEF statments have been replaced with compile time integer constants
+    as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
 
 Deprecations
 
