@@ -347,6 +347,10 @@
 
 <span class="kn">from</span> <span class="nn">...due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1039/C9CP01532A&quot;</span><span class="p">),</span>
          <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hydrogen bond analysis implementation&quot;</span><span class="p">,</span>
          <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.hydrogenbonds.hbond_analysis&quot;</span><span class="p">,</span>
@@ -935,25 +939,25 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s2">&quot;Autocorrelation analysis of hydrogen bonds cannot be done&quot;</span>
                 <span class="s2">&quot;before the hydrogen bonds are found&quot;</span>
             <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s2">&quot;Autocorrelation: Please use the .run() before calling this&quot;</span>
                 <span class="s2">&quot;function&quot;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;.hbonds attribute is None: use .run() first&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Autocorrelation: Hydrogen bonds were computed with step &gt; 1.&quot;</span>
             <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Autocorrelation: We recommend recomputing hydrogen bonds with&quot;</span>
                 <span class="s2">&quot; step = 1.&quot;</span>
             <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Autocorrelation: if you would like to allow bonds to break&quot;</span>
                 <span class="s2">&quot; and reform, please use &#39;intermittency&#39;&quot;</span>
             <span class="p">)</span>
