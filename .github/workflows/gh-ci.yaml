@@ -88,6 +88,15 @@ jobs:
       with:
         build-tests: true
         build-docs: false
+        # If we specifically define an old NumPy version then we isolate the
+        # the build, i.e. make sure that we build with NumPy 1.25+ but we keep
+        # the old version of NumPy as what we use for runtime testing
+        isolation: ${{ matrix.numpy != '' }}
+
+    - name: check_deps
+      run: |
+        micromamba list
+        pip list
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
@@ -152,6 +161,7 @@ jobs:
       with:
         build-tests: true
         build-docs: true
+        isolation: false
 
     - name: doctests
       if: github.event_name == 'pull_request'
