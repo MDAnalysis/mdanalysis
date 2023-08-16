@@ -1,0 +1,1 @@
+.. automodule:: MDAnalysis.core.universe
