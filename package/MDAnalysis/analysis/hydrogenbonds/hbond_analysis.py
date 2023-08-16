@@ -250,6 +250,10 @@ from MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel import find_hydrogen_don
 
 from ...due import due, Doi
 
+
+logger = logging.getLogger(__name__)
+
+
 due.cite(Doi("10.1039/C9CP01532A"),
          description="Hydrogen bond analysis implementation",
          path="MDAnalysis.analysis.hydrogenbonds.hbond_analysis",
@@ -838,25 +842,25 @@ class HydrogenBondAnalysis(AnalysisBase):
         """
 
         if self.results.hbonds is None:
-            logging.error(
+            logger.error(
                 "Autocorrelation analysis of hydrogen bonds cannot be done"
                 "before the hydrogen bonds are found"
             )
-            logging.error(
+            logger.error(
                 "Autocorrelation: Please use the .run() before calling this"
                 "function"
             )
             raise NoDataError(".hbonds attribute is None: use .run() first")
 
         if self.step != 1:
-            logging.warning(
+            logger.warning(
                 "Autocorrelation: Hydrogen bonds were computed with step > 1."
             )
-            logging.warning(
+            logger.warning(
                 "Autocorrelation: We recommend recomputing hydrogen bonds with"
                 " step = 1."
             )
-            logging.warning(
+            logger.warning(
                 "Autocorrelation: if you would like to allow bonds to break"
                 " and reform, please use 'intermittency'"
             )
