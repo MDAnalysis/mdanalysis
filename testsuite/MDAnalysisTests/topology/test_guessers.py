@@ -108,7 +108,7 @@ class TestGuessTypes(object):
         ('C0U', 'C'),
         ('C0S', 'C'),
         ('Na+', 'NA'),
-        ('Cu+', 'CU')
+        ('Cu2+', 'CU')
     ))
     def test_guess_element_from_name(self, name, element):
         assert guessers.guess_atom_element(name) == element
