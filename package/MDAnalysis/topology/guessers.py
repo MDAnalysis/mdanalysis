@@ -209,7 +209,7 @@ def guess_atom_element(atomname):
         no_numbers = re.split(NUMBERS, no_symbols)
         no_numbers = list(filter(None, no_numbers)) #remove ''
         # if no_numbers is not empty, use the first element of no_numbers
-        name = list(filter(None, no_numbers))[0].upper() if no_numbers else ''
+        name = no_numbers[0].upper() if no_numbers else ''
 
         # just in case
         if name in tables.atomelements:
