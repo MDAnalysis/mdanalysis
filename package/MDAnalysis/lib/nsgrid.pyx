@@ -83,18 +83,18 @@ import numpy as np
 from libcpp.vector cimport vector
 from libc cimport math
 
-DEF END = -1
+cdef int END = -1
 
-DEF XX = 0
-DEF XY = 3
-DEF YY = 4
-DEF XZ = 6
-DEF YZ = 7
-DEF ZZ = 8
+cdef int XX = 0
+cdef int XY = 3
+cdef int YY = 4
+cdef int XZ = 6
+cdef int YZ = 7
+cdef int ZZ = 8
 
 # Cube root of the maximum size of a 32 bit signed integer. If the system is divided into more
 # grids than this, integer overflow will occur.
-DEF MAX_GRID_DIM = 1290
+cdef int  MAX_GRID_DIM = 1290
 
 ctypedef float coordinate[3]
 
