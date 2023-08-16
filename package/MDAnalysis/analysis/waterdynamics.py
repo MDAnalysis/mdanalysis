@@ -885,15 +885,17 @@ class MeanSquareDisplacement(object):
 
 class SurvivalProbability(object):
     r"""
-    Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
-    The SP is given by:
+    Survival Probability (SP) gives the probability for a group of particles to remain
+    in a certain region. The SP is given by:
 
     .. math::
-        P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}
+        P(\tau) = \langle \frac{ N(t, t + \tau )} { N(t) }\rangle
 
-    where :math:`T` is the maximum time of simulation, :math:`\tau` is the
-    timestep, :math:`N(t)` the number of particles at time :math:`t`, and
-    :math:`N(t, t+\tau)` is the number of particles at every frame from :math:`t` to `\tau`.
+    where :math:`\tau` is the timestep, :math:`N(t)` the number of particles at time 
+    :math:`t`, and :math:`N(t, t+\tau)` is the number of particles at every frame from 
+    :math:`t` to :math:`t + \tau`. The angular brackets represent an average over all time 
+    origins, :math:`t`. See :func:`MDAnalysis.lib.correlations.autocorrelation` for
+    technical details.
 
 
     Parameters
@@ -902,7 +904,8 @@ class SurvivalProbability(object):
       Universe object
     select : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
+      define the region/zone where to analyze, e.g.: "resname SOL and around 5 
+      (resid 10)". See `SP-examples`_.
     verbose : Boolean, optional
       When True, prints progress and comments to the console.
 
@@ -928,6 +931,8 @@ class SurvivalProbability(object):
        The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now
        changed behaviour and will act in an `exclusive` manner (instead of it's
        previous `inclusive` behaviour),
+    .. versionchanged:: 2.7.0
+       Updated docs to align with discrete autocorrelation function.
     """
 
     def __init__(self, universe, select, verbose=False):
