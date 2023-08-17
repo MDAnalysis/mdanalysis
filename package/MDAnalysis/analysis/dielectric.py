@@ -128,7 +128,7 @@ class DielectricConstant(AnalysisBase):
         if not hasattr(self.atomgroup, "charges"):
             raise NoDataError("No charges defined given atomgroup.")
 
-        if not np.allclose(self.atomgroup.total_charge(compound='fragments'),
+        if not np.allclose(self.atomgroup.total_charge(compound='group'),
                            0.0, atol=1E-5):
             raise NotImplementedError("Analysis for non-neutral systems or"
                                       " systems with free charges are not"
