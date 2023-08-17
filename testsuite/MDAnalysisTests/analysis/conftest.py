@@ -3,7 +3,7 @@ import inspect
 import functools
 import importlib
 import multiprocessing
-from contextlib import contextmanager
+import warnings
 
 from MDAnalysis.analysis.base import AnalysisBase, AnalysisFromFunction
 from MDAnalysisTests.analysis.test_base import (
@@ -15,47 +15,32 @@ from MDAnalysis.analysis.rms import RMSD, RMSF
 
 from MDAnalysis.analysis.base import ParallelExecutor
 from MDAnalysis.lib.util import is_installed
-from MDAnalysisTests.util import get_running_dask_client
 
 
-@contextmanager
-def set_tmpdir_as_cwd():
-    import os
-    from pathlib import Path
-    import tempfile
-
-    origin = Path().absolute()
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        try:
-            os.chdir(tmpdirname)
-            yield
-        finally:
-            os.chdir(origin)
-
-
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def dask_client_1():
     if not is_installed("dask"):
         yield "NoClient"
     else:
-        with set_tmpdir_as_cwd:
-            import dask
+        import dask
 
-            lc = dask.distributed.LocalCluster(
-                n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None
-            )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
+            lc = dask.distributed.LocalCluster(n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None)
             client = dask.distributed.Client(lc)
             yield client
             client.close()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def dask_client_2():
     if not is_installed("dask"):
         yield "NoClient"
     else:
-        with set_tmpdir_as_cwd:
-            import dask
+        import dask
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
 
             lc = dask.distributed.LocalCluster(
                 n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None
@@ -78,11 +63,11 @@ def generate_client_fixture(cls):
         if backend not in ("dask.distributed", "local")
     ]
     params.extend([{"backend": "local"}, {"backend": "local", "n_workers": 1}])
-    if is_installed("dask.distributed") and "dsak.distributed" in possible_backends:
+    if is_installed("dask.distributed") and "dask.distributed" in possible_backends:
         params.extend(["dask_client_1", "dask_client_2"])
 
     @pytest.fixture(scope="module", params=params)
-    def generated_fixture(request):
+    def generated_fixture(request, dask_client_1, dask_client_2):
         if request.param == "dask_client_1":
             request.param = {"client": dask_client_1}
         elif request.param == "dask_client_2":
