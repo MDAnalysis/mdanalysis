@@ -13,12 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope, pillose
+??/??/?? IAlibay, hmacdope, pillose, ztimol
 
  * 2.7.0
 
 Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
+  * Fix AtomGroup resids to match resnumbers of tpr file
+    (PR #4251, Issue #4224)
 
 Enhancements
 
