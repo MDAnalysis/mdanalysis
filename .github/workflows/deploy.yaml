@@ -199,19 +199,8 @@ jobs:
         python-version: ["3.9", "3.10", "3.11"]
         type: ["FULL", "MIN"]
         exclude:
-          # Py311 doesn't support all optional deps yet
-          - python-version: "3.11"
-            type: "FULL"
           # Multiple deps don't like windows
           - os: windows-latest
-            python-version: "3.9"
-            type: "FULL"
-          - os: windows-latest
-            python-version: "3.10"
-            type: "FULL"
-          # OpenMM isn't available for this yet
-          - os: macos-latest
-            python-version: "3.10"
             type: "FULL"
     env:
       MPLBACKEND: agg
@@ -225,6 +214,7 @@ jobs:
           environment-name: mda
           create-args: >-
             python=${{ matrix.python-version }}
+            packaging
             pip
           # jaime's shim to avoid pulling down the cudatoolkit
           # bioconda for clustalw things
