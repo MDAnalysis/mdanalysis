@@ -792,8 +792,10 @@ def do_atoms(data, symtab, fver):
 
 
 def do_resinfo(data, symtab, fver, nres):
+
     if fver < 63:
         resnames = [symtab[i] for i in ndo_int(data, nres)]
+        resids = [i+1 for i in range(nres)]
     else:
         resnames = []
         resids = []
