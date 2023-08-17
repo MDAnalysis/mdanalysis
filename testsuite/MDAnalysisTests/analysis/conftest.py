@@ -1,46 +1,21 @@
 import pytest
+import inspect
 import functools
 import importlib
 import multiprocessing
 from contextlib import contextmanager
 
 from MDAnalysis.analysis.base import AnalysisBase, AnalysisFromFunction
-from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysisTests.analysis.test_base import (
     FrameAnalysis,
     IncompleteAnalysis,
     OldAPIAnalysis,
 )
+from MDAnalysis.analysis.rms import RMSD, RMSF
 
 from MDAnalysis.analysis.base import ParallelExecutor
 from MDAnalysis.lib.util import is_installed
 from MDAnalysisTests.util import get_running_dask_client
-
-
-def create_fixture_params_for(cls: type):
-    possible_backends = cls.available_backends
-    installed_backends = [b for b in possible_backends if is_installed(b)]
-
-    params = [
-        pytest.param(
-            {"backend": backend, "n_workers": nproc},
-        )
-        for backend in installed_backends
-        for nproc in (1, 2)
-        if backend not in ("dask.distributed", "local")
-    ]
-    params.extend(
-        [
-            pytest.param(
-                {"backend": "local"},
-            )
-        ]
-    )
-
-    if is_installed("dask.distributed"):
-        params.extend([pytest.param({"client": get_running_dask_client()}) for n in (1, 2)])
-
-    return params
 
 
 @contextmanager
@@ -58,52 +33,75 @@ def set_tmpdir_as_cwd():
             os.chdir(origin)
 
 
-@contextmanager
-def LocalClient(*args, **kwargs):
-    from dask.distributed import LocalCluster, Client
-
-    cluster = LocalCluster(*args, **kwargs)
-    client = Client(cluster)
-    yield client
-    client.close()
-    cluster.close()
-
-
-@pytest.fixture(scope="package", autouse=True)
-def setup_client():
-    if is_installed("dask") and is_installed("dask.distributed"):
-        from multiprocessing import cpu_count
-        import warnings
-
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            with set_tmpdir_as_cwd():
-                with LocalClient(n_workers=cpu_count(), processes=True, threads_per_worker=1) as client:
-                    yield client
+@pytest.fixture(scope="module")
+def dask_client_1():
+    if not is_installed("dask"):
+        yield "NoClient"
     else:
-        yield None
+        with set_tmpdir_as_cwd:
+            import dask
+
+            lc = dask.distributed.LocalCluster(
+                n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None
+            )
+            client = dask.distributed.Client(lc)
+            yield client
+            client.close()
 
 
-@pytest.fixture(params=create_fixture_params_for(FrameAnalysis))
-def client_FrameAnalysis(request):
-    return request.param
+@pytest.fixture(scope="module")
+def dask_client_2():
+    if not is_installed("dask"):
+        yield "NoClient"
+    else:
+        with set_tmpdir_as_cwd:
+            import dask
+
+            lc = dask.distributed.LocalCluster(
+                n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None
+            )
+            client = dask.distributed.Client(lc)
+            yield client
+            client.close()
 
 
-@pytest.fixture(params=create_fixture_params_for(IncompleteAnalysis))
-def client_IncompleteAnalysis(request):
-    return request.param
+def generate_client_fixture(cls):
+    possible_backends = cls.available_backends
+    installed_backends = [b for b in possible_backends if is_installed(b)]
+
+    params = [
+        pytest.param(
+            {"backend": backend, "n_workers": nproc},
+        )
+        for backend in installed_backends
+        for nproc in (1, 2)
+        if backend not in ("dask.distributed", "local")
+    ]
+    params.extend([{"backend": "local"}, {"backend": "local", "n_workers": 1}])
+    if is_installed("dask.distributed") and "dsak.distributed" in possible_backends:
+        params.extend(["dask_client_1", "dask_client_2"])
+
+    @pytest.fixture(scope="module", params=params)
+    def generated_fixture(request):
+        if request.param == "dask_client_1":
+            request.param = {"client": dask_client_1}
+        elif request.param == "dask_client_2":
+            request.param = {"client": dask_client_2}
+        return request.param
+
+    return generated_fixture
 
 
-@pytest.fixture(params=create_fixture_params_for(AnalysisFromFunction))
-def client_AnalysisFromFunction(request):
-    return request.param
+def inject_testing_fixture(fixture_name: str, class_name: type):
+    """Dynamically inject a fixture at runtime"""
+    # we need the caller's global scope for this hack to work hence the use of the inspect module
+    caller_globals = inspect.stack()[1][0].f_globals
+    # for an explanation of this trick and why it works go here: https://github.com/pytest-dev/pytest/issues/2424
+    caller_globals[fixture_name] = generate_client_fixture(class_name)
 
 
-@pytest.fixture(params=create_fixture_params_for(RMSF))
-def client_RMSF(request):
-    return request.param
-
-
-@pytest.fixture(params=create_fixture_params_for(RMSD))
-def client_RMSD(request):
-    return request.param
+classes = [AnalysisBase, AnalysisFromFunction, FrameAnalysis, IncompleteAnalysis, OldAPIAnalysis, RMSD, RMSF]
+for cls in classes:
+    name = cls.__name__
+    fixture_name = f"client_{name}"
+    inject_testing_fixture(fixture_name=fixture_name, class_name=cls)
