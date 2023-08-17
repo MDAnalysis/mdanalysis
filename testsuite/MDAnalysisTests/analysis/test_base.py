@@ -112,12 +112,9 @@ class TestParallelExecutor:
             backend == 'dask.distributed',
             n_workers is None,
             isinstance(n_workers, int) and n_workers < 0,
-            not is_installed(backend, ignore_names=['local', None])
+            backend not in ['local', None] and not is_installed(backend),
         ]
-        if any(failing_conditions):
-            raised = ValueError
-        else:
-            raised = FinallyRaised
+        raised = ValueError if any(failing_conditions) else FinallyRaised
         with pytest.raises(raised):
             executor = base.ParallelExecutor(
                 backend=backend, n_workers=n_workers, client=client

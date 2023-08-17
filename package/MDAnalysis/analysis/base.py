@@ -158,12 +158,31 @@ class ParallelExecutor:
 
         Returns
         -------
-        available_backends : list[str]
+        list[str]
             list of available backends as strings
         """
         return ("local", "multiprocessing", "dask", "dask.distributed")
 
     def __init__(self, backend: str, n_workers: int, client: object = None):
+        """Generates an instance of a ParallelExecutor class, setting up correct
+        computation parameters upon initialization.
+
+        Parameters
+        ----------
+        backend : str
+            type of backend (one of `self.available_backends`)
+        n_workers : int
+            number of workers to split the workload between
+        client : object, optional
+            pre-configured client for running computations, by default None
+
+        Raises
+        ------
+        ValueError
+            Configuration is correct if n_workers > 0 and integer, 'backend' is in `available_backends`
+            and respective module is installed, or there is a pre-configured `client`
+            which is an instance of `dask.distributed.Client`. Any other configuration gets error.
+        """
         errors = {
             f"Should have only one of 'client' and 'backend' as non-None value, got {client=} and {backend=}":
                 sum((val is None for val in (client, backend))) != 1,
@@ -176,7 +195,7 @@ class ParallelExecutor:
             f"'n_workers' must be a positive integer, got {n_workers=}":
                 not (isinstance(n_workers, int) and n_workers > 0),
             f"backend {backend} is not installed, please run 'python3 -m pip install {backend} to fix this":
-                not is_installed(backend, ignore_names=['local', None])
+                backend not in ['local', None] and not is_installed(backend),
         }
 
         for message, failing_condition in errors.items():
@@ -283,7 +302,6 @@ class ParallelExecutor:
         """
         from dask.delayed import delayed
         import dask
-        from multiprocessing import Pool
 
         computations = [delayed(func)(task) for task in computations]
         results = dask.compute(computations, scheduler='processes', chunksize=1, n_workers=self.n_workers)[0]
@@ -696,6 +714,8 @@ class AnalysisBase(object):
         client : ParallelExecutor
             a ParallelExecutor instance, configured with given parameters
         """
+        if client is not None:  # temporarily set backend for easier evaluation
+            backend = 'dask.distributed'
         if backend is not None and backend not in self.available_backends:
             raise ValueError(f"{backend=} is not in {self.available_backends=} for class {self.__class__.__name__}")
         return ParallelExecutor(backend=backend, n_workers=n_workers, client=client)
@@ -767,16 +787,13 @@ class AnalysisBase(object):
             raise NotImplementedError("Can not display progressbar with non-local backend")
 
         if n_workers is None:
-            if client:
-                n_workers = sum(client.nthreads().values())
-            else:
-                n_workers = 1
+            n_workers = sum(client.nthreads().values()) if client else 1
 
         # validate input parameters
         n_parts = n_workers if n_parts is None else n_parts
 
         # do this as early as possible to check client parameters before any computations occur
-        client = self._configure_client(backend=backend, n_workers=n_workers, client=client)
+        executor = self._configure_client(backend=backend, n_workers=n_workers, client=client)
 
         # start preparing the run
         worker_func = partial(self._compute, progressbar_kwargs=progressbar_kwargs, verbose=verbose)
@@ -785,7 +802,7 @@ class AnalysisBase(object):
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
-        remote_results: list["AnalysisBase"] = client.apply(worker_func, computation_groups)
+        remote_results: list["AnalysisBase"] = executor.apply(worker_func, computation_groups)
         self.results = self._parallel_conclude(remote_results=remote_results)
 
         self._conclude()
