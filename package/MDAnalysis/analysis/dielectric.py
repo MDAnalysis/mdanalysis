@@ -74,6 +74,10 @@ class DielectricConstant(AnalysisBase):
     make_whole : bool
       Make molecules whole; If the input already contains whole molecules
       this can be disabled to gain speedup
+    check_neutrality_of: str
+        Modify the level at which charge neutrality is enforced. Options are
+        {'group', 'segments', 'residues', 'molecules', 'fragments'}. Default
+        is 'fragments' and the most permissive is 'group'.
     verbose : bool
       Show detailed progress of the calculation
 
@@ -117,18 +121,19 @@ class DielectricConstant(AnalysisBase):
 
     .. versionadded:: 2.1.0
     """
-    def __init__(self, atomgroup, temperature=300, make_whole=True, **kwargs):
+    def __init__(self, atomgroup, temperature=300, make_whole=True, check_neutrality_of="fragments",**kwargs):
         super(DielectricConstant, self).__init__(atomgroup.universe.trajectory,
                                                  **kwargs)
         self.atomgroup = atomgroup
         self.temperature = temperature
         self.make_whole = make_whole
+        self.check_neutrality_of = check_neutrality_of
 
     def _prepare(self):
         if not hasattr(self.atomgroup, "charges"):
             raise NoDataError("No charges defined given atomgroup.")
 
-        if not np.allclose(self.atomgroup.total_charge(compound='group'),
+        if not np.allclose(self.atomgroup.total_charge(compound=self.check_neutrality_of),
                            0.0, atol=1E-5):
             raise NotImplementedError("Analysis for non-neutral systems or"
                                       " systems with free charges are not"
