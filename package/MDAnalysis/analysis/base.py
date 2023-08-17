@@ -714,10 +714,9 @@ class AnalysisBase(object):
         client : ParallelExecutor
             a ParallelExecutor instance, configured with given parameters
         """
-        if client is not None:  # temporarily set backend for easier evaluation
-            backend = 'dask.distributed'
-        if backend is not None and backend not in self.available_backends:
-            raise ValueError(f"{backend=} is not in {self.available_backends=} for class {self.__class__.__name__}")
+        backend_eval = 'dask.distributed' if client is not None else backend
+        if backend_eval is not None and backend_eval not in self.available_backends:
+            raise ValueError(f"backend={backend_eval} is not in {self.available_backends=} for class {self.__class__.__name__}")
         return ParallelExecutor(backend=backend, n_workers=n_workers, client=client)
 
     def run(
