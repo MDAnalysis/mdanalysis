@@ -364,7 +364,7 @@ class RMSD(AnalysisBase):
     @classmethod
     @property
     def available_backends(cls):
-        return ['local', 'multiprocessing', 'dask', 'dask.distributed']
+        return ('local', 'multiprocessing', 'dask', 'dask.distributed')
 
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, weights=None, weights_groupselections=False,
