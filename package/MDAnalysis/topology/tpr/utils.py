@@ -308,6 +308,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
 
     atomids = []
     segids = []
+    resinds = []
     resids = []
     resnames = []
     atomnames = []
@@ -333,7 +334,8 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
             for atomkind in mt.atomkinds:
                 atomids.append(atomkind.id + atom_start_ndx)
                 segids.append(segid)
-                resids.append(atomkind.resid + res_start_ndx)
+                resinds.append(atomkind.resind + res_start_ndx)
+                resids.append(atomkind.resid)
                 resnames.append(atomkind.resname.decode())
                 atomnames.append(atomkind.name.decode())
                 atomtypes.append(atomkind.type.decode())
@@ -362,11 +364,13 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     moltypes = np.array(moltypes, dtype=object)
     molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
+    resinds = np.array(resinds, dtype=np.int32)
     resids = np.array(resids, dtype=np.int32)
-    if tpr_resid_from_one:
-        resids += 1
-
     resnames = np.array(resnames, dtype=object)
+    
+    if tpr_resid_from_one:
+        resinds += 1
+
     (residx, new_resids,
      (new_resnames,
       new_moltypes,
@@ -488,7 +492,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_int()  # tab.table
             data.unpack_real()  # tab.kB
         elif i in [setting.F_CROSS_BOND_BONDS]:
-            data.unpack_real()  # cross_bb.r1e
+            data.unpackp_real()  # cross_bb.r1e
             data.unpack_real()  # cross_bb.r2e
             data.unpack_real()  # cross_bb.krr
         elif i in [setting.F_CROSS_BOND_ANGLES]:
@@ -694,6 +698,7 @@ def do_moltype(data, symtab, fver):
             atoms_obj.atomnames[k],
             atoms_obj.type[k],
             a.resind,
+            atoms_obj.resids[a.resind],
             atoms_obj.resnames[a.resind],
             a.m,
             a.q,
@@ -781,9 +786,9 @@ def do_atoms(data, symtab, fver):
 
     type = [symtab[i] for i in ndo_int(data, nr)]  # e.g. opls_111
     typeB = [symtab[i] for i in ndo_int(data, nr)]
-    resnames = do_resinfo(data, symtab, fver, nres)
+    resnames, resids = do_resinfo(data, symtab, fver, nres)
 
-    return obj.Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
+    return obj.Atoms(atoms, nr, nres, type, typeB, atomnames, resnames, resids)
 
 
 def do_resinfo(data, symtab, fver, nres):
@@ -791,11 +796,12 @@ def do_resinfo(data, symtab, fver, nres):
         resnames = [symtab[i] for i in ndo_int(data, nres)]
     else:
         resnames = []
+        resids = []
         for i in range(nres):
             resnames.append(symtab[data.unpack_int()])
-            data.unpack_int()
+            resids.append(data.unpack_int())
             data.unpack_uchar()
-    return resnames
+    return resnames, resids
 
 
 def do_atom(data, fver):
