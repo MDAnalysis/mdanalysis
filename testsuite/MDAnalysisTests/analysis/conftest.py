@@ -26,9 +26,12 @@ def dask_client_1():
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
-            lc = dask.distributed.LocalCluster(n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None)
+            lc = dask.distributed.LocalCluster(
+                n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None
+            )
             client = dask.distributed.Client(lc)
             yield client
+            lc.close()
             client.close()
 
 
@@ -47,6 +50,7 @@ def dask_client_2():
             )
             client = dask.distributed.Client(lc)
             yield client
+            lc.close()
             client.close()
 
 
