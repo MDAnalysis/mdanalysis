@@ -17,7 +17,7 @@ from MDAnalysis.analysis.base import ParallelExecutor
 from MDAnalysis.lib.util import is_installed
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def dask_client_1():
     if not is_installed("dask"):
         yield "NoClient"
@@ -32,7 +32,7 @@ def dask_client_1():
             client.close()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def dask_client_2():
     if not is_installed("dask"):
         yield "NoClient"
