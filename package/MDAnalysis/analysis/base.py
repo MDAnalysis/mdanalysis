@@ -132,7 +132,7 @@ from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.util import is_installed
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Sequence
 from importlib import import_module
 from functools import partial
 
@@ -414,6 +414,63 @@ class Results(UserDict):
 
     def __setstate__(self, state):
         self.data = state
+
+
+class ResultsGroup:
+    """Simple class that does aggregation of the results from independent remote workers in AnalysisBase
+    """
+    def __init__(self, lookup: dict[str, Callable] = None):
+        """Initializes the class, saving aggregation functions in _lookup attribute.
+
+        Parameters
+        ----------
+        lookup : dict[str, Callable], optional
+            aggregation functions lookup dict, by default None
+        """
+        self._lookup = lookup
+
+    def merge(self, objects: Sequence[Results], do_raise: bool = True) -> Results:
+        """Merge results into a single object.
+        If objects contain single element, returns it while ignoring _lookup attribute.
+
+        Parameters
+        ----------
+        do_raise : bool, optional
+            if you want to raise an exception when no aggregation function for a particular argument is found, by default True
+
+        Returns
+        -------
+        Results
+            merged Result object
+
+        Raises
+        ------
+        ValueError
+            if no aggregation function for a key is found and do_raise = True
+        """
+        if len(objects) == 1:
+            rv = objects[0]
+        else:
+            rv = Results()
+            for key in objects[0].keys():
+                agg_function = self._lookup.get(key, None)
+                if agg_function is None and do_raise:
+                    raise ValueError(f"No aggregation function for {key=}")
+                results_of_t = [obj[key] for obj in objects]
+                rv[key] = agg_function(results_of_t)
+        return rv
+
+def flatten_sequence(arrs: list[list]):
+    return [item for sublist in arrs for item in sublist]
+
+def ndarray_sum(arrs: np.ndarray):
+    return np.array(arrs).sum(axis=0)
+
+def ndarray_mean(arrs: np.ndarray):
+    return np.array(arrs).sum(axis=0)
+
+def float_mean(floats: list[float]):
+    return sum(floats) / len(floats)
 
 
 class AnalysisBase(object):
@@ -801,65 +858,29 @@ class AnalysisBase(object):
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
-        remote_results: list["AnalysisBase"] = executor.apply(worker_func, computation_groups)
-        self.results = self._parallel_conclude(remote_results=remote_results)
+
+        # gather all remote objects
+        remote_objects: list["AnalysisBase"] = executor.apply(worker_func, computation_groups)
+        self.frames = np.array([obj.frames for obj in remote_objects]).sum(axis=0)
+        self.times = np.array([obj.times for obj in remote_objects]).sum(axis=0)
+
+        # aggregate results
+        remote_results = [obj.results for obj in remote_objects]
+        results_aggregator = self._get_aggregator()
+        self.results = results_aggregator.merge(remote_results)
 
         self._conclude()
         return self
 
-    def _parallel_conclude(self, remote_results: list["AnalysisBase"], do_raise: bool = True):
-        """Aggregation function that gathers together results of workers
-        into .results of the main object.
+    def _get_aggregator(self):
+        """Returns a default aggregator that takes entire results if there is a single object, and raises ValueError otherwise
 
-        By default, if checks type of each attribute in first remote worker,
-        and based on this type applies aggregation to the results in remote workers:
-         - `np.ndarray` -- sums the results (assuming the results will be zero in all but one workers)
-         - `float` -- averages the values
-         - `timeseries` -- merges the iterables obtained from remote workers
-
-        Parameters
-        ----------
-        remote_results : list['AnalysisBase']
-            objects that workers have returned after performing _compute for each of them
-        do_raise : bool, optional
-            whether to raise an exception if you couldn't guess the type of an attribute
-            and find a proper aggregation function for it.
-
-        Raises
-        ------
-        NotImplementedError
-            If type of the attribute in results is neither `float`,
-            `np.ndarray` and is not named `timeseries` (which is a special case of ordered iterable)
+        Returns
+        -------
+        ResultsGroup
+            aggregating object
         """
-        self.frames = np.array([obj.frames for obj in remote_results]).sum(axis=0)
-        self.times = np.array([obj.times for obj in remote_results]).sum(axis=0)
-
-        results = Results()
-        if not hasattr(remote_results[0], "results") or len(remote_results[0].results) == 0:
-            # results are empty
-            pass
-        elif len(remote_results) == 1:  # there was only one worker --> no aggregation needed
-            results = remote_results[0].results
-        elif isinstance(remote_results[0].results, np.ndarray):
-            results = np.array([obj.results for obj in remote_results]).sum(axis=0)
-        else:
-            results = Results()
-            keys, typenames = zip(*remote_results[0].results.items())
-            for k, t in zip(keys, typenames):
-                results_of_t = [obj.results[k] for obj in remote_results]
-                if isinstance(t, np.ndarray):
-                    results[k] = np.array(results_of_t).sum(axis=0)
-                elif isinstance(t, float):
-                    results[k] = np.array(results_of_t).mean()
-                elif isinstance(t, list):  # aggregation function suitable for any 'list' attribute
-                    # here we also rely on the fact that frames are ordered in execution order in self._computation_groups
-                    results[k] = [item for sublist in results_of_t for item in sublist]
-                else:
-                    if do_raise:
-                        raise NotImplementedError(
-                            f"Attribute {k} of type {type(t)} will not be available in resulting object"
-                        )
-        return results
+        return ResultsGroup(lookup=None)
 
 
 class AnalysisFromFunction(AnalysisBase):
@@ -944,6 +965,9 @@ class AnalysisFromFunction(AnalysisBase):
 
     def _prepare(self):
         self.results.timeseries = []
+
+    def _get_aggregator(self):
+        return ResultsGroup({'timeseries': flatten_sequence})
 
     def _single_frame(self):
         self.results.timeseries.append(self.function(*self.args, **self.kwargs))
