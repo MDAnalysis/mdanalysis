@@ -167,7 +167,7 @@ import logging
 import warnings
 
 import MDAnalysis.lib.qcprot as qcp
-from MDAnalysis.analysis.base import AnalysisBase
+from MDAnalysis.analysis.base import AnalysisBase, flatten_sequence, ndarray_mean, ndarray_sum, ResultsGroup
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
@@ -675,6 +675,9 @@ class RMSD(AnalysisBase):
                                       3 + len(self._groupselections_atoms)))
 
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'rmsd': ndarray_sum})
 
     def _single_frame(self):
         mobile_com = self.mobile_atoms.center(self.weights_select).astype(np.float64)

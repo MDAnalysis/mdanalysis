@@ -44,15 +44,18 @@ class FrameAnalysis(base.AnalysisBase):
     def __init__(self, reader, **kwargs):
         super(FrameAnalysis, self).__init__(reader, **kwargs)
         self.traj = reader
-    
+
     def _prepare(self):
         self.results.found_frames = []
 
     def _single_frame(self):
         self.results.found_frames.append(self._ts.frame)
-    
+
     def _conclude(self):
         self.found_frames = list(self.results.found_frames)
+
+    def _get_aggregator(self):
+        return base.ResultsGroup({'found_frames': base.flatten_sequence})
 
 class IncompleteAnalysis(base.AnalysisBase):
     def __init__(self, reader, **kwargs):
@@ -67,6 +70,9 @@ class OldAPIAnalysis(base.AnalysisBase):
 
     def _single_frame(self):
         pass
+
+    def _prepare(self):
+        self.results = base.Results()
 
 class FinallyRaised(Exception):
     pass
