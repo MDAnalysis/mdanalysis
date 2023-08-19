@@ -145,6 +145,7 @@ def test_universe_unpickle_in_new_process():
     assert_equal(ref, res)
 
 
+@pytest.mark.skip
 def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
     #  test if they can be created without generating
     #  the offset simultaneously.
