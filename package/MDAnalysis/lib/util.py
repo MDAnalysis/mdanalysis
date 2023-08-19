@@ -160,6 +160,7 @@ Function decorators
 .. autofunction:: static_variables
 .. autofunction:: warn_if_not_unique
 .. autofunction:: check_coords
+.. autofunction:: check_atomgroup_not_empty
 
 Code management
 ---------------
@@ -214,6 +215,7 @@ import inspect
 from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
 
 from ..exceptions import StreamWarning, DuplicateWarning
+
 try:
     from ._cutil import unique_int_1d
 except ImportError:
@@ -336,9 +338,10 @@ def anyopen(datasource, mode='rt', reset=True):
         a file (from :class:`file` or :func:`open`) or a stream (e.g. from
         :func:`urllib2.urlopen` or :class:`io.StringIO`)
     mode: {'r', 'w', 'a'} (optional)
-        Open in r(ead), w(rite) or a(ppen) mode. More complicated
-        modes ('r+', 'w+', ...) are not supported; only the first letter of
-        `mode` is used and thus any additional modifiers are silently ignored.
+        Open in r(ead), w(rite) or a(ppend) mode. This string is directly
+        passed to the file opening handler (either Python's openfe, bz2, or
+        gzip). More complex modes are supported if the file opening handler
+        supports it.
     reset: bool (optional)
         try to read (`mode` 'r') the stream from the start
 
@@ -472,6 +475,8 @@ def greedy_splitext(p):
 
     Example
     -------
+
+    >>> from MDAnalysis.lib.util import greedy_splitext
     >>> greedy_splitext("/home/joe/protein.pdb.bz2")
     ('/home/joe/protein', '.pdb.bz2')
 
@@ -1618,10 +1623,14 @@ def unique_rows(arr, return_index=False):
     --------
     Remove dupicate rows from an array:
 
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import unique_rows
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
-    array([[0, 1], [1, 2], [2, 3]])
+    array([[0, 1],
+           [1, 2],
+           [2, 3]])
 
     See Also
     --------
@@ -1678,6 +1687,8 @@ def blocks_of(a, n, m):
 
     Examples
     --------
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import blocks_of
     >>> arr = np.arange(16).reshape(4, 4)
     >>> view = blocks_of(arr, 2, 2)
     >>> view[:] = 100
@@ -1735,6 +1746,7 @@ def group_same_or_consecutive_integers(arr):
     list of :class:`numpy.ndarray`
 
     Examples
+    >>> import numpy as np
     >>> arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])
     >>> group_same_or_consecutive_integers(arr)
     [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
@@ -1789,6 +1801,7 @@ def ltruncate_int(value, ndigits):
 
     Examples
     --------
+    >>> from MDAnalysis.lib.util import ltruncate_int
     >>> ltruncate_int(123, 2)
     23
     >>> ltruncate_int(1234, 5)
@@ -1838,6 +1851,7 @@ def static_variables(**kwargs):
     Example
     -------
 
+    >>> from MDAnalysis.lib.util import static_variables
     >>> @static_variables(msg='foo calls', calls=0)
     ... def foo():
     ...     foo.calls += 1
@@ -1937,12 +1951,17 @@ def check_coords(*coord_names, **options):
     :mod:`MDAnalysis.lib.distances`.
     It takes an arbitrary number of positional arguments which must correspond
     to names of positional arguments of the decorated function.
-    It then checks if the corresponding values are valid coordinate arrays.
-    If all these arrays are single coordinates (i.e., their shape is ``(3,)``),
-    the decorated function can optionally return a single coordinate (or angle)
-    instead of an array of coordinates (or angles). This can be used to enable
-    computations of single observables using functions originally designed to
-    accept only 2-d coordinate arrays.
+    It then checks if the corresponding values are valid coordinate arrays or
+    an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    If the input is an array and all these arrays are single coordinates
+    (i.e., their shape is ``(3,)``), the decorated function can optionally
+    return a single coordinate (or angle) instead of an array of coordinates
+    (or angles). This can be used to enable computations of single observables
+    using functions originally designed to accept only 2-d coordinate arrays.
+
+    If the input is an :class:`~MDAnalysis.core.groups.AtomGroup` it is
+    converted into its corresponding position array via a call to
+    `AtomGroup.positions`.
 
     The checks performed on each individual coordinate array are:
 
@@ -1979,6 +1998,9 @@ def check_coords(*coord_names, **options):
         * **check_lengths_match** (:class:`bool`, optional) -- If ``True``, a
           :class:`ValueError` is raised if not all coordinate arrays contain the
           same number of coordinates. Default: ``True``
+        * **allow_atomgroup** (:class:`bool`, optional) -- If ``False``, a
+          :class:`TypeError` is raised if an :class:`AtomGroup` is supplied
+          Default: ``False``
 
     Raises
     ------
@@ -1992,7 +2014,8 @@ def check_coords(*coord_names, **options):
 
         If any of the coordinate arrays has a wrong shape.
     TypeError
-        If any of the coordinate arrays is not a :class:`numpy.ndarray`.
+        If any of the coordinate arrays is not a :class:`numpy.ndarray` or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
 
         If the dtype of any of the coordinate arrays is not convertible to
           ``numpy.float32``.
@@ -2000,7 +2023,11 @@ def check_coords(*coord_names, **options):
     Example
     -------
 
-    >>> @check_coords('coords1', 'coords2')
+    >>> import numpy as np
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    >>> from MDAnalysis.lib.util import check_coords
+    >>> @check_coords('coords1', 'coords2', allow_atomgroup=True)
     ... def coordsum(coords1, coords2):
     ...     assert coords1.dtype == np.float32
     ...     assert coords2.flags['C_CONTIGUOUS']
@@ -2014,12 +2041,26 @@ def check_coords(*coord_names, **options):
     >>> coordsum(np.zeros(3), np.ones(6)[::2])
     array([1., 1., 1.], dtype=float32)
     >>>
+    >>> # automatic handling of AtomGroups
+    >>> u = mda.Universe(PSF, DCD)
+    >>> try:
+    ...     coordsum(u.atoms, u.select_atoms("index 1 to 10"))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].')
+    >>>
     >>> # automatic shape checking:
-    >>> coordsum(np.zeros(3), np.ones(6))
-    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
+    >>> try:
+    ...     coordsum(np.zeros(3), np.ones(6))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords2.shape must be (3,) or (n, 3), got (6,)')
 
 
     .. versionadded:: 0.19.0
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`AtomGroup` as input, and added option
+       allow_atomgroup with default False to retain old behaviour
     """
     enforce_copy = options.get('enforce_copy', True)
     enforce_dtype = options.get('enforce_dtype', True)
@@ -2028,6 +2069,7 @@ def check_coords(*coord_names, **options):
     reduce_result_if_single = options.get('reduce_result_if_single', True)
     check_lengths_match = options.get('check_lengths_match',
                                       len(coord_names) > 1)
+    allow_atomgroup = options.get('allow_atomgroup', False)
     if not coord_names:
         raise ValueError("Decorator check_coords() cannot be used without "
                          "positional arguments.")
@@ -2051,32 +2093,49 @@ def check_coords(*coord_names, **options):
                                  "".format(name, func.__name__))
 
         def _check_coords(coords, argname):
-            if not isinstance(coords, np.ndarray):
-                raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray, "
-                                "got {}.".format(fname, argname, type(coords)))
             is_single = False
-            if allow_single:
-                if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
-                    raise ValueError("{}(): {}.shape must be (3,) or (n, 3), "
-                                     "got {}.".format(fname, argname,
-                                                      coords.shape))
-                if coords.ndim == 1:
-                    is_single = True
-                    if convert_single:
-                        coords = coords[None, :]
+            if isinstance(coords, np.ndarray):
+                if allow_single:
+                    if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
+                        errmsg = (f"{fname}(): {argname}.shape must be (3,) or "
+                                  f"(n, 3), got {coords.shape}")
+                        raise ValueError(errmsg)
+                    if coords.ndim == 1:
+                        is_single = True
+                        if convert_single:
+                            coords = coords[None, :]
+                else:
+                    if (coords.ndim != 2) or (coords.shape[1] != 3):
+                        errmsg = (f"{fname}(): {argname}.shape must be (n, 3) "
+                                  f"got {coords.shape}")
+                        raise ValueError(errmsg)
+                if enforce_dtype:
+                    try:
+                        coords = coords.astype(
+                            np.float32, order='C', copy=enforce_copy)
+                    except ValueError:
+                        errmsg = (f"{fname}(): {argname}.dtype must be"
+                                  f"convertible to float32, got"
+                                  f" {coords.dtype}.")
+                        raise TypeError(errmsg) from None
+                # coordinates should now be the right shape
+                ncoord = coords.shape[0]
             else:
-                if (coords.ndim != 2) or (coords.shape[1] != 3):
-                    raise ValueError("{}(): {}.shape must be (n, 3), got {}."
-                                     "".format(fname, argname, coords.shape))
-            if enforce_dtype:
                 try:
-                    coords = coords.astype(
-                        np.float32, order='C', copy=enforce_copy)
-                except ValueError:
-                    errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
-                              f"float32, got {coords.dtype}.")
-                    raise TypeError(errmsg) from None
-            return coords, is_single
+                    coords = coords.positions  # homogenise to a numpy array
+                    ncoord = coords.shape[0]
+                    if not allow_atomgroup:
+                        err = TypeError("AtomGroup or other class with a"
+                                        "`.positions` method supplied as an"
+                                        "argument, but allow_atomgroup is"
+                                        " False")
+                        raise err
+                except AttributeError:
+                    raise TypeError(f"{fname}(): Parameter '{argname}' must be"
+                                    f" a numpy.ndarray or an AtomGroup,"
+                                    f" got {type(coords)}.")
+
+            return coords, is_single, ncoord
 
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -2107,14 +2166,15 @@ def check_coords(*coord_names, **options):
             for name in coord_names:
                 idx = posargnames.index(name)
                 if idx < len(args):
-                    args[idx], is_single = _check_coords(args[idx], name)
+                    args[idx], is_single, ncoord = _check_coords(args[idx],
+                                                                 name)
                     all_single &= is_single
-                    ncoords.append(args[idx].shape[0])
+                    ncoords.append(ncoord)
                 else:
-                    kwargs[name], is_single = _check_coords(kwargs[name],
-                                                            name)
+                    kwargs[name], is_single, ncoord = _check_coords(kwargs[name],
+                                                                    name)
                     all_single &= is_single
-                    ncoords.append(kwargs[name].shape[0])
+                    ncoords.append(ncoord)
             if check_lengths_match and ncoords:
                 if ncoords.count(ncoords[0]) != len(ncoords):
                     raise ValueError("{}(): {} must contain the same number of "
@@ -2127,6 +2187,32 @@ def check_coords(*coord_names, **options):
             return func(*args, **kwargs)
         return wrapper
     return check_coords_decorator
+
+
+def check_atomgroup_not_empty(groupmethod):
+    """Decorator triggering a ``ValueError`` if the underlying group is empty.
+
+    Avoids downstream errors in computing properties of empty atomgroups. 
+
+    Raises
+    ------
+    ValueError
+        If the input :class:`~MDAnalysis.core.groups.AtomGroup`,
+        of a decorated method is empty.
+
+
+    .. versionadded:: 2.4.0
+    """
+    @wraps(groupmethod)
+    def wrapper(group, *args, **kwargs):
+        # Throw error if the group is empty.
+        if not group.atoms:
+            raise ValueError("AtomGroup is empty.")
+        # Proceed as usual if the calling group is not empty.
+        else:
+            result = groupmethod(group, *args, **kwargs)
+        return result
+    return wrapper
 
 
 # ------------------------------------------------------------------

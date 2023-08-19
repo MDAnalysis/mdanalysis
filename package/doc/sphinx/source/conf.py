@@ -19,6 +19,10 @@ import MDAnalysis as mda
 import msmb_theme  # for little versions pop-up
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
+# Custom MDA Formating
+from pybtex.style.formatting.unsrt import Style as UnsrtStyle
+from pybtex.style.labels import BaseLabelStyle
+from pybtex.plugin import register_plugin
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -35,11 +39,39 @@ sys.path.insert(0, os.path.abspath('../../..'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
-              'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
-              'sphinx.ext.napoleon', 'sphinx.ext.todo',
-              'sphinx_sitemap',
-              'sphinx_rtd_theme']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.todo',
+    'sphinx_sitemap',
+    'sphinx_rtd_theme',
+    'sphinxcontrib.bibtex',
+    'sphinx.ext.doctest',
+]
+
+bibtex_bibfiles = ['references.bib']
+
+
+# Define custom MDA style for references
+class KeyLabelStyle(BaseLabelStyle):
+    def format_labels(self, entries):
+        entry_list = []
+        for entry in entries:
+            author = str(entry.persons['author'][0]).split(",")[0]
+            year = entry.fields['year']
+            entry_list.append(f"{author}{year}")
+        return entry_list
+
+
+class KeyStyle(UnsrtStyle):
+    default_label_style = 'keylabel'
+
+
+register_plugin('pybtex.style.labels', 'keylabel', KeyLabelStyle)
+register_plugin('pybtex.style.formatting', 'MDA', KeyStyle)
 
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
@@ -99,7 +131,7 @@ release = packageversion
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -123,6 +155,9 @@ pygments_style = 'default'
 
 # to include decorated objects like __init__
 autoclass_content = 'both'
+
+# to prevent including of member entries in toctree
+toc_object_entries = False
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -338,15 +373,15 @@ epub_copyright = u'2015, '+authors
 
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
-intersphinx_mapping = {'https://docs.h5py.org/en/stable': None,
-                       'https://docs.python.org/3/': None,
-                       'https://docs.scipy.org/doc/scipy/': None,
-                       'https://gsd.readthedocs.io/en/stable/': None,
-                       'https://matplotlib.org/stable/': None,
-                       'https://mdanalysis.org/GridDataFormats/': None,
-                       'https://mdanalysis.org/pmda/': None,
-                       'https://networkx.org/documentation/stable/': None,
-                       'https://numpy.org/doc/stable/': None,
-                       'https://parmed.github.io/ParmEd/html/': None,
-                       'https://rdkit.org/docs/': None,
+intersphinx_mapping = {'h5py': ('https://docs.h5py.org/en/stable', None),
+                       'python': ('https://docs.python.org/3/', None),
+                       'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+                       'gsd': ('https://gsd.readthedocs.io/en/stable/', None),
+                       'maplotlib': ('https://matplotlib.org/stable/', None),
+                       'griddataformats': ('https://mdanalysis.org/GridDataFormats/', None),
+                       'pmda': ('https://mdanalysis.org/pmda/', None),
+                       'networkx': ('https://networkx.org/documentation/stable/', None),
+                       'numpy': ('https://numpy.org/doc/stable/', None),
+                       'parmed': ('https://parmed.github.io/ParmEd/html/', None),
+                       'rdkit': ('https://rdkit.org/docs/', None),
                        }

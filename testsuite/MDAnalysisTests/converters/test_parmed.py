@@ -23,9 +23,7 @@
 import pytest
 import MDAnalysis as mda
 
-from numpy.testing import (assert_equal,
-                           assert_almost_equal,
-                           assert_almost_equal)
+from numpy.testing import (assert_allclose, assert_equal)
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -51,38 +49,40 @@ class TestParmEdReaderGRO:
 
     universe = mda.Universe(pmd.load_file(GRO))
     ref = mda.Universe(GRO)
-    prec = 3
 
     def test_dimensions(self):
-        assert_almost_equal(
+        assert_allclose(
             self.universe.trajectory.ts.dimensions, 
             self.ref.trajectory.ts.dimensions,
-            self.prec,
-            "ParmEdReader failed to get unitcell dimensions from ParmEd")
+            rtol=0,
+            atol=1e-3,
+            err_msg=("ParmEdReader failed to get unitcell dimensions "
+                     "from ParmEd"))
     
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
-        assert_almost_equal(up, rp, decimal=3)
+        assert_allclose(up, rp, rtol=0, atol=1e-3)
     
 
 class BaseTestParmEdReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(pmd.load_file(self.ref_filename))
         self.ref = mda.Universe(self.ref_filename)
-        self.prec = 3
 
     def test_dimensions(self):
-        assert_almost_equal(
+        assert_allclose(
             self.universe.trajectory.ts.dimensions, 
             self.ref.trajectory.ts.dimensions,
-            self.prec,
-            "ParmEdReader failed to get unitcell dimensions from ParmEd")
+            rtol=0,
+            atol=1e-3,
+            err_msg=("ParmEdReader failed to get unitcell dimensions "
+                     "from ParmEd"))
     
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
-        assert_almost_equal(up, rp, decimal=3)
+        assert_allclose(up, rp, rtol=0, atol=1e-3)
     
 
 class TestParmEdReaderPDB(BaseTestParmEdReader):
@@ -187,7 +187,9 @@ class BaseTestParmEdConverter:
             for attr in self.almost_equal_atom_attrs:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
-                assert_almost_equal(ra, oa, decimal=2, err_msg='atom {} not almost equal for atoms {} and {}'.format(attr, r, o))
+                assert_allclose(ra, oa, rtol=0, atol=1e-2,
+                    err_msg=(f'atom {attr} not almost equal for atoms '
+                             f'{r} and {o}'))
 
     @pytest.mark.parametrize('attr', ('bonds', 'angles', 'impropers',
                      'cmaps'))
@@ -292,7 +294,7 @@ class TestParmEdConverterPDB(BaseTestParmEdConverter):
     almost_equal_atom_attrs = ('charge', 'occupancy')
 
     def test_equivalent_coordinates(self, ref, output):
-        assert_almost_equal(ref.coordinates, output.coordinates, decimal=3)
+        assert_allclose(ref.coordinates, output.coordinates, rtol=0, atol=1e-3)
 
 
 def test_incorrect_object_passed_typeerror():

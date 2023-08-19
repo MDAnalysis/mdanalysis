@@ -27,13 +27,22 @@
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
 :Copyright: GNU Public License v3
-:Citation: [Chavent2014]_
+
 
 The :func:`generate_streamlines_3d` function can generate a 3D flow field from
 a MD trajectory, for instance, lipid molecules in a virus capsid. It can make
 use of multiple cores to perform the analyis in parallel (using
 :mod:`multiprocessing`).
 
+.. rubric: References
+
+.. bibliography::
+    :filter: False
+    :style: MDA
+    :keyprefix: b-
+    :labelprefix: ᵇ
+
+    Chavent2014
 
 See Also
 --------
@@ -52,7 +61,9 @@ import scipy.spatial.distance
 
 import MDAnalysis
 
-def determine_container_limits(topology_file_path, trajectory_file_path, buffer_value):
+
+def determine_container_limits(topology_file_path, trajectory_file_path,
+                               buffer_value):
     """Calculate the extent of the atom coordinates + buffer.
 
     A function for the parent process which should take the input trajectory
@@ -272,7 +283,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
                                                            axis=0)
                 cube['centroid_of_particles_first_frame'] = centroid_particles_in_cube
             else:  # empty cube
-                cube['centroid_of_particles_first_frame'] = 'empty'
+                cube['centroid_of_particles_first_frame'] = None
             cube_counter += 1
 
     def update_dictionary_end_frame(array_simulation_particle_coordinates, dictionary_cube_data_this_core):
@@ -280,7 +291,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
         cube_counter = 0
         for key, cube in dictionary_cube_data_this_core.items():
             # if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0
-            if cube['centroid_of_particles_first_frame'] == 'empty':
+            if cube['centroid_of_particles_first_frame'] is None:
                 cube['dx'] = 0
                 cube['dy'] = 0
                 cube['dz'] = 0
@@ -343,7 +354,7 @@ def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spaci
     trajectory_file_path : str
             Absolute path to the trajectory file. It will normally be desirable
             to filter the trajectory with a tool such as GROMACS
-            :program:`g_filter` (see [Chavent2014]_)
+            :program:`g_filter` (see :cite:p:`b-Chavent2014`)
     grid_spacing : float
             The spacing between grid lines (angstroms)
     MDA_selection : str

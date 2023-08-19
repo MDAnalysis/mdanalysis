@@ -126,6 +126,10 @@ The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
 report, we will take appropriate action.
 
+You may also follow [NumFOCUS’s Code of Conduct violation reporting][NF-conduct] 
+guidelines if you would like to contact a third-party outside of the MDAnalysis 
+community.
+
 ## Enforcement
 
 When a report is sent to us we will reply as soon as possible to confirm receipt;
@@ -153,7 +157,7 @@ the
 [*Django*](https://www.djangoproject.com/conduct),
 [*Contributor Covenant*](http://contributor-covenant.org/),
 and
-[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md) projects,
+[*Jupyter*](https://github.com/jupyter/governance/blob/main/conduct/code_of_conduct.md) projects,
 modified by MDAnalysis. We are grateful to those projects for contributing these
 materials under open licensing terms for us to easily reuse.
 
@@ -162,3 +166,6 @@ Attribution*](http://creativecommons.org/licenses/by/3.0/) license.
 
 [conduct-mail]: mailto:mdnalysis-conduct@googlegroups.com
 [conduct-form]: https://goo.gl/forms/w2IwBKkY3oT0aVEB3
+
+[NF-conduct]: https://numfocus.org/code-of-conduct
+

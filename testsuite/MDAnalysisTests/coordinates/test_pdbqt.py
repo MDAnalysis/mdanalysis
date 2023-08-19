@@ -89,13 +89,17 @@ class TestPDBQTWriter(object):
     def outfile(self, tmpdir):
         return str(tmpdir) + 'out.pdbqt'
 
-    def test_roundtrip_writing_coords(self, outfile):
-        u = mda.Universe(PDBQT_input)
-        u.atoms.write(outfile)
-        u2 = mda.Universe(outfile)
+    @pytest.mark.parametrize('filename',
+        ['test.pdbqt', 'test.pdbqt.bz2', 'test.pdbqt.gz'])
+    def test_roundtrip_writing_coords(self, filename, tmpdir):
 
-        assert_equal(u2.atoms.positions, u.atoms.positions,
-                     "Round trip does not preserve coordinates")
+        with tmpdir.as_cwd():
+            u = mda.Universe(PDBQT_input)
+            u.atoms.write(filename)
+            u2 = mda.Universe(filename)
+
+            assert_equal(u2.atoms.positions, u.atoms.positions,
+                         "Round trip does not preserve coordinates")
 
     def test_roundtrip_formatting(self, outfile):
         # Compare formatting of first line

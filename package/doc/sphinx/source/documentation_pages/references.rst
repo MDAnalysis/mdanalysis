@@ -1,5 +1,5 @@
 .. -*- coding: utf-8 -*-
-.. note: make sure that no lines accidentaly start with a single character
+.. note: make sure that no lines accidentally start with a single character
 ..       followed by a period: reST interprets it as an enumerated list and
 ..       messes up the formatting
 
@@ -258,7 +258,7 @@ or set the environment variable :envvar:`DUECREDIT_ENABLE`
 
 .. code-block:: bash
 
-   DUECREDIT-ENABLE=yes python yourscript.py
+   DUECREDIT_ENABLE=yes python yourscript.py
 
 Once the citations have been extracted (to a hidden file in the
 current directory), you can use the :program:`duecredit` program to

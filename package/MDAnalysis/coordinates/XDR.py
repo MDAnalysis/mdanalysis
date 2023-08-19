@@ -63,8 +63,7 @@ def offsets_filename(filename, ending='npz'):
 
     """
     head, tail = split(filename)
-    return join(head, '.{tail}_offsets.{ending}'.format(tail=tail,
-                                                        ending=ending))
+    return join(head, f'.{tail}_offsets.{ending}')
 
 
 def read_numpy_offsets(filename):
@@ -88,7 +87,7 @@ def read_numpy_offsets(filename):
 
     #  `ValueError` is encountered when the offset file is corrupted.
     except (ValueError, IOError):
-        warnings.warn("Failed to load offsets file {}\n".format(filename))
+        warnings.warn(f"Failed to load offsets file {filename}\n")
         return False
 
 class XDRBaseReader(base.ReaderBase):
@@ -120,7 +119,8 @@ class XDRBaseReader(base.ReaderBase):
        XDR offsets read from trajectory if offsets file read-in fails
     .. versionchanged:: 2.0.0
        Add a InterProcessLock when generating offsets
-
+    .. versionchanged:: 2.4.0
+       Use a direct read into ts attributes
     """
     @store_init_arguments
     def __init__(self, filename, convert_units=True, sub=None,
@@ -197,11 +197,14 @@ class XDRBaseReader(base.ReaderBase):
         try:
             with fasteners.InterProcessLock(lock_name) as filelock:
                 pass
-        except PermissionError:
-            warnings.warn(f"Cannot write lock/offset file in same location as "
-                           "{self.filename}. Using slow offset calculation.")
-            self._read_offsets(store=True)
-            return
+        except OSError as e:
+            if isinstance(e, PermissionError) or e.errno == errno.EROFS:
+                warnings.warn(f"Cannot write lock/offset file in same location as "
+                              f"{self.filename}. Using slow offset calculation.")
+                self._read_offsets(store=True)
+                return
+            else:
+                raise
 
         with fasteners.InterProcessLock(lock_name) as filelock:
             if not isfile(fname):
@@ -216,10 +219,10 @@ class XDRBaseReader(base.ReaderBase):
             # refer to Issue #1893
             data = read_numpy_offsets(fname)
             if not data:
-                warnings.warn("Reading offsets from {} failed, "
+                warnings.warn(f"Reading offsets from {fname} failed, "
                               "reading offsets from trajectory instead.\n"
                               "Consider setting 'refresh_offsets=True' "
-                              "when loading your Universe.".format(fname))
+                              "when loading your Universe.")
                 self._read_offsets(store=True)
                 return
 
@@ -252,7 +255,7 @@ class XDRBaseReader(base.ReaderBase):
                          offsets=offsets, size=size, ctime=ctime,
                          n_atoms=self._xdr.n_atoms)
             except Exception as e:
-                warnings.warn("Couldn't save offsets because: {}".format(e))
+                warnings.warn(f"Couldn't save offsets because: {e}")
 
     @property
     def n_frames(self):
@@ -284,17 +287,6 @@ class XDRBaseReader(base.ReaderBase):
             self._xdr.seek(i)
             timestep = self._read_next_timestep()
         return timestep
-
-    def _read_next_timestep(self, ts=None):
-        """copy next frame into timestep"""
-        if self._frame == self.n_frames - 1:
-            raise IOError(errno.EIO, 'trying to go over trajectory limit')
-        if ts is None:
-            ts = self.ts
-        frame = self._xdr.read()
-        self._frame += 1
-        self._frame_to_ts(frame, ts)
-        return ts
 
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Return writer for trajectory format"""

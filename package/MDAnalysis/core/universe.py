@@ -238,6 +238,11 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
+    fudge_factor: float, default [0.55]
+        For use with *guess_bonds*. Supply the factor by which atoms must
+        overlap each other to be considered a bond.
+    lower_bound: float, default [0.1]
+        For use with *guess_bonds*. Supply the minimum bond length.
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -312,11 +317,14 @@ class Universe(object):
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
         ``topology`` and ``trajectory`` are reserved upon unpickle.
-
+    .. versionchanged:: 2.5.0
+        Added fudge_factor and lower_bound parameters for use with
+        *guess_bonds*.
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
-                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 guess_bonds=False, vdwradii=None, fudge_factor=0.55,
+                 lower_bound=0.1, in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -330,6 +338,8 @@ class Universe(object):
             'transformations': transformations,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
+            'fudge_factor': fudge_factor,
+            'lower_bound': lower_bound,
             'in_memory': in_memory,
             'in_memory_step': in_memory_step,
             'format': format,
@@ -371,7 +381,8 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         if guess_bonds:
-            self.atoms.guess_bonds(vdwradii=vdwradii)
+            self.atoms.guess_bonds(vdwradii=vdwradii, fudge_factor=fudge_factor,
+                                   lower_bound=lower_bound)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -380,7 +391,7 @@ class Universe(object):
         return new
 
     @classmethod
-    def empty(cls, n_atoms, n_residues=1, n_segments=1,
+    def empty(cls, n_atoms, n_residues=1, n_segments=1, n_frames=1,
               atom_resindex=None, residue_segindex=None,
               trajectory=False, velocities=False, forces=False):
         """Create a blank Universe
@@ -400,6 +411,8 @@ class Universe(object):
           number of Residues in the Universe, defaults to 1
         n_segments: int, default 1
           number of Segments in the Universe, defaults to 1
+        n_frames: int, default 1
+          number of Frames in the Universe, defaults to 1
         atom_resindex: array like, optional
           mapping of atoms to residues, e.g. with 6 atoms,
           `atom_resindex=[0, 0, 1, 1, 2, 2]` would put 2 atoms
@@ -445,13 +458,13 @@ class Universe(object):
             n_residues = 0
             n_segments = 0
 
-        if atom_resindex is None:
+        if atom_resindex is None and n_residues > 1:
             warnings.warn(
                 'Residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
 
-        if residue_segindex is None:
+        if residue_segindex is None and n_segments > 1:
             warnings.warn(
                 'Segments specified but no segment_resindex given.  '
                 'All residues will be placed in first Segment',
@@ -464,8 +477,8 @@ class Universe(object):
 
         u = cls(top)
 
-        if trajectory:
-            coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
+        if n_frames > 1 or trajectory:
+            coords = np.zeros((n_frames, n_atoms, 3), dtype=np.float32)
             vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
@@ -541,6 +554,8 @@ class Universe(object):
         .. versionchanged:: 0.17.0
            Now returns a :class:`Universe` instead of the tuple of file/array
            and detected file type.
+        .. versionchanged:: 2.4.0
+           Passes through kwargs if `in_memory=True`.
 
         """
         # filename==None happens when only a topology is provided
@@ -574,12 +589,12 @@ class Universe(object):
                                  trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
-            self.transfer_to_memory(step=in_memory_step)
+            self.transfer_to_memory(step=in_memory_step, **kwargs)
 
         return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
-                           verbose=False):
+                           verbose=False, **kwargs):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -600,6 +615,8 @@ class Universe(object):
 
 
         .. versionadded:: 0.16.0
+        .. versionchanged:: 2.4.0
+           Passes through kwargs to MemoryReader
         """
         from ..coordinates.memory import MemoryReader
 
@@ -641,8 +658,7 @@ class Universe(object):
                 dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename,
                 velocities=velocities,
-                forces=forces,
-            )
+                forces=forces, **kwargs)
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
     # argument signatures.
@@ -792,9 +808,12 @@ class Universe(object):
         -------
         For example to add bfactors to a Universe:
 
-        >>> u.add_TopologyAttr('bfactors')
-        >>> u.atoms.bfactors
-        array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+        >>> u.add_TopologyAttr('tempfactors')
+        >>> u.atoms.tempfactors
+        array([0., 0., 0., ..., 0., 0., 0.])
 
         .. versionchanged:: 0.17.0
            Can now also add TopologyAttrs with a string of the name of the
@@ -849,8 +868,15 @@ class Universe(object):
         -------
         For example to remove bfactors to a Universe:
 
-        >>> u.del_TopologyAttr('bfactors')
-        >>> hasattr(u.atoms[:3], 'bfactors')
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+        >>> u.add_TopologyAttr('tempfactors')
+        >>> hasattr(u.atoms[:3], 'tempfactors')
+        True
+        >>>
+        >>> u.del_TopologyAttr('tempfactors')
+        >>> hasattr(u.atoms[:3], 'tempfactors')
         False
 
 
@@ -973,9 +999,12 @@ class Universe(object):
 
         Adding a new GLY residue, then placing atoms within it:
 
-        >>> newres = u.add_Residue(segment=u.segments[0], resid=42, resname='GLY')
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+        >>> newres = u.add_Residue(segment=u.segments[0], resid=42, resname='GLY', resnum=0)
         >>> u.atoms[[1, 2, 3]].residues = newres
-        >>> u.select_atoms('resname GLY and resid 42')
+        >>> u.select_atoms('resname GLY and resid 42 and resnum 0')
         <AtomGroup with 3 atoms>
 
         """
@@ -1393,6 +1422,7 @@ class Universe(object):
         --------
         To create a Universe with 10 conformers of ethanol:
 
+        >>> from rdkit.Chem import AllChem
         >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
         >>> u
         <Universe with 9 atoms>
@@ -1402,7 +1432,7 @@ class Universe(object):
         To use a different conformer generation algorithm, like ETKDGv3:
 
         >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
-                                         params=AllChem.ETKDGv3()))
+        ...      params=AllChem.ETKDGv3()))
         >>> u.trajectory
         <RDKitReader with 1 frames of 9 atoms>
 

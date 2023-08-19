@@ -119,6 +119,11 @@ def _unpickle(u, ix):
     return u.atoms[ix]
 
 
+# TODO 3.0: deprecate _unpickle in favor of _unpickle2.
+def _unpickle2(u, ix, cls):
+    return cls(ix, u)
+
+
 def _unpickle_uag(basepickle, selections, selstrs):
     bfunc, bargs = basepickle[0], basepickle[1:][0]
     basegroup = bfunc(*bargs)
@@ -1014,7 +1019,7 @@ class GroupBase(_MutableBase):
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ValueError
-            If both 'pbc' and 'unwrap' set to true.
+            If both 'wrap' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -1066,7 +1071,7 @@ class GroupBase(_MutableBase):
                 return coords.mean(axis=0)
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
-            return (coords * weights[:, None]).sum(axis=0) / weights.sum()
+            return np.einsum('ij,ij->j',coords,weights[:, None]) / weights.sum()
 
         # When compound split caching gets implemented it will be clever to
         # preempt at this point whether or not stable sorting will be needed
@@ -1095,7 +1100,7 @@ class GroupBase(_MutableBase):
                 _centers = _coords.mean(axis=1)
             else:
                 _weights = weights[atom_mask]
-                _centers = (_coords * _weights[:, :, None]).sum(axis=1)
+                _centers = np.einsum('ijk,ijk->ik',_coords,_weights[:, :, None])
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
         if wrap:
@@ -1714,14 +1719,14 @@ class GroupBase(_MutableBase):
 
             # compute and apply required shift:
             if ctr == 'com':
-                ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_mass(wrap=False, compound=comp)
                 if np.any(np.isnan(ctrpos)):
                     specifier = 'the' if comp == 'group' else 'one of the'
                     raise ValueError("Cannot use compound='{0}' with "
                                      "center='com' because {1} {0}\'s total "
                                      "mass is zero.".format(comp, specifier))
             else:  # ctr == 'cog'
-                ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_geometry(wrap=False, compound=comp)
             ctrpos = ctrpos.astype(np.float32, copy=False)
             target = distances.apply_PBC(ctrpos, box)
             shifts = target - ctrpos
@@ -1859,7 +1864,7 @@ class GroupBase(_MutableBase):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = np.sum(positions * masses[:, None], axis=0)
+                    refpos = np.einsum('ij,ij->j',positions,masses[:, None])
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
@@ -1888,8 +1893,8 @@ class GroupBase(_MutableBase):
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "the {} is zero.".format(comp))
-                        refpos = np.sum(positions[atom_mask]
-                                        * masses[:, :, None], axis=1)
+                        refpos = np.einsum('ijk,ijk->ik',positions[atom_mask],
+                                           masses[:, :, None])
                         refpos /= total_mass[:, None]
                     else:  # reference == 'cog'
                         refpos = positions[atom_mask].mean(axis=1)
@@ -2525,9 +2530,6 @@ class AtomGroup(GroupBase):
        Indexing an AtomGroup with ``None`` raises a ``TypeError``.
     """
 
-    def __reduce__(self):
-        return (_unpickle, (self.universe, self.ix))
-
     def __getattr__(self, attr):
         # special-case timestep info
         if attr in ('velocities', 'forces'):
@@ -2535,6 +2537,9 @@ class AtomGroup(GroupBase):
         elif attr == 'positions':
             raise NoDataError('This Universe has no coordinates')
         return super(AtomGroup, self).__getattr__(attr)
+
+    def __reduce__(self):
+        return (_unpickle, (self.universe, self.ix))
 
     @property
     def atoms(self):
@@ -2667,16 +2672,19 @@ class AtomGroup(GroupBase):
         Examples
         --------
 
+           >>> import MDAnalysis as mda
+           >>> from MDAnalysis.tests.datafiles import PSF, DCD
+           >>> u = mda.Universe(PSF, DCD)
            >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
            >>> ag
            <AtomGroup with 6 atoms>
            >>> ag.ix
-           array([2, 1, 2, 2, 1, 0])
+           array([2, 1, 2, 2, 1, 0], dtype=int64)
            >>> ag2 = ag.unique
            >>> ag2
            <AtomGroup with 3 atoms>
            >>> ag2.ix
-           array([0, 1, 2])
+           array([0, 1, 2], dtype=int64)
            >>> ag2.unique is ag2
            False
 
@@ -2720,19 +2728,22 @@ class AtomGroup(GroupBase):
         Examples
         --------
 
+           >>> import MDAnalysis as mda
+           >>> from MDAnalysis.tests.datafiles import PSF, DCD
+           >>> u = mda.Universe(PSF, DCD)
            >>> ag = u.atoms[[2, 1, 0]]
            >>> ag2 = ag.asunique(sorted=False)
            >>> ag2 is ag
            True
            >>> ag2.ix
-           array([2, 1, 0])
+           array([2, 1, 0], dtype=int64)
            >>> ag3 = ag.asunique(sorted=True)
            >>> ag3 is ag
            False
            >>> ag3.ix
-           array([0, 1, 2])
+           array([0, 1, 2], dtype=int64)
            >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
-           array([2, 1, 0])
+           array([2, 1, 0], dtype=int64)
 
 
         .. versionadded:: 2.0.0
@@ -3041,6 +3052,11 @@ class AtomGroup(GroupBase):
                 ``S`` will be possible options but other values will not raise
                 an error.
 
+            formalcharge *formal-charge*
+                select atoms based on their formal charge, e.g.
+                ``name O and formalcharge -1`` to select all oxygens with a
+                negative 1 formal charge.
+
         **Boolean**
 
             not
@@ -3076,6 +3092,9 @@ class AtomGroup(GroupBase):
             sphlayer *inner radius* *outer radius* *selection*
                 Similar to sphzone, but also excludes atoms that are within
                 *inner radius* of the selection COG
+            isolayer *inner radius* *outer radius* *selection*
+                Similar to sphlayer, but will find layer around all reference
+                layer, creating an iso-surface.
             cyzone *externalRadius* *zMax* *zMin* *selection*
                 selects all atoms within a cylindric zone centered in the
                 center of geometry (COG) of a given selection,
@@ -3257,24 +3276,38 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None):
-        """Guess bonds that exist within this :class:`AtomGroup` and add them to
-        the underlying :attr:`~AtomGroup.universe`.
+    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1):
+        """Guess bonds, angles, and dihedrals between the atoms in this
+        :class:`AtomGroup` and add them to the underlying
+        :attr:`~AtomGroup.universe`.
 
         Parameters
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
 
+        fudge_factor : float, optional
+            The factor by which atoms must overlap each other to be considered
+            a bond.  Larger values will increase the number of bonds found. [0.55]
+        lower_bound : float, optional
+            The minimum bond length. All bonds found shorter than this length
+            will be ignored. This is useful for parsing PDB with altloc records
+            where atoms with altloc A and B may be very close together and
+            there should be no chemical bond between them. [0.1]
 
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`
+        :func:`MDAnalysis.topology.guessers.guess_angles`
+        :func:`MDAnalysis.topology.guessers.guess_dihedrals`
 
 
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
+        .. versionchanged:: 2.5.0
+           Corrected misleading docs, and now allows passing of `fudge_factor`
+           and `lower_bound` arguments.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -3289,9 +3322,15 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions)
-        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
+        b = guess_bonds(
+            self.atoms,
+            self.atoms.positions,
+            vdwradii=vdwradii,
+            box=self.dimensions,
+            fudge_factor=fudge_factor,
+            lower_bound=lower_bound,
+        )
+        bondattr = get_TopAttr(self.universe, "bonds", Bonds)
         bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)
@@ -3647,6 +3686,9 @@ class ResidueGroup(GroupBase):
        Indexing an ResidueGroup with ``None`` raises a ``TypeError``.
     """
 
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, ResidueGroup))
+
     @property
     def atoms(self):
         """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
@@ -3839,6 +3881,9 @@ class SegmentGroup(GroupBase):
     .. versionchanged:: 2.1.0
        Indexing an SegmentGroup with ``None`` raises a ``TypeError``.
     """
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, SegmentGroup))
 
     @property
     def atoms(self):
@@ -4132,6 +4177,9 @@ class Atom(ComponentBase):
             me += ' and altLoc {}'.format(self.altLoc)
         return me + '>'
 
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Atom))
+
     def __getattr__(self, attr):
         # special-case timestep info
         ts = {'velocity': 'velocities', 'force': 'forces'}
@@ -4254,6 +4302,9 @@ class Residue(ComponentBase):
 
         return me + '>'
 
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Residue))
+
     @property
     def atoms(self):
         """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
@@ -4303,6 +4354,9 @@ class Segment(ComponentBase):
         if hasattr(self, 'segid'):
             me += ' {}'.format(self.segid)
         return me + '>'
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Segment))
 
     @property
     def atoms(self):

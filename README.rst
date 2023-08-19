@@ -2,9 +2,9 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |cron| |travis| |cov| [*]_
+|numfocus| |build| |cron| |linters| |cov|
 
-|docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder| |asv|
+|docs| |devdocs| |usergroup| |developergroup| |anaconda| |asv|
 
 MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
@@ -25,7 +25,7 @@ This project is bound by a `Code of Conduct`_.
 
 |powered_by_MDA|
 
-If you use MDAnalysis_ in your project consider lettting your users and the world know about it by displaying the MDAnalysis_ badge! `Embedding code`_ is available for different markups.
+If you use MDAnalysis_ in your project consider letting your users and the world know about it by displaying the MDAnalysis_ badge! `Embedding code`_ is available for different markups.
 
 Example analysis script
 =======================
@@ -73,8 +73,11 @@ The latest release can be **installed via pip or conda** as
 described in the `Installation Quick Start`_.
 
 **Source code** is hosted in a git repository at
-https://github.com/MDAnalysis/mdanalysis and is available under the
-GNU General Public License, version 2 (see the file LICENSE_).
+https://github.com/MDAnalysis/mdanalysis and is packaged under the
+GNU General Public License, version 3 or any later version. Invidiual
+source code components are provided under a mixture of GPLv3+ compatible
+licenses, including LGPLv2.1+ and GPLv2+. Please see the file LICENSE_
+for more information.
 
 
 Contributing
@@ -112,12 +115,6 @@ two papers:
 For citations of included algorithms and sub-modules please see the references_.
 
 
-
-.. Footnotes
-
-.. [*] **build**: Unit testing is for the whole package; **coverage** is
-       shown for the core library modules and the analysis modules.
-
 .. _NumFOCUS: https://numfocus.org/
 .. _open governance model: https://www.mdanalysis.org/about/#governance
 .. _tax-deductible donation: https://numfocus.org/donate-to-mdanalysis
@@ -126,7 +123,7 @@ For citations of included algorithms and sub-modules please see the references_.
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
 .. _MDAnalysis: https://www.mdanalysis.org
 .. _LICENSE:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
+   https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
 .. _`Installation Quick Start`:
    https://www.mdanalysis.org/pages/installation_quick_start/
 .. _`MDAnalysis.analysis`: https://docs.mdanalysis.org/documentation_pages/analysis_modules.html
@@ -178,9 +175,9 @@ For citations of included algorithms and sub-modules please see the references_.
    :alt: Github Actions Cron Job Status
    :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci-cron.yaml
 
-.. |travis| image:: https://img.shields.io/travis/MDAnalysis/mdanalysis/develop?label=Travis%20CI
-   :alt: Travis CI Build Status
-   :target: https://travis-ci.com/MDAnalysis/mdanalysis
+.. |linters| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/linters.yaml/badge.svg
+   :alt: Github Actions Linters Status
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/linters.yaml
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
@@ -189,10 +186,6 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |anaconda| image:: https://anaconda.org/conda-forge/mdanalysis/badges/version.svg
    :alt: Anaconda
    :target: https://anaconda.org/conda-forge/mdanalysis
-
-.. |mybinder| image:: https://mybinder.org/badge.svg
-   :alt: My Binder
-   :target: https://mybinder.org/v2/gh/MDAnalysis/binder-notebook/master
    
 .. |asv| image:: https://img.shields.io/badge/benchmarked%20by-asv-blue.svg
    :alt: ASV Benchmarks

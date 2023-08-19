@@ -528,7 +528,7 @@ class NCDFReader(base.ReaderBase):
             # len(dimensions['frame']) ==  10: in any case, we need to get
             # the number of frames from somewhere such as the time variable:
             if self.n_frames is None:
-                self.n_frames = self.trjfile.variables['time'].shape[0]
+                self.n_frames = self.trjfile.variables['coordinates'].shape[0]
         except KeyError:
             errmsg = (f"NCDF trajectory {self.filename} does not contain "
                       f"frame information")
@@ -544,7 +544,17 @@ class NCDFReader(base.ReaderBase):
 
         # checks for not-implemented features (other units would need to be
         # hacked into MDAnalysis.units)
-        self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
+        try:
+            self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
+            self.has_time = True
+        except KeyError:
+            self.has_time = False
+            wmsg = ("NCDF trajectory does not contain `time` information;"
+                    " `time` will be set as an increasing index")  
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
+
+
         self._verify_units(self.trjfile.variables['coordinates'].units,
                            'angstrom')
 
@@ -640,7 +650,8 @@ class NCDFReader(base.ReaderBase):
                 self.n_frames))
         # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
         ts._pos[:] = self._get_var_and_scale('coordinates', frame)
-        ts.time = self._get_var_and_scale('time', frame)
+        if self.has_time:
+            ts.time = self._get_var_and_scale('time', frame)
         if self.has_velocities:
             ts._velocities[:] = self._get_var_and_scale('velocities', frame)
         if self.has_forces:
@@ -685,7 +696,7 @@ class NCDFReader(base.ReaderBase):
         try:
             t1 = self.trjfile.variables['time'][1]
             t0 = self.trjfile.variables['time'][0]
-        except IndexError:
+        except (IndexError, KeyError):
             raise AttributeError
         return t1 - t0
 

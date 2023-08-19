@@ -7,6 +7,7 @@ omit =
     */legacy/*
     */due.py
 concurrency = thread, multiprocessing
+parallel = true
 
 [report]
 exclude_lines =

@@ -36,7 +36,7 @@ table on :ref:`table-baseunits`.
 
 .. _table-baseunits:
 
-.. Table:: Base units in MDAnalysis
+.. Table:: Base units in MDAnalysis as encoded in :data:`MDANALYSIS_BASE_UNITS`
 
    =========== ============== ===============================================
    quantity    unit            SI units
@@ -134,6 +134,7 @@ Functions
 Data
 ----
 
+.. autodata:: MDANALYSIS_BASE_UNITS
 .. autodata:: constants
 .. autodata:: lengthUnit_factor
 .. autodata:: water
@@ -149,7 +150,11 @@ Data
 References and footnotes
 ------------------------
 
-.. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
+.. bibliography::
+   :filter: False
+   :style: MDA
+
+   Jorgensen1998
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -166,6 +171,23 @@ References and footnotes
       X' = f_{b,b'} X
 
 """
+
+import warnings
+
+
+# Remove in 2.8.0
+class DeprecatedKeyAccessDict(dict):
+    deprecated_kB = 'Boltzman_constant'
+
+    def __getitem__(self, key):
+        if key == self.deprecated_kB:
+            wmsg = ("Please use 'Boltzmann_constant' henceforth. The key "
+                    "'Boltzman_constant' was a typo and will be removed "
+                    "in MDAnalysis 2.8.0.")
+            warnings.warn(wmsg, DeprecationWarning)
+            key = 'Boltzmann_constant'
+        return super().__getitem__(key)
+
 
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
@@ -184,13 +206,13 @@ References and footnotes
 #:    http://physics.nist.gov/Pubs/SP811/appenB8.html#C
 #:
 #: .. versionadded:: 0.9.0
-constants = {
+constants = DeprecatedKeyAccessDict({
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As
     'calorie': 4.184,                      # J
-    'Boltzman_constant': 8.314462159e-3,   # KJ (mol K)**-1
+    'Boltzmann_constant': 8.314462159e-3,   # KJ (mol K)**-1
     'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
-}
+})
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
@@ -205,7 +227,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values at T=298K, P=1atm [Jorgensen1998]_
+#: water density values at T=298K, P=1atm :cite:p:`Jorgensen1998`.
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -337,6 +359,14 @@ for utype, ufactor in conversion_factor.items():
     for unit in ufactor.keys():
         assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
+
+#: Lookup table for base units in MDAnalysis by unit type.
+MDANALYSIS_BASE_UNITS = {"length": "A",
+                         "time": "ps",
+                         "energy": "kJ/mol",
+                         "charge": "e",
+                         "force": "kJ/(mol*A)",
+                         "speed": "A/ps"}
 
 
 def get_conversion_factor(unit_type, u1, u2):
