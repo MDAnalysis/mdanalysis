@@ -67,7 +67,7 @@ Distances
 
 """
 
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import warnings
 
 import numpy as np
@@ -149,6 +149,28 @@ class NucPairDist(AnalysisBase):
             self._s1 += selection1[i]
             self._s2 += selection2[i]
 
+    @staticmethod
+    def select_strand_atoms(strand1: List[Residue], strand2: List[Residue], a1_name: str, a2_name: str,
+                            g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
+                            t_name: str = 'T', c_name: str = 'C') -> Tuple[List[mda.AtomGroup], List[mda.AtomGroup]]:
+        sel1: List[mda.AtomGroup]
+        sel2: List[mda.AtomGroup]
+        strand: Tuple[Residue, Residue] = zip(strand1, strand2)
+
+
+        for s in strand:
+            if s[0].resname[0] in [c_name, t_name, u_name]:
+                a1, a2 = a2_name, a1_name
+            elif s[0].resname[0] in [a_name, g_name]:
+                a1, a2 = a1_name, a2_name
+            else:
+                raise ValueError(f"{s} are not valid nucleic acids")
+
+            sel1.append(s[0].atoms.select_atoms(f'name {a1}'))
+            sel2.append(s[1].atoms.select_atoms(f'name {a2}'))
+
+        return (sel1, sel2)
+
     def _prepare(self) -> None:
         self._res_array: np.ndarray = np.zeros([self.n_frames, self._n_sel])
 
@@ -223,22 +245,13 @@ class WatsonCrickDist(NucPairDist):
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
                  **kwargs) -> None:
-        sel1: List[mda.AtomGroup] = []
-        sel2: List[mda.AtomGroup] = []
-        strand = zip(strand1, strand2)
 
-        for s in strand:
-            if s[0].resname[0] in [c_name, t_name, u_name]:
-                a1, a2 = n3_name, n1_name
-            elif s[0].resname[0] in [a_name, g_name]:
-                a1, a2 = n1_name, n3_name
-            else:
-                raise ValueError(f"{s} are not valid nucleic acids")
+        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
+            strand1, strand2, n1_name, n3_name, g_name=g_name, a_name=a_name,
+            t_name=t_name, u_name=u_name
+        )
 
-            sel1.append(s[0].atoms.select_atoms(f'name {a1}'))
-            sel2.append(s[1].atoms.select_atoms(f'name {a2}'))
-
-        super(WatsonCrickDist, self).__init__(sel1, sel2, **kwargs)
+        super(WatsonCrickDist, self).__init__(selections[0], selections[1], **kwargs)
 
 
 class MinorPairDist(NucPairDist):
@@ -299,22 +312,13 @@ class MinorPairDist(NucPairDist):
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
                  **kwargs) -> None:
-        sel1: List[mda.AtomGroup] = []
-        sel2: List[mda.AtomGroup] = []
-        strand = zip(strand1, strand2)
+        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
+            strand1, strand2, o2_name, c2_name, g_name=g_name, a_name=a_name,
+            t_name=t_name, u_name=u_name
+        )
 
-        for s in strand:
-            if s[0].resname[0] in [c_name, t_name, u_name]:
-                a1, a2 = o2_name, c2_name
-            elif s[0].resname[0] in [a_name, g_name]:
-                a1, a2 = c2_name, o2_name
-            else:
-                raise ValueError(f"{s} are not valid nucleic acids")
+        super(MinorPairDist, self).__init__(selections[0], selections[1], **kwargs)
 
-            sel1.append(s[0].atoms.select_atoms(f'name {a1}'))
-            sel2.append(s[1].atoms.select_atoms(f'name {a2}'))
-
-        super(MinorPairDist, self).__init__(sel1, sel2, **kwargs)
 
 
 class MajorPairDist(NucPairDist):
@@ -375,19 +379,9 @@ class MajorPairDist(NucPairDist):
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
                  **kwargs) -> None:
-        sel1: List[mda.AtomGroup] = []
-        sel2: List[mda.AtomGroup] = []
-        strand = zip(strand1, strand2)
+        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
+            strand1, strand2, n4_name, o6_name, g_name=g_name, a_name=a_name,
+            t_name=t_name, u_name=u_name
+        )
 
-        for s in strand:
-            if s[0].resname[0] in [c_name, t_name, u_name]:
-                a1, a2 = n4_name, o6_name
-            elif s[0].resname[0] in [a_name, g_name]:
-                a1, a2 = o6_name, n4_name
-            else:
-                raise ValueError(f"{s} are not valid nucleic acids")
-
-            sel1.append(s[0].atoms.select_atoms(f'name {a1}'))
-            sel2.append(s[1].atoms.select_atoms(f'name {a2}'))
-
-        super(MajorPairDist, self).__init__(sel1, sel2, **kwargs)
+        super(MajorPairDist, self).__init__(selections[0], selections[1], **kwargs)
