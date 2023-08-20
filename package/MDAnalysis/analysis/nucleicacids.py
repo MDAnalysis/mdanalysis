@@ -249,7 +249,7 @@ class MinorPairDist(NucPairDist):
     Bases are matched by their index in the lists given as arguments.
 
     Parameters
-    __________
+    ----------
     strand1: List[Residue]
         First list of bases
     strand2: List[Residue]
@@ -279,14 +279,14 @@ class MinorPairDist(NucPairDist):
         arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
-    __________
+    ----------
     results: numpy.ndarray
     first index is selection second index is time
     results.times: numpy.ndarray
     times used in analysis
 
     Raises
-    ______
+    ------
     ValueError
     if the residues given are not amino acids
     ValueError
@@ -325,7 +325,7 @@ class MajorPairDist(NucPairDist):
     Bases are matched by their index in the lists given as arguments.
 
     Parameters
-    __________
+    ----------
     strand1: List[Residue]
         First list of bases
     strand2: List[Residue]
@@ -355,14 +355,14 @@ class MajorPairDist(NucPairDist):
         arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
-    __________
+    ----------
     results: numpy.ndarray
     first index is selection second index is time
     results.times: numpy.ndarray
     times used in analysis
 
     Raises
-    ______
+    ------
     ValueError
     if the residues given are not amino acids
     ValueError
