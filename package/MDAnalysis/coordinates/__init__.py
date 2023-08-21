@@ -763,6 +763,9 @@ from . import chain
 from . import chemfiles
 from . import CRD
 from . import DCD
+from . import DDC
+from . import DDCMD
+from . import DDCMDTAR
 from . import DLPoly
 from . import DMS
 from . import GMS
