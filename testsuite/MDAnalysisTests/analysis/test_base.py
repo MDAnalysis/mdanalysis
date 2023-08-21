@@ -55,7 +55,7 @@ class FrameAnalysis(base.AnalysisBase):
         self.found_frames = list(self.results.found_frames)
 
     def _get_aggregator(self):
-        return base.ResultsGroup({'found_frames': base.flatten_sequence})
+        return base.ResultsGroup({'found_frames': base.ResultsGroup.flatten_sequence})
 
 class IncompleteAnalysis(base.AnalysisBase):
     def __init__(self, reader, **kwargs):

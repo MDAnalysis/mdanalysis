@@ -460,18 +460,21 @@ class ResultsGroup:
                 rv[key] = agg_function(results_of_t)
         return rv
 
-def flatten_sequence(arrs: list[list]):
-    return [item for sublist in arrs for item in sublist]
+    @staticmethod
+    def flatten_sequence(arrs: list[list]):
+        return [item for sublist in arrs for item in sublist]
 
-def ndarray_sum(arrs: np.ndarray):
-    return np.array(arrs).sum(axis=0)
+    @staticmethod
+    def ndarray_sum(arrs: np.ndarray):
+        return np.array(arrs).sum(axis=0)
 
-def ndarray_mean(arrs: np.ndarray):
-    return np.array(arrs).sum(axis=0)
+    @staticmethod
+    def ndarray_mean(arrs: np.ndarray):
+        return np.array(arrs).sum(axis=0)
 
-def float_mean(floats: list[float]):
-    return sum(floats) / len(floats)
-
+    @staticmethod
+    def float_mean(floats: list[float]):
+        return sum(floats) / len(floats)
 
 class AnalysisBase(object):
     r"""Base class for defining multi-frame analysis
@@ -967,7 +970,7 @@ class AnalysisFromFunction(AnalysisBase):
         self.results.timeseries = []
 
     def _get_aggregator(self):
-        return ResultsGroup({'timeseries': flatten_sequence})
+        return ResultsGroup({'timeseries': ResultsGroup.flatten_sequence})
 
     def _single_frame(self):
         self.results.timeseries.append(self.function(*self.args, **self.kwargs))
