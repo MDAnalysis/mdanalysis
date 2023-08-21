@@ -67,7 +67,7 @@ Distances
 
 """
 
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, TypeAlias, Union
 import warnings
 
 import numpy as np
@@ -75,8 +75,14 @@ import numpy as np
 import MDAnalysis as mda
 from .distances import calc_bonds
 from .base import AnalysisBase, Results
-from MDAnalysis.core.groups import Residue
+from MDAnalysis.core.groups import Residue, ResidueGroup
 
+
+ResidueClass: TypeAlias = Union[Residue, ResidueGroup]
+r"""A :class:`typing.TypeAlias` for :code:`Union[Residue, ResidueGroup]`
+
+Used as an alias for methods where either class is acceptable.
+"""
 
 class NucPairDist(AnalysisBase):
     r"""Atom Pair distance calculation base class.
@@ -100,8 +106,6 @@ class NucPairDist(AnalysisBase):
 
     Attributes
     ----------
-    times: numpy.ndarray
-        Simulation times for analysis.
     results.pair_distances: numpy.ndarray
         2D array of pair distances. First dimension is simulation time, second
         dimension contains the pair distances for each each entry pair in
@@ -129,7 +133,6 @@ class NucPairDist(AnalysisBase):
     _s2: mda.AtomGroup
     _n_sel: int
     _res_dict: Dict[int, List[float]]
-    _times = List[float]
 
     def __init__(self, selection1: List[mda.AtomGroup],
                  selection2: List[mda.AtomGroup],
@@ -226,8 +229,6 @@ class WatsonCrickDist(NucPairDist):
 
     Attributes
     ----------
-    times: numpy.ndarray
-        Simulation times for analysis.
     results.pair_distances: numpy.ndarray
         2D array of Watson-Crick basepair distances. First dimension is
         simulation time, second dimension contains the pair distances for
@@ -252,7 +253,7 @@ class WatsonCrickDist(NucPairDist):
        MDAnalysis 2.5.0. Please use the class attribute :attr:`times` instead.
     """
 
-    def __init__(self, strand1: List[Residue], strand2: List[Residue],
+    def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
                  nitrogen1_name: str = 'N1', nitrogen3_name: str = "N3",
                  guanine_name: str = 'G', adenine_name: str = 'A', uracil_name: str = 'U',
                  tymine_name: str = 'T', cytosine_name: str = 'C',
@@ -308,8 +309,6 @@ class MinorPairDist(NucPairDist):
     ----------
     results: numpy.ndarray
         first index is selection second index is time
-    results.times: numpy.ndarray
-        times used in analysis
 
     Raises
     ------
@@ -320,7 +319,7 @@ class MinorPairDist(NucPairDist):
 
     """
 
-    def __init__(self, strand1: List[Residue], strand2: List[Residue],
+    def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
                  oxygen2_name: str = 'O2', carbon2_name: str = "C2",
                  guanine_name: str = 'G', adenine_name: str = 'A', uracil_name: str = 'U',
                  tymine_name: str = 'T', cytosine_name: str = 'C',
@@ -375,9 +374,7 @@ class MajorPairDist(NucPairDist):
     Attributes
     ----------
     results: numpy.ndarray
-    first index is selection second index is time
-    results.times: numpy.ndarray
-    times used in analysis
+        first index is selection second index is time
 
     Raises
     ------
@@ -388,7 +385,7 @@ class MajorPairDist(NucPairDist):
 
     """
 
-    def __init__(self, strand1: List[Residue], strand2: List[Residue],
+    def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
                  nitrogen4_name: str = 'N4', oxygen6_name: str = "O6",
                  guanine_name: str = 'G', adenine_name: str = 'A', uracil_name: str = 'U',
                  tymine_name: str = 'T', cytosine_name: str = 'C',
