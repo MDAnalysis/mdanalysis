@@ -260,7 +260,7 @@ class WatsonCrickDist(NucPairDist):
 
         selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
             strand1, strand2, n1_name, n3_name, guanine_name=guanine_name, adenine_name=adenine_name,
-            tymine_name=tymine_name, uracil_name=uracil_name
+            tymine_name=tymine_name, uracil_name=uracil_name, cytosine_name=cytosine_name
         )
 
         super(WatsonCrickDist, self).__init__(selections[0], selections[1], **kwargs)
