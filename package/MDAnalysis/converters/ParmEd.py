@@ -81,7 +81,7 @@ import functools
 import itertools
 import warnings
 
-from ..coordinates import base
+from . import base
 from ..topology.tables import SYMB2Z
 from ..core.universe import Universe
 from ..exceptions import NoDataError
