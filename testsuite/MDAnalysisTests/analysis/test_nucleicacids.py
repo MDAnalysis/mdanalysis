@@ -22,11 +22,15 @@
 #
 
 import MDAnalysis as mda
+
 import pytest
-from MDAnalysis.analysis.nucleicacids import WatsonCrickDist,\
-    MajorPairDist, MinorPairDist
+
+from pytest import approx
+
+from MDAnalysis.analysis.nucleicacids import (NucPairDist, WatsonCrickDist,
+                                              MajorPairDist, MinorPairDist)
+                                              
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
-from numpy.testing import assert_allclose
 
 
 @pytest.fixture(scope='module')
@@ -54,15 +58,15 @@ def test_wc_dist_results_keys(wc_rna):
 
 
 def test_wc_dist(wc_rna):
-    assert_allclose(wc_rna.results.pair_distances[0, 0], 4.3874702, atol=1e-3)
-    assert_allclose(wc_rna.results.pair_distances[0, 1], 4.1716404, atol=1e-3)
+    assert wc_rna.results.pair_distances[0, 0] == approx(4.3874702, rel=1e-3)
+    assert wc_rna.results.pair_distances[0, 1] == approx(4.1716404, rel=1e-3)
 
 
 def test_wc_dist_invalid_residue_types(u):
     strand = u.select_atoms("resid 1-10")
     strand1 = [strand.residues[0], strand.residues[21]]
     strand2 = [strand.residues[2], strand.residues[22]]
-    with pytest.raises(ValueError, match="are not valid nucleic acids"):
+    with pytest.raises(ValueError, match="is not a valid nucleic acid"):
         WatsonCrickDist(strand1, strand2)
 
 
@@ -87,8 +91,8 @@ def test_minor_dist(u):
     MI = MinorPairDist(strand1, strand2)
     MI.run()
 
-    assert_allclose(MI.results[0][0], 15.06506, atol=1e-3)
-    assert_allclose(MI.results[1][0], 3.219116, atol=1e-3)
+    assert MI.results.pair_distances[0, 0] == approx(15.06506, rel=1e-3)
+    assert MI.results.pair_distances[0, 1] == approx(3.219116, rel=1e-3)
 
 
 def test_major_dist(u):
@@ -99,5 +103,5 @@ def test_major_dist(u):
     MA = MajorPairDist(strand1, strand2)
     MA.run()
 
-    assert_allclose(MA.results[0][0], 26.884272, atol=1e-3)
-    assert_allclose(MA.results[1][0], 13.578535, atol=1e-3)
+    assert(MA.results.pair_distances[0, 0] == approx(26.884272, rel=1e-3))
+    assert(MA.results.pair_distances[0, 1] == approx(13.578535, rel=1e-3))
