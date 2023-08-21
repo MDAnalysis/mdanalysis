@@ -29,7 +29,7 @@ from pytest import approx
 
 from MDAnalysis.analysis.nucleicacids import (NucPairDist, WatsonCrickDist,
                                               MajorPairDist, MinorPairDist)
-                                              
+                                         
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 
 
@@ -111,5 +111,5 @@ def test_major_dist(u):
     MA = MajorPairDist(strand1, strand2)
     MA.run()
 
-    assert(MA.results.pair_distances[0, 0] == approx(26.884272, rel=1e-3))
-    assert(MA.results.pair_distances[0, 1] == approx(13.578535, rel=1e-3))
+    assert MA.results.pair_distances[0, 0] == approx(26.884272, rel=1e-3)
+    assert MA.results.pair_distances[0, 1] == approx(13.578535, rel=1e-3)
