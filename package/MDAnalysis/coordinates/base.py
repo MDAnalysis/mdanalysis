@@ -1,6 +1,6 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-#
+
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
@@ -101,6 +101,18 @@ file.
    :members:
    :inherited-members:
 
+Converters
+----------
+Converters output information to other libraries. 
+
+.. deprecated:: 2.7.0
+    All converter code has been moved to :mod:`MDAnalysis.converters` and will
+    be removed in 3.0.0.
+
+.. autoclass:: ConverterBase
+   :members:
+   :inherited-members:
+
 Helper classes
 --------------
 
@@ -123,6 +135,7 @@ from .. import (
     _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
+    _CONVERTERS,  # remove in 3.0.0 (Issue #3404)
 )
 from .. import units
 from ..auxiliary.base import AuxReader
@@ -1770,3 +1783,47 @@ def range_length(start, stop, step):
     else:
         # The range is empty.
         return 0
+
+# Verbatim copy of code from converters/base.py
+# Needed to avoid circular imports before removal in
+# MDAnalysis 3.0.0
+# Remove in 3.0.0
+class _Convertermeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = asiterable(classdict['lib'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                f = f.upper()
+                _CONVERTERS[f] = cls
+
+
+# Verbatim copy of code from converters/base.py
+# Needed to avoid circular imports before removal in
+# MDAnalysis 3.0.0
+# Remove in 3.0.0
+class ConverterBase(IOBase, metaclass=_Convertermeta):
+    """Base class for converting to other libraries.
+
+    .. deprecated:: 2.7.0
+        This class has been moved to 
+        :class:`MDAnalysis.converters.base.ConverterBase` and will be removed
+        from :mod:`MDAnalysis.coordinates.base` in 3.0.0.
+    """
+
+    def __init_subclass__(cls):
+        wmsg = ("ConverterBase moved from coordinates.base."
+                "ConverterBase to converters.base.ConverterBase "
+                "and will be removed from coordinates.base "
+                "in MDAnalysis release 3.0.0")
+        warnings.warn(wmsg, DeprecationWarning, stacklevel=2)
+
+    def __repr__(self):
+        return "<{cls}>".format(cls=self.__class__.__name__)
+
+    def convert(self, obj):
+        raise NotImplementedError

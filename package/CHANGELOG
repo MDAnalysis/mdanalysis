@@ -30,6 +30,8 @@ Changes
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
 
 Deprecations
+  * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
+    use converters.base.ConvertBase instead (Issue #3404)
 
 
 08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,

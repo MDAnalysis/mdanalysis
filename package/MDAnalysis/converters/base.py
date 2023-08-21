@@ -33,7 +33,7 @@ Converters output information to other libraries.
 """
 
 from .. import _CONVERTERS
-from ..coordinates.base import IOBase, SingleFrameReaderBase
+from ..coordinates.base import IOBase
 from ..lib.util import asiterable
 
 
