@@ -38,6 +38,14 @@ def u():
     return mda.Universe(RNA_PSF, RNA_PDB)
 
 
+def test_empty_ag_error(u):
+    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+    strand1 = [strand.residues[0]]
+    strand2 = [strand.residues[1]]
+
+    with pytest.raises(ValueError, match="returns an empty AtomGroup"):
+        NucPairDist.select_strand_atoms(strand1, strand2, 'UNK1', 'O2')
+
 @pytest.fixture(scope='module')
 def wc_rna(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
