@@ -207,9 +207,9 @@ class WatsonCrickDist(NucPairDist):
         First list of bases
     strand2: List[Residue]
         Second list of bases
-    n1_name: str (optional)
+    nitrogen1_name: str (optional)
         Name of Nitrogen 1 of nucleic acids, by default assigned to N1
-    n3_name: str (optional)
+    nitrogen3_name: str (optional)
         Name of Nitrogen 3 of nucleic acids, by default assigned to N3
     guanine_name: str (optional)
         Name of Guanine in topology, by default assigned to G
@@ -253,13 +253,14 @@ class WatsonCrickDist(NucPairDist):
     """
 
     def __init__(self, strand1: List[Residue], strand2: List[Residue],
-                 n1_name: str = 'N1', n3_name: str = "N3",
+                 nitrogen1_name: str = 'N1', nitrogen3_name: str = "N3",
                  guanine_name: str = 'G', adenine_name: str = 'A', uracil_name: str = 'U',
                  tymine_name: str = 'T', cytosine_name: str = 'C',
                  **kwargs) -> None:
 
         selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
-            strand1, strand2, n1_name, n3_name, guanine_name=guanine_name, adenine_name=adenine_name,
+            strand1, strand2, nitrogen1_name, nitrogen3_name, 
+            guanine_name=guanine_name, adenine_name=adenine_name,
             tymine_name=tymine_name, uracil_name=uracil_name, cytosine_name=cytosine_name
         )
 
@@ -279,10 +280,10 @@ class MinorPairDist(NucPairDist):
         First list of bases
     strand2: List[Residue]
         Second list of bases
-    o2_name: str (optional)
+    oxygen2_name: str (optional)
         Name of Oxygen 2 of nucleic acids
         by default assigned to O2
-    c2_name: str (optional)
+    carbon2_name: str (optional)
         Name of Carbon 2 of nucleic acids
         by default assigned to C2
     guanine_name: str (optional)
@@ -313,19 +314,20 @@ class MinorPairDist(NucPairDist):
     Raises
     ------
     ValueError
-    if the residues given are not amino acids
+        if the residues given are not amino acids
     ValueError
-    if the selections given are not the same length
+        if the selections given are not the same length
 
     """
 
     def __init__(self, strand1: List[Residue], strand2: List[Residue],
-                 o2_name: str = 'O2', c2_name: str = "C2",
+                 oxygen2_name: str = 'O2', carbon2_name: str = "C2",
                  guanine_name: str = 'G', adenine_name: str = 'A', uracil_name: str = 'U',
                  tymine_name: str = 'T', cytosine_name: str = 'C',
                  **kwargs) -> None:
         selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
-            strand1, strand2, c2_name, o2_name, guanine_name=guanine_name, adenine_name=adenine_name,
+            strand1, strand2, carbon2_name, oxygen2_name,
+            guanine_name=guanine_name, adenine_name=adenine_name,
             tymine_name=tymine_name, uracil_name=uracil_name, cytosine_name=cytosine_name
         )
 
@@ -346,10 +348,10 @@ class MajorPairDist(NucPairDist):
         First list of bases
     strand2: List[Residue]
         Second list of bases
-    o6_name: str (optional)
+    oxygen6_name: str (optional)
         Name of Oxygen 6 of nucleic acids
         by default assigned to O6
-    n4_name: str (optional)
+    nitrogen4_name: str (optional)
         Name of Nitrogen 4 of nucleic acids
         by default assigned to N4
     guanine_name: str (optional)
@@ -380,20 +382,21 @@ class MajorPairDist(NucPairDist):
     Raises
     ------
     ValueError
-    if the residues given are not amino acids
+        if the residues given are not amino acids
     ValueError
-    if the selections given are not the same length
+        if the selections given are not the same length
 
     """
 
     def __init__(self, strand1: List[Residue], strand2: List[Residue],
-                 n4_name: str = 'N4', o6_name: str = "O6",
+                 nitrogen4_name: str = 'N4', oxygen6_name: str = "O6",
                  guanine_name: str = 'G', adenine_name: str = 'A', uracil_name: str = 'U',
                  tymine_name: str = 'T', cytosine_name: str = 'C',
                  **kwargs) -> None:
         selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
-            strand1, strand2, o6_name, n4_name, guanine_name=guanine_name, adenine_name=adenine_name,
-            tymine_name=tymine_name, uracil_name=uracil_name, cytosine_name=cytosine_name
+            strand1, strand2, oxygen6_name, nitrogen4_name, guanine_name=guanine_name, 
+            adenine_name=adenine_name, tymine_name=tymine_name, uracil_name=uracil_name,
+            cytosine_name=cytosine_name
         )
 
         super(MajorPairDist, self).__init__(selections[0], selections[1], **kwargs)
