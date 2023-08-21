@@ -76,7 +76,6 @@ import MDAnalysis as mda
 from .distances import calc_bonds
 from .base import AnalysisBase, Results
 from MDAnalysis.core.groups import Residue
-from .dihedrals import Dihedral
 
 
 class NucPairDist(AnalysisBase):
@@ -307,9 +306,9 @@ class MinorPairDist(NucPairDist):
     Attributes
     ----------
     results: numpy.ndarray
-    first index is selection second index is time
+        first index is selection second index is time
     results.times: numpy.ndarray
-    times used in analysis
+        times used in analysis
 
     Raises
     ------
