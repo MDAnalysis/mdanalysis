@@ -694,7 +694,7 @@ class TopologyGroup(object):
         atom_idx = ag.indices
         # Create a list of boolean arrays,
         # each representing a column of bond indices.
-        seen = [np.in1d(col, atom_idx) for col in self._bix.T]
+        seen = [np.isin(col, atom_idx) for col in self._bix.T]
 
         # Create final boolean mask by summing across rows
         mask = func(seen, axis=0)
