@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope, pillose
+??/??/?? IAlibay, hmacdope, pillose, jaclark5
 
  * 2.7.0
 
@@ -23,6 +23,8 @@ Fixes
 Enhancements
 
 Changes
+  * Update documentation for SurvivalProbabilty to be more clear
+    (Issue #4247)
   * Cython DEF statments have been replaced with compile time integer constants
     as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
 
