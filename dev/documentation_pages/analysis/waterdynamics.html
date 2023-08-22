@@ -571,19 +571,22 @@ average distance that particles travels. The MSD is given by:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.waterdynamics.SurvivalProbability">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.waterdynamics.</span></span><span class="sig-name descname"><span class="pre">SurvivalProbability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="Permalink to this definition"></a></dt>
-<dd><p>Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
-The SP is given by:</p>
+<dd><p>Survival Probability (SP) gives the probability for a group of particles to remain
+in a certain region. The SP is given by:</p>
 <div class="math notranslate nohighlight">
-\[P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}\]</div>
-<p>where <span class="math notranslate nohighlight">\(T\)</span> is the maximum time of simulation, <span class="math notranslate nohighlight">\(\tau\)</span> is the
-timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number of particles at time <span class="math notranslate nohighlight">\(t\)</span>, and
-<span class="math notranslate nohighlight">\(N(t, t+\tau)\)</span> is the number of particles at every frame from <span class="math notranslate nohighlight">\(t\)</span> to <cite>tau</cite>.</p>
+\[P(\tau) = \langle \frac{ N(t, t + \tau )} { N(t) }\rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(\tau\)</span> is the timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number of particles at time
+<span class="math notranslate nohighlight">\(t\)</span>, and <span class="math notranslate nohighlight">\(N(t, t+\tau)\)</span> is the number of particles at every frame from
+<span class="math notranslate nohighlight">\(t\)</span> to <span class="math notranslate nohighlight">\(t + \tau\)</span>. The angular brackets represent an average over all time
+origins, <span class="math notranslate nohighlight">\(t\)</span>. See <a class="reference internal" href="../lib/correlations.html#MDAnalysis.lib.correlations.autocorrelation" title="MDAnalysis.lib.correlations.autocorrelation"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations.autocorrelation()</span></code></a> for
+technical details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
-define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resid 10)”. See <a class="reference internal" href="#sp-examples">SP-examples</a>.</p></li>
+define the region/zone where to analyze, e.g.: “resname SOL and around 5
+(resid 10)”. See <a class="reference internal" href="#sp-examples">SP-examples</a>.</p></li>
 <li><p><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – When True, prints progress and comments to the console.</p></li>
 </ul>
 </dd>
@@ -608,6 +611,9 @@ the <cite>start</cite>, <cite>stop</cite>, and <cite>tau_max</cite> keywords res
 The <cite>stop</cite> keyword as passed to <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SurvivalProbability.run()</span></code></a> has now
 changed behaviour and will act in an <cite>exclusive</cite> manner (instead of it’s
 previous <cite>inclusive</cite> behaviour),</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Updated docs to align with discrete autocorrelation function.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">

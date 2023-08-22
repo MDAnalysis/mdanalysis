@@ -982,15 +982,17 @@
 
 <div class="viewcode-block" id="SurvivalProbability"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability">[docs]</a><span class="k">class</span> <span class="nc">SurvivalProbability</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.</span>
-<span class="sd">    The SP is given by:</span>
+<span class="sd">    Survival Probability (SP) gives the probability for a group of particles to remain</span>
+<span class="sd">    in a certain region. The SP is given by:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}</span>
+<span class="sd">        P(\tau) = \langle \frac{ N(t, t + \tau )} { N(t) }\rangle</span>
 
-<span class="sd">    where :math:`T` is the maximum time of simulation, :math:`\tau` is the</span>
-<span class="sd">    timestep, :math:`N(t)` the number of particles at time :math:`t`, and</span>
-<span class="sd">    :math:`N(t, t+\tau)` is the number of particles at every frame from :math:`t` to `\tau`.</span>
+<span class="sd">    where :math:`\tau` is the timestep, :math:`N(t)` the number of particles at time </span>
+<span class="sd">    :math:`t`, and :math:`N(t, t+\tau)` is the number of particles at every frame from </span>
+<span class="sd">    :math:`t` to :math:`t + \tau`. The angular brackets represent an average over all time </span>
+<span class="sd">    origins, :math:`t`. See :func:`MDAnalysis.lib.correlations.autocorrelation` for</span>
+<span class="sd">    technical details.</span>
 
 
 <span class="sd">    Parameters</span>
@@ -999,7 +1001,8 @@
 <span class="sd">      Universe object</span>
 <span class="sd">    select : str</span>
 <span class="sd">      Selection string; any selection is allowed. With this selection you</span>
-<span class="sd">      define the region/zone where to analyze, e.g.: &quot;resname SOL and around 5 (resid 10)&quot;. See `SP-examples`_.</span>
+<span class="sd">      define the region/zone where to analyze, e.g.: &quot;resname SOL and around 5 </span>
+<span class="sd">      (resid 10)&quot;. See `SP-examples`_.</span>
 <span class="sd">    verbose : Boolean, optional</span>
 <span class="sd">      When True, prints progress and comments to the console.</span>
 
@@ -1025,6 +1028,8 @@
 <span class="sd">       The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now</span>
 <span class="sd">       changed behaviour and will act in an `exclusive` manner (instead of it&#39;s</span>
 <span class="sd">       previous `inclusive` behaviour),</span>
+<span class="sd">    .. versionchanged:: 2.7.0</span>
+<span class="sd">       Updated docs to align with discrete autocorrelation function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
