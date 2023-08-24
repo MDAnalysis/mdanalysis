@@ -13,7 +13,7 @@ from MDAnalysisTests.analysis.test_base import (
 )
 from MDAnalysis.analysis.rms import RMSD, RMSF
 
-from MDAnalysis.analysis.base import ParallelExecutor
+from MDAnalysis.analysis.parallel import ParallelExecutor
 from MDAnalysis.lib.util import is_installed
 
 
