@@ -123,8 +123,8 @@ class set_variable_dimensions(TransformationBase):
     ----------
     dimensions: iterable of floats
         vector that contains unit cell lengths and angles.
-        Expected shape is are (N, 6), where N is the number of frames
-        in the trajectoru.
+        Expected shape is (N, 6), where N is the number of frames
+        in the trajectory.
 
     Returns
     -------
