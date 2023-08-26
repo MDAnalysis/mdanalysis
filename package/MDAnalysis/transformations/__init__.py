@@ -132,4 +132,4 @@ from .positionaveraging import PositionAverager
 from .nojump import NoJump
 from .fit import fit_translation, fit_rot_trans
 from .wrap import wrap, unwrap
-from .boxdimensions import set_dimensions
+from .boxdimensions import set_dimensions, set_variable_dimensions
