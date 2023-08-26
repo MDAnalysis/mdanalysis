@@ -33,7 +33,7 @@ Set dimensions of the simulation box to a constant vector across all timesteps.
 import numpy as np
 
 from .base import TransformationBase
-
+from ..exceptions import NoDataError
 
 class set_dimensions(TransformationBase):
     """
@@ -91,4 +91,73 @@ class set_dimensions(TransformationBase):
 
     def _transform(self, ts):
         ts.dimensions = self.dimensions
+        return ts
+
+
+class set_variable_dimensions(TransformationBase):
+    """
+    Set simulation box dimensions that may vary over time.
+    This is useful for creating NPT trajectories.
+
+    Timestep dimensions are modified in place.
+
+    Example
+    -------
+
+    e.g. set simulation box dimensions to a vector containing unit cell
+    dimensions [*a*, *b*, *c*, *alpha*, *beta*, *gamma*] at the first frame,
+    and [*2a*, *2b*, *2c*, *alpha*, *beta*, *gamma*] at the second frame.
+    Lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and angles
+    are in degrees.
+
+    .. code-block:: python
+
+        dim = [
+            [2, 2, 2, 90, 90, 90],
+            [4, 4, 4, 90, 90, 90],
+        ]
+        transform = mda.transformations.boxdimensions.set_dimensions(dim)
+        u.trajectory.add_transformations(transform)
+
+    Parameters
+    ----------
+    dimensions: iterable of floats
+        vector that contains unit cell lengths and angles.
+        Expected shape is are (N, 6), where N is the number of frames
+        in the trajectoru.
+
+    Returns
+    -------
+    :class:`~MDAnalysis.coordinates.timestep.Timestep` object
+    """
+
+    def __init__(self,
+                 dimensions,
+                 max_threads=None,
+                 parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+        self.dimensions = dimensions
+
+        try:
+            self.dimensions = np.asarray(self.dimensions, np.float32)
+        except ValueError:
+            errmsg = (f'{self.dimensions} cannot be converted into '
+                       'np.float32 numpy.ndarray')
+            raise ValueError(errmsg)
+        try:
+            self.dimensions = self.dimensions.reshape(-1, 6)
+        except ValueError:
+            errmsg = (f'{self.dimensions} array does not have valid box '
+                       'dimension shape.\nSimulation box dimensions are '
+                       'given by an float array of shape (N_frames, 6), '
+                       ' containing 3 lengths and 3 angles at each frame: '
+                       '[a, b, c, alpha, beta, gamma]')
+            raise ValueError(errmsg)
+
+    def _transform(self, ts):
+        try:
+            ts.dimensions = self.dimensions[ts.frame]
+        except IndexError as e:
+            raise NoDataError(f"Dimensions array has no data for frame {ts.frame}") from e
         return ts
