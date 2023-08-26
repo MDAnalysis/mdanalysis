@@ -13,7 +13,7 @@ def nojump_universes_fromfile():
     Create the universe objects for the tests.
     '''
     u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
-    transformation = NoJump()
+    transformation = NoJump(ag=u.atoms)
     u.trajectory.add_transformations(transformation)
     return u
 
@@ -55,7 +55,7 @@ def test_nojump_orthogonal_fwd(nojump_universe):
     """
     u = nojump_universe
     dim = np.asarray([1, 1, 1, 90, 90, 90], np.float32)
-    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
+    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump(ag=u.atoms)]
     u.trajectory.add_transformations(*workflow)
     transformed_coordinates = u.trajectory.timeseries()[0]
     # Step is 1 unit every 3 steps. After 99 steps from the origin,
@@ -76,7 +76,7 @@ def test_nojump_nonorthogonal_fwd(nojump_universe):
     # [0.        1.        0.       ]
     # [0.5       0.        0.8660254]]
     dim = np.asarray([1, 1, 1, 90, 60, 90], np.float32)
-    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
+    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump(ag=u.atoms)]
     u.trajectory.add_transformations(*workflow)
     transformed_coordinates = u.trajectory.timeseries()[0]
     # After the transformation, you should end up in a repeating pattern, since you are
@@ -111,7 +111,7 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     workflow = [
         mda.transformations.boxdimensions.set_dimensions(dim),
         wrap(towrap.atoms),
-        NoJump(),
+        NoJump(ag=towrap.atoms),
     ]
     towrap.trajectory.add_transformations(*workflow)
     assert_allclose(
@@ -120,6 +120,71 @@ def test_nojump_constantvel(nojump_constantvel_universe):
         rtol=5e-07,
         atol=5e-06,
     )
+
+def test_nojump_2nd_frame():
+    """
+    Test if the nojump transform returns the correct values
+    at all frames when iterating over an npt trajectory
+    and an atom crosses the x-boundary at the second frame
+
+    Wrapped coordinates are:
+    coordinates = [
+        [97.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+    ]
+    where each row is a different timestep.
+
+    And box dimensions are:
+    dimensions = [
+        [100, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+    ]
+    again where each row corresponds to a different timestep.
+
+    Unwarpped coordinates are the same at each frame:
+    unwrapped = [97.5, 50.0, 50.0]
+    """
+    u = mda.Universe(data.NOJUMP_NPT_2ND_FRAME_PDB, data.NOJUMP_NPT_2ND_FRAME_XTC)
+    u.trajectory.add_transformations(NoJump(ag=u.atoms))
+    x_position = 97.5
+    np.testing.assert_allclose(u.trajectory.timeseries()[:, 0, 0], x_position)
+
+
+def test_nojump_3rd_frame():
+    """
+    Test if the nojump transform returns the correct values
+    at all frames when iterating over an npt trajectory
+    and an atom crosses the x-boundary at the third frame.
+
+    Wrapped coordinates are:
+    coordinates = [
+        [97.5, 50.0, 50.0],
+        [97.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+    ]
+    where each row is a different timestep.
+
+    And box dimensions are:
+    dimensions = [
+        [100, 100, 100, 90, 90, 90],
+        [100, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+    ]
+    again where each row corresponds to a different timestep.
+
+    Unwarpped coordinates are the same at each frame:
+    unwrapped = [97.5, 50.0, 50.0]
+    """
+    u = mda.Universe(data.NOJUMP_NPT_3RD_FRAME_PDB, data.NOJUMP_NPT_3RD_FRAME_XTC)
+    u.trajectory.add_transformations(NoJump(ag=u.atoms))
+    x_position = 97.5
+    np.testing.assert_allclose(u.trajectory.timeseries()[:, 0, 0], x_position)
 
 
 def test_nojump_constantvel_skip(nojump_universes_fromfile):
@@ -150,7 +215,7 @@ def test_missing_dimensions_init(nojump_universe):
     """
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
-        workflow = [NoJump()]
+        workflow = [NoJump(ag=u.atoms)]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
 
@@ -163,7 +228,7 @@ def test_missing_dimensions(nojump_universe):
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         u.dimensions = [73, 73, 73, 90, 90, 90]
-        workflow = [NoJump()]
+        workflow = [NoJump(ag=u.atoms)]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
 
@@ -176,6 +241,6 @@ def test_notinvertible(nojump_universe):
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         dim = [1, 0, 0, 90, 90, 90]
-        workflow = [mda.transformations.boxdimensions.set_dimensions(dim),NoJump()]
+        workflow = [mda.transformations.boxdimensions.set_dimensions(dim),NoJump(ag=u.atoms)]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
