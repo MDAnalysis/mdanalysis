@@ -174,15 +174,6 @@ def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
     ]
     where each row is a different timestep.
 
-    And box dimensions are:
-    dimensions = [
-        [100, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90],
-    ]
-    again where each row corresponds to a different timestep.
-
     Unwarpped coordinates are the same at each frame:
     unwrapped = [97.5, 50.0, 50.0]
     """
@@ -215,15 +206,6 @@ def test_nojump_3rd_frame(nojump_universe_npt_3rd_frame):
         [2.5, 50.0, 50.0],
     ]
     where each row is a different timestep.
-
-    And box dimensions are:
-    dimensions = [
-        [100, 100, 100, 90, 90, 90],
-        [100, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90],
-    ]
-    again where each row corresponds to a different timestep.
 
     Unwarpped coordinates are the same at each frame:
     unwrapped = [97.5, 50.0, 50.0]
