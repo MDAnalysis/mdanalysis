@@ -234,14 +234,9 @@ __all__ = [
     "PDB_charges",  # PDB file with formal charges
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
-    "NOJUMP_NPT_2ND_FRAME_PDB",  # crosses pbc at second frame
-    "NOJUMP_NPT_2ND_FRAME_XTC",  # crosses pbc at second frame
-    "NOJUMP_NPT_3RD_FRAME_PDB",  # crosses pbc at third frame
-    "NOJUMP_NPT_3RD_FRAME_XTC",  # crosses pbc at third frame
 ]
 
 from importlib import resources
-import pathlib
 import MDAnalysisTests.data
 
 _data_ref = resources.files('MDAnalysisTests.data')
@@ -627,12 +622,6 @@ PDBX = (_data_ref / "4x8u.pdbx").as_posix()
 
 SURFACE_PDB = (_data_ref / 'surface.pdb.bz2').as_posix()
 SURFACE_TRR = (_data_ref / 'surface.trr').as_posix()
-
-NOJUMP_NPT_2ND_FRAME_PDB = (pathlib.Path(__file__).parent / 'transformations/nojump_npt_second_frame.pdb').as_posix()
-NOJUMP_NPT_2ND_FRAME_XTC = (pathlib.Path(__file__).parent / 'transformations/nojump_npt_second_frame.xtc').as_posix()
-
-NOJUMP_NPT_3RD_FRAME_PDB = (pathlib.Path(__file__).parent / 'transformations/nojump_npt_third_frame.pdb').as_posix()
-NOJUMP_NPT_3RD_FRAME_XTC = (pathlib.Path(__file__).parent / 'transformations/nojump_npt_third_frame.xtc').as_posix()
 
 # This should be the last line: clean up namespace
 del resources
