@@ -101,6 +101,7 @@ class NoJump(TransformationBase):
     )
     def __init__(
         self,
+        ag,
         check_continuity=True,
         max_threads=None,
         # NoJump transforms are inherently unparallelizable, since
@@ -108,9 +109,20 @@ class NoJump(TransformationBase):
         parallelizable=False,
     ):
         super().__init__(max_threads=max_threads, parallelizable=parallelizable)
-        self.prev = None
-        self.old_frame = 0
-        self.older_frame = "A"
+        self.ag = ag
+
+        L = ag.universe.trajectory.ts.triclinic_dimensions
+        if L is None:
+            self.prev = None
+            self.old_frame = 0
+            self.older_frame = "A"
+        else:
+            L = ag.universe.trajectory.ts.triclinic_dimensions
+            Linverse = np.linalg.inv(L)
+            self.prev = ag.positions @ Linverse
+            self.old_frame = -1
+            self.older_frame = -2
+
         self.check_c = check_continuity
 
     def _transform(self, ts):
@@ -124,7 +136,7 @@ class NoJump(TransformationBase):
             msg = f"Periodic box dimensions are not invertible at step {ts.frame}"
             raise NoDataError(msg)
         if self.prev is None:
-            self.prev = ts.positions @ Linverse
+            self.prev = self.ag.positions @ Linverse
             self.old_frame = ts.frame
             return ts
         if (
@@ -137,7 +149,7 @@ class NoJump(TransformationBase):
                 "We are resetting the reference frame to the current timestep.",
                 UserWarning,
             )
-            self.prev = ts.positions @ Linverse
+            self.prev = self.ag.positions @ Linverse
             self.old_frame = ts.frame
             self.older_frame = "A"
             return ts
@@ -151,7 +163,7 @@ class NoJump(TransformationBase):
                 UserWarning,
             )
         # Convert into reduced coordinate space
-        fcurrent = ts.positions @ Linverse
+        fcurrent = self.ag.positions @ Linverse
         fprev = self.prev  # Previous unwrapped coordinates in reduced box coordinates.
         # Calculate the new positions in reduced coordinate space (Equation B6 from
         # 10.1021/acs.jctc.2c00327). As it turns out, the displacement term can
@@ -159,7 +171,7 @@ class NoJump(TransformationBase):
         # difference between wrapped and unwrapped coordinates is an integer.
         newpositions = fcurrent - np.round(fcurrent - fprev)
         # Convert back into real space
-        ts.positions = newpositions @ L
+        self.ag.positions = newpositions @ L
         # Set things we need to save for the next frame.
         self.prev = newpositions  # Note that this is in reduced coordinate space.
         self.older_frame = self.old_frame
