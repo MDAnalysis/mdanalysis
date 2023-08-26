@@ -117,7 +117,6 @@ class NoJump(TransformationBase):
             self.old_frame = 0
             self.older_frame = "A"
         else:
-            L = ag.universe.trajectory.ts.triclinic_dimensions
             Linverse = np.linalg.inv(L)
             self.prev = ag.positions @ Linverse
             self.old_frame = -1
