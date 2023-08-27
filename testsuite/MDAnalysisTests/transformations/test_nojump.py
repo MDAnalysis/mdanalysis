@@ -13,7 +13,7 @@ def nojump_universes_fromfile():
     Create the universe objects for the tests.
     '''
     u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
-    transformation = NoJump(ag=u.atoms)
+    transformation = NoJump()
     u.trajectory.add_transformations(transformation)
     return u
 
@@ -86,9 +86,31 @@ def nojump_universe_npt_3rd_frame():
     return u
 
 
-@pytest.fixture()
-def nojump_universe_npt_2nd_frame_from_file(nojump_universe_npt_2nd_frame, tmp_path):
-    u = nojump_universe_npt_2nd_frame
+@pytest.fixture(scope="module")
+def nojump_universe_npt_2nd_frame_from_file(tmp_path_factory):
+    """
+    Write the `nojump_universe_npt_2nd_frame` fixture to file, read it in and
+    return the Universe.
+    
+    Used for testing that coordinates can be unwrapped correctly when iterating
+    over the trajectory multiple times.
+
+    We can't use an in-memory trajectory to test this because the
+    transformation would only be applied once.
+
+    Note, we use `tmp_path_factory` because this fixture requies `module` scope
+    so we can read the file after the fixture has been created, and
+    `tmp_path` has function-level scope.
+    """
+    n_atoms = 1
+    n_frames = 4
+    u = mda.Universe.empty(n_atoms, trajectory=True)
+    coordinates = np.empty((n_frames, u.atoms.n_atoms, 3))
+    coordinates[0] = [97.5, 50.0, 50.0]
+    coordinates[1] = [2.5, 50.0, 50.0]
+    coordinates[2] = [2.5, 50.0, 50.0]
+    coordinates[3] = [2.5, 50.0, 50.0]
+    u.load_new(coordinates, order="fac")
     dim = np.asarray([
         [100, 100, 100, 90, 90, 90],
         [95, 100, 100, 90, 90, 90], # Box shrinks by 5 in the x-dimension at the second frame
@@ -99,12 +121,13 @@ def nojump_universe_npt_2nd_frame_from_file(nojump_universe_npt_2nd_frame, tmp_p
         mda.transformations.boxdimensions.set_variable_dimensions(dim),
     ]
     u.trajectory.add_transformations(*workflow)
-    u.atoms.write(tmp_path / "nojump_npt_2nd_frame.pdb")
-    with mda.Writer((tmp_path / "nojump_npt_2nd_frame.xtc").as_posix()) as f:
+    tmp_pdb = (tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.pdb").as_posix()
+    tmp_xtc = (tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.xtc").as_posix()
+    u.atoms.write(tmp_pdb)
+    with mda.Writer(tmp_xtc) as f:
         for ts in u.trajectory:
             f.write(u.atoms)
-
-    return mda.Universe(tmp_path / "nojump_npt_2nd_frame.pdb", tmp_path / "nojump_npt_2nd_frame.xtc")
+    return mda.Universe(tmp_pdb, tmp_xtc)
 
 
 def test_nojump_orthogonal_fwd(nojump_universe):
@@ -114,7 +137,7 @@ def test_nojump_orthogonal_fwd(nojump_universe):
     """
     u = nojump_universe
     dim = np.asarray([1, 1, 1, 90, 90, 90], np.float32)
-    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump(ag=u.atoms)]
+    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
     u.trajectory.add_transformations(*workflow)
     transformed_coordinates = u.trajectory.timeseries()[0]
     # Step is 1 unit every 3 steps. After 99 steps from the origin,
@@ -135,7 +158,7 @@ def test_nojump_nonorthogonal_fwd(nojump_universe):
     # [0.        1.        0.       ]
     # [0.5       0.        0.8660254]]
     dim = np.asarray([1, 1, 1, 90, 60, 90], np.float32)
-    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump(ag=u.atoms)]
+    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
     u.trajectory.add_transformations(*workflow)
     transformed_coordinates = u.trajectory.timeseries()[0]
     # After the transformation, you should end up in a repeating pattern, since you are
@@ -170,7 +193,7 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     workflow = [
         mda.transformations.boxdimensions.set_dimensions(dim),
         wrap(towrap.atoms),
-        NoJump(ag=towrap.atoms),
+        NoJump(),
     ]
     towrap.trajectory.add_transformations(*workflow)
     assert_allclose(
@@ -207,7 +230,7 @@ def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
     ])
     workflow = [
         mda.transformations.boxdimensions.set_variable_dimensions(dim),
-        NoJump(ag=u.atoms),
+        NoJump(),
     ]
     u.trajectory.add_transformations(*workflow)
     x_position = 97.5
@@ -240,7 +263,7 @@ def test_nojump_3rd_frame(nojump_universe_npt_3rd_frame):
     ])
     workflow = [
         mda.transformations.boxdimensions.set_variable_dimensions(dim),
-        NoJump(ag=u.atoms),
+        NoJump(),
     ]
     u.trajectory.add_transformations(*workflow)
     x_position = 97.5
@@ -253,7 +276,7 @@ def test_nojump_iterate_twice(nojump_universe_npt_2nd_frame_from_file):
     at all frames when iterating over multiple times.
     """
     u = nojump_universe_npt_2nd_frame_from_file
-    u.trajectory.add_transformations(NoJump(ag=u.atoms))
+    u.trajectory.add_transformations(NoJump())
     timeseries_first_iteration = u.trajectory.timeseries()
     timeseries_second_iteration = u.trajectory.timeseries()
     np.testing.assert_allclose(timeseries_first_iteration, timeseries_second_iteration)
@@ -287,7 +310,7 @@ def test_missing_dimensions_init(nojump_universe):
     """
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
-        workflow = [NoJump(ag=u.atoms)]
+        workflow = [NoJump()]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
 
@@ -300,7 +323,7 @@ def test_missing_dimensions(nojump_universe):
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         u.dimensions = [73, 73, 73, 90, 90, 90]
-        workflow = [NoJump(ag=u.atoms)]
+        workflow = [NoJump()]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
 
@@ -313,6 +336,6 @@ def test_notinvertible(nojump_universe):
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         dim = [1, 0, 0, 90, 90, 90]
-        workflow = [mda.transformations.boxdimensions.set_dimensions(dim),NoJump(ag=u.atoms)]
+        workflow = [mda.transformations.boxdimensions.set_dimensions(dim),NoJump()]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
