@@ -27,6 +27,7 @@ from numpy.testing import assert_array_almost_equal
 
 import MDAnalysis as mdanalysis
 from MDAnalysis.transformations import set_dimensions, set_variable_dimensions
+from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe
 
 
@@ -139,3 +140,20 @@ def test_variable_dimensions_vector_asarray(variable_boxdimensions_universe,
     ts = variable_boxdimensions_universe.trajectory.ts
     with pytest.raises(ValueError, match='cannot be converted'):
         set_variable_dimensions(dim_vector_forms_dtypes)(ts)
+
+
+def test_variable_dimensions_no_data(
+    variable_boxdimensions_universe,
+):
+    """
+    Check error is raised when dimensions are missing for a frame
+    in a trajectory.
+    """
+    # trjactory has three frames
+    new_dims = np.float32([
+        [2, 2, 2, 90, 90, 90],
+        [4, 4, 4, 90, 90, 90],
+    ])
+    transform = set_variable_dimensions(new_dims)
+    with pytest.raises(NoDataError, match="Dimensions array has no data for frame 2"):
+        variable_boxdimensions_universe.trajectory.add_transformations(transform)
