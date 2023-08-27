@@ -95,7 +95,9 @@ def test_dimensions_transformations_api(boxdimensions_universe):
                                   new_dims, decimal=6)
 
 
-def test_variable_dimensions_transformations_api(variable_boxdimensions_universe):
+def test_variable_dimensions_transformations_api(
+    variable_boxdimensions_universe,
+):
     # test if transformation works with on-the-fly transformations API
     new_dims = np.float32([
         [2, 2, 2, 90, 90, 90],
@@ -120,7 +122,10 @@ def test_variable_dimensions_transformations_api(variable_boxdimensions_universe
         111909090,
     ),
 )
-def test_variable_dimensions_vector(variable_boxdimensions_universe, dim_vector_shapes):
+def test_variable_dimensions_vector(
+    variable_boxdimensions_universe,
+    dim_vector_shapes,
+):
     # wrong box dimension vector shape
     ts = variable_boxdimensions_universe.trajectory.ts
     with pytest.raises(ValueError, match='valid box dimension shape'):
@@ -134,8 +139,10 @@ def test_variable_dimensions_vector(variable_boxdimensions_universe, dim_vector_
         'abcd'
     ),
 )
-def test_variable_dimensions_vector_asarray(variable_boxdimensions_universe,
-                                   dim_vector_forms_dtypes):
+def test_variable_dimensions_vector_asarray(
+    variable_boxdimensions_universe,
+    dim_vector_forms_dtypes,
+):
     # box dimension input type not convertible into array
     ts = variable_boxdimensions_universe.trajectory.ts
     with pytest.raises(ValueError, match='cannot be converted'):
