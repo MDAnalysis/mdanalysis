@@ -777,16 +777,16 @@
             <span class="c1"># Find donors in G1 and acceptors in G2</span>
             <span class="n">mask</span><span class="p">[</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
                     <span class="p">)</span>
             <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="c1"># Find acceptors in G1 and donors in G2</span>
             <span class="n">mask</span><span class="p">[</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 

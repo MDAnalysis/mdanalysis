@@ -519,7 +519,7 @@
             <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ix_array</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># if self is an Atom</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix_array</span>
-        <span class="n">seen</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">ugroup</span><span class="o">.</span><span class="n">_bix</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">ugroup</span><span class="o">.</span><span class="n">_bix</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">seen</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ugroup</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
@@ -2251,7 +2251,7 @@
 <span class="sd">        .. versionadded:: 0.16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">o_ix</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">ix_array</span>
-        <span class="n">in_other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">o_ix</span><span class="p">)</span>  <span class="c1"># mask of in self.ix AND other</span>
+        <span class="n">in_other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">o_ix</span><span class="p">)</span>  <span class="c1"># mask of in self.ix AND other</span>
         <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="o">~</span><span class="n">in_other</span><span class="p">]</span>  <span class="c1"># ie inverse of previous mask</span>
 
     <span class="nd">@_only_same_level</span>

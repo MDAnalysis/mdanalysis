@@ -1534,7 +1534,7 @@
                 <span class="n">good</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">match_mask</span><span class="p">]</span>  <span class="c1"># resid for each residue</span>
                 <span class="n">resids</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resids</span>                     <span class="c1"># resid for each atom</span>
                 <span class="c1"># boolean array for all matching atoms</span>
-                <span class="n">ix_good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">good</span><span class="p">)</span>
+                <span class="n">ix_good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">good</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">ag</span><span class="p">[</span><span class="n">ix_good</span><span class="p">]</span>
 
             <span class="n">_ag1</span> <span class="o">=</span> <span class="n">get_atoms_byres</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span>
