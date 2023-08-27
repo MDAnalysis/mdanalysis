@@ -86,6 +86,27 @@ def nojump_universe_npt_3rd_frame():
     return u
 
 
+@pytest.fixture()
+def nojump_universe_npt_2nd_frame_from_file(nojump_universe_npt_2nd_frame, tmp_path):
+    u = nojump_universe_npt_2nd_frame
+    dim = np.asarray([
+        [100, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90], # Box shrinks by 5 in the x-dimension at the second frame
+        [95, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+    ])
+    workflow = [
+        mda.transformations.boxdimensions.set_variable_dimensions(dim),
+    ]
+    u.trajectory.add_transformations(*workflow)
+    u.atoms.write(tmp_path / "nojump_npt_2nd_frame.pdb")
+    with mda.Writer((tmp_path / "nojump_npt_2nd_frame.xtc").as_posix()) as f:
+        for ts in u.trajectory:
+            f.write(u.atoms)
+
+    return mda.Universe(tmp_path / "nojump_npt_2nd_frame.pdb", tmp_path / "nojump_npt_2nd_frame.xtc")
+
+
 def test_nojump_orthogonal_fwd(nojump_universe):
     """
     Test if the nojump transform is returning the correct
@@ -224,6 +245,18 @@ def test_nojump_3rd_frame(nojump_universe_npt_3rd_frame):
     u.trajectory.add_transformations(*workflow)
     x_position = 97.5
     np.testing.assert_allclose(u.trajectory.timeseries()[:, 0, 0], x_position)
+
+
+def test_nojump_iterate_twice(nojump_universe_npt_2nd_frame_from_file):
+    """
+    Test if the nojump transform always returns the correct values
+    at all frames when iterating over multiple times.
+    """
+    u = nojump_universe_npt_2nd_frame_from_file
+    u.trajectory.add_transformations(NoJump(ag=u.atoms))
+    timeseries_first_iteration = u.trajectory.timeseries()
+    timeseries_second_iteration = u.trajectory.timeseries()
+    np.testing.assert_allclose(timeseries_first_iteration, timeseries_second_iteration)
 
 
 def test_nojump_constantvel_skip(nojump_universes_fromfile):
