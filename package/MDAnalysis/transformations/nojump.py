@@ -91,6 +91,9 @@ class NoJump(TransformationBase):
 
         Kulke2022
 
+
+    .. versionchanged:: 2.7.0
+       The `ag` argument was added to the transformation.
     """
 
     @due.dcite(
