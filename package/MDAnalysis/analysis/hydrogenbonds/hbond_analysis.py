@@ -680,16 +680,16 @@ class HydrogenBondAnalysis(AnalysisBase):
             # Find donors in G1 and acceptors in G2
             mask[
                     np.logical_and(
-                        np.in1d(donors.indices, group1.indices),
-                        np.in1d(acceptors.indices, group2.indices)
+                        np.isin(donors.indices, group1.indices),
+                        np.isin(acceptors.indices, group2.indices)
                     )
             ] = True
 
             # Find acceptors in G1 and donors in G2
             mask[
                 np.logical_and(
-                    np.in1d(acceptors.indices, group1.indices),
-                    np.in1d(donors.indices, group2.indices)
+                    np.isin(acceptors.indices, group1.indices),
+                    np.isin(donors.indices, group2.indices)
                 )
             ] = True
 
