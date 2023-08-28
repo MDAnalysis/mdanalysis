@@ -51,7 +51,7 @@ class set_dimensions(TransformationBase):
 
     .. code-block:: python
 
-        dim = [2, 2, 2, 90, 90, 90]
+        dim = np.array([2, 2, 2, 90, 90, 90])
         transform = mda.transformations.boxdimensions.set_dimensions(dim)
         u.trajectory.add_transformations(transform)
 
@@ -61,10 +61,10 @@ class set_dimensions(TransformationBase):
 
     .. code-block:: python
 
-        dim = [
+        dim = np.array([
             [2, 2, 2, 90, 90, 90],
             [4, 4, 4, 90, 90, 90],
-        ]
+        ])
         transform = mda.transformations.boxdimensions.set_dimensions(dim)
         u.trajectory.add_transformations(transform)
 
