@@ -23,7 +23,7 @@ Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
-  * Added a `set_variable_dimensions` transformation (PR #4258)
+  * Allow `set_dimensions` transformation to handle NPT trajectories (PR #4258)
 
 Changes
   * NumPy `in1d` replaced with `isin` in preparation for NumPy
