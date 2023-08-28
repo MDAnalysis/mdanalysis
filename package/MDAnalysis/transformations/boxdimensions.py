@@ -130,6 +130,8 @@ class set_variable_dimensions(TransformationBase):
     Returns
     -------
     :class:`~MDAnalysis.coordinates.timestep.Timestep` object
+
+    .. versionadded:: 2.7.0
     """
 
     def __init__(self,
