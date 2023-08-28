@@ -103,11 +103,11 @@ file.
 
 Converters
 ----------
-Converters output information to other libraries. 
+Converters output information to other libraries.
 
 .. deprecated:: 2.7.0
     All converter code has been moved to :mod:`MDAnalysis.converters` and will
-    be removed in 3.0.0.
+    be removed from the :mod:`MDAnalysis.coordinates.base` module in 3.0.0.
 
 .. autoclass:: ConverterBase
    :members:
@@ -1810,7 +1810,7 @@ class ConverterBase(IOBase, metaclass=_Convertermeta):
     """Base class for converting to other libraries.
 
     .. deprecated:: 2.7.0
-        This class has been moved to 
+        This class has been moved to
         :class:`MDAnalysis.converters.base.ConverterBase` and will be removed
         from :mod:`MDAnalysis.coordinates.base` in 3.0.0.
     """
