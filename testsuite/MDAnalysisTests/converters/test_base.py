@@ -35,7 +35,7 @@ def test_coordinate_converterbase_warning():
 
     with pytest.warns(DeprecationWarning, match=wmsg):
         class DerivedConverter(ConverterBase):
-            ...
+            pass
 
 
 def test_converters_converterbase_no_warning():
@@ -45,4 +45,4 @@ def test_converters_converterbase_no_warning():
         warnings.simplefilter("error")
 
         class DerivedConverter(ConverterBase):
-            ...
+            pass
