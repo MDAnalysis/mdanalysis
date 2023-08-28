@@ -124,7 +124,6 @@ class NoJump(TransformationBase):
             msg = f"Periodic box dimensions are not invertible at step {ts.frame}"
             raise NoDataError(msg)
         if ts.frame == 0:
-            Linverse = np.linalg.inv(L)
             self.prev = ts.positions @ Linverse
             self.old_frame = -1
             self.older_frame = -2
