@@ -26,7 +26,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal
 
 import MDAnalysis as mdanalysis
-from MDAnalysis.transformations import set_dimensions, set_variable_dimensions
+from MDAnalysis.transformations import set_dimensions
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe
 
@@ -84,7 +84,6 @@ def test_dimensions_vector_asarray(boxdimensions_universe,
     with pytest.raises(ValueError, match='cannot be converted'):
         set_dimensions(dim_vector_forms_dtypes)(ts)
 
-
 def test_dimensions_transformations_api(boxdimensions_universe):
     # test if transformation works with on-the-fly transformations API
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
@@ -95,61 +94,25 @@ def test_dimensions_transformations_api(boxdimensions_universe):
                                   new_dims, decimal=6)
 
 
-def test_variable_dimensions_transformations_api(
+def test_varying_dimensions_transformations_api(
     variable_boxdimensions_universe,
 ):
-    # test if transformation works with on-the-fly transformations API
+    """
+    Test if transformation works with on-the-fly transformations API
+    when we have varying dimensions.
+    """
     new_dims = np.float32([
         [2, 2, 2, 90, 90, 90],
         [4, 4, 4, 90, 90, 90],
         [8, 8, 8, 90, 90, 90],
     ])
-    transform = set_variable_dimensions(new_dims)
+    transform = set_dimensions(new_dims)
     variable_boxdimensions_universe.trajectory.add_transformations(transform)
     for ts in variable_boxdimensions_universe.trajectory:
         assert_array_almost_equal(variable_boxdimensions_universe.dimensions,
                                   new_dims[ts.frame], decimal=6)
 
-@pytest.mark.parametrize(
-    'dim_vector_shapes',
-    (
-        [[1, 1, 1, 90, 90]],
-        [[1, 1, 1, 1, 90, 90, 90]],
-        np.array([[1], [1], [90], [90], [90]]),
-        np.array([[1, 1, 1, 90, 90]]),
-        np.array([[1, 1, 1, 1, 90, 90, 90]]),
-        [1, 1, 1, 90, 90],
-        111909090,
-    ),
-)
-def test_variable_dimensions_vector(
-    variable_boxdimensions_universe,
-    dim_vector_shapes,
-):
-    # wrong box dimension vector shape
-    ts = variable_boxdimensions_universe.trajectory.ts
-    with pytest.raises(ValueError, match='valid box dimension shape'):
-        set_variable_dimensions(dim_vector_shapes)(ts)
-
-@pytest.mark.parametrize(
-    'dim_vector_forms_dtypes',
-    (
-        [['a', 'b', 'c', 'd', 'e', 'f']],
-        np.array([['a', 'b', 'c', 'd', 'e', 'f']]),
-        'abcd'
-    ),
-)
-def test_variable_dimensions_vector_asarray(
-    variable_boxdimensions_universe,
-    dim_vector_forms_dtypes,
-):
-    # box dimension input type not convertible into array
-    ts = variable_boxdimensions_universe.trajectory.ts
-    with pytest.raises(ValueError, match='cannot be converted'):
-        set_variable_dimensions(dim_vector_forms_dtypes)(ts)
-
-
-def test_variable_dimensions_no_data(
+def test_varying_dimensions_no_data(
     variable_boxdimensions_universe,
 ):
     """
@@ -161,6 +124,6 @@ def test_variable_dimensions_no_data(
         [2, 2, 2, 90, 90, 90],
         [4, 4, 4, 90, 90, 90],
     ])
-    transform = set_variable_dimensions(new_dims)
+    transform = set_dimensions(new_dims)
     with pytest.raises(NoDataError, match="Dimensions array has no data for frame 2"):
         variable_boxdimensions_universe.trajectory.add_transformations(transform)
