@@ -27,7 +27,6 @@ from numpy.testing import assert_array_almost_equal
 
 import MDAnalysis as mdanalysis
 from MDAnalysis.transformations import set_dimensions
-from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe
 
 
@@ -126,5 +125,5 @@ def test_varying_dimensions_no_data(
         [4, 4, 4, 90, 90, 90],
     ])
     transform = set_dimensions(new_dims)
-    with pytest.raises(NoDataError, match="Dimensions array has no data for frame 2"):
+    with pytest.raises(ValueError, match="Dimensions array has no data for frame 2"):
         variable_boxdimensions_universe.trajectory.add_transformations(transform)

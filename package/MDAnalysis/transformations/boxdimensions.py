@@ -33,7 +33,6 @@ all timesteps or to a specified vector at each frame.
 import numpy as np
 
 from .base import TransformationBase
-from ..exceptions import NoDataError
 
 class set_dimensions(TransformationBase):
     """
@@ -115,5 +114,5 @@ class set_dimensions(TransformationBase):
         try:
             ts.dimensions = self.dimensions[0] if self.dimensions.shape[0] == 1 else self.dimensions[ts.frame]
         except IndexError as e:
-            raise NoDataError(f"Dimensions array has no data for frame {ts.frame}") from e
+            raise ValueError(f"Dimensions array has no data for frame {ts.frame}") from e
         return ts
