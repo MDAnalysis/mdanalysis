@@ -218,7 +218,7 @@ def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
     ]
     where each row is a different timestep.
 
-    Unwarpped coordinates are the same at each frame:
+    Unwrapped coordinates are the same at each frame:
     unwrapped = [97.5, 50.0, 50.0]
     """
     u = nojump_universe_npt_2nd_frame
