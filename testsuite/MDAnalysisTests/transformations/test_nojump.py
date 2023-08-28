@@ -118,7 +118,7 @@ def nojump_universe_npt_2nd_frame_from_file(tmp_path_factory):
         [95, 100, 100, 90, 90, 90],
     ])
     workflow = [
-        mda.transformations.boxdimensions.set_variable_dimensions(dim),
+        mda.transformations.boxdimensions.set_dimensions(dim),
     ]
     u.trajectory.add_transformations(*workflow)
     tmp_pdb = (tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.pdb").as_posix()
@@ -229,7 +229,7 @@ def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
         [95, 100, 100, 90, 90, 90],
     ])
     workflow = [
-        mda.transformations.boxdimensions.set_variable_dimensions(dim),
+        mda.transformations.boxdimensions.set_dimensions(dim),
         NoJump(),
     ]
     u.trajectory.add_transformations(*workflow)
@@ -262,7 +262,7 @@ def test_nojump_3rd_frame(nojump_universe_npt_3rd_frame):
         [95, 100, 100, 90, 90, 90],
     ])
     workflow = [
-        mda.transformations.boxdimensions.set_variable_dimensions(dim),
+        mda.transformations.boxdimensions.set_dimensions(dim),
         NoJump(),
     ]
     u.trajectory.add_transformations(*workflow)
