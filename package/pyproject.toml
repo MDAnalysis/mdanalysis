@@ -17,7 +17,7 @@ requires = [
     # For unreleased versions of Python there is currently no known supported
     # NumPy version. In that case we just let it be a bare NumPy install
     "numpy<2.0; python_version>='3.12'",
-    "setuptools",
+    "setuptools>=68.0",
     "wheel",
 ]
 
