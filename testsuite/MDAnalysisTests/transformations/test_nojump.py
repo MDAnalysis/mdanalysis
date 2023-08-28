@@ -47,6 +47,7 @@ def nojump_constantvel_universe():
     reference.load_new(coordinates, order="fac")
     return reference
 
+
 @pytest.fixture
 def nojump_universe_npt_2nd_frame():
     """
@@ -65,6 +66,7 @@ def nojump_universe_npt_2nd_frame():
     coordinates[3] = [2.5, 50.0, 50.0]
     u.load_new(coordinates, order="fac")
     return u
+
 
 @pytest.fixture
 def nojump_universe_npt_3rd_frame():
@@ -203,6 +205,7 @@ def test_nojump_constantvel(nojump_constantvel_universe):
         atol=5e-06,
     )
 
+
 def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
     """
     Test if the nojump transform returns the correct values
@@ -235,6 +238,7 @@ def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
     u.trajectory.add_transformations(*workflow)
     x_position = 97.5
     np.testing.assert_allclose(u.trajectory.timeseries()[:, 0, 0], x_position)
+
 
 def test_nojump_3rd_frame(nojump_universe_npt_3rd_frame):
     """

@@ -112,6 +112,7 @@ def test_varying_dimensions_transformations_api(
         assert_array_almost_equal(variable_boxdimensions_universe.dimensions,
                                   new_dims[ts.frame], decimal=6)
 
+
 def test_varying_dimensions_no_data(
     variable_boxdimensions_universe,
 ):
