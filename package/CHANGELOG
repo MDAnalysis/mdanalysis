@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+??/??/?? IAlibay, hmacdope, pillose, jaclark5, tylerjereddy, PicoCentauri
 
  * 2.7.0
 
@@ -21,6 +21,8 @@ Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
+  * Added a warning about charge neutrality to the documentation of
+    ``DielectricConstant`` (Issue #4262, PR #4263)
 
 Changes
   * NumPy `in1d` replaced with `isin` in preparation for NumPy
