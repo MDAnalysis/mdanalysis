@@ -23,6 +23,8 @@ Fixes
 Enhancements
 
 Changes
+  * Reverts PR #4108, builds are now again made using the oldest
+    supported Python version.
   * NumPy `in1d` replaced with `isin` in preparation for NumPy
     `2.0` (PR #4255)
   * Update documentation for SurvivalProbabilty to be more clear

@@ -88,10 +88,11 @@ jobs:
       with:
         build-tests: true
         build-docs: false
-        # If we specifically define an old NumPy version then we isolate the
-        # the build, i.e. make sure that we build with NumPy 1.25+ but we keep
-        # the old version of NumPy as what we use for runtime testing
-        isolation: ${{ matrix.numpy != '' }}
+        # The standard mdanalysis deployment is to build with the
+        # oldest supported numpy version and then use whatever new
+        # numpy version we want at runtime. To do this we ensure
+        # that we use build isolation
+        isolation: true
 
     - name: check_deps
       run: |
@@ -161,7 +162,7 @@ jobs:
       with:
         build-tests: true
         build-docs: true
-        isolation: false
+        isolation: true
 
     - name: doctests
       if: github.event_name == 'pull_request'

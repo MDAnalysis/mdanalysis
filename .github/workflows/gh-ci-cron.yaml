@@ -69,6 +69,8 @@ jobs:
       with:
         build-tests: true
         build-docs: false
+        # We don't use build isolation because we want to ensure that we
+        # test building with brand new versions of NumPy here.
         isolation: false
 
     - name: run_tests
@@ -119,7 +121,7 @@ jobs:
       with:
         build-tests: true
         build-docs: false
-        isolation: false
+        isolation: true
 
     - name: run_tests
       run: |
@@ -167,7 +169,7 @@ jobs:
       with:
         build-tests: true
         build-docs: false
-        isolation: false
+        isolation: true
 
     - name: run_tests
       run: |
