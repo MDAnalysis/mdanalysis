@@ -125,8 +125,8 @@ class NoJump(TransformationBase):
             raise NoDataError(msg)
         if ts.frame == 0:
             self.prev = ts.positions @ Linverse
-            self.old_frame = -1
-            self.older_frame = -2
+            self.old_frame = 0
+            self.older_frame = -1
             return ts
         if self.prev is None:
             self.prev = ts.positions @ Linverse
