@@ -13,9 +13,9 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
 
- * 2.7.0
+ * 2.6.1
 
 Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
