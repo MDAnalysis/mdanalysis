@@ -124,12 +124,13 @@ class NoJump(TransformationBase):
             msg = f"Periodic box dimensions are not invertible at step {ts.frame}"
             raise NoDataError(msg)
         if ts.frame == 0:
-            # We don't need to apply the transformation here. However, we need to ensure we
-            # have the 0th frame coordinates in reduced form. We also need to set an
-            # an appropriate value for self.older frame. This is so that on the following frame
-            # we don't return early when we check `self.older_frame != "A"`. If we return early,
-            # then the transformation is not applied, and any jumps across boundaries that occur
-            # at that frame will not be accounted for.
+            # We don't need to apply the transformation here. However, we need to
+            # ensure we have the 0th frame coordinates in reduced form. We also need to
+            # set an an appropriate value for self.older frame. This is so that on the
+            # following frame we don't return early when we check
+            # `self.older_frame != "A"`. If we return early, then the transformation is
+            # not applied, and any jumps across boundaries that occur at that frame will
+            # not be accounted for.
             self.prev = ts.positions @ Linverse
             self.old_frame = 0
             self.older_frame = -1

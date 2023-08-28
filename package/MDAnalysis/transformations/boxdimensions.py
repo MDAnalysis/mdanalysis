@@ -95,24 +95,34 @@ class set_dimensions(TransformationBase):
         try:
             self.dimensions = np.asarray(self.dimensions, np.float32)
         except ValueError:
-            errmsg = (f'{self.dimensions} cannot be converted into '
-                       'np.float32 numpy.ndarray')
+            errmsg = (
+                f'{self.dimensions} cannot be converted into '
+                'np.float32 numpy.ndarray'
+            )
             raise ValueError(errmsg)
         try:
             self.dimensions = self.dimensions.reshape(-1, 6)
         except ValueError:
-            errmsg = (f'{self.dimensions} array does not have valid box '
-                       'dimension shape.\nSimulation box dimensions are '
-                       'given by an float array of shape (6, 0), (1, 6), '
-                       'or (N, 6) where N is the number of frames in the '
-                       'trajectory and the dimension vector(s) containing '
-                       '3 lengths and 3 angles: '
-                       '[a, b, c, alpha, beta, gamma]')
+            errmsg = (
+                f'{self.dimensions} array does not have valid box '
+                'dimension shape.\nSimulation box dimensions are '
+                'given by an float array of shape (6, 0), (1, 6), '
+                'or (N, 6) where N is the number of frames in the '
+                'trajectory and the dimension vector(s) containing '
+                '3 lengths and 3 angles: '
+                '[a, b, c, alpha, beta, gamma]'
+            )
             raise ValueError(errmsg)
 
     def _transform(self, ts):
         try:
-            ts.dimensions = self.dimensions[0] if self.dimensions.shape[0] == 1 else self.dimensions[ts.frame]
+            ts.dimensions = (
+                self.dimensions[0]
+                if self.dimensions.shape[0] == 1
+                else self.dimensions[ts.frame]
+            )
         except IndexError as e:
-            raise ValueError(f"Dimensions array has no data for frame {ts.frame}") from e
+            raise ValueError(
+                f"Dimensions array has no data for frame {ts.frame}"
+            ) from e
         return ts

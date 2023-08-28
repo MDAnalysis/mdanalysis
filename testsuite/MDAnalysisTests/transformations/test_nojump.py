@@ -93,7 +93,7 @@ def nojump_universe_npt_2nd_frame_from_file(tmp_path_factory):
     """
     Write the `nojump_universe_npt_2nd_frame` fixture to file, read it in and
     return the Universe.
-    
+
     Used for testing that coordinates can be unwrapped correctly when iterating
     over the trajectory multiple times.
 
@@ -115,7 +115,7 @@ def nojump_universe_npt_2nd_frame_from_file(tmp_path_factory):
     u.load_new(coordinates, order="fac")
     dim = np.asarray([
         [100, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90], # Box shrinks by 5 in the x-dimension at the second frame
+        [95, 100, 100, 90, 90, 90],  # Box shrinks by 5 in the x-dimension
         [95, 100, 100, 90, 90, 90],
         [95, 100, 100, 90, 90, 90],
     ])
@@ -227,7 +227,7 @@ def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
     u = nojump_universe_npt_2nd_frame
     dim = np.asarray([
         [100, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90], # Box shrinks by 5 in the x-dimension at the second frame
+        [95, 100, 100, 90, 90, 90],  # Box shrinks by 5 in the x-dimension
         [95, 100, 100, 90, 90, 90],
         [95, 100, 100, 90, 90, 90],
     ])
@@ -262,7 +262,7 @@ def test_nojump_3rd_frame(nojump_universe_npt_3rd_frame):
     dim = np.asarray([
         [100, 100, 100, 90, 90, 90],
         [100, 100, 100, 90, 90, 90],
-        [95, 100, 100, 90, 90, 90],  # Box shrinks by 5 in the x-dimension at the third frame
+        [95, 100, 100, 90, 90, 90],  # Box shrinks by 5 in the x-dimension
         [95, 100, 100, 90, 90, 90],
     ])
     workflow = [
