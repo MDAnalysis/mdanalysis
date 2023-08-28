@@ -26,6 +26,7 @@ import warnings
 
 def test_coordinate_converterbase_warning():
     from MDAnalysis.coordinates.base import ConverterBase
+    import MDAnalysis.converters.base
 
     wmsg = ("ConverterBase moved from coordinates.base."
             "ConverterBase to converters.base.ConverterBase "
@@ -36,12 +37,20 @@ def test_coordinate_converterbase_warning():
         class DerivedConverter(ConverterBase):
             pass
 
+    assert issubclass(DerivedConverter, ConverterBase)
+    assert not issubclass(DerivedConverter,
+                          MDAnalysis.converters.base.ConverterBase)
+
 
 def test_converters_converterbase_no_warning():
     from MDAnalysis.converters.base import ConverterBase
 
+    # check that no warning is issued at all
+    # when subclassing converters.base.ConverterBase
     with warnings.catch_warnings():
         warnings.simplefilter("error")
 
         class DerivedConverter(ConverterBase):
             pass
+
+    assert issubclass(DerivedConverter, ConverterBase)
