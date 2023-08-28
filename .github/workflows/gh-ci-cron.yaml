@@ -288,7 +288,7 @@ jobs:
           if [ "${{ matrix.wheels }}" == "false" ]; then
             INSTALL_FLAGS="-vvv --no-binary"
           fi
-          pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests pytest-xdist pytest-timeout "gsd<3.0"
+          pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests pytest-xdist pytest-timeout
 
     - name: run_tests
       shell: bash
