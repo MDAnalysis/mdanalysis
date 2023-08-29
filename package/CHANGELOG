@@ -22,6 +22,9 @@ Fixes
 Enhancements
 
 Changes
+  * The `mda-xdrlib` module is now a core dependency of MDAnalysis
+    replacing the now deprecated `xdrlib` core Python library
+    (PR #4271)
 
 Deprecations
 
