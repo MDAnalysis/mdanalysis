@@ -217,15 +217,20 @@ jobs:
   conda-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu-latest, macos-latest]
+          os: [ubuntu, macos]
           python-version: ["3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v3
+
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v1
@@ -259,14 +264,24 @@ jobs:
   pypi-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu-latest, macos-latest, windows-latest]
+          os: [ubuntu, macos, windows]
           python-version: ["3.9", "3.10", "3.11"]
+          wheels: ['true', 'false']
     steps:
+      # Checkout to have access to local actions (i.e. setup-os)
+    - uses: actions/checkout@v3
+
+      # We need this here in order to make sure we assign the correct compiler (i.e. clang for macos)
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: ${{ matrix.os }}
+
     - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
@@ -274,7 +289,12 @@ jobs:
     - name: install_mdanalysis
       shell: bash
       run: |
-          pip install mdanalysis mdanalysistests pytest-xdist pytest-timeout "gsd<3.0"
+          # If wheels is False we build directly from source so we use the --no-binary flag
+          # to avoid pulling down wheels for MDAnalysis (which are already precompiled)
+          if [ "${{ matrix.wheels }}" == "false" ]; then
+            INSTALL_FLAGS="-vvv --no-binary"
+          fi
+          pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests pytest-xdist pytest-timeout
 
     - name: run_tests
       shell: bash
