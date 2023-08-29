@@ -23,6 +23,7 @@
 
 __all__ = [
     'align',
+    'backends',
     'base',
     'contacts',
     'density',

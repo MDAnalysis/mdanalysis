@@ -125,6 +125,8 @@ from collections import UserDict
 import inspect
 import logging
 import itertools
+import functools
+from typing import Callable, Iterable, Sequence
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -652,3 +654,236 @@ def _filter_baseanalysis_kwargs(function, kwargs):
         base_args[argname] = kwargs.pop(argname, default)
 
     return base_args, kwargs
+
+
+class ResultsGroup:
+    """Simple class that does aggregation of the results from independent remote workers in AnalysisBase
+    """
+    def __init__(self, lookup: dict[str, Callable] = None):
+        """Initializes the class, saving aggregation functions in _lookup attribute.
+
+        Parameters
+        ----------
+        lookup : dict[str, Callable], optional
+            aggregation functions lookup dict, by default None
+        """
+        self._lookup = lookup
+
+    def merge(self, objects: Sequence[Results], do_raise: bool = True) -> Results:
+        """Merge results into a single object.
+        If objects contain single element, returns it while ignoring _lookup attribute.
+
+        Parameters
+        ----------
+        do_raise : bool, optional
+            if you want to raise an exception when no aggregation function for a particular argument is found, by default True
+
+        Returns
+        -------
+        Results
+            merged Result object
+
+        Raises
+        ------
+        ValueError
+            if no aggregation function for a key is found and do_raise = True
+        """
+        if len(objects) == 1:
+            rv = objects[0]
+        else:
+            rv = Results()
+            for key in objects[0].keys():
+                agg_function = self._lookup.get(key, None)
+                if agg_function is None and do_raise:
+                    raise ValueError(f"No aggregation function for {key=}")
+                results_of_t = [obj[key] for obj in objects]
+                rv[key] = agg_function(results_of_t)
+        return rv
+
+    @staticmethod
+    def flatten_sequence(arrs: list[list]):
+        return [item for sublist in arrs for item in sublist]
+
+    @staticmethod
+    def ndarray_sum(arrs: np.ndarray):
+        return np.array(arrs).sum(axis=0)
+
+    @staticmethod
+    def ndarray_mean(arrs: np.ndarray):
+        return np.array(arrs).sum(axis=0)
+
+    @staticmethod
+    def float_mean(floats: list[float]):
+        return sum(floats) / len(floats)
+
+
+class ParallelAnalysisBase(AnalysisBase):
+
+    def __init__(self, trajectory, verbose=False, **kwargs):
+        super().__init__(trajectory, verbose, **kwargs)
+
+    def _setup_computation_groups(
+        self, n_parts: int, start=None, stop=None, step=None, frames=None
+    ) -> list[np.ndarray]:
+        """
+        Splits the trajectory frames, defined by `start/stop/step` or `frames`, into
+        `n_parts` even groups, preserving their indices.
+
+        Parameters
+        ----------
+        n_parts : int
+            number of parts to split the workload into
+        start : int, optional
+            start frame
+        stop : int, optional
+            stop frame
+        step : int, optional
+            number of frames to skip between each analysed frame
+        frames : array_like, optional
+            array of integers or booleans to slice trajectory; `frames` can
+            only be used *instead* of `start`, `stop`, and `step`. Setting
+            *both* `frames` and at least one of `start`, `stop`, `step` to a
+            non-default value will raise a :exc:`ValueError`.
+
+        Raises
+        ------
+        ValueError
+            if *both* `frames` and at least one of `start`, `stop`, or `frames`
+            is provided (i.e., set to another value than ``None``)
+
+        Returns
+        -------
+        computation_groups : list[np.ndarray]
+            list of (n, 2) shaped np.ndarrays with frame indices and numbers
+        """
+        if frames is None:
+            start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
+            used_frames = np.arange(start, stop, step)
+        elif not all(opt is None for opt in [start, stop, step]):
+            raise ValueError("start/stop/step cannot be combined with frames")
+        else:
+            used_frames = frames
+
+        if all((isinstance(obj, bool) for obj in used_frames)):
+            arange = np.arange(len(used_frames))
+            used_frames = arange[used_frames]
+
+        # this numpy thing is similar to list(enumerate(frames))
+        enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
+
+        return np.array_split(enumerated_frames, n_parts)
+
+
+    def _compute(self, indexed_frames: np.ndarray, verbose=None, *, progressbar_kwargs={}) -> "AnalysisBase":
+        """Perform the calculation on a balanced slice of frames
+        that have been setup prior to that using _setup_computation_groups()
+
+        Parameters
+        ----------
+        indexed_frames : np.ndarray
+            np.ndarray of (n, 2) shape,
+            where first column is frame iteration indices
+            and second is frame numbers
+
+        verbose : bool, optional
+            Turn on verbosity
+
+        progressbar_kwargs : dict, optional
+            ProgressBar keywords with custom parameters regarding progress bar position, etc;
+            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
+
+
+        .. versionchanged:: 2.2.0
+            Added ability to analyze arbitrary frames by passing a list of
+            frame indices in the `frames` keyword argument.
+
+        .. versionchanged:: 2.5.0
+            Add `progressbar_kwargs` parameter,
+            allowing to modify description, position etc of tqdm progressbars
+        """
+        logger.info("Choosing frames to analyze")
+        # if verbose unchanged, use class default
+        verbose = getattr(self, "_verbose", False) if verbose is None else verbose
+
+        logger.info("Starting preparation")
+        logger.info("Starting analysis loop over %d trajectory frames", self.n_frames)
+
+        if len(indexed_frames) == 0:  # if `frames` were empty in `run` or `stop=0`
+            return self
+
+        frame_indices, frames = (
+            indexed_frames[:, 0],
+            indexed_frames[:, 1],
+        )
+        trajectory = self._trajectory[frames]
+        for idx, ts in enumerate(ProgressBar(trajectory, verbose=verbose, **progressbar_kwargs)):
+            i = frame_indices[idx]
+            self._frame_index = i
+            self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
+            self._single_frame()
+        logger.info("Finishing up")
+        return self
+
+
+    def _get_aggregator(self):
+        """Returns a default aggregator that takes entire results if there is a single object, and raises ValueError otherwise
+
+        Returns
+        -------
+        ResultsGroup
+            aggregating object
+        """
+        return ResultsGroup(lookup=None)
+
+
+    def run(
+        self,
+        start: int = None,
+        stop: int = None,
+        step: int = None,
+        frames: Iterable = None,
+        verbose: bool = None,
+        n_workers: int = 1,
+        n_parts: int = 1,
+        backend: Callable = None,
+        *,
+        progressbar_kwargs={},
+    ):
+        if backend is None:
+            return super().run(
+                start,
+                stop,
+                step,
+                frames,
+                verbose,
+                progressbar_kwargs=progressbar_kwargs,
+            )
+
+        # Start preparing the run
+        super()._setup_frames(trajectory=self._trajectory, start=start, stop=stop, step=step, frames=frames)
+        self._prepare()
+        computation_groups = self._setup_computation_groups(
+            start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
+        )
+        # Ignore progressbar_kwargs: cannot display progressbar with non-local backend"
+        # https://github.com/MDAnalysis/mdanalysis/blob/72ece490a47baab1c2dae81f89d3d7c4b157f26d/package/MDAnalysis/analysis/base.py#L846C39-L846C91
+        worker_func = functools.partial(self._compute, progressbar_kwargs={}, verbose=verbose)
+
+        # gather all remote objects
+        remote_objects: list["ParallelAnalysisBase"] = backend.apply(
+            func=worker_func,
+            computations=computation_groups,
+            n_workers=n_workers,
+        )
+        self.frames = np.array([obj.frames for obj in remote_objects]).sum(axis=0)
+        self.times = np.array([obj.times for obj in remote_objects]).sum(axis=0)
+
+        # aggregate results
+        remote_results = [obj.results for obj in remote_objects]
+        results_aggregator = self._get_aggregator()
+        self.results = results_aggregator.merge(remote_results)
+
+        self._conclude()
+        return self
