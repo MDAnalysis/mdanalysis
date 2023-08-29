@@ -113,6 +113,12 @@ class NucPairDist(AnalysisBase):
 
         .. versionadded:: 2.4.0
 
+    results.distances: numpy.ndarray
+        stored in a 2d numpy array with first index selecting the Residue pair, 
+        and the second index selecting the frame number
+    times: numpy.ndarray
+        Simulation times for analysis.
+
 
     Raises
     ------
@@ -238,7 +244,7 @@ class NucPairDist(AnalysisBase):
         self._res_array[self._frame_index, :] = dist
 
     def _conclude(self) -> None:
-        self.results['pair_distances'] = self._res_array
+        self.results['distances'] = self._res_array
 
 
 class WatsonCrickDist(NucPairDist):
@@ -280,6 +286,11 @@ class WatsonCrickDist(NucPairDist):
 
         .. versionadded:: 2.4.0
 
+    results.distances: numpy.ndarray
+        stored in a 2d numpy array with first index selecting the Residue pair, 
+        and the second index selecting the frame number
+    times: numpy.ndarray
+            Simulation times for analysis.
 
     Raises
     ------
@@ -351,13 +362,16 @@ class MinorPairDist(NucPairDist):
 
     Attributes
     ----------
-    results: numpy.ndarray
+    results.distances: numpy.ndarray
         first index is selection second index is time
+    times: numpy.ndarray
+        Simulation times for analysis.
 
     Raises
     ------
     ValueError
-        if the residues given are not amino acids
+        stored in a 2d numpy array with first index selecting the Residue pair, 
+        and the second index selecting the frame number
     ValueError
         if the selections given are not the same length
 
@@ -417,8 +431,11 @@ class MajorPairDist(NucPairDist):
 
     Attributes
     ----------
-    results: numpy.ndarray
-        first index is selection second index is time
+    results.distances: numpy.ndarray
+        stored in a 2d numpy array with first index selecting the Residue pair, 
+        and the second index selecting the frame number
+    times: numpy.ndarray
+        Simulation times for analysis.
 
     Raises
     ------

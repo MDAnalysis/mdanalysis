@@ -58,7 +58,7 @@ def wc_rna(u):
 
 
 def test_wc_dist_shape(wc_rna):
-    assert wc_rna.results.pair_distances.shape == (1, 2)
+    assert wc_rna.results.distances.shape == (1, 2)
 
 
 def test_wc_dist_results_keys(wc_rna):
@@ -66,8 +66,8 @@ def test_wc_dist_results_keys(wc_rna):
 
 
 def test_wc_dist(wc_rna):
-    assert wc_rna.results.pair_distances[0, 0] == approx(4.3874702, rel=1e-3)
-    assert wc_rna.results.pair_distances[0, 1] == approx(4.1716404, rel=1e-3)
+    assert wc_rna.results.distances[0, 0] == approx(4.3874702, rel=1e-3)
+    assert wc_rna.results.distances[0, 1] == approx(4.1716404, rel=1e-3)
 
 
 def test_wc_dist_invalid_residue_types(u):
@@ -99,8 +99,8 @@ def test_minor_dist(u):
     MI = MinorPairDist(strand1, strand2)
     MI.run()
 
-    assert MI.results.pair_distances[0, 0] == approx(15.06506, rel=1e-3)
-    assert MI.results.pair_distances[0, 1] == approx(3.219116, rel=1e-3)
+    assert MI.results.distances[0, 0] == approx(15.06506, rel=1e-3)
+    assert MI.results.distances[0, 1] == approx(3.219116, rel=1e-3)
 
 
 def test_major_dist(u):
@@ -111,5 +111,5 @@ def test_major_dist(u):
     MA = MajorPairDist(strand1, strand2)
     MA.run()
 
-    assert MA.results.pair_distances[0, 0] == approx(26.884272, rel=1e-3)
-    assert MA.results.pair_distances[0, 1] == approx(13.578535, rel=1e-3)
+    assert MA.results.distances[0, 0] == approx(26.884272, rel=1e-3)
+    assert MA.results.distances[0, 1] == approx(13.578535, rel=1e-3)
