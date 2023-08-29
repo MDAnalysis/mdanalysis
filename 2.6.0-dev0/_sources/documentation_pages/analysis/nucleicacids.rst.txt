@@ -1,1 +1,0 @@
-.. automodule:: MDAnalysis.analysis.nucleicacids
