@@ -13,6 +13,19 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+??/??/?? IAlibay
+
+ * 2.7.0
+
+Fixes
+
+Enhancements
+
+Changes
+
+Deprecations
+
+
 28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
 
  * 2.6.1
@@ -24,7 +37,7 @@ Enhancements
 
 Changes
   * Reverts PR #4108, builds are now again made using the oldest
-    supported Python version.
+    supported NumPy version.
   * NumPy `in1d` replaced with `isin` in preparation for NumPy
     `2.0` (PR #4255)
   * Update documentation for SurvivalProbabilty to be more clear

@@ -67,7 +67,7 @@ import configparser
 from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.6.1"
+RELEASE = "2.7.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -592,7 +592,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.22.3,<2.0',
+          'numpy>=1.22.3',
           'biopython>=1.80',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
