@@ -67,7 +67,7 @@ Distances
 
 """
 
-from typing import List, Dict, Tuple, TypeAlias, Union
+from typing import List, Dict, Tuple, TypeAlias, Union, Iterable
 import warnings
 
 import numpy as np
@@ -160,25 +160,69 @@ class NucPairDist(AnalysisBase):
         ) -> Tuple[List[mda.AtomGroup], List[mda.AtomGroup]]:
         pyrimidines: List[str] = [c_name, t_name, u_name]
         purines: List[str] = [a_name, g_name]
+        r"""
+        A helper method for nucleic acid pair distance analyses. Used for selecting specific atoms
+        from two strands of nucleic acids. 
+        
+
+        Parameters
+        ----------
+        strand1: List[Residue]
+            The first nucleic acid strand
+        strand2: List[Residue]
+            The second nucleic acid strand
+        a1_name: str
+            The selection for the purine base of the strand pair
+        a2_name: str
+            the selection for the pyrimidine base of the strand pair
+        g_name: str (optional)
+            Name of Guanine in topology, by default assigned to G
+        a_name: str (optional)
+            Name of Adenine in topology, by default assigned to A
+        u_name: str (optional)
+            Name of Uracil in topology, by default assigned to U
+        t_name: str (optional)
+            Name of Thymine in topology, by default assigned to T
+        c_name: str (optional)
+            Name of Cytosine in topology, by default assigned to C
+        
+        Returns
+        -------
+        Tuple[List[AtomGroup], List[AtomGroup]]
+            returns a tuple containing two lists of :class:`~MDAnalysis.core.groups.AtomGroup`s
+            corresponding to the provided selections from each strand.
+
+        Raises
+        ------
+        ValueError:
+            An :class:`~MDAnalysis.core.groups.AtomGroup` in one of the strands not
+            a valid nucleic acid
+        ValueError:
+            An :class:`~MDAnalysis.core.groups.Residue` returns an empty
+            :class:`~MDAnalysis.core.groups.AtomGroup` with the provided selection
+
+
+        .. versionadded:: 2.7.0
+        """
         
         sel1: List[mda.AtomGroup] = []
         sel2: List[mda.AtomGroup] = []
-        strand: Tuple[Residue, Residue] = zip(strand1, strand2)
+        
 
 
-        for s in strand:
-            if s[0].resname[0] in pyrimidines:
+        for pair in zip(strand1, strand2):
+            if pair[0].resname[0] in pyrimidines:
                 a1, a2 = a2_name, a1_name
-            elif s[0].resname[0] in purines:
+            elif pair[0].resname[0] in purines:
                 a1, a2 = a1_name, a2_name
             else:
-                raise ValueError(f"AtomGroup in {s} is not a valid nucleic acid")
+                raise ValueError(f"AtomGroup in {pair} is not a valid nucleic acid")
 
-            ag1 = s[0].atoms.select_atoms(f'name {a1}')
-            ag2 = s[1].atoms.select_atoms(f'name {a2}')
+            ag1 = pair[0].atoms.select_atoms(f'name {a1}')
+            ag2 = pair[1].atoms.select_atoms(f'name {a2}')
 
-            if not all([len(ag) > 0 for ag in [ag1, ag2]]):
-                err_info: Tuple[Residue, str] = (s[0], a1) if len(ag1) == 0 else (s[1], a2)
+            if not all(len(ag) > 0 for ag in [ag1, ag2]):
+                err_info: Tuple[Residue, str] = (pair[0], a1) if len(ag1) == 0 else (pair[1], a2)
                 raise ValueError(f"{err_info[0]} returns an empty AtomGroup with selection string \"name {a2}\"")
 
             sel1.append(ag1) 
