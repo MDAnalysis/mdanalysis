@@ -34,7 +34,7 @@ inputs:
   matplotlib:
     default: 'matplotlib-base'
   mda_xdrlib:
-    default: 'mda_xdrlib'
+    default: 'mda-xdrlib'
   mmtf-python:
     default: 'mmtf-python'
   networkx:
