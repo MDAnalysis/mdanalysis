@@ -604,7 +604,7 @@ if __name__ == '__main__':
           'threadpoolctl',
           'packaging',
           'fasteners',
-          'mda_xdrlib',
+          'mda-xdrlib',
     ]
 
     setup(name='MDAnalysis',
