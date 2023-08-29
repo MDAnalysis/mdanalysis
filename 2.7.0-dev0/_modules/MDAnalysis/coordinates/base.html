@@ -97,7 +97,7 @@
   <h1>Source code for MDAnalysis.coordinates.base</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
-<span class="c1">#</span>
+
 <span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
 <span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
 <span class="c1"># (see the file AUTHORS for the full list of names)</span>
@@ -198,16 +198,17 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-
 <span class="sd">Converters</span>
 <span class="sd">----------</span>
-
 <span class="sd">Converters output information to other libraries.</span>
+
+<span class="sd">.. deprecated:: 2.7.0</span>
+<span class="sd">    All converter code has been moved to :mod:`MDAnalysis.converters` and will</span>
+<span class="sd">    be removed from the :mod:`MDAnalysis.coordinates.base` module in 3.0.0.</span>
 
 <span class="sd">.. autoclass:: ConverterBase</span>
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
-
 
 <span class="sd">Helper classes</span>
 <span class="sd">--------------</span>
@@ -231,7 +232,7 @@
     <span class="n">_READERS</span><span class="p">,</span> <span class="n">_READER_HINTS</span><span class="p">,</span>
     <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span>
     <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span>
-    <span class="n">_CONVERTERS</span>
+    <span class="n">_CONVERTERS</span><span class="p">,</span>  <span class="c1"># remove in 3.0.0 (Issue #3404)</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">..auxiliary.base</span> <span class="kn">import</span> <span class="n">AuxReader</span>
@@ -1880,7 +1881,10 @@
         <span class="c1"># The range is empty.</span>
         <span class="k">return</span> <span class="mi">0</span>
 
-
+<span class="c1"># Verbatim copy of code from converters/base.py</span>
+<span class="c1"># Needed to avoid circular imports before removal in</span>
+<span class="c1"># MDAnalysis 3.0.0</span>
+<span class="c1"># Remove in 3.0.0</span>
 <span class="k">class</span> <span class="nc">_Convertermeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="c1"># Auto register upon class creation</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
@@ -1894,13 +1898,26 @@
                 <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
                 <span class="n">_CONVERTERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
+
+<span class="c1"># Verbatim copy of code from converters/base.py</span>
+<span class="c1"># Needed to avoid circular imports before removal in</span>
+<span class="c1"># MDAnalysis 3.0.0</span>
+<span class="c1"># Remove in 3.0.0</span>
 <div class="viewcode-block" id="ConverterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase">[docs]</a><span class="k">class</span> <span class="nc">ConverterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Convertermeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for converting to other libraries.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    :mod:`MDAnalysis.converters`</span>
+<span class="sd">    .. deprecated:: 2.7.0</span>
+<span class="sd">        This class has been moved to</span>
+<span class="sd">        :class:`MDAnalysis.converters.base.ConverterBase` and will be removed</span>
+<span class="sd">        from :mod:`MDAnalysis.coordinates.base` in 3.0.0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ConverterBase moved from coordinates.base.&quot;</span>
+                <span class="s2">&quot;ConverterBase to converters.base.ConverterBase &quot;</span>
+                <span class="s2">&quot;and will be removed from coordinates.base &quot;</span>
+                <span class="s2">&quot;in MDAnalysis release 3.0.0&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{cls}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
