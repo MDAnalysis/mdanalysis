@@ -202,11 +202,11 @@ jobs:
 
     - name: pip install mdanalysis
       run: |
-        cd package && pip install .
+        cd package && pip install . -vvv
 
     - name: pip install mdanalysistests
       run: |
-        cd testsuite && pip install .
+        cd testsuite && pip install . -vvv
 
     - name: install_pip_extras
       run: |
