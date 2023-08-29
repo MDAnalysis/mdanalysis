@@ -24,7 +24,7 @@ import os
 
 import MDAnalysis
 import MDAnalysis as mda
-from MDAnalysis.analysis import rms, align
+from MDAnalysis.analysis import rms, align, backends
 
 from numpy.testing import assert_equal, assert_almost_equal
 
@@ -182,9 +182,10 @@ class TestRMSD(object):
         return [[0, 1, 0, 0, 0],
                 [49, 50, 4.6997, 1.9154, 2.7139]]
 
-    def test_rmsd(self, universe, correct_values):
+    @pytest.mark.parametrize("backend", [None, backends.Multiprocessing])
+    def test_rmsd(self, universe, correct_values, backend):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
-        RMSD.run(step=49)
+        RMSD.run(step=49, backend=backend, n_workers=4, n_parts=4)
         assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
