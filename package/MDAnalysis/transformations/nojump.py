@@ -135,10 +135,6 @@ class NoJump(TransformationBase):
             self.old_frame = 0
             self.older_frame = -1
             return ts
-        if self.prev is None:
-            self.prev = ts.positions @ Linverse
-            self.old_frame = ts.frame
-            return ts
         if (
             self.check_c
             and self.older_frame != "A"
