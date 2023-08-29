@@ -375,6 +375,7 @@ class MinorPairDist(NucPairDist):
     ValueError
         if the selections given are not the same length
 
+    .. versionadded:: 2.7.0
     """
 
     def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
@@ -444,6 +445,7 @@ class MajorPairDist(NucPairDist):
     ValueError
         if the selections given are not the same length
 
+    .. versionadded:: 2.7.0
     """
 
     def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
