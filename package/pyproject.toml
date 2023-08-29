@@ -46,7 +46,7 @@ dependencies = [
     'threadpoolctl',
     'packaging',
     'fasteners',
-    'mda_xdrlib',
+    'mda-xdrlib',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
