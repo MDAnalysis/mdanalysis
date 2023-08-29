@@ -48,7 +48,7 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 
 import numpy as np
-import xdrlib
+import mda_xdrlib
 import struct
 
 from . import obj
@@ -74,7 +74,7 @@ from ...core.topologyattrs import (
 )
 
 
-class TPXUnpacker(xdrlib.Unpacker):
+class TPXUnpacker(mda_xdrlib.Unpacker):
     """
     Extend the standard XDR unpacker for the specificity of TPX files.
     """

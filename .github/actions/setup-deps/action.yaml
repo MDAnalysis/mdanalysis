@@ -33,6 +33,8 @@ inputs:
     default: 'hypothesis'
   matplotlib:
     default: 'matplotlib-base'
+  mda_xdrlib:
+    default: 'mda_xdrlib'
   mmtf-python:
     default: 'mmtf-python'
   networkx:
@@ -111,6 +113,7 @@ runs:
           ${{ inputs.griddataformats }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
+          ${{ inputs.mda_xdrlib }}
           ${{ inputs.mmtf-python }}
           ${{ inputs.networkx }}
           ${{ inputs.numpy }}
