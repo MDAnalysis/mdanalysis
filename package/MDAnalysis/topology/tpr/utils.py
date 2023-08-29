@@ -48,7 +48,7 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 
 import numpy as np
-import mda_xdrlib import xdrlib
+from mda_xdrlib import xdrlib
 import struct
 
 from . import obj
