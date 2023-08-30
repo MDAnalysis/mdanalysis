@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope, pillose
+??/??/?? IAlibay, hmacdope, pillose, ALescoulie
 
  * 2.7.0
 
@@ -21,12 +21,16 @@ Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
+  * Add faster nucleic acid Major and Minor pair distance calculators using
+    AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
 
 Changes
   * Cython DEF statments have been replaced with compile time integer constants
     as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
 
 Deprecations
+  * added `DeprecationWarning` to `analysis.nucleicacids.WatsonCrickDist` when
+    `List[Residue]` is given instead of `ResidueGroup`
 
 
 08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
