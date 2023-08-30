@@ -125,6 +125,13 @@ class NucPairDist(AnalysisBase):
 
     ValueError
         If the selections given are not the same length
+    ValueError:
+        An :class:`~MDAnalysis.core.groups.AtomGroup` in one of the strands not
+        a valid nucleic acid
+    ValueError
+        If a given residue pair from the provided strands returns an empty
+        :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
+        pairs used in the distance calculations
 
 
     .. versionchanged:: 2.5.0
@@ -133,6 +140,10 @@ class NucPairDist(AnalysisBase):
        :attr:`results.pair_distances` instead.
        The :attr:`results.times` was deprecated and is now removed as of
        MDAnalysis 2.5.0. Please use the class attribute :attr:`times` instead.
+    
+    .. versionchanged:: 2.7.0
+        Added static method :attr:`select_strand_atoms` as a helper for selecting
+        atom pairs for distance analysis.
     """
 
     _s1: mda.AtomGroup
@@ -299,14 +310,14 @@ class WatsonCrickDist(NucPairDist):
         :attr:`strand1` of :attr:`strand2` instead of a
         :class:`~MDAnalysis.core.groups.ResidueGroup`
     ValueError
-        If the residues given are not amino acids
+        If the selections given are not the same length
+    ValueError:
+        An :class:`~MDAnalysis.core.groups.AtomGroup` in one of the strands not
+        a valid nucleic acid
     ValueError
         If a given residue pair from the provided strands returns an empty
         :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
         pairs used in the distance calculations
-    ValueError
-        If the selections given are not the same length
-
 
     .. versionchanged:: 2.5.0
        Accessing results by passing strand indices to :attr:`results` is
@@ -333,13 +344,13 @@ class WatsonCrickDist(NucPairDist):
             strand2: ResidueGroup = ResidueGroup(strand2)
         
          
-        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
+        strand_atomgroups: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
             strand1, strand2, n1_name, n3_name, 
             g_name=g_name, a_name=a_name,
             t_name=t_name, u_name=u_name, c_name=c_name
         )
 
-        super(WatsonCrickDist, self).__init__(selections[0], selections[1], **kwargs)
+        super(WatsonCrickDist, self).__init__(strand_atomgroups[0], strand_atomgroups[1], **kwargs)
 
 
 class MinorPairDist(NucPairDist):
@@ -382,17 +393,22 @@ class MinorPairDist(NucPairDist):
     Attributes
     ----------
     results.distances: numpy.ndarray
-        first index is selection second index is time
+        stored in a 2d numpy array with first index selecting the Residue pair, 
+        and the second index selecting the frame number
     times: numpy.ndarray
         Simulation times for analysis.
 
     Raises
     ------
     ValueError
-        stored in a 2d numpy array with first index selecting the Residue pair, 
-        and the second index selecting the frame number
+        If the selections given are not the same length
+    ValueError:
+        An :class:`~MDAnalysis.core.groups.AtomGroup` in one of the strands not
+        a valid nucleic acid
     ValueError
-        if the selections given are not the same length
+        If a given residue pair from the provided strands returns an empty
+        :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
+        pairs used in the distance calculations
 
     .. versionadded:: 2.7.0
     """
@@ -460,7 +476,12 @@ class MajorPairDist(NucPairDist):
     Raises
     ------
     ValueError
-        if the residues given are not amino acids
+        An :class:`~MDAnalysis.core.groups.AtomGroup` in one of the strands not
+        a valid nucleic acid
+    ValueError
+        If a given residue pair from the provided strands returns an empty
+        :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
+        pairs used in the distance calculations
     ValueError
         if the selections given are not the same length
 
