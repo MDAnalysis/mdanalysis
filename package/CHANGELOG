@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, ianmkenney
 
  * 2.7.0
 
@@ -25,8 +25,11 @@ Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
+  * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
 
 Deprecations
+  * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
+    use converters.base.ConvertBase instead (Issue #3404)
 
 
 28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
