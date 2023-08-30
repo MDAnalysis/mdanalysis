@@ -18,6 +18,8 @@ The rules for this file:
  * 2.7.0
 
 Fixes
+  * Deprecated np.float_ and np.NaN aliases have been replaced with
+    their original type value (np.float64 and np.nan) (PR #4272)
 
 Enhancements
 
