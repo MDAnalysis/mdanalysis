@@ -391,6 +391,76 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
+    def _init_run(self, start=None, stop=None, step=None, frames=None):
+        """
+        Determine frames to run the analysis on and perform any preparation required.
+
+        Parameters
+        ----------
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+        frames : array_like, optional
+            array of integers or booleans to slice trajectory; cannot be
+            combined with `start`, `stop`, `step`
+
+            .. versionadded:: 2.2.0
+        """
+
+        logger.info("Choosing frames to analyze")
+        self._setup_frames(self._trajectory, start=start, stop=stop,
+                           step=step, frames=frames)
+        logger.info("Starting preparation")
+        self._prepare()
+
+    def _compute(self, sliced_frame_indices: np.ndarray, verbose=None, *, progressbar_kwargs={}) -> "AnalysisBase":
+        """
+        Perform the calculation on a list of frames indices from the sliced trajectory.
+
+        For parallel analyses that inherit from ParallelAnalysisBase, the `sliced_frame_indices` will
+        cover only a subset on the total sliced trajectory. For serial analyses that inherit
+        from AnalysisBase, the `sliced_frame_indices` will cover the entire sliced trajectory.
+
+        Parameters
+        ----------
+        sliced_frame_indices : np.ndarray or None
+            Indices of frames to use from the sliced trajectory.
+
+        verbose : bool, optional
+            Turn on verbosity
+
+        progressbar_kwargs : dict, optional
+            ProgressBar keywords with custom parameters regarding progress bar position, etc;
+            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
+        """
+
+        # if verbose unchanged, use class default
+        verbose = getattr(self, '_verbose',
+                          False) if verbose is None else verbose
+
+        sliced_frame_indices = np.asarray(sliced_frame_indices)
+        if not sliced_frame_indices.size:  # if `frames` were empty in `run` or `stop=0`
+            return self
+
+        logger.info("Starting analysis loop over %d trajectory frames",
+                    sliced_frame_indices.size)
+
+        for i, ts in enumerate(ProgressBar(
+                self._sliced_trajectory[sliced_frame_indices],
+                verbose=verbose,
+                **progressbar_kwargs,)):
+            self._frame_index = sliced_frame_indices[i]
+            self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
+            self._single_frame()
+
+        return self
+
+
     def run(self, start=None, stop=None, step=None, frames=None,
             verbose=None, *, progressbar_kwargs={}):
         """Perform the calculation
@@ -427,27 +497,13 @@ class AnalysisBase(object):
             Add `progressbar_kwargs` parameter, 
             allowing to modify description, position etc of tqdm progressbars
         """
-        logger.info("Choosing frames to analyze")
-        # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose',
-                          False) if verbose is None else verbose
 
-        self._setup_frames(self._trajectory, start=start, stop=stop,
-                           step=step, frames=frames)
-        logger.info("Starting preparation")
-        self._prepare()
-        logger.info("Starting analysis loop over %d trajectory frames",
-                    self.n_frames)
-
-        for i, ts in enumerate(ProgressBar(
-                self._sliced_trajectory,
-                verbose=verbose,
-                **progressbar_kwargs)):
-            self._frame_index = i
-            self._ts = ts
-            self.frames[i] = ts.frame
-            self.times[i] = ts.time
-            self._single_frame()
+        self._init_run(start=start, stop=stop, step=step, frames=frames)
+        self._compute(
+            sliced_frame_indices=np.arange(len(self._sliced_trajectory)),
+            verbose=verbose,
+            progressbar_kwargs=progressbar_kwargs,
+        )
         logger.info("Finishing up")
         self._conclude()
         return self
@@ -722,109 +778,25 @@ class ParallelAnalysisBase(AnalysisBase):
     def __init__(self, trajectory, verbose=False, **kwargs):
         super().__init__(trajectory, verbose, **kwargs)
 
-    def _setup_computation_groups(
-        self, n_parts: int, start=None, stop=None, step=None, frames=None
-    ) -> list[np.ndarray]:
+    def _setup_computation_groups(self, n_parts: int) -> list[np.ndarray]:
         """
-        Splits the trajectory frames, defined by `start/stop/step` or `frames`, into
-        `n_parts` even groups, preserving their indices.
+        Splits the sliced trajectory `n_parts` even groups, preserving their indices.
+        This requires that self._setup_frames has first been called to generate the
+        sliced trajectory.
 
         Parameters
         ----------
         n_parts : int
             number of parts to split the workload into
-        start : int, optional
-            start frame
-        stop : int, optional
-            stop frame
-        step : int, optional
-            number of frames to skip between each analysed frame
-        frames : array_like, optional
-            array of integers or booleans to slice trajectory; `frames` can
-            only be used *instead* of `start`, `stop`, and `step`. Setting
-            *both* `frames` and at least one of `start`, `stop`, `step` to a
-            non-default value will raise a :exc:`ValueError`.
-
-        Raises
-        ------
-        ValueError
-            if *both* `frames` and at least one of `start`, `stop`, or `frames`
-            is provided (i.e., set to another value than ``None``)
 
         Returns
         -------
         computation_groups : list[np.ndarray]
-            list of (n, 2) shaped np.ndarrays with frame indices and numbers
+            list of N np.ndarrays. Each array containes indices of the sliced trajectory to run the
+            computation on.
         """
-        if frames is None:
-            start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
-            used_frames = np.arange(start, stop, step)
-        elif not all(opt is None for opt in [start, stop, step]):
-            raise ValueError("start/stop/step cannot be combined with frames")
-        else:
-            used_frames = frames
-
-        if all((isinstance(obj, bool) for obj in used_frames)):
-            arange = np.arange(len(used_frames))
-            used_frames = arange[used_frames]
-
-        # this numpy thing is similar to list(enumerate(frames))
-        enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
-
-        return np.array_split(enumerated_frames, n_parts)
-
-
-    def _compute(self, indexed_frames: np.ndarray, verbose=None, *, progressbar_kwargs={}) -> "AnalysisBase":
-        """Perform the calculation on a balanced slice of frames
-        that have been setup prior to that using _setup_computation_groups()
-
-        Parameters
-        ----------
-        indexed_frames : np.ndarray
-            np.ndarray of (n, 2) shape,
-            where first column is frame iteration indices
-            and second is frame numbers
-
-        verbose : bool, optional
-            Turn on verbosity
-
-        progressbar_kwargs : dict, optional
-            ProgressBar keywords with custom parameters regarding progress bar position, etc;
-            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
-
-
-        .. versionchanged:: 2.2.0
-            Added ability to analyze arbitrary frames by passing a list of
-            frame indices in the `frames` keyword argument.
-
-        .. versionchanged:: 2.5.0
-            Add `progressbar_kwargs` parameter,
-            allowing to modify description, position etc of tqdm progressbars
-        """
-        logger.info("Choosing frames to analyze")
-        # if verbose unchanged, use class default
-        verbose = getattr(self, "_verbose", False) if verbose is None else verbose
-
-        logger.info("Starting preparation")
-        logger.info("Starting analysis loop over %d trajectory frames", self.n_frames)
-
-        if len(indexed_frames) == 0:  # if `frames` were empty in `run` or `stop=0`
-            return self
-
-        frame_indices, frames = (
-            indexed_frames[:, 0],
-            indexed_frames[:, 1],
-        )
-        trajectory = self._trajectory[frames]
-        for idx, ts in enumerate(ProgressBar(trajectory, verbose=verbose, **progressbar_kwargs)):
-            i = frame_indices[idx]
-            self._frame_index = i
-            self._ts = ts
-            self.frames[i] = ts.frame
-            self.times[i] = ts.time
-            self._single_frame()
-        logger.info("Finishing up")
-        return self
+        sliced_frame_indices = np.arange(len(self._sliced_trajectory))
+        return np.array_split(sliced_frame_indices, n_parts)
 
 
     def _get_aggregator(self):
@@ -862,14 +834,12 @@ class ParallelAnalysisBase(AnalysisBase):
             )
 
         # Start preparing the run
-        super()._setup_frames(trajectory=self._trajectory, start=start, stop=stop, step=step, frames=frames)
-        self._prepare()
-        computation_groups = self._setup_computation_groups(
-            start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
-        )
+        self._init_run(start=start, stop=stop, step=step, frames=frames)
+
         # Ignore progressbar_kwargs: cannot display progressbar with non-local backend"
         # https://github.com/MDAnalysis/mdanalysis/blob/72ece490a47baab1c2dae81f89d3d7c4b157f26d/package/MDAnalysis/analysis/base.py#L846C39-L846C91
         worker_func = functools.partial(self._compute, progressbar_kwargs={}, verbose=verbose)
+        computation_groups = self._setup_computation_groups(n_parts=n_parts)
 
         # gather all remote objects
         remote_objects: list["ParallelAnalysisBase"] = backend.apply(
@@ -885,5 +855,6 @@ class ParallelAnalysisBase(AnalysisBase):
         results_aggregator = self._get_aggregator()
         self.results = results_aggregator.merge(remote_results)
 
+        logger.info("Finishing up")
         self._conclude()
         return self
