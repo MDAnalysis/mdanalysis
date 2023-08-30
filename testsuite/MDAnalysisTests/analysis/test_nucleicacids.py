@@ -32,6 +32,8 @@ from MDAnalysis.analysis.nucleicacids import (NucPairDist, WatsonCrickDist,
                                          
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 
+from MDAnalysis.core.groups import ResidueGroup
+
 
 @pytest.fixture(scope='module')
 def u():
@@ -40,8 +42,8 @@ def u():
 
 def test_empty_ag_error(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
-    strand1 = [strand.residues[0]]
-    strand2 = [strand.residues[1]]
+    strand1 = ResidueGroup([strand.residues[0]])
+    strand2 = ResidueGroup([strand.residues[1]])
 
     with pytest.raises(ValueError, match="returns an empty AtomGroup"):
         NucPairDist.select_strand_atoms(strand1, strand2, 'UNK1', 'O2')
@@ -49,8 +51,8 @@ def test_empty_ag_error(u):
 @pytest.fixture(scope='module')
 def wc_rna(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
-    strand1 = [strand.residues[0], strand.residues[21]]
-    strand2 = [strand.residues[1], strand.residues[22]]
+    strand1 = ResidueGroup([strand.residues[0], strand.residues[21]])
+    strand2 = ResidueGroup([strand.residues[1], strand.residues[22]])
 
     WC = WatsonCrickDist(strand1, strand2)
     WC.run()
@@ -62,7 +64,7 @@ def test_wc_dist_shape(wc_rna):
 
 
 def test_wc_dist_results_keys(wc_rna):
-    assert "pair_distances" in wc_rna.results
+    assert "distances" in wc_rna.results
 
 
 def test_wc_dist(wc_rna):
@@ -72,8 +74,8 @@ def test_wc_dist(wc_rna):
 
 def test_wc_dist_invalid_residue_types(u):
     strand = u.select_atoms("resid 1-10")
-    strand1 = [strand.residues[0], strand.residues[21]]
-    strand2 = [strand.residues[2], strand.residues[22]]
+    strand1 = ResidueGroup([strand.residues[0], strand.residues[21]])
+    strand2 = ResidueGroup([strand.residues[2], strand.residues[22]])
     with pytest.raises(ValueError, match="is not a valid nucleic acid"):
         WatsonCrickDist(strand1, strand2)
 
@@ -84,6 +86,17 @@ def test_selection_length_mismatch(u):
     with pytest.raises(ValueError, match="Selections must be same length"):
         NucPairDist(sel1, sel2)
 
+def test_wc_dist_deprecation_warning(u):
+    strand = u.select_atoms("resid 1-10")
+    strand1 = [strand.residues[0], strand.residues[21]]
+    strand2 = [strand.residues[2], strand.residues[22]]
+    with pytest.raises(
+        DeprecationWarning, 
+        match="ResidueGroup should be used instead of giving a Residue list"):
+        
+        WatsonCrickDist(strand1, strand2)
+
+
 
 @pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
 def test_wc_dis_results_keyerrs(wc_rna, key):
@@ -93,8 +106,8 @@ def test_wc_dis_results_keyerrs(wc_rna, key):
 
 def test_minor_dist(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
-    strand1 = [strand.residues[2], strand.residues[19]]
-    strand2 = [strand.residues[16], strand.residues[4]]
+    strand1 = ResidueGroup([strand.residues[2], strand.residues[19]])
+    strand2 = ResidueGroup([strand.residues[16], strand.residues[4]])
 
     MI = MinorPairDist(strand1, strand2)
     MI.run()
@@ -105,8 +118,8 @@ def test_minor_dist(u):
 
 def test_major_dist(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
-    strand1 = [strand.residues[1], strand.residues[4]]
-    strand2 = [strand.residues[11], strand.residues[8]]
+    strand1 = ResidueGroup([strand.residues[1], strand.residues[4]])
+    strand2 = ResidueGroup([strand.residues[11], strand.residues[8]])
 
     MA = MajorPairDist(strand1, strand2)
     MA.run()

@@ -78,7 +78,7 @@ from .base import AnalysisBase, Results
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
 
-ResidueClass: TypeAlias = Union[Residue, ResidueGroup]
+ResidueClass: TypeAlias = Union[List[Residue], ResidueGroup]
 r"""A :class:`typing.TypeAlias` for :code:`Union[Residue, ResidueGroup]`
 
 Used as an alias for methods where either class is acceptable.
@@ -159,7 +159,7 @@ class NucPairDist(AnalysisBase):
 
     @staticmethod
     def select_strand_atoms(
-        strand1: List[Residue], strand2: List[Residue], 
+        strand1: ResidueGroup, strand2: ResidueGroup, 
         a1_name: str, a2_name: str, g_name: str = 'G',
         a_name: str = 'A', u_name: str = 'U',
         t_name: str = 'T', c_name: str = 'C'
@@ -216,7 +216,7 @@ class NucPairDist(AnalysisBase):
         
 
 
-        for pair in zip(strand1, strand2):
+        for pair in zip(strand1.residues, strand2.residues):
             if pair[0].resname[0] in pyrimidines:
                 a1, a2 = a2_name, a1_name
             elif pair[0].resname[0] in purines:
@@ -256,9 +256,9 @@ class WatsonCrickDist(NucPairDist):
 
     Parameters
     ----------
-    strand1: List[Residue]
+    strand1: ResidueClass
         First list of bases
-    strand2: List[Residue]
+    strand2: ResidueClass
         Second list of bases
     n1_name: str (optional)
         Name of Nitrogen 1 of nucleic acids, by default assigned to N1
@@ -294,8 +294,16 @@ class WatsonCrickDist(NucPairDist):
 
     Raises
     ------
+    DeprecationWarning
+        If a lits of :class:`~MDAnalysis.core.groups.Residue` is given for
+        :attr:`strand1` of :attr:`strand2` instead of a
+        :class:`~MDAnalysis.core.groups.ResidueGroup`
     ValueError
         If the residues given are not amino acids
+    ValueError
+        If a given residue pair from the provided strands returns an empty
+        :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
+        pairs used in the distance calculations
     ValueError
         If the selections given are not the same length
 
@@ -306,14 +314,25 @@ class WatsonCrickDist(NucPairDist):
        use :attr:`results.pair_distances` instead.
        The :attr:`results.times` was deprecated and is now removed as of
        MDAnalysis 2.5.0. Please use the class attribute :attr:`times` instead.
+
+    .. versionchanged:: 2.7.0
+        Deprecated the use of :attr:`List[Residue]` instead use
+        :class:`~MDAnalysis.core.groups.ResidueGroup`.
+
     """
 
-    def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
+    def __init__(self, strand1: ResidueClass, strand2: ResidueClass,
                  n1_name: str = 'N1', n3_name: str = "N3",
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
                  **kwargs) -> None:
-
+        
+        if isinstance(strand1, list) or isinstance(strand2, list):
+            raise DeprecationWarning("ResidueGroup should be used instead of giving a Residue list")
+            strand1: ResidueGroup = ResidueGroup(strand1)
+            strand2: ResidueGroup = ResidueGroup(strand2)
+        
+         
         selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
             strand1, strand2, n1_name, n3_name, 
             g_name=g_name, a_name=a_name,
@@ -378,7 +397,7 @@ class MinorPairDist(NucPairDist):
     .. versionadded:: 2.7.0
     """
 
-    def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
+    def __init__(self, strand1: ResidueGroup, strand2: ResidueGroup,
                  o2_name: str = 'O2', c2_name: str = "C2",
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
@@ -448,7 +467,7 @@ class MajorPairDist(NucPairDist):
     .. versionadded:: 2.7.0
     """
 
-    def __init__(self, strand1: List[ResidueClass], strand2: List[ResidueClass],
+    def __init__(self, strand1: ResidueGroup, strand2: ResidueGroup,
                  n4_name: str = 'N4', o6_name: str = "O6",
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
