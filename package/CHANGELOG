@@ -13,19 +13,37 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope, pillose, jaclark5, tylerjereddy, p-j-smith
+??/??/?? IAlibay, ianmkenney, p-j-smith
 
  * 2.7.0
 
 Fixes
   * Fix `NoJump`` unwrapping for jumps on the second frame in a
     trajectory (PR #4258, Issue #4257)
+
+Enhancements
+
+Changes
+  * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+
+Deprecations
+  * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
+    use converters.base.ConvertBase instead (Issue #3404)
+
+
+28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+
+ * 2.6.1
+
+Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
   * Allow `set_dimensions` transformation to handle NPT trajectories (PR #4258)
 
 Changes
+  * Reverts PR #4108, builds are now again made using the oldest
+    supported NumPy version.
   * NumPy `in1d` replaced with `isin` in preparation for NumPy
     `2.0` (PR #4255)
   * Update documentation for SurvivalProbabilty to be more clear

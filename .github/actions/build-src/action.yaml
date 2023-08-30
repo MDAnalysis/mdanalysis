@@ -42,7 +42,7 @@ inputs:
     #   example, when we use nightly wheels of NumPy.
     descriptions: 'Use build isolation for pip installs, if false `--no-build-isolation` is used. '
     required: true
-    default: false
+    default: true
 
 
 runs:
