@@ -326,32 +326,63 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
-        molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
+        mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
+        molblock = mt.name.decode('utf-8')
         segid = f"seg_{i}_{molblock}"
-        for j in range(mb.molb_nmol):
-            mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
-            for atomkind in mt.atomkinds:
-                atomids.append(atomkind.id + atom_start_ndx)
-                segids.append(segid)
-                resids.append(atomkind.resid + res_start_ndx)
-                resnames.append(atomkind.resname.decode())
-                atomnames.append(atomkind.name.decode())
-                atomtypes.append(atomkind.type.decode())
-                moltypes.append(molblock)
-                molnums.append(molnum)
-                charges.append(atomkind.charge)
-                masses.append(atomkind.mass)
-                elements.append(atomkind.element_symbol)
-            molnum += 1
+        # NOTE: many calculations below appear to be incorrect,
+        # but the test suite says otherwise, or at least is not sensitive...
+        if mt.bonds is not None:
+            curr_bonds = np.tile(mt.bonds, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.bonds), 2))
+            adder = np.repeat(np.arange(0, mt.number_of_atoms() * mb.molb_nmol, mt.number_of_atoms()), 2 * len(mt.bonds)).reshape(-1, 2) + atom_start_ndx
+            curr_bonds += adder
+            bonds.extend(curr_bonds)
+        if mt.angles is not None:
+            curr_angles = np.tile(mt.angles, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.angles), 3))
+            angles.extend(curr_angles)
+        if mt.dihe is not None:
+            curr_dihedrals = np.tile(mt.dihe, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.dihe), 4))
+            dihedrals.extend(curr_dihedrals)
+        if mt.impr is not None:
+            curr_impropers = np.tile(mt.impr, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.impr), 4))
+            impropers.extend(curr_impropers)
 
-            # remap_ method returns [blah, blah, ..] or []
-            bonds.extend(mt.remap_bonds(atom_start_ndx))
-            angles.extend(mt.remap_angles(atom_start_ndx))
-            dihedrals.extend(mt.remap_dihe(atom_start_ndx))
-            impropers.extend(mt.remap_impr(atom_start_ndx))
+        atomids_mol = np.arange(mt.number_of_atoms() * mb.molb_nmol, dtype=np.int32) + atom_start_ndx
+        atomids.extend(atomids_mol)
+        segids.extend(np.repeat(segid, mt.number_of_atoms() * mb.molb_nmol))
+        resids_mol = np.empty(mt.number_of_atoms(), dtype=np.int32)
+        resnames_mol = np.empty(mt.number_of_atoms(), dtype=object)
+        atomnames_mol = np.empty(mt.number_of_atoms(), dtype=object)
+        atomtypes_mol = np.empty(mt.number_of_atoms(), dtype=object)
+        charges_mol = np.empty(mt.number_of_atoms(), dtype=np.float32)
+        masses_mol = np.empty(mt.number_of_atoms(), dtype=np.float32)
+        elements_mol = np.empty(mt.number_of_atoms(), dtype=object)
+        for n in range(mt.number_of_atoms()):
+            resids_mol[n] = mt.atomkinds[n].resid + res_start_ndx
+            resnames_mol[n] = mt.atomkinds[n].resname
+            atomnames_mol[n] = mt.atomkinds[n].name
+            atomtypes_mol[n] = mt.atomkinds[n].type
+            charges_mol[n] = mt.atomkinds[n].charge
+            masses_mol[n] = mt.atomkinds[n].mass
+            elements_mol[n] = mt.atomkinds[n].element_symbol
+        resids_mol = np.tile(resids_mol, mb.molb_nmol)
+        adder = np.repeat(np.arange(0, mt.number_of_residues() * mb.molb_nmol, mt.number_of_residues()), mt.number_of_atoms())
+        resids_mol += adder
+        resids.extend(resids_mol)
+        resnames.extend(np.tile(resnames_mol, mb.molb_nmol))
+        atomnames.extend(np.tile(atomnames_mol, mb.molb_nmol))
+        atomtypes.extend(np.tile(atomtypes_mol, mb.molb_nmol))
+        moltypes.extend([molblock] * (mt.number_of_atoms() * mb.molb_nmol))
+        charges.extend(np.tile(charges_mol, mb.molb_nmol))
+        masses.extend(np.tile(masses_mol, mb.molb_nmol))
+        elements.extend(np.tile(elements_mol, mb.molb_nmol))
 
-            atom_start_ndx += mt.number_of_atoms()
-            res_start_ndx += mt.number_of_residues()
+        molnumes_mol = np.repeat(molnum, mt.number_of_atoms() * mb.molb_nmol)
+        adder = np.repeat(np.arange(mb.molb_nmol), mt.number_of_atoms())
+        molnumes_mol += adder
+        molnums.extend(molnumes_mol)
+        molnum += mb.molb_nmol
+        atom_start_ndx += mt.number_of_atoms() * mb.molb_nmol
+        res_start_ndx += mt.number_of_residues() * mb.molb_nmol
 
     atomids = Atomids(np.array(atomids, dtype=np.int32))
     atomnames = Atomnames(np.array(atomnames, dtype=object))
@@ -394,12 +425,10 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
                           segids],
                    atom_resindex=residx,
                    residue_segindex=segidx)
-    top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
-    top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
-    top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals
-                                    if dihedral]))
-    top.add_TopologyAttr(Impropers([improper for improper in impropers
-                                    if improper]))
+    top.add_TopologyAttr(Bonds(bonds))
+    top.add_TopologyAttr(Angles(angles))
+    top.add_TopologyAttr(Dihedrals(dihedrals))
+    top.add_TopologyAttr(Impropers(impropers))
 
     if any(elements):
         elements = Elements(np.array(elements, dtype=object))

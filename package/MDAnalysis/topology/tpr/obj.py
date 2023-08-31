@@ -32,6 +32,7 @@ Class definitions for the TPRParser
 
 """
 from collections import namedtuple
+import functools
 from ..tables import Z2SYMB
 
 TpxHeader = namedtuple(
@@ -69,9 +70,11 @@ class MoleculeKind(object):
             f"#residues: {self.number_of_residues():<10d}"
         )
 
+    @functools.lru_cache
     def number_of_atoms(self):
         return len(self.atomkinds)
 
+    @functools.lru_cache
     def number_of_residues(self):
         return len({a.resid for a in self.atomkinds})
 
@@ -108,10 +111,10 @@ class AtomKind(object):
             self, id, name, type, resid, resname, mass, charge, atomic_number):
         # id is only within the scope of a single molecule, not the whole system
         self.id = id
-        self.name = name
-        self.type = type
+        self.name = name.decode()
+        self.type = type.decode()
         self.resid = resid
-        self.resname = resname
+        self.resname = resname.decode()
         self.mass = mass
         self.charge = charge
         self.atomic_number = atomic_number
