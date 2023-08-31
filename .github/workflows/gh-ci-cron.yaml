@@ -251,7 +251,6 @@ jobs:
       with:
         micromamba: true
         full-deps: true
-        gsd: "gsd<3.0"
 
     - name: install_mdanalysis
       run: |
