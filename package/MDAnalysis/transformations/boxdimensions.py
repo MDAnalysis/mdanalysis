@@ -80,6 +80,7 @@ class set_dimensions(TransformationBase):
     -------
     :class:`~MDAnalysis.coordinates.timestep.Timestep` object
 
+
     .. versionchanged:: 2.7.0
        Added the option to set varying box dimensions (i.e. an NPT trajectory).
     """
