@@ -121,18 +121,18 @@ simple wrappers that make it even easier to create fully-featured analysis
 tools if only the single-frame analysis function needs to be written.
 
 """
-from collections import UserDict
 import inspect
-import logging
 import itertools
+import logging
+from functools import partial
+from typing import Callable, Iterable, Sequence
 
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
-from .parallel import ParallelExecutor, ResultsGroup, Results
-from typing import Callable, Iterable, Sequence
-from functools import partial
+
+from .parallel import ParallelExecutor, Results, ResultsGroup
 
 logger = logging.getLogger(__name__)
 
