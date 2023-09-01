@@ -1315,9 +1315,9 @@ def fixedwidth_bins(delta, xmin, xmax):
     """
     if not np.all(xmin < xmax):
         raise ValueError('Boundaries are not sane: should be xmin < xmax.')
-    _delta = np.asarray(delta, dtype=np.float_)
-    _xmin = np.asarray(xmin, dtype=np.float_)
-    _xmax = np.asarray(xmax, dtype=np.float_)
+    _delta = np.asarray(delta, dtype=np.float64)
+    _xmin = np.asarray(xmin, dtype=np.float64)
+    _xmax = np.asarray(xmax, dtype=np.float64)
     _length = _xmax - _xmin
     N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end

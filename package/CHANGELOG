@@ -18,12 +18,17 @@ The rules for this file:
  * 2.7.0
 
 Fixes
-  * Fix `NoJump`` unwrapping for jumps on the second frame in a
+  * Fix `NoJump` unwrapping for jumps on the second frame in a
     trajectory (PR #4258, Issue #4257)
+  * Deprecated np.float_ and np.NaN aliases have been replaced with
+    their original type value (np.float64 and np.nan) (PR #4272)
 
 Enhancements
 
 Changes
+  * The `mda-xdrlib` module is now a core dependency of MDAnalysis
+    replacing the now deprecated `xdrlib` core Python library
+    (PR #4271)
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
 
 Deprecations
