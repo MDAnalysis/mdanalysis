@@ -129,7 +129,7 @@ Store data to the disk and load it again::
 
 Analysis classes
 ----------------
- .. autoclass:: BAT
+.. autoclass:: BAT
     :members:
     :inherited-members:
 
