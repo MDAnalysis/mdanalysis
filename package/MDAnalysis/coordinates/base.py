@@ -1607,9 +1607,9 @@ class WriterBase(IOBase, metaclass=_Writermeta):
     def has_valid_coordinates(self, criteria, x):
         """Returns ``True`` if all values are within limit values of their formats.
 
-        Due to rounding, the test is asymmetric (and *min* is supposed to be negative):
+        Due to rounding, the test is asymmetric (and *min* is supposed to be negative)::
 
-           min < x <= max
+            min < x <= max
 
         Parameters
         ----------
