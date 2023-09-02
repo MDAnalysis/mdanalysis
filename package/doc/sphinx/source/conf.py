@@ -13,12 +13,8 @@
 
 import sys
 import os
-import platform
 import datetime
 import MDAnalysis as mda
-import msmb_theme  # for little versions pop-up
-# https://sphinx-rtd-theme.readthedocs.io/en/stable/
-import sphinx_rtd_theme
 # Custom MDA Formating
 from pybtex.style.formatting.unsrt import Style as UnsrtStyle
 from pybtex.style.labels import BaseLabelStyle
@@ -47,7 +43,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx_sitemap',
-    'sphinx_rtd_theme',
+    'mdanalysis_sphinx_theme',
     'sphinxcontrib.bibtex',
     'sphinx.ext.doctest',
 ]
@@ -85,7 +81,7 @@ mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?
 site_url = "https://docs.mdanalysis.org/"
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+# templates_path = ['_templates']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -163,7 +159,7 @@ toc_object_entries = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'msmb_theme'
+html_theme = 'mdanalysis_sphinx_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -194,17 +190,13 @@ html_theme_options = {
     'navigation_depth': 4,
     'includehidden': True,
     'titles_only': False,
+    # mda options
+    'mda_official': True
 }
 
 html_context = {
     'versions_json_url': 'https://docs.mdanalysis.org/versions.json'
 }
-
-# Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [
-    msmb_theme.get_html_theme_path(),
-    sphinx_rtd_theme.get_html_theme_path()
-]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -227,7 +219,6 @@ html_favicon = "_static/logos/mdanalysis-logo.ico"
 # so a file named "default.css" will overwrite the builtin "default.css".
 # For RTD theme: custom.css to override theme defaults.
 html_static_path = ['_static']
-html_css_files = ['custom.css']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -373,15 +364,16 @@ epub_copyright = u'2015, '+authors
 
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
-intersphinx_mapping = {'h5py': ('https://docs.h5py.org/en/stable', None),
-                       'python': ('https://docs.python.org/3/', None),
-                       'scipy': ('https://docs.scipy.org/doc/scipy/', None),
-                       'gsd': ('https://gsd.readthedocs.io/en/stable/', None),
-                       'maplotlib': ('https://matplotlib.org/stable/', None),
-                       'griddataformats': ('https://mdanalysis.org/GridDataFormats/', None),
-                       'pmda': ('https://mdanalysis.org/pmda/', None),
-                       'networkx': ('https://networkx.org/documentation/stable/', None),
-                       'numpy': ('https://numpy.org/doc/stable/', None),
-                       'parmed': ('https://parmed.github.io/ParmEd/html/', None),
-                       'rdkit': ('https://rdkit.org/docs/', None),
-                       }
+intersphinx_mapping = {
+    'h5py': ('https://docs.h5py.org/en/stable', None),
+    'python': ('https://docs.python.org/3/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+    'gsd': ('https://gsd.readthedocs.io/en/stable/', None),
+    'maplotlib': ('https://matplotlib.org/stable/', None),
+    'griddataformats': ('https://mdanalysis.org/GridDataFormats/', None),
+    'pmda': ('https://mdanalysis.org/pmda/', None),
+    'networkx': ('https://networkx.org/documentation/stable/', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'parmed': ('https://parmed.github.io/ParmEd/html/', None),
+    'rdkit': ('https://rdkit.org/docs/', None),
+}
