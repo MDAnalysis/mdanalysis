@@ -1437,7 +1437,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                 good = ag.residues.resids[match_mask]  # resid for each residue
                 resids = ag.resids                     # resid for each atom
                 # boolean array for all matching atoms
-                ix_good = np.in1d(resids, good)
+                ix_good = np.isin(resids, good)
                 return ag[ix_good]
 
             _ag1 = get_atoms_byres(ag1)

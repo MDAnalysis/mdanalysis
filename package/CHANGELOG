@@ -13,18 +13,47 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope, pillose, ALescoulie
+??/??/?? IAlibay, ianmkenney, PicoCentauri, ALescoulie
 
  * 2.7.0
+
+Fixes
+  * Deprecated np.float_ and np.NaN aliases have been replaced with
+    their original type value (np.float64 and np.nan) (PR #4272)
+
+Enhancements
+  * Add faster nucleic acid Major and Minor pair distance calculators using
+    AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
+  * Added a warning about charge neutrality to the documentation of
+    `DielectricConstant` (Issue #4262, PR #4263)
+
+Changes
+  * The `mda-xdrlib` module is now a core dependency of MDAnalysis
+    replacing the now deprecated `xdrlib` core Python library
+    (PR #4271)
+  * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+
+Deprecations
+  * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
+    use converters.base.ConvertBase instead (Issue #3404)
+
+
+28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+
+ * 2.6.1
 
 Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
-  * Add faster nucleic acid Major and Minor pair distance calculators using
-    AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
 
 Changes
+  * Reverts PR #4108, builds are now again made using the oldest
+    supported NumPy version.
+  * NumPy `in1d` replaced with `isin` in preparation for NumPy
+    `2.0` (PR #4255)
+  * Update documentation for SurvivalProbabilty to be more clear
+    (Issue #4247)
   * Cython DEF statments have been replaced with compile time integer constants
     as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
 
