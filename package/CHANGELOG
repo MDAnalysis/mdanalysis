@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney
+??/??/?? IAlibay, ianmkenney, PicoCentauri, richardjgowers
 
  * 2.7.0
 
@@ -23,6 +23,8 @@ Fixes
 
 Enhancements
   * Updated lib.qcprot to accept either float32 or float64 inputs
+  * Added a warning about charge neutrality to the documentation of
+    `DielectricConstant` (Issue #4262, PR #4263)
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
