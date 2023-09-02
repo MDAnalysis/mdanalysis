@@ -111,7 +111,7 @@ __all__ = [
     "PRMNCRST",  # Amber ncrst with positions/forces/velocities
     "PRM_NCBOX", "TRJ_NCBOX",  # Amber parm7 + nc w/ pos/forces/vels/box
     "PRMNEGATIVE",  # Amber negative ATOMIC_NUMBER (Issue 2306)
-    "PRMErr1", # Amber TOP files to check raised errors
+    "PRMErr1",  # Amber TOP files to check raised errors
     "PRMErr2",
     "PRMErr3",
     "PRMErr4",
