@@ -32,27 +32,18 @@
 
 This module provides functions to analyze water dynamics trajectories and water
 interactions with other molecules.  The functions in this module are: water
-orientational relaxation (WOR) :cite:p:`Yeh1999`, hydrogen bond lifetimes (HBL)
-:cite:p:`Rapaport1983`, angular distribution (AD) :cite:p:`Grigera1995`, mean
-square displacement (MSD) :cite:p:`Brodka1994` and survival probability (SP)
-:cite:p:`Liu2004`.
+orientational relaxation (WOR) :footcite:p:`Yeh1999`, hydrogen bond lifetimes (HBL)
+:footcite:p:`Rapaport1983`, angular distribution (AD) :footcite:p:`Grigera1995`, mean
+square displacement (MSD) :footcite:p:`Brodka1994` and survival probability (SP)
+:footcite:p:`Liu2004`.
 
 For more information about this type of analysis please refer to
-:cite:p:`ArayaSecchi2014` (water in a protein cavity) and
-:cite:p:`Milischuk2011` (water in a nanopore).
+:footcite:p:`ArayaSecchi2014` (water in a protein cavity) and
+:footcite:p:`Milischuk2011` (water in a nanopore).
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Rapaport1983
-    Yeh1999
-    Grigera1995
-    Liu2004
-    Brodka1994
-    Milischuk2011
+.. footbibliography::
 
 
 Example use of the analysis classes
@@ -384,7 +375,7 @@ class WaterOrientationalRelaxation(object):
     r"""Water orientation relaxation analysis
 
     Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
-    Yeh and Chung-Yuan Mou :cite:p:`Yeh1999`. WaterOrientationalRelaxation
+    Yeh and Chung-Yuan Mou :footcite:p:`Yeh1999`. WaterOrientationalRelaxation
     indicates "how fast" water molecules are rotating or changing direction.
     This is a time correlation function given by:
 

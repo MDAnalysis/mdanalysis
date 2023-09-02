@@ -722,7 +722,7 @@ def cosine_content(pca_space, i):
     The cosine content of pca projections can be used as an indicator if a
     simulation is converged. Values close to 1 are an indicator that the
     simulation isn't converged. For values below 0.7 no statement can be made.
-    If you use this function please cite :cite:p:`BerkHess2002`.
+    If you use this function please cite :footcite:p:`BerkHess2002`.
 
 
     Parameters
@@ -740,11 +740,7 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        BerkHess2002
+    .. footbibliography::
 
     """
 

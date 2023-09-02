@@ -101,10 +101,7 @@ be specified using a 4 character string or encoded 4-tuple:
 
 .. rubric:: References
 
-.. bibliography::
-    :list: enumerated
-    :style: MDA
-    :filter: id % "transformations"
+.. footbibliography::
 
 Examples
 --------

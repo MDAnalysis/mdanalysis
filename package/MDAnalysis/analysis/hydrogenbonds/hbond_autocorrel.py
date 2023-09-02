@@ -72,7 +72,7 @@ Where the final pre expoential factor :math:`A_n` is subject to the condition:
 .. math::
     A_n = 1 - \\sum\\limits_{i=1}^{n-1} A_i
 
-For further details see :cite:p:`Gowers2015`.
+For further details see :footcite:p:`Gowers2015`.
 
 Input
 -----

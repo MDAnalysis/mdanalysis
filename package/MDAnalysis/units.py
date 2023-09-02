@@ -150,11 +150,7 @@ Data
 References and footnotes
 ------------------------
 
-.. bibliography::
-   :filter: False
-   :style: MDA
-
-   Jorgensen1998
+.. footbibliography::
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -227,7 +223,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values at T=298K, P=1atm :cite:p:`Jorgensen1998`.
+#: water density values at T=298K, P=1atm :footcite:p:`Jorgensen1998`.
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
