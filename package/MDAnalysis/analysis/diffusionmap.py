@@ -63,7 +63,7 @@ First load all modules and test data
    from MDAnalysis.tests.datafiles import PSF, DCD
 
 Given a universe or atom group, we can create and eigenvalue decompose
-the Diffusion Matrix from that trajectory using :class:`DiffusionMap`:: and get
+the Diffusion Matrix from that trajectory using :class:`DiffusionMap` and get
 the corresponding eigenvalues and eigenvectors.
 
 .. code-block:: python
