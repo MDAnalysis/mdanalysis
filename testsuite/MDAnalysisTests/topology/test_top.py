@@ -88,23 +88,6 @@ class TOPBase(ParserBase):
         assert len(u.atoms[[self.atom_i]].impropers) == \
             self.expected_n_i_impropers
 
-    def test_chainIDs(self, filename):
-        """Tests chainIDs attribute.
-
-        If RESIDUE_CHAINID present, residue chainIDs are compared against a
-        provided list of expected values.
-        Otherwise, checks that elements are not in the topology attributes.
-        """
-
-        u = mda.Universe(filename)
-        if hasattr(self, "expected_chainIDs"):
-            reschainIDs = [atomchainIDs[0] for atomchainIDs in u.residues.chainIDs]
-            assert_equal(
-                reschainIDs, self.expected_chainIDs, "unexpected element match"
-            )
-        else:
-            assert not hasattr(u.atoms, "chainIDs"), "Unexpected chainIDs attr"
-
     def test_bonds_identity(self, top):
         vals = top.bonds.values
         for bond in self.atom_zero_bond_values:
@@ -392,6 +375,23 @@ class TestPRMChainidParser(TOPBase):
             "C",
         ]
     )
+
+    def test_chainIDs(self, filename):
+        """Tests chainIDs attribute.
+
+        If RESIDUE_CHAINID present, residue chainIDs are compared against a
+        provided list of expected values.
+        Otherwise, checks that elements are not in the topology attributes.
+        """
+
+        u = mda.Universe(filename)
+        if hasattr(self, "expected_chainIDs"):
+            reschainIDs = [atomchainIDs[0] for atomchainIDs in u.residues.chainIDs]
+            assert_equal(
+                reschainIDs, self.expected_chainIDs, "unexpected element match"
+            )
+        else:
+            assert not hasattr(u.atoms, "chainIDs"), "Unexpected chainIDs attr"
 
 
 class TestPRM12Parser(TOPBase):
