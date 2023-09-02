@@ -22,6 +22,7 @@ Fixes
     their original type value (np.float64 and np.nan) (PR #4272)
 
 Enhancements
+  * Updated lib.qcprot to accept either float32 or float64 inputs
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
