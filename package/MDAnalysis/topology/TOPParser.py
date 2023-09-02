@@ -170,7 +170,7 @@ class TOPParser(TopologyReaderBase):
       warns users that chamber-style topologies are not currently supported
     .. versionchanged:: 2.0.0
       no longer guesses elements if missing
-    .. versionchanged:: 2.6.0
+    .. versionchanged:: 2.7.0
       gets Segments and chainIDs from flag RESIDUE_CHAINID, when present
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
