@@ -372,7 +372,7 @@ def get_conversion_factor(unit_type, u1, u2):
 
     Conversion of :math:`X` (in u1) to :math:`X'` (in u2):
 
-       :math:`X'` = conversion_factor * :math:`X`
+    :math:`X'` = conversion_factor * :math:`X`
     """
     # x is in u1: from u1 to b:  x'  = x  / factor[u1]
     #             from b  to u2: x'' = x' * factor[u2]
