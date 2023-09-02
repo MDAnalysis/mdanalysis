@@ -323,10 +323,10 @@ def CalcRMSDRotationalMatrix(cython.floating[:, :] ref not None,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
-cpdef cython.floating FastCalcRMSDAndRotation(cython.floating[:] rot,
-                                              cython.floating[:] A,
-                                              cython.floating E0,
-                                              int N):
+cpdef double FastCalcRMSDAndRotation(cython.floating[:] rot,
+                                     cython.floating[:] A,
+                                     cython.floating E0,
+                                     int N):
     """
     Calculate the RMSD, and/or the optimal rotation matrix.
 
@@ -336,43 +336,44 @@ cpdef cython.floating FastCalcRMSDAndRotation(cython.floating[:] rot,
         result rotation matrix, modified inplace
     A : ndarray
         the inner product of two structures
-    E0 : float64
+    E0 : floating
         0.5 * (G1 + G2)
     N : int
         size of the system
 
     Returns
     -------
-    rmsd : float
+    rmsd : double
         RMSD value for two structures
 
 
     .. versionchanged:: 0.16.0
        Array sized changed from 3xN to Nx3.
     .. versionchanged:: 2.7.0
-       Changed arguments to floating type, can accept either float32 or float64 inputs
+       Changed arguments to floating type, can accept either float32 or float64 inputs.  Internally still uses
+       double precision for QCP algorithm
     """
-    cdef cython.floating Sxx, Sxy, Sxz, Syx, Syy, Syz, Szx, Szy, Szz
-    cdef cython.floating Szz2, Syy2, Sxx2, Sxy2, Syz2, Sxz2, Syx2, Szy2, Szx2,
-    cdef cython.floating SyzSzymSyySzz2, Sxx2Syy2Szz2Syz2Szy2, Sxy2Sxz2Syx2Szx2,
-    cdef cython.floating SxzpSzx, SyzpSzy, SxypSyx, SyzmSzy,
-    cdef cython.floating SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
+    cdef double Sxx, Sxy, Sxz, Syx, Syy, Syz, Szx, Szy, Szz
+    cdef double Szz2, Syy2, Sxx2, Sxy2, Syz2, Sxz2, Syx2, Szy2, Szx2,
+    cdef double SyzSzymSyySzz2, Sxx2Syy2Szz2Syz2Szy2, Sxy2Sxz2Syx2Szx2,
+    cdef double SxzpSzx, SyzpSzy, SxypSyx, SyzmSzy,
+    cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
 
-    cdef cython.floating[4] C
+    cdef double[4] C
     cdef unsigned int i
-    cdef cython.floating mxEigenV
-    cdef cython.floating oldg = 0.0
-    cdef cython.floating b, a, delta, rms, qsqr
-    cdef cython.floating q1, q2, q3, q4, normq
-    cdef cython.floating a11, a12, a13, a14, a21, a22, a23, a24
-    cdef cython.floating a31, a32, a33, a34, a41, a42, a43, a44
-    cdef cython.floating a2, x2, y2, z2
-    cdef cython.floating xy, az, zx, ay, yz, ax
-    cdef cython.floating a3344_4334, a3244_4234, a3243_4233, a3143_4133, a3144_4134, a3142_4132
-    cdef cython.floating evecprec = 1e-6
-    cdef cython.floating evalprec = 1e-14
+    cdef double mxEigenV
+    cdef double oldg = 0.0
+    cdef double b, a, delta, rms, qsqr
+    cdef double q1, q2, q3, q4, normq
+    cdef double a11, a12, a13, a14, a21, a22, a23, a24
+    cdef double a31, a32, a33, a34, a41, a42, a43, a44
+    cdef double a2, x2, y2, z2
+    cdef double xy, az, zx, ay, yz, ax
+    cdef double a3344_4334, a3244_4234, a3243_4233, a3143_4133, a3144_4134, a3142_4132
+    cdef double evecprec = 1e-6
+    cdef double evalprec = 1e-14
 
-    cdef cython.floating a1324_1423, a1224_1422, a1223_1322, a1124_1421, a1123_1321, a1122_1221
+    cdef double a1324_1423, a1224_1422, a1223_1322, a1124_1421, a1123_1321, a1122_1221
 
     C[0] = C[1] = C[2] = C[3] = 0.0
 
