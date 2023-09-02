@@ -595,7 +595,8 @@ class PCA(AnalysisBase):
         both instances. The RMSIP effectively measures how
         correlated the vectors of this instance are to those of ``other``.
 
-        Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
+        Please cite :cite:p:`Amadei1999` and :cite:p:`Leo-Macias2005` if you
+        use this function.
 
         Parameters
         ----------
@@ -671,7 +672,7 @@ class PCA(AnalysisBase):
         This is not symmetric. The cumulative overlap measures the overlap of
         the chosen vector in this instance, in the ``other`` subspace.
 
-        Please cite [Yang2008]_ if you use this function.
+        Please cite :cite:p:`b-Yang2008` if you use this function.
 
         Parameters
         ----------
@@ -768,7 +769,8 @@ def rmsip(a, b, n_components=None):
     ``a`` and ``b``. The RMSIP effectively measures how
     correlated the vectors of ``a`` are to those of ``b``.
 
-    Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
+    Please cite :cite:p:`Amadei1999` and :cite:p:`Leo-Macias2005`
+    if you use this function.
 
     Parameters
     ----------
@@ -822,6 +824,13 @@ def rmsip(a, b, n_components=None):
 
 
     .. versionadded:: 1.0.0
+
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        Amadei1999
+        Leo-Macias2005
     """
     n_components = util.asiterable(n_components)
     if len(n_components) == 1:
@@ -852,7 +861,7 @@ def cumulative_overlap(a, b, i=0, n_components=None):
     This is not symmetric. The cumulative overlap measures the overlap of
     the chosen vector in ``a``, in the ``b`` subspace.
 
-    Please cite [Yang2008]_ if you use this function.
+    Please cite :cite:p:`b-Yang2008` if you use this function.
 
     Parameters
     ----------
@@ -876,6 +885,14 @@ def cumulative_overlap(a, b, i=0, n_components=None):
 
 
     .. versionadded:: 1.0.0
+
+    .. bibliography::
+        :filter: False
+        :style: MDA
+        :keyprefix: b-
+        :labelprefix: ᵇ
+
+        Yang2008
     """
 
     if len(a.shape) < len(b.shape):

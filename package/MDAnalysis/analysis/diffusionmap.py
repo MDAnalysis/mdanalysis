@@ -142,6 +142,7 @@ module in published work please :cite:p:`Theobald2005`.
     Clementi2011
     Ferguson2011
     Theobald2005
+
 """
 import logging
 import warnings

@@ -39,6 +39,8 @@ HBONDS plugin`_.
 
 .. _`VMD HBONDS plugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/
 
+Please cite :cite:p:`Smith2019` if you use this module in addition to the
+normal MDAnalysis citations.
 
 Input
 ------
@@ -234,6 +236,12 @@ The class and its methods
       .. deprecated:: 2.0.0
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.hbonds` instead.
+
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        Smith2019
 """
 import logging
 import warnings

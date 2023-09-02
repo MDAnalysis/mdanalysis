@@ -38,13 +38,20 @@ The module contains code to analyze root mean square quantities such
 as the coordinat root mean square distance (:class:`RMSD`) or the
 per-residue root mean square fluctuations (:class:`RMSF`).
 
-This module uses the fast QCP algorithm [Theobald2005]_ to calculate
+This module uses the fast QCP algorithm :cite:p:`d-Theobald2005` to calculate
 the root mean square distance (RMSD) between two coordinate sets (as
 implemented in
 :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).
 
-When using this module in published work please cite [Theobald2005]_.
+When using this module in published work please cite :cite:p:`d-Theobald2005`.
 
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: d-
+   :labelprefix: ᵈ
+
+   Theobald2005
 
 See Also
 --------
@@ -203,7 +210,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         compute weighted average as center.
     superposition : bool (optional)
         perform a rotational and translational superposition with the fast QCP
-        algorithm [Theobald2005]_ before calculating the RMSD; implies
+        algorithm :cite:p:`d-Theobald2005` before calculating the RMSD; implies
         ``center=True``.
 
     Returns
@@ -468,10 +475,11 @@ class RMSD(AnalysisBase):
            w_i = \frac{w'_i}{\langle w' \rangle}
 
         The selected coordinates from `atomgroup` are optimally superimposed
-        (translation and rotation) on the `reference` coordinates at each time step
-        as to minimize the RMSD. Douglas Theobald's fast QCP algorithm
-        [Theobald2005]_ is used for the rotational superposition and to calculate
-        the RMSD (see :mod:`MDAnalysis.lib.qcprot` for implementation details).
+        (translation and rotation) on the `reference` coordinates at each time
+        step as to minimize the RMSD. Douglas Theobald's fast QCP algorithm
+        :cite:p:`d-Theobald2005` is used for the rotational superposition and
+        to calculate the RMSD (see :mod:`MDAnalysis.lib.qcprot` for
+        implementation details).
 
         The class runs various checks on the input to ensure that the two atom
         groups can be compared. This includes a comparison of atom masses (i.e.,

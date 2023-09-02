@@ -38,7 +38,7 @@ square displacement (MSD) :cite:p:`Brodka1994` and survival probability (SP)
 :cite:p:`Liu2004`.
 
 For more information about this type of analysis please refer to
-:cite:p:`ArayaSecchi2014` (water in a protein cavity) and
+:cite:p:`a-ArayaSecchi2014` (water in a protein cavity) and
 :cite:p:`Milischuk2011` (water in a nanopore).
 
 .. rubric:: References

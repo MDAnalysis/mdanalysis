@@ -27,7 +27,7 @@ Citations for the whole MDAnalysis library
 ==========================================
 
 When using MDAnalysis in published work, please cite
-[Michaud-Agrawal2011]_ and [Gowers2016]_.
+:cite:p:`Michaud-Agrawal2011` and :cite:p:`Gowers2016`.
 
 (We are currently asking you to cite *both* papers if at all possible
 because the 2016 paper describes many updates to the original 2011
@@ -36,26 +36,12 @@ description of the library. We will publish a complete self-contained
 paper with the upcoming 1.0 release of MDAnalysis, which will then
 supersede these two citations.)
 
+.. bibliography::
+   :filter: False
+   :style: MDA
 
-.. [Michaud-Agrawal2011] N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
-   and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics
-   Simulations. *J. Comput. Chem.* **32** (2011),
-   2319–2327. doi:`10.1002/jcc.21787`_
-
-.. [Gowers2016] R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N.
-   Melo, S. L. Seyler, D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney,
-   and O. Beckstein. `MDAnalysis: A Python package for the rapid analysis of
-   molecular dynamics simulations`_. In S. Benthall and S. Rostrup, editors,
-   *Proceedings of the 15th Python in Science Conference*, pages 98-105,
-   Austin, TX, 2016. SciPy. doi:`10.25080/Majora-629e541a-00e`_
-
-.. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
-.. _`10.25080/Majora-629e541a-00e`:
-   https://doi.org/10.25080/Majora-629e541a-00e
-
-.. _`MDAnalysis: A Python package for the rapid analysis of molecular
-   dynamics simulations`:
-   http://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html
+   Michaud-Agrawal2011
+   Gowers2016
 
 
 .. _references-components:
@@ -65,170 +51,180 @@ Citations for included algorithms and modules
 
 If you use the RMSD calculation (:mod:`MDAnalysis.analysis.rms`) or alignment
 code (:mod:`MDAnalysis.analysis.align`) that uses the
-:mod:`~MDAnalysis.core.qcprot` module please also cite [Theobald2005b]_ and
-[Liu2010b]_.
+:mod:`~MDAnalysis.lib.qcprot` module please also cite :cite:p:`a-Theobald2005`
+and :cite:p:`a-Liu2010`.
 
-.. [Theobald2005b] Douglas L. Theobald. Rapid calculation of RMSD using a
-   quaternion-based characteristic polynomial. *Acta Crystallographica A*
-   **61** (2005), 478-480.
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. [Liu2010b] Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast
-   determination of the optimal rotational matrix for macromolecular
-   superpositions. *J. Comput. Chem.* **31** (2010), 1561–1563.
+   Liu2010
+   Theobald2005
 
-If you use the helix analysis algorithm HELANAL_ in
-:mod:`MDAnalysis.analysis.helanal` please cite [Bansal2000b]_.
+If you use the HELANAL_ algorithm in
+:mod:`MDAnalysis.analysis.helix_analysis` please cite :cite:p:`a-Bansal2000,a-Sugeta1967`.
 
-.. [Bansal2000b] Bansal M, Kumar S, Velavan R. HELANAL — A program to
-   characterise helix geometry in proteins. *J. Biomol. Struct. Dyn.* **17**
-   (2000), 811–819
+.. _HELANAL: https://web.archive.org/web/20100818185943/http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
-.. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   Bansal2000
+   Sugeta1967
 
 If you use the GNM trajectory analysis code in
-:mod:`MDAnalysis.analysis.gnm` please cite [Hall2007b]_.
+:mod:`MDAnalysis.analysis.gnm` please cite :cite:p:`a-Hall2007`.
 
-.. [Hall2007b] Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and
-   Philip C. Biggin. Characterization of Protein Conformational States by
-   Normal-Mode Frequencies. *JACS* **129** (2007), 11394–11401.
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   Hall2007
 
 If you use the water analysis code in
-:mod:`MDAnalysis.analysis.waterdynamics` please cite [Araya-Secchi2014b]_.
+:mod:`MDAnalysis.analysis.waterdynamics` please cite :cite:p:`a-ArayaSecchi2014`.
 
-.. [Araya-Secchi2014b] R. Araya-Secchi., Tomas Perez-Acle, Seung-gu Kang, Tien
-   Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate,
-   Agustin D. Martinez, Isaac E. Garcia, Juan C. Saez, Ruhong
-   Zhou. Characterization of a novel water pocket inside the human Cx26
-   hemichannel structure. *Biophysical Journal*, **107** (2014), 599-612.
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   ArayaSecchi2014
+
 
 If you use the Path Similarity Analysis (PSA) code in
-:mod:`MDAnalysis.analysis.psa` please cite [Seyler2015b]_.
+:mod:`MDAnalysis.analysis.psa` please :cite:p:`a-Seyler2015`.
 
-.. [Seyler2015b] Seyler SL, Kumar A, Thorpe MF, Beckstein O. Path Similarity
-  Analysis: A Method for Quantifying Macromolecular Pathways. *PLoS
-  Comput Biol* **11** (2015), e1004568. doi: `10.1371/journal.pcbi.1004568`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1371/journal.pcbi.1004568`: http://doi.org/10.1371/journal.pcbi.1004568
+   Seyler2015
 
 If you use the implementation of the ENCORE ensemble analysis in
-:mod:`MDAnalysis.analysis.encore` please cite [Tiberti2015b]_.
+:mod:`MDAnalysis.analysis.encore` please cite :cite:p:`a-Tiberti2015`.
 
-.. [Tiberti2015b] M. Tiberti, E. Papaleo, T. Bengtsen, W. Boomsma,
-   and K. Lindorff-Larsen. ENCORE: Software for quantitative ensemble
-   comparison. *PLoS Comput Biol*, **11** (2015), e1004415.  doi:
-   `10.1371/journal.pcbi.1004415`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1371/journal.pcbi.1004415`: http://doi.org/10.1371/journal.pcbi.1004415
+   Tiberti2015
 
 If you use the streamline visualization in
 :mod:`MDAnalysis.visualization.streamlines` and
-:mod:`MDAnalysis.visualization.streamlines_3D` please cite [Chavent2014b]_.
+:mod:`MDAnalysis.visualization.streamlines_3D` please cite :cite:p:`a-Chavent2014`.
 
-.. [Chavent2014b] Chavent, M., Reddy, T., Dahl, C.E., Goose, J., Jobard, B.,
-   and Sansom, M.S.P. Methodologies for the analysis of instantaneous lipid
-   diffusion in MD simulations of large membrane systems.  *Faraday
-   Discussions* **169** (2014), 455–475. doi: `10.1039/c3fd00145h`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
+   Chavent2014
 
 If you use the hydrogen bond analysis code in
-:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` please cite [Smith2019]_.
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` please cite :cite:p:`a-Smith2019`.
 
-.. [Smith2019] P. Smith, R. M. Ziolek, E. Gazzarrini, D. M. Owen, and C. D. Lorenz.
-   On the interaction of hyaluronic acid with synovial fluid lipid membranes. *PCCP*
-   **21** (2019), 9845-9857. doi:  `10.1039/C9CP01532A`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
+   Smith2019
 
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or
-:func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and
-[Leo-Macias2004]_ .
+:func:`~MDAnalysis.analysis.pca.rmsip` please cite :cite:p:`a-Amadei1999` and
+:cite:p:`a-Leo-Macias2005`.
 
-.. [Amadei1999] Amadei, A., Ceruso, M. A. & Nola, A. D.
-   On the convergence of the conformational coordinates basis set obtained by the essential dynamics analysis of proteins’ molecular dynamics simulations.
-   *Proteins: Structure, Function, and Bioinformatics* **36**, 419–424 (1999).
-   doi: `10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`: https://doi.org/10.1002/(SICI)1097-0134(19990901)36:4%3C419::AID-PROT5%3E3.0.CO;2-U
-
-.. [Leo-Macias2004] Leo-Macias, A., Lopez-Romero, P., Lupyan, D., Zerbino, D. & Ortiz, A. R.
-   An Analysis of Core Deformations in Protein Superfamilies.
-   *Biophys J* **88**, 1291–1299 (2005). doi: `10.1529/biophysj.104.052449`_
-
-.. _`10.1529/biophysj.104.052449`: https://dx.doi.org/10.1529%2Fbiophysj.104.052449
+   Amadei1999
+   Leo-Macias2005
 
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
-:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite [Yang2008]_ .
+:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite
+:cite:p:`a-Yang2008`.
 
-.. [Yang2008] Yang, L., Song, G., Carriquiry, A. & Jernigan, R. L.
-   Close Correspondence between the Motions from Principal Component Analysis of Multiple HIV-1 Protease Structures and Elastic Network Modes.
-   *Structure* **16**, 321–330 (2008). doi: `10.1016/j.str.2007.12.011`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1016/j.str.2007.12.011`: https://dx.doi.org/10.1016/j.str.2007.12.011
+   Yang2008
 
 If you use the Mean Squared Displacement analysis code in
-:mod:`MDAnalysis.analysis.msd` please cite [Calandri2011]_ and [Buyl2018]_.
+:mod:`MDAnalysis.analysis.msd` please cite :cite:p:`a-Calandrini2011` and
+:cite:p:`a-Buyl2018`.
 
-.. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R.
-   NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions.
-   *Collect. SFN*, **12**, 201–232 (2011). doi: `10.1051/sfn/201112010`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1051/sfn/201112010`: https://doi.org/10.1051/sfn/201112010
-
-.. [Buyl2018] Buyl, P. tidynamics: A tiny package to compute the dynamics of stochastic and molecular simulations. Journal of Open Source Software,
-   3(28), 877 (2018). doi: `10.21105/joss.00877`_
-
-.. _`10.21105/joss.00877`: https://doi.org/10.21105/joss.00877
+   Calandrini2011
+   Buyl2018
 
 If you calculate shape parameters using
 :meth:`~MDAnalysis.core.group.AtomGroup.shape_parameter`,
 :meth:`~MDAnalysis.core.group.ResidueGroup.shape_parameter`,
-:meth:`~MDAnalysis.core.group.SegmentGroup.shape_parameter`
-please cite [Dima2004a]_.
-
-.. [Dima2004a] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-   in the shapes of folded and denatured states of
-   proteins. *J Phys Chem B*, 108(21),
-   6564-6570. doi:`10.1021/jp037128y
-   <https://doi.org/10.1021/jp037128y>`_
-
-If you calculate asphericities using
+:meth:`~MDAnalysis.core.group.SegmentGroup.shape_parameter`,
+or if you calculate asphericities using
 :meth:`~MDAnalysis.core.group.AtomGroup.asphericity`,
 :meth:`~MDAnalysis.core.group.ResidueGroup.asphericity`,
-:meth:`~MDAnalysis.core.group.SegmentGroup.asphericity`
-please cite [Dima2004b]_.
+:meth:`~MDAnalysis.core.group.SegmentGroup.asphericity`,
+please cite :cite:p:`a-Dima2004`.
 
-.. [Dima2004b] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-   in the shapes of folded and denatured states of
-   proteins. *J Phys Chem B*, 108(21),
-   6564-6570. doi:`10.1021/jp037128y
-   <https://doi.org/10.1021/jp037128y>`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   Dima2004
 
 If you use use the dielectric analysis code in
-:class:`~MDAnalysis.analysis.dielectric.DielectricConstant` please cite [Neumann1983]_.
+:class:`~MDAnalysis.analysis.dielectric.DielectricConstant` please cite
+:cite:p:`a-Neumann1983`.
 
-.. [Neumann1983] Neumann, M. (1983). Dipole
-   Moment Fluctuation Formulas in Computer Simulations of Polar Systems.
-   *Molecular Physics* **50**, no. 4, 841–858. doi: `10.1080/00268978300102721`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1080/00268978300102721`: http://doi.org/10.1080/00268978300102721
+   Neumann1983
 
-If you use H5MD files using
-:mod:`MDAnalysis.coordinates.H5MD.py`, please cite [Buyl2013]_ and
-[Jakupovic2021]_.
+If you use H5MD files with
+:mod:`MDAnalysis.coordinates.H5MD`, please cite :cite:p:`a-deBuyl2014` and
+:cite:p:`a-Jakupovic2021`.
 
-.. [Buyl2013] Buyl P., Colberg P., and Höfling F.(2013).
-   H5MD: A structured, efficient, and portable file format for molecular data.
-   *Computer Physics Communications*, 185. doi:`10.1016/j.cpc.2014.01.018.
-   <https://doi.org/10.1016/j.cpc.2014.01.018>`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. [Jakupovic2021] Jakupovic E. and Beckstein O., MPI-parallel Molecular
-   Dynamics Trajectory Analysis with the H5MD Format in the MDAnalysis
-   Python Package, in *Proceedings of the 20th Python in Science Conference*,
-   (Meghann Agarwal, Chris Calloway, Dillon Niederhut, and David Shupe, eds.),
-   pp. 18 – 26, 2021. doi:`10.25080/majora-1b6fd038-005.
-   <https://www.doi.org/10.25080/majora-1b6fd038-005>`_
-
+   deBuyl2014
+   Jakupovic2021
 
 .. _citations-using-duecredit:
 
