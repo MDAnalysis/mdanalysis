@@ -88,6 +88,23 @@ class TOPBase(ParserBase):
         assert len(u.atoms[[self.atom_i]].impropers) == \
             self.expected_n_i_impropers
 
+    def test_chainIDs(self, filename):
+        """Tests chainIDs attribute.
+
+        If RESIDUE_CHAINID present, residue chainIDs are compared against a
+        provided list of expected values.
+        Otherwise, checks that elements are not in the topology attributes.
+        """
+
+        u = mda.Universe(filename)
+        if hasattr(self, "expected_chainIDs"):
+            reschainIDs = [atomchainIDs[0] for atomchainIDs in u.residues.chainIDs]
+            assert_equal(
+                reschainIDs, self.expected_chainIDs, "unexpected element match"
+            )
+        else:
+            assert not hasattr(u.atoms, "chainIDs"), "Unexpected chainIDs attr"
+
     def test_bonds_identity(self, top):
         vals = top.bonds.values
         for bond in self.atom_zero_bond_values:
@@ -332,6 +349,49 @@ class TestPRMChainidParser(TOPBase):
         ),
         np.array(["H", "C", "O", "O", "N", "H", "H", "H"], dtype=object),
     ]
+
+    expected_chainIDs = np.array(
+        [
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+        ]
+    )
 
 
 class TestPRM12Parser(TOPBase):
@@ -598,13 +658,18 @@ class TestPRMEP(TOPBase):
 
 class TestErrorsAndWarnings(object):
 
-    ATOMIC_NUMBER_MSG = ("ATOMIC_NUMBER record not found, elements attribute "
-                         "will not be populated")
-    MISSING_ELEM_MSG = ("Unknown ATOMIC_NUMBER value found for some atoms, "
-                        "these have been given an empty element record")
-    COORDINATE_READER_MSG = ("No coordinate reader found")
-    RESIDUE_CHAINID_MSG = ("Number of residues (38) does not match number of "
-                           "%RESIDUE_CHAINID (37). Skipping section.")
+    ATOMIC_NUMBER_MSG = (
+        "ATOMIC_NUMBER record not found, elements attribute will not be populated"
+    )
+    MISSING_ELEM_MSG = (
+        "Unknown ATOMIC_NUMBER value found for some atoms, "
+        "these have been given an empty element record"
+    )
+    COORDINATE_READER_MSG = "No coordinate reader found"
+    RESIDUE_CHAINID_MSG = (
+        "Number of residues (38) does not match number of "
+        "%RESIDUE_CHAINID (37). Skipping section."
+    )
 
     @pytest.mark.parametrize(
         "parm,errmatch",
@@ -623,14 +688,17 @@ class TestErrorsAndWarnings(object):
         with pytest.raises(IndexError, match="%FLAG section not found"):
             u = mda.Universe(PRMErr3)
 
-    @pytest.mark.parametrize("parm, errmsgs", (
-        [PRM, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
-        [PRM7, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
-        [PRMpbc, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
-        [PRMNEGATIVE, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
-        [PRM19SBOPC, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
-        [PRMErr5, [RESIDUE_CHAINID_MSG, COORDINATE_READER_MSG]]
-    ))
+    @pytest.mark.parametrize(
+        "parm, errmsgs",
+        (
+            [PRM, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+            [PRM7, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+            [PRMpbc, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+            [PRMNEGATIVE, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
+            [PRM19SBOPC, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
+            [PRMErr5, [RESIDUE_CHAINID_MSG, COORDINATE_READER_MSG]],
+        ),
+    )
     def test_warning(self, parm, errmsgs):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(parm)
