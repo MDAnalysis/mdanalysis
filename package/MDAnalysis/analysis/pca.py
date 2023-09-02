@@ -450,8 +450,8 @@ class PCA(AnalysisBase):
             and returns ts with the projected structure
 
             .. warning::
-               The transformation function takes a :class:``Timestep`` as input
-               because this is required for :ref:``transformations``.
+               The transformation function takes a :class:`Timestep` as input
+               because this is required for :ref:`transformations`.
                However, the inverse-PCA transformation is applied on the atoms
                of the Universe that was used for the PCA. It is *expected*
                that the `ts` is from the same Universe but this is
