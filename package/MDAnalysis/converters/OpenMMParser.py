@@ -34,10 +34,10 @@ Converts an
 Also converts some objects within the
 `OpenMM Application layer <http://docs.openmm.org/latest/api-python/app.html>`_
 
-    - `openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile>`_
-    - `openmm.app.simulation.Simulation <http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation>`_
-    - `openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller>`_
-    - `openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile>`_
+- `openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile>`_
+- `openmm.app.simulation.Simulation <http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation>`_
+- `openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller>`_
+- `openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile>`_
 
 The :class:`OpenMMTopologyParser` generates a topology from an OpenMM Topology object.
 
