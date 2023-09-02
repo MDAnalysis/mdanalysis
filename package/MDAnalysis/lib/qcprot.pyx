@@ -193,8 +193,8 @@ cpdef cython.floating InnerProduct(cython.floating[:] A,
         candidate structure
     N : int
         size of system
-    weight : ndarray, optional
-        use to calculate weighted inner product
+    weight : ndarray or None
+        used to calculate weighted inner product
 
     Returns
     -------
@@ -282,7 +282,7 @@ cpdef cython.floating InnerProduct(cython.floating[:] A,
 def CalcRMSDRotationalMatrix(cython.floating[:, :] ref not None,
                              cython.floating[:, :] conf not None,
                              int N,
-                             cython.floating[:] rot not None,
+                             cython.floating[:] rot,
                              cython.floating[:] weights) -> float:
     """
     Calculate the RMSD & rotational matrix.
@@ -295,9 +295,9 @@ def CalcRMSDRotationalMatrix(cython.floating[:, :] ref not None,
         condidate structure coordinates
     N : int
         size of the system
-    rot : ndarray, np.float64_t
+    rot : ndarray or None
         array to store rotation matrix. Must be flat
-    weights : ndarray, npfloat64_t (optional)
+    weights : ndarray or None
         weights for each component
 
     Returns
@@ -332,7 +332,7 @@ cpdef cython.floating FastCalcRMSDAndRotation(cython.floating[:] rot,
 
     Parameters
     ----------
-    rot : ndarray
+    rot : ndarray or None
         result rotation matrix, modified inplace
     A : ndarray
         the inner product of two structures
@@ -439,7 +439,7 @@ cpdef cython.floating FastCalcRMSDAndRotation(cython.floating[:] rot,
     # but *negative* numbers due to floating point error
     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
 
-    if (rot is None):
+    if rot is None:
         return rms  # Don't bother with rotation.
 
     a11 = SxxpSyy + Szz-mxEigenV
