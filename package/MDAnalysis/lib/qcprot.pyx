@@ -289,14 +289,14 @@ def CalcRMSDRotationalMatrix(cython.floating[:, :] ref not None,
 
     Parameters
     ----------
-    ref : ndarray, np.float64_t
-        reference structure coordinates
-    conf : ndarray, np.float64_t
-        condidate structure coordinates
+    ref : ndarray
+        reference structure coordinates, shape (N, 3)
+    conf : ndarray
+        condidate structure coordinates, shape (N, 3)
     N : int
         size of the system
     rot : ndarray or None
-        array to store rotation matrix. Must be flat
+        array to store rotation matrix. If given must be flat and shape (9,)
     weights : ndarray or None
         weights for each component
 
