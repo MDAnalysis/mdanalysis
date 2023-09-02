@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, p-j-smith
+??/??/?? IAlibay, ianmkenney, PicoCentauri, p-j-smith
 
  * 2.7.0
 
@@ -24,6 +24,8 @@ Fixes
     their original type value (np.float64 and np.nan) (PR #4272)
 
 Enhancements
+  * Added a warning about charge neutrality to the documentation of
+    `DielectricConstant` (Issue #4262, PR #4263)
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
