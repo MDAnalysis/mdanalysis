@@ -22,6 +22,8 @@ Fixes
     their original type value (np.float64 and np.nan) (PR #4272)
 
 Enhancements
+  * Added a warning about charge neutrality to the documentation of
+    `DielectricConstant` (Issue #4262, PR #4263)
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
@@ -42,8 +44,6 @@ Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
-  * Added a warning about charge neutrality to the documentation of
-    `DielectricConstant` (Issue #4262, PR #4263)
 
 Changes
   * Reverts PR #4108, builds are now again made using the oldest
