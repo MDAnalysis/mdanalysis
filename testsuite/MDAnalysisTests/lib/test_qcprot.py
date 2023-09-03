@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_allclose
 import pytest
 
 import MDAnalysis as mda
@@ -43,7 +43,7 @@ class TestQCProt:
 
         assert r == pytest.approx(0.7174389197644676, abs=err)
         assert rot.dtype == dtype
-        assert_array_almost_equal(rot.reshape(3, 3), np.eye(3))
+        assert_allclose(rot.reshape(3, 3), np.eye(3))
 
     def test_regression(self, dtype):
         u = mda.Universe(PSF, DCD)
@@ -64,4 +64,4 @@ class TestQCProt:
 
         err = 0.001 if dtype is np.float32 else 0.000001
         assert r == pytest.approx(0.6057544485785074, abs=err)
-        assert_array_almost_equal(rot, rot_ref)
+        assert_allclose(rot, rot_ref, atol=err)
