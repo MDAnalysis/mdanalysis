@@ -20,9 +20,12 @@ The rules for this file:
 Fixes
   * Deprecated np.float_ and np.NaN aliases have been replaced with
     their original type value (np.float64 and np.nan) (PR #4272)
+  * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
+    RMSD of None
 
 Enhancements
-  * Updated lib.qcprot to accept either float32 or float64 inputs
+  * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
+    inputs
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
 
