@@ -211,10 +211,14 @@ to invoke the element guessers after parsing the topology file. Please see
 - Type_indices
 - Bonds
 - Angles
-- Dihedrals (inc. impropers)</p>
-<p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file
+- Dihedrals (inc. impropers)
+- ChainIDs (from %RESIDUE_CHAINID)
+- Segids (from %RESIDUE_CHAINID)</p>
+<p>The format is defined in <a class="reference external" href="https://ambermd.org/FileFormats.php#topo.cntrl">PARM parameter/topology file
 specification</a>.  The reader tries to detect if it is a newer
 (AMBER 12?) file format by looking for the flag “ATOMIC_NUMBER”.</p>
+<p>Additionally, the RESIDUE_CHAINID non-standard flag is supported. This
+can be added with the <a class="reference external" href="https://parmed.github.io/ParmEd/html/parmed.html#addpdb">addPDB</a> command from parmed:</p>
 <p class="rubric">Notes</p>
 <p>Elements are obtained from the atomic numbers (if present). If a given
 input atomic number does not belong to an element (usually either -1 or 0),
@@ -230,6 +234,9 @@ the element will be assigned an empty record.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>no longer guesses elements if missing</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>gets Segments and chainIDs from flag RESIDUE_CHAINID, when present</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.close">
@@ -462,11 +469,32 @@ is avoided.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For the bond/angle sections of parm7 files, the atom numbers are set to
-coordinate array index values. As detailed in
-<a class="reference external" href="http://ambermd.org/formats.html">http://ambermd.org/formats.html</a> to recover the actual atom number, one
+coordinate array index values. As detailed in <a class="reference external" href="https://ambermd.org/FileFormats.php#topo.cntrl">the specification</a>,
+to recover the actual atom number, one
 should divide the values by 3 and add 1. Here, since we want to satisfy
 zero-indexing, we only divide by 3.</p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_chainids">
+<span class="sig-name descname"><span class="pre">parse_chainids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_chainids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_chainids" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts the chainID of each residue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of entries for each record in section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>attr</strong> – A numpy array containing the chainID of each residue as defined in
+the parm7 file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -544,7 +572,7 @@ improper dihedrals as defined by the parm7 file</p></li>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As detailed in <a class="reference external" href="http://ambermd.org/formats.html">http://ambermd.org/formats.html</a>, the dihedral sections
+<p>As detailed in <a class="reference external" href="https://ambermd.org/FileFormats.php#topo.cntrl">the specification</a>, the dihedral sections
 of parm7 files contain information about both conventional dihedrals
 and impropers. The following must be accounted for:
 1) If the fourth atom in a dihedral entry is given a negative value,

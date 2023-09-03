@@ -175,7 +175,7 @@
 <span class="sd">   :mod:`MDAnalysis.topology.guessers` for more details.</span>
 
 <span class="sd">.. _`PARM parameter/topology file specification`:</span>
-<span class="sd">   http://ambermd.org/formats.html#topology</span>
+<span class="sd">   https://ambermd.org/FileFormats.php#topo.cntrl</span>
 
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
@@ -190,7 +190,7 @@
 
 <span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Z2SYMB</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">FORTRANReader</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomnames</span><span class="p">,</span>
@@ -203,6 +203,7 @@
     <span class="n">Resids</span><span class="p">,</span>
     <span class="n">Resnums</span><span class="p">,</span>
     <span class="n">Segids</span><span class="p">,</span>
+    <span class="n">ChainIDs</span><span class="p">,</span>
     <span class="n">AtomAttr</span><span class="p">,</span>
     <span class="n">Bonds</span><span class="p">,</span>
     <span class="n">Angles</span><span class="p">,</span>
@@ -237,13 +238,20 @@
 <span class="sd">    - Bonds</span>
 <span class="sd">    - Angles</span>
 <span class="sd">    - Dihedrals (inc. impropers)</span>
+<span class="sd">    - ChainIDs (from %RESIDUE_CHAINID)</span>
+<span class="sd">    - Segids (from %RESIDUE_CHAINID)</span>
 
 <span class="sd">    The format is defined in `PARM parameter/topology file</span>
 <span class="sd">    specification`_.  The reader tries to detect if it is a newer</span>
 <span class="sd">    (AMBER 12?) file format by looking for the flag &quot;ATOMIC_NUMBER&quot;.</span>
 
 <span class="sd">    .. _`PARM parameter/topology file specification`:</span>
-<span class="sd">       http://ambermd.org/formats.html#topology</span>
+<span class="sd">       https://ambermd.org/FileFormats.php#topo.cntrl</span>
+
+<span class="sd">    Additionally, the RESIDUE_CHAINID non-standard flag is supported. This</span>
+<span class="sd">    can be added with the `addPDB`_ command from parmed:</span>
+
+<span class="sd">    .. _`addPDB`: https://parmed.github.io/ParmEd/html/parmed.html#addpdb</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -259,6 +267,8 @@
 <span class="sd">      warns users that chamber-style topologies are not currently supported</span>
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">      no longer guesses elements if missing</span>
+<span class="sd">    .. versionchanged:: 2.7.0</span>
+<span class="sd">      gets Segments and chainIDs from flag RESIDUE_CHAINID, when present</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PRMTOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PARM7&#39;</span><span class="p">]</span>
 
@@ -285,7 +295,8 @@
             <span class="s2">&quot;ANGLES_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;angh&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
             <span class="s2">&quot;ANGLES_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;anga&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
             <span class="s2">&quot;DIHEDRALS_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;dihh&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-            <span class="s2">&quot;DIHEDRALS_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;diha&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+            <span class="s2">&quot;DIHEDRALS_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;diha&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+            <span class="s2">&quot;RESIDUE_CHAINID&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_chainids</span><span class="p">,</span> <span class="s2">&quot;segids&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
         <span class="p">}</span>
 
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># empty dict for attrs that we&#39;ll fill</span>
@@ -395,12 +406,36 @@
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;atomids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resnums&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;segids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
 
-        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_res</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-                       <span class="n">attrs</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
-                       <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
-                       <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># Amber&#39;s &#39;RESIDUE_CHAINID&#39; is a by-residue attribute, turn it into</span>
+        <span class="c1"># a by-atom attribute when present. See PR #4007.</span>
+        <span class="k">if</span> <span class="s2">&quot;segids&quot;</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">n_res</span><span class="p">:</span>
+            <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">],),</span> <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">],))</span>
+            <span class="n">chainids</span> <span class="o">=</span> <span class="p">[</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residx</span><span class="p">]</span>
+
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;ChainIDs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ChainIDs</span><span class="p">(</span><span class="n">chainids</span><span class="p">)</span>
+            <span class="n">n_segs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;segids&quot;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Number of residues (</span><span class="si">{</span><span class="n">n_res</span><span class="si">}</span><span class="s2">) does not match number of &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;%RESIDUE_CHAINID (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;segids&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">). Skipping section.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;segids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+            <span class="n">segidx</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">n_segs</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+            <span class="n">n_atoms</span><span class="p">,</span>
+            <span class="n">n_res</span><span class="p">,</span>
+            <span class="n">n_segs</span><span class="p">,</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+            <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+            <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">top</span></div>
 
@@ -634,10 +669,12 @@
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
 <span class="sd">        For the bond/angle sections of parm7 files, the atom numbers are set to</span>
-<span class="sd">        coordinate array index values. As detailed in</span>
-<span class="sd">        http://ambermd.org/formats.html to recover the actual atom number, one</span>
+<span class="sd">        coordinate array index values. As detailed in `the specification`_,</span>
+<span class="sd">        to recover the actual atom number, one</span>
 <span class="sd">        should divide the values by 3 and add 1. Here, since we want to satisfy</span>
 <span class="sd">        zero-indexing, we only divide by 3.</span>
+
+<span class="sd">        .. _`the specification`: https://ambermd.org/FileFormats.php#topo.cntrl</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_chunks</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">)</span>
@@ -660,9 +697,24 @@
 <span class="sd">            A list of all entries in a given parm7 section</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">section</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">ORMAT(&quot;</span><span class="p">)</span>
-        <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_fmt</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Skips &#39;%COMMENT&#39; lines until it gets the FORMAT specification</span>
+<span class="sd">            for the section.&quot;&quot;&quot;</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="si">%F</span><span class="s2">ORMAT&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;%COMMENT&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">get_fmt</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Invalid header line. Does not begin with either </span><span class="si">%F</span><span class="s2">LAG, </span><span class="si">%F</span><span class="s2">ORMAT &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;nor %COMMENT:</span><span class="se">\n</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># There may be %COMMENT lines between %FLAG and %FORMAT statements. Skip them.</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="n">get_fmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numlines</span><span class="p">):</span>
             <span class="n">l</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">)):</span>
@@ -693,7 +745,7 @@
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
-<span class="sd">        As detailed in http://ambermd.org/formats.html, the dihedral sections</span>
+<span class="sd">        As detailed in `the specification`_, the dihedral sections</span>
 <span class="sd">        of parm7 files contain information about both conventional dihedrals</span>
 <span class="sd">        and impropers. The following must be accounted for:</span>
 <span class="sd">        1) If the fourth atom in a dihedral entry is given a negative value,</span>
@@ -702,6 +754,8 @@
 <span class="sd">        this indicates that it 1-4 NB interactions are ignored for this</span>
 <span class="sd">        dihedrals. This could be due to the dihedral within a ring, or if it is</span>
 <span class="sd">        part of a multi-term dihedral definition or if it is an improper.</span>
+
+<span class="sd">        .. _`the specification`: https://ambermd.org/FileFormats.php#topo.cntrl</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">improp</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dihed</span> <span class="o">=</span> <span class="p">[]</span>
@@ -716,7 +770,27 @@
         <span class="n">dihed</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dihed</span><span class="p">))</span>
         <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">Dihedrals</span><span class="p">(</span><span class="n">dihed</span><span class="p">)</span>
         <span class="n">impropers</span> <span class="o">=</span> <span class="n">Impropers</span><span class="p">(</span><span class="n">improp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dihedrals</span><span class="p">,</span> <span class="n">impropers</span></div></div>
+        <span class="k">return</span> <span class="n">dihedrals</span><span class="p">,</span> <span class="n">impropers</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_chainids"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_chainids">[docs]</a>    <span class="k">def</span> <span class="nf">parse_chainids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numlines</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the chainID of each residue</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr : numpy array</span>
+<span class="sd">            A numpy array containing the chainID of each residue as defined in</span>
+<span class="sd">            the parm7 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr</span></div></div>
 </pre></div>
 
            </div>
