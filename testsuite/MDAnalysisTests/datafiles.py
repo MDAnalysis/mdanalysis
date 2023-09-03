@@ -633,6 +633,5 @@ PDBX = (_data_ref / "4x8u.pdbx").as_posix()
 SURFACE_PDB = (_data_ref / 'surface.pdb.bz2').as_posix()
 SURFACE_TRR = (_data_ref / 'surface.trr').as_posix()
 
-
 # This should be the last line: clean up namespace
 del resources

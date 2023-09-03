@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith
 
  * 2.7.0
 
 Fixes
+  * Fix `NoJump` unwrapping for jumps on the second frame in a
+    trajectory (PR #4258, Issue #4257)
   * Deprecated np.float_ and np.NaN aliases have been replaced with
     their original type value (np.float64 and np.nan) (PR #4272)
 
@@ -45,6 +47,7 @@ Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
+  * Allow `set_dimensions` transformation to handle NPT trajectories (PR #4258)
 
 Changes
   * Reverts PR #4108, builds are now again made using the oldest
