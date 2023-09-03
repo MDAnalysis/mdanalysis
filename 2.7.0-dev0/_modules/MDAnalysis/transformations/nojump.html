@@ -220,9 +220,17 @@
         <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Periodic box dimensions are not invertible at step </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># We don&#39;t need to apply the transformation here. However, we need to</span>
+            <span class="c1"># ensure we have the 0th frame coordinates in reduced form. We also need to</span>
+            <span class="c1"># set an an appropriate value for self.older frame. This is so that on the</span>
+            <span class="c1"># following frame we don&#39;t return early when we check</span>
+            <span class="c1"># `self.older_frame != &quot;A&quot;`. If we return early, then the transformation is</span>
+            <span class="c1"># not applied, and any jumps across boundaries that occur at that frame will</span>
+            <span class="c1"># not be accounted for.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">@</span> <span class="n">Linverse</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">old_frame</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_frame</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">older_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
             <span class="k">return</span> <span class="n">ts</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">check_c</span>

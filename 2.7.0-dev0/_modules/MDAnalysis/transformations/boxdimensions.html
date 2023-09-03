@@ -122,8 +122,8 @@
 <span class="sd">Set box dimensions --- :mod:`MDAnalysis.transformations.boxdimensions`</span>
 <span class="sd">=======================================================================</span>
 
-<span class="sd">Set dimensions of the simulation box to a constant vector across all timesteps.</span>
-
+<span class="sd">Set dimensions of the simulation box, either to a constant vector across</span>
+<span class="sd">all timesteps or to a specified vector at each frame.</span>
 
 <span class="sd">.. autoclass:: set_dimensions</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -131,35 +131,55 @@
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
 
-
 <div class="viewcode-block" id="set_dimensions"><a class="viewcode-back" href="../../../documentation_pages/transformations/boxdimensions.html#MDAnalysis.transformations.boxdimensions.set_dimensions">[docs]</a><span class="k">class</span> <span class="nc">set_dimensions</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set simulation box dimensions.</span>
 
 <span class="sd">    Timestep dimensions are modified in place.</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 
 <span class="sd">    e.g. set simulation box dimensions to a vector containing unit cell</span>
 <span class="sd">    dimensions [*a*, *b*, *c*, *alpha*, *beta*, *gamma*], lengths *a*,</span>
 <span class="sd">    *b*, *c* are in the MDAnalysis length unit (Å), and angles are in degrees.</span>
+<span class="sd">    The same dimensions will be used for every frame in the trajectory.</span>
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        dim = [2, 2, 2, 90, 90, 90]</span>
+<span class="sd">        dim = np.array([2, 2, 2, 90, 90, 90])</span>
+<span class="sd">        transform = mda.transformations.boxdimensions.set_dimensions(dim)</span>
+<span class="sd">        u.trajectory.add_transformations(transform)</span>
+
+<span class="sd">    Or e.g. set simulation box dimensions to a vector containing unit cell</span>
+<span class="sd">    dimensions [*a*, *b*, *c*, *alpha*, *beta*, *gamma*] at the first frame,</span>
+<span class="sd">    and [*2a*, *2b*, *2c*, *alpha*, *beta*, *gamma*] at the second frame.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        dim = np.array([</span>
+<span class="sd">            [2, 2, 2, 90, 90, 90],</span>
+<span class="sd">            [4, 4, 4, 90, 90, 90],</span>
+<span class="sd">        ])</span>
 <span class="sd">        transform = mda.transformations.boxdimensions.set_dimensions(dim)</span>
 <span class="sd">        u.trajectory.add_transformations(transform)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dimensions: iterable of floats</span>
+<span class="sd">    dimensions: iterable of floats or two-dimensional np.typing.NDArrayLike</span>
 <span class="sd">        vector that contains unit cell lengths and angles.</span>
-<span class="sd">        Expected shapes are (6, 0) or (1, 6)</span>
+<span class="sd">        Expected shapes are (6, 0) or (1, 6) or (N, 6), where</span>
+<span class="sd">        N is the number of frames in the trajectory. If shape is (6, 0) or</span>
+<span class="sd">        (1, 6), the same dimensions will be used at every frame in the</span>
+<span class="sd">        trajectory.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
+
+
+<span class="sd">    .. versionchanged:: 2.7.0</span>
+<span class="sd">       Added the option to set varying box dimensions (i.e. an NPT trajectory).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -173,21 +193,36 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="si">}</span><span class="s1"> cannot be converted into &#39;</span>
-                       <span class="s1">&#39;np.float32 numpy.ndarray&#39;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="si">}</span><span class="s1"> cannot be converted into &#39;</span>
+                <span class="s1">&#39;np.float32 numpy.ndarray&#39;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="si">}</span><span class="s1"> array does not have valid box &#39;</span>
-                       <span class="s1">&#39;dimension shape.</span><span class="se">\n</span><span class="s1">Simulation box dimensions are &#39;</span>
-                       <span class="s1">&#39;given by an float array of shape (6, ), &#39;</span>
-                       <span class="s1">&#39; containing 3 lengths and 3 angles: &#39;</span>
-                       <span class="s1">&#39;[a, b, c, alpha, beta, gamma]&#39;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="si">}</span><span class="s1"> array does not have valid box &#39;</span>
+                <span class="s1">&#39;dimension shape.</span><span class="se">\n</span><span class="s1">Simulation box dimensions are &#39;</span>
+                <span class="s1">&#39;given by an float array of shape (6, 0), (1, 6), &#39;</span>
+                <span class="s1">&#39;or (N, 6) where N is the number of frames in the &#39;</span>
+                <span class="s1">&#39;trajectory and the dimension vector(s) containing &#39;</span>
+                <span class="s1">&#39;3 lengths and 3 angles: &#39;</span>
+                <span class="s1">&#39;[a, b, c, alpha, beta, gamma]&#39;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Dimensions array has no data for frame </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
         <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 

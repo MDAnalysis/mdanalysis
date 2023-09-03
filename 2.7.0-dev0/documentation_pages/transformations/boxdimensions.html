@@ -117,35 +117,58 @@
              
   <span class="target" id="module-MDAnalysis.transformations.boxdimensions"></span><section id="set-box-dimensions-mdanalysis-transformations-boxdimensions">
 <h1><span class="section-number">8.6.7. </span>Set box dimensions — <a class="reference internal" href="#module-MDAnalysis.transformations.boxdimensions" title="MDAnalysis.transformations.boxdimensions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a><a class="headerlink" href="#set-box-dimensions-mdanalysis-transformations-boxdimensions" title="Permalink to this heading"></a></h1>
-<p>Set dimensions of the simulation box to a constant vector across all timesteps.</p>
+<p>Set dimensions of the simulation box, either to a constant vector across
+all timesteps or to a specified vector at each frame.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.transformations.boxdimensions.set_dimensions">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.boxdimensions.</span></span><span class="sig-name descname"><span class="pre">set_dimensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/boxdimensions.html#set_dimensions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.boxdimensions.set_dimensions" title="Permalink to this definition"></a></dt>
 <dd><p>Set simulation box dimensions.</p>
 <p>Timestep dimensions are modified in place.</p>
-<p class="rubric">Example</p>
+<p class="rubric">Examples</p>
 <p>e.g. set simulation box dimensions to a vector containing unit cell
 dimensions [<em>a</em>, <em>b</em>, <em>c</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>], lengths <em>a</em>,
-<em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and angles are in degrees.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dim</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
+<em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and angles are in degrees.
+The same dimensions will be used for every frame in the trajectory.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">boxdimensions</span><span class="o">.</span><span class="n">set_dimensions</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or e.g. set simulation box dimensions to a vector containing unit cell
+dimensions [<em>a</em>, <em>b</em>, <em>c</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>] at the first frame,
+and [<em>2a</em>, <em>2b</em>, <em>2c</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>] at the second frame.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+<span class="p">])</span>
 <span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">boxdimensions</span><span class="o">.</span><span class="n">set_dimensions</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dimensions</strong> (<em>iterable</em><em> of </em><em>floats</em><em> or </em><em>two-dimensional np.typing.NDArrayLike</em>) – vector that contains unit cell lengths and angles.
+Expected shapes are (6, 0) or (1, 6) or (N, 6), where
+N is the number of frames in the trajectory. If shape is (6, 0) or
+(1, 6), the same dimensions will be used at every frame in the
+trajectory.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Added the option to set varying box dimensions (i.e. an NPT trajectory).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dimensions</strong> (<em>iterable</em><em> of </em><em>floats</em>) – vector that contains unit cell lengths and angles.
-Expected shapes are (6, 0) or (1, 6)</p></li>
 <li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>
 <li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
 analysis approach.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object</p>
 </dd>
 </dl>
 </dd></dl>
