@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, p-j-smith
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith
 
  * 2.7.0
 
@@ -26,6 +26,7 @@ Fixes
 Enhancements
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
+  * Add support for reading chainID info from prmtop amber topologies (PR #4007)
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
