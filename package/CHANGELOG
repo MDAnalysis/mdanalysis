@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, richardjgowers
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers
 
  * 2.7.0
 
 Fixes
+  * Fix `NoJump` unwrapping for jumps on the second frame in a
+    trajectory (PR #4258, Issue #4257)
   * Deprecated np.float_ and np.NaN aliases have been replaced with
     their original type value (np.float64 and np.nan) (PR #4272)
   * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
@@ -28,6 +30,7 @@ Enhancements
     inputs
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
+  * Add support for reading chainID info from prmtop amber topologies (PR #4007)
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
@@ -48,6 +51,7 @@ Fixes
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
+  * Allow `set_dimensions` transformation to handle NPT trajectories (PR #4258)
 
 Changes
   * Reverts PR #4108, builds are now again made using the oldest
