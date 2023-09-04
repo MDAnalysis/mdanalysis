@@ -192,7 +192,7 @@ jobs:
         # (see https://github.com/travis-ci/travis-ci/issues/4704)
         # commented out as this is not a problem with gh-actions
         # python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
-        cd package/doc/html/html
+        cd package/doc/html/
 
         # move docs into version subfolder
         mkdir ../${VERSION} && mv * ../${VERSION} && mv ../${VERSION} $VERSION
