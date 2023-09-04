@@ -67,7 +67,7 @@ Distances
 
 """
 
-from typing import List, Dict, Tuple, TypeAlias, Union, Iterable
+from typing import List, Dict, Tuple, Union
 import warnings
 
 import numpy as np
@@ -78,8 +78,8 @@ from .base import AnalysisBase, Results
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
 
-ResidueClass: TypeAlias = Union[List[Residue], ResidueGroup]
-r"""A :class:`typing.TypeAlias` for :code:`Union[Residue, ResidueGroup]`
+ResidueClass = Union[List[Residue], ResidueGroup]
+r"""A type alias for :code:`Union[Residue, ResidueGroup]`
 
 Used as an alias for methods where either class is acceptable.
 """
