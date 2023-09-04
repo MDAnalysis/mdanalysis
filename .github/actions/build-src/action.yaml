@@ -90,4 +90,4 @@ runs:
       run: |
         SOURCEDIR="sphinx/source"
         BUILDDIR="html"
-        cd package/doc && python -m sphinx -T -E -b html -D language=en ${SOURCEDIR} ${BUILDDIR}
+        cd package/doc && python -m sphinx -T -E --keep-going -b html -D language=en ${SOURCEDIR} ${BUILDDIR}
