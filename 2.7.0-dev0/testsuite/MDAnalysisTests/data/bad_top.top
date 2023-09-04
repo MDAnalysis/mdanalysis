@@ -1,2 +1,0 @@
-; Include forcefield parameters
-#include "gromos53a6.ff/forcefield.itp"
