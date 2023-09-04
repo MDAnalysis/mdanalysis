@@ -155,7 +155,7 @@ jobs:
       with:
         micromamba: true
         full-deps: true
-        extra-pip-deps: "docutils sphinx sphinx-sitemap mdanalysis-sphinx-theme sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-pip-deps: "docutils sphinx<7 sphinx-sitemap mdanalysis-sphinx-theme>=1.0.1 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src

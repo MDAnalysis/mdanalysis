@@ -17,8 +17,8 @@ pytest
 scikit-learn
 scipy
 seaborn>=0.7.0,<=0.9
-sphinx==1.8.5
-mdanalysis_sphinx_theme
+sphinx <7.0
+mdanalysis_sphinx_theme >=1.0.1
 sphinx_sitemap
 threadpoolctl
 tqdm

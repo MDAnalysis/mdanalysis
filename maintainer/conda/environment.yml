@@ -13,8 +13,7 @@ dependencies:
   - h5py>=2.10
   - hypothesis
   - joblib>=0.12
-  - mdanalysis-sphinx-theme
-  - sphinx_rtd_theme >=1.2
+  - mdanalysis-sphinx-theme >=1.0.1
   - matplotlib>=3.2.2
   - mmtf-python
   - mock
@@ -26,7 +25,7 @@ dependencies:
   - scikit-learn
   - scipy
   - pip
-  - sphinx
+  - sphinx <7.0
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
