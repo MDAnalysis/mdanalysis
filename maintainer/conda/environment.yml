@@ -6,7 +6,7 @@ dependencies:
   - chemfiles>=0.10
   - codecov
   - cython
-  - docutils <0.18
+  - docutils
   - fasteners
   - griddataformats
   - gsd
@@ -25,13 +25,13 @@ dependencies:
   - scikit-learn
   - scipy
   - pip
-  - sphinx <7.0
+  - sphinx
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
   - pip:
       - duecredit
       - parmed
-      - sphinx-sitemap==1.0.2
+      - sphinx-sitemap
       - packaging
       - pyedr>=0.7.0
