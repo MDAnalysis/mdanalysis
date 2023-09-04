@@ -1771,7 +1771,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         Returns
         -------
-        table : numpy.recarray
+        table : numpy.rec.recarray
             A "tidy" table with one hydrogen bond per row, labeled according to
             `output_format` and containing information of atom_1, atom_2,
             distance, and angle.
@@ -1832,7 +1832,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 cursor += 1
         assert cursor == num_records, \
             "Internal Error: Not all wb records stored"
-        table = out.view(np.recarray)
+        table = out.view(np.rec.recarray)
         logger.debug(
             "WBridge: Stored results as table with %(num_records)d entries.",
             vars())
