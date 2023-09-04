@@ -186,17 +186,18 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ref</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – reference structure coordinates</p></li>
-<li><p><strong>conf</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – condidate structure coordinates</p></li>
+<li><p><strong>ref</strong> (<em>ndarray</em>) – reference structure coordinates, shape (N, 3)</p></li>
+<li><p><strong>conf</strong> (<em>ndarray</em>) – condidate structure coordinates, shape (N, 3)</p></li>
 <li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of the system</p></li>
-<li><p><strong>rot</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – array to store rotation matrix. Must be flat</p></li>
-<li><p><strong>weights</strong> (<em>ndarray</em><em>, </em><em>npfloat64_t</em><em> (</em><em>optional</em><em>)</em>) – weights for each component</p></li>
+<li><p><strong>rot</strong> (<em>ndarray</em><em> or </em><em>None</em>) – array to store rotation matrix. If given must be flat and shape (9,)</p></li>
+<li><p><strong>weights</strong> (<em>ndarray</em><em> or </em><em>None</em>) – weights for each component</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>rmsd</strong> (<em>float</em>) – RMSD value</p></li>
 <li><p><em>.. versionchanged:: 0.16.0</em> – Array size changed from 3xN to Nx3.</p></li>
+<li><p><em>.. versionchanged:: 2.7.0</em> – Changed arguments to floating type, can accept either float32 or float64 inputs</p></li>
 </ul>
 </p>
 </dd>
@@ -210,11 +211,11 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>A</strong> (<em>ndarray np.float64_t</em>) – result inner product array, modified in place</p></li>
-<li><p><strong>coords1</strong> (<em>ndarray np.float64_t</em>) – reference structure</p></li>
-<li><p><strong>coord2</strong> (<em>ndarray np.float64_t</em>) – candidate structure</p></li>
+<li><p><strong>A</strong> (<em>ndarray</em>) – result inner product array, modified in place</p></li>
+<li><p><strong>coords1</strong> (<em>ndarray</em>) – reference structure</p></li>
+<li><p><strong>coords2</strong> (<em>ndarray</em>) – candidate structure</p></li>
 <li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of system</p></li>
-<li><p><strong>weights</strong> (<em>ndarray np.float64_t</em><em> (</em><em>optional</em><em>)</em>) – use to calculate weighted inner product</p></li>
+<li><p><strong>weight</strong> (<em>ndarray</em><em> or </em><em>None</em>) – used to calculate weighted inner product</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -234,6 +235,9 @@ function.</p></li>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.16.0: </span>Array size changed from 3xN to Nx3.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Updating to allow either float32 or float64 inputs</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -243,9 +247,9 @@ function.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rot</strong> (<em>ndarray np.float64_t</em>) – result rotation matrix, modified inplace</p></li>
-<li><p><strong>A</strong> (<em>ndarray np.float64_t</em>) – the inner product of two structures</p></li>
-<li><p><strong>E0</strong> (<em>float64</em>) – 0.5 * (G1 + G2)</p></li>
+<li><p><strong>rot</strong> (<em>ndarray</em><em> or </em><em>None</em>) – result rotation matrix, modified inplace</p></li>
+<li><p><strong>A</strong> (<em>ndarray</em>) – the inner product of two structures</p></li>
+<li><p><strong>E0</strong> (<em>floating</em>) – 0.5 * (G1 + G2)</p></li>
 <li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of the system</p></li>
 </ul>
 </dd>
@@ -253,11 +257,15 @@ function.</p></li>
 <dd class="field-even"><p><strong>rmsd</strong> – RMSD value for two structures</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+<dd class="field-odd"><p>double</p>
 </dd>
 </dl>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.16.0: </span>Array sized changed from 3xN to Nx3.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Changed arguments to floating type, can accept either float32 or float64 inputs.  Internally still uses
+double precision for QCP algorithm</p>
 </div>
 </dd></dl>
 
