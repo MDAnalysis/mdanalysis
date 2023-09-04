@@ -161,39 +161,13 @@ toc_object_entries = False
 # a list of builtin themes.
 html_theme = 'mdanalysis_sphinx_theme'
 
+html_theme_options = {
+    "mda_official": True,
+}
+
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#
-# styles/fonts to match https://userguide.mdanalysis.org
-#
-# /* MDAnalysis orange: #FF9200 */
-# /* MDAnalysis gray: #808080 */
-# /* MDAnalysis white: #FFFFFF */
-# /* MDAnalysis black: #000000 */
-
-color = {'orange': '#FF9200',
-         'gray': '#808080',
-         'white': '#FFFFFF',
-         'black': '#000000', }
-
-html_theme_options = {
-    'canonical_url': '',
-    'logo_only': True,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    'style_nav_header_background': 'white',
-    # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False,
-    # mda options
-    'mda_official': True
-}
-
 html_context = {
     'versions_json_url': 'https://docs.mdanalysis.org/versions.json'
 }
@@ -204,15 +178,6 @@ html_context = {
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
-
-# The name of an image file (relative to this directory) to place at the top
-# of the sidebar. --- use theme
-html_logo = "_static/logos/mdanalysis-logo-thin.png"
-
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
-html_favicon = "_static/logos/mdanalysis-logo.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
