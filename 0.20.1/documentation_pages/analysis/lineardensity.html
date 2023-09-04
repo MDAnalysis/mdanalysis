@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>4.8.2. Linear Density — MDAnalysis.analysis.lineardensity &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics" href="waterdynamics.html" />
+    <link rel="prev" title="4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.analysis.lineardensity"></span><div class="section" id="linear-density-mdanalysis-analysis-lineardensity">
+<h1><span class="section-number">4.8.2. </span>Linear Density — <a class="reference internal" href="#module-MDAnalysis.analysis.lineardensity" title="MDAnalysis.analysis.lineardensity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a><a class="headerlink" href="#linear-density-mdanalysis-analysis-lineardensity" title="Permalink to this headline">¶</a></h1>
+<p>A tool to compute mass and charge density profiles along the three
+cartesian axes of the simulation cell. Works only for orthorombic,
+fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
+<dl class="class">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.analysis.lineardensity.</code><code class="sig-name descname">LinearDensity</code><span class="sig-paren">(</span><em class="sig-param">selection</em>, <em class="sig-param">grouping='atoms'</em>, <em class="sig-param">binsize=0.25</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear density profile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – any atomgroup</p></li>
+<li><p><strong>grouping</strong> (<em>str {'atoms'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em>) – Density profiles will be computed on the center of geometry
+of a selected group of atoms [‘atoms’]</p></li>
+<li><p><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Bin width in Angstrom used to build linear density
+histograms. Defines the resolution of the resulting density
+profile (smaller –&gt; higher resolution) [0.25]</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The frame to start at [0]</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The frame to end at [-1]</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The step size through the trajectory in frames [0]</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results">
+<code class="sig-name descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keys ‘x’, ‘y’, and ‘z’ for the three directions. Under these
+keys, find ‘pos’, ‘pos_std’ (mass-weighted density and
+standard deviation), ‘char’, ‘char_std’ (charge density and
+its standard deviation), ‘slice_volume’ (volume of bin).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Example</p>
+<p>First create a LinearDensity object by supplying a selection,
+then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span> <span class="o">=</span> <span class="n">LinearDensity</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+<span class="n">ldens</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.14.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trajectory</strong> (<em>mda.Reader</em>) – A trajectory Reader</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on more logging and debugging, default <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.save" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save</cite> is deprecated!</p>
+<p>Save density profile to file</p>
+<p>Allows to save the density profile to either a ASCII txt file or a
+binary numpy npz file. Output file has extension ‘ldens’ and begins
+with the name of the trajectory file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – An arbitrary description added to the output filename. Can be useful</p></li>
+<li><p><strong>form</strong> (<em>str {'txt'</em><em>, </em><em>'npz'}</em>) – Format of the output. ‘txt’ will generate an ASCII text file while
+‘npz’ will produce a numpy binary file.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>After initializing and running a <cite>LinearDensity</cite> object, results can be
+written to file as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;mydensprof&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which will output the linear density profiles in a file named
+<cite>&lt;trajectory_filename&gt;.mydensprof_&lt;grouping&gt;.ldens</cite>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.19.0: </span>Instead save the <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="MDAnalysis.analysis.lineardensity.LinearDensity.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> dictionary directly in your favorite format (pickle, json, hdf5, …).
+<cite>save</cite> will be removed in release 1.0.0.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="density.html">4.8.1. Generating densities from trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.8.2. Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="waterdynamics.html">4.8.3. Water dynamics analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a><ul>
+      <li>Previous: <a href="density.html" title="previous chapter"><span class="section-number">4.8.1. </span>Generating densities from trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
+      <li>Next: <a href="waterdynamics.html" title="next chapter"><span class="section-number">4.8.3. </span>Water dynamics analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/analysis/lineardensity.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

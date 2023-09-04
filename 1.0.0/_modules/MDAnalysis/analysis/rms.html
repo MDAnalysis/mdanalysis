@@ -1,0 +1,1057 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.rms &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.rms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.rms</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`</span>
+<span class="sd">==========================================================================</span>
+
+<span class="sd">:Author: Oliver Beckstein, David L. Dotson, John Detlefs</span>
+<span class="sd">:Year: 2016</span>
+<span class="sd">:Copyright: GNU Public License v2</span>
+
+<span class="sd">.. versionadded:: 0.7.7</span>
+<span class="sd">.. versionchanged:: 0.11.0</span>
+<span class="sd">   Added :class:`RMSF` analysis.</span>
+<span class="sd">.. versionchanged:: 0.16.0</span>
+<span class="sd">   Refactored RMSD to fit AnalysisBase API</span>
+
+<span class="sd">The module contains code to analyze root mean square quantities such</span>
+<span class="sd">as the coordinat root mean square distance (:class:`RMSD`) or the</span>
+<span class="sd">per-residue root mean square fluctuations (:class:`RMSF`).</span>
+
+<span class="sd">This module uses the fast QCP algorithm [Theobald2005]_ to calculate</span>
+<span class="sd">the root mean square distance (RMSD) between two coordinate sets (as</span>
+<span class="sd">implemented in</span>
+<span class="sd">:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).</span>
+
+<span class="sd">When using this module in published work please cite [Theobald2005]_.</span>
+
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">:mod:`MDAnalysis.analysis.align`</span>
+<span class="sd">   aligning structures based on RMSD</span>
+<span class="sd">:mod:`MDAnalysis.lib.qcprot`</span>
+<span class="sd">   implements the fast RMSD algorithm.</span>
+
+
+<span class="sd">Example applications</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">Calculating RMSD for multiple domains</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">In this example we will globally fit a protein to a reference</span>
+<span class="sd">structure and investigate the relative movements of domains by</span>
+<span class="sd">computing the RMSD of the domains to the reference. The example is a</span>
+<span class="sd">DIMS trajectory of adenylate kinase, which samples a large</span>
+<span class="sd">closed-to-open transition. The protein consists of the CORE, LID, and</span>
+<span class="sd">NMP domain.</span>
+
+<span class="sd">* superimpose on the closed structure (frame 0 of the trajectory),</span>
+<span class="sd">  using backbone atoms</span>
+
+<span class="sd">* calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)</span>
+
+<span class="sd">The trajectory is included with the test data files. The data in</span>
+<span class="sd">:attr:`RMSD.rmsd` is plotted with :func:`matplotlib.pyplot.plot`::</span>
+
+<span class="sd">   import MDAnalysis</span>
+<span class="sd">   from MDAnalysis.tests.datafiles import PSF,DCD,CRD</span>
+<span class="sd">   u = MDAnalysis.Universe(PSF,DCD)</span>
+<span class="sd">   ref = MDAnalysis.Universe(PSF,DCD)     # reference closed AdK (1AKE) (with the default ref_frame=0)</span>
+<span class="sd">   #ref = MDAnalysis.Universe(PSF,CRD)    # reference open AdK (4AKE)</span>
+
+<span class="sd">   import MDAnalysis.analysis.rms</span>
+
+<span class="sd">   R = MDAnalysis.analysis.rms.RMSD(u, ref,</span>
+<span class="sd">              select=&quot;backbone&quot;,             # superimpose on whole backbone of the whole protein</span>
+<span class="sd">              groupselections=[&quot;backbone and (resid 1-29 or resid 60-121 or resid 160-214)&quot;,   # CORE</span>
+<span class="sd">                               &quot;backbone and resid 122-159&quot;,                                   # LID</span>
+<span class="sd">                               &quot;backbone and resid 30-59&quot;])                                    # NMP</span>
+<span class="sd">   R.run()</span>
+
+<span class="sd">   import matplotlib.pyplot as plt</span>
+<span class="sd">   rmsd = R.rmsd.T   # transpose makes it easier for plotting</span>
+<span class="sd">   time = rmsd[1]</span>
+<span class="sd">   fig = plt.figure(figsize=(4,4))</span>
+<span class="sd">   ax = fig.add_subplot(111)</span>
+<span class="sd">   ax.plot(time, rmsd[2], &#39;k-&#39;,  label=&quot;all&quot;)</span>
+<span class="sd">   ax.plot(time, rmsd[3], &#39;k--&#39;, label=&quot;CORE&quot;)</span>
+<span class="sd">   ax.plot(time, rmsd[4], &#39;r--&#39;, label=&quot;LID&quot;)</span>
+<span class="sd">   ax.plot(time, rmsd[5], &#39;b--&#39;, label=&quot;NMP&quot;)</span>
+<span class="sd">   ax.legend(loc=&quot;best&quot;)</span>
+<span class="sd">   ax.set_xlabel(&quot;time (ps)&quot;)</span>
+<span class="sd">   ax.set_ylabel(r&quot;RMSD ($\\AA$)&quot;)</span>
+<span class="sd">   fig.savefig(&quot;rmsd_all_CORE_LID_NMP_ref1AKE.pdf&quot;)</span>
+
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+
+<span class="sd">.. autofunction:: rmsd</span>
+
+<span class="sd">Analysis classes</span>
+<span class="sd">----------------</span>
+
+<span class="sd">.. autoclass:: RMSD</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">   .. attribute:: rmsd</span>
+
+<span class="sd">       Contains the time series of the RMSD as an N×3 :class:`numpy.ndarray`</span>
+<span class="sd">       array with content ``[[frame, time (ps), RMSD (A)], [...], ...]``.</span>
+
+<span class="sd">.. autoclass:: RMSF</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">   .. attribute:: rmsf</span>
+
+<span class="sd">      Results are stored in this N-length :class:`numpy.ndarray` array,</span>
+<span class="sd">      giving RMSFs for each of the given atoms.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">string_types</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="k">as</span> <span class="nn">qcp</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">get_weights</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.rmsd&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="rmsd"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.rmsd">[docs]</a><span class="k">def</span> <span class="nf">rmsd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">superposition</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns RMSD between two coordinate sets `a` and `b`.</span>
+
+<span class="sd">    `a` and `b` are arrays of the coordinates of N atoms of shape</span>
+<span class="sd">    :math:`N times 3` as generated by, e.g.,</span>
+<span class="sd">    :meth:`MDAnalysis.core.groups.AtomGroup.positions`.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    If you use trajectory data from simulations performed under **periodic</span>
+<span class="sd">    boundary conditions** then you *must make your molecules whole* before</span>
+<span class="sd">    performing RMSD calculations so that the centers of mass of the mobile and</span>
+<span class="sd">    reference structure are properly superimposed.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        coordinates to align to `b`</span>
+<span class="sd">    b : array_like</span>
+<span class="sd">        coordinates to align to (same shape as `a`)</span>
+<span class="sd">    weights : array_like (optional)</span>
+<span class="sd">        1D array with weights, use to compute weighted average</span>
+<span class="sd">    center : bool (optional)</span>
+<span class="sd">        subtract center of geometry before calculation. With weights given</span>
+<span class="sd">        compute weighted average as center.</span>
+<span class="sd">    superposition : bool (optional)</span>
+<span class="sd">        perform a rotational and translational superposition with the fast QCP</span>
+<span class="sd">        algorithm [Theobald2005]_ before calculating the RMSD; implies</span>
+<span class="sd">        ``center=True``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rmsd : float</span>
+<span class="sd">        RMSD between `a` and `b`</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The RMSD :math:`\rho(t)` as a function of time is calculated as</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)</span>
+<span class="sd">                                - \mathbf{x}_i^{\text{ref}}\right)^2}</span>
+
+<span class="sd">    It is the Euclidean distance in configuration space of the current</span>
+<span class="sd">    configuration (possibly after optimal translation and rotation) from a</span>
+<span class="sd">    reference configuration divided by :math:`1/\sqrt{N}` where :math:`N` is</span>
+<span class="sd">    the number of coordinates.</span>
+
+<span class="sd">    The weights :math:`w_i` are calculated from the input weights</span>
+<span class="sd">    `weights` :math:`w&#39;_i` as relative to the mean:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       w_i = \frac{w&#39;_i}{\langle w&#39; \rangle}</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; u = Universe(PSF,DCD)</span>
+<span class="sd">    &gt;&gt;&gt; bb = u.select_atoms(&#39;backbone&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; A = bb.positions.copy()  # coordinates of first frame</span>
+<span class="sd">    &gt;&gt;&gt; u.trajectory[-1]         # forward to last frame</span>
+<span class="sd">    &gt;&gt;&gt; B = bb.positions.copy()  # coordinates of last frame</span>
+<span class="sd">    &gt;&gt;&gt; rmsd(A, B, center=True)</span>
+<span class="sd">    3.9482355416565049</span>
+
+<span class="sd">    .. versionchanged: 0.8.1</span>
+<span class="sd">       *center* keyword added</span>
+<span class="sd">    .. versionchanged: 0.14.0</span>
+<span class="sd">       *superposition* keyword added</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;a and b must have same shape&#39;</span><span class="p">)</span>
+
+    <span class="c1"># superposition only works if structures are centered</span>
+    <span class="k">if</span> <span class="n">center</span> <span class="ow">or</span> <span class="n">superposition</span><span class="p">:</span>
+        <span class="c1"># make copies (do not change the user data!)</span>
+        <span class="c1"># weights=None is equivalent to all weights 1</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;weights must have same length as a and b&#39;</span><span class="p">)</span>
+        <span class="c1"># weights are constructed as relative to the mean</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">superposition</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+                                  <span class="o">*</span> <span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">N</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a canonical selection dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    select : str or tuple or dict</span>
+
+<span class="sd">        - `str` -&gt; Any valid string selection</span>
+<span class="sd">        - `dict` -&gt; ``{&#39;mobile&#39;:sel1, &#39;reference&#39;:sel2}``</span>
+<span class="sd">        - `tuple` -&gt; ``(sel1, sel2)``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        selections for &#39;reference&#39; and &#39;mobile&#39;. Values are guarenteed to be</span>
+<span class="sd">        iterable (so that one can provide selections to retain order)</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The dictionary input for `select` can be generated by</span>
+<span class="sd">    :func:`fasta2select` based on a ClustalW_ or STAMP_ sequence alignment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;reference&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="s1">&#39;mobile&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">select</span><span class="p">)}</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mobile&#39;</span><span class="p">:</span> <span class="n">select</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;reference&#39;</span><span class="p">:</span> <span class="n">select</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">(</span>
+                <span class="s2">&quot;select must contain two selection strings &quot;</span>
+                <span class="s2">&quot;(reference, mobile)&quot;</span><span class="p">),</span>
+                <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># compatability hack to use new nomenclature</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">]</span>
+            <span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span>
+                <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="s2">&quot;select dictionary must contain entries for keys &quot;</span>
+                    <span class="s2">&quot;&#39;mobile&#39; and &#39;reference&#39;.&quot;</span>
+                    <span class="p">),</span>
+                <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;select&#39; must be either a string, 2-tuple, or dict&quot;</span><span class="p">)</span>
+    <span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
+    <span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">select</span>
+
+
+<div class="viewcode-block" id="RMSD"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSD">[docs]</a><span class="k">class</span> <span class="nc">RMSD</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class to perform RMSD analysis on a trajectory.</span>
+
+<span class="sd">    The RMSD will be computed for two groups of atoms and all frames in the</span>
+<span class="sd">    trajectory belonging to `atomgroup`. The groups of atoms are obtained by</span>
+<span class="sd">    applying the selection selection `select` to the changing `atomgroup` and</span>
+<span class="sd">    the fixed `reference`.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    If you use trajectory data from simulations performed under **periodic</span>
+<span class="sd">    boundary conditions** then you *must make your molecules whole* before</span>
+<span class="sd">    performing RMSD calculations so that the centers of mass of the selected</span>
+<span class="sd">    and reference structure are properly superimposed.</span>
+
+
+<span class="sd">    Run the analysis with :meth:`RMSD.run`, which stores the results</span>
+<span class="sd">    in the array :attr:`RMSD.rmsd`.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       ``save()`` method was removed, use ``np.savetxt()`` on</span>
+<span class="sd">       :attr:`RMSD.rmsd` instead.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                 <span class="n">groupselections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights_groupselections</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomgroup : AtomGroup or Universe</span>
+<span class="sd">            Group of atoms for which the RMSD is calculated. If a trajectory is</span>
+<span class="sd">            associated with the atoms then the computation iterates over the</span>
+<span class="sd">            trajectory.</span>
+<span class="sd">        reference : AtomGroup or Universe (optional)</span>
+<span class="sd">            Group of reference atoms; if ``None`` then the current frame of</span>
+<span class="sd">            `atomgroup` is used.</span>
+<span class="sd">        select : str or dict or tuple (optional)</span>
+<span class="sd">            The selection to operate on; can be one of:</span>
+
+<span class="sd">            1. any valid selection string for</span>
+<span class="sd">               :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that</span>
+<span class="sd">               produces identical selections in `atomgroup` and `reference`; or</span>
+
+<span class="sd">            2. a dictionary ``{&#39;mobile&#39;: sel1, &#39;reference&#39;: sel2}`` where *sel1*</span>
+<span class="sd">               and *sel2* are valid selection strings that are applied to</span>
+<span class="sd">               `atomgroup` and `reference` respectively (the</span>
+<span class="sd">               :func:`MDAnalysis.analysis.align.fasta2select` function returns such</span>
+<span class="sd">               a dictionary based on a ClustalW_ or STAMP_ sequence alignment); or</span>
+
+<span class="sd">            3. a tuple ``(sel1, sel2)``</span>
+
+<span class="sd">            When using 2. or 3. with *sel1* and *sel2* then these selection strings</span>
+<span class="sd">            are applied to `atomgroup` and `reference` respectively and should</span>
+<span class="sd">            generate *groups of equivalent atoms*.  *sel1* and *sel2* can each also</span>
+<span class="sd">            be a *list of selection strings* to generate a</span>
+<span class="sd">            :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as</span>
+<span class="sd">            described under :ref:`ordered-selections-label`).</span>
+
+<span class="sd">        groupselections : list (optional)</span>
+<span class="sd">            A list of selections as described for `select`, with the difference</span>
+<span class="sd">            that these selections are *always applied to the full universes*,</span>
+<span class="sd">            i.e., ``atomgroup.universe.select_atoms(sel1)`` and</span>
+<span class="sd">            ``reference.universe.select_atoms(sel2)``. Each selection describes</span>
+<span class="sd">            additional RMSDs to be computed *after the structures have been</span>
+<span class="sd">            superimposed* according to `select`. No additional fitting is</span>
+<span class="sd">            performed.The output contains one additional column for each</span>
+<span class="sd">            selection.</span>
+
+<span class="sd">            .. Note:: Experimental feature. Only limited error checking</span>
+<span class="sd">                      implemented.</span>
+
+<span class="sd">        weights : {&quot;mass&quot;, ``None``} or array_like (optional)</span>
+<span class="sd">             1. &quot;mass&quot; will use masses as weights for both `select` and `groupselections`.</span>
+
+<span class="sd">             2. ``None`` will weigh each atom equally for both `select` and `groupselections`.</span>
+
+<span class="sd">             3. If 1D float array of the same length as `atomgroup` is provided,</span>
+<span class="sd">             use each element of the `array_like` as a weight for the</span>
+<span class="sd">             corresponding atom in `select`, and assumes ``None`` for `groupselections`.</span>
+
+<span class="sd">        weights_groupselections : False or list of {&quot;mass&quot;, ``None`` or array_like} (optional)</span>
+<span class="sd">             1. ``False`` will apply imposed weights to `groupselections` from ``weights`` option.</span>
+
+<span class="sd">             2. A list of {&quot;mass&quot;, ``None`` or array_like} with the length of `groupselections`</span>
+<span class="sd">             will apply the weights to `groupselections` correspondingly.</span>
+
+<span class="sd">        tol_mass : float (optional)</span>
+<span class="sd">             Reject match if the atomic masses for matched atoms differ by more</span>
+<span class="sd">             than `tol_mass`.</span>
+<span class="sd">        ref_frame : int (optional)</span>
+<span class="sd">             frame index to select frame from `reference`</span>
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">             default is ``False``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        SelectionError</span>
+<span class="sd">             If the selections from `atomgroup` and `reference` do not match.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">             If `weights` or `weights_groupselections` is not of the appropriate type;</span>
+<span class="sd">             see also :func:`MDAnalysis.lib.util.get_weights`</span>
+<span class="sd">        ValueError</span>
+<span class="sd">             If `weights` are not compatible with `atomgroup` (not the same</span>
+<span class="sd">             length) or if it is not a 1D array (see</span>
+<span class="sd">             :func:`MDAnalysis.lib.util.get_weights`).</span>
+
+<span class="sd">             A :exc:`ValueError` is also raised if the length of `weights_groupselections`</span>
+<span class="sd">             are not compatible with `groupselections`.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The root mean square deviation :math:`\rho(t)` of a group of :math:`N`</span>
+<span class="sd">        atoms relative to a reference structure as a function of time is</span>
+<span class="sd">        calculated as</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)</span>
+<span class="sd">                                    - \mathbf{x}_i^{\text{ref}}\right)^2}</span>
+
+<span class="sd">        The weights :math:`w_i` are calculated from the input weights `weights`</span>
+<span class="sd">        :math:`w&#39;_i` as relative to the mean of the input weights:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           w_i = \frac{w&#39;_i}{\langle w&#39; \rangle}</span>
+
+<span class="sd">        The selected coordinates from `atomgroup` are optimally superimposed</span>
+<span class="sd">        (translation and rotation) on the `reference` coordinates at each time step</span>
+<span class="sd">        as to minimize the RMSD. Douglas Theobald&#39;s fast QCP algorithm</span>
+<span class="sd">        [Theobald2005]_ is used for the rotational superposition and to calculate</span>
+<span class="sd">        the RMSD (see :mod:`MDAnalysis.lib.qcprot` for implementation details).</span>
+
+<span class="sd">        The class runs various checks on the input to ensure that the two atom</span>
+<span class="sd">        groups can be compared. This includes a comparison of atom masses (i.e.,</span>
+<span class="sd">        only the positions of atoms of the same mass will be considered to be</span>
+<span class="sd">        correct for comparison). If masses should not be checked, just set</span>
+<span class="sd">        `tol_mass` to a large value such as 1000.</span>
+
+<span class="sd">        .. _ClustalW: http://www.clustal.org/</span>
+<span class="sd">        .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
+
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        rmsd</span>
+
+
+<span class="sd">        .. versionadded:: 0.7.7</span>
+<span class="sd">        .. versionchanged:: 0.8</span>
+<span class="sd">           `groupselections` added</span>
+<span class="sd">        .. versionchanged:: 0.16.0</span>
+<span class="sd">           Flexible weighting scheme with new `weights` keyword.</span>
+<span class="sd">        .. deprecated:: 0.16.0</span>
+<span class="sd">           Instead of ``mass_weighted=True`` (removal in 0.17.0) use new</span>
+<span class="sd">           ``weights=&#39;mass&#39;``; refactored to fit with AnalysisBase API</span>
+<span class="sd">        .. versionchanged:: 0.17.0</span>
+<span class="sd">           removed deprecated `mass_weighted` keyword; `groupselections`</span>
+<span class="sd">           are *not* rotationally superimposed any more.</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           `filename` keyword was removed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
+                                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span> <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span>
+
+        <span class="n">select</span> <span class="o">=</span> <span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span> <span class="o">=</span> <span class="p">([</span><span class="n">process_selection</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">groupselections</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">groupselections</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span> <span class="o">=</span> <span class="n">tol_mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span> <span class="o">=</span> <span class="n">ref_frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span> <span class="o">=</span> <span class="n">weights_groupselections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">):</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Reference and trajectory atom selections do &quot;</span>
+                   <span class="s2">&quot;not contain the same number of atoms: &quot;</span>
+                   <span class="s2">&quot;N_ref=</span><span class="si">{0:d}</span><span class="s2">, N_traj=</span><span class="si">{1:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RMS calculation &quot;</span>
+                    <span class="s2">&quot;for </span><span class="si">{0:d}</span><span class="s2"> atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)))</span>
+        <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">))</span> <span class="o">&gt;</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
+            <span class="c1"># diagnostic output:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Atoms: reference | mobile&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0!s:&gt;4}</span><span class="s2"> </span><span class="si">{1:3d}</span><span class="s2"> </span><span class="si">{2!s:&gt;3}</span><span class="s2"> </span><span class="si">{3!s:&gt;3}</span><span class="s2"> </span><span class="si">{4:6.3f}</span><span class="s2">&quot;</span>
+                                 <span class="s2">&quot;|  </span><span class="si">{5!s:&gt;4}</span><span class="s2"> </span><span class="si">{6:3d}</span><span class="s2"> </span><span class="si">{7!s:&gt;3}</span><span class="s2"> </span><span class="si">{8!s:&gt;3}</span><span class="s2">&quot;</span>
+                                 <span class="s2">&quot;</span><span class="si">{9:6.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
+                                                   <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                   <span class="n">ar</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
+                                                   <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                   <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">))</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Inconsistent selections, masses differ by more than&quot;</span>
+                      <span class="s2">&quot;</span><span class="si">{0:f}</span><span class="s2">; mis-matching atoms&quot;</span>
+                      <span class="s2">&quot;are shown above.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">mass_mismatches</span>
+
+        <span class="c1"># TODO:</span>
+        <span class="c1"># - make a group comparison a class that contains the checks above</span>
+        <span class="c1"># - use this class for the *select* group and the additional</span>
+        <span class="c1">#   *groupselections* groups each a dict with reference/mobile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;reference&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]),</span>
+                <span class="s1">&#39;mobile&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">]),</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">]</span>
+        <span class="c1"># sanity check</span>
+        <span class="k">for</span> <span class="n">igroup</span><span class="p">,</span> <span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;SelectionError: Group Selection&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span>
+                    <span class="s2">&quot;Group selection </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2"> | </span><span class="si">{2}</span><span class="s2">: Reference and trajectory &quot;</span>
+                    <span class="s2">&quot;atom selections do not contain the same number of atoms: &quot;</span>
+                    <span class="s2">&quot;N_ref=</span><span class="si">{3}</span><span class="s2">, N_traj=</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">igroup</span><span class="p">,</span> <span class="n">sel</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">],</span> <span class="n">sel</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">],</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])))</span>
+
+        <span class="c1"># check weights type</span>
+        <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
+                                <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;weights should only be &#39;mass&#39;, None or 1D float array.&quot;</span>
+                                 <span class="s2">&quot;For weights on groupselections, use **weight_groupselections** &quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">!=</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
+            <span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Length of weights_groupselections is not equal to &quot;</span>
+                                 <span class="s2">&quot;length of groupselections &quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">weights</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">selection</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="n">weights</span> <span class="o">!=</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
+                        <span class="n">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">],</span> <span class="n">weights</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; happens in selection </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">selection</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
+
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">n_atoms</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">):</span>         <span class="c1"># apply &#39;mass&#39; or &#39;None&#39; to groupselections</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">igroup</span><span class="p">,</span> <span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span>
+            <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">],</span>
+                                                                  <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span>  \
+                                             <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="p">])</span>
+        <span class="c1"># add the array of weights to weights_select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span> <span class="o">=</span> <span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_ref</span> <span class="o">=</span> <span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span>  \
+                                  <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_ref</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> \
+                               <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_ref</span><span class="p">)</span>
+
+        <span class="n">current_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Move to the ref_frame</span>
+            <span class="c1"># (coordinates MUST be stored in case the ref traj is advanced</span>
+            <span class="c1"># elsewhere or if ref == mobile universe)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_ref</span><span class="p">)</span>
+            <span class="c1"># makes a copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_ref_coords64</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span>
+                                                       <span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span><span class="o">.</span>
+                                                       <span class="n">positions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">]</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Move back to the original frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">current_frame</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates64</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">:</span>
+            <span class="c1"># Only carry out a rotation if we want to calculate secondary</span>
+            <span class="c1"># RMSDs.</span>
+            <span class="c1"># R: rotation matrix that aligns r-r_com, x~-x~com</span>
+            <span class="c1">#    (x~: selected coordinates, x: all coordinates)</span>
+            <span class="c1"># Final transformed traj coordinates: x&#39; = (x-x~_com)*R + ref_com</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># allocate space</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
+                              <span class="mi">3</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mobile_coordinates64</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mobile_coordinates64</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mobile_coordinates64</span> <span class="o">-=</span> <span class="n">mobile_com</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">time</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">:</span>
+            <span class="c1"># superimpose structures: MDAnalysis qcprot needs Nx3 coordinate</span>
+            <span class="c1"># array with float64 datatype (float32 leads to errors up to 1e-3 in</span>
+            <span class="c1"># RMSD). Note that R is defined in such a way that it acts **to the</span>
+            <span class="c1"># left** so that we can easily use broadcasting and save one</span>
+            <span class="c1"># expensive numpy transposition.</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates64</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mobile_coordinates64</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="c1"># Transform each atom in the trajectory (use inplace ops to</span>
+            <span class="c1"># avoid copying arrays) (Marginally (~3%) faster than</span>
+            <span class="c1"># &quot;ts.positions[:] = (ts.positions - x_com) * R + ref_com&quot;.)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span> <span class="o">-=</span> <span class="n">mobile_com</span>
+
+            <span class="c1"># R acts to the left &amp; is broadcasted N times.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span>
+
+            <span class="c1"># 2) calculate secondary RMSDs (without any further</span>
+            <span class="c1">#    superposition)</span>
+            <span class="k">for</span> <span class="n">igroup</span><span class="p">,</span> <span class="p">(</span><span class="n">refpos</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                    <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_ref_coords64</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_groupselections_atoms</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">rmsd</span><span class="p">(</span>
+                    <span class="n">refpos</span><span class="p">,</span> <span class="n">atoms</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                    <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_groupselections</span><span class="p">[</span><span class="n">igroup</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="n">center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">superposition</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># only calculate RMSD by setting the Rmatrix to None (no need</span>
+            <span class="c1"># to carry out the rotation as we already get the optimum RMSD)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates64</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mobile_coordinates64</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_select</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RMSF"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSF">[docs]</a><span class="k">class</span> <span class="nc">RMSF</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate RMSF of given atoms across a trajectory.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    No RMSD-superposition is performed; it is assumed that the user is</span>
+<span class="sd">    providing a trajectory where the protein of interest has been structurally</span>
+<span class="sd">    aligned to a reference structure (see the Examples section below). The</span>
+<span class="sd">    protein also has be whole because periodic boundaries are not taken into</span>
+<span class="sd">    account.</span>
+
+
+<span class="sd">    Run the analysis with :meth:`RMSF.run`, which stores the results</span>
+<span class="sd">    in the array :attr:`RMSF.rmsf`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomgroup : AtomGroup</span>
+<span class="sd">            Atoms for which RMSF is calculated</span>
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">             default is ``False``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">             raised if negative values are calculated, which indicates that a</span>
+<span class="sd">             numerical overflow or underflow occured</span>
+
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The root mean square fluctuation of an atom :math:`i` is computed as the</span>
+<span class="sd">        time average</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">          \rho_i = \sqrt{\left\langle (\mathbf{x}_i - \langle\mathbf{x}_i\rangle)^2 \right\rangle}</span>
+
+<span class="sd">        No mass weighting is performed.</span>
+
+<span class="sd">        This method implements an algorithm for computing sums of squares while</span>
+<span class="sd">        avoiding overflows and underflows [Welford1962]_.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        In this example we calculate the residue RMSF fluctuations by analyzing</span>
+<span class="sd">        the :math:`\text{C}_\alpha` atoms. First we need to fit the trajectory</span>
+<span class="sd">        to the average structure as a reference. That requires calculating the</span>
+<span class="sd">        average structure first. Because we need to analyze and manipulate the</span>
+<span class="sd">        same trajectory multiple times, we are going to load it into memory</span>
+<span class="sd">        using the :mod:`~MDAnalysis.coordinates.MemoryReader`. (If your</span>
+<span class="sd">        trajectory does not fit into memory, you will need to :ref:`write out</span>
+<span class="sd">        intermediate trajectories &lt;writing-trajectories&gt;` to disk or</span>
+<span class="sd">        :ref:`generate an in-memory universe</span>
+<span class="sd">        &lt;creating-in-memory-trajectory-label&gt;` that only contains, say, the</span>
+<span class="sd">        protein)::</span>
+
+<span class="sd">           import MDAnalysis as mda</span>
+<span class="sd">           from MDAnalysis.analysis import align</span>
+
+<span class="sd">           from MDAnalysis.tests.datafiles import TPR, XTC</span>
+
+<span class="sd">           u = mda.Universe(TPR, XTC, in_memory=True)</span>
+<span class="sd">           protein = u.select_atoms(&quot;protein&quot;)</span>
+
+<span class="sd">           # 1) need a step to center and make whole: this trajectory</span>
+<span class="sd">           #    contains the protein being split across periodic boundaries</span>
+<span class="sd">           #</span>
+<span class="sd">           # TODO</span>
+
+<span class="sd">           # 2) fit to the initial frame to get a better average structure</span>
+<span class="sd">           #    (the trajectory is changed in memory)</span>
+<span class="sd">           prealigner = align.AlignTraj(u, select=&quot;protein and name CA&quot;, in_memory=True).run()</span>
+
+<span class="sd">           # 3) reference = average structure</span>
+<span class="sd">           reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)</span>
+<span class="sd">           # make a reference structure (need to reshape into a 1-frame &quot;trajectory&quot;)</span>
+<span class="sd">           reference = mda.Merge(protein).load_new(</span>
+<span class="sd">                       reference_coordinates[:, None, :], order=&quot;afc&quot;)</span>
+
+<span class="sd">        We created a new universe ``reference`` that contains a single frame</span>
+<span class="sd">        with the averaged coordinates of the protein.  Now we need to fit the</span>
+<span class="sd">        whole trajectory to the reference by minimizing the RMSD. We use</span>
+<span class="sd">        :class:`MDAnalysis.analysis.align.AlignTraj`::</span>
+
+<span class="sd">           aligner = align.AlignTraj(u, reference, select=&quot;protein and name CA&quot;, in_memory=True).run()</span>
+
+<span class="sd">        The trajectory is now fitted to the reference (the RMSD is stored as</span>
+<span class="sd">        `aligner.rmsd` for further inspection). Now we can calculate the RMSF::</span>
+
+<span class="sd">           from MDAnalysis.analysis.rms import RMSF</span>
+
+<span class="sd">           calphas = protein.select_atoms(&quot;name CA&quot;)</span>
+<span class="sd">           rmsfer = RMSF(calphas, verbose=True).run()</span>
+
+<span class="sd">        and plot::</span>
+
+<span class="sd">           import matplotlib.pyplot as plt</span>
+
+<span class="sd">           plt.plot(calphas.resnums, rmsfer.rmsf)</span>
+
+
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        .. [Welford1962] B. P. Welford (1962). &quot;Note on a Method for</span>
+<span class="sd">           Calculating Corrected Sums of Squares and Products.&quot; Technometrics</span>
+<span class="sd">           4(3):419-420.</span>
+
+
+<span class="sd">        .. versionadded:: 0.11.0</span>
+<span class="sd">        .. versionchanged:: 0.16.0</span>
+<span class="sd">           refactored to fit with AnalysisBase API</span>
+<span class="sd">        .. deprecated:: 0.16.0</span>
+<span class="sd">           the keyword argument `quiet` is deprecated in favor of `verbose`.</span>
+<span class="sd">        .. versionchanged:: 0.17.0</span>
+<span class="sd">           removed unused keyword `weights`</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
+<span class="sd">           removed. These should instead be passed to :meth:`RMSF.run`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RMSF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumsquares</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumsquares</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumsquares</span> <span class="o">+=</span> <span class="p">(</span><span class="n">k</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mf">1.0</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmsf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumsquares</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rmsf</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some RMSF values negative; overflow &quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot;or underflow occurred&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

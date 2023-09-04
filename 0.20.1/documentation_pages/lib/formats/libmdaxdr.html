@@ -1,0 +1,466 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>12.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="12.3.2. Low level DCD trajectory reading - MDAnalysis.lib.formats.libdcd" href="libdcd.html" />
+    <link rel="prev" title="12.2.10. Helper functions — MDAnalysis.lib.util" href="../util.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.lib.formats.libmdaxdr"></span><div class="section" id="low-level-gromacs-xdr-trajectory-reading-mdanalysis-lib-formats-libmdaxdr">
+<h1><span class="section-number">12.3.1. </span>Low-level Gromacs XDR trajectory reading — <a class="reference internal" href="#module-MDAnalysis.lib.formats.libmdaxdr" title="MDAnalysis.lib.formats.libmdaxdr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a><a class="headerlink" href="#low-level-gromacs-xdr-trajectory-reading-mdanalysis-lib-formats-libmdaxdr" title="Permalink to this headline">¶</a></h1>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">libmdaxdr</span></code> contains the classes <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> and
+<a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRRFile</span></code></a>. Both can be used to read and write frames from and to
+<a class="reference external" href="http://www.gromacs.org">Gromacs</a> XTC and TRR files. These classes are used internally by MDAnalysis in
+<a class="reference internal" href="../../coordinates/XTC.html#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a> and <a class="reference internal" href="../../coordinates/TRR.html#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a>. They
+behave similar to normal file objects.</p>
+<p>For example, one can use a <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> to directly calculate mean
+coordinates (where the coordinates are stored in <cite>x</cite> attribute of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">namedtuple</span></code> <cite>frame</cite>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="k">with</span> <span class="n">XTCFile</span><span class="p">(</span><span class="s2">&quot;trajectory.xtc&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">xtc</span><span class="p">:</span>
+</span><span class="hll">   <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">xtc</span><span class="o">.</span><span class="n">n_atoms</span>
+</span>   <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+   <span class="c1"># iterate over trajectory</span>
+<span class="hll">   <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">xtc</span><span class="p">:</span>
+</span>       <span class="n">mean</span> <span class="o">+=</span> <span class="n">frame</span><span class="o">.</span><span class="n">x</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> class can be useful as a compressed storage format.</p>
+<p>Besides iteration, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRRFile</span></code></a> one can also seek to
+arbitrary frames using the <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> method. This is provided by
+lazily generating a offset list for stored frames. The offset list is generated
+the first time <a class="reference external" href="https://docs.python.org/3/library/functions.html#len" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">len()</span></code></a> or :<cite>~XTCFile.seek</cite> is called.</p>
+<p>(For more details on how to use <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRRFile</span></code></a> on their
+own please see the source code in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/develop/package/MDAnalysis/lib/formats/libmdaxdr.pyx">lib/formats/libmdaxdr.pyx</a> for the time being.)</p>
+<dl class="class">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.lib.formats.libmdaxdr.</code><code class="sig-name descname">TRRFile</code><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>File-like wrapper for gromacs TRR files.</p>
+<p>This class can be similar to the normal file objects in python. The read()
+function will return a frame and all information in it instead of a single
+line. Additionally the context-manager protocoll is supported as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.formats.libmdaxdr</span> <span class="kn">import</span> <span class="n">TRRFile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">TRRFile</span><span class="p">(</span><span class="s1">&#39;foo.trr&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="nb">print</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>This class can be pickled. The pickle will store filename, mode, current
+frame and offsets</p>
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.calc_offsets">
+<code class="sig-name descname">calc_offsets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.calc_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>read byte offsets from TRR file directly</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the open XDR file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.offsets">
+<code class="sig-name descname">offsets</code><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>get byte offsets from current xdr file</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offsets</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.open">
+<code class="sig-name descname">open</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a XDR file</p>
+<p>If another XDR file is currently opened it will be closed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.read">
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read next frame in the TRR file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>frame</strong> – namedtuple with frame information</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>libmdaxdr.TRRFrame</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">TRRFrame()</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-meth docutils literal notranslate"><span class="pre">XTCFile()</span></code></a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.seek">
+<code class="sig-name descname">seek</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.seek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seek to Frame.</p>
+<p>Please note that this function will generate internal file offsets if
+they haven’t been set before. For large file this means the first seek
+can be very slow. Later seeks will be very fast.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – seek the file to given frame</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets">
+<code class="sig-name descname">set_offsets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>set frame offsets</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.tell">
+<code class="sig-name descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.tell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current frame</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>write one frame into TRR file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyz</strong> (array_like, shape=(<cite>n_atoms</cite>, 3), optional) – cartesion coordinates. Only written if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>velocity</strong> (array_like, shape=(<cite>n_atoms</cite>, 3), optional) – cartesion velocities. Only written if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>forces</strong> (array_like, shape=(<cite>n_atoms</cite>, 3), optional) – cartesion forces. Only written if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – Box vectors for this frame</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – current step number, 1 indexed</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – current time</p></li>
+<li><p><strong>_lambda</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – current lambda value</p></li>
+<li><p><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in frame</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.lib.formats.libmdaxdr.</code><code class="sig-name descname">XTCFile</code><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>File-like wrapper for gromacs XTC files.</p>
+<p>This class can be similar to the normal file objects in python. The read()
+function will return a frame and all information in it instead of a single
+line. Additionally the context-manager protocoll is supported as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.formats.libmdaxdr</span> <span class="kn">import</span> <span class="n">XTCFile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">XTCFile</span><span class="p">(</span><span class="s1">&#39;foo.trr&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="nb">print</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>This class can be pickled. The pickle will store filename, mode, current
+frame and offsets</p>
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.calc_offsets">
+<code class="sig-name descname">calc_offsets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.calc_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate offsets from XTC file directly</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the open XDR file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.offsets">
+<code class="sig-name descname">offsets</code><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>get byte offsets from current xdr file</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offsets</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.open">
+<code class="sig-name descname">open</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a XDR file</p>
+<p>If another XDR file is currently opened it will be closed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.read">
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read next frame in the XTC file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>frame</strong> – namedtuple with frame information</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>libmdaxdr.XTCFrame</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">XTCFrame()</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TRRFile()</span></code></a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek">
+<code class="sig-name descname">seek</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seek to Frame.</p>
+<p>Please note that this function will generate internal file offsets if
+they haven’t been set before. For large file this means the first seek
+can be very slow. Later seeks will be very fast.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – seek the file to given frame</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets">
+<code class="sig-name descname">set_offsets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>set frame offsets</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.tell">
+<code class="sig-name descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.tell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get current frame</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>write one frame to the XTC file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyz</strong> (array_like, shape=(<cite>n_atoms</cite>, 3)) – cartesion coordinates</p></li>
+<li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – Box vectors for this frame</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – current step number, 1 indexed</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – current time</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – precision of saved trajectory, see Notes</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Gromacs specifies the precision a little bit strange. The coordinates
+will be multiplied by precision and then converted to an integer. This
+means a precision of 1000 yields an accuracy of 3 decimal places.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../lib_modules.html#overview">12.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../lib_modules.html#list-of-modules">12.2. List of modules</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.3.1. Low-level Gromacs XDR trajectory reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="libdcd.html">12.3.2. Low level DCD  trajectory reading - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../lib_modules.html"><span class="section-number">12. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="../util.html" title="previous chapter"><span class="section-number">12.2.10. </span>Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+      <li>Next: <a href="libdcd.html" title="next chapter"><span class="section-number">12.3.2. </span>Low level DCD  trajectory reading - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/documentation_pages/lib/formats/libmdaxdr.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

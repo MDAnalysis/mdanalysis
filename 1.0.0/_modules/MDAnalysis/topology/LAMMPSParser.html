@@ -1,0 +1,913 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.topology.LAMMPSParser &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.topology.LAMMPSParser</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.topology.LAMMPSParser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LAMMPSParser</span>
+<span class="sd">============</span>
+
+<span class="sd">Parses data_ or dump_ files produced by LAMMPS_.</span>
+
+<span class="sd">.. _LAMMPS: http://lammps.sandia.gov/</span>
+<span class="sd">.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html</span>
+<span class="sd">.. _dump: http://lammps.sandia.gov/doc/dump.html</span>
+
+<span class="sd">.. versionchanged:: 1.0.0</span>
+<span class="sd">   Deprecated :class:`LAMMPSDataConverter` has now been removed.</span>
+
+
+<span class="sd">.. _atom_style_kwarg:</span>
+
+<span class="sd">Atom styles</span>
+<span class="sd">-----------</span>
+
+<span class="sd">By default parsers and readers for Lammps data files expect either an</span>
+<span class="sd">*atomic* or *full* `atom_style`_.  This can be customised by passing</span>
+<span class="sd">the `atom_style` keyword argument.  This should be a space separated</span>
+<span class="sd">string indicating the position of the `id`, `type`, `resid`, `charge`,</span>
+<span class="sd">`x`, `y` and `z` fields.  The `resid` and `charge` fields are optional</span>
+<span class="sd">and any other specified field will be ignored.</span>
+
+<span class="sd">For example to read a file with the following format, where there is no resid::</span>
+
+<span class="sd">  Atoms # atomic</span>
+
+<span class="sd">  1 1 3.7151744275286681e+01 1.8684434743140471e+01 1.9285127961842125e+01 0 0 0</span>
+
+
+<span class="sd">The following code could be used::</span>
+
+<span class="sd">  &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">  &gt;&gt;&gt;</span>
+<span class="sd">  &gt;&gt;&gt; u = mda.Universe(&#39;myfile.data&#39;, atom_style=&#39;id type x y z&#39;)</span>
+
+
+<span class="sd">.. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: DATAParser</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">.. autoclass:: LammpsDumpParser</span>
+<span class="sd">   :members:</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">guessers</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">conv_float</span>
+<span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_box</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">squash_by</span>
+<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Atomtypes</span><span class="p">,</span>
+    <span class="n">Atomids</span><span class="p">,</span>
+    <span class="n">Angles</span><span class="p">,</span>
+    <span class="n">Bonds</span><span class="p">,</span>
+    <span class="n">Charges</span><span class="p">,</span>
+    <span class="n">Dihedrals</span><span class="p">,</span>
+    <span class="n">Impropers</span><span class="p">,</span>
+    <span class="n">Masses</span><span class="p">,</span>
+    <span class="n">Resids</span><span class="p">,</span>
+    <span class="n">Resnums</span><span class="p">,</span>
+    <span class="n">Segids</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.LAMMPS&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Sections will all start with one of these words</span>
+<span class="c1"># and run until the next section title</span>
+<span class="n">SECTIONS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span>
+    <span class="s1">&#39;Atoms&#39;</span><span class="p">,</span>  <span class="c1"># Molecular topology sections</span>
+    <span class="s1">&#39;Velocities&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Masses&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Ellipsoids&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Lines&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Triangles&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Bodies&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Bonds&#39;</span><span class="p">,</span>  <span class="c1"># Forcefield sections</span>
+    <span class="s1">&#39;Angles&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Dihedrals&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Impropers&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Pair&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Pair LJCoeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Bond Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Angle Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Dihedral Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Improper Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BondBond Coeffs&#39;</span><span class="p">,</span>  <span class="c1"># Class 2 FF sections</span>
+    <span class="s1">&#39;BondAngle Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MiddleBondTorsion Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;EndBondTorsion Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AngleTorsion Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AngleAngleTorsion Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BondBond13 Coeffs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AngleAngle Coeffs&#39;</span><span class="p">,</span>
+<span class="p">])</span>
+<span class="c1"># We usually check by splitting around whitespace, so check</span>
+<span class="c1"># if any SECTION keywords will trip up on this</span>
+<span class="c1"># and add them</span>
+<span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">SECTIONS</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">SECTIONS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
+
+<span class="n">HEADERS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span>
+    <span class="s1">&#39;atoms&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bonds&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;angles&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;impropers&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;atom types&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bond types&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;angle types&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dihedral types&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;improper types&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;extra bond per atom&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;extra angle per atom&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;extra dihedral per atom&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;extra improper per atom&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;extra special per atom&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ellipsoids&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;triangles&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bodies&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;xlo xhi&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ylo yhi&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;zlo zhi&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;xy xz yz&#39;</span><span class="p">,</span>
+<span class="p">])</span>
+
+
+<div class="viewcode-block" id="DATAParser"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser">[docs]</a><span class="k">class</span> <span class="nc">DATAParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse a LAMMPS DATA file for topology and coordinates.</span>
+
+<span class="sd">    Note that LAMMPS DATA files can be used standalone.</span>
+
+<span class="sd">    Both topology and coordinate parsing functionality is kept in this</span>
+<span class="sd">    class as the topology and coordinate reader share many common</span>
+<span class="sd">    functions</span>
+
+<span class="sd">    By default the parser expects either *atomic* or *full* `atom_style`</span>
+<span class="sd">    however this can be by passing an `atom_style` keyword argument,</span>
+<span class="sd">    see :ref:`atom_style_kwarg`.</span>
+
+<span class="sd">    .. versionadded:: 0.9.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;DATA&#39;</span>
+
+    <span class="k">def</span> <span class="nf">iterdata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">line</span>
+
+<div class="viewcode-block" id="DATAParser.grab_datafile"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.grab_datafile">[docs]</a>    <span class="k">def</span> <span class="nf">grab_datafile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Split a data file into dict of header and sections</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        header - dict of header section: value</span>
+<span class="sd">        sections - dict of section name: content</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterdata</span><span class="p">())</span>
+
+        <span class="n">starts</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                  <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">SECTIONS</span><span class="p">]</span>
+        <span class="n">starts</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+
+        <span class="n">header</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[:</span><span class="n">starts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]:</span>
+            <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">HEADERS</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+                    <span class="n">header</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">token</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">continue</span>
+
+        <span class="n">sects</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">[</span><span class="n">l</span><span class="p">]:</span><span class="n">f</span><span class="p">[</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">starts</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span>
+                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">starts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])}</span>
+
+        <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">sects</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_interpret_atom_style</span><span class="p">(</span><span class="n">atom_style</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform a string description of atom style into a dict</span>
+
+<span class="sd">        Required fields: id, type, x, y, z</span>
+<span class="sd">        Optional fields: resid, charge</span>
+
+<span class="sd">        eg: &quot;id resid type charge x y z&quot;</span>
+<span class="sd">        {&#39;id&#39;: 0,</span>
+<span class="sd">         &#39;resid&#39;: 1,</span>
+<span class="sd">         &#39;type&#39;: 2,</span>
+<span class="sd">         &#39;charge&#39;: 3,</span>
+<span class="sd">         &#39;x&#39;: 4,</span>
+<span class="sd">         &#39;y&#39;: 5,</span>
+<span class="sd">         &#39;z&#39;: 6,</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">style_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">atom_style</span> <span class="o">=</span> <span class="n">atom_style</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;resid&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">location</span> <span class="o">=</span> <span class="n">atom_style</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">style_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">location</span>
+
+        <span class="n">reqd_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]</span>
+        <span class="n">missing_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">reqd_attrs</span> <span class="k">if</span> <span class="n">attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">style_dict</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing_attrs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;atom_style string missing required field(s): </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_attrs</span><span class="p">)))</span>
+                
+        <span class="k">return</span> <span class="n">style_dict</span>
+    
+<div class="viewcode-block" id="DATAParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses a LAMMPS_ DATA file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MDAnalysis Topology object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Can pass atom_style to help parsing</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpret_atom_style</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atom_style&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">head</span><span class="p">,</span> <span class="n">sects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grab_datafile</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_masses</span><span class="p">(</span><span class="n">sects</span><span class="p">[</span><span class="s1">&#39;Masses&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="s1">&#39;Atoms&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sects</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data file was missing Atoms section&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_atoms</span><span class="p">(</span><span class="n">sects</span><span class="p">[</span><span class="s1">&#39;Atoms&#39;</span><span class="p">],</span> <span class="n">masses</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to parse atoms section.  You can supply a description &quot;</span>
+                <span class="s2">&quot;of the atom_style as a keyword argument, &quot;</span>
+                <span class="s2">&quot;eg mda.Universe(..., atom_style=&#39;id resid x y z&#39;)&quot;</span>
+            <span class="p">),</span>
+            <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># create mapping of id to index (ie atom id 10 might be the 0th atom)</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">atom_id</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">values</span><span class="p">)}</span>
+
+        <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">nentries</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">Bonds</span><span class="p">,</span> <span class="s1">&#39;Bonds&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Angles</span><span class="p">,</span> <span class="s1">&#39;Angles&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Dihedrals</span><span class="p">,</span> <span class="s1">&#39;Dihedrals&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Impropers</span><span class="p">,</span> <span class="s1">&#39;Impropers&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">type</span><span class="p">,</span> <span class="n">sect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_bond_section</span><span class="p">(</span><span class="n">sects</span><span class="p">[</span><span class="n">L</span><span class="p">],</span> <span class="n">nentries</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="nb">type</span><span class="p">,</span> <span class="n">sect</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+            
+            <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">attr</span><span class="p">(</span><span class="n">sect</span><span class="p">,</span> <span class="nb">type</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">top</span></div>
+
+<div class="viewcode-block" id="DATAParser.read_DATA_timestep"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.read_DATA_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">read_DATA_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">TS_class</span><span class="p">,</span> <span class="n">TS_kwargs</span><span class="p">,</span>
+                           <span class="n">atom_style</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read a DATA file and try and extract x, v, box.</span>
+
+<span class="sd">        - positions</span>
+<span class="sd">        - velocities (optional)</span>
+<span class="sd">        - box information</span>
+
+<span class="sd">        Fills this into the Timestep object and returns it</span>
+
+<span class="sd">        .. versionadded:: 0.9.0</span>
+<span class="sd">        .. versionchanged:: 0.18.0</span>
+<span class="sd">           Added atom_style kwarg</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom_style</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpret_atom_style</span><span class="p">(</span><span class="n">atom_style</span><span class="p">)</span>
+        
+        <span class="n">header</span><span class="p">,</span> <span class="n">sects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grab_datafile</span><span class="p">()</span>
+
+        <span class="n">unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_box</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">positions</span><span class="p">,</span> <span class="n">ordering</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_pos</span><span class="p">(</span><span class="n">sects</span><span class="p">[</span><span class="s1">&#39;Atoms&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span>
+                <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Position information not found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">)),</span>
+                <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;Velocities&#39;</span> <span class="ow">in</span> <span class="n">sects</span><span class="p">:</span>
+            <span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_vel</span><span class="p">(</span><span class="n">sects</span><span class="p">[</span><span class="s1">&#39;Velocities&#39;</span><span class="p">],</span> <span class="n">ordering</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">velocities</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">TS_class</span><span class="o">.</span><span class="n">from_coordinates</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span>
+                                       <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span>
+                                       <span class="o">**</span><span class="n">TS_kwargs</span><span class="p">)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">unitcell</span>
+
+        <span class="k">return</span> <span class="n">ts</span></div>
+
+    <span class="k">def</span> <span class="nf">_parse_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datalines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Strip coordinate info into np array&quot;&quot;&quot;</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">datalines</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="c1"># TODO: could maybe store this from topology parsing?</span>
+        <span class="c1"># Or try to reach into Universe?</span>
+        <span class="c1"># but ugly because assumes lots of things, and Reader should be standalone</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datalines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+                <span class="n">style_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">style_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">style_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span>
+    
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">datalines</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+            <span class="n">ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">style_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]]</span>
+
+            <span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="n">style_dict</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]],</span>
+                         <span class="n">line</span><span class="p">[</span><span class="n">style_dict</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]],</span>
+                         <span class="n">line</span><span class="p">[</span><span class="n">style_dict</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]]]</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="c1"># return order for velocities</span>
+        <span class="k">return</span> <span class="n">pos</span><span class="p">,</span> <span class="n">order</span>
+
+    <span class="k">def</span> <span class="nf">_parse_vel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datalines</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Strip velocity info into np array</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        datalines : list</span>
+<span class="sd">          list of strings from file</span>
+<span class="sd">        order : np.array</span>
+<span class="sd">          array which rearranges the velocities into correct order</span>
+<span class="sd">          (from argsort on atom ids)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        velocities : np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">datalines</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">datalines</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">vel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">vel</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">vel</span>
+
+    <span class="k">def</span> <span class="nf">_parse_bond_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datalines</span><span class="p">,</span> <span class="n">nentries</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read lines and strip information</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+<span class="sd">        datalines : list</span>
+<span class="sd">          the raw lines from the data file</span>
+<span class="sd">        nentries : int</span>
+<span class="sd">          number of integers per line</span>
+<span class="sd">        mapping : dict</span>
+<span class="sd">          converts atom_ids to index within topology</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        types : tuple of strings</span>
+<span class="sd">          type of the bond/angle/dihedral/improper</span>
+<span class="sd">        indices : tuple of ints</span>
+<span class="sd">          indices of atoms involved</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">datalines</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="c1"># map to 0 based int</span>
+            <span class="n">section</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span> <span class="o">+</span> <span class="n">nentries</span><span class="p">]]))</span>
+            <span class="nb">type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">type</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datalines</span><span class="p">,</span> <span class="n">massdict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a Topology object</span>
+
+<span class="sd">        Adds the following attributes</span>
+<span class="sd">         - resid</span>
+<span class="sd">         - type</span>
+<span class="sd">         - masses (optional)</span>
+<span class="sd">         - charge (optional)</span>
+
+<span class="sd">        Lammps atoms can have lots of different formats,</span>
+<span class="sd">        and even custom formats</span>
+
+<span class="sd">        http://lammps.sandia.gov/doc/atom_style.html</span>
+
+<span class="sd">        Treated here are</span>
+<span class="sd">        - atoms with 7 fields (with charge) &quot;full&quot;</span>
+<span class="sd">        - atoms with 6 fields (no charge) &quot;molecular&quot;</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+<span class="sd">        datalines - the relevent lines from the data file</span>
+<span class="sd">        massdict - dictionary relating type to mass</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        top - Topology object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Doing Atoms section&quot;</span><span class="p">)</span>
+
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">datalines</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sd</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="s1">&#39;resid&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                  <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+            <span class="c1"># Fields per line</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">datalines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+                <span class="n">sd</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">style_dict</span>
+
+        <span class="n">has_charge</span> <span class="o">=</span> <span class="s1">&#39;charge&#39;</span> <span class="ow">in</span> <span class="n">sd</span>
+        <span class="n">has_resid</span> <span class="o">=</span> <span class="s1">&#39;resid&#39;</span> <span class="ow">in</span> <span class="n">sd</span>
+
+        <span class="c1"># atom ids aren&#39;t necessarily sequential</span>
+        <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">has_resid</span><span class="p">:</span>
+            <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">has_charge</span><span class="p">:</span>
+            <span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">datalines</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+            <span class="c1"># these numpy array are already typed correctly,</span>
+            <span class="c1"># so just pass the raw strings</span>
+            <span class="c1"># and let numpy handle the conversion</span>
+            <span class="n">atom_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">sd</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">has_resid</span><span class="p">:</span>
+                <span class="n">resids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">sd</span><span class="p">[</span><span class="s1">&#39;resid&#39;</span><span class="p">]]</span>
+            <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">sd</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">has_charge</span><span class="p">:</span>
+                <span class="n">charges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">sd</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">]]</span>
+
+        <span class="c1"># at this point, we&#39;ve read the atoms section,</span>
+        <span class="c1"># but it&#39;s still (potentially) unordered</span>
+        <span class="c1"># TODO: Maybe we can optimise by checking if we need to sort</span>
+        <span class="c1"># ie `if np.any(np.diff(atom_ids) &gt; 1)`  but we want to search</span>
+        <span class="c1"># in a generatorish way, np.any() would check everything at once</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">atom_ids</span><span class="p">)</span>
+        <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">atom_ids</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">types</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">has_resid</span><span class="p">:</span>
+            <span class="n">resids</span> <span class="o">=</span> <span class="n">resids</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">has_charge</span><span class="p">:</span>
+            <span class="n">charges</span> <span class="o">=</span> <span class="n">charges</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">types</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">has_charge</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Charges</span><span class="p">(</span><span class="n">charges</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">massdict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">types</span><span class="p">):</span>
+                <span class="n">masses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">massdict</span><span class="p">[</span><span class="n">at</span><span class="p">]</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">masses</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Guess them</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_masses</span><span class="p">(</span><span class="n">types</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="n">residx</span><span class="p">,</span> <span class="n">resids</span> <span class="o">=</span> <span class="n">squash_by</span><span class="p">(</span><span class="n">resids</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
+
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomids</span><span class="p">(</span><span class="n">atom_ids</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
+                       <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">top</span>
+
+    <span class="k">def</span> <span class="nf">_parse_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datalines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lammps defines mass on a per atom type basis.</span>
+
+<span class="sd">        This reads mass for each type and stores in dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Doing Masses section&quot;</span><span class="p">)</span>
+
+        <span class="n">masses</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">datalines</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">masses</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">masses</span>
+
+    <span class="k">def</span> <span class="nf">_parse_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">):</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;xlo xhi&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span>
+        <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;ylo yhi&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span>
+        <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;zlo zhi&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">z1</span>
+
+        <span class="k">if</span> <span class="s1">&#39;xy xz yz&#39;</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+            <span class="c1"># Triclinic</span>
+            <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+            <span class="n">xy</span><span class="p">,</span> <span class="n">xz</span><span class="p">,</span> <span class="n">yz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;xy xz yz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xy</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xz</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">yz</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
+
+            <span class="n">unitcell</span> <span class="o">=</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="n">unitcell</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Orthogonal</span>
+            <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span>
+
+        <span class="k">return</span> <span class="n">unitcell</span></div>
+
+
+<div class="viewcode-block" id="LammpsDumpParser"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser">[docs]</a><span class="k">class</span> <span class="nc">LammpsDumpParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses Lammps ascii dump files in &#39;atom&#39; format</span>
+
+<span class="sd">    Only reads atom ids.  Sets all masses to 1.0.</span>
+
+<span class="sd">    .. versionadded:: 0.19.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;LAMMPSDUMP&#39;</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM TIMESTEP</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># 0</span>
+
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM NUMBER OF ATOMS</span>
+            <span class="n">natoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM BOX</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># x</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># y</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># z</span>
+
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+            
+            <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM ATOMS</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natoms</span><span class="p">):</span>
+                <span class="n">idx</span><span class="p">,</span> <span class="n">atype</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+                <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">atype</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="n">types</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomids</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">types</span><span class="p">))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Guessed all Masses to 1.0&#39;</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span></div>
+
+
+<span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
+<span class="k">class</span> <span class="nc">LAMMPSAtom</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;chainid&quot;</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;_positions&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">chain_id</span><span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chainid</span> <span class="o">=</span> <span class="n">chain_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">charge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">mass</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;LAMMPSAtom &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: name &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; of chain &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chainid</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s1">&#39;pos&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">LAMMPSAtom</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chainid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

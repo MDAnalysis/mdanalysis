@@ -1,0 +1,595 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>MDAnalysis.analysis.dihedrals &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.analysis.dihedrals</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`</span>
+<span class="sd">===========================================================================</span>
+
+<span class="sd">:Author: Henry Mull</span>
+<span class="sd">:Year: 2018</span>
+<span class="sd">:Copyright: GNU Public License v2</span>
+
+<span class="sd">.. versionadded:: 0.19.0</span>
+
+<span class="sd">This module contains classes for calculating dihedral angles for a given set of</span>
+<span class="sd">atoms or residues. This can be done for selected frames or whole trajectories.</span>
+
+<span class="sd">A list of time steps that contain angles of interest is generated and can be</span>
+<span class="sd">easily plotted if desired. For the :class:`~MDAnalysis.analysis.dihedrals.Ramachandran`</span>
+<span class="sd">and :class:`~MDAnalysis.analysis.dihedrals.Janin` classes, basic plots can be</span>
+<span class="sd">generated using the method :meth:`Ramachandran.plot()` or :meth:`Janin.plot()`.</span>
+<span class="sd">These plots are best used as references, but they also allow for user customization.</span>
+
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">:func:`MDAnalysis.lib.distances.calc_dihedrals()`</span>
+<span class="sd">   function to calculate dihedral angles from atom positions</span>
+
+
+<span class="sd">Example applications</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">General dihedral analysis</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">The :class:`~MDAnalysis.analysis.dihedrals.Dihedral` class is useful for calculating</span>
+<span class="sd">angles for many dihedrals of interest. For example, we can find the phi angles</span>
+<span class="sd">for residues 5-10 of adenylate kinase (AdK). The trajectory is included within</span>
+<span class="sd">the test data files::</span>
+
+<span class="sd">   import MDAnalysis as mda</span>
+<span class="sd">   from MDAnalysisTests.datafiles import GRO, XTC</span>
+<span class="sd">   u = mda.Universe(GRO, XTC)</span>
+
+<span class="sd">   # selection of atomgroups</span>
+<span class="sd">   ags = [res.phi_selection() for res in u.residues[4:9]]</span>
+
+<span class="sd">   from MDAnalysis.analysis.dihedrals import Dihedral</span>
+<span class="sd">   R = Dihedral(ags).run()</span>
+
+<span class="sd">The angles can then be accessed with :attr:`Dihedral.angles`.</span>
+
+<span class="sd">Ramachandran analysis</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">The :class:`~MDAnalysis.analysis.dihedrals.Ramachandran` class allows for the</span>
+<span class="sd">quick calculation of phi and psi angles. Unlike the :class:`~MDanalysis.analysis.dihedrals.Dihedral`</span>
+<span class="sd">class which takes a list of `atomgroups`, this class only needs a list of</span>
+<span class="sd">residues or atoms from those residues. The previous example can repeated with::</span>
+
+<span class="sd">   u = mda.Universe(GRO, XTC)</span>
+<span class="sd">   r = u.select_atoms(&quot;resid 5-10&quot;)</span>
+
+<span class="sd">   R = Ramachandran(r).run()</span>
+
+<span class="sd">Then it can be plotted using the built-in plotting method :meth:`Ramachandran.plot()`::</span>
+
+<span class="sd">   import matplotlib.pyplot as plt</span>
+<span class="sd">   fig, ax = plt.subplots(figsize=plt.figaspect(1))</span>
+<span class="sd">   R.plot(ax=ax, color=&#39;k&#39;, marker=&#39;s&#39;)</span>
+
+<span class="sd">as shown in the example :ref:`Ramachandran plot figure &lt;figure-ramachandran&gt;`.</span>
+
+<span class="sd">.. _figure-ramachandran:</span>
+
+<span class="sd">.. figure:: /images/rama_demo_plot.png</span>
+<span class="sd">   :scale: 50 %</span>
+<span class="sd">   :alt: Ramachandran plot</span>
+
+<span class="sd">   Ramachandran plot for residues 5 to 10 of AdK, sampled from the AdK test</span>
+<span class="sd">   trajectory (XTC). The contours in the background are the &quot;allowed region&quot;</span>
+<span class="sd">   and the &quot;marginally allowed&quot; regions.</span>
+
+<span class="sd">The Janin class works in the same way, only needing a list of residues; see the</span>
+<span class="sd">:ref:`Janin plot figure &lt;figure-janin&gt;` as an example. To plot the data</span>
+<span class="sd">yourself, the angles can be accessed using :attr:`Ramachandran.angles` or</span>
+<span class="sd">:attr:`Janin.angles`.</span>
+
+<span class="sd">Reference plots can be added to the axes for both the Ramachandran and Janin</span>
+<span class="sd">classes using the kwarg ``ref=True``. The Ramachandran reference data</span>
+<span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data</span>
+<span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data</span>
+<span class="sd">obtained from a large selection of 500 PDB files, and were analyzed using these</span>
+<span class="sd">classes. The allowed and marginally allowed regions of the Ramachandran reference</span>
+<span class="sd">plt have cutoffs set to include 90% and 99% of the data points, and the Janin</span>
+<span class="sd">reference plot has cutoffs for 90% and 98% of the data points. The list of PDB</span>
+<span class="sd">files used for the referece plots was taken from [Lovell2003]_ and information</span>
+<span class="sd">about general Janin regions was taken from [Janin1978]_.</span>
+
+<span class="sd">.. Note::</span>
+<span class="sd">   These classes are prone to errors if the topology contains duplicate or missing</span>
+<span class="sd">   atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as</span>
+<span class="sd">   an `altloc` attribute, you must specify only one `altloc` for the atoms with</span>
+<span class="sd">   more than one (``&quot;protein and not altloc B&quot;``).</span>
+
+
+<span class="sd">.. _figure-janin:</span>
+
+<span class="sd">.. figure:: /images/janin_demo_plot.png</span>
+<span class="sd">   :scale: 50 %</span>
+<span class="sd">   :alt: Janin plot</span>
+
+<span class="sd">   Janin plot for residues 5 to 10 of AdK, sampled from the AdK test trajectory</span>
+<span class="sd">   (XTC). The contours in the background are the &quot;allowed region&quot; and the</span>
+<span class="sd">   &quot;marginally allowed&quot; regions for all possible residues.</span>
+
+
+<span class="sd">Analysis Classes</span>
+<span class="sd">----------------</span>
+
+<span class="sd">.. autoclass:: Dihedral</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">       Contains the time steps of the angles for each atomgroup in the list as</span>
+<span class="sd">       an ``n_frames×len(atomgroups)`` :class:`numpy.ndarray` with content</span>
+<span class="sd">       ``[[angle 1, angle 2, ...], [time step 2], ...]``.</span>
+
+<span class="sd">.. autoclass:: Ramachandran</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">       Contains the time steps of the :math:`\phi` and :math:`\psi` angles for</span>
+<span class="sd">       each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray` with</span>
+<span class="sd">       content ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.</span>
+
+<span class="sd">.. autoclass:: Janin</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">       Contains the time steps of the :math:`\chi_1` and :math:`\chi_2` angles</span>
+<span class="sd">       for each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray`</span>
+<span class="sd">       with content ``[[[chi1, chi2], [residue 2], ...], [time step 2], ...]``.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">.. [Lovell2003] Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III,</span>
+<span class="sd">   Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant,</span>
+<span class="sd">   Jane S. Richardson, and David C. Richardson (2003). &quot;Structure validation by</span>
+<span class="sd">   :math:`C_{\alpha}` geometry: :math:`\phi`, :math:`\psi`, and</span>
+<span class="sd">   :math:`C_{\beta}` deviation&quot;. *Proteins* 50(3): 437-450. doi:</span>
+<span class="sd">   `10.1002/prot.10286 &lt;https://doi.org/10.1002/prot.10286&gt;`_</span>
+
+<span class="sd">.. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard</span>
+<span class="sd">   Maigret. (1978). &quot;Conformation of amino acid side-chains in</span>
+<span class="sd">   proteins&quot;. *Journal of Molecular Biology* 125(3): 357-386. doi:</span>
+<span class="sd">   `10.1016/0022-2836(78)90408-4 &lt;https://doi.org/10.1016/0022-2836(78)90408-4&gt;`_</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">range</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">calc_dihedrals</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.data.filenames</span> <span class="kn">import</span> <span class="n">Rama_ref</span><span class="p">,</span> <span class="n">Janin_ref</span>
+
+
+<div class="viewcode-block" id="Dihedral"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Dihedral">[docs]</a><span class="k">class</span> <span class="nc">Dihedral</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate dihedral angles for specified atomgroups.</span>
+
+<span class="sd">    Dihedral angles will be calculated for each atomgroup that is given for</span>
+<span class="sd">    each step in the trajectory. Each :class:`~MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">    must contain 4 atoms.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This class takes a list as an input and is most useful for a large</span>
+<span class="sd">    selection of atomgroups. If there is only one atomgroup of interest, then</span>
+<span class="sd">    it must be given as a list of one atomgroup.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomgroups : list</span>
+<span class="sd">            a list of atomgroups for which the dihedral angles are calculated</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If any atomgroups do not contain 4 atoms</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Dihedral</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span> <span class="o">=</span> <span class="n">atomgroups</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All AtomGroups must contain 4 atoms&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">ag</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">ag</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">ag</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">ag</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                               <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Ramachandran"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran">[docs]</a><span class="k">class</span> <span class="nc">Ramachandran</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected residues.</span>
+
+<span class="sd">    :math:`\phi` and :math:`\psi` angles will be calculated for each residue</span>
+<span class="sd">    corresponding to `atomgroup` for each time step in the trajectory. A</span>
+<span class="sd">    :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is</span>
+<span class="sd">    compared to the protein to determine if it is a legitimate selection.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    If the residue selection is beyond the scope of the protein, then an error</span>
+<span class="sd">    will be raised. If the residue selection includes the first or last residue,</span>
+<span class="sd">    then a warning will be raised and they will be removed from the list of</span>
+<span class="sd">    residues, but the analysis will still run. If a :math:`\phi` or :math:`\psi`</span>
+<span class="sd">    selection cannot be made, that residue will be removed from the analysis.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomgroup : AtomGroup or ResidueGroup</span>
+<span class="sd">            atoms for residues for which :math:`\phi` and :math:`\psi` are</span>
+<span class="sd">            calculated</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the selection of residues is not contained within the protein</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">residues</span>
+        <span class="n">protein</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">protein</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found atoms outside of protein. Only atoms &quot;</span>
+                             <span class="s2">&quot;inside of a &#39;protein&#39; selection can be used to &quot;</span>
+                             <span class="s2">&quot;calculate dihedrals.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">protein</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot determine phi and psi angles for the first &quot;</span>
+                          <span class="s2">&quot;or last residues&quot;</span><span class="p">)</span>
+            <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">protein</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+        <span class="n">phi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">phi_selection</span><span class="p">()</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="n">psi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">psi_selection</span><span class="p">()</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="c1"># phi_selection() and psi_selection() currently can&#39;t handle topologies</span>
+        <span class="c1"># with an altloc attribute so this removes any residues that have either</span>
+        <span class="c1"># angle return none instead of a value</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">sel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Some residues in selection do not have phi selections&quot;</span><span class="p">)</span>
+            <span class="n">remove</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phi_sel</span><span class="p">)</span> <span class="k">if</span> <span class="n">sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">phi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">sel</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phi_sel</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">]</span>
+            <span class="n">psi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">sel</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_sel</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">sel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="n">psi_sel</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Some residues in selection do not have psi selections&quot;</span><span class="p">)</span>
+            <span class="n">remove</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_sel</span><span class="p">)</span> <span class="k">if</span> <span class="n">sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">phi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">sel</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phi_sel</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">]</span>
+            <span class="n">psi_sel</span> <span class="o">=</span> <span class="p">[</span><span class="n">sel</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_sel</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">remove</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">phi_sel</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="n">psi_sel</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">phi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">psi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">phi_psi</span> <span class="o">=</span> <span class="p">[(</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span> <span class="k">for</span> <span class="n">phi</span><span class="p">,</span> <span class="n">psi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">phi_angles</span><span class="p">,</span> <span class="n">psi_angles</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phi_psi</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="Ramachandran.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plots data into standard ramachandran plot. Each time step in</span>
+<span class="sd">        :attr:`Ramachandran.angles` is plotted onto the same graph.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
+<span class="sd">              If no `ax` is supplied or set to ``None`` then the plot will</span>
+<span class="sd">              be added to the current active axes.</span>
+
+<span class="sd">        ref : bool, optional</span>
+<span class="sd">              Adds a general Ramachandran plot which shows allowed and</span>
+<span class="sd">              marginally allowed regions</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
+<span class="sd">             Axes with the plot, either `ax` or the current axes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">180</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+               <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\phi$ (deg)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\psi$ (deg)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">15000</span><span class="p">]</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#A1D4FF&#39;</span><span class="p">,</span> <span class="s1">&#39;#35A1FF&#39;</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Rama_ref</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div></div>
+
+<div class="viewcode-block" id="Janin"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Janin">[docs]</a><span class="k">class</span> <span class="nc">Janin</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected residues.</span>
+
+<span class="sd">    :math:`\chi_1` and :math:`\chi_2` angles will be calculated for each residue</span>
+<span class="sd">    corresponding to `atomgroup` for each time step in the trajectory. A</span>
+<span class="sd">    :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is</span>
+<span class="sd">    compared to the protein to determine if it is a legitimate selection.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    If the residue selection is beyond the scope of the protein, then an error</span>
+<span class="sd">    will be raised. If the residue selection includes the residues ALA, CYS,</span>
+<span class="sd">    GLY, PRO, SER, THR, or VAL, then a warning will be raised and they will be</span>
+<span class="sd">    removed from the list of residues, but the analysis will still run. Some</span>
+<span class="sd">    topologies have altloc attribues which can add duplicate atoms to the</span>
+<span class="sd">    selection and must be removed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomgroup : AtomGroup or ResidueGroup</span>
+<span class="sd">            atoms for residues for which :math:`\chi_1` and :math:`\chi_2` are</span>
+<span class="sd">            calculated</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">             If the selection of residues is not contained within the protein</span>
+
+<span class="sd">        ValueError</span>
+<span class="sd">             If not enough or too many atoms are found for a residue in the</span>
+<span class="sd">             selection, usually due to missing atoms or alternative locations</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">residues</span>
+        <span class="n">protein</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span>
+        <span class="n">remove</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resname ALA CYS GLY PRO SER&quot;</span>
+                                             <span class="s2">&quot; THR VAL&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">protein</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found atoms outside of protein. Only atoms &quot;</span>
+                             <span class="s2">&quot;inside of a &#39;protein&#39; selection can be used to &quot;</span>
+                             <span class="s2">&quot;calculate dihedrals.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">remove</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;All ALA, CYS, GLY, PRO, SER, THR, and VAL residues&quot;</span>
+                          <span class="s2">&quot; have been removed from the selection.&quot;</span><span class="p">)</span>
+            <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">remove</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CA&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CB&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CG CG1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CD CD1 OD1 ND1 SD&quot;</span><span class="p">)</span>
+
+        <span class="c1"># if there is an altloc attribute, too many atoms will be selected which</span>
+        <span class="c1"># must be removed before using the class, or the file is missing atoms</span>
+        <span class="c1"># for some residues which must also be removed</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too many or too few atoms selected. Check for &quot;</span>
+                             <span class="s2">&quot;missing or duplicate atoms in topology.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+
+<div class="viewcode-block" id="Janin.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Janin.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plots data into standard Janin plot. Each time step in</span>
+<span class="sd">        :attr:`Janin.angles` is plotted onto the same graph.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
+<span class="sd">              If no `ax` is supplied or set to ``None`` then the plot will</span>
+<span class="sd">              be added to the current active axes.</span>
+
+<span class="sd">        ref : bool, optional</span>
+<span class="sd">              Adds a general Janin plot which shows allowed and marginally</span>
+<span class="sd">              allowed regions</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
+<span class="sd">             Axes with the plot, either `ax` or the current axes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">361</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">361</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+               <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi1$ (deg)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi2$ (deg)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+            <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">600</span><span class="p">]</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#A1D4FF&#39;</span><span class="p">,</span> <span class="s1">&#39;#35A1FF&#39;</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Janin_ref</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

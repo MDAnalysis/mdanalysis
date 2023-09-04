@@ -1,0 +1,508 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>4.2.2. Native contacts analysis — MDAnalysis.analysis.contacts &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="4.2.3. Distance analysis — MDAnalysis.analysis.distances" href="distances.html" />
+    <link rel="prev" title="4.2.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="align.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.analysis.contacts"></span><div class="section" id="native-contacts-analysis-mdanalysis-analysis-contacts">
+<h1><span class="section-number">4.2.2. </span>Native contacts analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.contacts" title="MDAnalysis.analysis.contacts"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a><a class="headerlink" href="#native-contacts-analysis-mdanalysis-analysis-contacts" title="Permalink to this headline">¶</a></h1>
+<p>This module contains classes to analyze native contacts <em>Q</em> over a
+trajectory. Native contacts of a conformation are contacts that exist
+in a reference structure and in the conformation. Contacts in the
+reference structure are always defined as being closer then a distance
+<cite>radius</cite>. The fraction of native contacts for a conformation can be
+calculated in different ways. This module supports 3 different metrics
+listed below, as well as custom metrics.</p>
+<ol class="arabic simple">
+<li><p><em>Hard Cut</em>: To count as a contact the atoms <em>i</em> and <em>j</em> have to be at least
+as close as in the reference structure.</p></li>
+<li><p><em>Soft Cut</em>: The atom pair <em>i</em> and <em>j</em> is assigned based on a soft potential
+that is 1 if the distance is 0, 1/2 if the distance is the same as in
+the reference and 0 for large distances. For the exact definition of the
+potential and parameters have a look at function <a class="reference internal" href="#MDAnalysis.analysis.contacts.soft_cut_q" title="MDAnalysis.analysis.contacts.soft_cut_q"><code class="xref py py-func docutils literal notranslate"><span class="pre">soft_cut_q()</span></code></a>.</p></li>
+<li><p><em>Radius Cut</em>: To count as a contact the atoms <em>i</em> and <em>j</em> cannot be further
+apart than some distance <cite>radius</cite>.</p></li>
+</ol>
+<p>The “fraction of native contacts” <em>Q(t)</em> is a number between 0 and 1 and
+calculated as the total number of native contacts for a given time frame
+divided by the total number of contacts in the reference structure.</p>
+<div class="section" id="examples-for-contact-analysis">
+<h2><span class="section-number">4.2.2.1. </span>Examples for contact analysis<a class="headerlink" href="#examples-for-contact-analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="one-dimensional-contact-analysis">
+<h3><span class="section-number">4.2.2.1.1. </span>One-dimensional contact analysis<a class="headerlink" href="#one-dimensional-contact-analysis" title="Permalink to this headline">¶</a></h3>
+<p>As an example we analyze the opening (“unzipping”) of salt bridges
+when the AdK enzyme opens up; this is one of the example trajectories
+in MDAnalysis.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">contacts</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>
+<span class="c1"># example trajectory (transition of AdK from closed to open)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<span class="c1"># crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
+<span class="c1"># OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
+<span class="c1"># problem before using this for real work.</span>
+<span class="n">sel_basic</span> <span class="o">=</span> <span class="s2">&quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
+<span class="n">sel_acidic</span> <span class="o">=</span> <span class="s2">&quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+<span class="c1"># reference groups (first frame of the trajectory, but you could also use a</span>
+<span class="c1"># separate PDB, eg crystal structure)</span>
+<span class="n">acidic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">)</span>
+<span class="n">basic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_basic</span><span class="p">)</span>
+<span class="c1"># set up analysis of native contacts (&quot;salt bridges&quot;); salt bridges have a</span>
+<span class="c1"># distance &lt;6 A</span>
+<span class="n">ca1</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
+                        <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">6.0</span><span class="p">)</span>
+<span class="c1"># iterate through trajectory and perform analysis of &quot;native contacts&quot; Q</span>
+<span class="n">ca1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="c1"># print number of averave contacts</span>
+<span class="n">average_contacts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;average contacts = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
+<span class="c1"># plot time series q(t)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ca1</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;fraction of native contacts&#39;</span><span class="p">,</span>
+       <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Native Contacts, average = </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The first graph shows that when AdK opens, about 20% of the salt
+bridges that existed in the closed state disappear when the enzyme
+opens. They open in a step-wise fashion (made more clear by the movie
+<a class="reference external" href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2803350/bin/NIHMS150766-supplement-03.avi">AdK_zipper_cartoon.avi</a>).</p>
+<p class="rubric">Notes</p>
+<p>Suggested cutoff distances for different simulations</p>
+<ul class="simple">
+<li><p>For all-atom simulations, cutoff = 4.5 Å</p></li>
+<li><p>For coarse-grained simulations, cutoff = 6.0 Å</p></li>
+</ul>
+</div>
+<div class="section" id="two-dimensional-contact-analysis-q1-q2">
+<h3><span class="section-number">4.2.2.1.2. </span>Two-dimensional contact analysis (q1-q2)<a class="headerlink" href="#two-dimensional-contact-analysis-q1-q2" title="Permalink to this headline">¶</a></h3>
+<p>Analyze a single DIMS transition of AdK between its closed and open
+conformation and plot the trajectory projected on q1-q2 <a class="reference internal" href="#franklin2007" id="id1"><span>[Franklin2007]</span></a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">contacts</span>
+<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="n">q1q2</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;name CA&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">q1q2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figaspect</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q1&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q2&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;.-&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Compare the resulting pathway to the <a class="reference external" href="http://lorentz.dynstr.pasteur.fr/joel/adenylate.php">MinActionPath result for AdK</a>
+<a class="reference internal" href="#franklin2007" id="id2"><span>[Franklin2007]</span></a>.</p>
+</div>
+<div class="section" id="writing-your-own-contact-analysis">
+<h3><span class="section-number">4.2.2.1.3. </span>Writing your own contact analysis<a class="headerlink" href="#writing-your-own-contact-analysis" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a> class has been designed to be extensible for your own
+analysis. As an example we will analyze when the acidic and basic groups of AdK
+are in contact which each other; this means that at least one of the contacts
+formed in the reference is closer than 2.5 Å.</p>
+<p>For this we define a new function to determine if any contact is closer than
+2.5 Å; this function must implement the API prescribed by <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">is_any_closer</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mf">2.5</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first two parameters <cite>r</cite> and <cite>r0</cite> are provided by <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a> when it
+calls <code class="xref py py-func docutils literal notranslate"><span class="pre">is_any_closer()</span></code> while the others can be passed as keyword args
+using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a>.</p>
+<p>Next we are creating an instance of the <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a> class and use the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">is_any_closer()</span></code> function as an argument to <cite>method</cite> and run the analysis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
+<span class="c1"># OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
+<span class="c1"># problem before using this for real work.</span>
+<span class="n">sel_basic</span> <span class="o">=</span> <span class="s2">&quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
+<span class="n">sel_acidic</span> <span class="o">=</span> <span class="s2">&quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+
+<span class="c1"># reference groups (first frame of the trajectory, but you could also use a</span>
+<span class="c1"># separate PDB, eg crystal structure)</span>
+<span class="n">acidic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">)</span>
+<span class="n">basic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_basic</span><span class="p">)</span>
+
+<span class="n">nc</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
+                       <span class="n">method</span><span class="o">=</span><span class="n">is_any_closer</span><span class="p">,</span>
+                       <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dist&#39;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">})</span>
+<span class="n">nc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="n">bound</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">frames</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">bound</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;is Bound&#39;</span><span class="p">,</span>
+       <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">))</span>
+
+<span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2><span class="section-number">4.2.2.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.analysis.contacts.hard_cut_q">
+<code class="sig-prename descclassname">MDAnalysis.analysis.contacts.</code><code class="sig-name descname">hard_cut_q</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">cutoff</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#hard_cut_q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.hard_cut_q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate fraction of native contacts <em>Q</em> for a hard cut off.</p>
+<p>The cutoff can either be a float or a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of the same
+shape as <cite>r</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>ndarray</em>) – distance matrix</p></li>
+<li><p><strong>cutoff</strong> (<em>ndarray | float</em>) – cut off value to count distances. Can either be a float of a ndarray of
+the same size as distances</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Q</strong> – fraction of contacts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.contacts.soft_cut_q">
+<code class="sig-prename descclassname">MDAnalysis.analysis.contacts.</code><code class="sig-name descname">soft_cut_q</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">r0</em>, <em class="sig-param">beta=5.0</em>, <em class="sig-param">lambda_constant=1.8</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#soft_cut_q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.soft_cut_q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate fraction of native contacts <em>Q</em> for a soft cut off</p>
+<p>The native contact function is defined as <a class="reference internal" href="#best2013" id="id3"><span>[Best2013]</span></a></p>
+<div class="math notranslate nohighlight">
+\[Q(r, r_0) = \frac{1}{1 + e^{\beta (r - \lambda r_0)}}\]</div>
+<p>Reasonable values for different simulation types are</p>
+<ul class="simple">
+<li><p><em>All Atom</em>: <cite>lambda_constant = 1.8</cite> (unitless)</p></li>
+<li><p><em>Coarse Grained</em>: <cite>lambda_constant = 1.5</cite> (unitless)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>array</em>) – Contact distances at time t</p></li>
+<li><p><strong>r0</strong> (<em>array</em>) – Contact distances at time t=0, reference distances</p></li>
+<li><p><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>default 5.0 Angstrom</em><em>)</em>) – Softness of the switching function</p></li>
+<li><p><strong>lambda_constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>default 1.8</em><em>, </em><em>unitless</em><em>)</em>) – Reference distance tolerance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Q</strong> – fraction of native contacts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="best2013"><span class="brackets"><a class="fn-backref" href="#id3">Best2013</a></span></dt>
+<dd><p>RB Best, G Hummer, and WA Eaton, “Native contacts determine protein
+folding mechanisms in atomistic simulations” _PNAS_ <strong>110</strong> (2013),
+17874–17879. doi: <a class="reference external" href="http://doi.org/10.1073/pnas.1311599110">10.1073/pnas.1311599110</a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.contacts.radius_cut_q">
+<code class="sig-prename descclassname">MDAnalysis.analysis.contacts.</code><code class="sig-name descname">radius_cut_q</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">r0</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#radius_cut_q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.radius_cut_q" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate native contacts <em>Q</em> based on the single distance radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>ndarray</em>) – distance array between atoms</p></li>
+<li><p><strong>r0</strong> (<em>ndarray</em>) – unused to fullfill <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a> API</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Distance between atoms at which a contact is formed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Q</strong> – fraction of contacts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="franklin2007"><span class="brackets">Franklin2007</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id4">3</a>)</span></dt>
+<dd><p>Franklin, J., Koehl, P., Doniach, S., &amp; Delarue,
+M. (2007).  MinActionPath: Maximum likelihood trajectory for large-scale
+structural transitions in a coarse-grained locally harmonic energy
+landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.
+doi: <a class="reference external" href="http://doi.org/10.1093/nar/gkm342">10.1093/nar/gkm342</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.contacts.contact_matrix">
+<code class="sig-prename descclassname">MDAnalysis.analysis.contacts.</code><code class="sig-name descname">contact_matrix</code><span class="sig-paren">(</span><em class="sig-param">d</em>, <em class="sig-param">radius</em>, <em class="sig-param">out=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#contact_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.contact_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate contacts from distance matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> (<em>array-like</em>) – distance matrix</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – distance below which a contact is formed.</p></li>
+<li><p><strong>out</strong> (<em>array</em><em> (</em><em>optional</em><em>)</em>) – If <cite>out</cite> is supplied as a pre-allocated array of the correct
+shape then it is filled instead of allocating a new one in
+order to increase performance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>contacts</strong> – boolean array of formed contacts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.contacts.q1q2">
+<code class="sig-prename descclassname">MDAnalysis.analysis.contacts.</code><code class="sig-name descname">q1q2</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">selection='all'</em>, <em class="sig-param">radius=4.5</em>, <em class="sig-param">start=None</em>, <em class="sig-param">stop=None</em>, <em class="sig-param">step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#q1q2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.q1q2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a q1-q2 analysis.</p>
+<p>Compares native contacts between the starting structure and final structure
+of a trajectory <a class="reference internal" href="#franklin2007" id="id4"><span>[Franklin2007]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe with a trajectory</p></li>
+<li><p><strong>selection</strong> (<em>string</em><em>, </em><em>optional</em>) – atoms to do analysis on</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – distance at which contact is formed</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: 0</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to analyse, Default: -1</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames to analyse, Default: 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>contacts</strong> – Contact Analysis that is set up for a q1-q2 analysis</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h2><span class="section-number">4.2.2.3. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.analysis.contacts.Contacts">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.analysis.contacts.</code><code class="sig-name descname">Contacts</code><span class="sig-paren">(</span><em class="sig-param">u</em>, <em class="sig-param">selection</em>, <em class="sig-param">refgroup</em>, <em class="sig-param">method='hard_cut'</em>, <em class="sig-param">radius=4.5</em>, <em class="sig-param">kwargs=None</em>, <em class="sig-param">**basekwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#Contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate contacts based observables.</p>
+<p>The standard methods used in this class calculate the fraction of native
+contacts <em>Q</em> from a trajectory.</p>
+<p class="rubric">Contact API</p>
+<p>By defining your own method it is possible to calculate other observables
+that only depend on the distances and a possible reference distance. The
+<strong>Contact API</strong> prescribes that this method must be a function with call
+signature <code class="docutils literal notranslate"><span class="pre">func(r,</span> <span class="pre">r0,</span> <span class="pre">**kwargs)</span></code> and must be provided in the keyword
+argument <cite>method</cite>.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.contacts.Contacts.timeseries">
+<code class="sig-name descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>list containing <em>Q</em> for all refgroup pairs and analyzed frames</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – trajectory</p></li>
+<li><p><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>(</em><em>string</em><em>, </em><em>string</em><em>)</em>) – two contacting groups that change over time</p></li>
+<li><p><strong>refgroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>(</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>, </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>)</em>) – two contacting atomgroups in their reference conformation. This
+can also be a list of tuples containing different atom groups</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>4.5 Angstroms</em><em>)</em>) – radius within which contacts exist in refgroup</p></li>
+<li><p><strong>method</strong> (<em>string | callable</em><em> (</em><em>optional</em><em>)</em>) – Can either be one of <code class="docutils literal notranslate"><span class="pre">['hard_cut'</span> <span class="pre">,</span> <span class="pre">'soft_cut']</span></code> or a callable
+with call signature <code class="docutils literal notranslate"><span class="pre">func(r,</span> <span class="pre">r0,</span> <span class="pre">**kwargs)</span></code> (the “Contacts API”).</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of additional kwargs passed to <cite>method</cite>. Check
+respective functions for reasonable values.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="MDAnalysis.analysis.contacts.Contacts.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts.save" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>save</cite> is deprecated!</p>
+<p>save contacts timeseries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – file to save contacts</p>
+</dd>
+</dl>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.19.0: </span><cite>save</cite> is deprecated!
+<cite>save</cite> will be removed in release 1.0.0.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples-for-contact-analysis">4.2.2.1. Examples for contact analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">4.2.2.2. Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">4.2.2.3. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rms.html">4.2.4. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.5. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a><ul>
+      <li>Previous: <a href="align.html" title="previous chapter"><span class="section-number">4.2.1. </span>Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+      <li>Next: <a href="distances.html" title="next chapter"><span class="section-number">4.2.3. </span>Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/analysis/contacts.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

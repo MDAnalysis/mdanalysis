@@ -1,0 +1,1816 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>11.2.3. Topology attribute objects — MDAnalysis.core.topologyattrs &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="11.3.1. Atom selection Hierarchy — MDAnalysis.core.selection" href="selection.html" />
+    <link rel="prev" title="11.2.2. Core Topology Objects — MDAnalysis.core.topologyobjects" href="topologyobjects.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">11. Core modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.1. Important objects for users</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">11.2. Topology system</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="topology.html">11.2.1. Core Topology object — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyobjects.html">11.2.2. Core Topology Objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.3. Topology attribute objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.3. Selection system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#flag-system">11.4. Flag system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../core_modules.html">11. Core modules</a> &raquo;</li>
+        
+      <li>11.2.3. Topology attribute objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/core/topologyattrs.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.core.topologyattrs"></span><div class="section" id="topology-attribute-objects-mdanalysis-core-topologyattrs">
+<h1>11.2.3. Topology attribute objects — <a class="reference internal" href="#module-MDAnalysis.core.topologyattrs" title="MDAnalysis.core.topologyattrs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a><a class="headerlink" href="#topology-attribute-objects-mdanalysis-core-topologyattrs" title="Permalink to this headline">¶</a></h1>
+<p>Common <a class="reference internal" href="#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a> instances that are used by most topology
+parsers.</p>
+<p>TopologyAttrs are used to contain attributes such as atom names or resids.
+These are usually read by the TopologyParser.</p>
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.AltLocs">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">AltLocs</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AltLocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AltLocs" title="Permalink to this definition">¶</a></dt>
+<dd><p>AltLocs for each atom</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.AltLocs.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AltLocs.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Angles">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Angles</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angles between three atoms</p>
+<p>Initialise with a list of 3 long tuples
+E.g.,  <cite>[(0, 1, 2), (1, 2, 3), (2, 3, 4)]</cite></p>
+<p>These indices refer to the atom indices.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.AtomAttr">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">AtomAttr</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for atom attributes.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.AtomAttr.get_atoms">
+<code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.AtomAttr.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the values for each atom present in the set of residues
+are returned in a single array. This behavior can be overriden in child
+attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.AtomAttr.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the values for each atom present in the set of residues
+are returned in a single array. This behavior can be overriden in child
+attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.AtomAttr.set_atoms">
+<code class="descname">set_atoms</code><span class="sig-paren">(</span><em>ag</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr.set_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr.set_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.AtomAttr.set_residues">
+<code class="descname">set_residues</code><span class="sig-paren">(</span><em>rg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr.set_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr.set_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.AtomAttr.set_segments">
+<code class="descname">set_segments</code><span class="sig-paren">(</span><em>sg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr.set_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr.set_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set segmentattributes for a given SegmentGroup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Atomids">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Atomids</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomids" title="Permalink to this definition">¶</a></dt>
+<dd><p>ID for each atom.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Atomids.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomids.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Atomindices">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Atomindices</code><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomindices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomindices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Globally unique indices for each atom in the group.</p>
+<p>If the group is an AtomGroup, then this gives the index for each atom in
+the group. This is the unambiguous identifier for each atom in the
+topology, and it is not alterable.</p>
+<p>If the group is a ResidueGroup or SegmentGroup, then this gives the indices
+of each atom represented in the group in a 1-D array, in the order of the
+elements in that group.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomindices.get_atoms">
+<code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomindices.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomindices.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomindices.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomindices.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomindices.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomindices.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomindices.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomindices.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get segment attributes for a given SegmentGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomindices.set_atoms">
+<code class="descname">set_atoms</code><span class="sig-paren">(</span><em>ag</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomindices.set_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomindices.set_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Atomnames</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name for each atom.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.chi1_selection">
+<code class="descname">chi1_selection</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.chi1_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.chi1_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+<li><strong>cb_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the beta-carbon atom</li>
+<li><strong>cg_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the gamma-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no CB and/or CG is found
+then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+<li><em>.. versionadded:: 0.7.5</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.chi1_selections">
+<code class="descname">chi1_selections</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.chi1_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.chi1_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the chi1 sidechain dihedral
+N-CA-CB-CG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+<li><strong>cb_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the beta-carbon atom</li>
+<li><strong>cg_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the gamma-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no CB and/or CG is found
+then the corresponding item in the list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.omega_selection">
+<code class="descname">omega_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.omega_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.omega_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the omega protein backbone dihedral
+CA-C-N’-CA’.</p>
+<p>omega describes the -C-N- peptide bond. Typically, it is trans (180
+degrees) although cis-bonds (0 degrees) are also occasionally observed
+(especially near Proline).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no C’ found in the
+previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.omega_selections">
+<code class="descname">omega_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.omega_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.omega_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the omega protein
+backbone dihedral CA-C-N’-CA’.</p>
+<p>omega describes the -C-N- peptide bond. Typically, it is trans (180
+degrees) although cis-bonds (0 degrees) are also occasionally observed
+(especially near Proline).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no C’ found in the
+previous residue (by resid) then the corresponding item in the
+list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.phi_selection">
+<code class="descname">phi_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.phi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.phi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the phi protein backbone dihedral
+C’-N-CA-C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no C’ found in the
+previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.phi_selections">
+<code class="descname">phi_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.phi_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.phi_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the phi protein
+backbone dihedral C’-N-CA-C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>list of AtomGroups</em> – 4-atom selections in the correct order. If no C’ found in the
+previous residue (by resid) then corresponding item in the list
+is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.psi_selection">
+<code class="descname">psi_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.psi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.psi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the psi protein backbone dihedral
+N-CA-C-N’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no N’ found in the
+following residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.psi_selections">
+<code class="descname">psi_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.psi_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.psi_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the psi protein
+backbone dihedral N-CA-C-N’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no N’ found in the
+following residue (by resid) then the corresponding item in the
+list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Atomtypes">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Atomtypes</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomtypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomtypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type for each atom</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Atomtypes.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomtypes.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Bfactors">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Bfactors</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crystallographic B-factors in A**2 for each atom</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Bfactors.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bfactors.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Bonds">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Bonds</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bonds between two atoms</p>
+<p>Must be initialised by a list of zero based tuples.
+These indices refer to the atom indices.
+E.g., ` [(0, 1), (1, 2), (2, 3)]`</p>
+<p>Also adds the <cite>bonded_atoms</cite>, <cite>fragment</cite> and <cite>fragments</cite>
+attributes.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.bonded_atoms">
+<code class="descname">bonded_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.bonded_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.bonded_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>An <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of all
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> bonded to this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.fragindex">
+<code class="descname">fragindex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragindex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index (ID) of the
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragment" title="MDAnalysis.core.topologyattrs.Bonds.fragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span></code></a> this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is part of.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.fragindices">
+<code class="descname">fragindices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragindices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragindices" title="Permalink to this definition">¶</a></dt>
+<dd><p>The
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragindex" title="MDAnalysis.core.topologyattrs.Bonds.fragindex"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span> <span class="pre">indices</span></code></a>
+of all <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code><code class="docutils literal notranslate"><span class="pre">,)</span></code>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.int64</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.fragment">
+<code class="descname">fragment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragment" title="Permalink to this definition">¶</a></dt>
+<dd><p>An <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> representing the
+fragment this <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is part of.</p>
+<p>A fragment is a
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">group</span> <span class="pre">of</span> <span class="pre">atoms</span></code></a> which are
+interconnected by <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a>, i.e.,
+there exists a path along one
+or more <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a> between any pair
+of <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.fragments">
+<code class="descname">fragments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.fragments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragment" title="MDAnalysis.core.topologyattrs.Bonds.fragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragments</span></code></a>.</p>
+<p>Contains all fragments that
+any <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> in this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> is part of.</p>
+<p>A fragment is a
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">group</span> <span class="pre">of</span> <span class="pre">atoms</span></code></a> which are
+interconnected by <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a>, i.e.,
+there exists a path along one
+or more <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a> between any pair
+of <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>This property is only accessible if the underlying topology contains
+bond information.</li>
+<li>The contents of the fragments may extend beyond the contents of this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</li>
+</ul>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Bonds.n_fragments">
+<code class="descname">n_fragments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds.n_fragments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds.n_fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of unique
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragments" title="MDAnalysis.core.topologyattrs.Bonds.fragments"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragments</span></code></a> the
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> of this
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> are part of.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This property is only accessible if the underlying topology contains
+bond information.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.CMaps">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">CMaps</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#CMaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.CMaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>A connection between five atoms
+.. versionadded:: 1.0.0</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.ChainIDs">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">ChainIDs</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ChainIDs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ChainIDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>ChainID per atom</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is an attribute of the Atom, not Residue or Segment</p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.ChainIDs.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ChainIDs.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Charges">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Charges</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Charges" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Charges.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Charges.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Charges.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Charges.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Charges.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the values for each atom present in the set of residues
+are returned in a single array. This behavior can be overriden in child
+attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Charges.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Charges.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Charges.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the values for each atom present in the set of residues
+are returned in a single array. This behavior can be overriden in child
+attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Charges.total_charge">
+<code class="descname">total_charge</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Charges.total_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Charges.total_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total charge of (compounds of) the group.</p>
+<p>Computes the total charge of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> in the group.
+Total charges per <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If ‘group’, the total charge of all atoms in the group will
+be returned as a single value. Otherwise, the total charges per
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, molecule, or fragment
+will be returned as a 1d array.
+Note that, in any case, <em>only</em> the charges of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total charge of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Dihedrals">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Dihedrals</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Dihedrals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>A connection between four sequential atoms</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Elements">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Elements</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element for each atom</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Elements.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Elements.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Epsilon14s">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Epsilon14s</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Epsilon14s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Epsilon14s" title="Permalink to this definition">¶</a></dt>
+<dd><p>The epsilon LJ parameter for 1-4 interactions</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Epsilon14s.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Epsilon14s.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Epsilons">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Epsilons</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Epsilons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Epsilons" title="Permalink to this definition">¶</a></dt>
+<dd><p>The epsilon LJ parameter</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Epsilons.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Epsilons.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.GBScreens">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">GBScreens</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#GBScreens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.GBScreens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generalized Born screening factor</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.GBScreens.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.GBScreens.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.ICodes">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">ICodes</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ICodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ICodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insertion code for Atoms</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.ICodes.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ICodes.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Impropers">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Impropers</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Impropers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Impropers" title="Permalink to this definition">¶</a></dt>
+<dd><p>An imaginary dihedral between four atoms</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Masses">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Masses</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.align_principal_axis">
+<code class="descname">align_principal_axis</code><span class="sig-paren">(</span><em>axis</em>, <em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.align_principal_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.align_principal_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align principal axis with index <cite>axis</cite> with <cite>vector</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axis</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Index of the principal axis (0, 1, or 2), as produced by
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.Masses.principal_axes" title="MDAnalysis.core.topologyattrs.Masses.principal_axes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">principal_axes()</span></code></a>.</li>
+<li><strong>vector</strong> (<em>array_like</em>) – Vector to align principal axis with.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>To align the long axis of a channel (the first principal axis, i.e.
+<em>axis</em> = 0) with the z-axis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">align_principal_axis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;aligned.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.asphericity">
+<code class="descname">asphericity</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>unwrap=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.asphericity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asphericity.</p>
+<p>See <a class="reference internal" href="#dima2004b" id="id1">[Dima2004b]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="dima2004b" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Dima2004b]</a></td><td>Dima, R. I., &amp; Thirumalai, D. (2004). Asymmetry
+in the shapes of folded and denatured states of
+proteins. <em>J Phys Chem B</em>, 108(21),
+6564-6570. doi:<a class="reference external" href="https://doi.org/10.1021/jp037128y">10.1021/jp037128y</a></td></tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <em>unwrap</em> and <em>compound</em> parameter</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.center_of_mass">
+<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.center_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass of (compounds of) the group.</p>
+<p>Computes the center of mass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> in the group.
+Centers of mass per <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly. If the masses of a compound sum up to zero, the
+center of mass coordinates of that compound will be <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a
+number).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+be returned as a single position vector. Otherwise, the centers of
+mass of each <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, molecule, or
+fragment will be returned as an array of position vectors, i.e. a 2d
+array.
+Note that, in any case, <em>only</em> the positions of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code>
+<em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the center(s) of mass of the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+position vector.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+output will be a 2d coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code>
+is the number of compounds.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>This method can only be accessed if the underlying topology has
+information about atomic masses.</li>
+</ul>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Masses.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float64</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the values for each atom present in the set of residues
+are returned in a single array. This behavior can be overriden in child
+attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the values for each atom present in the set of residues
+are returned in a single array. This behavior can be overriden in child
+attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.moment_of_inertia">
+<code class="descname">moment_of_inertia</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.moment_of_inertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.moment_of_inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
+array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.principal_axes">
+<code class="descname">principal_axes</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.principal_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.principal_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the principal axes from the moment of inertia.</p>
+<p>e1,e2,e3 = AtomGroup.principal_axes()</p>
+<p>The eigenvectors are sorted by eigenvalue, i.e. the first one
+corresponds to the highest eigenvalue and is thus the first principal
+axes.</p>
+<p>The eigenvectors form a right-handed coordinate system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>axis_vectors</strong> – 3 x 3 array with <code class="docutils literal notranslate"><span class="pre">v[0]</span></code> as first, <code class="docutils literal notranslate"><span class="pre">v[1]</span></code> as second, and
+<code class="docutils literal notranslate"><span class="pre">v[2]</span></code> as third eigenvector.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Always return principal axes in right-hand convention.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.radius_of_gyration">
+<code class="descname">radius_of_gyration</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.radius_of_gyration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radius of gyration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.shape_parameter">
+<code class="descname">shape_parameter</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.shape_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.shape_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape parameter.</p>
+<p>See <a class="reference internal" href="#dima2004a" id="id2">[Dima2004a]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="dima2004a" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Dima2004a]</a></td><td>Dima, R. I., &amp; Thirumalai, D. (2004). Asymmetry
+in the shapes of folded and denatured states of
+proteins. <em>J Phys Chem B</em>, 108(21),
+6564-6570. doi:<a class="reference external" href="https://doi.org/10.1021/jp037128y">10.1021/jp037128y</a></td></tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Masses.total_mass">
+<code class="descname">total_mass</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.total_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.total_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total mass of (compounds of) the group.</p>
+<p>Computes the total mass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> in the group.
+Total masses per <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+returned as a single value. Otherwise, the total masses per
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, molecule, or fragment will be
+returned as a 1d array.
+Note that, in any case, <em>only</em> the masses of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total mass of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Molnums">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Molnums</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Molnums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Molnums" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the molecule type</p>
+<p>Two molecules that share a molecule type share a common template topology.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Molnums.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Molnums.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.int64</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Moltypes">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Moltypes</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Moltypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Moltypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the molecule type</p>
+<p>Two molecules that share a molecule type share a common template topology.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Moltypes.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Moltypes.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.NonbondedIndices">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">NonbondedIndices</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#NonbondedIndices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.NonbondedIndices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nonbonded index (AMBER)</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.NonbondedIndices.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.NonbondedIndices.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Occupancies">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Occupancies</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Occupancies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Occupancies" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Occupancies.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Occupancies.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.RMin14s">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">RMin14s</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#RMin14s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.RMin14s" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Rmin/2 LJ parameter for 1-4 interactions</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.RMin14s.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.RMin14s.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.RMins">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">RMins</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#RMins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.RMins" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Rmin/2 LJ parameter</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.RMins.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.RMins.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Radii">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Radii</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Radii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radii for each atom</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Radii.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Radii.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.RecordTypes">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">RecordTypes</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#RecordTypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.RecordTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>For PDB-like formats, indicates if ATOM or HETATM</p>
+<p>Defaults to ‘ATOM’</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Now stores array of dtype object rather than boolean mapping</p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.RecordTypes.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.RecordTypes.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Resids">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Resids</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Residue ID</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Resids.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resids.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.ResidueAttr">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">ResidueAttr</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ResidueAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ResidueAttr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.ResidueAttr.get_atoms">
+<code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ResidueAttr.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ResidueAttr.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.ResidueAttr.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ResidueAttr.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ResidueAttr.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.ResidueAttr.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ResidueAttr.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ResidueAttr.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the values for each residue present in the set of
+segments are returned in a single array. This behavior can be overriden
+in child attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.ResidueAttr.set_atoms">
+<code class="descname">set_atoms</code><span class="sig-paren">(</span><em>ag</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ResidueAttr.set_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ResidueAttr.set_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.ResidueAttr.set_residues">
+<code class="descname">set_residues</code><span class="sig-paren">(</span><em>rg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ResidueAttr.set_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ResidueAttr.set_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.ResidueAttr.set_segments">
+<code class="descname">set_segments</code><span class="sig-paren">(</span><em>sg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#ResidueAttr.set_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.ResidueAttr.set_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set segmentattributes for a given SegmentGroup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Resindices">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Resindices</code><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resindices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resindices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Globally unique resindices for each residue in the group.</p>
+<p>If the group is an AtomGroup, then this gives the resindex for each atom in
+the group. This unambiguously determines each atom’s residue membership.
+Resetting these values changes the residue membership of the atoms.</p>
+<p>If the group is a ResidueGroup or SegmentGroup, then this gives the
+resindices of each residue represented in the group in a 1-D array, in the
+order of the elements in that group.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Resindices.get_atoms">
+<code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resindices.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resindices.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Resindices.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resindices.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resindices.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Resindices.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resindices.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resindices.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get segment attributes for a given SegmentGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Resindices.set_residues">
+<code class="descname">set_residues</code><span class="sig-paren">(</span><em>rg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resindices.set_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resindices.set_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Resnames">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Resnames</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resnames" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Resnames.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resnames.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Resnames.sequence">
+<code class="descname">sequence</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resnames.sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resnames.sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the amino acid sequence.</p>
+<p>The format of the sequence is selected with the keyword <em>format</em>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><em>format</em></th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>‘SeqRecord’</td>
+<td><code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code> (default)</td>
+</tr>
+<tr class="row-odd"><td>‘Seq’</td>
+<td><code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code></td>
+</tr>
+<tr class="row-even"><td>‘string’</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p>The sequence is returned by default (keyword <code class="docutils literal notranslate"><span class="pre">format</span> <span class="pre">=</span> <span class="pre">'SeqRecord'</span></code>)
+as a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code> instance, which can then be
+further processed. In this case, all keyword arguments (such as the
+<em>id</em> string or the <em>name</em> or the <em>description</em>) are directly passed to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code>.</p>
+<p>If the keyword <em>format</em> is set to <code class="docutils literal notranslate"><span class="pre">'Seq'</span></code>, all <em>kwargs</em> are ignored
+and a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code> instance is returned. The difference to the
+record is that the record also contains metadata and can be directly
+used as an input for other functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">Bio</span></code>.</p>
+<p>If the keyword <em>format</em> is set to <code class="docutils literal notranslate"><span class="pre">'string'</span></code>, all <em>kwargs</em> are
+ignored and a Python string is returned.</p>
+<p class="rubric">Example: Write FASTA file</p>
+<p>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">Bio.SeqIO.write()</span></code>, which takes sequence records:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
+
+<span class="c1"># get the sequence record of a protein component of a Universe</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">record</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;myseq1&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;myprotein&quot;</span><span class="p">)</span>
+
+<span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s2">&quot;single.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A FASTA file with multiple entries can be written with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="s2">&quot;multi.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>format</strong> (<em>string</em><em>, </em><em>optional</em>) – <ul>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;string&quot;</span></code>: return sequence as a string of 1-letter codes</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;Seq&quot;</span></code>: return a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code> instance</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;SeqRecord&quot;</span></code>: return a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code>
+instance</li>
+</ul>
+<blockquote>
+<div>Default is <code class="docutils literal notranslate"><span class="pre">&quot;SeqRecord&quot;</span></code></div></blockquote>
+</li>
+<li><strong>id</strong> (<em>optional</em>) – Sequence ID for SeqRecord (should be different for different
+sequences)</li>
+<li><strong>name</strong> (<em>optional</em>) – Name of the protein.</li>
+<li><strong>description</strong> (<em>optional</em>) – Short description of the sequence.</li>
+<li><strong>kwargs</strong> (<em>optional</em>) – Any other keyword arguments that are understood by
+class:<cite>Bio.SeqRecord.SeqRecord</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if a residue name cannot be converted to a</li>
+<li>1-letter IUPAC protein amino acid code; make sure to only</li>
+<li>select protein residues.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> if an unknown <em>format</em> is selected.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Resnums">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Resnums</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resnums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resnums" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Resnums.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resnums.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Segids">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Segids</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Segids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segids" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Segids.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segids.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.object</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Segindices">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Segindices</code><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Segindices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segindices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Globally unique segindices for each segment in the group.</p>
+<p>If the group is an AtomGroup, then this gives the segindex for each atom in
+the group. This unambiguously determines each atom’s segment membership.
+It is not possible to set these, since membership in a segment is an
+attribute of each atom’s residue.</p>
+<p>If the group is a ResidueGroup or SegmentGroup, then this gives the
+segindices of each segment represented in the group in a 1-D array, in the
+order of the elements in that group.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Segindices.get_atoms">
+<code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Segindices.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segindices.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Segindices.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Segindices.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segindices.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Segindices.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Segindices.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segindices.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get segment attributes for a given SegmentGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Segindices.set_segments">
+<code class="descname">set_segments</code><span class="sig-paren">(</span><em>sg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Segindices.set_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segindices.set_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set segmentattributes for a given SegmentGroup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.SegmentAttr">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">SegmentAttr</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SegmentAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SegmentAttr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for segment attributes.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.SegmentAttr.get_atoms">
+<code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SegmentAttr.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SegmentAttr.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.SegmentAttr.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SegmentAttr.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SegmentAttr.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.SegmentAttr.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SegmentAttr.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SegmentAttr.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get segment attributes for a given SegmentGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.SegmentAttr.set_atoms">
+<code class="descname">set_atoms</code><span class="sig-paren">(</span><em>ag</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SegmentAttr.set_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SegmentAttr.set_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.SegmentAttr.set_residues">
+<code class="descname">set_residues</code><span class="sig-paren">(</span><em>rg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SegmentAttr.set_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SegmentAttr.set_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.SegmentAttr.set_segments">
+<code class="descname">set_segments</code><span class="sig-paren">(</span><em>sg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SegmentAttr.set_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SegmentAttr.set_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set segmentattributes for a given SegmentGroup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.SolventRadii">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">SolventRadii</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#SolventRadii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SolventRadii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intrinsic solvation radius</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.SolventRadii.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.SolventRadii.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Tempfactors">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Tempfactors</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Tempfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tempfactor for atoms</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Tempfactors.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">TopologyAttr</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for Topology attributes.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This class is intended to be subclassed, and mostly amounts to
+a skeleton. The methods here should be present in all
+<a class="reference internal" href="#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a> child classes, but by default they raise
+appropriate exceptions.</p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.attrname">
+<code class="descname">attrname</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.attrname" title="Permalink to this definition">¶</a></dt>
+<dd><p>the name used for the attribute when attached to a <code class="docutils literal notranslate"><span class="pre">Topology</span></code> object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.singular">
+<code class="descname">singular</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.singular" title="Permalink to this definition">¶</a></dt>
+<dd><p>name for the attribute on a singular object (Atom/Residue/Segment)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.per_object">
+<code class="descname">per_object</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.per_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>If there is a strict mapping between Component and Attribute</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type to coerce this attribute to be.  For string use ‘object’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int/float/object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.top">
+<code class="descname">top</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>handle for the Topology object TopologyAttr is associated with</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology">Topology</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deepcopy of this attribute</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.from_blank">
+<em class="property">classmethod </em><code class="descname">from_blank</code><span class="sig-paren">(</span><em>n_atoms=None</em>, <em>n_residues=None</em>, <em>n_segments=None</em>, <em>values=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.from_blank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.from_blank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a blank version of this TopologyAttribute</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Size of the TopologyAttribute atoms</li>
+<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Size of the TopologyAttribute residues</li>
+<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Size of the TopologyAttribute segments</li>
+<li><strong>values</strong> (<em>optional</em>) – Initial values for the TopologyAttribute</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.get_atoms">
+<code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.get_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.get_residues">
+<code class="descname">get_residues</code><span class="sig-paren">(</span><em>rg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.get_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.get_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.get_segments">
+<code class="descname">get_segments</code><span class="sig-paren">(</span><em>sg</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.get_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.get_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get segment attributes for a given SegmentGroup</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.is_guessed">
+<code class="descname">is_guessed</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.is_guessed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool of if the source of this information is a guess</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.set_atoms">
+<code class="descname">set_atoms</code><span class="sig-paren">(</span><em>ag</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.set_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.set_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set atom attributes for a given AtomGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.set_residues">
+<code class="descname">set_residues</code><span class="sig-paren">(</span><em>rg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.set_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.set_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set residue attributes for a given ResidueGroup</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.TopologyAttr.set_segments">
+<code class="descname">set_segments</code><span class="sig-paren">(</span><em>sg</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#TopologyAttr.set_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.TopologyAttr.set_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set segmentattributes for a given SegmentGroup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.UreyBradleys">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">UreyBradleys</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#UreyBradleys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.UreyBradleys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angles between two atoms</p>
+<p>Initialise with a list of 2 long tuples</p>
+<p>These indices refer to the atom indices.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="selection.html" class="btn btn-neutral float-right" title="11.3.1. Atom selection Hierarchy — MDAnalysis.core.selection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="topologyobjects.html" class="btn btn-neutral float-left" title="11.2.2. Core Topology Objects — MDAnalysis.core.topologyobjects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

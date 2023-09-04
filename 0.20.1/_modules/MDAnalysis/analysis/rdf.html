@@ -1,0 +1,518 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>MDAnalysis.analysis.rdf &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.analysis.rdf</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`</span>
+<span class="sd">================================================================</span>
+
+<span class="sd">This module contains two classes to calculate radial</span>
+<span class="sd">`pair distribution functions`_ (`radial distribution functions`_ or &quot;RDF&quot;).</span>
+<span class="sd">The RDF :math:`g_{ab}(r)` between types of particles :math:`a` and :math:`b` is</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">   g_{ab}(r) = (N_{a} N_{b})^{-1} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}</span>
+<span class="sd">               \langle \delta(|\mathbf{r}_i - \mathbf{r}_j| - r) \rangle</span>
+
+<span class="sd">which is normalized so that the RDF becomes 1 for large separations in a</span>
+<span class="sd">homogenous system. The RDF effectively counts the average number of :math:`b`</span>
+<span class="sd">neighbours in a shell at distance :math:`r` around a :math:`a` particle and</span>
+<span class="sd">represents it as a density.</span>
+
+<span class="sd">The radial cumulative distribution function is</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">   G_{ab}(r) = \int_0^r \!\!dr&#39; 4\pi r&#39;^2 g_{ab}(r&#39;)</span>
+
+<span class="sd">and the average number of :math:`b` particles within radius :math:`r`</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">   N_{ab}(r) = \rho G_{ab}(r)</span>
+
+<span class="sd">(with the appropriate density :math:`\rho`). The latter function can be used to</span>
+<span class="sd">compute, for instance, coordination numbers such as the number of neighbors in</span>
+<span class="sd">the first solvation shell :math:`N(r_1)` where :math:`r_1` is the position of</span>
+<span class="sd">the first minimum in :math:`g(r)`.</span>
+
+
+<span class="sd">.. _`pair distribution functions`:</span>
+<span class="sd">   https://en.wikipedia.org/wiki/Pair_distribution_function</span>
+<span class="sd">.. _`radial distribution functions`:</span>
+<span class="sd">   https://en.wikipedia.org/wiki/Radial_distribution_function</span>
+
+
+<span class="sd">Average radial distribution function</span>
+<span class="sd">------------------------------------</span>
+
+<span class="sd">:class:`InterRDF` is a tool to calculate average radial distribution functions</span>
+<span class="sd">between two groups of atoms. Suppose we have two AtomGroups ``A`` and</span>
+<span class="sd">``B``. ``A`` contains atom ``A1``, ``A2``, and ``B`` contains ``B1``,</span>
+<span class="sd">``B2``. Give ``A`` and ``B`` to class:`InterRDF`, the output will be the</span>
+<span class="sd">average of RDFs between ``A1`` and ``B1``, ``A1`` and ``B2``, ``A2`` and</span>
+<span class="sd">``B1``, ``A2`` and ``B2``. A typical application is to calculate the RDF of</span>
+<span class="sd">solvent with itself or with another solute.</span>
+
+<span class="sd">.. autoclass:: InterRDF</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+
+<span class="sd">Site-specific radial distribution function</span>
+<span class="sd">------------------------------------------</span>
+
+<span class="sd">:class:`InterRDF_s` calculates site-specific radial distribution</span>
+<span class="sd">functions. Instead of two groups of atoms it takes as input a list of pairs of</span>
+<span class="sd">AtomGroup, ``[[A, B], [C, D], ...]``. Give the same ``A`` and ``B`` to</span>
+<span class="sd">:class:`InterRDF_s`, the output will be a list of RDFs between ``A1`` and</span>
+<span class="sd">``B1``, ``A1`` and ``B2``, ``A2`` and ``B1``, ``A2`` and ``B2`` (and similarly</span>
+<span class="sd">for ``C`` and ``D``). These site-specific radial distribution functions are</span>
+<span class="sd">typically calculated if one is interested in the solvation shells of a ligand</span>
+<span class="sd">in a binding site or the solvation of specific residues in a protein. A common</span>
+<span class="sd">use case is to choose ``A`` and ``C`` to be AtomGroups that only contain a</span>
+<span class="sd">single atom and ``W`` all solvent molecules: ``InterRDF_s(u, [[A, W], [B,</span>
+<span class="sd">W]])`` will then produce the RDF of solvent around atom ``A[0]`` and around</span>
+<span class="sd">atom ``B[0]``.</span>
+
+
+<span class="sd">.. autoclass:: InterRDF_s</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+
+<span class="sd">.. Not Implemented yet:</span>
+<span class="sd">.. - Structure factor?</span>
+<span class="sd">.. - Coordination number</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">blocks_of</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">range</span>
+
+
+<div class="viewcode-block" id="InterRDF"><a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF">[docs]</a><span class="k">class</span> <span class="nc">InterRDF</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Intermolecular pair distribution function</span>
+
+<span class="sd">    InterRDF(g1, g2, nbins=75, range=(0.0, 15.0))</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    g1 : AtomGroup</span>
+<span class="sd">      First AtomGroup</span>
+<span class="sd">    g2 : AtomGroup</span>
+<span class="sd">      Second AtomGroup</span>
+<span class="sd">    nbins : int (optional)</span>
+<span class="sd">          Number of bins in the histogram [75]</span>
+<span class="sd">    range : tuple or list (optional)</span>
+<span class="sd">          The size of the RDF [0.0, 15.0]</span>
+<span class="sd">    exclusion_block : tuple (optional)</span>
+<span class="sd">          A tuple representing the tile to exclude from the distance</span>
+<span class="sd">          array. [None]</span>
+<span class="sd">    start : int (optional)</span>
+<span class="sd">          The frame to start at (default is first)</span>
+<span class="sd">    stop : int (optional)</span>
+<span class="sd">          The frame to end at (default is last)</span>
+<span class="sd">    step : int (optional)</span>
+<span class="sd">          The step size through the trajectory in frames (default is</span>
+<span class="sd">          every frame)</span>
+<span class="sd">    verbose : bool (optional)</span>
+<span class="sd">          Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">          default is ``False``.</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    First create the :class:`InterRDF` object, by supplying two</span>
+<span class="sd">    AtomGroups then use the :meth:`run` method ::</span>
+
+<span class="sd">      rdf = InterRDF(ag1, ag2)</span>
+<span class="sd">      rdf.run()</span>
+
+<span class="sd">    Results are available through the :attr:`bins` and :attr:`rdf`</span>
+<span class="sd">    attributes::</span>
+
+<span class="sd">      plt.plot(rdf.bins, rdf.rdf)</span>
+
+<span class="sd">    The `exclusion_block` keyword allows the masking of pairs from</span>
+<span class="sd">    within the same molecule.  For example, if there are 7 of each</span>
+<span class="sd">    atom in each molecule, the exclusion mask `(7, 7)` can be used.</span>
+
+
+<span class="sd">    .. versionadded:: 0.13.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span>
+                 <span class="n">nbins</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span> <span class="n">exclusion_block</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">InterRDF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">g1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g1</span> <span class="o">=</span> <span class="n">g1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g2</span> <span class="o">=</span> <span class="n">g2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">g1</span><span class="o">.</span><span class="n">universe</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span>
+                             <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span> <span class="o">=</span> <span class="n">exclusion_block</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Empty histogram to store the RDF</span>
+        <span class="n">count</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">*=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+        <span class="c1"># Need to know average volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># Set the max range to filter the search radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">g2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span><span class="p">,</span>
+                                                <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="c1"># Maybe exclude same molecule distances</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idxA</span><span class="p">,</span> <span class="n">idxB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">//</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">idxA</span> <span class="o">!=</span> <span class="n">idxB</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+
+        <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="n">count</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Number of each selection</span>
+        <span class="n">nA</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g1</span><span class="p">)</span>
+        <span class="n">nB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g2</span><span class="p">)</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">nA</span> <span class="o">*</span> <span class="n">nB</span>
+
+        <span class="c1"># If we had exclusions, take these into account</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span><span class="p">:</span>
+            <span class="n">xA</span><span class="p">,</span> <span class="n">xB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusion_block</span>
+            <span class="n">nblocks</span> <span class="o">=</span> <span class="n">nA</span> <span class="o">/</span> <span class="n">xA</span>
+            <span class="n">N</span> <span class="o">-=</span> <span class="n">xA</span> <span class="o">*</span> <span class="n">xB</span> <span class="o">*</span> <span class="n">nblocks</span>
+
+        <span class="c1"># Volume in each radial shell</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">vol</span> <span class="o">*=</span> <span class="mi">4</span><span class="o">/</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="c1"># Average number density</span>
+        <span class="n">box_vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="n">box_vol</span>
+
+        <span class="n">rdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">/</span> <span class="p">(</span><span class="n">density</span> <span class="o">*</span> <span class="n">vol</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdf</span> <span class="o">=</span> <span class="n">rdf</span></div>
+
+
+<div class="viewcode-block" id="InterRDF_s"><a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF_s">[docs]</a><span class="k">class</span> <span class="nc">InterRDF_s</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Site-specific intermolecular pair distribution function</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    u : Universe</span>
+<span class="sd">          a Universe that contains atoms in `ags`</span>
+<span class="sd">    ags : list</span>
+<span class="sd">          a list of pairs of :class:`~MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">          instances</span>
+<span class="sd">    nbins : int (optional)</span>
+<span class="sd">          Number of bins in the histogram [75]</span>
+<span class="sd">    range : tuple or list (optional)</span>
+<span class="sd">          The size of the RDF [0.0, 15.0]</span>
+<span class="sd">    start : int (optional)</span>
+<span class="sd">          The frame to start at (default is first)</span>
+<span class="sd">    stop : int (optional)</span>
+<span class="sd">          The frame to end at (default is last)</span>
+<span class="sd">    step : int (optional)</span>
+<span class="sd">          The step size through the trajectory in frames (default is</span>
+<span class="sd">          every frame)</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    First create the :class:`InterRDF_s` object, by supplying one Universe and</span>
+<span class="sd">    one list of pairs of AtomGroups, then use the :meth:`~InterRDF_s.run`</span>
+<span class="sd">    method::</span>
+
+<span class="sd">      from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT</span>
+<span class="sd">      u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)</span>
+
+<span class="sd">      s1 = u.select_atoms(&#39;name ZND and resid 289&#39;)</span>
+<span class="sd">      s2 = u.select_atoms(&#39;(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)&#39;)</span>
+<span class="sd">      s3 = u.select_atoms(&#39;name ZND and (resid 291 or resid 292)&#39;)</span>
+<span class="sd">      s4 = u.select_atoms(&#39;(name OD1 or name OD2) and sphzone 5.0 (resid 291)&#39;)</span>
+<span class="sd">      ags = [[s1, s2], [s3, s4]]</span>
+
+<span class="sd">      rdf = InterRDF_s(u, ags)</span>
+<span class="sd">      rdf.run()</span>
+
+<span class="sd">    Results are available through the :attr:`bins` and :attr:`rdf` attributes::</span>
+
+<span class="sd">      plt.plot(rdf.bins, rdf.rdf[0][0][0])</span>
+
+<span class="sd">    (Which plots the rdf between the first atom in ``s1`` and the first atom in</span>
+<span class="sd">    ``s2``)</span>
+
+<span class="sd">    To generate the *cumulative distribution function* (cdf), use the</span>
+<span class="sd">    :meth:`~InterRDF_s.get_cdf` method ::</span>
+
+<span class="sd">      cdf = rdf.get_cdf()</span>
+
+<span class="sd">    Results are available through the :attr:&#39;cdf&#39; attribute::</span>
+
+<span class="sd">      plt.plot(rdf.bins, rdf.cdf[0][0][0])</span>
+
+<span class="sd">    (Which plots the cdf between the first atom in ``s1`` and the first atom in</span>
+<span class="sd">    ``s2``)</span>
+
+
+<span class="sd">    .. versionadded:: 0.19.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">ags</span><span class="p">,</span>
+                 <span class="n">nbins</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">InterRDF_s</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># List of pairs of AtomGroups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ags</span> <span class="o">=</span> <span class="n">ags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_density</span> <span class="o">=</span> <span class="n">density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="n">nbins</span><span class="p">,</span>
+                             <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Empty list to store the RDF</span>
+        <span class="n">count_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">count</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)</span>
+        <span class="n">count_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">count</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+        <span class="c1"># Need to know average volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">):</span>
+            <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                    <span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_maxrange</span><span class="p">,</span>
+                                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> 
+                                                             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">rdf_settings</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>            
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">volume</span>
+
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Volume in each radial shell</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">vol</span> <span class="o">*=</span> <span class="mi">4</span><span class="o">/</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="c1"># Empty lists to restore indices, RDF</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rdf</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">):</span>
+            <span class="c1"># Number of each selection</span>
+            <span class="n">nA</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span>
+            <span class="n">nB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">)</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">nA</span> <span class="o">*</span> <span class="n">nB</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ag1</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">indices</span><span class="p">])</span>
+
+            <span class="c1"># Average number density</span>
+            <span class="n">box_vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+            <span class="n">density</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="n">box_vol</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_density</span><span class="p">:</span>
+                <span class="n">rdf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">density</span> <span class="o">*</span> <span class="n">vol</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rdf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">vol</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdf</span> <span class="o">=</span> <span class="n">rdf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span>
+
+<div class="viewcode-block" id="InterRDF_s.get_cdf"><a class="viewcode-back" href="../../../documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf">[docs]</a>    <span class="k">def</span> <span class="nf">get_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the cumulative distribution functions (CDF) for all sites.</span>
+<span class="sd">        Note that this is the actual count within a given radius, i.e.,</span>
+<span class="sd">        :math:`N(r)`.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">              cdf : list</span>
+<span class="sd">                      list of arrays with the same structure as :attr:`rdf`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculate cumulative distribution function</span>
+        <span class="c1"># Empty list to restore CDF</span>
+        <span class="n">cdf</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
+            <span class="n">cdf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+
+        <span class="c1"># Results stored in self.cdf</span>
+        <span class="c1"># self.cdf is a list of cdf between pairs of AtomGroups in ags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cdf</span> <span class="o">=</span> <span class="n">cdf</span>
+
+        <span class="k">return</span> <span class="n">cdf</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

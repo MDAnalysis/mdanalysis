@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>12.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="12.2.6. Setting up logging — MDAnalysis.lib.log" href="log.html" />
+    <link rel="prev" title="12.2.4. Neighbor search library — MDAnalysis.lib.nsgrid" href="nsgrid.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.lib.pkdtree"></span><div class="section" id="periodickdtree-mdanalysis-lib-pkdtree">
+<h1><span class="section-number">12.2.5. </span>PeriodicKDTree — <a class="reference internal" href="#module-MDAnalysis.lib.pkdtree" title="MDAnalysis.lib.pkdtree"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a><a class="headerlink" href="#periodickdtree-mdanalysis-lib-pkdtree" title="Permalink to this headline">¶</a></h1>
+<p>This module contains a class to allow searches on a KDTree involving periodic
+boundary conditions.</p>
+<dl class="class">
+<dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.lib.pkdtree.</code><code class="sig-name descname">PeriodicKDTree</code><span class="sig-paren">(</span><em class="sig-param">box=None</em>, <em class="sig-param">leafsize=10</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/pkdtree.html#PeriodicKDTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.html#scipy.spatial.cKDTree" title="(in SciPy v1.5.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.cKDTree</span></code></a></p>
+<p>Creates an object which can handle periodic as well as
+non periodic boundary condtions depending on the parameters
+provided while constructing the tree.</p>
+<p>To enable periodic boundary conditions, box dimensions must be
+provided. Periodic Boundary conditions are implemented by creating
+duplicates of the particles which are within the specified cutoff
+distance from the boundary. These duplicates along with the
+original particle coordinates are used with the cKDTree without
+any special treatment due to PBC beyond this point.  The final
+results after any operation with duplicate particle indices can be
+traced back to the original particle using the
+<a class="reference internal" href="distances.html#MDAnalysis.lib.distances.undo_augment" title="MDAnalysis.lib.distances.undo_augment"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances.undo_augment()</span></code></a> function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>box</strong> (array-like or <code class="docutils literal notranslate"><span class="pre">None</span></code>, optional, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Simulation cell dimensions in the form of
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.trajectory.base.Timestep.dimensions</span></code> when
+periodic boundary conditions should be taken into account for
+the calculation of contacts.</p></li>
+<li><p><strong>leafsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of entries in leafs of the KDTree. If you suffer poor
+performance you can play around with this number. Increasing the
+<cite>leafsize</cite> will speed up the construction of the KDTree but
+slow down the search.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree.get_indices">
+<code class="sig-name descname">get_indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/pkdtree.html#PeriodicKDTree.get_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.get_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the neighbors from the last query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>indices</strong> – neighbors for the last query points and search radius</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree.pbc">
+<em class="property">property </em><code class="sig-name descname">pbc</code><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.pbc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag to indicate the presence of periodic boundaries.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if PBC are taken into account</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code> if no unitcell dimension is available.</p></li>
+</ul>
+<p>This is a managed attribute and can only be read.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree.search">
+<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param">centers</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/pkdtree.html#PeriodicKDTree.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search all points within radius from centers and their periodic images.</p>
+<p>All the centers coordinates are wrapped around the central cell
+to enable distance evaluations from points in the tree
+and their images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>centers</strong> (<em>array_like</em><em> (</em><em>N</em><em>,</em><em>3</em><em>)</em>) – coordinate array to search for neighbors</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – maximum distance to search for neighbors.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree.search_pairs">
+<code class="sig-name descname">search_pairs</code><span class="sig-paren">(</span><em class="sig-param">radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/pkdtree.html#PeriodicKDTree.search_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.search_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search all the pairs within a specified radius</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Maximum distance between pairs of coordinates</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pairs</strong> – Indices of all the pairs which are within the specified radius</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree.search_tree">
+<code class="sig-name descname">search_tree</code><span class="sig-paren">(</span><em class="sig-param">centers</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/pkdtree.html#PeriodicKDTree.search_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.search_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches all the pairs within <cite>radius</cite> between <cite>centers</cite>
+and <code class="docutils literal notranslate"><span class="pre">coords</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">coords</span></code> are the already initialized coordinates in the tree
+during <a class="reference internal" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.set_coords" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.set_coords"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_coords()</span></code></a>.
+<code class="docutils literal notranslate"><span class="pre">centers</span></code> are wrapped around the primary unit cell
+if PBC is desired. Minimum image convention (PBC) is
+activated if the <cite>box</cite> argument is provided during
+class initialization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>centers</strong> (<em>array_like</em><em> (</em><em>N</em><em>,</em><em>3</em><em>)</em>) – coordinate array to search for neighbors</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – maximum distance to search for neighbors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pairs</strong> – all the pairs between <code class="docutils literal notranslate"><span class="pre">coords</span></code> and <code class="docutils literal notranslate"><span class="pre">centers</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method constructs another tree from the <code class="docutils literal notranslate"><span class="pre">centers</span></code>
+and queries the previously built tree (built in
+<a class="reference internal" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.set_coords" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.set_coords"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_coords()</span></code></a>)</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree.set_coords">
+<code class="sig-name descname">set_coords</code><span class="sig-paren">(</span><em class="sig-param">coords</em>, <em class="sig-param">cutoff=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/pkdtree.html#PeriodicKDTree.set_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree.set_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs KDTree from the coordinates</p>
+<p>Wrapping of coordinates to the primary unit cell is enforced
+before any distance evaluations. If periodic boundary conditions
+are enabled, then duplicate particles are generated in the
+vicinity of the box. An additional array <cite>mapping</cite> is also
+generated which can be later used to trace the origin of
+duplicate particle coordinates.</p>
+<p>For non-periodic calculations, cutoff should not be provided
+the parameter is only required for periodic calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>array_like</em>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for N atoms.</p></li>
+<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Specified cutoff distance to create duplicate images
+Typically equivalent to the desired search radius
+or the maximum of the desired cutoff radius. Relevant images
+corresponding to every atom which lies
+within <code class="docutils literal notranslate"><span class="pre">cutoff</span></code> distance from either of the box boundary
+will be generated.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="distances.html#MDAnalysis.lib.distances.augment_coordinates" title="MDAnalysis.lib.distances.augment_coordinates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances.augment_coordinates()</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">12.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">12.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">12.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.4. Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.5. PeriodicKDTree — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.6. Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.7. Mathematical helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../lib_modules.html"><span class="section-number">12. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="nsgrid.html" title="previous chapter"><span class="section-number">12.2.4. </span>Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+      <li>Next: <a href="log.html" title="next chapter"><span class="section-number">12.2.6. </span>Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/lib/pkdtree.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

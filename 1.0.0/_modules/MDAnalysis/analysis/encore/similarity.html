@@ -1,0 +1,1946 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.encore.similarity</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.encore.similarity</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;=================================================================================</span>
+<span class="sd">Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity`</span>
+<span class="sd">=================================================================================</span>
+
+<span class="sd">:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</span>
+
+<span class="sd">.. versionadded:: 0.16.0</span>
+
+<span class="sd">The module contains implementations of similarity measures between protein</span>
+<span class="sd">ensembles described in [Lindorff-Larsen2009]_. The implementation and examples</span>
+<span class="sd">are described in [Tiberti2015]_.</span>
+
+<span class="sd">The module includes facilities for handling ensembles and trajectories through</span>
+<span class="sd">the :class:`Universe` class, performing clustering or dimensionality reduction</span>
+<span class="sd">of the ensemble space, estimating multivariate probability distributions from</span>
+<span class="sd">the input data, and more. ENCORE can be used to compare experimental and</span>
+<span class="sd">simulation-derived ensembles, as well as estimate the convergence of</span>
+<span class="sd">trajectories from time-dependent simulations.</span>
+
+<span class="sd">ENCORE includes three different methods for calculations of similarity measures</span>
+<span class="sd">between ensembles implemented in individual functions:</span>
+
+<span class="sd">+ **Harmonic Ensemble Similarity** : :func:`hes`</span>
+<span class="sd">+ **Clustering Ensemble Similarity** : :func:`ces`</span>
+<span class="sd">+ **Dimensional Reduction Ensemble Similarity** : :func:`dres`</span>
+
+<span class="sd">as well as two methods to evaluate the convergence of trajectories:</span>
+
+<span class="sd">+ **Clustering based convergence evaluation** : :func:`ces_convergence`</span>
+<span class="sd">+ **Dimensionality-reduction based convergence evaluation** : :func:`dres_convergence`</span>
+
+<span class="sd">When using this module in published work please cite [Tiberti2015]_.</span>
+
+<span class="sd">References</span>
+<span class="sd">==========</span>
+
+<span class="sd">.. [Lindorff-Larsen2009] Similarity Measures for Protein</span>
+<span class="sd">   Ensembles. Lindorff-Larsen, K. Ferkinghoff-Borg, J. PLoS ONE 2008, 4, e4203.</span>
+
+<span class="sd">.. [Tiberti2015] ENCORE: Software for Quantitative Ensemble Comparison. Matteo</span>
+<span class="sd">   Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, Kresten</span>
+<span class="sd">   Lindorff-Larsen. PLoS Comput Biol. 2015, 11, e1004415.</span>
+
+<span class="sd">.. _Examples:</span>
+<span class="sd">Examples</span>
+<span class="sd">========</span>
+
+<span class="sd">The examples show how to use ENCORE to calculate a similarity measurement</span>
+<span class="sd">of two simple ensembles. The ensembles are obtained from the MDAnalysis</span>
+<span class="sd">test suite for two different simulations of the protein AdK. To run the</span>
+<span class="sd">examples first execute: ::</span>
+
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
+
+<span class="sd">To calculate the Harmonic Ensemble Similarity (:func:`hes`)</span>
+<span class="sd">two ensemble objects are first created and then used for calculation: ::</span>
+
+<span class="sd">    &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">    &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">    &gt;&gt;&gt; HES, details = encore.hes([ens1, ens2])</span>
+<span class="sd">    &gt;&gt;&gt; print(HES)</span>
+<span class="sd">    [[        0.        ,  38279683.95892926],</span>
+<span class="sd">    [ 38279683.95892926,         0.        ]]</span>
+
+<span class="sd">HES can assume any non-negative value, i.e. no upper bound exists and the</span>
+<span class="sd">measurement can therefore be used as an absolute scale.</span>
+
+<span class="sd">The calculation of the Clustering Ensemble Similarity (:func:`ces`)</span>
+<span class="sd">is computationally more expensive. It is based on clustering algorithms that in</span>
+<span class="sd">turn require a similarity matrix between the frames the ensembles are made</span>
+<span class="sd">of. The similarity matrix is derived from a distance matrix (By default a RMSD</span>
+<span class="sd">matrix; a full RMSD matrix between each pairs of elements needs to be computed).</span>
+<span class="sd">The RMSD matrix is automatically calculated. ::</span>
+
+<span class="sd">    &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">    &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">    &gt;&gt;&gt; CES, details = encore.ces([ens1, ens2])</span>
+<span class="sd">    &gt;&gt;&gt; print(CES)</span>
+<span class="sd">    [[ 0.          0.68070702]</span>
+<span class="sd">    [ 0.68070702  0.        ]]</span>
+
+<span class="sd">However, we may want to reuse the RMSD matrix in other calculations e.g.</span>
+<span class="sd">running CES with different parameters or running DRES. In this</span>
+<span class="sd">case we first compute the RMSD matrix alone:</span>
+
+<span class="sd">    &gt;&gt;&gt; rmsd_matrix = encore.get_distance_matrix(</span>
+<span class="sd">                                    encore.utils.merge_universes([ens1, ens2]),</span>
+<span class="sd">                                    save_matrix=&quot;rmsd.npz&quot;)</span>
+
+<span class="sd">In the above example the RMSD matrix was also saved in rmsd.npz on disk, and</span>
+<span class="sd">so can be loaded and re-used at later times, instead of being recomputed:</span>
+
+<span class="sd">    &gt;&gt;&gt; rmsd_matrix = encore.get_distance_matrix(</span>
+<span class="sd">                                    encore.utils.merge_universes([ens1, ens2]),</span>
+<span class="sd">                                    load_matrix=&quot;rmsd.npz&quot;)</span>
+
+
+<span class="sd">For instance, the rmsd_matrix object can be re-used as input for the</span>
+<span class="sd">Dimensional Reduction Ensemble Similarity (:func:`dres`) method.</span>
+<span class="sd">DRES is based on the estimation of the probability density in</span>
+<span class="sd">a dimensionally-reduced conformational space of the ensembles, obtained from</span>
+<span class="sd">the original space using either the Stochastic Proximity Embedding algorithm or</span>
+<span class="sd">the Principal Component Analysis.</span>
+<span class="sd">As the algorithms require the distance matrix calculated on the original space,</span>
+<span class="sd">we can reuse the previously-calculated RMSD matrix.</span>
+<span class="sd">In the following example the dimensions are reduced to 3 using the</span>
+<span class="sd">saved RMSD matrix and the default SPE dimensional reduction method.   : ::</span>
+
+<span class="sd">    &gt;&gt;&gt; DRES,details = encore.dres([ens1, ens2],</span>
+<span class="sd">                                   distance_matrix = rmsd_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; print(DRES)</span>
+<span class="sd">    [[ 0.        ,   0.67453198]</span>
+<span class="sd">     [  0.67453198,  0.        ]]</span>
+
+
+<span class="sd">In addition to the quantitative similarity estimate, the dimensional reduction</span>
+<span class="sd">can easily be visualized, see the ``Example`` section in</span>
+<span class="sd">:mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`.</span>
+<span class="sd">Due to the stochastic nature of SPE, two identical ensembles will not</span>
+<span class="sd">necessarily result in an exactly 0 estimate of the similarity, but will be very</span>
+<span class="sd">close. For the same reason, calculating the similarity with the :func:`dres`</span>
+<span class="sd">twice will not result in necessarily identical values but rather two very close</span>
+<span class="sd">values.</span>
+
+<span class="sd">It should be noted that both in :func:`ces` and :func:`dres` the similarity is</span>
+<span class="sd">evaluated using the Jensen-Shannon divergence resulting in an upper bound of</span>
+<span class="sd">ln(2), which indicates no similarity between the ensembles and a lower bound</span>
+<span class="sd">of 0.0 signifying two identical ensembles. In contrast, the :func:`hes` function uses</span>
+<span class="sd">a symmetrized version of the Kullback-Leibler divergence, which is unbounded.</span>
+
+
+<span class="sd">Functions for ensemble comparisons</span>
+<span class="sd">==================================</span>
+
+<span class="sd">.. autofunction:: hes</span>
+
+<span class="sd">.. autofunction:: ces</span>
+
+<span class="sd">.. autofunction:: dres</span>
+
+
+<span class="sd">Function reference</span>
+<span class="sd">==================</span>
+
+<span class="sd">.. All functions are included via automodule :members:.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+
+<span class="kn">from</span> <span class="nn">...coordinates.memory</span> <span class="kn">import</span> <span class="n">MemoryReader</span>
+<span class="kn">from</span> <span class="nn">.confdistmatrix</span> <span class="kn">import</span> <span class="n">get_distance_matrix</span>
+<span class="kn">from</span> <span class="nn">.bootstrap</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">,</span>
+                        <span class="n">get_ensemble_bootstrap_samples</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.clustering.cluster</span> <span class="kn">import</span> <span class="n">cluster</span>
+<span class="kn">from</span> <span class="nn">.clustering.ClusteringMethod</span> <span class="kn">import</span> <span class="n">AffinityPropagationNative</span>
+<span class="kn">from</span> <span class="nn">.dimensionality_reduction.DimensionalityReductionMethod</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">StochasticProximityEmbeddingNative</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.dimensionality_reduction.reduce_dimensionality</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">reduce_dimensionality</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.covariance</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">covariance_matrix</span><span class="p">,</span> <span class="n">ml_covariance_estimator</span><span class="p">,</span> <span class="n">shrinkage_covariance_estimator</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">merge_universes</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">trm_indices_diag</span><span class="p">,</span> <span class="n">trm_indices_nodiag</span>
+
+<span class="c1"># Low boundary value for log() argument - ensure no nans</span>
+<span class="n">EPSILON</span> <span class="o">=</span> <span class="mf">1E-15</span>
+
+<span class="n">xlogy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="discrete_kullback_leibler_divergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence">[docs]</a><span class="k">def</span> <span class="nf">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Kullback-Leibler divergence between discrete probability distribution.</span>
+<span class="sd">    Notice that since this measure is not symmetric ::</span>
+<span class="sd">    :math:`d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    pA : iterable of floats</span>
+<span class="sd">        First discrete probability density function</span>
+
+<span class="sd">    pB : iterable of floats</span>
+<span class="sd">        Second discrete probability density function</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    dkl : float</span>
+<span class="sd">        Discrete Kullback-Liebler divergence</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xlogy</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pA</span> <span class="o">/</span> <span class="n">pB</span><span class="p">))</span></div>
+
+
+<span class="c1"># discrete dJS</span>
+<div class="viewcode-block" id="discrete_jensen_shannon_divergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence">[docs]</a><span class="k">def</span> <span class="nf">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Jensen-Shannon divergence between discrete probability distributions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    pA : iterable of floats</span>
+<span class="sd">        First discrete probability density function</span>
+
+<span class="sd">    pB : iterable of floats</span>
+<span class="sd">        Second discrete probability density function</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    djs : float</span>
+<span class="sd">        Discrete Jensen-Shannon divergence</span>
+<span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="p">(</span><span class="n">pA</span> <span class="o">+</span> <span class="n">pB</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">+</span>
+                  <span class="n">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pB</span><span class="p">,</span> <span class="p">(</span><span class="n">pA</span> <span class="o">+</span> <span class="n">pB</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">))</span></div>
+
+
+<span class="c1"># calculate harmonic similarity</span>
+<div class="viewcode-block" id="harmonic_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.harmonic_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span>
+                                 <span class="n">sigma2</span><span class="p">,</span>
+                                 <span class="n">x1</span><span class="p">,</span>
+                                 <span class="n">x2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the harmonic ensemble similarity measure</span>
+<span class="sd">    as defined in [Tiberti2015]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    sigma1 : numpy.array</span>
+<span class="sd">        Covariance matrix for the first ensemble.</span>
+
+<span class="sd">    sigma2 : numpy.array</span>
+<span class="sd">        Covariance matrix for the second ensemble.</span>
+
+<span class="sd">    x1: numpy.array</span>
+<span class="sd">        Mean for the estimated normal multivariate distribution of the first</span>
+<span class="sd">        ensemble.</span>
+
+<span class="sd">    x2: numpy.array</span>
+<span class="sd">        Mean for the estimated normal multivariate distribution of the second</span>
+<span class="sd">        ensemble.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">        dhes : float</span>
+<span class="sd">            harmonic similarity measure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Inverse covariance matrices</span>
+    <span class="n">sigma1_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">sigma1</span><span class="p">)</span>
+    <span class="n">sigma2_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">sigma2</span><span class="p">)</span>
+
+    <span class="c1"># Difference between average vectors</span>
+    <span class="n">d_avg</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span>
+
+    <span class="c1"># Distance measure</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span> <span class="n">sigma2_inv</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma2</span><span class="p">,</span> <span class="n">sigma1_inv</span><span class="p">)</span>
+                        <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">sigma1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="n">d_hes</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">d_avg</span><span class="p">),</span>
+                              <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma1_inv</span> <span class="o">+</span> <span class="n">sigma2_inv</span><span class="p">,</span>
+                                        <span class="n">d_avg</span><span class="p">))</span> <span class="o">+</span> <span class="n">trace</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d_hes</span></div>
+
+
+<div class="viewcode-block" id="clustering_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
+                                   <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Clustering ensemble similarity: calculate the probability densities from</span>
+<span class="sd">     the clusters and calculate discrete Jensen-Shannon divergence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    cc : encore.clustering.ClustersCollection</span>
+<span class="sd">        Collection from cluster calculated by a clustering algorithm</span>
+<span class="sd">        (e.g. Affinity propagation)</span>
+
+<span class="sd">    ens1 : :class:`~MDAnalysis.core.universe.Universe`</span>
+<span class="sd">        First ensemble to be used in comparison</span>
+
+<span class="sd">    ens1_id : int</span>
+<span class="sd">        First ensemble id as detailed in the ClustersCollection metadata</span>
+
+<span class="sd">    ens2 : :class:`~MDAnalysis.core.universe.Universe`</span>
+<span class="sd">        Second ensemble to be used in comparison</span>
+
+<span class="sd">    ens2_id : int</span>
+<span class="sd">        Second ensemble id as detailed in the ClustersCollection metadata</span>
+
+<span class="sd">    select : str</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    djs : float</span>
+<span class="sd">        Jensen-Shannon divergence between the two ensembles, as calculated by</span>
+<span class="sd">        the clustering ensemble similarity method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ens1_coordinates</span> <span class="o">=</span> <span class="n">ens1</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
+                                                  <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+    <span class="n">ens2_coordinates</span> <span class="o">=</span> <span class="n">ens2</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
+                                                  <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+    <span class="n">tmpA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens1_id</span><span class="p">)[</span>
+                            <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ens1_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span>
+                        <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">])</span>
+    <span class="n">tmpB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens2_id</span><span class="p">)[</span>
+                            <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ens2_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span>
+                        <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">])</span>
+
+    <span class="c1"># Exclude clusters which have 0 elements in both ensembles</span>
+    <span class="n">pA</span> <span class="o">=</span> <span class="n">tmpA</span><span class="p">[</span><span class="n">tmpA</span> <span class="o">+</span> <span class="n">tmpB</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">]</span>
+    <span class="n">pB</span> <span class="o">=</span> <span class="n">tmpB</span><span class="p">[</span><span class="n">tmpA</span> <span class="o">+</span> <span class="n">tmpB</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cumulative_clustering_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">cumulative_clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
+                                              <span class="n">ens1_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens2_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate clustering ensemble similarity between joined ensembles.</span>
+<span class="sd">    This means that, after clustering has been performed, some ensembles are</span>
+<span class="sd">    merged and the dJS is calculated between the probability distributions of</span>
+<span class="sd">    the two clusters groups. In particular, the two ensemble groups are defined</span>
+<span class="sd">    by their ensembles id: one of the two joined ensembles will comprise all</span>
+<span class="sd">    the ensembles with id [ens1_id_min, ens1_id], and the other ensembles will</span>
+<span class="sd">    comprise all the ensembles with id [ens2_id_min, ens2_id].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    cc : encore.ClustersCollection</span>
+<span class="sd">            Collection from cluster calculated by a clustering algorithm</span>
+<span class="sd">            (e.g. Affinity propagation)</span>
+
+<span class="sd">    ens1_id : int</span>
+<span class="sd">            First ensemble id as detailed in the ClustersCollection</span>
+<span class="sd">            metadata</span>
+
+<span class="sd">    ens2_id : int</span>
+<span class="sd">            Second ensemble id as detailed in the ClustersCollection</span>
+<span class="sd">            metadata</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    djs : float</span>
+<span class="sd">            Jensen-Shannon divergence between the two ensembles, as</span>
+<span class="sd">            calculated by the clustering ensemble similarity method</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+    <span class="n">ensA</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ens1_id</span><span class="p">,</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">])</span>
+                     <span class="o">&gt;=</span> <span class="n">ens1_id_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">]</span>
+    <span class="n">ensB</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ens2_id</span><span class="p">,</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">])</span>
+                     <span class="o">&gt;=</span> <span class="n">ens2_id_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">]</span>
+    <span class="n">sizeA</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ensA</span><span class="p">))</span>
+    <span class="n">sizeB</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ensB</span><span class="p">))</span>
+
+    <span class="n">tmpA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensA</span><span class="p">)</span> <span class="o">/</span> <span class="n">sizeA</span>
+    <span class="n">tmpB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensB</span><span class="p">)</span> <span class="o">/</span> <span class="n">sizeB</span>
+
+    <span class="c1"># Exclude clusters which have 0 elements in both ensembles</span>
+    <span class="n">pA</span> <span class="o">=</span> <span class="n">tmpA</span><span class="p">[</span><span class="n">tmpA</span> <span class="o">+</span> <span class="n">tmpB</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">]</span>
+    <span class="n">pB</span> <span class="o">=</span> <span class="n">tmpB</span><span class="p">[</span><span class="n">tmpA</span> <span class="o">+</span> <span class="n">tmpB</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gen_kde_pdfs"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs">[docs]</a><span class="k">def</span> <span class="nf">gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
+                 <span class="n">nsamples</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
+<span class="sd">    elaborate the coordinates for later use.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    embedded_space : numpy.array</span>
+<span class="sd">        Array containing the coordinates of the embedded space</span>
+
+<span class="sd">    ensemble_assignment : numpy.array</span>
+<span class="sd">        Array containing one int per ensemble conformation. These allow to</span>
+<span class="sd">        distinguish, in the complete embedded space, which conformations</span>
+<span class="sd">        belong to each ensemble. For instance if ensemble_assignment</span>
+<span class="sd">        is [1,1,1,1,2,2], it means that the first four conformations belong</span>
+<span class="sd">        to ensemble 1 and the last two to ensemble 2</span>
+
+<span class="sd">    nensembles : int</span>
+<span class="sd">        Number of ensembles</span>
+
+<span class="sd">    nsamples : int</span>
+<span class="sd">        samples to be drawn from the ensembles. Will be required in</span>
+<span class="sd">        a later stage in order to calculate dJS.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    kdes : scipy.stats.gaussian_kde</span>
+<span class="sd">        KDEs calculated from ensembles</span>
+
+<span class="sd">    resamples : list of numpy.array</span>
+<span class="sd">        For each KDE, draw samples according to the probability distribution</span>
+<span class="sd">        of the KDE mixture model</span>
+
+<span class="sd">    embedded_ensembles : list of numpy.array</span>
+<span class="sd">        List of numpy.array containing, each one, the elements of the</span>
+<span class="sd">        embedded space belonging to a certain ensemble</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kdes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">resamples</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nensembles</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">this_embedded</span> <span class="o">=</span> <span class="n">embedded_space</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">)]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">embedded_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">)</span>
+        <span class="n">kdes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">gaussian_kde</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">))</span>
+
+    <span class="c1"># # Set number of samples</span>
+    <span class="c1"># if not nsamples:</span>
+    <span class="c1">#     nsamples = this_embedded.shape[1] * 10</span>
+
+    <span class="c1"># Resample according to probability distributions</span>
+    <span class="k">for</span> <span class="n">this_kde</span> <span class="ow">in</span> <span class="n">kdes</span><span class="p">:</span>
+        <span class="n">resamples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_kde</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">nsamples</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dimred_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kde1</span><span class="p">,</span> <span class="n">resamples1</span><span class="p">,</span> <span class="n">kde2</span><span class="p">,</span> <span class="n">resamples2</span><span class="p">,</span>
+                               <span class="n">ln_P1_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">ln_P1P2_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P1P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the Jensen-Shannon divergence according the the</span>
+<span class="sd">    Dimensionality reduction method. In this case, we have continuous</span>
+<span class="sd">    probability densities, this we need to integrate over the measurable</span>
+<span class="sd">    space. The aim is to first calculate the Kullback-Liebler divergence, which</span>
+<span class="sd">    is defined as:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P - \\langle{}ln(Q(x))\\rangle{}_P</span>
+
+<span class="sd">    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation calculated</span>
+<span class="sd">    under the distribution P. We can, thus, just estimate the expectation</span>
+<span class="sd">    values of the components to get an estimate of dKL.</span>
+<span class="sd">    Since the Jensen-Shannon distance is actually  more complex, we need to</span>
+<span class="sd">    estimate four expectation values:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">         \\langle{}log(P(x))\\rangle{}_P</span>
+
+<span class="sd">         \\langle{}log(Q(x))\\rangle{}_Q</span>
+
+<span class="sd">         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P</span>
+
+<span class="sd">         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    kde1 : scipy.stats.gaussian_kde</span>
+<span class="sd">        Kernel density estimation for ensemble 1</span>
+
+<span class="sd">    resamples1 : numpy.array</span>
+<span class="sd">        Samples drawn according do kde1. Will be used as samples to</span>
+<span class="sd">        calculate the expected values according to &#39;P&#39; as detailed before.</span>
+
+<span class="sd">    kde2 : scipy.stats.gaussian_kde</span>
+<span class="sd">            Kernel density estimation for ensemble 2</span>
+
+<span class="sd">    resamples2 : numpy.array</span>
+<span class="sd">        Samples drawn according do kde2. Will be used as sample to</span>
+<span class="sd">        calculate the expected values according to &#39;Q&#39; as detailed before.</span>
+
+<span class="sd">    ln_P1_exp_P1 : float or None</span>
+<span class="sd">        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P`; if None,</span>
+<span class="sd">        calculate it instead</span>
+
+<span class="sd">    ln_P2_exp_P2 : float or None</span>
+<span class="sd">        Use this value for :math:`\\langle{}log(Q(x))\\rangle{}_Q`; if</span>
+<span class="sd">        None, calculate it instead</span>
+
+<span class="sd">    ln_P1P2_exp_P1 : float or None</span>
+<span class="sd">        Use this value for</span>
+<span class="sd">        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;</span>
+<span class="sd">        if None, calculate it instead</span>
+
+<span class="sd">    ln_P1P2_exp_P2 : float or None</span>
+<span class="sd">        Use this value for</span>
+<span class="sd">        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q`;</span>
+<span class="sd">        if None, calculate it instead</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    djs : float</span>
+<span class="sd">        Jensen-Shannon divergence calculated according to the dimensionality</span>
+<span class="sd">        reduction method</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ln_P1_exp_P1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ln_P2_exp_P2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ln_P1P2_exp_P1</span> <span class="ow">and</span> <span class="ow">not</span> \
+            <span class="n">ln_P1P2_exp_P2</span><span class="p">:</span>
+        <span class="n">ln_P1_exp_P1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">)))</span>
+        <span class="n">ln_P2_exp_P2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">)))</span>
+        <span class="n">ln_P1P2_exp_P1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">)</span> <span class="o">+</span> <span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">))))</span>
+        <span class="n">ln_P1P2_exp_P2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">)</span> <span class="o">+</span> <span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">))))</span>
+
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">ln_P1_exp_P1</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P1</span> <span class="o">+</span> <span class="n">ln_P2_exp_P2</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cumulative_gen_kde_pdfs"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs">[docs]</a><span class="k">def</span> <span class="nf">cumulative_gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
+                            <span class="n">nsamples</span><span class="p">,</span> <span class="n">ens_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens_id_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
+<span class="sd">    elaborate the coordinates for later use. However, consider more than</span>
+<span class="sd">    one ensemble as the space on which the KDE will be generated. In</span>
+<span class="sd">    particular, will use ensembles with ID [ens_id_min, ens_id_max].</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    embedded_space : numpy.array</span>
+<span class="sd">            Array containing the coordinates of the embedded space</span>
+
+<span class="sd">    ensemble_assignment : numpy.array</span>
+<span class="sd">            array containing one int per ensemble conformation. These allow</span>
+<span class="sd">            to distinguish, in the complete embedded space, which</span>
+<span class="sd">            conformations belong to each ensemble. For instance if</span>
+<span class="sd">            ensemble_assignment is [1,1,1,1,2,2], it means that the first</span>
+<span class="sd">            four conformations belong to ensemble 1 and the last two</span>
+<span class="sd">            to ensemble 2</span>
+
+<span class="sd">    nensembles : int</span>
+<span class="sd">            Number of ensembles</span>
+
+<span class="sd">    nsamples : int</span>
+<span class="sd">        Samples to be drawn from the ensembles. Will be required in a later</span>
+<span class="sd">        stage in order to calculate dJS.</span>
+
+<span class="sd">    ens_id_min : int</span>
+<span class="sd">        Minimum ID of the ensemble to be considered; see description</span>
+
+<span class="sd">    ens_id_max : int</span>
+<span class="sd">        Maximum ID of the ensemble to be considered; see description. If None,</span>
+<span class="sd">        it will be set to the maximum possible value given the number of</span>
+<span class="sd">        ensembles.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    kdes : scipy.stats.gaussian_kde</span>
+<span class="sd">            KDEs calculated from ensembles</span>
+
+<span class="sd">    resamples : list of numpy.array</span>
+<span class="sd">            For each KDE, draw samples according to the probability</span>
+<span class="sd">            distribution of the kde mixture model</span>
+
+<span class="sd">    embedded_ensembles : list of numpy.array</span>
+<span class="sd">            List of numpy.array containing, each one, the elements of the</span>
+<span class="sd">            embedded space belonging to a certain ensemble</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">kdes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">resamples</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ens_id_max</span><span class="p">:</span>
+        <span class="n">ens_id_max</span> <span class="o">=</span> <span class="n">nensembles</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ens_id_min</span><span class="p">,</span> <span class="n">ens_id_max</span><span class="p">):</span>
+        <span class="n">this_embedded</span> <span class="o">=</span> <span class="n">embedded_space</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">ensemble_assignment</span> <span class="o">&gt;=</span> <span class="n">ens_id_min</span><span class="p">,</span>
+                              <span class="n">ensemble_assignment</span> <span class="o">&lt;=</span> <span class="n">i</span><span class="p">))]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">embedded_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">)</span>
+        <span class="n">kdes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">gaussian_kde</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">))</span>
+
+    <span class="c1"># Resample according to probability distributions</span>
+    <span class="k">for</span> <span class="n">this_kde</span> <span class="ow">in</span> <span class="n">kdes</span><span class="p">:</span>
+        <span class="n">resamples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_kde</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">nsamples</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_output"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.write_output">[docs]</a><span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">base_fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;dat&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write output matrix with a nice format, to stdout and optionally a file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    matrix : encore.utils.TriangularMatrix</span>
+<span class="sd">        Matrix containing the values to be printed</span>
+
+<span class="sd">    base_fname : str</span>
+<span class="sd">        Basic filename for output. If None, no files will be written, and</span>
+<span class="sd">        the matrix will be just printed on standard output</span>
+
+<span class="sd">    header : str</span>
+<span class="sd">        Text to be written just before the matrix</span>
+
+<span class="sd">    suffix : str</span>
+<span class="sd">        String to be concatenated to basename, in order to get the final</span>
+<span class="sd">        file name</span>
+
+<span class="sd">    extension : str</span>
+<span class="sd">        Extension for the output file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">base_fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">base_fname</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">suffix</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">extension</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">matrix</span><span class="o">.</span><span class="n">square_print</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="prepare_ensembles_for_convergence_increasing_window"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">[docs]</a><span class="k">def</span> <span class="nf">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
+                                                        <span class="n">window_size</span><span class="p">,</span>
+                                                        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate ensembles to be fed to ces_convergence or dres_convergence</span>
+<span class="sd">    from a single ensemble. Basically, the different slices the algorithm</span>
+<span class="sd">    needs are generated here.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    ensemble : :class:`~MDAnalysis.core.universe.Universe` object</span>
+<span class="sd">        Input ensemble</span>
+
+<span class="sd">    window_size : int</span>
+<span class="sd">        size of the window (in number of frames) to be used</span>
+
+<span class="sd">    select : str</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    tmp_ensembles :</span>
+<span class="sd">        The original ensemble is divided into different ensembles, each being</span>
+<span class="sd">        a window_size-long slice of the original ensemble. The last</span>
+<span class="sd">        ensemble will be bigger if the length of the input ensemble</span>
+<span class="sd">        is not exactly divisible by window_size.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ens_size</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
+                                              <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">rest_slices</span> <span class="o">=</span> <span class="n">ens_size</span> <span class="o">//</span> <span class="n">window_size</span>
+    <span class="n">residuals</span> <span class="o">=</span> <span class="n">ens_size</span> <span class="o">%</span> <span class="n">window_size</span>
+    <span class="n">slices_n</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">tmp_ensembles</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">rs</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rest_slices</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">slices_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slices_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">window_size</span><span class="p">)</span>
+    <span class="n">slices_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slices_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">residuals</span> <span class="o">+</span> <span class="n">window_size</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">sl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slices_n</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">tmp_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
+            <span class="n">ensemble</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">slices_n</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span><span class="n">slices_n</span><span class="p">[</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:,</span> <span class="p">:],</span>
+            <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">tmp_ensembles</span></div>
+
+
+<div class="viewcode-block" id="hes"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.hes">[docs]</a><span class="k">def</span> <span class="nf">hes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+        <span class="n">cov_estimator</span><span class="o">=</span><span class="s2">&quot;shrinkage&quot;</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span>
+        <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Calculates the Harmonic Ensemble Similarity (HES) between ensembles using</span>
+<span class="sd">    the symmetrized version of Kullback-Leibler divergence as described</span>
+<span class="sd">    in [Tiberti2015]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ensembles : list</span>
+<span class="sd">        List of Universe objects for similarity measurements.</span>
+<span class="sd">    select : str, optional</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
+<span class="sd">    cov_estimator : str, optional</span>
+<span class="sd">        Covariance matrix estimator method, either shrinkage, `shrinkage`,</span>
+<span class="sd">        or Maximum Likelyhood, `ml`. Default is shrinkage.</span>
+<span class="sd">    weights : str/array_like, optional</span>
+<span class="sd">        specify optional weights. If ``mass`` then chose masses of ensemble atoms</span>
+<span class="sd">    align : bool, optional</span>
+<span class="sd">        Whether to align the ensembles before calculating their similarity.</span>
+<span class="sd">        Note: this changes the ensembles in-place, and will thus leave your</span>
+<span class="sd">        ensembles in an altered state.</span>
+<span class="sd">        (default is False)</span>
+<span class="sd">    estimate_error : bool, optional</span>
+<span class="sd">        Whether to perform error estimation (default is False).</span>
+<span class="sd">    bootstrapping_samples : int, optional</span>
+<span class="sd">        Number of times the similarity matrix will be bootstrapped (default</span>
+<span class="sd">        is 100), only if estimate_error is True.</span>
+<span class="sd">    calc_diagonal : bool, optional</span>
+<span class="sd">        Whether to calculate the diagonal of the similarity scores</span>
+<span class="sd">        (i.e. the similarities of every ensemble against itself).</span>
+<span class="sd">        If this is False (default), 0.0 will be used instead.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    hes, details : numpy.array, dictionary</span>
+<span class="sd">        Harmonic similarity measurements between each pair of ensembles,</span>
+<span class="sd">        and dict containing mean and covariance matrix for each ensemble</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The method assumes that each ensemble is derived from a multivariate normal</span>
+<span class="sd">    distribution. The mean and covariance matrix are, thus, estimatated from</span>
+<span class="sd">    the distribution of each ensemble and used for comparision by the</span>
+<span class="sd">    symmetrized version of Kullback-Leibler divergence defined as:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i)</span>
+<span class="sd">        ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P -</span>
+<span class="sd">        \\langle{}ln(Q(x))\\rangle{}_P</span>
+
+
+<span class="sd">    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation</span>
+<span class="sd">    calculated under the distribution P.</span>
+
+<span class="sd">    For each ensemble, the  mean conformation is estimated as the average over</span>
+<span class="sd">    the ensemble, and the covariance matrix is calculated by default using a</span>
+<span class="sd">    shrinkage estimation method (or by a maximum-likelihood method,</span>
+<span class="sd">    optionally).</span>
+
+<span class="sd">    Note that the symmetrized version of the Kullback-Leibler divergence has no</span>
+<span class="sd">    upper bound (unlike the Jensen-Shannon divergence used by for instance CES and DRES).</span>
+
+<span class="sd">    When using this similarity measure, consider whether you want to align</span>
+<span class="sd">    the ensembles first (see example below).</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    To calculate the Harmonic Ensemble similarity, two ensembles are created</span>
+<span class="sd">    as Universe objects from a topology file and two trajectories. The</span>
+<span class="sd">    topology- and trajectory files used are obtained from the MDAnalysis</span>
+<span class="sd">    test suite for two different simulations of the protein AdK. To run the</span>
+<span class="sd">    examples see the module `Examples`_ for how to import the files: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">        &gt;&gt;&gt; HES, details = encore.hes([ens1, ens2])</span>
+<span class="sd">        &gt;&gt;&gt; print(HES)</span>
+<span class="sd">        [[        0.          38279683.95892926]</span>
+<span class="sd">         [ 38279683.95892926         0.        ]]</span>
+
+
+<span class="sd">    You can use the align=True option to align the ensembles first. This will</span>
+<span class="sd">    align everything to the current timestep in the first ensemble. Note that</span>
+<span class="sd">    this changes the ens1 and ens2 objects:</span>
+
+<span class="sd">        &gt;&gt;&gt; print(encore.hes([ens1, ens2], align=True)[0])</span>
+<span class="sd">        [[    0.          6880.34140106]</span>
+<span class="sd">        [ 6880.34140106     0.        ]]</span>
+
+<span class="sd">    Alternatively, for greater flexibility in how the alignment should be done</span>
+<span class="sd">    you can call use an AlignTraj object manually:</span>
+
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.analysis import align</span>
+<span class="sd">        &gt;&gt;&gt; align.AlignTraj(ens1, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
+<span class="sd">        &gt;&gt;&gt; align.AlignTraj(ens2, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
+<span class="sd">        &gt;&gt;&gt; print(encore.hes([ens1, ens2])[0])</span>
+<span class="sd">        [[    0.          7032.19607004]</span>
+<span class="sd">         [ 7032.19607004     0.        ]]</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       hes doesn&#39;t accept the *details* argument anymore, it always returns the</span>
+<span class="sd">       details of the calculation instead, in the form of a dictionary</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mass&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))]</span>
+    <span class="k">elif</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;need weights for every ensemble&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))]</span>
+
+    <span class="c1"># Ensure in-memory trajectories either by calling align</span>
+    <span class="c1"># with in_memory=True or by directly calling transfer_to_memory</span>
+    <span class="c1"># on the universe.</span>
+    <span class="k">if</span> <span class="n">align</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+            <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                         <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                                         <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+                                         <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="n">ensembles</span><span class="p">:</span>
+            <span class="n">ensemble</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">calc_diagonal</span><span class="p">:</span>
+        <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_diag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_nodiag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Chosen metric: Harmonic similarity&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cov_estimator</span> <span class="o">==</span> <span class="s2">&quot;shrinkage&quot;</span><span class="p">:</span>
+        <span class="n">covariance_estimator</span> <span class="o">=</span> <span class="n">shrinkage_covariance_estimator</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    Covariance matrix estimator: Shrinkage&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">cov_estimator</span> <span class="o">==</span> <span class="s2">&quot;ml&quot;</span><span class="p">:</span>
+        <span class="n">covariance_estimator</span> <span class="o">=</span> <span class="n">ml_covariance_estimator</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    Covariance matrix estimator: Maximum Likelihood&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="s2">&quot;Covariance estimator </span><span class="si">{0}</span><span class="s2"> is not supported. &quot;</span>
+            <span class="s2">&quot;Choose between &#39;shrinkage&#39; and &#39;ml&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cov_estimator</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">out_matrix_eln</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)</span>
+
+    <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">sigmas</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+            <span class="n">ensembles_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">get_ensemble_bootstrap_samples</span><span class="p">(</span>
+                    <span class="n">ensemble</span><span class="p">,</span>
+                    <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The coordinates will be bootstrapped.&quot;</span><span class="p">)</span>
+
+            <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">sigmas</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">out_matrix_eln</span><span class="p">,</span> <span class="n">out_matrix_eln</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e_orig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+                <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+                    <span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
+                        <span class="n">e_orig</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
+                        <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fac&#39;</span><span class="p">)),</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+                <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">],</span>
+                                                <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span>
+                                                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                     <span class="n">x2</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                                     <span class="n">sigma1</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                     <span class="n">sigma2</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">avgs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">avgs</span><span class="p">,</span> <span class="n">stds</span><span class="p">)</span>
+
+    <span class="c1"># Calculate the parameters for the multivariate normal distribution</span>
+    <span class="c1"># of each ensemble</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">out_matrix_eln</span><span class="p">,</span> <span class="n">out_matrix_eln</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+        <span class="c1"># Extract coordinates from each ensemble</span>
+        <span class="n">coordinates_system</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
+                                                     <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Average coordinates in each system</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">coordinates_system</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+
+        <span class="c1"># Covariance matrices in each system</span>
+        <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">e</span><span class="p">,</span>
+                                        <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
+                                        <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span>
+                                        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                             <span class="n">x2</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                                             <span class="n">sigma1</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                             <span class="n">sigma2</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># Save details as required</span>
+    <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out_matrix_eln</span><span class="p">):</span>
+        <span class="n">details</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_mean&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">details</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_covariance_matrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
+
+
+<div class="viewcode-block" id="ces"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces">[docs]</a><span class="k">def</span> <span class="nf">ces</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+        <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
+            <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+            <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+            <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+            <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Calculates the Clustering Ensemble Similarity (CES) between ensembles</span>
+<span class="sd">    using the Jensen-Shannon divergence as described in</span>
+<span class="sd">    [Tiberti2015]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    ensembles : list</span>
+<span class="sd">        List of ensemble objects for similarity measurements</span>
+
+<span class="sd">    select : str, optional</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
+
+<span class="sd">    clustering_method :</span>
+<span class="sd">        A single or a list of instances of the</span>
+<span class="sd">        :class:`MDAnalysis.analysis.encore.clustering.ClusteringMethod` classes</span>
+<span class="sd">        from the clustering module. Different parameters for the same clustering</span>
+<span class="sd">        method can be explored by adding different instances of the same</span>
+<span class="sd">        clustering class. Clustering methods options are the</span>
+<span class="sd">        Affinity Propagation (default), the DBSCAN and the KMeans. The latter</span>
+<span class="sd">        two methods need the sklearn python module installed.</span>
+
+<span class="sd">    distance_matrix : encore.utils.TriangularMatrix</span>
+<span class="sd">        Distance matrix clustering methods. If this parameter</span>
+<span class="sd">        is not supplied the matrix will be calculated on the fly.</span>
+
+<span class="sd">    estimate_error :  bool, optional</span>
+<span class="sd">        Whether to perform error estimation (default is False).</span>
+<span class="sd">        Only bootstrapping mode is supported.</span>
+
+<span class="sd">    bootstrapping_samples : int, optional</span>
+<span class="sd">        number of samples to be used for estimating error.</span>
+
+<span class="sd">    ncores : int, optional</span>
+<span class="sd">        Maximum number of cores to be used (default is 1).</span>
+
+<span class="sd">    calc_diagonal : bool, optional</span>
+<span class="sd">        Whether to calculate the diagonal of the similarity scores</span>
+<span class="sd">        (i.e. the similarities of every ensemble against itself).</span>
+<span class="sd">        If this is False (default), 0.0 will be used instead.</span>
+
+<span class="sd">    allow_collapsed_result: bool, optional</span>
+<span class="sd">        Whether a return value of a list of one value should be collapsed</span>
+<span class="sd">        into just the value.</span>
+
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    ces, details : numpy.array, numpy.array</span>
+
+<span class="sd">        ces contains the similarity values, arranged in a numpy.array.</span>
+<span class="sd">        If only one clustering_method is provided the output will be a</span>
+<span class="sd">        2-dimensional square symmetrical numpy.array. The order of the matrix</span>
+<span class="sd">        elements depends on the order of the input ensembles: for instance, if</span>
+
+<span class="sd">            ensemble = [ens1, ens2, ens3]</span>
+
+<span class="sd">        the matrix elements [0,2] and [2,0] will both contain the similarity</span>
+<span class="sd">        value between ensembles ens1 and ens3.</span>
+<span class="sd">        Elaborating on the previous example, if *n* ensembles are given and *m*</span>
+<span class="sd">        clustering_methods are provided the output will be a list of *m* arrays</span>
+<span class="sd">        ordered by the input sequence of methods, each with a *n*x*n*</span>
+<span class="sd">        symmetrical similarity matrix.</span>
+
+<span class="sd">        details contains information on the clustering: the individual size of</span>
+<span class="sd">        each cluster, the centroids and the frames associated with each cluster.</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    In the Jensen-Shannon divergence the upper bound of ln(2) signifies</span>
+<span class="sd">    no similarity between the two ensembles, the lower bound, 0.0,</span>
+<span class="sd">    signifies identical ensembles.</span>
+
+<span class="sd">    To calculate the CES, the affinity propagation method (or others, if</span>
+<span class="sd">    specified) is used to partition the whole space of conformations. The</span>
+<span class="sd">    population of each ensemble in each cluster is then taken as a probability</span>
+<span class="sd">    density function. Different probability density functions from each</span>
+<span class="sd">    ensemble are finally compared using the Jensen-Shannon divergence measure.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    To calculate the Clustering Ensemble similarity, two ensembles are</span>
+<span class="sd">    created as Universe object using a topology file and two trajectories. The</span>
+<span class="sd">    topology- and trajectory files used are obtained from the MDAnalysis</span>
+<span class="sd">    test suite for two different simulations of the protein AdK. To run the</span>
+<span class="sd">    examples see the module `Examples`_ for how to import the files.</span>
+<span class="sd">    Here the simplest case of just two instances of :class:`Universe` is illustrated: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">        &gt;&gt;&gt; CES, details = encore.ces([ens1,ens2])</span>
+<span class="sd">        &gt;&gt;&gt; print(CES)</span>
+<span class="sd">        [[ 0.          0.68070702]</span>
+<span class="sd">         [ 0.68070702  0.        ]]</span>
+
+<span class="sd">    To use a different clustering method, set the parameter clustering_method</span>
+<span class="sd">    (Note that the sklearn module must be installed). Likewise,  different parameters</span>
+<span class="sd">    for the same clustering method can be explored by adding different</span>
+<span class="sd">    instances of the same clustering class: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; CES, details = encore.ces([ens1,ens2],</span>
+<span class="sd">                                      clustering_method = [encore.DBSCAN(eps=0.45),</span>
+<span class="sd">                                                           encore.DBSCAN(eps=0.50)])</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;eps=0.45: &quot;, CES[0])</span>
+<span class="sd">        eps=0.45:  [[ 0.          0.20447236]</span>
+<span class="sd">        [ 0.20447236  0.        ]]</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;eps=0.5: &quot;, CES[1])</span>
+<span class="sd">        eps=0.5:  [[ 0.          0.25331629]</span>
+<span class="sd">        [ 0.25331629  0.        ]]&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="n">ensembles</span><span class="p">:</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">calc_diagonal</span><span class="p">:</span>
+        <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_diag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_nodiag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+
+    <span class="n">clustering_methods</span> <span class="o">=</span> <span class="n">clustering_method</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="n">clustering_methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">clustering_method</span><span class="p">]</span>
+
+    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">clustering_methods</span><span class="p">])</span>
+    <span class="n">all_methods_accept_distance_matrix</span> <span class="o">=</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">clustering_methods</span><span class="p">])</span>
+
+    <span class="c1"># Register which ensembles the samples belong to</span>
+    <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+
+    <span class="c1"># Calculate distance matrix if not provided</span>
+    <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">distance_matrix</span><span class="p">:</span>
+        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
+                                              <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                                              <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
+            <span class="n">distance_matrix</span> <span class="o">=</span> \
+                <span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">(</span>
+                    <span class="n">distance_matrix</span><span class="p">,</span>
+                    <span class="n">ensemble_assignment</span><span class="p">,</span>
+                    <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">,</span>
+                    <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">all_methods_accept_distance_matrix</span><span class="p">:</span>
+            <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+                <span class="n">ensembles_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">get_ensemble_bootstrap_samples</span><span class="p">(</span>
+                        <span class="n">ensemble</span><span class="p">,</span>
+                        <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">))</span>
+            <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
+                <span class="n">ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles_list</span><span class="p">):</span>
+                    <span class="n">ensembles</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if all methods accept distances matrices, duplicate</span>
+            <span class="c1"># ensemble so that it matches size of distance matrices</span>
+            <span class="c1"># (no need to resample them since they will not be used)</span>
+            <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span><span class="o">*</span><span class="n">bootstrapping_samples</span>
+
+
+    <span class="c1"># Call clustering procedure</span>
+    <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+                  <span class="n">method</span><span class="o">=</span> <span class="n">clustering_methods</span><span class="p">,</span>
+                  <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                  <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">,</span>
+                  <span class="n">ncores</span> <span class="o">=</span> <span class="n">ncores</span><span class="p">,</span>
+                  <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Do error analysis</span>
+    <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">avgs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">clustering_methods</span><span class="p">):</span>
+            <span class="n">failed_runs</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ccs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">clusters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">failed_runs</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
+                                           <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]))))</span>
+
+                <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
+                    <span class="c1"># Calculate dJS</span>
+                    <span class="n">this_djs</span> <span class="o">=</span> \
+                        <span class="n">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">ccs</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                                                       <span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">][</span>
+                                                           <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                       <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                                       <span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">][</span>
+                                                           <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                                       <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                                       <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+                    <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_djs</span>
+                    <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_djs</span>
+                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">outs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">avgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">stds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">avgs</span> <span class="o">=</span> <span class="n">avgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">stds</span> <span class="o">=</span> <span class="n">stds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">avgs</span><span class="p">,</span> <span class="n">stds</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">clustering_methods</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ccs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">clusters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))))</span>
+
+            <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
+                <span class="c1"># Calculate dJS</span>
+                <span class="n">this_val</span> <span class="o">=</span> \
+                    <span class="n">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">ccs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                   <span class="n">ensembles</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                   <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                                   <span class="n">ensembles</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                                   <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                                   <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+                <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_val</span>
+                <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_val</span>
+
+    <span class="n">details</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ccs</span>
+
+    <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
+
+
+<div class="viewcode-block" id="dres"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres">[docs]</a><span class="k">def</span> <span class="nf">dres</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+         <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
+             <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">distance_cutoff</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
+             <span class="n">min_lam</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+             <span class="n">max_lam</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+             <span class="n">ncycle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+             <span class="n">nstep</span><span class="o">=</span><span class="mi">10000</span><span class="p">),</span>
+         <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+         <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+         <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+         <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+         <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+         <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Calculates the Dimensional Reduction Ensemble Similarity (DRES) between</span>
+<span class="sd">    ensembles using the Jensen-Shannon divergence as described in</span>
+<span class="sd">    [Tiberti2015]_.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    ensembles : list</span>
+<span class="sd">        List of ensemble objects for similarity measurements</span>
+
+<span class="sd">    select : str, optional</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
+
+<span class="sd">    dimensionality_reduction_method :</span>
+<span class="sd">        A single or a list of instances of the DimensionalityReductionMethod</span>
+<span class="sd">        classes from the dimensionality_reduction module. Different parameters</span>
+<span class="sd">        for the same method can be explored by adding different instances of</span>
+<span class="sd">        the same dimensionality reduction class. Provided methods are the</span>
+<span class="sd">        Stochastic Proximity Embedding (default) and the Principal Component</span>
+<span class="sd">        Analysis.</span>
+
+<span class="sd">    distance_matrix : encore.utils.TriangularMatrix</span>
+<span class="sd">        conformational distance matrix, It will be calculated on the fly</span>
+<span class="sd">        from the ensemble data if it is not provided.</span>
+
+<span class="sd">    nsamples : int, optional</span>
+<span class="sd">        Number of samples to be drawn from the ensembles (default is 1000).</span>
+<span class="sd">        This is used to resample the density estimates and calculate the</span>
+<span class="sd">        Jensen-Shannon divergence between ensembles.</span>
+
+<span class="sd">    estimate_error : bool, optional</span>
+<span class="sd">        Whether to perform error estimation (default is False)</span>
+
+<span class="sd">    bootstrapping_samples : int, optional</span>
+<span class="sd">        number of samples to be used for estimating error.</span>
+
+<span class="sd">    ncores : int, optional</span>
+<span class="sd">        Maximum number of cores to be used (default is 1).</span>
+
+<span class="sd">    calc_diagonal : bool, optional</span>
+<span class="sd">        Whether to calculate the diagonal of the similarity scores</span>
+<span class="sd">        (i.e. the simlarities of every ensemble against itself).</span>
+<span class="sd">        If this is False (default), 0.0 will be used instead.</span>
+
+<span class="sd">    allow_collapsed_result: bool, optional</span>
+<span class="sd">        Whether a return value of a list of one value should be collapsed</span>
+<span class="sd">        into just the value.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    dres, details : numpy.array, numpy.array</span>
+<span class="sd">        dres contains the similarity values, arranged in numpy.array.</span>
+<span class="sd">        If one number of dimensions is provided as an integer,</span>
+<span class="sd">        the output will be a 2-dimensional square symmetrical numpy.array.</span>
+<span class="sd">        The order of the matrix elements depends on the order of the</span>
+<span class="sd">        input ensemble: for instance, if</span>
+
+<span class="sd">            ensemble = [ens1, ens2, ens3]</span>
+
+<span class="sd">        then the matrix elements [0,2] and [2,0] will both contain the</span>
+<span class="sd">        similarity value between ensembles ens1 and ens3.</span>
+<span class="sd">        Elaborating on the previous example, if *n* ensembles are given and *m*</span>
+<span class="sd">        methods are provided the output will be a list of *m* arrays</span>
+<span class="sd">        ordered by the input sequence of methods, each with a *n*x*n*</span>
+<span class="sd">        symmetrical similarity matrix.</span>
+
+<span class="sd">        details provide an array of the reduced_coordinates.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    To calculate the similarity, the method first projects the ensembles into</span>
+<span class="sd">    lower dimensions by using the Stochastic Proximity Embedding (or others)</span>
+<span class="sd">    algorithm. A gaussian kernel-based density estimation method is then used</span>
+<span class="sd">    to estimate the probability density for each ensemble which is then used</span>
+<span class="sd">    to compute the Jensen-Shannon divergence between each pair of ensembles.</span>
+
+<span class="sd">    In the Jensen-Shannon divergence the upper bound of ln(2) signifies</span>
+<span class="sd">    no similarity between the two ensembles, the lower bound, 0.0,</span>
+<span class="sd">    signifies identical ensembles. However, due to the stochastic nature of</span>
+<span class="sd">    the dimensional reduction in :func:`dres`, two identical ensembles will</span>
+<span class="sd">    not necessarily result in an exact 0.0 estimate of the similarity but</span>
+<span class="sd">    will be very close. For the same reason, calculating the similarity with</span>
+<span class="sd">    the :func:`dres` twice will not result in two identical numbers; small</span>
+<span class="sd">    differences have to be expected.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    To calculate the Dimensional Reduction Ensemble similarity, two ensembles</span>
+<span class="sd">    are created as Universe objects from a topology file and two trajectories.</span>
+<span class="sd">    The topology- and trajectory files used are obtained from the MDAnalysis</span>
+<span class="sd">    test suite for two different simulations of the protein AdK. To run the</span>
+<span class="sd">    examples see the module `Examples`_ for how to import the files.</span>
+<span class="sd">    Here the simplest case of comparing just two instances of :class:`Universe` is</span>
+<span class="sd">    illustrated: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
+<span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF,DCD2)</span>
+<span class="sd">        &gt;&gt;&gt; DRES, details = encore.dres([ens1,ens2])</span>
+<span class="sd">        &gt;&gt;&gt; print(DRES)</span>
+<span class="sd">        [[ 0.          0.67996043]</span>
+<span class="sd">         [ 0.67996043  0.        ]]</span>
+
+<span class="sd">    In addition to the quantitative similarity estimate, the dimensional</span>
+<span class="sd">    reduction can easily be visualized, see the ``Example`` section in</span>
+<span class="sd">    :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality``</span>
+
+
+<span class="sd">    To use a different dimensional reduction methods, simply set the</span>
+<span class="sd">    parameter dimensionality_reduction_method. Likewise, different parameters</span>
+<span class="sd">    for the same clustering method can be explored by adding different</span>
+<span class="sd">    instances of the same method  class: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; DRES, details = encore.dres([ens1,ens2],</span>
+<span class="sd">                                        dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
+<span class="sd">        &gt;&gt;&gt; print(DRES)</span>
+<span class="sd">        [[ 0.          0.69314718]</span>
+<span class="sd">         [ 0.69314718  0.        ]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="n">ensembles</span><span class="p">:</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">calc_diagonal</span><span class="p">:</span>
+        <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_diag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_nodiag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+
+    <span class="n">dimensionality_reduction_methods</span> <span class="o">=</span> <span class="n">dimensionality_reduction_method</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="n">dimensionality_reduction_methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">dimensionality_reduction_method</span><span class="p">]</span>
+
+    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">dimensionality_reduction_methods</span><span class="p">])</span>
+    <span class="n">all_methods_accept_distance_matrix</span> <span class="o">=</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">dimensionality_reduction_methods</span><span class="p">])</span>
+
+    <span class="c1"># Register which ensembles the samples belong to</span>
+    <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+
+    <span class="c1"># Calculate distance matrix if not provided</span>
+    <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">distance_matrix</span><span class="p">:</span>
+        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
+                                              <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                                              <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
+            <span class="n">distance_matrix</span> <span class="o">=</span> \
+                <span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">(</span>
+                    <span class="n">distance_matrix</span><span class="p">,</span>
+                    <span class="n">ensemble_assignment</span><span class="p">,</span>
+                    <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">,</span>
+                    <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">all_methods_accept_distance_matrix</span><span class="p">:</span>
+            <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+                <span class="n">ensembles_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">get_ensemble_bootstrap_samples</span><span class="p">(</span>
+                        <span class="n">ensemble</span><span class="p">,</span>
+                        <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">))</span>
+            <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
+                <span class="n">ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span>
+                                 <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ensembles_list</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if all methods accept distances matrices, duplicate</span>
+            <span class="c1"># ensemble so that it matches size of distance matrices</span>
+            <span class="c1"># (no need to resample them since they will not be used)</span>
+            <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span> <span class="o">*</span> <span class="n">bootstrapping_samples</span>
+
+    <span class="c1"># Call dimensionality reduction procedure</span>
+    <span class="n">coordinates</span><span class="p">,</span> <span class="n">dim_red_details</span> <span class="o">=</span> <span class="n">reduce_dimensionality</span><span class="p">(</span>
+        <span class="n">ensembles</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">dimensionality_reduction_methods</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">,</span>
+        <span class="n">ncores</span> <span class="o">=</span> <span class="n">ncores</span><span class="p">,</span>
+        <span class="n">allow_collapsed_result</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">details</span><span class="p">[</span><span class="s2">&quot;reduced_coordinates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coordinates</span>
+    <span class="n">details</span><span class="p">[</span><span class="s2">&quot;dimensionality_reduction_details&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dim_red_details</span>
+
+    <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">avgs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dimensionality_reduction_methods</span><span class="p">):</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
+
+                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
+                                           <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]))))</span>
+
+                <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="n">gen_kde_pdfs</span><span class="p">(</span>
+                    <span class="n">coordinates</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                    <span class="n">ensemble_assignment</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
+                    <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
+                    <span class="n">this_value</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                            <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                            <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                                            <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+                    <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
+                    <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
+
+                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">outs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">avgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">stds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">avgs</span> <span class="o">=</span> <span class="n">avgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">stds</span> <span class="o">=</span> <span class="n">stds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">avgs</span><span class="p">,</span> <span class="n">stds</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dimensionality_reduction_methods</span><span class="p">):</span>
+
+        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))))</span>
+        <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="n">gen_kde_pdfs</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                           <span class="n">ensemble_assignment</span><span class="p">,</span>
+                                                           <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
+                                                           <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
+            <span class="n">this_value</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                    <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                                    <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                                                    <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
+            <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
+
+    <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span>
+                                              <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
+
+
+<div class="viewcode-block" id="ces_convergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces_convergence">[docs]</a><span class="k">def</span> <span class="nf">ces_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
+                    <span class="n">window_size</span><span class="p">,</span>
+                    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+                    <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
+                        <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+                        <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+                        <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                        <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+                        <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                    <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use the CES to evaluate the convergence of the ensemble/trajectory.</span>
+<span class="sd">    CES will be calculated between the whole trajectory contained in an</span>
+<span class="sd">    ensemble and windows of such trajectory of increasing sizes, so that</span>
+<span class="sd">    the similarity values should gradually drop to zero. The rate at which</span>
+<span class="sd">    the value reach zero will be indicative of how much the trajectory</span>
+<span class="sd">    keeps on resampling the same regions of the conformational space, and</span>
+<span class="sd">    therefore of convergence.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    original_ensemble : :class:`~MDAnalysis.core.universe.Universe` object</span>
+<span class="sd">        ensemble containing the trajectory whose convergence has to estimated</span>
+
+<span class="sd">    window_size : int</span>
+<span class="sd">        Size of window to be used, in number of frames</span>
+
+<span class="sd">    select : str, optional</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
+
+<span class="sd">    clustering_method : MDAnalysis.analysis.encore.clustering.ClusteringMethod</span>
+<span class="sd">        A single or a list of instances of the ClusteringMethod classes from</span>
+<span class="sd">        the clustering module. Different parameters for the same clustering</span>
+<span class="sd">        method can be explored by adding different instances of the same</span>
+<span class="sd">        clustering class.</span>
+
+<span class="sd">    ncores : int, optional</span>
+<span class="sd">        Maximum number of cores to be used (default is 1).</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    out : np.array</span>
+<span class="sd">        array of shape (number_of_frames / window_size, preference_values).</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    --------</span>
+<span class="sd">    To calculate the convergence of a trajectory using the clustering ensemble</span>
+<span class="sd">    similarity method a Universe object is created from a topology file and the</span>
+<span class="sd">    trajectory. The topology- and trajectory files used are obtained from the</span>
+<span class="sd">    MDAnalysis test suite for two different simulations of the protein AdK.</span>
+<span class="sd">    To run the examples see the module `Examples`_ for how to import the files.</span>
+<span class="sd">    Here the simplest case of evaluating the convergence is illustrated by</span>
+<span class="sd">    splitting the trajectory into a window_size of 10 frames : ::</span>
+
+
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
+<span class="sd">        &gt;&gt;&gt; ces_conv = encore.ces_convergence(ens1, 10)</span>
+<span class="sd">        &gt;&gt;&gt; print(ces_conv)</span>
+<span class="sd">        [[ 0.48194205]</span>
+<span class="sd">        [ 0.40284672]</span>
+<span class="sd">        [ 0.31699026]</span>
+<span class="sd">        [ 0.25220447]</span>
+<span class="sd">        [ 0.19829817]</span>
+<span class="sd">        [ 0.14642725]</span>
+<span class="sd">        [ 0.09911411]</span>
+<span class="sd">        [ 0.05667391]</span>
+<span class="sd">        [ 0.        ]]</span>
+
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
+        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+
+    <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+                  <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                  <span class="n">method</span><span class="o">=</span><span class="n">clustering_method</span><span class="p">,</span>
+                  <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">ccs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cc</span><span class="o">.</span><span class="n">clusters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cumulative_clustering_ensemble_similarity</span><span class="p">(</span>
+                <span class="n">cc</span><span class="p">,</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
+                <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="dres_convergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres_convergence">[docs]</a><span class="k">def</span> <span class="nf">dres_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
+                     <span class="n">window_size</span><span class="p">,</span>
+                     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+                     <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> \
+                            <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
+                                <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                                <span class="n">distance_cutoff</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+                                <span class="n">min_lam</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                                <span class="n">max_lam</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                                <span class="n">ncycle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                                <span class="n">nstep</span><span class="o">=</span><span class="mi">10000</span>
+                            <span class="p">),</span>
+                     <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                     <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use the DRES to evaluate the convergence of the ensemble/trajectory.</span>
+<span class="sd">    DRES will be calculated between the whole trajectory contained in an</span>
+<span class="sd">    ensemble and windows of such trajectory of increasing sizes, so that</span>
+<span class="sd">    the similarity values should gradually drop to zero. The rate at which</span>
+<span class="sd">    the value reach zero will be indicative of how much the trajectory</span>
+<span class="sd">    keeps on resampling the same ares of the conformational space, and</span>
+<span class="sd">    therefore of convergence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    original_ensemble : :class:`~MDAnalysis.core.universe.Universe` object</span>
+<span class="sd">        ensemble containing the trajectory whose convergence has to estimated</span>
+
+<span class="sd">    window_size : int</span>
+<span class="sd">        Size of window to be used, in number of frames</span>
+
+<span class="sd">    select : str, optional</span>
+<span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
+
+<span class="sd">    dimensionality_reduction_method :</span>
+<span class="sd">        A single or a list of instances of the DimensionalityReductionMethod</span>
+<span class="sd">        classes from the dimensionality_reduction module. Different parameters</span>
+<span class="sd">        for the same method can be explored by adding different instances of</span>
+<span class="sd">        the same dimensionality reduction class.</span>
+
+<span class="sd">    nsamples : int, optional</span>
+<span class="sd">        Number of samples to be drawn from the ensembles (default is 1000).</span>
+<span class="sd">        This is akin to the nsamples parameter of dres().</span>
+
+<span class="sd">    ncores  : int, optional</span>
+<span class="sd">        Maximum number of cores to be used (default is 1).</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    out : np.array</span>
+<span class="sd">        array of shape (number_of_frames / window_size, preference_values).</span>
+
+
+
+<span class="sd">    Example</span>
+<span class="sd">    --------</span>
+<span class="sd">    To calculate the convergence of a trajectory using the DRES</span>
+<span class="sd">    method, a Universe object is created from a topology file and the</span>
+<span class="sd">    trajectory. The topology- and trajectory files used are obtained from the</span>
+<span class="sd">    MDAnalysis test suite for two different simulations of the protein AdK.</span>
+<span class="sd">    To run the examples see the module `Examples`_ for how to import the files.</span>
+<span class="sd">    Here the simplest case of evaluating the convergence is illustrated by</span>
+<span class="sd">    splitting the trajectory into a window_size of 10 frames : ::</span>
+
+
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
+<span class="sd">        &gt;&gt;&gt; dres_conv = encore.dres_convergence(ens1, 10)</span>
+<span class="sd">        &gt;&gt;&gt; print(dres_conv)</span>
+<span class="sd">        [[ 0.5295528 ]</span>
+<span class="sd">         [ 0.40716539]</span>
+<span class="sd">         [ 0.31158669]</span>
+<span class="sd">         [ 0.25314041]</span>
+<span class="sd">         [ 0.20447271]</span>
+<span class="sd">         [ 0.13212364]</span>
+<span class="sd">         [ 0.06979114]</span>
+<span class="sd">         [ 0.05214759]</span>
+<span class="sd">         [ 0.        ]]</span>
+
+<span class="sd">    Here, the rate at which the values reach zero will be indicative of how</span>
+<span class="sd">    much the trajectory keeps on resampling the same ares of the conformational</span>
+<span class="sd">    space, and therefore of convergence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
+        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+
+    <span class="n">coordinates</span><span class="p">,</span> <span class="n">dimred_details</span> <span class="o">=</span> \
+        <span class="n">reduce_dimensionality</span><span class="p">(</span>
+            <span class="n">ensembles</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span>
+            <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+
+    <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
+
+        <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> \
+            <span class="n">cumulative_gen_kde_pdfs</span><span class="p">(</span>
+                <span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">ensemble_assignment</span><span class="o">=</span><span class="n">ensemble_assignment</span><span class="p">,</span>
+                <span class="n">nensembles</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
+                <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kdes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                    <span class="n">resamples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                    <span class="n">kdes</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                                                    <span class="n">resamples</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

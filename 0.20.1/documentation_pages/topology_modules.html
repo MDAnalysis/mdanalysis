@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>5. Topology modules &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.1. Topology readers — MDAnalysis.topology" href="topology/init.html" />
+    <link rel="prev" title="4.11.1. Analysis data files" href="analysis/data.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="topology-modules">
+<h1><span class="section-number">5. </span>Topology modules<a class="headerlink" href="#topology-modules" title="Permalink to this headline">¶</a></h1>
+<p>The topology module contains the functions to read topology
+files. MDAnalysis uses topology files to identify atoms and bonds
+between the atoms. It can use topology files from MD packages such as
+CHARMM’s and NAMD’s PSF format or Amber’s PRMTOP files. In addition,
+it can also glean atom information from single frame coordinate files
+such the PDB, CRD, or PQR formats (see the <a class="reference internal" href="topology/init.html#supported-topology-formats"><span class="std std-ref">Table of Supported Topology Formats</span></a>).</p>
+<p>Typically, MDAnalysis recognizes formats by the file extension and
+hence most users probably do not need to concern themselves with
+classes and functions described here. However, if MDAnalysis does not
+properly recognize a file format then a user can explicitly set the
+topology file format in the <em>topology_format</em> keyword argument to
+<a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
+<p class="rubric">Topology formats</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="topology/init.html">5.1. Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/CRDParser.html">5.2. CRD topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/GMSParser.html">5.5. GAMESS Topology Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/GROParser.html">5.6. GRO topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/HoomdXMLParser.html">5.7. HOOMD XML topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/LAMMPSParser.html">5.8. LAMMPSParser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/MinimalParser.html">5.9. Minimal topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/MMTFParser.html">5.10. MMTF Topology Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/MOL2Parser.html">5.11. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PDBParser.html">5.12. PDB Topology Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/ExtendedPDBParser.html">5.13. Extended PDB topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PDBQTParser.html">5.14. PDBQT topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PQRParser.html">5.15. PQR topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PSFParser.html">5.16. PSF topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TOPParser.html">5.17. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TPRParser.html">5.18. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TXYZParser.html">5.19. TXYZ topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/XYZParser.html">5.20. XYZ Topology Parser</a></li>
+</ul>
+</div>
+<p class="rubric">Topology core modules</p>
+<p>The remaining pages are primarily of interest to developers as they
+contain functions and classes that are used in the implementation of
+the topology readers.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="topology/base.html">5.21. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/core.html">5.22. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/guessers.html">5.23. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/tables.html">5.24. MDAnalysis topology tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/tpr_util.html">5.25. Utility functions for the TPR topology parser</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Topology modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="topology/init.html">5.1. Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/CRDParser.html">5.2. CRD topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/GMSParser.html">5.5. GAMESS Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/GROParser.html">5.6. GRO topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/HoomdXMLParser.html">5.7. HOOMD XML topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/LAMMPSParser.html">5.8. LAMMPSParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/MinimalParser.html">5.9. Minimal topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/MMTFParser.html">5.10. MMTF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/MOL2Parser.html">5.11. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PDBParser.html">5.12. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/ExtendedPDBParser.html">5.13. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PDBQTParser.html">5.14. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PQRParser.html">5.15. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/PSFParser.html">5.16. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/TOPParser.html">5.17. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/TPRParser.html">5.18. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/TXYZParser.html">5.19. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/XYZParser.html">5.20. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/base.html">5.21. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/core.html">5.22. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/guessers.html">5.23. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/tables.html">5.24. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology/tpr_util.html">5.25. Utility functions for the TPR topology parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="analysis/data.html" title="previous chapter"><span class="section-number">4.11.1. </span>Analysis data files</a></li>
+      <li>Next: <a href="topology/init.html" title="next chapter"><span class="section-number">5.1. </span>Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/documentation_pages/topology_modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>6.22. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="6.23. FHI-AIMS file format — MDAnalysis.coordinates.FHIAIMS" href="FHIAIMS.html" />
+    <link rel="prev" title="6.21. XTC trajectory files — MDAnalysis.coordinates.XTC" href="XTC.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">6.1. Trajectory Readers and Writers  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.9. INPCRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.10. LAMMPS DCD trajectory and DATA I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.11. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.12. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.13. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.14. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.15. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.16. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.17. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.18. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.19. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.20. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.21. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.22. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xyz-file-format">6.22.1. XYZ File format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.22.2. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.23. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.24. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.25. Reading trajectory with Chemfiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.26. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.27. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.28. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.29. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.30. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
+        
+      <li>6.22. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/coordinates/XYZ.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.XYZ"></span><div class="section" id="xyz-trajectory-reader-mdanalysis-coordinates-xyz">
+<h1>6.22. XYZ trajectory reader — <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a><a class="headerlink" href="#xyz-trajectory-reader-mdanalysis-coordinates-xyz" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#xyz-format"><span class="std std-ref">XYZ format</span></a> is a loosely defined, simple
+coordinate trajectory format. The implemented format definition was
+taken from the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> and is therefore compatible with VMD.</p>
+<p>Note the following:</p>
+<ul class="simple">
+<li>Comments are not allowed in the XYZ file (we neither read nor write
+them to remain compatible with VMD).</li>
+<li>The atom name (first column) is ignored during reading.</li>
+<li>The coordinates are assumed to be space-delimited rather than fixed
+width (this may cause issues - see below).</li>
+<li>All fields to the right of the z-coordinate are ignored.</li>
+<li>The unitcell information is all zeros since this is not recorded in
+the XYZ format.</li>
+</ul>
+<p class="rubric">Units</p>
+<ul class="simple">
+<li>Coordinates are in Angstroms.</li>
+<li>The length of a timestep can be set by passing the <em>dt</em> argument,
+it’s assumed to be in ps (default: 1 ps).</li>
+</ul>
+<p>There appears to be no rigid format definition so it is likely users
+will need to tweak this class.</p>
+<div class="section" id="xyz-file-format">
+<span id="xyz-format"></span><h2>6.22.1. XYZ File format<a class="headerlink" href="#xyz-file-format" title="Permalink to this headline">¶</a></h2>
+<p>Definition used by the <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="MDAnalysis.coordinates.XYZ.XYZReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZReader</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> (and
+the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> from whence the definition was taken):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
+[ N                       ] # of atoms, required by this xyz reader plugin  line 1
+[ molecule name           ] name of molecule (can be blank)                 line 2
+atom1 x y z [optional data] atom name followed by xyz coords                line 3
+atom2 x y z [ ...         ] and (optionally) other data.
+...
+atomN x y z [ ...         ]                                                 line N+2
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>comment lines not implemented (do not include them)</li>
+<li>molecule name: the line is required but the content is ignored
+at the moment</li>
+<li>optional data (after the coordinates) are presently ignored</li>
+</ul>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>6.22.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.XYZ.XYZReader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XYZ.</code><code class="descname">XYZReader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads from an XYZ file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">ts</span></code></dt>
+<dd><p class="first last">Timestep object containing coordinates of current frame</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first last docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">len(xyz)</span></code></dt>
+<dd><p class="first last">return number of frames in xyz</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">xyz:</span></code></dt>
+<dd><p class="first last">iterate through trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The XYZ file format follows VMD’s <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a> and is also described
+under <a class="reference internal" href="#xyz-format"><span class="std std-ref">XYZ format</span></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based. Added <em>dt</em> and
+<em>time_offset</em> keywords (passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>)</p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZReader.Writer">
+<code class="descname">Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a XYZWriter for <em>filename</em> with the same parameters as this
+XYZ.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the output trajectory</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms. If none is given use the same number of atoms from
+the reader instance is used</li>
+<li><strong>**kwargs</strong> – See <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> for additional kwargs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> (see there for more details)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZReader.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close xyz trajectory file if it was open.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XYZ.XYZReader.n_atoms">
+<code class="descname">n_atoms</code><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.n_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of atoms in a frame</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.XYZ.XYZWriter">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XYZ.</code><code class="descname">XYZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>atoms=None</em>, <em>convert_units=True</em>, <em>remark=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes an XYZ file</p>
+<p>The XYZ file format is not formally defined. This writer follows
+the VMD implementation for the molfile <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a>.</p>
+<p>Initialize the XYZ trajectory writer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of trajectory file. If it ends with “gz” then the file
+will be gzip-compressed; if it ends with “bz2” it will be bzip2
+compressed.</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of atoms in trajectory. By default assume that this is None
+and that this file is used to store several different models
+instead of a single trajectory. If a number is provided each
+written TimeStep has to contain the same number of atoms.</li>
+<li><strong>atoms</strong> (<em>str | list</em><em> (</em><em>optional</em><em>)</em>) – Provide atom names: This can be a list of names or an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.  If none is provided, atoms will
+be called ‘X’ in the output. These atom names will be
+used when a trajectory is written from raw
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> objects which do not contain atom
+information. If you write a <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> with
+<a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="MDAnalysis.coordinates.XYZ.XYZWriter.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">XYZWriter.write()</span></code></a> then atom information is taken
+at each step and <em>atoms</em> is ignored.</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
+writing  [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
+version and frame</li>
+<li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: Removed <code class="code docutils literal notranslate"><span class="pre">default_remark</span></code> variable (Issue #2692).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZWriter.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file and finalize the writing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZWriter.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write object <cite>obj</cite> at current trajectory frame to file.</p>
+<p>Atom elements (or names) in the output are taken from the <cite>obj</cite> or
+default to the value of the <cite>atoms</cite> keyword supplied to the
+<a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> constructor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> to write.</td>
+</tr>
+</tbody>
+</table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated the use of Timestep as arguments to write. Use either an
+AtomGroup or Universe. To be removed in version 2.0.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="FHIAIMS.html" class="btn btn-neutral float-right" title="6.23. FHI-AIMS file format — MDAnalysis.coordinates.FHIAIMS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="XTC.html" class="btn btn-neutral float-left" title="6.21. XTC trajectory files — MDAnalysis.coordinates.XTC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

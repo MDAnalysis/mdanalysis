@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>6.15. PQR file format — MDAnalysis.coordinates.PQR &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="6.16. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" />
+    <link rel="prev" title="6.14. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.PQR"></span><div class="section" id="pqr-file-format-mdanalysis-coordinates-pqr">
+<h1><span class="section-number">6.15. </span>PQR file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a><a class="headerlink" href="#pqr-file-format-mdanalysis-coordinates-pqr" title="Permalink to this headline">¶</a></h1>
+<p>Read atoms with charges from a <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html">PQR</a> file (as written by <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html">PDB2PQR</a>). The
+following is adopted from the description of the <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html">PQR</a> format as used by <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html">APBS</a>:</p>
+<p><em>MDAnalysis</em> reads very loosely-formatted PQR files: all fields are
+<strong>whitespace-delimited</strong> rather than the strict column formatting mandated
+by the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format">PDB</a> format. This more liberal formatting allows coordinates
+which are larger/smaller than ±999 Å.</p>
+<p>MDAnalysis reads data on a per-line basis from PQR files using the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">recordName</span> <span class="n">serial</span> <span class="n">atomName</span> <span class="n">residueName</span> <span class="n">chainID</span> <span class="n">residueNumber</span> <span class="n">X</span> <span class="n">Y</span> <span class="n">Z</span> <span class="n">charge</span> <span class="n">radius</span>
+</pre></div>
+</div>
+<p>If this fails it is assumed that the <em>chainID</em> was omitted and the shorter
+format is read:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">recordName</span> <span class="n">serial</span> <span class="n">atomName</span> <span class="n">residueName</span> <span class="n">residueNumber</span> <span class="n">X</span> <span class="n">Y</span> <span class="n">Z</span> <span class="n">charge</span> <span class="n">radius</span>
+</pre></div>
+</div>
+<p>Anything else will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<p>The whitespace is the most important feature of this format: fields
+<em>must</em> be separated by at least one space or tab character. The fields
+are:</p>
+<dl class="simple">
+<dt><em>recordName</em></dt><dd><p>A string which specifies the type of PQR entry and should either be ATOM or
+HETATM.</p>
+</dd>
+<dt><em>serial</em></dt><dd><p>An integer which provides the atom index (but note that MDAnalysis renumbers
+atoms so one cannot rely on the <em>serial</em>)</p>
+</dd>
+<dt><em>atomName</em></dt><dd><p>A string which provides the atom name.</p>
+</dd>
+<dt><em>residueName</em></dt><dd><p>A string which provides the residue name.</p>
+</dd>
+<dt><em>chainID</em></dt><dd><p>An optional string which provides the chain ID of the atom.</p>
+</dd>
+<dt><em>residueNumber</em></dt><dd><p>An integer which provides the residue index.</p>
+</dd>
+<dt><em>X Y Z</em></dt><dd><p>Three floats which provide the atomic coordiantes.</p>
+</dd>
+<dt><em>charge</em></dt><dd><p>A float which provides the atomic charge (in electrons).</p>
+</dd>
+<dt><em>radius</em></dt><dd><p>A float which provides the atomic radius (in Å).</p>
+</dd>
+</dl>
+<p>Clearly, this format can deviate wildly from <a class="reference external" href="http://www.wwpdb.org/documentation/file-format">PDB</a> due to the use of whitespaces
+rather than specific column widths and alignments. This deviation can be
+particularly significant when large coordinate values are used.</p>
+<p>Output should look like this (although the only real requirement is
+<em>whitespace</em> separation between <em>all</em> entries). The chainID is optional
+and can be omitted:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ATOM</span>      <span class="mi">1</span>  <span class="n">N</span>    <span class="n">MET</span>     <span class="mi">1</span>     <span class="o">-</span><span class="mf">11.921</span>   <span class="mf">26.307</span>   <span class="mf">10.410</span> <span class="o">-</span><span class="mf">0.3000</span> <span class="mf">1.8500</span>
+<span class="n">ATOM</span>     <span class="mi">36</span>  <span class="n">NH1</span>  <span class="n">ARG</span>     <span class="mi">2</span>      <span class="o">-</span><span class="mf">6.545</span>   <span class="mf">25.499</span>    <span class="mf">3.854</span> <span class="o">-</span><span class="mf">0.8000</span> <span class="mf">1.8500</span>
+<span class="n">ATOM</span>     <span class="mi">37</span> <span class="n">HH11</span>  <span class="n">ARG</span>     <span class="mi">2</span>      <span class="o">-</span><span class="mf">6.042</span>   <span class="mf">25.480</span>    <span class="mf">4.723</span>  <span class="mf">0.4600</span> <span class="mf">0.2245</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Fields <em>must be white-space separated</em> or data are read
+incorrectly. PDB formatted files are <em>not</em> guaranteed to be
+white-space separated so extra care should be taken when quickly
+converting PDB files into PQR files using simple scripts.</p>
+</div>
+<p>For example, PQR files created with <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html">PDB2PQR</a> and the <cite>–whitespace</cite>
+option are guaranteed to conform to the above format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pdb2pqr</span> <span class="o">--</span><span class="n">ff</span><span class="o">=</span><span class="n">charmm</span> <span class="o">--</span><span class="n">whitespace</span> <span class="mi">4</span><span class="n">ake</span><span class="o">.</span><span class="n">pdb</span> <span class="mi">4</span><span class="n">ake</span><span class="o">.</span><span class="n">pqr</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PQR.PQRReader">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.coordinates.PQR.</code><code class="sig-name descname">PQRReader</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">convert_units=None</em>, <em class="sig-param">n_atoms=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html">PQR</a> file into MDAnalysis.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PQR.PQRReader.Writer">
+<code class="sig-name descname">Writer</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a PQRWriter for <em>filename</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the output PQR file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="MDAnalysis.coordinates.PQR.PQRWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PQRWriter</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PQR.PQRWriter">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.coordinates.PQR.</code><code class="sig-name descname">PQRWriter</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">convert_units=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a single coordinate frame in whitespace-separated PQR format.</p>
+<p>Charges (“Q”) are taken from the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.Atom.charge</span></code> attribute while
+radii are obtaine from the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.Atom.radius</span></code> attribute.</p>
+<ul class="simple">
+<li><p>If the segid is ‘SYSTEM’ then it will be set to the empty
+string. Otherwise the first letter will be used as the chain ID.</p></li>
+<li><p>The serial number always starts at 1 and increments sequentially
+for the atoms.</p></li>
+</ul>
+<p>The output format is similar to <code class="docutils literal notranslate"><span class="pre">pdb2pqr</span> <span class="pre">--whitespace</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+</div>
+<p>Set up a PQRWriter with full whitespace separation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – output filename</p></li>
+<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – remark lines (list of strings) or single string to be added to the
+top of the PQR file</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PQR.PQRWriter.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">selection</em>, <em class="sig-param">frame=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write selection at current trajectory frame to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis AtomGroup or Universe</p></li>
+<li><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – optionally move to frame index <cite>frame</cite>; by default, write the
+current frame</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">6.1. Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.9. INPCRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.10. LAMMPS DCD trajectory and DATA I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.11. MMTF trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.12. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.13. PDB structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.14. PDBQT structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.15. PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.16. AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.17. TRR trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.18. TXYZ file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.19. XTC trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.20. XYZ trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.21. TRZ trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.22. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.23. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.24. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.25. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.26. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.27. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../coordinates_modules.html"><span class="section-number">6. </span>Coordinates modules</a><ul>
+      <li>Previous: <a href="PDBQT.html" title="previous chapter"><span class="section-number">6.14. </span>PDBQT structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+      <li>Next: <a href="TRJ.html" title="next chapter"><span class="section-number">6.16. </span>AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/coordinates/PQR.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

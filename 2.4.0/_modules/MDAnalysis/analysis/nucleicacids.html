@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.analysis.nucleicacids &mdash; MDAnalysis 2.4.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/js/versions.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.4.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+            <a href="../../../index.html">
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.4.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.ApplicationError"><code class="docutils literal notranslate"><span class="pre">ApplicationError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.ConversionWarning"><code class="docutils literal notranslate"><span class="pre">ConversionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.DuplicateWarning"><code class="docutils literal notranslate"><span class="pre">DuplicateWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.FileFormatWarning"><code class="docutils literal notranslate"><span class="pre">FileFormatWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.MissingDataWarning"><code class="docutils literal notranslate"><span class="pre">MissingDataWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.NoDataError"><code class="docutils literal notranslate"><span class="pre">NoDataError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.SelectionError"><code class="docutils literal notranslate"><span class="pre">SelectionError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.SelectionWarning"><code class="docutils literal notranslate"><span class="pre">SelectionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html#MDAnalysis.exceptions.StreamWarning"><code class="docutils literal notranslate"><span class="pre">StreamWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.analysis.nucleicacids</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.analysis.nucleicacids</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Updated nucleic acid analysis --- :mod:`MDAnalysis.analysis.nucleicacids`</span>
+<span class="sd">=========================================================================</span>
+
+<span class="sd">:Author: Alia Lescoulie</span>
+<span class="sd">:Year: 2022</span>
+<span class="sd">:copyright: GNU Public Licence v3</span>
+
+<span class="sd">The module provides classes for analyzing nucleic acids structures.</span>
+<span class="sd">This is an updated, higher performance version of previous nucleic acid tools.</span>
+<span class="sd">For applications see :cite:p:`b-Denning2011,b-Denning2012`.</span>
+
+<span class="sd">.. rubric:: References</span>
+
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
+<span class="sd">    :keyprefix: b-</span>
+<span class="sd">    :labelprefix: ᵇ</span>
+
+<span class="sd">    Denning2011</span>
+<span class="sd">    Denning2012</span>
+
+<span class="sd">Distances</span>
+<span class="sd">---------</span>
+
+<span class="sd">.. autoclass:: NucPairDist</span>
+<span class="sd">    :members:</span>
+<span class="sd">    :inherited-members:</span>
+
+<span class="sd">.. autoclass:: WatsonCrickDist</span>
+<span class="sd">    :members:</span>
+<span class="sd">    :inherited-members:</span>
+
+<span class="sd">.. versionadded 2.2.0</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">.distances</span> <span class="kn">import</span> <span class="n">calc_bonds</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">Residue</span>
+
+
+<span class="c1"># Remove in 2.5.0</span>
+<span class="k">class</span> <span class="nc">DeprecatedResults</span><span class="p">(</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;times&quot;</span><span class="p">:</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `times` results attribute is deprecated and will &quot;</span>
+                        <span class="s2">&quot;be removed in MDAnalysis 2.5.0.&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="s2">&quot;__missing__&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pair_distances&#39;</span><span class="p">][:,</span> <span class="n">key</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Accessing results via selection indices is &quot;</span>
+                        <span class="s2">&quot;deprecated and will be removed in MDAnalysis 2.5.0&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">item</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NucPairDist"><a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.NucPairDist">[docs]</a><span class="k">class</span> <span class="nc">NucPairDist</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atom Pair distance calculation base class.</span>
+
+<span class="sd">    Takes two lists of :class:`~MDAnalysis.core.groups.AtomGroup` and</span>
+<span class="sd">    computes the distances between them over a trajectory. Used as a</span>
+<span class="sd">    superclass for the other nucleic acid distances classes. The distance</span>
+<span class="sd">    will be measured between atoms sharing an index in the two lists of</span>
+<span class="sd">    :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    selection1: List[AtomGroup]</span>
+<span class="sd">        List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom</span>
+<span class="sd">        of each nucleic acid being analyzed.</span>
+<span class="sd">    selection2: List[AtomGroup]</span>
+<span class="sd">        List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom</span>
+<span class="sd">        of each nucleic acid being analyzed.</span>
+<span class="sd">    kwargs: dict</span>
+<span class="sd">        Arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times: numpy.ndarray</span>
+<span class="sd">        Simulation times for analysis.</span>
+<span class="sd">    results: numpy.ndarray</span>
+<span class="sd">        Array of pair distances. First index is selection, second index is time.</span>
+
+<span class="sd">        .. deprecated:: 2.4.0</span>
+<span class="sd">           Will be removed in MDAnalysis 2.5.0. Please use</span>
+<span class="sd">           :attr:`results.pair_distances` instead.</span>
+
+<span class="sd">    results.times: numpy.ndarray</span>
+<span class="sd">        Simulation times used in analysis</span>
+
+<span class="sd">        .. deprecated:: 2.4.0</span>
+<span class="sd">           Will be removed in MDAnalysis 2.5.0. Please use</span>
+<span class="sd">           :attr:`times` instead.</span>
+
+<span class="sd">    results.pair_distances: numpy.ndarray</span>
+<span class="sd">        2D array of pair distances. First dimension is simulation time, second</span>
+<span class="sd">        dimension contains the pair distances for each each entry pair in</span>
+<span class="sd">        selection1 and selection2.</span>
+
+<span class="sd">        .. versionadded:: 2.4.0</span>
+
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+
+<span class="sd">    ValueError</span>
+<span class="sd">        If the selections given are not the same length</span>
+
+
+<span class="sd">    .. deprecated:: 2.4.0</span>
+<span class="sd">       Accessing results by passing selection indices to :attr:`results` is</span>
+<span class="sd">       now deprecated and will be removed in MDAnalysis version 2.5.0. Please</span>
+<span class="sd">       use :attr:`results.pair_distances` instead.</span>
+<span class="sd">       The :attr:`results.times` is deprecated and will be removed in version</span>
+<span class="sd">       2.5.0. Please use the class attribute :attr:`times` instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_s1</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span>
+    <span class="n">_s2</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span>
+    <span class="n">_n_sel</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">_res_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+    <span class="n">_times</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
+                 <span class="n">selection2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">selection1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Selections must be same length&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_sel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span> <span class="o">=</span> <span class="n">selection1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">=</span> <span class="n">selection2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_sel</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span> <span class="o">+=</span> <span class="n">selection1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">+=</span> <span class="n">selection2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">DeprecatedResults</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_res_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_sel</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_res_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dist</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Remove 2.5.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;times&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;pair_distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_res_array</span></div>
+
+
+<div class="viewcode-block" id="WatsonCrickDist"><a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.WatsonCrickDist">[docs]</a><span class="k">class</span> <span class="nc">WatsonCrickDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Watson-Crick basepair distance for selected residues over a trajectory.</span>
+
+<span class="sd">    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and calculates</span>
+<span class="sd">    the Watson-Crick distance between them over the trajectory. Bases are matched by</span>
+<span class="sd">    their index in the lists given as arguments.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    strand1: List[Residue]</span>
+<span class="sd">        First list of bases</span>
+<span class="sd">    strand2: List[Residue]</span>
+<span class="sd">        Second list of bases</span>
+<span class="sd">    n1_name: str (optional)</span>
+<span class="sd">        Name of Nitrogen 1 of nucleic acids, by default assigned to N1</span>
+<span class="sd">    n3_name: str (optional)</span>
+<span class="sd">        Name of Nitrogen 3 of nucleic acids, by default assigned to N3</span>
+<span class="sd">    g_name: str (optional)</span>
+<span class="sd">        Name of Guanine in topology, by default assigned to G</span>
+<span class="sd">    a_name: str (optional)</span>
+<span class="sd">        Name of Adenine in topology, by default assigned to A</span>
+<span class="sd">    u_name: str (optional)</span>
+<span class="sd">        Name of Uracil in topology, by default assigned to U</span>
+<span class="sd">    t_name: str (optional)</span>
+<span class="sd">        Name of Thymine in topology, by default assigned to T</span>
+<span class="sd">    c_name: str (optional)</span>
+<span class="sd">        Name of Cytosine in topology, by default assigned to C</span>
+<span class="sd">    **kwargs: dict</span>
+<span class="sd">        arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times: numpy.ndarray</span>
+<span class="sd">        Simulation times for analysis.</span>
+<span class="sd">    results: numpy.ndarray</span>
+<span class="sd">        Array of Watson-Crick basepair distances. First index is selection,</span>
+<span class="sd">        second index is time.</span>
+
+<span class="sd">        .. deprecated:: 2.4.0</span>
+<span class="sd">           Will be removed in MDAnalysis 2.5.0. Please use</span>
+<span class="sd">           :attr:`results.pair_distances` instead.</span>
+
+<span class="sd">    results.times: numpy.ndarray</span>
+<span class="sd">        Simulation times used in analysis</span>
+
+<span class="sd">        .. deprecated:: 2.4.0</span>
+<span class="sd">           Will be removed in MDAnalysis 2.5.0. Please use</span>
+<span class="sd">           :attr:`times` instead.</span>
+
+<span class="sd">    results.pair_distances: numpy.ndarray</span>
+<span class="sd">        2D array of Watson-Crick basepair distances. First dimension is</span>
+<span class="sd">        simulation time, second dimension contains the pair distances for</span>
+<span class="sd">        each each entry pair in strand1 and strand2.</span>
+
+<span class="sd">        .. versionadded:: 2.4.0</span>
+
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the residues given are not amino acids</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the selections given are not the same length</span>
+
+
+<span class="sd">    .. deprecated:: 2.4.0</span>
+<span class="sd">       Accessing results by passing strand indices to :attr:`results` is</span>
+<span class="sd">       now deprecated and will be removed in MDAnalysis version 2.5.0. Please</span>
+<span class="sd">       use :attr:`results.pair_distances` instead.</span>
+<span class="sd">       The :attr:`results.times` is deprecated and will be removed in version</span>
+<span class="sd">       2.5.0. Please use the class attribute :attr:`times` instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strand1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Residue</span><span class="p">],</span> <span class="n">strand2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Residue</span><span class="p">],</span>
+                 <span class="n">n1_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;N1&#39;</span><span class="p">,</span> <span class="n">n3_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;N3&quot;</span><span class="p">,</span>
+                 <span class="n">g_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">a_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">u_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span>
+                 <span class="n">t_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sel2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">strand</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">strand1</span><span class="p">,</span> <span class="n">strand2</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strand</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="n">c_name</span><span class="p">,</span> <span class="n">t_name</span><span class="p">,</span> <span class="n">u_name</span><span class="p">]:</span>
+                <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">n3_name</span><span class="p">,</span> <span class="n">n1_name</span>
+            <span class="k">elif</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a_name</span><span class="p">,</span> <span class="n">g_name</span><span class="p">]:</span>
+                <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">n1_name</span><span class="p">,</span> <span class="n">n3_name</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2"> are not valid nucleic acids&quot;</span><span class="p">)</span>
+
+            <span class="n">sel1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;name </span><span class="si">{</span><span class="n">a1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span>
+            <span class="n">sel2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;name </span><span class="si">{</span><span class="n">a2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">WatsonCrickDist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">sel1</span><span class="p">,</span> <span class="n">sel2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+  </div>
+
+  
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.4.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

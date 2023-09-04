@@ -1,0 +1,583 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.coordinates.PDBQT &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.coordinates.PDBQT</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.coordinates.PDBQT</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PDBQT structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDBQT`</span>
+<span class="sd">===========================================================================</span>
+
+<span class="sd">MDAnalysis reads coordinates from PDBQT_ files and additional optional</span>
+<span class="sd">data such as B-factors, partial charge and AutoDock_ atom types.  It</span>
+<span class="sd">is also possible to substitute a PDBQT file for a PSF file in order to</span>
+<span class="sd">define the list of atoms (but no connectivity information will be</span>
+<span class="sd">available in this case).</span>
+
+<span class="sd">.. _PDBQT:</span>
+<span class="sd">   http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file</span>
+<span class="sd">.. _AutoDock:</span>
+<span class="sd">   http://autodock.scripps.edu/</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+
+
+<div class="viewcode-block" id="PDBQTReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDBQT.html#MDAnalysis.coordinates.PDBQT.PDBQTReader">[docs]</a><span class="k">class</span> <span class="nc">PDBQTReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;PDBQTReader that reads a PDBQT-formatted file, no frills.</span>
+
+<span class="sd">    Records read:</span>
+<span class="sd">     - CRYST1 for unitcell A,B,C, alpha,beta,gamm</span>
+<span class="sd">     - ATOM. HETATM for x,y,z</span>
+
+<span class="sd">    Original `PDB format documentation`_ with `AutoDOCK extensions`_</span>
+
+
+<span class="sd">    .. _PDB format documentation:</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
+<span class="sd">    .. _AutoDOCK extensions:</span>
+<span class="sd">       http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file</span>
+
+<span class="sd">    =============  ============  ===========  =============================================</span>
+<span class="sd">    COLUMNS        DATA  TYPE    FIELD        DEFINITION</span>
+<span class="sd">    =============  ============  ===========  =============================================</span>
+<span class="sd">    1 -  6         Record name   &quot;CRYST1&quot;</span>
+<span class="sd">    7 - 15         Real(9.3)     a              a (Angstroms).</span>
+<span class="sd">    16 - 24        Real(9.3)     b              b (Angstroms).</span>
+<span class="sd">    25 - 33        Real(9.3)     c              c (Angstroms).</span>
+<span class="sd">    34 - 40        Real(7.2)     alpha          alpha (degrees).</span>
+<span class="sd">    41 - 47        Real(7.2)     beta           beta (degrees).</span>
+<span class="sd">    48 - 54        Real(7.2)     gamma          gamma (degrees).</span>
+
+<span class="sd">    1 -  6         Record name   &quot;ATOM  &quot;</span>
+<span class="sd">    7 - 11         Integer       serial       Atom  serial number.</span>
+<span class="sd">    13 - 16        Atom          name         Atom name.</span>
+<span class="sd">    17             Character     altLoc       Alternate location indicator. IGNORED</span>
+<span class="sd">    18 - 21        Residue name  resName      Residue name.</span>
+<span class="sd">    22             Character     chainID      Chain identifier.</span>
+<span class="sd">    23 - 26        Integer       resSeq       Residue sequence number.</span>
+<span class="sd">    27             AChar         iCode        Code for insertion of residues. IGNORED</span>
+<span class="sd">    31 - 38        Real(8.3)     x            Orthogonal coordinates for X in Angstroms.</span>
+<span class="sd">    39 - 46        Real(8.3)     y            Orthogonal coordinates for Y in Angstroms.</span>
+<span class="sd">    47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.</span>
+<span class="sd">    55 - 60        Real(6.2)     occupancy    Occupancy.</span>
+<span class="sd">    61 - 66        Real(6.2)     tempFactor   Temperature  factor.</span>
+<span class="sd">    67 - 76        Real(10.4)    partialChrg  Gasteiger PEOE partial charge *q*.</span>
+<span class="sd">    79 - 80        LString(2)    atomType     AutoDOCK atom type *t*.</span>
+<span class="sd">    =============  ============  ===========  =============================================</span>
+
+<span class="sd">    We ignore torsion notation and just pull the partial charge and atom type columns::</span>
+
+<span class="sd">         COMPND    NSC7810</span>
+<span class="sd">         REMARK  3 active torsions:</span>
+<span class="sd">         REMARK  status: (&#39;A&#39; for Active; &#39;I&#39; for Inactive)</span>
+<span class="sd">         REMARK    1  A    between atoms: A7_7  and  C22_23</span>
+<span class="sd">         REMARK    2  A    between atoms: A9_9  and  A11_11</span>
+<span class="sd">         REMARK    3  A    between atoms: A17_17  and  C21_21</span>
+<span class="sd">         ROOT</span>
+<span class="sd">         123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)</span>
+<span class="sd">         ATOM      1  A1  INH I           1.054   3.021   1.101  0.00  0.00     0.002 A</span>
+<span class="sd">         ATOM      2  A2  INH I           1.150   1.704   0.764  0.00  0.00     0.012 A</span>
+<span class="sd">         ATOM      3  A3  INH I          -0.006   0.975   0.431  0.00  0.00    -0.024 A</span>
+<span class="sd">         ATOM      4  A4  INH I           0.070  -0.385   0.081  0.00  0.00     0.012 A</span>
+<span class="sd">         ATOM      5  A5  INH I          -1.062  -1.073  -0.238  0.00  0.00     0.002 A</span>
+<span class="sd">         ATOM      6  A6  INH I          -2.306  -0.456  -0.226  0.00  0.00     0.019 A</span>
+<span class="sd">         ATOM      7  A7  INH I          -2.426   0.885   0.114  0.00  0.00     0.052 A</span>
+<span class="sd">         ATOM      8  A8  INH I          -1.265   1.621   0.449  0.00  0.00     0.002 A</span>
+<span class="sd">         ATOM      9  A9  INH I          -1.339   2.986   0.801  0.00  0.00    -0.013 A</span>
+<span class="sd">         ATOM     10  A10 INH I          -0.176   3.667   1.128  0.00  0.00     0.013 A</span>
+<span class="sd">         ENDROOT</span>
+<span class="sd">         BRANCH   9  11</span>
+<span class="sd">         ATOM     11  A11 INH I          -2.644   3.682   0.827  0.00  0.00    -0.013 A</span>
+<span class="sd">         ATOM     12  A16 INH I          -3.007   4.557  -0.220  0.00  0.00     0.002 A</span>
+<span class="sd">         ATOM     13  A12 INH I          -3.522   3.485   1.882  0.00  0.00     0.013 A</span>
+<span class="sd">         ATOM     14  A15 INH I          -4.262   5.209  -0.177  0.00  0.00    -0.024 A</span>
+<span class="sd">         ATOM     15  A17 INH I          -2.144   4.784  -1.319  0.00  0.00     0.052 A</span>
+<span class="sd">         ATOM     16  A14 INH I          -5.122   4.981   0.910  0.00  0.00     0.012 A</span>
+<span class="sd">         ATOM     17  A20 INH I          -4.627   6.077  -1.222  0.00  0.00     0.012 A</span>
+<span class="sd">         ATOM     18  A13 INH I          -4.749   4.135   1.912  0.00  0.00     0.002 A</span>
+<span class="sd">         ATOM     19  A19 INH I          -3.777   6.285  -2.267  0.00  0.00     0.002 A</span>
+<span class="sd">         ATOM     20  A18 INH I          -2.543   5.650  -2.328  0.00  0.00     0.019 A</span>
+<span class="sd">         BRANCH  15  21</span>
+<span class="sd">         ATOM     21  C21 INH I          -0.834   4.113  -1.388  0.00  0.00     0.210 C</span>
+<span class="sd">         ATOM     22  O1  INH I          -0.774   2.915  -1.581  0.00  0.00    -0.644 OA</span>
+<span class="sd">         ATOM     23  O3  INH I           0.298   4.828  -1.237  0.00  0.00    -0.644 OA</span>
+<span class="sd">         ENDBRANCH  15  21</span>
+<span class="sd">         ENDBRANCH   9  11</span>
+<span class="sd">         BRANCH   7  24</span>
+<span class="sd">         ATOM     24  C22 INH I          -3.749   1.535   0.125  0.00  0.00     0.210 C</span>
+<span class="sd">         ATOM     25  O2  INH I          -4.019   2.378  -0.708  0.00  0.00    -0.644 OA</span>
+<span class="sd">         ATOM     26  O4  INH I          -4.659   1.196   1.059  0.00  0.00    -0.644 OA</span>
+<span class="sd">         ENDBRANCH   7  24</span>
+<span class="sd">         TORSDOF 3</span>
+<span class="sd">         123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)</span>
+
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Frames now 0-based instead of 1-based</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PDBQT&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdbfile</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">pdbfile</span><span class="p">:</span>
+                <span class="c1"># Should only break at the &#39;END&#39; of a model definition</span>
+                <span class="c1"># and prevent premature exit for a torsion termination</span>
+                <span class="c1"># , eg, ENDBRANCH</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;END</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CRYST1&#39;</span><span class="p">):</span>
+                    <span class="c1"># lengths</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">((</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">15</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">33</span><span class="p">]))</span>
+                    <span class="c1"># angles</span>
+                    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">((</span><span class="n">line</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">54</span><span class="p">]))</span>
+                    <span class="n">unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">G</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;ATOM&#39;</span><span class="p">,</span> <span class="s1">&#39;HETATM&#39;</span><span class="p">)):</span>
+                    <span class="c1"># convert all entries at the end once for optimal speed</span>
+                    <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="o">.</span><span class="n">from_coordinates</span><span class="p">(</span>
+            <span class="n">coords</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 0-based frame number</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="c1"># in-place !</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+
+<div class="viewcode-block" id="PDBQTReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDBQT.html#MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a permissive (simple) PDBQTWriter for *filename*.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            filename of the output PDBQT file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`PDBQTWriter`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PDBQTWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PDBQTWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDBQT.html#MDAnalysis.coordinates.PDBQT.PDBQTWriter">[docs]</a><span class="k">class</span> <span class="nc">PDBQTWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.</span>
+
+<span class="sd">    .. _PDB: http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
+<span class="sd">    .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ATOM&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ATOM  </span><span class="si">{serial:5d}</span><span class="s2"> </span><span class="si">{name:&lt;4.4s}</span><span class="s2"> </span><span class="si">{resName:&lt;4.4s}</span><span class="s2">&quot;</span>
+                 <span class="s2">&quot;</span><span class="si">{chainID:1.1s}{resSeq:4d}{iCode:1.1s}</span><span class="s2">&quot;</span>
+                 <span class="s2">&quot;   </span><span class="si">{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}</span><span class="s2">&quot;</span>
+                 <span class="s2">&quot;</span><span class="si">{tempFactor:6.2f}</span><span class="s2">    </span><span class="si">{charge:&lt; 1.3f}</span><span class="s2"> </span><span class="si">{element:&lt;2.2s}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;REMARK&#39;</span><span class="p">:</span> <span class="s2">&quot;REMARK     </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;TITLE&#39;</span><span class="p">:</span> <span class="s2">&quot;TITLE     </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;CRYST1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;CRYST1</span><span class="si">{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}</span><span class="s2">&quot;</span>
+                   <span class="s2">&quot;</span><span class="si">{ang[0]:7.2f}{ang[1]:7.2f}{ang[2]:7.2f}</span><span class="s2"> &quot;</span>
+                   <span class="s2">&quot;</span><span class="si">{spacegroup:&lt;11s}{zvalue:4d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PDBQT&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+    <span class="n">pdb_coor_limits</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9995</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="mf">9999.9995</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;pdbqt&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PDBQTWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDBQT.html#MDAnalysis.coordinates.PDBQT.PDBQTWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PDBQTWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDBQT.html#MDAnalysis.coordinates.PDBQT.PDBQTWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        selection : AtomGroup</span>
+<span class="sd">            The selection to be written</span>
+<span class="sd">        frame : int (optional)</span>
+<span class="sd">            optionally move to frame index `frame` before writing; the default</span>
+<span class="sd">            is to write the current trajectory frame</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The first letter of the</span>
+<span class="sd">        :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB</span>
+<span class="sd">        chainID.</span>
+
+
+<span class="sd">        .. versionchanged:: 0.11.0</span>
+<span class="sd">           Frames now 0-based instead of 1-based</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">universe</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>  <span class="c1"># advance to frame</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># should catch cases when we are analyzing a single PDB (?)</span>
+
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">atoms</span>  <span class="c1"># make sure to use atoms (Issue 46)</span>
+        <span class="n">coor</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>  <span class="c1"># can write from selection == Universe (Issue 49)</span>
+
+        <span class="c1"># Check attributes</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">missing_topology</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">dflt</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">&#39;altLocs&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;icodes&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;occupancies&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;resids&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;UNK&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;types&#39;</span><span class="p">,</span> <span class="s1">&#39;  &#39;</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="n">dflt</span><span class="p">,))</span>
+                <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+        <span class="c1"># Order of preference: chainids -&gt; segids -&gt; blank string</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">chainids</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">,))</span>
+                <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;chainids&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing_topology</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Supplied AtomGroup was missing the following attributes: &quot;</span>
+                <span class="s2">&quot;</span><span class="si">{miss}</span><span class="s2">. These will be written with default values. &quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miss</span><span class="o">=</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_topology</span><span class="p">)))</span>
+
+        <span class="c1"># check if any coordinates are illegal (coordinates are already</span>
+        <span class="c1"># in Angstroem per package default)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">,</span> <span class="n">coor</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;PDB files must have coordinate values between </span><span class="si">{0:.3f}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; and </span><span class="si">{1:.3f}</span><span class="s2"> Angstroem: No file was written.&quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">],</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]))</span>
+
+        <span class="c1"># Write title record</span>
+        <span class="c1"># http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;FRAME &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; FROM &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;TITLE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+
+        <span class="c1"># Write CRYST1 record</span>
+        <span class="c1"># http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;CRYST1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">ang</span><span class="o">=</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span>
+                                                 <span class="n">spacegroup</span><span class="o">=</span><span class="s1">&#39;P 1&#39;</span><span class="p">,</span> <span class="n">zvalue</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># Write atom records</span>
+        <span class="c1"># http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html</span>
+        <span class="k">for</span> <span class="n">serial</span><span class="p">,</span> <span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">chainid</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">icode</span><span class="p">,</span>
+                     <span class="n">occupancy</span><span class="p">,</span> <span class="n">tempfactor</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">coor</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resnames&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">],</span>
+                    <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resids&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;icodes&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;occupancies&#39;</span><span class="p">],</span>
+                    <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;charges&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]),</span>
+                         <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">serial</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ltruncate_int</span><span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># check for overflow here?</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ltruncate_int</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">name</span>  <span class="c1"># customary to start in column 14</span>
+            <span class="n">chainid</span> <span class="o">=</span> <span class="n">chainid</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># take the last character</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ATOM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">serial</span><span class="o">=</span><span class="n">serial</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">resName</span><span class="o">=</span><span class="n">resname</span><span class="p">,</span>
+                <span class="n">chainID</span><span class="o">=</span><span class="n">chainid</span><span class="p">,</span>
+                <span class="n">resSeq</span><span class="o">=</span><span class="n">resid</span><span class="p">,</span>
+                <span class="n">iCode</span><span class="o">=</span><span class="n">icode</span><span class="p">,</span>
+                <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span>
+                <span class="n">occupancy</span><span class="o">=</span><span class="n">occupancy</span><span class="p">,</span>
+                <span class="n">tempFactor</span><span class="o">=</span><span class="n">tempfactor</span><span class="p">,</span>
+                <span class="n">charge</span><span class="o">=</span><span class="n">charge</span><span class="p">,</span>
+                <span class="n">element</span><span class="o">=</span><span class="n">element</span><span class="p">,</span>
+            <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

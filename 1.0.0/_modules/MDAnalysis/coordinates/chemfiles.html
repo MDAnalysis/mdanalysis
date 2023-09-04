@@ -1,0 +1,623 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.coordinates.chemfiles &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.coordinates.chemfiles</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.coordinates.chemfiles</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Reading trajectory with Chemfiles --- :mod:`MDAnalysis.coordinates.chemfiles`</span>
+<span class="sd">=============================================================================</span>
+
+<span class="sd">Classes to read and write files using the `chemfiles`_ library. This library</span>
+<span class="sd">provides C++ implementation of multiple formats readers and writers, the full</span>
+<span class="sd">list if available `here &lt;formats&gt;`_.</span>
+
+<span class="sd">.. _chemfiles: https://chemfiles.org</span>
+<span class="sd">.. _formats: http://chemfiles.org/chemfiles/latest/formats.html</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: ChemfilesReader</span>
+
+<span class="sd">.. autoclass:: ChemfilesWriter</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">string_types</span>
+<span class="kn">from</span> <span class="nn">distutils.version</span> <span class="kn">import</span> <span class="n">LooseVersion</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span><span class="p">,</span> <span class="n">core</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">chemfiles</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAS_CHEMFILES</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">HAS_CHEMFILES</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="n">MIN_CHEMFILES_VERSION</span> <span class="o">=</span> <span class="n">LooseVersion</span><span class="p">(</span><span class="s2">&quot;0.9&quot;</span><span class="p">)</span>
+<span class="n">MAX_CHEMFILES_VERSION</span> <span class="o">=</span> <span class="n">LooseVersion</span><span class="p">(</span><span class="s2">&quot;0.10&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">check_chemfiles_version</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check an appropriate Chemfiles is available</span>
+
+<span class="sd">    Returns True if a usable chemfiles version is available</span>
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_CHEMFILES</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;No Chemfiles package found.  &quot;</span>
+            <span class="s2">&quot;Try installing with &#39;pip install chemfiles&#39;&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">LooseVersion</span><span class="p">(</span><span class="n">chemfiles</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+    <span class="n">wrong</span> <span class="o">=</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="n">MIN_CHEMFILES_VERSION</span> <span class="ow">or</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="n">MAX_CHEMFILES_VERSION</span>
+    <span class="k">if</span> <span class="n">wrong</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;unsupported Chemfiles version </span><span class="si">{}</span><span class="s2">, we need a version &gt;</span><span class="si">{}</span><span class="s2"> and &lt;</span><span class="si">{}</span><span class="s2">&quot;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">MIN_CHEMFILES_VERSION</span><span class="p">,</span> <span class="n">MAX_CHEMFILES_VERSION</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">wrong</span>
+
+
+<div class="viewcode-block" id="ChemfilesReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesReader">[docs]</a><span class="k">class</span> <span class="nc">ChemfilesReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Coordinate reader using chemfiles.</span>
+
+<span class="sd">    The file format to used is guessed based on the file extension. If no</span>
+<span class="sd">    matching format is found, a ``ChemfilesError`` is raised. It is also</span>
+<span class="sd">    possible to manually specify the format to use for a given file.</span>
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;chemfiles&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">chemfiles_format</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : chemfiles.Trajectory or str</span>
+<span class="sd">            the chemfiles object to read or filename to read</span>
+<span class="sd">        chemfiles_format : str (optional)</span>
+<span class="sd">            if *filename* was a string, use the given format name instead of</span>
+<span class="sd">            guessing from the extension. The `list of supported formats</span>
+<span class="sd">            &lt;formats&gt;`_ and the associated names is available in chemfiles</span>
+<span class="sd">            documentation.</span>
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            General reader arguments.</span>
+
+
+<span class="sd">        .. _formats: http://chemfiles.org/chemfiles/latest/formats.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">check_chemfiles_version</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please install Chemfiles &gt; </span><span class="si">{}</span><span class="s2">&quot;</span>
+                               <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MIN_CHEMFILES_VERSION</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ChemfilesReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="n">chemfiles_format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_n_atoms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Can this Reader read *thing*&quot;&quot;&quot;</span>
+        <span class="c1"># nb, filename strings can still get passed through if</span>
+        <span class="c1"># format=&#39;CHEMFILES&#39; is used</span>
+        <span class="k">return</span> <span class="n">HAS_CHEMFILES</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;number of frames in trajectory&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">nsteps</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;number of atoms in the first frame of the trajectory&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cached_n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">read_step</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_n_atoms</span>
+
+    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reopen trajectory&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;read frame i&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;copy next frame into timestep&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;trying to go over trajectory limit&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">read_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_ts</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">ts</span>
+
+    <span class="k">def</span> <span class="nf">_frame_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;convert a chemfiles frame to a :class:`TimeStep`&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                <span class="s2">&quot;The number of atom changed in the trajectory. &quot;</span>
+                <span class="s2">&quot;This is not supported by MDAnalysis.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">lengths</span> <span class="o">+</span> <span class="n">frame</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">angles</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="n">frame</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">():</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">velocities</span><span class="p">[:]</span>
+
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return writer for trajectory format&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
+        <span class="k">return</span> <span class="n">ChemfilesWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ChemfilesWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesWriter">[docs]</a><span class="k">class</span> <span class="nc">ChemfilesWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinate writer using chemfiles.</span>
+
+<span class="sd">    The file format to used is guessed based on the file extension. If no</span>
+<span class="sd">    matching format is found, a ``ChemfilesError`` is raised. It is also</span>
+<span class="sd">    possible to manually specify the format to use for a given file.</span>
+
+<span class="sd">    Chemfiles support writting to files with varying number of atoms if the</span>
+<span class="sd">    underlying format support it. This is the case of most of text-based</span>
+<span class="sd">    formats.</span>
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;chemfiles&#39;</span>
+    <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># chemfiles mostly[1] uses these units for the in-memory representation,</span>
+    <span class="c1"># and convert into the file format units when writing.</span>
+    <span class="c1">#</span>
+    <span class="c1"># [1] mostly since some format don&#39;t have a specified unit</span>
+    <span class="c1"># (XYZ for example), so then chemfiles just assume they are in A and fs.</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">chemfiles_format</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename: str</span>
+<span class="sd">            filename of trajectory file.</span>
+<span class="sd">        n_atoms: int</span>
+<span class="sd">            number of atoms in the trajectory to write. This value is not</span>
+<span class="sd">            used and can vary during trajectory, if the underlying format</span>
+<span class="sd">            support it</span>
+<span class="sd">        mode : str (optional)</span>
+<span class="sd">            file opening mode: use &#39;a&#39; to append to an existing file or &#39;w&#39; to</span>
+<span class="sd">            create a new file</span>
+<span class="sd">        chemfiles_format : str (optional)</span>
+<span class="sd">            use the given format name instead of guessing from the extension.</span>
+<span class="sd">            The `list of supported formats &lt;formats&gt;`_ and the associated names</span>
+<span class="sd">            is available in chemfiles documentation.</span>
+<span class="sd">        topology : Universe or AtomGroup (optional)</span>
+<span class="sd">            use the topology from this :class:`~MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">            or :class:`~MDAnalysis.core.universe.Universe` to write all the</span>
+<span class="sd">            timesteps to the file</span>
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            General writer arguments.</span>
+
+
+<span class="sd">        .. _formats: http://chemfiles.org/chemfiles/latest/formats.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">check_chemfiles_version</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please install Chemfiles &gt; </span><span class="si">{}</span><span class="s2">&quot;</span>
+                               <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MIN_CHEMFILES_VERSION</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;a&quot;</span> <span class="ow">and</span> <span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;w&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Expected &#39;a&#39; or &#39;w&#39; as mode in ChemfilesWriter&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">chemfiles_format</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">topology</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">set_topology</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">topology</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology_to_chemfiles</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">set_topology</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the trajectory file and finalize the writing&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_closed&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write information associated with ``obj`` at current frame into trajectory.</span>
+
+<span class="sd">        Topology for the output is taken from the `obj` or default to the value</span>
+<span class="sd">        of the `topology` keyword supplied to the :class:`ChemfilesWriter`</span>
+<span class="sd">        constructor.</span>
+
+<span class="sd">        If `obj` contains velocities, and the underlying format supports it, the</span>
+<span class="sd">        velocities are writen to the file. Writing forces is unsupported at the</span>
+<span class="sd">        moment.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        obj : AtomGroup or Universe</span>
+<span class="sd">            The :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
+<span class="sd">            :class:`~MDAnalysis.core.universe.Universe` to write.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO 2.0: Remove timestep logic</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;atoms&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;universe&#39;</span><span class="p">):</span>
+                <span class="c1"># For AtomGroup and children (Residue, ResidueGroup, Segment)</span>
+                <span class="n">ts_full</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+                <span class="k">if</span> <span class="n">ts_full</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">ts_full</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Only populate a time step with the selected atoms.</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">ts_full</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;trajectory&#39;</span><span class="p">):</span>
+                <span class="c1"># For Universe only --- get everything</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span>
+                <span class="n">topology</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No Timestep found in obj argument&quot;</span><span class="p">)</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timestep_to_chemfiles</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">topology</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology_to_chemfiles</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_timestep_to_chemfiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a Timestep to a chemfiles Frame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: CONVERTERS?</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Frame</span><span class="p">()</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_positions</span><span class="p">:</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">add_velocities</span><span class="p">()</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[:]</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">UnitCell</span><span class="p">(</span><span class="o">*</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">frame</span>
+
+    <span class="k">def</span> <span class="nf">_topology_to_chemfiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert an AtomGroup or an Universe to a chemfiles Topology</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">topology</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Topology</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;atoms&quot;</span><span class="p">):</span>
+            <span class="c1"># use an empty topology</span>
+            <span class="n">topology</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">topology</span>
+
+        <span class="c1"># (1) add all atoms to the topology</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">chemfiles_atom</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s1">&#39;altLoc&#39;</span><span class="p">):</span>
+                <span class="n">chemfiles_atom</span><span class="p">[</span><span class="s2">&quot;altloc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">altLoc</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s1">&#39;segid&#39;</span><span class="p">):</span>
+                <span class="n">chemfiles_atom</span><span class="p">[</span><span class="s2">&quot;segid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">segid</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s1">&#39;segindex&#39;</span><span class="p">):</span>
+                <span class="n">chemfiles_atom</span><span class="p">[</span><span class="s2">&quot;segindex&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">segindex</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s1">&#39;resid&#39;</span><span class="p">):</span>
+                <span class="n">resname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s1">&#39;resname&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">resid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">residues</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">residues</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">]</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Residue</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
+                <span class="n">residue</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">]</span>
+
+                <span class="n">atom_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+                <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="s2">&quot;record_type&quot;</span><span class="p">):</span>
+                    <span class="c1"># set corresponding chemfiles residue property</span>
+                    <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">record_type</span> <span class="o">==</span> <span class="s2">&quot;ATOM&quot;</span><span class="p">:</span>
+                        <span class="n">residue</span><span class="p">[</span><span class="s2">&quot;is_standard_pdb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">residue</span><span class="p">[</span><span class="s2">&quot;is_standard_pdb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">topology</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chemfiles_atom</span><span class="p">)</span>
+
+        <span class="c1"># (2) add residues to the topology</span>
+        <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">residues</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">topology</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+
+        <span class="c1"># (3) add bonds to the topology</span>
+        <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">topology</span><span class="o">.</span><span class="n">add_bond</span><span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">bond</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">topology</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

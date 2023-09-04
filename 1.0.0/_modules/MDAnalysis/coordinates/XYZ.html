@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.coordinates.XYZ</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.coordinates.XYZ</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`</span>
+<span class="sd">==============================================================</span>
+
+<span class="sd">The :ref:`XYZ format &lt;xyz-format&gt;` is a loosely defined, simple</span>
+<span class="sd">coordinate trajectory format. The implemented format definition was</span>
+<span class="sd">taken from the `VMD xyzplugin`_ and is therefore compatible with VMD.</span>
+
+<span class="sd">Note the following:</span>
+
+<span class="sd">* Comments are not allowed in the XYZ file (we neither read nor write</span>
+<span class="sd">  them to remain compatible with VMD).</span>
+<span class="sd">* The atom name (first column) is ignored during reading.</span>
+<span class="sd">* The coordinates are assumed to be space-delimited rather than fixed</span>
+<span class="sd">  width (this may cause issues - see below).</span>
+<span class="sd">* All fields to the right of the z-coordinate are ignored.</span>
+<span class="sd">* The unitcell information is all zeros since this is not recorded in</span>
+<span class="sd">  the XYZ format.</span>
+
+<span class="sd">.. rubric:: Units</span>
+
+<span class="sd">* Coordinates are in Angstroms.</span>
+<span class="sd">* The length of a timestep can be set by passing the *dt* argument,</span>
+<span class="sd">  it&#39;s assumed to be in ps (default: 1 ps).</span>
+
+<span class="sd">There appears to be no rigid format definition so it is likely users</span>
+<span class="sd">will need to tweak this class.</span>
+
+<span class="sd">.. _xyz-format:</span>
+
+<span class="sd">XYZ File format</span>
+<span class="sd">---------------</span>
+
+<span class="sd">Definition used by the :class:`XYZReader` and :class:`XYZWriter` (and</span>
+<span class="sd">the `VMD xyzplugin`_ from whence the definition was taken)::</span>
+
+<span class="sd">    [ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE</span>
+<span class="sd">    [ N                       ] # of atoms, required by this xyz reader plugin  line 1</span>
+<span class="sd">    [ molecule name           ] name of molecule (can be blank)                 line 2</span>
+<span class="sd">    atom1 x y z [optional data] atom name followed by xyz coords                line 3</span>
+<span class="sd">    atom2 x y z [ ...         ] and (optionally) other data.</span>
+<span class="sd">    ...</span>
+<span class="sd">    atomN x y z [ ...         ]                                                 line N+2</span>
+
+
+<span class="sd">Note</span>
+<span class="sd">----</span>
+<span class="sd">* comment lines not implemented (do not include them)</span>
+<span class="sd">* molecule name: the line is required but the content is ignored</span>
+<span class="sd">  at the moment</span>
+<span class="sd">* optional data (after the coordinates) are presently ignored</span>
+
+
+<span class="sd">.. Links</span>
+<span class="sd">.. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.coordinates.XYZ&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">..version</span> <span class="kn">import</span> <span class="n">__version__</span>
+
+
+<div class="viewcode-block" id="XYZWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter">[docs]</a><span class="k">class</span> <span class="nc">XYZWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Writes an XYZ file</span>
+
+<span class="sd">    The XYZ file format is not formally defined. This writer follows</span>
+<span class="sd">    the VMD implementation for the molfile `xyzplugin`_.</span>
+
+<span class="sd">    .. _xyzplugin:</span>
+<span class="sd">       http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</span>
+
+<span class="sd">    .. versionchanged: 1.0.0</span>
+<span class="sd">       Use elements attribute instead of names attribute, if present</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;XYZ&#39;</span>
+    <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># these are assumed!</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">remark</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the XYZ trajectory writer</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename: str</span>
+<span class="sd">            filename of trajectory file. If it ends with &quot;gz&quot; then the file</span>
+<span class="sd">            will be gzip-compressed; if it ends with &quot;bz2&quot; it will be bzip2</span>
+<span class="sd">            compressed.</span>
+<span class="sd">        n_atoms: int (optional)</span>
+<span class="sd">            Number of atoms in trajectory. By default assume that this is None</span>
+<span class="sd">            and that this file is used to store several different models</span>
+<span class="sd">            instead of a single trajectory. If a number is provided each</span>
+<span class="sd">            written TimeStep has to contain the same number of atoms.</span>
+<span class="sd">        atoms: str | list (optional)</span>
+<span class="sd">            Provide atom names: This can be a list of names or an</span>
+<span class="sd">            :class:`AtomGroup`.  If none is provided, atoms will</span>
+<span class="sd">            be called &#39;X&#39; in the output. These atom names will be</span>
+<span class="sd">            used when a trajectory is written from raw</span>
+<span class="sd">            :class:`Timestep` objects which do not contain atom</span>
+<span class="sd">            information. If you write a :class:`AtomGroup` with</span>
+<span class="sd">            :meth:`XYZWriter.write` then atom information is taken</span>
+<span class="sd">            at each step and *atoms* is ignored.</span>
+<span class="sd">        convert_units : bool (optional)</span>
+<span class="sd">            convert quantities to default MDAnalysis units of Angstrom upon</span>
+<span class="sd">            writing  [``True``]</span>
+<span class="sd">        remark: str (optional)</span>
+<span class="sd">            single line of text (&quot;molecule name&quot;). By default writes MDAnalysis</span>
+<span class="sd">            version and frame</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Removed :code:`default_remark` variable (Issue #2692).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">remark</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atoms_elements_or_names</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+
+        <span class="c1"># can also be gz, bz2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_atoms_elements_or_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of atom elements (if present) or fallback to atom names&quot;&quot;&quot;</span>
+        <span class="c1"># Default case</span>
+        <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))</span>
+        <span class="c1"># Single atom name provided</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="n">atoms</span><span class="p">,))</span>
+        <span class="c1"># List of atom names providded</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">atoms</span>
+        <span class="c1"># AtomGroup or Universe, grab the names else default</span>
+        <span class="c1"># (AtomGroup.atoms just returns AtomGroup)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">elements</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))</span>
+
+<div class="viewcode-block" id="XYZWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the trajectory file and finalize the writing&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="XYZWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write object `obj` at current trajectory frame to file.</span>
+
+<span class="sd">        Atom elements (or names) in the output are taken from the `obj` or</span>
+<span class="sd">        default to the value of the `atoms` keyword supplied to the</span>
+<span class="sd">        :class:`XYZWriter` constructor.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        obj : Universe or AtomGroup</span>
+<span class="sd">            The :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
+<span class="sd">            :class:`~MDAnalysis.core.universe.Universe` to write.</span>
+
+
+<span class="sd">        .. deprecated:: 1.0.0</span>
+<span class="sd">           Deprecated the use of Timestep as arguments to write. Use either an</span>
+<span class="sd">           AtomGroup or Universe. To be removed in version 2.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># prepare the Timestep and extract atom names if possible</span>
+        <span class="c1"># (The way it is written it should be possible to write</span>
+        <span class="c1"># trajectories with frames that differ in atom numbers</span>
+        <span class="c1"># but this is not tested.)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;Passing a Timestep to write is deprecated, &#39;</span>
+                    <span class="s1">&#39;and will be removed in 2.0; &#39;</span>
+                    <span class="s1">&#39;use either an AtomGroup or Universe&#39;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No Timestep found in obj argument&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;universe&#39;</span><span class="p">):</span>
+                <span class="c1"># For AtomGroup and children (Residue, ResidueGroup, Segment)</span>
+                <span class="n">ts_full</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+                <span class="k">if</span> <span class="n">ts_full</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">ts_full</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Only populate a time step with the selected atoms.</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">ts_full</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;trajectory&#39;</span><span class="p">):</span>
+                <span class="c1"># For Universe only --- get everything</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+            <span class="c1"># update atom names</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atoms_elements_or_names</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write coordinate information in *ts* to the trajectory</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Print out :code:`remark` if present, otherwise use generic one </span>
+<span class="sd">           (Issue #2692).</span>
+<span class="sd">           Renamed from `write_next_timestep` to `_write_next_frame`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s1">&#39;XYZWriter: no coordinate data to write to &#39;</span>
+                                  <span class="s1">&#39;trajectory file&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;n_atoms keyword was specified indicating &#39;</span>
+                                 <span class="s1">&#39;that this should be a trajectory of the &#39;</span>
+                                 <span class="s1">&#39;same model. But the provided TimeStep has a &#39;</span>
+                                 <span class="s1">&#39;different number (</span><span class="si">{}</span><span class="s1">) then expected (</span><span class="si">{}</span><span class="s1">)&#39;</span>
+                                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Trying to write a TimeStep with unknown atoms. &#39;</span>
+                            <span class="s1">&#39;Expected </span><span class="si">{}</span><span class="s1"> atoms, got </span><span class="si">{}</span><span class="s1">. Try using &quot;write&quot; if you are &#39;</span>
+                            <span class="s1">&#39;using &quot;_write_next_frame&quot; directly&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">),</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
+
+        <span class="c1"># Write number of atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+
+        <span class="c1"># Write remark</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">remark</span> <span class="o">=</span> <span class="s2">&quot;frame </span><span class="si">{}</span><span class="s2"> | Written by MDAnalysis </span><span class="si">{}</span><span class="s2"> (release </span><span class="si">{}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">remark</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remark</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Write content</span>
+        <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0!s:&gt;8}</span><span class="s2">  </span><span class="si">{1:10.5f}</span><span class="s2"> </span><span class="si">{2:10.5f}</span><span class="s2"> </span><span class="si">{3:10.5f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="XYZReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader">[docs]</a><span class="k">class</span> <span class="nc">XYZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads from an XYZ file</span>
+
+<span class="sd">    :Data:</span>
+<span class="sd">        :attr:`ts`</span>
+<span class="sd">          Timestep object containing coordinates of current frame</span>
+
+<span class="sd">    :Methods:</span>
+<span class="sd">        ``len(xyz)``</span>
+<span class="sd">          return number of frames in xyz</span>
+<span class="sd">        ``for ts in xyz:``</span>
+<span class="sd">          iterate through trajectory</span>
+
+<span class="sd">    .. Note: this can read both compressed (foo.xyz) and compressed</span>
+<span class="sd">          (foo.xyz.bz2 or foo.xyz.gz) files; uncompression is handled</span>
+<span class="sd">          on the fly and also reads streams via</span>
+<span class="sd">          :class:`~MDAnalysis.lib.util.NamedStream`.</span>
+
+<span class="sd">    The XYZ file format follows VMD&#39;s xyzplugin_ and is also described</span>
+<span class="sd">    under :ref:`XYZ format &lt;xyz-format&gt;`.</span>
+
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Frames now 0-based instead of 1-based. Added *dt* and</span>
+<span class="sd">       *time_offset* keywords (passed to :class:`Timestep`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Phil Fowler:</span>
+    <span class="c1"># Validation: the geometric centre of 1284 atoms was calculated over</span>
+    <span class="c1"># 500 frames using both MDAnalysis and a VMD Tcl script. There was</span>
+    <span class="c1"># exact agreement (measured to three decimal places). bzipped and</span>
+    <span class="c1"># gzipped versions of the XYZ file were also tested</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XYZ&quot;</span>
+    <span class="c1"># these are assumed!</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">XYZReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by</span>
+        <span class="c1"># coordinates::core.py so the last file extension will tell us if it is</span>
+        <span class="c1"># bzipped or not</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compression</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="s2">&quot;xyz&quot;</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+        <span class="c1"># Haven&#39;t quite figured out where to start with all the self._reopen()</span>
+        <span class="c1"># etc.</span>
+        <span class="c1"># (Also cannot just use seek() or reset() because that would break</span>
+        <span class="c1"># with urllib2.urlopen() streams)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;number of atoms in a frame&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="c1"># need to check type of n</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;n_frames&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_n_frames</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_read_xyz_n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># the number of lines in the XYZ file will be 2 greater than the</span>
+        <span class="c1"># number of atoms</span>
+        <span class="n">linesPerFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">counter</span> <span class="o">%</span> <span class="n">linesPerFrame</span><span class="p">:</span>
+                    <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># need to check this is an integer!</span>
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counter</span> <span class="o">/</span> <span class="n">linesPerFrame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="o">=</span> <span class="n">offsets</span>
+        <span class="k">return</span> <span class="n">n_frames</span>
+
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># gets +1&#39;d in next</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># check that the timestep object exists</span>
+        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># we assume that there are only two header lines per frame</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="c1"># convert all entries at the end once for optimal speed</span>
+            <span class="n">tmp_buf</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
+                <span class="n">tmp_buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">tmp_buf</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">ts</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">EOFError</span><span class="p">(</span><span class="n">err</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s1">&#39;XYZ file already opened&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># reset ts</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span>
+
+<div class="viewcode-block" id="XYZReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a XYZWriter for *filename* with the same parameters as this</span>
+<span class="sd">        XYZ.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename: str</span>
+<span class="sd">            filename of the output trajectory</span>
+<span class="sd">        n_atoms: int (optional)</span>
+<span class="sd">            number of atoms. If none is given use the same number of atoms from</span>
+<span class="sd">            the reader instance is used</span>
+<span class="sd">        **kwargs:</span>
+<span class="sd">            See :class:`XYZWriter` for additional kwargs</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`XYZWriter` (see there for more details)</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`XYZWriter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
+        <span class="k">return</span> <span class="n">XYZWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="XYZReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close xyz trajectory file if it was open.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

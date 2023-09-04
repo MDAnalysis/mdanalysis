@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>12.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="12.2.10. Helper functions — MDAnalysis.lib.util" href="util.html" />
+    <link rel="prev" title="12.2.8. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations" href="transformations.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.lib.qcprot"></span><div class="section" id="fast-qcp-rmsd-structure-alignment-mdanalysis-lib-qcprot">
+<h1><span class="section-number">12.2.9. </span>Fast QCP RMSD structure alignment — <a class="reference internal" href="#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a><a class="headerlink" href="#fast-qcp-rmsd-structure-alignment-mdanalysis-lib-qcprot" title="Permalink to this headline">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Joshua L. Adelman, University of Pittsburgh</p>
+</dd>
+<dt class="field-even">Author</dt>
+<dd class="field-even"><p>Robert R. Delgado, Cornell University and Arizona State University</p>
+</dd>
+<dt class="field-odd">Contact</dt>
+<dd class="field-odd"><p><a class="reference external" href="mailto:jla65&#37;&#52;&#48;pitt&#46;edu">jla65<span>&#64;</span>pitt<span>&#46;</span>edu</a></p>
+</dd>
+<dt class="field-even">Year</dt>
+<dd class="field-even"><p>2011, 2016</p>
+</dd>
+<dt class="field-odd">Licence</dt>
+<dd class="field-odd"><p>BSD</p>
+</dd>
+</dl>
+<p><a class="reference external" href="https://github.com/synapticarbors/pyqcprot">PyQCPROT</a> is a python/cython implementation of Douglas Theobald’s QCP
+method for calculating the minimum RMSD between two structures
+<a class="reference internal" href="#theobald2005" id="id1"><span>[Theobald2005]</span></a> and determining the optimal least-squares rotation
+matrix <a class="reference internal" href="#liu2010" id="id2"><span>[Liu2010]</span></a>.</p>
+<p>A full description of the method, along with the original C implementation can
+be found at <a class="reference external" href="http://theobald.brandeis.edu/qcp/">http://theobald.brandeis.edu/qcp/</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../analysis/align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></dt><dd><p>Align structures using <a class="reference internal" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">CalcRMSDRotationalMatrix()</span></code></a></p>
+</dd>
+<dt><a class="reference internal" href="../analysis/rms.html#MDAnalysis.analysis.rms.rmsd" title="MDAnalysis.analysis.rms.rmsd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms.rmsd</span></code></a></dt><dd><p>Calculate the RMSD between two structures using <a class="reference internal" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">CalcRMSDRotationalMatrix()</span></code></a></p>
+</dd>
+</dl>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.16.0: </span>Call signatures were changed to directly interface with MDAnalysis
+coordinate arrays: shape (N, 3)</p>
+</div>
+<p class="rubric">References</p>
+<p>If you use this QCP rotation calculation method in a publication, please
+reference:</p>
+<dl class="citation">
+<dt class="label" id="theobald2005"><span class="brackets"><a class="fn-backref" href="#id1">Theobald2005</a></span></dt>
+<dd><p>Douglas L. Theobald (2005)
+“Rapid calculation of RMSD using a quaternion-based characteristic
+polynomial.”  Acta Crystallographica A 61(4):478-480.</p>
+</dd>
+<dt class="label" id="liu2010"><span class="brackets"><a class="fn-backref" href="#id2">Liu2010</a></span></dt>
+<dd><p>Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald (2010)
+“Fast determination of the optimal rotational matrix for macromolecular
+superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
+</dd>
+</dl>
+<div class="section" id="functions">
+<h2><span class="section-number">12.2.9.1. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<p>Users will typically use the <a class="reference internal" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">CalcRMSDRotationalMatrix()</span></code></a> function.</p>
+<dl class="function">
+<dt id="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix">
+<code class="sig-prename descclassname">MDAnalysis.lib.qcprot.</code><code class="sig-name descname">CalcRMSDRotationalMatrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the RMSD &amp; rotational matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – reference structure coordinates</p></li>
+<li><p><strong>conf</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – condidate structure coordinates</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – size of the system</p></li>
+<li><p><strong>rot</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – array to store rotation matrix. Must be flat</p></li>
+<li><p><strong>weights</strong> (<em>ndarray</em><em>, </em><em>npfloat64_t</em><em> (</em><em>optional</em><em>)</em>) – weights for each component</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>rmsd</strong> (<em>float</em>) – RMSD value</p></li>
+<li><p><em>.. versionchanged:: 0.16.0</em> – Array size changed from 3xN to Nx3.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.qcprot.InnerProduct">
+<code class="sig-prename descclassname">MDAnalysis.lib.qcprot.</code><code class="sig-name descname">InnerProduct</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.InnerProduct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the inner product of two structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>ndarray np.float64_t</em>) – result inner product array, modified in place</p></li>
+<li><p><strong>coords1</strong> (<em>ndarray np.float64_t</em>) – reference structure</p></li>
+<li><p><strong>coord2</strong> (<em>ndarray np.float64_t</em>) – candidate structure</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – size of system</p></li>
+<li><p><strong>weights</strong> (<em>ndarray np.float64_t</em><em> (</em><em>optional</em><em>)</em>) – use to calculate weighted inner product</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>E0</strong> (<em>float</em>)</p></li>
+<li><p>0.5 * (G1 + G2), can be used as input for <a class="reference internal" href="#MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation" title="MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation"><code class="xref py py-func docutils literal notranslate"><span class="pre">FastCalcRMSDAndRotation()</span></code></a></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ol class="arabic simple">
+<li><p>You MUST center the structures, coords1 and coords2, before calling this
+function.</p></li>
+<li><p>Coordinates are stored as Nx3 arrays (as everywhere else in MDAnalysis).</p></li>
+</ol>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.16.0: </span>Array size changed from 3xN to Nx3.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation">
+<code class="sig-prename descclassname">MDAnalysis.lib.qcprot.</code><code class="sig-name descname">FastCalcRMSDAndRotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the RMSD, and/or the optimal rotation matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rot</strong> (<em>ndarray np.float64_t</em>) – result rotation matrix, modified inplace</p></li>
+<li><p><strong>A</strong> (<em>ndarray np.float64_t</em>) – the inner product of two structures</p></li>
+<li><p><strong>E0</strong> (<em>float64</em>) – 0.5 * (G1 + G2)</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – size of the system</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rmsd</strong> – RMSD value for two structures</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.16.0: </span>Array sized changed from 3xN to Nx3.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">12.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">12.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">12.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.4. Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.6. Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.7. Mathematical helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#functions">12.2.9.1. Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../lib_modules.html"><span class="section-number">12. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="transformations.html" title="previous chapter"><span class="section-number">12.2.8. </span>Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+      <li>Next: <a href="util.html" title="next chapter"><span class="section-number">12.2.10. </span>Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/lib/qcprot.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,759 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>MDAnalysis.coordinates.memory &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.coordinates.memory</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">=========================================================================</span>
+<span class="sd">Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`</span>
+<span class="sd">=========================================================================</span>
+
+<span class="sd">:Author: Wouter Boomsma</span>
+<span class="sd">:Year: 2016</span>
+<span class="sd">:Copyright: GNU Public License v2</span>
+<span class="sd">:Maintainer: Wouter Boomsma &lt;wb@di.ku.dk&gt;, wouterboomsma on github</span>
+
+
+<span class="sd">.. versionadded:: 0.16.0</span>
+
+<span class="sd">The module contains a trajectory reader that operates on an array in</span>
+<span class="sd">memory, rather than reading from file. This makes it possible to</span>
+<span class="sd">operate on raw coordinates using existing MDAnalysis tools. In</span>
+<span class="sd">addition, it allows the user to make changes to the coordinates in a</span>
+<span class="sd">trajectory (e.g. through</span>
+<span class="sd">:attr:`MDAnalysis.core.groups.AtomGroup.positions`) without having</span>
+<span class="sd">to write the entire state to file.</span>
+
+
+<span class="sd">How to use the :class:`MemoryReader`</span>
+<span class="sd">====================================</span>
+
+<span class="sd">The :class:`MemoryReader` can be used to either directly generate a</span>
+<span class="sd">trajectory as a numpy array or by transferring an existing trajectory</span>
+<span class="sd">to memory.</span>
+
+<span class="sd">In-memory representation of arbitrary trajectories</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">If sufficient memory is available to hold a whole trajectory in memory</span>
+<span class="sd">then analysis can be sped up substantially by transferring the</span>
+<span class="sd">trajectory to memory.</span>
+
+<span class="sd">The most straightforward use of the :class:`MemoryReader` is to simply</span>
+<span class="sd">use the ``in_memory=True`` flag for the</span>
+<span class="sd">:class:`~MDAnalysis.core.universe.Universe` class, which</span>
+<span class="sd">automatically transfers a trajectory to memory::</span>
+
+<span class="sd"> import MDAnalysis as mda</span>
+<span class="sd"> from MDAnalysisTests.datafiles import TPR, XTC</span>
+
+<span class="sd"> universe = mda.Universe(TPR, XTC, in_memory=True)</span>
+
+<span class="sd">Of course, sufficient memory has to be available to hold the whole</span>
+<span class="sd">trajectory.</span>
+
+
+<span class="sd">Switching a trajectory to an in-memory representation</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">The decision to transfer the trajectory to memory can be made at any</span>
+<span class="sd">time with the</span>
+<span class="sd">:meth:`~MDAnalysis.core.universe.Universe.transfer_to_memory` method</span>
+<span class="sd">of a :class:`~MDAnalysis.core.universe.Universe`::</span>
+
+<span class="sd">    universe = mda.Universe(TPR, XTC)</span>
+<span class="sd">    universe.transfer_to_memory()</span>
+
+<span class="sd">This operation may take a while (with `verbose=True` a progress bar is</span>
+<span class="sd">displayed) but then subsequent operations on the trajectory directly</span>
+<span class="sd">operate on the in-memory array and will be very fast.</span>
+
+
+<span class="sd">Constructing a Reader from a numpy array</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">The :class:`MemoryReader` provides great flexibility because it</span>
+<span class="sd">becomes possible to create a :class:`~MDAnalysis.core.universe.Universe` directly</span>
+<span class="sd">from a numpy array.</span>
+
+<span class="sd">A simple example consists of a new universe created from the array</span>
+<span class="sd">extracted from a DCD</span>
+<span class="sd">:meth:`~MDAnalysis.coordinates.DCD.DCDReader.timeseries`::</span>
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    from MDAnalysisTests.datafiles import DCD, PSF</span>
+<span class="sd">    from MDAnalysis.coordinates.memory import MemoryReader</span>
+
+<span class="sd">    universe = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">    coordinates = universe.trajectory.timeseries(universe.atoms)</span>
+<span class="sd">    universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order=&#39;afc&#39;)</span>
+
+
+<span class="sd">.. _create-in-memory-trajectory-with-AnalysisFromFunction:</span>
+
+<span class="sd">.. rubric:: Creating an in-memory trajectory with</span>
+<span class="sd">            :func:`~MDAnalysis.analysis.base.AnalysisFromFunction`</span>
+
+<span class="sd">The :meth:`~MDAnalysis.coordinates.DCD.DCDReader.timeseries` is</span>
+<span class="sd">currently only implemented for the</span>
+<span class="sd">:class:`~MDAnalysis.coordinates.DCD.DCDReader`. However, the</span>
+<span class="sd">:func:`MDAnalysis.analysis.base.AnalysisFromFunction` can provide the</span>
+<span class="sd">same functionality for any supported trajectory format::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.tests.datafiles import PDB, XTC</span>
+
+<span class="sd">  from MDAnalysis.coordinates.memory import MemoryReader</span>
+<span class="sd">  from MDAnalysis.analysis.base import AnalysisFromFunction</span>
+
+<span class="sd">  u = mda.Universe(PDB, XTC)</span>
+
+<span class="sd">  coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),</span>
+<span class="sd">                                     u.atoms).run().results</span>
+<span class="sd">  u2 = mda.Universe(PDB, coordinates, format=MemoryReader)</span>
+
+<span class="sd">.. _creating-in-memory-trajectory-label:</span>
+
+<span class="sd">Creating an in-memory trajectory of a sub-system</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Creating a trajectory for just a selection of an existing trajectory</span>
+<span class="sd">requires the transfer of the appropriate coordinates as well as</span>
+<span class="sd">creation of a topology of the sub-system. For the latter one can use</span>
+<span class="sd">the :func:`~MDAnalysis.core.universe.Merge` function, for the former</span>
+<span class="sd">the :meth:`~MDAnalysis.core.universe.Universe.load_new` method of a</span>
+<span class="sd">:class:`~MDAnalysis.core.universe.Universe` together with the</span>
+<span class="sd">:class:`MemoryReader`. In the following, an in-memory trajectory of</span>
+<span class="sd">only the protein is created::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.tests.datafiles import PDB, XTC</span>
+
+<span class="sd">  from MDAnalysis.coordinates.memory import MemoryReader</span>
+<span class="sd">  from MDAnalysis.analysis.base import AnalysisFromFunction</span>
+
+<span class="sd">  u = mda.Universe(PDB, XTC)</span>
+<span class="sd">  protein = u.select_atoms(&quot;protein&quot;)</span>
+
+<span class="sd">  coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),</span>
+<span class="sd">                                     protein).run().results</span>
+<span class="sd">  u2 = mda.Merge(protein)            # create the protein-only Universe</span>
+<span class="sd">  u2.load_new(coordinates, format=MemoryReader)</span>
+
+<span class="sd">The protein coordinates are extracted into ``coordinates`` and then</span>
+<span class="sd">the in-memory trajectory is loaded from these coordinates. In</span>
+<span class="sd">principle, this could have all be done in one line::</span>
+
+<span class="sd">  u2 = mda.Merge(protein).load_new(</span>
+<span class="sd">           AnalysisFromFunction(lambda ag: ag.positions.copy(),</span>
+<span class="sd">                                protein).run().results,</span>
+<span class="sd">           format=MemoryReader)</span>
+
+<span class="sd">The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used</span>
+<span class="sd">to, for instance, write out a new trajectory or perform fast analysis</span>
+<span class="sd">on the sub-system.</span>
+
+
+<span class="sd">Classes</span>
+<span class="sd">=======</span>
+
+<span class="sd">.. autoclass:: Timestep</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">.. autoclass:: MemoryReader</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+
+
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Timestep for the :class:`MemoryReader`</span>
+
+<span class="sd">    Compared to the base :class:`base.Timestep`, this version</span>
+<span class="sd">    (:class:`memory.Timestep`) has an additional</span>
+<span class="sd">    :meth:`_replace_positions_array` method, which replaces the array of</span>
+<span class="sd">    positions while the :attr:`positions` property replaces the content of the</span>
+<span class="sd">    array.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_replace_positions_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Replace the array of positions</span>
+
+<span class="sd">        Replaces the array of positions by another array.</span>
+
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The behavior of :meth:`_replace_positions_array` is different from the</span>
+<span class="sd">        behavior of the :attr:`position` property that replaces the **content**</span>
+<span class="sd">        of the array. The :meth:`_replace_positions_array` method should only be</span>
+<span class="sd">        used to set the positions to a different frame in</span>
+<span class="sd">        :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets</span>
+<span class="sd">        the positions to a view of the correct frame.  Modifying the positions</span>
+<span class="sd">        for a given frame should be done with the :attr:`positions` attribute</span>
+<span class="sd">        that does not break the link between the array of positions in the time</span>
+<span class="sd">        step and the :attr:`MemoryReader.coordinate_array`.</span>
+
+
+<span class="sd">        .. versionadded:: 0.19.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">new</span>
+
+    <span class="k">def</span> <span class="nf">_replace_velocities_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">new</span>
+
+    <span class="k">def</span> <span class="nf">_replace_forces_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">new</span>
+
+    <span class="k">def</span> <span class="nf">_replace_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">new</span></div>
+
+
+<div class="viewcode-block" id="MemoryReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader">[docs]</a><span class="k">class</span> <span class="nc">MemoryReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MemoryReader works with trajectories represented as numpy arrays.</span>
+
+<span class="sd">    A trajectory reader interface to a numpy array of the coordinates.</span>
+<span class="sd">    For compatibility with the timeseries interface, support is provided for</span>
+<span class="sd">    specifying the order of columns through the format option.</span>
+
+<span class="sd">    .. versionadded:: 0.16.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MEMORY&#39;</span>
+    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate_array</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span>
+                 <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">velocities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coordinate_array : numpy.ndarray</span>
+<span class="sd">            The underlying array of coordinates. The MemoryReader now</span>
+<span class="sd">            necessarily requires a np.ndarray</span>
+<span class="sd">        order : {&quot;afc&quot;, &quot;acf&quot;, &quot;caf&quot;, &quot;fac&quot;, &quot;fca&quot;, &quot;cfa&quot;} (optional)</span>
+<span class="sd">            the order/shape of the return data array, corresponding</span>
+<span class="sd">            to (a)tom, (f)rame, (c)oordinates all six combinations</span>
+<span class="sd">            of &#39;a&#39;, &#39;f&#39;, &#39;c&#39; are allowed ie &quot;fac&quot; - return array</span>
+<span class="sd">            where the shape is (frame, number of atoms,</span>
+<span class="sd">            coordinates).</span>
+<span class="sd">        dimensions: [A, B, C, alpha, beta, gamma] (optional)</span>
+<span class="sd">            unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
+<span class="sd">            lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and</span>
+<span class="sd">            angles are in degrees. An array of dimensions can be given,</span>
+<span class="sd">            which must then be shape (nframes, 6)</span>
+<span class="sd">        dt: float (optional)</span>
+<span class="sd">            The time difference between frames (ps).  If :attr:`time`</span>
+<span class="sd">            is set, then `dt` will be ignored.</span>
+<span class="sd">        filename: string (optional)</span>
+<span class="sd">            The name of the file from which this instance is created. Set to ``None``</span>
+<span class="sd">            when created from an array</span>
+<span class="sd">        velocities : numpy.ndarray (optional)</span>
+<span class="sd">            Atom velocities.  Must match shape of coordinate_array.  Will share order</span>
+<span class="sd">            with coordinates.</span>
+<span class="sd">        forces : numpy.ndarray (optional)</span>
+<span class="sd">            Atom forces.  Must match shape of coordinate_array  Will share order</span>
+<span class="sd">            with coordinates</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError if the coordinate array passed is not a np.ndarray</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        At the moment, only a fixed `dimension` is supported, i.e., the same</span>
+<span class="sd">        unit cell for all frames in `coordinate_array`. See issue `#1041`_.</span>
+
+
+<span class="sd">        .. _`#1041`: https://github.com/MDAnalysis/mdanalysis/issues/1041</span>
+
+<span class="sd">        .. versionchanged:: 0.19.0</span>
+<span class="sd">            The input to the MemoryReader now must be a np.ndarray</span>
+<span class="sd">            Added optional velocities and forces</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">MemoryReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span> <span class="o">=</span> <span class="n">order</span>
+
+        <span class="c1"># See Issue #1685. The block below checks if the coordinate array</span>
+        <span class="c1"># passed is of shape (N, 3) and if it is, the coordiante array is</span>
+        <span class="c1"># reshaped to (1, N, 3)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coordinate_array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">coordinate_array</span> <span class="o">=</span> <span class="n">coordinate_array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The input has to be a numpy.ndarray that &quot;</span>
+                            <span class="s2">&quot;corresponds to the layout specified by the &quot;</span>
+                            <span class="s2">&quot;&#39;order&#39; keyword.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">coordinate_array</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">velocities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">velocities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;velocities&#39; must be array-like got </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">velocities</span><span class="p">)))</span>
+            <span class="c1"># if single frame, make into array of 1 frame</span>
+            <span class="k">if</span> <span class="n">velocities</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">velocities</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">velocities</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Velocities has wrong shape </span><span class="si">{}</span><span class="s1"> &#39;</span>
+                                 <span class="s1">&#39;to match coordinates </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">velocities</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span> <span class="o">=</span> <span class="n">velocities</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;forces&#39; must be array like got </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">forces</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">forces</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">forces</span> <span class="o">=</span> <span class="n">forces</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">forces</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Forces has wrong shape </span><span class="si">{}</span><span class="s1"> &#39;</span>
+                                 <span class="s1">&#39;to match coordinates </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">forces</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">force_array</span> <span class="o">=</span> <span class="n">forces</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">force_array</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">provided_n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">provided_n_atoms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+            <span class="n">provided_n_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided value for n_atoms (</span><span class="si">{}</span><span class="s2">) &quot;</span>
+                                 <span class="s2">&quot;does not match the shape of the coordinate &quot;</span>
+                                 <span class="s2">&quot;array (</span><span class="si">{}</span><span class="s2">)&quot;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">provided_n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
+        <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;dimensions&#39; must be array-like got </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">6</span><span class="p">,):</span>
+                <span class="c1"># single box, tile this to trajectory length</span>
+                <span class="c1"># allows modifying the box of some frames</span>
+                <span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provided dimensions array has shape </span><span class="si">{}</span><span class="s2">. &quot;</span>
+                                 <span class="s2">&quot;This must be a array of shape (6,) or &quot;</span>
+                                 <span class="s2">&quot;(n_frames, 6)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dimensions</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span> <span class="o">=</span> <span class="n">dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MemoryReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deduce number of atoms in a given array of coordinates</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : numpy.ndarray</span>
+<span class="sd">          data which will be used later in MemoryReader</span>
+<span class="sd">        order : {&quot;afc&quot;, &quot;acf&quot;, &quot;caf&quot;, &quot;fac&quot;, &quot;fca&quot;, &quot;cfa&quot;} (optional)</span>
+<span class="sd">            the order/shape of the return data array, corresponding</span>
+<span class="sd">            to (a)tom, (f)rame, (c)oordinates all six combinations</span>
+<span class="sd">            of &#39;a&#39;, &#39;f&#39;, &#39;c&#39; are allowed ie &quot;fac&quot; - return array</span>
+<span class="sd">            where the shape is (frame, number of atoms,</span>
+<span class="sd">            coordinates).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        n_atoms : int</span>
+<span class="sd">          number of atoms in system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># assume filename is a numpy array</span>
+        <span class="k">return</span> <span class="n">filename</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="MemoryReader.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of this Memory Reader&quot;&quot;&quot;</span>
+        <span class="n">vels</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">fors</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">force_array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">,</span>
+            <span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span>
+            <span class="n">velocities</span><span class="o">=</span><span class="n">vels</span><span class="p">,</span>
+            <span class="n">forces</span><span class="o">=</span><span class="n">fors</span><span class="p">,</span>
+            <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">new</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="c1"># since transformations are already applied to the whole trajectory</span>
+        <span class="c1"># simply copy the property</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">transformations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span>
+
+        <span class="k">return</span> <span class="n">new</span></div>
+
+<div class="viewcode-block" id="MemoryReader.set_array"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.set_array">[docs]</a>    <span class="k">def</span> <span class="nf">set_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate_array</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set underlying array in desired column order.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coordinate_array : :class:`~numpy.ndarray` object</span>
+<span class="sd">            The underlying array of coordinates</span>
+<span class="sd">        order : {&quot;afc&quot;, &quot;acf&quot;, &quot;caf&quot;, &quot;fac&quot;, &quot;fca&quot;, &quot;cfa&quot;} (optional)</span>
+<span class="sd">            the order/shape of the return data array, corresponding</span>
+<span class="sd">            to (a)tom, (f)rame, (c)oordinates all six combinations</span>
+<span class="sd">            of &#39;a&#39;, &#39;f&#39;, &#39;c&#39; are allowed ie &quot;fac&quot; - return array</span>
+<span class="sd">            where the shape is (frame, number of atoms,</span>
+<span class="sd">            coordinates).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Only make copy if not already in float32 format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span> <span class="o">=</span> <span class="n">coordinate_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stored_format</span> <span class="o">=</span> <span class="n">order</span></div>
+
+<div class="viewcode-block" id="MemoryReader.get_array"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.get_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return underlying array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span></div>
+
+    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset iteration to first frame&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+<div class="viewcode-block" id="MemoryReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup in desired</span>
+<span class="sd">        column order/format. If no selection is given, it will return a view of</span>
+<span class="sd">        the underlying array, while a copy is returned otherwise.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ---------</span>
+<span class="sd">        asel : AtomGroup (optional)</span>
+<span class="sd">            Atom selection. Defaults to ``None``, in which case the full set of</span>
+<span class="sd">            coordinate data is returned. Note that in this case, a view</span>
+<span class="sd">            of the underlying numpy array is returned, while a copy of the</span>
+<span class="sd">            data is returned whenever `asel` is different from ``None``.</span>
+<span class="sd">        start : int (optional)</span>
+<span class="sd">        stop : int (optional)</span>
+<span class="sd">        step : int (optional)</span>
+<span class="sd">            range of trajectory to access, `start` and `stop` are *inclusive*</span>
+<span class="sd">        order : {&quot;afc&quot;, &quot;acf&quot;, &quot;caf&quot;, &quot;fac&quot;, &quot;fca&quot;, &quot;cfa&quot;} (optional)</span>
+<span class="sd">            the order/shape of the return data array, corresponding</span>
+<span class="sd">            to (a)tom, (f)rame, (c)oordinates all six combinations</span>
+<span class="sd">            of &#39;a&#39;, &#39;f&#39;, &#39;c&#39; are allowed ie &quot;fac&quot; - return array</span>
+<span class="sd">            where the shape is (frame, number of atoms,</span>
+<span class="sd">            coordinates).</span>
+<span class="sd">        format : str (optional)</span>
+<span class="sd">            deprecated, equivalent to `order`</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The `format` parameter name is used to mimic the</span>
+<span class="sd">        :class:`MDAnalysis.coordinates.DCD.timeseries` interface. It is</span>
+<span class="sd">        identical to the `order` parameter for :class:`MemoryReader`. In a</span>
+<span class="sd">        future version, `format` will be renamed to `order`.</span>
+
+
+<span class="sd">        .. deprecated:: 0.17.0</span>
+<span class="sd">           `format` has been deprecated in favor of the standard keyword `order`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;format&#39; is deprecated and will be removed in 1.0. Use &#39;order&#39; instead&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="nb">format</span>
+
+        <span class="n">array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">a_index</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+        <span class="n">f_index</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+        <span class="n">stop_index</span> <span class="o">=</span> <span class="n">stop</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">stop_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">stop_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">basic_slice</span> <span class="o">=</span> <span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">f_index</span> <span class="o">+</span>
+                       <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop_index</span><span class="p">,</span> <span class="n">step</span><span class="p">)]</span> <span class="o">+</span>
+                       <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="n">f_index</span><span class="p">))</span>
+
+        <span class="c1"># Return a view if either:</span>
+        <span class="c1">#   1) asel is None</span>
+        <span class="c1">#   2) asel corresponds to the selection of all atoms.</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">asel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">asel</span> <span class="ow">is</span> <span class="n">asel</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">array</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If selection is specified, return a copy</span>
+            <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">asel</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">a_index</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;copy next frame into timestep&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s1">&#39;trying to go over trajectory limit&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">f_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+        <span class="n">basic_slice</span> <span class="o">=</span> <span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span><span class="o">*</span><span class="p">(</span><span class="n">f_index</span><span class="p">)</span> <span class="o">+</span>
+                       <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span> <span class="o">+</span>
+                       <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="n">f_index</span><span class="p">))</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">_replace_positions_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">_replace_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_replace_velocities_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_replace_forces_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">force_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
+
+        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+        <span class="k">return</span> <span class="n">ts</span>
+
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;read frame i&quot;&quot;&quot;</span>
+        <span class="c1"># Frame number is incremented to zero by _read_next_timestep()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;String representation&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&lt;</span><span class="si">{cls}</span><span class="s2"> with </span><span class="si">{nframes}</span><span class="s2"> frames of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;&quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
+                    <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
+                <span class="p">))</span>
+
+<div class="viewcode-block" id="MemoryReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
+
+<span class="sd">        This function take as list of transformations as an argument. These</span>
+<span class="sd">        transformations are functions that will be called by the Reader and given</span>
+<span class="sd">        a :class:`Timestep` object as argument, which will be transformed and returned</span>
+<span class="sd">        to the Reader.</span>
+<span class="sd">        The transformations can be part of the :mod:`~MDAnalysis.transformations`</span>
+<span class="sd">        module, or created by the user, and are stored as a list `transformations`.</span>
+<span class="sd">        This list can only be modified once, and further calls of this function will</span>
+<span class="sd">        raise an exception.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">          u = MDAnalysis.Universe(topology, coordinates)</span>
+<span class="sd">          workflow = [some_transform, another_transform, this_transform]</span>
+<span class="sd">          u.trajectory.add_transformations(*workflow)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        transform_list : list</span>
+<span class="sd">            list of all the transformations that will be applied to the coordinates</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :mod:`MDAnalysis.transformations`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
+        <span class="c1">#to avoid unintended behaviour where the coordinates of each frame are transformed</span>
+        <span class="c1">#multiple times when iterating over the trajectory.</span>
+        <span class="c1">#In this method, the trajectory is modified all at once and once only.</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">MemoryReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Applies the transformations to the timestep.&quot;&quot;&quot;</span>
+        <span class="c1"># Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
+        <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
+
+        <span class="k">return</span> <span class="n">ts</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

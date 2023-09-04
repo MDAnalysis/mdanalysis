@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>8.2.4. CHARMM selections &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="8.2.5. Jmol selections" href="jmol.html" />
+    <link rel="prev" title="8.2.3. Gromacs selections" href="gromacs.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.selections.charmm"></span><div class="section" id="charmm-selections">
+<h1><span class="section-number">8.2.4. </span>CHARMM selections<a class="headerlink" href="#charmm-selections" title="Permalink to this headline">¶</a></h1>
+<p>Write <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> selection to a <cite>str</cite> file
+that defines a <a class="reference external" href="http://www.charmm.org/documentation/c34b1/select.html">CHARMM selection</a>. To be used in <a class="reference external" href="http://www.charmm.org">CHARMM</a> like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stream</span> <span class="n">macro</span><span class="o">.</span><span class="n">str</span>
+</pre></div>
+</div>
+<p>The selection is named <em>mdanalysis001</em>.</p>
+<dl class="class">
+<dt id="MDAnalysis.selections.charmm.SelectionWriter">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.selections.charmm.</code><code class="sig-name descname">SelectionWriter</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='w'</em>, <em class="sig-param">numterms=None</em>, <em class="sig-param">preamble=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/charmm.html#SelectionWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up for writing to <em>filename</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – output file</p></li>
+<li><p><strong>mode</strong> – create a new file (“w”), or append (“a”) to existing file [“w”]</p></li>
+<li><p><strong>numterms</strong> – number of individual index numbers per line for output
+formats that write multiple entries in one line. If set
+to 0 or <code class="docutils literal notranslate"><span class="pre">False</span></code> then no special formatting is done  [8]</p></li>
+<li><p><strong>preamble</strong> – string that is written as a comment at the top of the file []</p></li>
+<li><p><strong>kwargs</strong> – use as defaults for <a class="reference internal" href="#MDAnalysis.selections.charmm.SelectionWriter.write" title="MDAnalysis.selections.charmm.SelectionWriter.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="MDAnalysis.selections.charmm.SelectionWriter.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the file</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.16.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.selections.charmm.SelectionWriter.comment">
+<code class="sig-name descname">comment</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string <em>s</em> interpolated into the comment format string.</p>
+<p>If no <code class="xref py py-attr docutils literal notranslate"><span class="pre">SelectionWriterBase.commentfmt</span></code> is defined (None) then the
+empty string is returned because presumably there is no way to enter
+comments into the file.</p>
+<p>A newline is appended to non-empty strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.selections.charmm.SelectionWriter.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">selection</em>, <em class="sig-param">number=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">frame=None</em>, <em class="sig-param">mode=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write selection to the output file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a></p></li>
+<li><p><strong>number</strong> – selection will be named “mdanalysis&lt;number&gt;”
+(<code class="docutils literal notranslate"><span class="pre">None</span></code> auto increments between writes; useful
+when appending) [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>name</strong> – selection will be named <em>name</em> (instead of numbered) [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>frame</strong> – write selection of this frame (or the current one if
+<code class="docutils literal notranslate"><span class="pre">None</span></code> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.selections.charmm.SelectionWriter.write_preamble">
+<code class="sig-name descname">write_preamble</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.write_preamble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a header, depending on the file format.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.selections.charmm.</code><code class="sig-name descname">SelectionWriter</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='w'</em>, <em class="sig-param">numterms=None</em>, <em class="sig-param">preamble=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/charmm.html#SelectionWriter"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Set up for writing to <em>filename</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – output file</p></li>
+<li><p><strong>mode</strong> – create a new file (“w”), or append (“a”) to existing file [“w”]</p></li>
+<li><p><strong>numterms</strong> – number of individual index numbers per line for output
+formats that write multiple entries in one line. If set
+to 0 or <code class="docutils literal notranslate"><span class="pre">False</span></code> then no special formatting is done  [8]</p></li>
+<li><p><strong>preamble</strong> – string that is written as a comment at the top of the file []</p></li>
+<li><p><strong>kwargs</strong> – use as defaults for <a class="reference internal" href="#MDAnalysis.selections.charmm.SelectionWriter.write" title="MDAnalysis.selections.charmm.SelectionWriter.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt>
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Close the file</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.16.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">comment</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span></dt>
+<dd><p>Return string <em>s</em> interpolated into the comment format string.</p>
+<p>If no <code class="xref py py-attr docutils literal notranslate"><span class="pre">SelectionWriterBase.commentfmt</span></code> is defined (None) then the
+empty string is returned because presumably there is no way to enter
+comments into the file.</p>
+<p>A newline is appended to non-empty strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">selection</em>, <em class="sig-param">number=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">frame=None</em>, <em class="sig-param">mode=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Write selection to the output file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> – a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a></p></li>
+<li><p><strong>number</strong> – selection will be named “mdanalysis&lt;number&gt;”
+(<code class="docutils literal notranslate"><span class="pre">None</span></code> auto increments between writes; useful
+when appending) [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>name</strong> – selection will be named <em>name</em> (instead of numbered) [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>frame</strong> – write selection of this frame (or the current one if
+<code class="docutils literal notranslate"><span class="pre">None</span></code> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">write_preamble</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Write a header, depending on the file format.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../selections_modules.html#how-to-write-selections">8.1. How to write selections</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../selections_modules.html#selection-writers">8.2. Selection writers</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="vmd.html">8.2.1. VMD selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pymol.html">8.2.2. PyMOL selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gromacs.html">8.2.3. Gromacs selections</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">8.2.4. CHARMM selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jmol.html">8.2.5. Jmol selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="base.html">8.2.6. Base classes for the selection writers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../selections_modules.html"><span class="section-number">8. </span>Selection exporters</a><ul>
+      <li>Previous: <a href="gromacs.html" title="previous chapter"><span class="section-number">8.2.3. </span>Gromacs selections</a></li>
+      <li>Next: <a href="jmol.html" title="next chapter"><span class="section-number">8.2.5. </span>Jmol selections</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/selections/charmm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

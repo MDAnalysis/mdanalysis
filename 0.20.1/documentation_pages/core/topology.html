@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>10.2.1. Core Topology object — MDAnalysis.core.topology &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="10.2.2. Core Topology Objects — MDAnalysis.core.topologyobjects" href="topologyobjects.html" />
+    <link rel="prev" title="10.1.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.core.topology"></span><div class="section" id="core-topology-object-mdanalysis-core-topology">
+<h1><span class="section-number">10.2.1. </span>Core Topology object — <a class="reference internal" href="#module-MDAnalysis.core.topology" title="MDAnalysis.core.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><a class="headerlink" href="#core-topology-object-mdanalysis-core-topology" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.16.0.</span></p>
+</div>
+<p><a class="reference internal" href="#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></a> is the core object that holds all topology information.</p>
+<p>TODO: Add in-depth discussion.</p>
+<p class="rubric">Notes</p>
+<p>For developers: In MDAnalysis 0.16.0 this new topology system was
+introduced and discussed as issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/363">#363</a>; this issue contains key
+information and discussions on the new system. The issue number <em>363</em>
+is also being used as a short-hand in discussions to refer to the new
+topology system.</p>
+<div class="section" id="classes">
+<h2><span class="section-number">10.2.1.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.core.topology.Topology">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.core.topology.</code><code class="sig-name descname">Topology</code><span class="sig-paren">(</span><em class="sig-param">n_atoms=1</em>, <em class="sig-param">n_res=1</em>, <em class="sig-param">n_seg=1</em>, <em class="sig-param">attrs=None</em>, <em class="sig-param">atom_resindex=None</em>, <em class="sig-param">residue_segindex=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-memory, array-based topology database.</p>
+<p>The topology model of MDanalysis features atoms, which must each be a
+member of one residue. Each residue, in turn, must be a member of one
+segment. The details of maintaining this heirarchy, and mappings of atoms
+to residues, residues to segments, and vice-versa, are handled internally
+by this object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in topology. Must be larger then 1 at each level</p></li>
+<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of residues in topology. Must be larger then 1 at each level</p></li>
+<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of segments in topology. Must be larger then 1 at each level</p></li>
+<li><p><strong>attrs</strong> (<em>TopologyAttr objects</em>) – components of the topology to be included</p></li>
+<li><p><strong>atom_resindex</strong> (<em>array</em>) – 1-D array giving the resindex of each atom in the system</p></li>
+<li><p><strong>residue_segindex</strong> (<em>array</em>) – 1-D array giving the segindex of each residue in the system</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="MDAnalysis.core.topology.Topology.add_Residue">
+<code class="sig-name descname">add_Residue</code><span class="sig-paren">(</span><em class="sig-param">segment</em>, <em class="sig-param">**new_attrs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_Residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_Residue" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>residx of the new Residue</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If not all data was provided.  This error is raised before any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.Topology.add_TopologyAttr">
+<code class="sig-name descname">add_TopologyAttr</code><span class="sig-paren">(</span><em class="sig-param">topologyattr</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_TopologyAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_TopologyAttr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new TopologyAttr to the Topology.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.Topology.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deepcopy of this Topology</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.Topology.guessed_attributes">
+<em class="property">property </em><code class="sig-name descname">guessed_attributes</code><a class="headerlink" href="#MDAnalysis.core.topology.Topology.guessed_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of the guessed attributes in this topology</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.Topology.read_attributes">
+<em class="property">property </em><code class="sig-name descname">read_attributes</code><a class="headerlink" href="#MDAnalysis.core.topology.Topology.read_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of the attributes read from the topology</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.topology.TransTable">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.core.topology.</code><code class="sig-name descname">TransTable</code><span class="sig-paren">(</span><em class="sig-param">n_atoms</em>, <em class="sig-param">n_residues</em>, <em class="sig-param">n_segments</em>, <em class="sig-param">atom_resindex=None</em>, <em class="sig-param">residue_segindex=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Membership tables with methods to translate indices across levels.</p>
+<p>There are three levels; Atom, Residue and Segment.  Each Atom <strong>must</strong>
+belong in a Residue, each Residue <strong>must</strong> belong to a Segment.</p>
+<p>When translating upwards, eg finding which Segment a Residue belongs in,
+a single numpy array is returned.  When translating downwards, two options
+are available; a concatenated result (suffix <cite>_1</cite>) or a list for each parent
+object (suffix <cite>_2d</cite>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in topology</p></li>
+<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of residues in topology</p></li>
+<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of segments in topology</p></li>
+<li><p><strong>atom_resindex</strong> (<em>1-D array</em>) – resindex for each atom in the topology; the number of unique values in
+this array must be &lt;= <cite>n_residues</cite>, and the array must be length
+<cite>n_atoms</cite>; giving None defaults to placing all atoms in residue 0</p></li>
+<li><p><strong>residue_segindex</strong> (<em>1-D array</em>) – segindex for each residue in the topology; the number of unique values
+in this array must be &lt;= <cite>n_segments</cite>, and the array must be length
+<cite>n_residues</cite>; giving None defaults to placing all residues in segment 0</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topology.TransTable.n_atoms">
+<code class="sig-name descname">n_atoms</code><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of atoms in topology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topology.TransTable.n_residues">
+<code class="sig-name descname">n_residues</code><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of residues in topology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topology.TransTable.n_segments">
+<code class="sig-name descname">n_segments</code><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of segments in topology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topology.TransTable.size">
+<code class="sig-name descname">size</code><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>tuple describing the shape of the TransTable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.atoms2residues">
+<code class="sig-name descname">atoms2residues</code><span class="sig-paren">(</span><em class="sig-param">aix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.atoms2residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the residue index for many atom indices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.residues2atoms_1d">
+<code class="sig-name descname">residues2atoms_1d</code><span class="sig-paren">(</span><em class="sig-param">rix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2atoms_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>All atoms in the residues represented by <em>rix</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.residues2atoms_2d">
+<code class="sig-name descname">residues2atoms_2d</code><span class="sig-paren">(</span><em class="sig-param">rix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2atoms_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of atom indices for each residue in <em>rix</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.residues2segments">
+<code class="sig-name descname">residues2segments</code><span class="sig-paren">(</span><em class="sig-param">rix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment indices for each residue in <em>rix</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.segments2residues_1d">
+<code class="sig-name descname">segments2residues_1d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2residues_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <cite>residues2atoms_1d</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.segments2residues_2d">
+<code class="sig-name descname">segments2residues_2d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2residues_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <cite>residues2atoms_2d</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.atoms2segments">
+<code class="sig-name descname">atoms2segments</code><span class="sig-paren">(</span><em class="sig-param">aix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.atoms2segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment indices for each atom in <em>aix</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.segments2atoms_1d">
+<code class="sig-name descname">segments2atoms_1d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2atoms_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <cite>residues2atoms_1d</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.segments2atoms_2d">
+<code class="sig-name descname">segments2atoms_2d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2atoms_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <cite>residues2atoms_2d</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">atoms2residues</code><span class="sig-paren">(</span><em class="sig-param">aix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2residues"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get residue indices for each atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>aix</strong> (<em>array</em>) – atom indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rix</strong> – residue index for each atom</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">atoms2segments</code><span class="sig-paren">(</span><em class="sig-param">aix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2segments"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get segment indices for each atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>aix</strong> (<em>array</em>) – atom indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rix</strong> – segment index for each atom</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deepcopy of this Transtable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.move_atom">
+<code class="sig-name descname">move_atom</code><span class="sig-paren">(</span><em class="sig-param">aix</em>, <em class="sig-param">rix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.move_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.move_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move aix to be in rix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topology.TransTable.move_residue">
+<code class="sig-name descname">move_residue</code><span class="sig-paren">(</span><em class="sig-param">rix</em>, <em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.move_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.move_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move rix to be in six</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">residues2atoms_1d</code><span class="sig-paren">(</span><em class="sig-param">rix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_1d"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get atom indices collectively represented by given residue indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rix</strong> (<em>array</em>) – residue indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>aix</strong> – indices of atoms present in residues, collectively</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">residues2atoms_2d</code><span class="sig-paren">(</span><em class="sig-param">rix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_2d"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get atom indices represented by each residue index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rix</strong> (<em>array</em>) – residue indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>raix</strong> – each element corresponds to a residue index, in order given in
+<cite>rix</cite>, with each element being an array of the atom indices present
+in that residue</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">residues2segments</code><span class="sig-paren">(</span><em class="sig-param">rix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2segments"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get segment indices for each residue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rix</strong> (<em>array</em>) – residue indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>six</strong> – segment index for each residue</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">segments2atoms_1d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_1d"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get atom indices collectively represented by given segment indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>six</strong> (<em>array</em>) – segment indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>aix</strong> – sorted indices of atoms present in segments, collectively</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">segments2atoms_2d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_2d"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get atom indices represented by each segment index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>six</strong> (<em>array</em>) – residue indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>saix</strong> – each element corresponds to a segment index, in order given in
+<cite>six</cite>, with each element being an array of the atom indices present
+in that segment</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">segments2residues_1d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_1d"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get residue indices collectively represented by given segment indices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>six</strong> (<em>array</em>) – segment indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rix</strong> – sorted indices of residues present in segments, collectively</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">segments2residues_2d</code><span class="sig-paren">(</span><em class="sig-param">six</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_2d"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Get residue indices represented by each segment index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>six</strong> (<em>array</em>) – residue indices</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>srix</strong> – each element corresponds to a segment index, in order given in
+<cite>six</cite>, with each element being an array of the residue indices
+present in that segment</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<em class="property">property </em><code class="sig-name descname">size</code></dt>
+<dd><p>The shape of the table, (n_atoms, n_residues, n_segments)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="helper-functions">
+<h2><span class="section-number">10.2.1.2. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.topology.make_downshift_arrays">
+<code class="sig-prename descclassname">MDAnalysis.core.topology.</code><code class="sig-name descname">make_downshift_arrays</code><span class="sig-paren">(</span><em class="sig-param">upshift</em>, <em class="sig-param">nparents</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#make_downshift_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topology.make_downshift_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>From an upwards translation table, create the opposite direction</p>
+<p>Turns a many to one mapping (eg atoms to residues) to a one to many mapping
+(residues to atoms)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>upshift</strong> (<em>array_like</em>) – Array of integers describing which parent each item belongs to</p></li>
+<li><p><strong>nparents</strong> (<em>integer</em>) – Total number of parents that exist.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>downshift</strong> – An array of arrays, each containing the indices of the children
+of each parent.  Length <cite>nparents</cite> + 1</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like (dtype object)</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>To find the residue to atom mappings for a given atom to residue mapping:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom2res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_downshift_arrays</span><span class="p">(</span><span class="n">atom2res</span><span class="p">)</span>
+<span class="go">array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)</span>
+</pre></div>
+</div>
+<p>Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 &amp; 5</p>
+<p class="rubric">Notes</p>
+<p>The final entry in the return array will be <code class="docutils literal notranslate"><span class="pre">None</span></code> to ensure that the
+dtype of the array is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This means negative indexing should <strong>never</strong>
+be used with these arrays.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">10. Core modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">10.1. Important objects for users</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">10.2. Topology system</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">10.2.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#classes">10.2.1.1. Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#helper-functions">10.2.1.2. Helper functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="topologyobjects.html">10.2.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">10.2.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">10.3. Selection system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#flag-system">10.4. Flag system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../core_modules.html"><span class="section-number">10. </span>Core modules</a><ul>
+      <li>Previous: <a href="groups.html" title="previous chapter"><span class="section-number">10.1.2. </span>Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+      <li>Next: <a href="topologyobjects.html" title="next chapter"><span class="section-number">10.2.2. </span>Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/core/topology.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,1570 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.waterdynamics &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.waterdynamics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.waterdynamics</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;Water dynamics analysis --- :mod:`MDAnalysis.analysis.waterdynamics`</span>
+<span class="sd">=======================================================================</span>
+
+<span class="sd">:Author: Alejandro Bernardin</span>
+<span class="sd">:Year: 2014-2015</span>
+<span class="sd">:Copyright: GNU Public License v3</span>
+
+<span class="sd">.. versionadded:: 0.11.0</span>
+
+<span class="sd">This module provides functions to analize water dynamics trajectories and water</span>
+<span class="sd">interactions with other molecules.  The functions in this module are: water</span>
+<span class="sd">orientational relaxation (WOR) [Yeh1999]_, hydrogen bond lifetimes (HBL)</span>
+<span class="sd">[Rapaport1983]_, angular distribution (AD) [Grigera1995]_, mean square</span>
+<span class="sd">displacement (MSD) [Brodka1994]_ and survival probability (SP) [Liu2004]_.</span>
+
+<span class="sd">For more information about this type of analysis please refer to</span>
+<span class="sd">[Araya-Secchi2014]_ (water in a protein cavity) and [Milischuk2011]_ (water in</span>
+<span class="sd">a nanopore).</span>
+
+<span class="sd">.. rubric:: References</span>
+
+<span class="sd">.. [Rapaport1983] D.C. Rapaport (1983): Hydrogen bonds in water, Molecular</span>
+<span class="sd">            Physics: An International Journal at the Interface Between</span>
+<span class="sd">            Chemistry and Physics, 50:5, 1151-1162.</span>
+
+<span class="sd">.. [Yeh1999] Yu-ling Yeh and Chung-Yuan Mou (1999).  Orientational Relaxation</span>
+<span class="sd">             Dynamics of Liquid Water Studied by Molecular Dynamics Simulation,</span>
+<span class="sd">             J. Phys. Chem. B 1999, 103, 3699-3705.</span>
+
+<span class="sd">.. [Grigera1995] Raul Grigera, Susana G. Kalko and Jorge Fischbarg</span>
+<span class="sd">                 (1995). Wall-Water Interface.  A Molecular Dynamics Study,</span>
+<span class="sd">                 Langmuir 1996,12,154-158</span>
+
+<span class="sd">.. [Liu2004] Pu Liu, Edward Harder, and B. J. Berne (2004).On the Calculation</span>
+<span class="sd">             of Diffusion Coefficients in Confined Fluids and Interfaces with</span>
+<span class="sd">             an Application to the Liquid-Vapor Interface of Water,</span>
+<span class="sd">             J. Phys. Chem. B 2004, 108, 6595-6602.</span>
+
+<span class="sd">.. [Brodka1994] Aleksander Brodka (1994). Diffusion in restricted volume,</span>
+<span class="sd">                Molecular Physics, 1994, Vol.  82, No. 5, 1075-1078.</span>
+
+<span class="sd">.. [Araya-Secchi2014] Araya-Secchi, R., Tomas Perez-Acle, Seung-gu Kang, Tien</span>
+<span class="sd">                      Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio</span>
+<span class="sd">                      Garate, Agustin D. Martinez, Isaac E. Garcia, Juan</span>
+<span class="sd">                      C. Saez, Ruhong Zhou (2014). Characterization of a novel</span>
+<span class="sd">                      water pocket inside the human Cx26 hemichannel</span>
+<span class="sd">                      structure. Biophysical journal, 107(3), 599-612.</span>
+
+<span class="sd">.. [Milischuk2011] Anatoli A. Milischuk and Branka M. Ladanyi. Structure and</span>
+<span class="sd">                   dynamics of water confined in silica</span>
+<span class="sd">                   nanopores. J. Chem. Phys. 135, 174709 (2011); doi:</span>
+<span class="sd">                   10.1063/1.3657408</span>
+
+
+<span class="sd">Example use of the analysis classes</span>
+<span class="sd">-----------------------------------</span>
+
+<span class="sd">HydrogenBondLifetimes</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Analyzing hydrogen bond lifetimes (HBL) :class:`HydrogenBondLifetimes`, both</span>
+<span class="sd">continuos and intermittent. In this case we are analyzing how residue 38</span>
+<span class="sd">interact with a water sphere of radius 6.0 centered on the geometric center of</span>
+<span class="sd">protein and residue 42. If the hydrogen bond lifetimes are very stable, we can</span>
+<span class="sd">assume that residue 38 is hydrophilic, on the other hand, if the are very</span>
+<span class="sd">unstable, we can assume that residue 38 is hydrophobic::</span>
+
+<span class="sd">  import MDAnalysis</span>
+<span class="sd">  from MDAnalysis.analysis.waterdynamics import HydrogenBondLifetimes as HBL</span>
+
+<span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
+<span class="sd">  selection1 = &quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
+<span class="sd">  selection2 = &quot;resid 38&quot;</span>
+<span class="sd">  HBL_analysis = HBL(universe, selection1, selection2, 0, 2000, 30)</span>
+<span class="sd">  HBL_analysis.run()</span>
+<span class="sd">  time = 0</span>
+<span class="sd">  #now we print the data ready to plot. The first two columns are the HBLc vs t</span>
+<span class="sd">  #plot and the second two columns are the HBLi vs t graph</span>
+<span class="sd">  for HBLc, HBLi in HBL_analysis.timeseries:</span>
+<span class="sd">      print(&quot;{time} {HBLc} {time} {HBLi}&quot;.format(time=time, HBLc=HBLc, HBLi=HBLi))</span>
+<span class="sd">      time += 1</span>
+
+<span class="sd">  #we can also plot our data</span>
+<span class="sd">  plt.figure(1,figsize=(18, 6))</span>
+
+<span class="sd">  #HBL continuos</span>
+<span class="sd">  plt.subplot(121)</span>
+<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;HBLc&#39;)</span>
+<span class="sd">  plt.title(&#39;HBL Continuos&#39;)</span>
+<span class="sd">  plt.plot(range(0,time),[column[0] for column in HBL_analysis.timeseries])</span>
+
+<span class="sd">  #HBL intermitent</span>
+<span class="sd">  plt.subplot(122)</span>
+<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;HBLi&#39;)</span>
+<span class="sd">  plt.title(&#39;HBL Intermitent&#39;)</span>
+<span class="sd">  plt.plot(range(0,time),[column[1] for column in HBL_analysis.timeseries])</span>
+
+<span class="sd">  plt.show()</span>
+
+<span class="sd">where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is</span>
+<span class="sd">the value for the intermittent hydrogen bond lifetime, t0 = 0, tf = 2000 and</span>
+<span class="sd">dtmax = 30. In this way we create 30 windows timestep (30 values in x</span>
+<span class="sd">axis). The continuos hydrogen bond lifetimes should decay faster than</span>
+<span class="sd">intermittent.</span>
+
+
+<span class="sd">WaterOrientationalRelaxation</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Analyzing water orientational relaxation (WOR)</span>
+<span class="sd">:class:`WaterOrientationalRelaxation`. In this case we are analyzing &quot;how fast&quot;</span>
+<span class="sd">water molecules are rotating/changing direction. If WOR is very stable we can</span>
+<span class="sd">assume that water molecules are rotating/changing direction very slow, on the</span>
+<span class="sd">other hand, if WOR decay very fast, we can assume that water molecules are</span>
+<span class="sd">rotating/changing direction very fast::</span>
+
+<span class="sd">  import MDAnalysis</span>
+<span class="sd">  from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR</span>
+
+<span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
+<span class="sd">  select = &quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
+<span class="sd">  WOR_analysis = WOR(universe, select, 0, 1000, 20)</span>
+<span class="sd">  WOR_analysis.run()</span>
+<span class="sd">  time = 0</span>
+<span class="sd">  #now we print the data ready to plot. The first two columns are WOR_OH vs t plot,</span>
+<span class="sd">  #the second two columns are WOR_HH vs t graph and the third two columns are WOR_dip vs t graph</span>
+<span class="sd">  for WOR_OH, WOR_HH, WOR_dip in WOR_analysis.timeseries:</span>
+<span class="sd">        print(&quot;{time} {WOR_OH} {time} {WOR_HH} {time} {WOR_dip}&quot;.format(time=time, WOR_OH=WOR_OH, WOR_HH=WOR_HH,WOR_dip=WOR_dip))</span>
+<span class="sd">        time += 1</span>
+
+<span class="sd">  #now, if we want, we can plot our data</span>
+<span class="sd">  plt.figure(1,figsize=(18, 6))</span>
+
+<span class="sd">  #WOR OH</span>
+<span class="sd">  plt.subplot(131)</span>
+<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;WOR&#39;)</span>
+<span class="sd">  plt.title(&#39;WOR OH&#39;)</span>
+<span class="sd">  plt.plot(range(0,time),[column[0] for column in WOR_analysis.timeseries])</span>
+
+<span class="sd">  #WOR HH</span>
+<span class="sd">  plt.subplot(132)</span>
+<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;WOR&#39;)</span>
+<span class="sd">  plt.title(&#39;WOR HH&#39;)</span>
+<span class="sd">  plt.plot(range(0,time),[column[1] for column in WOR_analysis.timeseries])</span>
+
+<span class="sd">  #WOR dip</span>
+<span class="sd">  plt.subplot(133)</span>
+<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;WOR&#39;)</span>
+<span class="sd">  plt.title(&#39;WOR dip&#39;)</span>
+<span class="sd">  plt.plot(range(0,time),[column[2] for column in WOR_analysis.timeseries])</span>
+
+<span class="sd">  plt.show()</span>
+
+<span class="sd">where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows</span>
+<span class="sd">timesteps (20 values in the x axis), the first window is created with 1000</span>
+<span class="sd">timestep average (1000/1), the second window is created with 500 timestep</span>
+<span class="sd">average(1000/2), the third window is created with 333 timestep average (1000/3)</span>
+<span class="sd">and so on.</span>
+
+<span class="sd">AngularDistribution</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Analyzing angular distribution (AD) :class:`AngularDistribution` for OH vector,</span>
+<span class="sd">HH vector and dipole vector. It returns a line histogram with vector</span>
+<span class="sd">orientation preference. A straight line in the output plot means no</span>
+<span class="sd">preferential orientation in water molecules. In this case we are analyzing if</span>
+<span class="sd">water molecules have some orientational preference, in this way we can see if</span>
+<span class="sd">water molecules are under an electric field or if they are interacting with</span>
+<span class="sd">something (residue, protein, etc)::</span>
+
+<span class="sd">  import MDAnalysis</span>
+<span class="sd">  from MDAnalysis.analysis.waterdynamics import AngularDistribution as AD</span>
+
+<span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
+<span class="sd">  selection = &quot;byres name OH2 and sphzone 6.0 (protein and (resid 42 or resid 26) )&quot;</span>
+<span class="sd">  bins = 30</span>
+<span class="sd">  AD_analysis = AD(universe,selection,bins)</span>
+<span class="sd">  AD_analysis.run()</span>
+<span class="sd">  #now we print data ready to graph. The first two columns are P(cos(theta)) vs cos(theta) for OH vector ,</span>
+<span class="sd">  #the seconds two columns are P(cos(theta)) vs cos(theta) for HH vector and thirds two columns</span>
+<span class="sd">  #are P(cos(theta)) vs cos(theta) for dipole vector</span>
+<span class="sd">  for bin in range(bins):</span>
+<span class="sd">        print(&quot;{AD_analysisOH} {AD_analysisHH} {AD_analysisDip}&quot;.format(AD_analysis.graph0=AD_analysis.graph[0][bin], AD_analysis.graph1=AD_analysis.graph[1][bin],AD_analysis.graph2=AD_analysis.graph[2][bin]))</span>
+
+<span class="sd">  #and if we want to graph our results</span>
+<span class="sd">  plt.figure(1,figsize=(18, 6))</span>
+
+<span class="sd">  #AD OH</span>
+<span class="sd">  plt.subplot(131)</span>
+<span class="sd">  plt.xlabel(&#39;cos theta&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;P(cos theta)&#39;)</span>
+<span class="sd">  plt.title(&#39;PDF cos theta for OH&#39;)</span>
+<span class="sd">  plt.plot([float(column.split()[0]) for column in AD_analysis.graph[0][:-1]],[float(column.split()[1]) for column in AD_analysis.graph[0][:-1]])</span>
+
+<span class="sd">  #AD HH</span>
+<span class="sd">  plt.subplot(132)</span>
+<span class="sd">  plt.xlabel(&#39;cos theta&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;P(cos theta)&#39;)</span>
+<span class="sd">  plt.title(&#39;PDF cos theta for HH&#39;)</span>
+<span class="sd">  plt.plot([float(column.split()[0]) for column in AD_analysis.graph[1][:-1]],[float(column.split()[1]) for column in AD_analysis.graph[1][:-1]])</span>
+
+<span class="sd">  #AD dip</span>
+<span class="sd">  plt.subplot(133)</span>
+<span class="sd">  plt.xlabel(&#39;cos theta&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;P(cos theta)&#39;)</span>
+<span class="sd">  plt.title(&#39;PDF cos theta for dipole&#39;)</span>
+<span class="sd">  plt.plot([float(column.split()[0]) for column in AD_analysis.graph[2][:-1]],[float(column.split()[1]) for column in AD_analysis.graph[2][:-1]])</span>
+
+<span class="sd">  plt.show()</span>
+
+
+<span class="sd">where `P(cos(theta))` is the angular distribution or angular probabilities.</span>
+
+
+<span class="sd">MeanSquareDisplacement</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Analyzing mean square displacement (MSD) :class:`MeanSquareDisplacement` for</span>
+<span class="sd">water molecules. In this case we are analyzing the average distance that water</span>
+<span class="sd">molecules travels inside protein in XYZ direction (cylindric zone of radius</span>
+<span class="sd">11[nm], Zmax 4.0[nm] and Zmin -8.0[nm]). A strong rise mean a fast movement of</span>
+<span class="sd">water molecules, a weak rise mean slow movement of particles::</span>
+
+<span class="sd">  import MDAnalysis</span>
+<span class="sd">  from MDAnalysis.analysis.waterdynamics import MeanSquareDisplacement as MSD</span>
+
+<span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
+<span class="sd">  select = &quot;byres name OH2 and cyzone 11.0 4.0 -8.0 protein&quot;</span>
+<span class="sd">  MSD_analysis = MSD(universe, select, 0, 1000, 20)</span>
+<span class="sd">  MSD_analysis.run()</span>
+<span class="sd">  #now we print data ready to graph. The graph</span>
+<span class="sd">  #represents MSD vs t</span>
+<span class="sd">  time = 0</span>
+<span class="sd">  for msd in MSD_analysis.timeseries:</span>
+<span class="sd">        print(&quot;{time} {msd}&quot;.format(time=time, msd=msd))</span>
+<span class="sd">        time += 1</span>
+
+<span class="sd">  #Plot</span>
+<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;MSD&#39;)</span>
+<span class="sd">  plt.title(&#39;MSD&#39;)</span>
+<span class="sd">  plt.plot(range(0,time),MSD_analysis.timeseries)</span>
+<span class="sd">  plt.show()</span>
+
+
+<span class="sd">.. _SP-examples:</span>
+
+<span class="sd">SurvivalProbability</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Analyzing survival probability (SP) :class:`SurvivalProbability` of molecules.</span>
+<span class="sd">In this case we are analyzing how long water molecules remain in a</span>
+<span class="sd">sphere of radius 12.3 centered in the geometrical center of resid 42 and 26.</span>
+<span class="sd">A slow decay of SP means a long permanence time of water molecules in</span>
+<span class="sd">the zone, on the other hand, a fast decay means a short permanence time::</span>
+
+<span class="sd">  import MDAnalysis</span>
+<span class="sd">  from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP</span>
+<span class="sd">  import matplotlib.pyplot as plt</span>
+
+<span class="sd">  universe = MDAnalysis.Universe(pdb, trajectory)</span>
+<span class="sd">  select = &quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
+<span class="sd">  sp = SP(universe, select, verbose=True)</span>
+<span class="sd">  sp.run(start=0, stop=101, tau_max=20)</span>
+<span class="sd">  tau_timeseries = sp.tau_timeseries</span>
+<span class="sd">  sp_timeseries = sp.sp_timeseries</span>
+
+<span class="sd">  # print in console</span>
+<span class="sd">  for tau, sp in zip(tau_timeseries, sp_timeseries):</span>
+<span class="sd">        print(&quot;{time} {sp}&quot;.format(time=tau, sp=sp))</span>
+
+<span class="sd">  # plot</span>
+<span class="sd">  plt.xlabel(&#39;Time&#39;)</span>
+<span class="sd">  plt.ylabel(&#39;SP&#39;)</span>
+<span class="sd">  plt.title(&#39;Survival Probability&#39;)</span>
+<span class="sd">  plt.plot(tau_timeseries, sp_timeseries)</span>
+<span class="sd">  plt.show()</span>
+
+<span class="sd">One should note that the `stop` keyword as used in the above example has an</span>
+<span class="sd">`exclusive` behaviour, i.e. here the final frame used will be 100 not 101.</span>
+<span class="sd">This behaviour is aligned with :class:`AnalysisBase` but currently differs from</span>
+<span class="sd">other :mod:`MDAnalysis.analysis.waterdynamics` classes, which all exhibit</span>
+<span class="sd">`inclusive` behaviour for their final frame selections.</span>
+
+<span class="sd">Another example applies to the situation where you work with many different &quot;residues&quot;.</span>
+<span class="sd">Here we calculate the SP of a potassium ion around each lipid in a membrane and</span>
+<span class="sd">average the results. In this example, if the SP analysis were run without treating each lipid</span>
+<span class="sd">separately, potassium ions may hop from one lipid to another and still be counted as remaining</span>
+<span class="sd">in the specified region. That is, the survival probability of the potassium ion around the</span>
+<span class="sd">entire membrane will be calculated.</span>
+
+<span class="sd">Note, for this example, it is advisable to use `Universe(in_memory=True)` to ensure that the</span>
+<span class="sd">simulation is not being reloaded into memory for each lipid::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP</span>
+<span class="sd">  import numpy as np</span>
+
+<span class="sd">  u = mda.Universe(&quot;md.gro&quot;, &quot;md100ns.xtc&quot;, in_memory=True)</span>
+<span class="sd">  lipids = u.select_atoms(&#39;resname LIPIDS&#39;)</span>
+<span class="sd">  joined_sp_timeseries = [[] for _ in range(20)]</span>
+<span class="sd">  for lipid in lipids.residues:</span>
+<span class="sd">      print(&quot;Lipid ID: %d&quot; % lipid.resid)</span>
+
+<span class="sd">      select = &quot;resname POTASSIUM and around 3.5 (resid %d and name O13 O14) &quot; % lipid.resid</span>
+<span class="sd">      sp = SP(u, select, verbose=True)</span>
+<span class="sd">      sp.run(tau_max=20)</span>
+
+<span class="sd">      # Raw SP points for each tau:</span>
+<span class="sd">      for sps, new_sps in zip(joined_sp_timeseries, sp.sp_timeseries_data):</span>
+<span class="sd">          sps.extend(new_sps)</span>
+
+<span class="sd">  # average all SP datapoints</span>
+<span class="sd">  sp_data = [np.mean(sp) for sp in joined_sp_timeseries]</span>
+
+<span class="sd">  for tau, sp in zip(range(1, tau_max + 1), sp_data):</span>
+<span class="sd">      print(&quot;{time} {sp}&quot;.format(time=tau, sp=sp))</span>
+
+<span class="sd">.. _Output:</span>
+
+<span class="sd">Output</span>
+<span class="sd">------</span>
+
+<span class="sd">HydrogenBondLifetimes</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is</span>
+<span class="sd">stored in :attr:`HydrogenBondLifetimes.timeseries` (in all the following</span>
+<span class="sd">descriptions, # indicates comments that are not part of the output)::</span>
+
+<span class="sd">    results = [</span>
+<span class="sd">        [ # time t0</span>
+<span class="sd">            &lt;HBL_c&gt;, &lt;HBL_i&gt;</span>
+<span class="sd">        ],</span>
+<span class="sd">        [ # time t1</span>
+<span class="sd">            &lt;HBL_c&gt;, &lt;HBL_i&gt;</span>
+<span class="sd">        ],</span>
+<span class="sd">        ...</span>
+<span class="sd">     ]</span>
+
+<span class="sd">WaterOrientationalRelaxation</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Water orientational relaxation (WOR) data is returned per window timestep,</span>
+<span class="sd">which is stored in :attr:`WaterOrientationalRelaxation.timeseries`::</span>
+
+<span class="sd">    results = [</span>
+<span class="sd">        [ # time t0</span>
+<span class="sd">            &lt;WOR_OH&gt;, &lt;WOR_HH&gt;, &lt;WOR_dip&gt;</span>
+<span class="sd">        ],</span>
+<span class="sd">        [ # time t1</span>
+<span class="sd">            &lt;WOR_OH&gt;, &lt;WOR_HH&gt;, &lt;WOR_dip&gt;</span>
+<span class="sd">        ],</span>
+<span class="sd">        ...</span>
+<span class="sd">     ]</span>
+
+<span class="sd">AngularDistribution</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Angular distribution (AD) data is returned per vector, which is stored in</span>
+<span class="sd">:attr:`AngularDistribution.graph`. In fact, AngularDistribution returns a</span>
+<span class="sd">histogram::</span>
+
+<span class="sd">    results = [</span>
+<span class="sd">        [ # OH vector values</span>
+<span class="sd">          # the values are order in this way: &lt;x_axis  y_axis&gt;</span>
+<span class="sd">            &lt;cos_theta0 ang_distr0&gt;, &lt;cos_theta1 ang_distr1&gt;, ...</span>
+<span class="sd">        ],</span>
+<span class="sd">        [ # HH vector values</span>
+<span class="sd">            &lt;cos_theta0 ang_distr0&gt;, &lt;cos_theta1 ang_distr1&gt;, ...</span>
+<span class="sd">        ],</span>
+<span class="sd">        [ # dip vector values</span>
+<span class="sd">           &lt;cos_theta0 ang_distr0&gt;, &lt;cos_theta1 ang_distr1&gt;, ...</span>
+<span class="sd">        ],</span>
+<span class="sd">     ]</span>
+
+<span class="sd">MeanSquareDisplacement</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Mean Square Displacement (MSD) data is returned in a list, which each element</span>
+<span class="sd">represents a MSD value in its respective window timestep. Data is stored in</span>
+<span class="sd">:attr:`MeanSquareDisplacement.timeseries`::</span>
+
+<span class="sd">    results = [</span>
+<span class="sd">         #MSD values orders by window timestep</span>
+<span class="sd">            &lt;MSD_t0&gt;, &lt;MSD_t1&gt;, ...</span>
+<span class="sd">     ]</span>
+
+<span class="sd">SurvivalProbability</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Survival Probability (SP) computes two lists: a list of taus (:attr:`SurvivalProbability.tau_timeseries`) and a list of</span>
+<span class="sd">the corresponding survival probabilities (:attr:`SurvivalProbability.sp_timeseries`).</span>
+
+<span class="sd">    results = [ tau1, tau2, ..., tau_n ], [ sp_tau1, sp_tau2, ..., sp_tau_n]</span>
+
+<span class="sd">Additionally, a list :attr:`SurvivalProbability.sp_timeseries_data`, is provided which contains</span>
+<span class="sd">a list of all SPs calculated for each tau. This can be used to compute the distribution or time dependence of SP, etc.</span>
+
+<span class="sd">Classes</span>
+<span class="sd">--------</span>
+
+<span class="sd">.. autoclass:: HydrogenBondLifetimes</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">.. autoclass:: WaterOrientationalRelaxation</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">.. autoclass:: AngularDistribution</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">.. autoclass:: MeanSquareDisplacement</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">.. autoclass:: SurvivalProbability</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">zip_longest</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.waterdynamics&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
+
+
+<div class="viewcode-block" id="HydrogenBondLifetimes"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondLifetimes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Hydrogen bond lifetime analysis</span>
+
+<span class="sd">    This is a autocorrelation function that gives the &quot;Hydrogen Bond Lifetimes&quot;</span>
+<span class="sd">    (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can</span>
+<span class="sd">    obtain the continuous and intermittent behavior of hydrogen bonds in</span>
+<span class="sd">    time. A fast decay in these parameters indicate a fast change in HBs</span>
+<span class="sd">    connectivity. A slow decay indicate very stables hydrogen bonds, like in</span>
+<span class="sd">    ice. The HBL is also know as &quot;Hydrogen Bond Population Relaxation&quot;</span>
+<span class="sd">    (HBPR). In the continuos case we have:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h&#39;_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}</span>
+
+<span class="sd">    where :math:`h&#39;_{ij}(t_0+\tau)=1` if there is a H-bond between a pair</span>
+<span class="sd">    :math:`ij` during time interval :math:`t_0+\tau` (continuos) and</span>
+<span class="sd">    :math:`h&#39;_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}</span>
+
+<span class="sd">    where :math:`h_{ij}(t_0+\tau)=1` if there is a H-bond between a pair</span>
+<span class="sd">    :math:`ij` at time :math:`t_0+\tau` (intermittent) and</span>
+<span class="sd">    :math:`h_{ij}(t_0+\tau)=0` otherwise.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">      Universe object</span>
+<span class="sd">    selection1 : str</span>
+<span class="sd">      Selection string for first selection [‘byres name OH2’].</span>
+<span class="sd">      It could be any selection available in MDAnalysis, not just water.</span>
+<span class="sd">    selection2 : str</span>
+<span class="sd">      Selection string to analize its HBL against selection1</span>
+<span class="sd">    t0 : int</span>
+<span class="sd">      frame  where analysis begins</span>
+<span class="sd">    tf : int</span>
+<span class="sd">      frame where analysis ends</span>
+<span class="sd">    dtmax : int</span>
+<span class="sd">      Maximum dt size, `dtmax` &lt; `tf` or it will crash.</span>
+
+
+<span class="sd">    .. versionadded:: 0.11.0</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       The ``nproc`` keyword was removed as it linked to a portion of code that</span>
+<span class="sd">       may have failed in some cases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span>
+                 <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span> <span class="o">=</span> <span class="n">selection1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span> <span class="o">=</span> <span class="n">selection2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_getC_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function give the intermitent Hydrogen Bond Lifetime</span>
+<span class="sd">        C_i = &lt;h(t0)h(t)&gt;/&lt;h(t0)&gt; between t0 and t</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">C_i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">])):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">C_i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">C_i</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_getC_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function give the continous Hydrogen Bond Lifetime</span>
+<span class="sd">        C_c = &lt;h(t0)h&#39;(t)&gt;/&lt;h(t0)&gt; between t0 and t</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">C_c</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">begt0</span> <span class="o">=</span> <span class="n">t0</span>
+        <span class="n">HBP_cp</span> <span class="o">=</span> <span class="n">HBP</span>
+        <span class="n">HBP_t0</span> <span class="o">=</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">]</span>
+        <span class="n">newHBP</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">t0</span> <span class="o">==</span> <span class="n">t</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">while</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">t</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP_t0</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP_cp</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">])):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">HBP_t0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP_cp</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span>
+                        <span class="n">HBP_t0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP_cp</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]):</span>
+                        <span class="n">newHBP</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HBP_t0</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="k">break</span>
+            <span class="n">C_c</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">newHBP</span><span class="p">)</span>
+            <span class="n">t0</span> <span class="o">+=</span> <span class="n">dt</span>
+            <span class="n">HBP_t0</span> <span class="o">=</span> <span class="n">newHBP</span>
+            <span class="n">newHBP</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">begt0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">C_c</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">begt0</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">_intervC_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function gets all the data for the h(t0)h(t0+dt)&#39;, where</span>
+<span class="sd">        t0 = 1,2,3,...,tf. This function give us one point of the final plot</span>
+<span class="sd">        HBL vs t</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">tf</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">t0</span> <span class="o">==</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">:</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t0</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">)</span>
+                <span class="n">t0</span> <span class="o">+=</span> <span class="n">dt</span>
+                <span class="n">a</span> <span class="o">+=</span> <span class="n">b</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">count</span>
+
+    <span class="k">def</span> <span class="nf">_intervC_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function gets all the data for the h(t0)h(t0+dt), where</span>
+<span class="sd">        t0 = 1,2,3,...,tf. This function give us a point of the final plot</span>
+<span class="sd">        HBL vs t</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">tf</span><span class="p">):</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getC_i</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">)</span>
+                <span class="n">t0</span> <span class="o">+=</span> <span class="n">dt</span>
+                <span class="n">a</span> <span class="o">+=</span> <span class="n">b</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">count</span>
+
+    <span class="k">def</span> <span class="nf">_finalGraphGetC_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function gets the final data of the C_i graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxdt</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intervC_i</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">def</span> <span class="nf">_finalGraphGetC_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function gets the final data of the C_c graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxdt</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intervC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">def</span> <span class="nf">_getGraphics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function that join all the results into a plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finalGraphGetC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">)</span>
+        <span class="n">inte</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finalGraphGetC_i</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cont</span><span class="p">)):</span>
+            <span class="n">fix</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">inte</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span>
+
+
+<div class="viewcode-block" id="HydrogenBondLifetimes.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
+        <span class="n">h_list</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span>
+                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">,</span>
+                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,</span>
+                                                                 <span class="n">distance</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+                                                                 <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
+        <span class="n">h_list</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getGraphics</span><span class="p">(</span><span class="n">h_list</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="WaterOrientationalRelaxation"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">[docs]</a><span class="k">class</span> <span class="nc">WaterOrientationalRelaxation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Water orientation relaxation analysis</span>
+
+<span class="sd">    Function to evaluate the Water Orientational Relaxation proposed by Yu-ling</span>
+<span class="sd">    Yeh and Chung-Yuan Mou [Yeh1999_]. WaterOrientationalRelaxation indicates</span>
+<span class="sd">    &quot;how fast&quot; water molecules are rotating or changing direction. This is a</span>
+<span class="sd">    time correlation function given by:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        C_{\hat u}(\tau)=\langle \mathit{P}_2[\mathbf{\hat{u}}(t_0)\cdot\mathbf{\hat{u}}(t_0+\tau)]\rangle</span>
+
+<span class="sd">    where :math:`P_2=(3x^2-1)/2` is the second-order Legendre polynomial and :math:`\hat{u}` is</span>
+<span class="sd">    a unit vector along HH, OH or dipole vector.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">      Universe object</span>
+<span class="sd">    selection : str</span>
+<span class="sd">      Selection string for water [‘byres name OH2’].</span>
+<span class="sd">    t0 : int</span>
+<span class="sd">      frame  where analysis begins</span>
+<span class="sd">    tf : int</span>
+<span class="sd">      frame where analysis ends</span>
+<span class="sd">    dtmax : int</span>
+<span class="sd">      Maximum dt size, `dtmax` &lt; `tf` or it will crash.</span>
+
+
+<span class="sd">    .. versionadded:: 0.11.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">=</span> <span class="n">nproc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_repeatedIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">totalFrames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicates the comparation between all the t+dt.</span>
+<span class="sd">        The results is a list of list with all the repeated index per frame</span>
+<span class="sd">        (or time).</span>
+<span class="sd">        Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...</span>
+<span class="sd">        Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...</span>
+<span class="sd">        Ex: dt=3, so compare frames (1,4),(4,7),(7,10)...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">totalFrames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">dt</span><span class="p">)))):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="n">totalFrames</span><span class="p">):</span>
+                <span class="n">rep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sameMolecTandDT</span><span class="p">(</span>
+                    <span class="n">selection</span><span class="p">,</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">dt</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">rep</span>
+
+    <span class="k">def</span> <span class="nf">_getOneDeltaPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">repInd</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives one point to calculate the mean and gets one point of the plot</span>
+<span class="sd">        C_vect vs t.</span>
+<span class="sd">        Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.</span>
+<span class="sd">        Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.</span>
+<span class="sd">        i = come from getMeanOnePoint (named j) (int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">valOH</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">valHH</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">valdip</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">//</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">begj</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">j</span>
+            <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">t0</span><span class="p">]</span>
+            <span class="n">Ot0</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span><span class="p">]</span>
+            <span class="n">H1t0</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">H2t0</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">OHVector0</span> <span class="o">=</span> <span class="n">H1t0</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">Ot0</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">HHVector0</span> <span class="o">=</span> <span class="n">H1t0</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">H2t0</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">dipVector0</span> <span class="o">=</span> <span class="p">((</span><span class="n">H1t0</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">H2t0</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-</span> <span class="n">Ot0</span><span class="o">.</span><span class="n">position</span>
+
+            <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">]</span>
+            <span class="n">Otp</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span><span class="p">]</span>
+            <span class="n">H1tp</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">H2tp</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">OHVectorp</span> <span class="o">=</span> <span class="n">H1tp</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">Otp</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">HHVectorp</span> <span class="o">=</span> <span class="n">H1tp</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">H2tp</span><span class="o">.</span><span class="n">position</span>
+            <span class="n">dipVectorp</span> <span class="o">=</span> <span class="p">((</span><span class="n">H1tp</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">H2tp</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-</span> <span class="n">Otp</span><span class="o">.</span><span class="n">position</span>
+
+            <span class="n">normOHVector0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVector0</span><span class="p">)</span>
+            <span class="n">normOHVectorp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVectorp</span><span class="p">)</span>
+            <span class="n">normHHVector0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVector0</span><span class="p">)</span>
+            <span class="n">normHHVectorp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVectorp</span><span class="p">)</span>
+            <span class="n">normdipVector0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVector0</span><span class="p">)</span>
+            <span class="n">normdipVectorp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVectorp</span><span class="p">)</span>
+
+            <span class="n">unitOHVector0</span> <span class="o">=</span> <span class="p">[</span><span class="n">OHVector0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">normOHVector0</span><span class="p">,</span>
+                             <span class="n">OHVector0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">normOHVector0</span><span class="p">,</span>
+                             <span class="n">OHVector0</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">normOHVector0</span><span class="p">]</span>
+            <span class="n">unitOHVectorp</span> <span class="o">=</span> <span class="p">[</span><span class="n">OHVectorp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">normOHVectorp</span><span class="p">,</span>
+                             <span class="n">OHVectorp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">normOHVectorp</span><span class="p">,</span>
+                             <span class="n">OHVectorp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">normOHVectorp</span><span class="p">]</span>
+            <span class="n">unitHHVector0</span> <span class="o">=</span> <span class="p">[</span><span class="n">HHVector0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">normHHVector0</span><span class="p">,</span>
+                             <span class="n">HHVector0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">normHHVector0</span><span class="p">,</span>
+                             <span class="n">HHVector0</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">normHHVector0</span><span class="p">]</span>
+            <span class="n">unitHHVectorp</span> <span class="o">=</span> <span class="p">[</span><span class="n">HHVectorp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">normHHVectorp</span><span class="p">,</span>
+                             <span class="n">HHVectorp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">normHHVectorp</span><span class="p">,</span>
+                             <span class="n">HHVectorp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">normHHVectorp</span><span class="p">]</span>
+            <span class="n">unitdipVector0</span> <span class="o">=</span> <span class="p">[</span><span class="n">dipVector0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">normdipVector0</span><span class="p">,</span>
+                              <span class="n">dipVector0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">normdipVector0</span><span class="p">,</span>
+                              <span class="n">dipVector0</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">normdipVector0</span><span class="p">]</span>
+            <span class="n">unitdipVectorp</span> <span class="o">=</span> <span class="p">[</span><span class="n">dipVectorp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">normdipVectorp</span><span class="p">,</span>
+                              <span class="n">dipVectorp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">normdipVectorp</span><span class="p">,</span>
+                              <span class="n">dipVectorp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">normdipVectorp</span><span class="p">]</span>
+
+            <span class="n">valOH</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitOHVector0</span><span class="p">,</span> <span class="n">unitOHVectorp</span><span class="p">))</span>
+            <span class="n">valHH</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitHHVector0</span><span class="p">,</span> <span class="n">unitHHVectorp</span><span class="p">))</span>
+            <span class="n">valdip</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitdipVector0</span><span class="p">,</span> <span class="n">unitdipVectorp</span><span class="p">))</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span>  <span class="p">(</span><span class="n">valOH</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">valHH</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">valdip</span><span class="o">/</span><span class="n">n</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_getMeanOnePoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span>
+                         <span class="n">totalFrames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function gets one point of the plot C_vec vs t. It uses the</span>
+<span class="sd">        _getOneDeltaPoint() function to calculate the average.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">repInd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repeatedIndex</span><span class="p">(</span><span class="n">selection1</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">totalFrames</span><span class="p">)</span>
+        <span class="n">sumsdt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">sumDeltaOH</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">sumDeltaHH</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">sumDeltadip</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">totalFrames</span> <span class="o">//</span> <span class="n">dt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getOneDeltaPoint</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">repInd</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">sumsdt</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="n">sumDeltaOH</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sumDeltaHH</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">sumDeltadip</span> <span class="o">+=</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">sumsdt</span> <span class="o">+=</span> <span class="n">dt</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># if no water molecules remain in selection, there is nothing to get</span>
+        <span class="c1"># the mean, so n = 0.</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">sumDeltaOH</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="n">sumDeltaHH</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="n">sumDeltadip</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sameMolecTandDT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">t0d</span><span class="p">,</span> <span class="n">tf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare the molecules in the t0d selection and the t0d+dt selection and</span>
+<span class="sd">        select only the particles that are repeated in both frame. This is to</span>
+<span class="sd">        consider only the molecules that remains in the selection after the dt</span>
+<span class="sd">        time has elapsed.</span>
+<span class="sd">        The result is a list with the indexs of the atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">selection</span><span class="p">[</span><span class="n">t0d</span><span class="p">])</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">selection</span><span class="p">[</span><span class="n">tf</span><span class="p">])</span>
+        <span class="n">sort</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">sort</span>
+
+    <span class="k">def</span> <span class="nf">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">):</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">total</span><span class="o">=</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">selection</span>
+
+<div class="viewcode-block" id="WaterOrientationalRelaxation.lg2"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">lg2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Second Legendre polynomial&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span></div>
+
+<div class="viewcode-block" id="WaterOrientationalRelaxation.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
+
+        <span class="c1"># All the selection to an array, this way is faster than selecting</span>
+        <span class="c1"># later.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">selection_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_serial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># selection_out = self._selection_parallel(self.universe,</span>
+            <span class="c1"># self.selection, self.nproc)</span>
+            <span class="c1"># parallel selection to be implemented</span>
+            <span class="n">selection_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_serial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AngularDistribution"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.AngularDistribution">[docs]</a><span class="k">class</span> <span class="nc">AngularDistribution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Angular distribution function analysis</span>
+
+<span class="sd">    The angular distribution function (AD) is defined as the distribution</span>
+<span class="sd">    probability of the cosine of the :math:`\theta` angle formed by the OH</span>
+<span class="sd">    vector, HH vector or dipolar vector of water molecules and a vector</span>
+<span class="sd">    :math:`\hat n` parallel to chosen axis (z is the default value). The cosine</span>
+<span class="sd">    is define as :math:`\cos \theta = \hat u \cdot \hat n`, where :math:`\hat</span>
+<span class="sd">    u` is OH, HH or dipole vector.  It creates a histogram and returns a list</span>
+<span class="sd">    of lists, see Output_. The AD is also know as Angular Probability (AP).</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">        Universe object</span>
+<span class="sd">    select : str</span>
+<span class="sd">        Selection string to evaluate its angular distribution [&#39;byres name OH2&#39;]</span>
+<span class="sd">    bins : int (optional)</span>
+<span class="sd">        Number of bins to create the histogram by means of :func:`numpy.histogram`</span>
+<span class="sd">    axis : {&#39;x&#39;, &#39;y&#39;, &#39;z&#39;} (optional)</span>
+<span class="sd">        Axis to create angle with the vector (HH, OH or dipole) and calculate</span>
+<span class="sd">        cosine theta [&#39;z&#39;].</span>
+
+
+<span class="sd">    .. versionadded:: 0.11.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection_str</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">=</span> <span class="n">nproc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_getCosTheta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">valOH</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">valHH</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">valdip</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span>
+
+            <span class="n">Ot0</span> <span class="o">=</span> <span class="n">line</span><span class="p">[::</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">H1t0</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">H2t0</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="n">OHVector0</span> <span class="o">=</span> <span class="n">H1t0</span> <span class="o">-</span> <span class="n">Ot0</span>
+            <span class="n">HHVector0</span> <span class="o">=</span> <span class="n">H1t0</span> <span class="o">-</span> <span class="n">H2t0</span>
+            <span class="n">dipVector0</span> <span class="o">=</span> <span class="p">(</span><span class="n">H1t0</span> <span class="o">+</span> <span class="n">H2t0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">Ot0</span>
+
+            <span class="n">unitOHVector0</span> <span class="o">=</span> <span class="n">OHVector0</span> <span class="o">/</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVector0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">unitHHVector0</span> <span class="o">=</span> <span class="n">HHVector0</span> <span class="o">/</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVector0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">unitdipVector0</span> <span class="o">=</span> <span class="n">dipVector0</span> <span class="o">/</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVector0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span>
+                    <span class="n">valOH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitOHVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">valHH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitHHVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">valdip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitdipVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+
+                <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span>
+                    <span class="n">valOH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitOHVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">valHH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitHHVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">valdip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitdipVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+                    <span class="n">valOH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitOHVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">valHH</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitHHVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">valdip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unitdipVector0</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">valOH</span><span class="p">,</span> <span class="n">valHH</span><span class="p">,</span> <span class="n">valdip</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getHistogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function gets a normalized histogram of the cos(theta) values. It</span>
+<span class="sd">        return a list of list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getCosTheta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="n">cosThetaOH</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cosThetaHH</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">cosThetadip</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">lencosThetaOH</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cosThetaOH</span><span class="p">)</span>
+        <span class="n">lencosThetaHH</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cosThetaHH</span><span class="p">)</span>
+        <span class="n">lencosThetadip</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cosThetadip</span><span class="p">)</span>
+        <span class="n">histInterval</span> <span class="o">=</span> <span class="n">bins</span>
+        <span class="n">histcosThetaOH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetaOH</span><span class="p">,</span> <span class="n">histInterval</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">histcosThetaHH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetaHH</span><span class="p">,</span> <span class="n">histInterval</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">histcosThetadip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetadip</span><span class="p">,</span> <span class="n">histInterval</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">histcosThetaOH</span><span class="p">,</span> <span class="n">histcosThetaHH</span><span class="p">,</span> <span class="n">histcosThetadip</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_hist2column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aList</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function transform from the histogram format</span>
+<span class="sd">        to a column format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">zip_longest</span><span class="p">(</span><span class="o">*</span><span class="n">aList</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">a</span>
+
+<div class="viewcode-block" id="AngularDistribution.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.AngularDistribution.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function to evaluate the angular distribution of cos(theta)&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_serial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection_str</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># not implemented yet</span>
+            <span class="c1"># selection = self._selection_parallel(self.universe,</span>
+            <span class="c1"># self.selection_str,self.nproc)</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_serial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection_str</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getHistogram</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
+        <span class="c1"># this is to format the exit of the file</span>
+        <span class="c1"># maybe this output could be improved</span>
+        <span class="n">listOH</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">listHH</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">listdip</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listOH</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listHH</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listdip</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">):</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">total</span><span class="o">=</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">selection</span></div>
+
+
+<div class="viewcode-block" id="MeanSquareDisplacement"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement">[docs]</a><span class="k">class</span> <span class="nc">MeanSquareDisplacement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean square displacement analysis</span>
+
+<span class="sd">    Function to evaluate the Mean Square Displacement (MSD_). The MSD gives the</span>
+<span class="sd">    average distance that particles travels. The MSD is given by:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \langle\Delta r(t)^2\rangle = 2nDt</span>
+
+<span class="sd">    where :math:`r(t)` is the position of particle in time :math:`t`,</span>
+<span class="sd">    :math:`\Delta r(t)` is the displacement after time lag :math:`t`,</span>
+<span class="sd">    :math:`n` is the dimensionality, in this case :math:`n=3`,</span>
+<span class="sd">    :math:`D` is the diffusion coefficient and :math:`t` is the time.</span>
+
+<span class="sd">    .. _MSD: http://en.wikipedia.org/wiki/Mean_squared_displacement</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">      Universe object</span>
+<span class="sd">    select : str</span>
+<span class="sd">      Selection string for water [‘byres name OH2’].</span>
+<span class="sd">    t0 : int</span>
+<span class="sd">      frame  where analysis begins</span>
+<span class="sd">    tf : int</span>
+<span class="sd">      frame where analysis ends</span>
+<span class="sd">    dtmax : int</span>
+<span class="sd">      Maximum dt size, `dtmax` &lt; `tf` or it will crash.</span>
+
+
+<span class="sd">    .. versionadded:: 0.11.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">=</span> <span class="n">nproc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_repeatedIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">totalFrames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicate the comparation between all the t+dt.</span>
+<span class="sd">        The results is a list of list with all the repeated index per frame</span>
+<span class="sd">        (or time).</span>
+
+<span class="sd">        - Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...</span>
+<span class="sd">        - Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...</span>
+<span class="sd">        - Ex: dt=3, so compare frames (1,4),(4,7),(7,10)...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">totalFrames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">dt</span><span class="p">)))):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="n">totalFrames</span><span class="p">):</span>
+                <span class="n">rep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sameMolecTandDT</span><span class="p">(</span>
+                    <span class="n">selection</span><span class="p">,</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">dt</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">rep</span>
+
+    <span class="k">def</span> <span class="nf">_getOneDeltaPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">repInd</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives one point to calculate the mean and gets one point of the plot</span>
+<span class="sd">        C_vect vs t.</span>
+
+<span class="sd">        - Ex: t0=1 and dt=1 so calculate the t0-dt=1-2 interval.</span>
+<span class="sd">        - Ex: t0=5 and dt=3 so calcultate the t0-dt=5-8 interva</span>
+
+<span class="sd">        i = come from getMeanOnePoint (named j) (int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">valO</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">//</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">begj</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">j</span>
+            <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">t0</span><span class="p">]</span>
+            <span class="c1"># Plus zero is to avoid 0to be equal to 0tp</span>
+            <span class="n">Ot0</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="mi">0</span>
+
+            <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">]</span>
+            <span class="c1"># Plus zero is to avoid 0to be equal to 0tp</span>
+            <span class="n">Otp</span> <span class="o">=</span> <span class="n">repInd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">begj</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="mi">0</span>
+
+            <span class="c1"># position oxygen</span>
+            <span class="n">OVector</span> <span class="o">=</span> <span class="n">Ot0</span> <span class="o">-</span> <span class="n">Otp</span>
+            <span class="c1"># here it is the difference with</span>
+            <span class="c1"># waterdynamics.WaterOrientationalRelaxation</span>
+            <span class="n">valO</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">OVector</span><span class="p">,</span> <span class="n">OVector</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># if no water molecules remain in selection, there is nothing to get</span>
+        <span class="c1"># the mean, so n = 0.</span>
+        <span class="k">return</span> <span class="n">valO</span><span class="o">/</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_getMeanOnePoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span>
+                         <span class="n">totalFrames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function gets one point of the plot C_vec vs t. It&#39;s uses the</span>
+<span class="sd">        _getOneDeltaPoint() function to calculate the average.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">repInd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repeatedIndex</span><span class="p">(</span><span class="n">selection1</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">totalFrames</span><span class="p">)</span>
+        <span class="n">sumsdt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">sumDeltaO</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">valOList</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">totalFrames</span> <span class="o">//</span> <span class="n">dt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getOneDeltaPoint</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">repInd</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">sumsdt</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="n">sumDeltaO</span> <span class="o">+=</span> <span class="n">a</span>
+            <span class="n">valOList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">sumsdt</span> <span class="o">+=</span> <span class="n">dt</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># if no water molecules remain in selection, there is nothing to get</span>
+        <span class="c1"># the mean, so n = 0.</span>
+        <span class="k">return</span> <span class="n">sumDeltaO</span><span class="o">/</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_sameMolecTandDT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">t0d</span><span class="p">,</span> <span class="n">tf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare the molecules in the t0d selection and the t0d+dt selection and</span>
+<span class="sd">        select only the particles that are repeated in both frame. This is to</span>
+<span class="sd">        consider only the molecules that remains in the selection after the dt</span>
+<span class="sd">        time has elapsed. The result is a list with the indexs of the atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">selection</span><span class="p">[</span><span class="n">t0d</span><span class="p">])</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">selection</span><span class="p">[</span><span class="n">tf</span><span class="p">])</span>
+        <span class="n">sort</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">sort</span>
+
+    <span class="k">def</span> <span class="nf">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">):</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">total</span><span class="o">=</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">selection</span>
+
+<div class="viewcode-block" id="MeanSquareDisplacement.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
+
+        <span class="c1"># All the selection to an array, this way is faster than selecting</span>
+        <span class="c1"># later.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">selection_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_serial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># parallel not yet implemented</span>
+            <span class="c1"># selection = selection_parallel(universe, selection_str, nproc)</span>
+            <span class="n">selection_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection_serial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SurvivalProbability"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability">[docs]</a><span class="k">class</span> <span class="nc">SurvivalProbability</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.</span>
+<span class="sd">    The SP is given by:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}</span>
+
+<span class="sd">    where :math:`T` is the maximum time of simulation, :math:`\tau` is the</span>
+<span class="sd">    timestep, :math:`N(t)` the number of particles at time :math:`t`, and</span>
+<span class="sd">    :math:`N(t, t+\tau)` is the number of particles at every frame from :math:`t` to `\tau`.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">      Universe object</span>
+<span class="sd">    select : str</span>
+<span class="sd">      Selection string; any selection is allowed. With this selection you</span>
+<span class="sd">      define the region/zone where to analyze, e.g.: &quot;resname SOL and around 5 (resid 10)&quot;. See `SP-examples`_.</span>
+<span class="sd">    verbose : Boolean, optional</span>
+<span class="sd">      When True, prints progress and comments to the console.</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Currently :class:`SurvivalProbability` is the only on in</span>
+<span class="sd">    :mod:`MDAnalysis.analysis.waterdynamics` to support an `exclusive`</span>
+<span class="sd">    behaviour (i.e. similar to the current behaviour of :class:`AnalysisBase`</span>
+<span class="sd">    to the `stop` keyword passed to :meth:`SurvivalProbability.run`. Unlike</span>
+<span class="sd">    other :mod:`MDAnalysis.analysis.waterdynamics` final frame definitions</span>
+<span class="sd">    which are `inclusive`.</span>
+
+
+<span class="sd">    .. versionadded:: 0.11.0</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Using the MDAnalysis.lib.correlations.py to carry out the intermittency</span>
+<span class="sd">       and autocorrelation calculations.</span>
+<span class="sd">       Changed `selection` keyword to `select`.</span>
+<span class="sd">       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. </span>
+<span class="sd">       These should instead be passed to :meth:`SurvivalProbability.run` as</span>
+<span class="sd">       the `start`, `stop`, and `tau_max` keywords respectively.</span>
+<span class="sd">       The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now</span>
+<span class="sd">       changed behaviour and will act in an `exclusive` manner (instead of it&#39;s</span>
+<span class="sd">       previous `inclusive` behaviour),</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes and returns the Survival Probability (SP) timeseries</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int, optional</span>
+<span class="sd">            Zero-based index of the first frame to be analysed, Default: None</span>
+<span class="sd">            (first frame).</span>
+<span class="sd">        stop : int, optional</span>
+<span class="sd">            Zero-based index of the last frame to be analysed (exclusive),</span>
+<span class="sd">            Default: None (last frame).</span>
+<span class="sd">        step : int, optional</span>
+<span class="sd">            Jump every `step`-th frame. This is compatible but independant of</span>
+<span class="sd">            the taus used, and it is good to consider using the  `step` equal</span>
+<span class="sd">            to `tau_max` to remove the overlap. Note that `step` and `tau_max`</span>
+<span class="sd">            work consistently with intermittency. Default: None</span>
+<span class="sd">            (use every frame).</span>
+<span class="sd">        tau_max : int, optional</span>
+<span class="sd">            Survival probability is calculated for the range</span>
+<span class="sd">            1 &lt;= `tau` &lt;= `tau_max`.</span>
+<span class="sd">        residues : Boolean, optional</span>
+<span class="sd">            If true, the analysis will be carried out on the residues</span>
+<span class="sd">            (.resids) rather than on atom (.ids). A single atom is sufficient</span>
+<span class="sd">            to classify the residue as within the distance.</span>
+<span class="sd">        intermittency : int, optional</span>
+<span class="sd">            The maximum number of consecutive frames for which an atom can</span>
+<span class="sd">            leave but be counted as present if it returns at the next frame.</span>
+<span class="sd">            An intermittency of `0` is equivalent to a continuous survival</span>
+<span class="sd">            probability, which does not allow for the leaving and returning of</span>
+<span class="sd">            atoms. For example, for `intermittency=2`, any given atom may leave</span>
+<span class="sd">            a region of interest for up to two consecutive frames yet be</span>
+<span class="sd">            treated as being present at all frames. The default is continuous</span>
+<span class="sd">            (0).</span>
+<span class="sd">        verbose : Boolean, optional</span>
+<span class="sd">            Print the progress to the console.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tau_timeseries : list</span>
+<span class="sd">            tau from 1 to `tau_max`. Saved in the field tau_timeseries.</span>
+<span class="sd">        sp_timeseries : list</span>
+<span class="sd">            survival probability for each value of `tau`. Saved in the field</span>
+<span class="sd">            sp_timeseries.</span>
+<span class="sd">        sp_timeseries_data: list</span>
+<span class="sd">            raw datapoints from which the average is taken (sp_timeseries).</span>
+<span class="sd">            Time dependancy and distribution can be extracted.</span>
+
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           To math other analysis methods, the `stop` keyword is now exclusive</span>
+<span class="sd">           rather than inclusive.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span>
+            <span class="n">start</span><span class="p">,</span>
+            <span class="n">stop</span><span class="p">,</span>
+            <span class="n">step</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tau_max</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too few frames selected for given tau_max.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># preload the frames (atom IDs) to a list of sets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ids</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># fixme - to parallise: the section should be rewritten so that this loop only creates a list of indices,</span>
+        <span class="c1"># on which the parallel _single_frame can be applied.</span>
+
+        <span class="c1"># skip frames that will not be used in order to improve performance</span>
+        <span class="c1"># because AtomGroup.select_atoms is the most expensive part of this calculation</span>
+        <span class="c1"># Example: step 5 and tau 2: LLLSS LLLSS, ... where L = Load, and S = Skip</span>
+        <span class="c1"># Intermittency means that we have to load the extra frames to know if the atom is actually missing.</span>
+        <span class="c1"># Say step=5 and tau=1, intermittency=0: LLSSS LLSSS</span>
+        <span class="c1"># Say step=5 and tau=1, intermittency=1: LLLSL LLLSL</span>
+        <span class="n">frame_loaded_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># only for the first window (frames before t are not used)</span>
+        <span class="n">frames_per_window</span> <span class="o">=</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">intermittency</span>
+        <span class="c1"># This number will apply after the first windows was loaded</span>
+        <span class="n">frames_per_window_subsequent</span> <span class="o">=</span> <span class="p">(</span><span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">intermittency</span><span class="p">)</span>
+        <span class="n">num_frames_to_skip</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">step</span> <span class="o">-</span> <span class="n">frames_per_window_subsequent</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">frame_no</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="k">while</span> <span class="n">frame_no</span> <span class="o">&lt;</span> <span class="n">stop</span><span class="p">:</span>      <span class="c1"># we have already added 1 to stop, therefore &lt;</span>
+            <span class="k">if</span> <span class="n">num_frames_to_skip</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">frame_loaded_counter</span> <span class="o">==</span> <span class="n">frames_per_window</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping the next </span><span class="si">%d</span><span class="s2"> frames:&quot;</span><span class="p">,</span> <span class="n">num_frames_to_skip</span><span class="p">)</span>
+                <span class="n">frame_no</span> <span class="o">+=</span> <span class="n">num_frames_to_skip</span>
+                <span class="n">frame_loaded_counter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="c1"># Correct the number of frames to be loaded after the first window (which starts at t=0, and</span>
+                <span class="c1"># intermittency does not apply to the frames before)</span>
+                <span class="n">frames_per_window</span> <span class="o">=</span> <span class="n">frames_per_window_subsequent</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># update the frame number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame_no</span><span class="p">]</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading frame: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+
+            <span class="c1"># SP of residues or of atoms</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span> <span class="k">if</span> <span class="n">residues</span> <span class="k">else</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ids</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
+
+            <span class="n">frame_no</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">frame_loaded_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># adjust for the frames that were not loaded (step&gt;tau_max + 1),</span>
+        <span class="c1"># and for extra frames that were loaded (intermittency)</span>
+        <span class="n">window_jump</span> <span class="o">=</span> <span class="n">step</span> <span class="o">-</span> <span class="n">num_frames_to_skip</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_intermittent_selected_ids</span> <span class="o">=</span> <span class="n">correct_intermittency</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ids</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="n">intermittency</span><span class="p">)</span>
+        <span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="n">autocorrelation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_intermittent_selected_ids</span><span class="p">,</span>
+                                                                            <span class="n">tau_max</span><span class="p">,</span> <span class="n">window_jump</span><span class="p">)</span>
+
+        <span class="c1"># warn the user if the NaN are found</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sp_timeseries</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NaN Error: Most likely data was not found. Check your atom selections. &#39;</span><span class="p">)</span>
+
+        <span class="c1"># user can investigate the distribution and sample size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="n">sp_timeseries_data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">tau_timeseries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries</span> <span class="o">=</span> <span class="n">sp_timeseries</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
