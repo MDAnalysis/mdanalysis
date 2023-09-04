@@ -88,4 +88,6 @@ runs:
       if: ${{ inputs.build-docs == 'true' }}
       shell: bash -l {0}
       run: |
-        cd package/doc && python -m sphinx -T -E -b html -D language=en sphinx/source html
+        SOURCEDIR="sphinx/source"
+        BUILDDIR="html"
+        cd package/doc && python -m sphinx -T -E -b html -D language=en ${SOURCEDIR} ${BUILDDIR}
