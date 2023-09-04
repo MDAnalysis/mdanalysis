@@ -1,0 +1,38 @@
+name: mda-dev
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - chemfiles>=0.10
+  - codecov
+  - cython
+  - docutils <0.18
+  - fasteners
+  - griddataformats
+  - gsd
+  - h5py>=2.10
+  - hypothesis
+  - joblib>=0.12
+  - matplotlib>=3.2.2
+  - mmtf-python
+  - mock
+  - networkx
+  - numpy>=1.22.3
+  - pytest
+  - python==3.9
+  - pytng>=0.2.3
+  - scikit-learn
+  - scipy
+  - pip
+  - sphinx <7.0
+  - tidynamics>=1.0.0
+  - tqdm>=4.43.0
+  - sphinxcontrib-bibtex
+  - sphinx_rtd_theme
+  - pip:
+      - duecredit
+      - parmed
+      - msmb_theme==1.2.0
+      - sphinx-sitemap==1.0.2
+      - packaging
+      - pyedr>=0.7.0

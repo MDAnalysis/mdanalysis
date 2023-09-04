@@ -1,0 +1,271 @@
+.. -*- coding: utf-8 -*-
+
+=======================
+ Authors of MDAnalysis
+=======================
+
+MDAnalysis was originally written by Naveen Michaud-Agrawal.
+
+The project is maintained by the MDAnalysis Core Developer Team
+(@MDAnalysis/coredevs on https://github.com/MDAnalysis).
+
+All contributing authors are listed in this file below. The repository
+history at https://github.com/MDAnalysis/mdanalysis and the CHANGELOG
+show individual code contributions.
+
+
+Chronological list of authors
+-----------------------------
+
+2005
+  - Naveen Michaud-Agrawal
+2006
+  - Elizabeth J. Denning
+2007
+  - Oliver Beckstein
+2010
+  - Danny Parton
+  - Philip Fowler
+  - Tyler Reddy
+  - Joseph Goose
+  - Jan Domanski
+2011
+  - Benjamin Hall
+  - Paul Rigor
+  - David Caplan
+  - Christian Beckstein (logo)
+  - Sébastien Buchoux
+  - Joshua L. Adelman
+2012
+  - Lukas Grossar
+  - Andy Somogyi
+  - Lukas Stelzl
+  - Jinju Lu
+  - Joshua L. Phillips
+2013
+  - Zhuyi Xue
+  - Xavier Deupi
+  - Manuel Nuno Melo
+  - Robert McGibbon
+  - Richard J. Gowers
+  - Alejandro Bernardin
+  - Lennard van der Feltz
+2014
+  - Matthieu Chavent
+  - Joe Jordan
+2015
+  - Alex Nesterenko
+  - Caio S. Souza
+  - Sean L. Seyler
+  - David L. Dotson
+  - Carlos Yanez S.
+  - Kyle J. Huston
+  - Isaac Virshup
+  - Max Linke
+  - Gorman Stock
+  - Jonathan Barnoud
+  - Hai Nguyen
+2016
+  - Balasubramanian
+  - Mattia F. Palermo
+  - Utkarsh Saxena
+  - Abhinav Gupta
+  - John Detlefs
+  - Eugen Hruska
+  - Bart Bruininks
+  - Fiona B. Naughton
+  - Robert Delgado
+  - Wouter Boomsma
+  - Matteo Tiberti
+  - Tone Bengtsen
+  - Shantanu Srivastava
+  - Pedro Reis
+ 2017
+  - Ruggero Cortini
+  - Kashish Punjani
+  - Utkarsh Bansal
+  - Shobhit Agarwal
+  - Vedant Rathore
+  - Zhiyi Wu
+  - Akshay Gupta
+  - Juan Eiros Zamora
+  - Jon Kapla
+  - Sang Young Noh
+  - Andrew William King
+  - Kathleen Clark
+  - Dominik 'Rathann' Mierzejewski
+  - Nestor Wendt
+  - Micaela Matta
+  - Jose Borreguero
+  - Sören von Bülow
+2018
+  - Nabarun Pal
+  - Mateusz Bieniek
+  - Paul Smith
+  - Navya Khare
+  - Johannes Zeman
+  - Ayush Suhane
+  - Davide Cruz
+  - Shujie Fan
+  - Andrew R. McCluskey
+  - Henry Mull
+  - Irfan Alibay
+  - Philip Loche
+  - Matthew W. Thompson
+  - Ali Ehlen
+  - Daniele Padula
+2019
+  - Ninad Bhat
+  - Fenil Suchak
+  - Yibo Zhang
+  - Luís Pedro Borges Araújo
+  - Abhishek A. Kognole
+  - Rocco Meli
+  - Lily Wang
+  - Matthijs Tadema
+  - Joao Miguel Correia Teixeira
+2020
+  - Charlie Cook
+  - Yuanyu Chang
+  - Guillaume Fraux
+  - Ivan Hristov
+  - Michael Quevillon
+  - Hao Tian
+  - Hugo MacDermott-Opeskin
+  - Anshul Angaria
+  - Shubham Sharma
+  - Yuxuan Zhuang
+  - Cédric Bouysset
+  - Abhishek Shandilya
+  - Morgan L. Nance
+  - Faraaz Shah
+  - Wiep van der Toorn
+  - Siddharth Jain
+  - Ameya Harmalkar
+  - Shakul Pathak
+  - Andrea Rizzi
+  - William Glass
+  - Marcello Sega
+  - Edis Jakupovic
+  - Nicholas Craven
+  - Mieczyslaw Torchala
+  - Ramon Crehuet
+  - Haochuan Chen
+  - Karthikeyan Singaravelan
+2021
+  - Aditya Kamath
+  - Leonardo Barneschi
+  - Henrik Jäger
+  - Jan Stevens
+  - Orion Cohen
+  - Dimitrios Papageorgiou
+  - Hannah Pollak
+  - Estefania Barreto-Ojeda
+  - Paarth Thadani
+  - Henry Kobin
+  - Kosuke Kudo
+  - Sulay Shah
+  - Alexander Yang
+  - Filip T. Szczypiński
+  - Marcelo C. R. Melo
+  - Mark D. Driver
+  - Kevin Boyd
+2022
+  - Atharva Kulkarni
+  - Yantong Cai
+  - Bjarne Feddersen
+  - Pratik Gupta
+  - Alexander Gorfer
+  - Aya M. Alaa
+  - Kazi Shudipto Amin
+  - Alia Lescoulie
+  - Henok Ademtew
+  - Uma D Kadam
+  - Tamandeep Singh
+  - Mingyi Xue
+  - Meghan Osato
+  - Anirvinya G
+  - Rishabh Shukla  
+  - Manish Kumar
+  - Aditi Tripathi
+  - Sukeerti T
+  - Kavya Bisht
+  - Mark Verma
+  - Marcelo D. Poleto
+  - Ricky Sexton
+  - Rafael R. Pappalardo
+  - Tengyu Xie
+  - Raymond Zhao
+  - Haleema Khan
+  - Jennifer A Clark
+  - Jake Fennick
+  - Utsav Khatu
+  - Patricio Barletta
+  - Mikhail Glagolev
+2023
+  - Christian Pfaendner
+  - Pratham Chauhan
+  - Meet Brijwani
+  - Vishal Parmar
+  - Moritz Schaeffler
+  - Xu Hong Chen
+  - Domenico Marson
+  - Ahmed Salah Ghoneim
+  - Alexander Schlaich
+  - Josh Vermaas
+  - Xiaoxu Ruan
+  - Egor Marin
+  - Shaivi Malik
+  - Daniel J. Evans
+  - Mohit Kumar
+  - Shubham Kumar
+  - Zaheer Timol
+  - Geongi Moon
+
+External code
+-------------
+
+External code (under a GPL-compatible licence) was obtained from
+various sources. The authors (as far as we know them) are listed here.
+
+xdrfile
+  - David van der Spoel <david.vanderspoel@icm.uu.se>
+  - Erik Lindahl <erik.lindahl@scilifelab.se>
+  - Frans van Hoesel <f.h.j.van.hoesel@rug.nl> (not listed as an xdrfile
+    author, but the original author of the XTC coordinate compression code)
+
+  The Gromacs libxdrfile (LGPL-licensed) was used before MDAnalysis
+   version 0.8.0.
+  Between MDAnalysis versions 0.8.0 and 0.13.0 libxdrfile was replaced by
+   libxdrfile2, our GPLv2 enhanced derivative of libxdrfile.
+  Since version 0.14.0 xdr enhanecments were rebased onto Gromacs'
+   xdrfile 1.1.4 code (now BSD-licensed). Our contributions remain GPLv2
+   and were split into files xtc_seek.c, trr_seek.c, xtc_seek.h, and
+   trr_seek.h, for clarity (xdrfile 1.1.4 code is distributed with minor
+   modifications). Also for clarity we now name the resulting enhanced
+   xdr-reading library, complete with cython bindings, 'libmdaxdr'.
+
+DCD reader from catdcd
+  - Justin Gullingsrud
+
+transformations
+  - Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
+
+pyqcprot
+  - Joshua L. Adelman, University of Pittsburgh <jla65@pitt.edu>
+  - https://github.com/synapticarbors/pyqcprot
+
+
+Other contributions
+-------------------
+
+- MDAnalysis includes code generated by quantifiedcode
+  https://www.quantifiedcode.com/ under the handle @quantifiedcode-bot
+
+
+Logo
+----
+
+The MDAnalysis 'Atom' logo was designed by Christian Beckstein; it is
+Copyright (c) 2011 Christian Beckstein and made available under a
+Creative Commons Attribution-NoDerivs 3.0 Unported License.

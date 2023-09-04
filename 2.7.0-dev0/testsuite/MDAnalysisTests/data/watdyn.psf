@@ -1,0 +1,54 @@
+PSF
+
+       3 !NTITLE
+ REMARKS original generated structure x-plor psf file
+ REMARKS topology toppar_water_ions.top 
+ REMARKS segment WAT { first NONE; last NONE; auto none  }
+
+      15 !NATOM
+       1 WAT  5    TIP3 OH2  OT    -0.834000       15.9994           0
+       2 WAT  5    TIP3 H1   HT     0.417000        1.0080           0
+       3 WAT  5    TIP3 H2   HT     0.417000        1.0080           0
+       4 WAT  7    TIP3 OH2  OT    -0.834000       15.9994           0
+       5 WAT  7    TIP3 H1   HT     0.417000        1.0080           0
+       6 WAT  7    TIP3 H2   HT     0.417000        1.0080           0
+       7 WAT  8    TIP3 OH2  OT    -0.834000       15.9994           0
+       8 WAT  8    TIP3 H1   HT     0.417000        1.0080           0
+       9 WAT  8    TIP3 H2   HT     0.417000        1.0080           0
+      10 WAT  15   TIP3 OH2  OT    -0.834000       15.9994           0
+      11 WAT  15   TIP3 H1   HT     0.417000        1.0080           0
+      12 WAT  15   TIP3 H2   HT     0.417000        1.0080           0
+      13 WAT  21   TIP3 OH2  OT    -0.834000       15.9994           0
+      14 WAT  21   TIP3 H1   HT     0.417000        1.0080           0
+      15 WAT  21   TIP3 H2   HT     0.417000        1.0080           0
+
+      15 !NBOND: bonds
+       1       2       1       3       2       3       4       5
+       4       6       5       6       7       8       7       9
+       8       9      10      11      10      12      11      12
+      13      14      13      15      14      15
+
+       5 !NTHETA: angles
+       2       1       3       5       4       6       8       7       9
+      11      10      12      14      13      15
+
+       0 !NPHI: dihedrals
+
+
+       0 !NIMPHI: impropers
+
+
+       0 !NDON: donors
+
+
+       0 !NACC: acceptors
+
+
+       0 !NNB
+
+       0       0       0       0       0       0       0       0
+       0       0       0       0       0       0       0
+
+       1       0 !NGRP
+       0       0       0
+

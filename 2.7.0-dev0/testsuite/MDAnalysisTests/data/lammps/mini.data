@@ -1,0 +1,23 @@
+LAMMPS minimal data file
+
+1 atoms 
+
+1 atom types 
+
+  0.00 60.0000000000 xlo xhi 
+-10.00 40.0000000000 ylo yhi 
+-15.00 15.0000000000 zlo zhi 
+
+Masses
+
+  1 0.0010078
+
+Atoms # I like comments
+
+  1 1 1 0.0 11.8998565674 48.4455718994 19.0971984863
+
+Velocities
+
+  1 -5.66759300232 7.91380977631 -3.00779533386
+
+

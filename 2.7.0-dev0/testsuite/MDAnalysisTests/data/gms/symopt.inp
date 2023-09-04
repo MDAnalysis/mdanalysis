@@ -1,0 +1,27 @@
+! EXAM 12.
+!   This job illustrates linear bends, for acetylene.
+!   The optimal RHF/STO-2G geometry is located.
+!
+!   At the input geometry,
+!   the FINAL E= -73.5036974734 after 7 iterations,
+!   and the RMS gradient is 0.1506891.
+!
+!   At the final geometry, 7 steps later,
+!   the FINAL E= -73.6046483165, RMS gradient=0.0000028,
+!   R(CC)=1.1777007 and R(CH)=1.0749435.
+!
+ $CONTRL SCFTYP=RHF RUNTYP=OPTIMIZE NZVAR=5 $END
+ $SYSTEM TIMLIM=6 MEMORY=100000 $END
+ $BASIS  GBASIS=STO NGAUSS=2 $END
+ $GUESS  GUESS=HUCKEL $END
+ $DATA
+Acetylene geometry optimization in internal coordinates
+Dnh      4
+
+CARBON      6.0    0.0  0.0  0.70
+HYDROGEN    1.0    0.0  0.0  1.78
+ $END
+ $ZMAT  IZMAT(1)=1,1,2,   1,1,3,   1,2,4,
+                 5,1,2,4,    5,2,1,3  $END
+------- XZ is 1st plane for both bends -------
+ $LIBE  APTS(1)=1.0,0.0,0.0,1.0,0.0,0.0 $END

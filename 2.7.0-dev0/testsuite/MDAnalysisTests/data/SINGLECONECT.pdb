@@ -1,0 +1,12 @@
+HEADER    ISSUE937 Test File
+REMARK    Contains a lone CONECT record (line 9)
+MODEL 1
+CRYST1  216.489  216.489  216.489  90.00  90.00  90.00 P 1           1
+ATOM      1 CA   ABC A   1     111.252  98.373  98.187
+ATOM      2 CA   ABC A   1     111.203 101.742  96.430
+ATOM      3 CA   ABC A   1     107.607 102.968  96.316
+TER       4      ABC A   1
+CONECT    1
+CONECT    2    3
+CONECT    3    2
+ENDMDL

@@ -1,0 +1,97 @@
+; This topology describes a system with a test molecule that intends to
+; use all the bonded interactions available in gromacs.
+; Most of the parameter values make no sense; here only the presence of the
+; interaction in the final TPR matters.
+
+[ defaults ]
+1 1
+
+[ atomtypes ]
+; name mass charge ptype c6          c12
+TA     72.0 0.000  A     0.24145E-00 0.26027E-02
+
+[ moleculetype ]
+; molname  	nrexcl
+TEST 	    	1
+
+[ atoms ]
+;id 	type 	resnr 	residu 	atom 	cgnr 	charge
+1       TA      1       T       T1      1       0 
+2       TA      1       T       T2      1       0 
+3       TA      1       T       T3      1       0 
+4       TA      1       T       T4      1       0 
+5       TA      1       T       T5      1       0 
+6       TA      1       T       T6      1       0 
+7       TA      1       T       T7      1       0 
+8       TA      1       T       T8      1       0 
+9       TA      1       T       T9      1       0 
+10      TA      1       T       T10     1       0 
+11      TA      1       T       T11     1       0 
+12      TA      1       T       T12     1       0 
+13      TA      1       T       T13     1       0 
+14      TA      1       T       T14     1       0 
+
+[bonds]
+; i j 	funct 	length 	force.c.
+  1 2   1       0.470   1250        ; regular bond
+  2 3   2       0.470   1250        ; G96 bond
+; i j 	funct 	length 	D     beta
+  3 4   3       0.470   1250  0.1   ; Morse
+; i j 	funct 	length 	C
+  4 5   4       0.470   1250 1250   ; cubic bond
+; i j   funct
+  5 6   5                           ; connection
+; i j 	funct 	length 	force.c.
+  6 7   6       0.470   1250        ; harmonic potential
+  7 8   7       0.470   1250        ; FENE bond
+; i j   funct   low  up1  up2  kdr
+  8 9   10      1    2    3    1250 ; restraint potential
+; i  j   funct table.number force.c
+  9 10   8     0            1       ; tabulated
+ 10 11   9     0            1       ; tabulated no exclusion
+
+[constraints]
+; i  j   funct   length
+  11 12  1       0.470
+  12 13  2       0.470
+
+[angles]
+;  i     j    k     funct   angle  force.c.
+   1     2    3     1       30     1000      ; regular angle
+   2     3    4     2       30     1000      ; G96 angle
+;  i     j    k     funct   r1    r2   k
+   3     4    5     3       1     1    1     ; cross bond-bond
+;  i     j    k     funct   r1    r2   r3  k
+   4     5    6     4       1     1    1   1 ; cross bond-angle
+;  i     j    k     funct   tetha ktheta r13 kUB
+   5     6    7     5       1     1      1   1   ; Urey-Bradley
+;  i     j    k     funct   theta C0 C1 C2 C3 C4
+   6     7    8     6       1     1  1  1  1  1  ; quartic angle
+;  i     j    k     funct   theta ktheta
+   7     8    9     10      1     1          ; restricted bending potential
+;  i     j    k     funct   table.number force.c
+   8     9    10    8       0            1   ; tabulated angle
+
+[dihedrals]
+; i  j  k  l  funct
+  1  2  3  4  1     1 1 1             ; proper dihedrals (3 params)
+  2  3  4  5  1     1 1 1 1 1 1       ; proper dihedrals (6 params)
+  5  6  7  8  3     1 1 1 1 1 1       ; Ryckaert-Bellemans dihedral
+  7  8  9  10 5     1 1 1 1           ; Fourier dihedral
+  8  9  10 11 9     1 1 1             ; proper dihedral (multiple)
+  9  10 11 12 10    1 1 1 1           ; restricted dihedral
+  10 11 12 13 11    1 1 1 1 1 1       ; combined bending-torsion potential
+  11 12 13 14 8     0 1               ; tabulated dihedral
+
+[dihedrals]
+; i  j  k  l  funct
+  3  4  5  6  2     1 1               ; improper dihedrals (2 params)
+  4  5  6  7  2     1 1 1 1           ; improper dihedrals (4 params)
+  6  7  8  9  4     1 1 1 1 1 1       ; periodic improper dihedral
+
+
+[system]
+Topology test
+
+[molecules]
+TEST  1
