@@ -14,6 +14,7 @@ dependencies:
   - hypothesis
   - joblib>=0.12
   - mdanalysis-sphinx-theme
+  - sphinx_rtd_theme >=1.2
   - matplotlib>=3.2.2
   - mmtf-python
   - mock
