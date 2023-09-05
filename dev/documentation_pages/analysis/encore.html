@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7. ENCORE Ensemble Similarity Calculations — MDAnalysis.analysis.encore &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -36,15 +45,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,6 +76,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -128,16 +154,16 @@
   <section id="encore-ensemble-similarity-calculations-mdanalysis-analysis-encore">
 <h1><span class="section-number">4.2.7. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code><a class="headerlink" href="#encore-ensemble-similarity-calculations-mdanalysis-analysis-encore" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2015-2017</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
-<dt class="field-even">Maintainer</dt>
+<dt class="field-even">Maintainer<span class="colon">:</span></dt>
 <dd class="field-even"><p>Matteo Tiberti &lt;<a class="reference external" href="mailto:matteo&#46;tiberti&#37;&#52;&#48;gmail&#46;com">matteo<span>&#46;</span>tiberti<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;, mtiberti on github</p>
 </dd>
 </dl>
@@ -145,8 +171,8 @@
 <p><span class="versionmodified added">New in version 0.16.0.</span></p>
 </div>
 <p>The module contains implementations of similarity measures between protein
-ensembles described in <span id="id1">[<a class="reference internal" href="#id33" title="Kresten Lindorff-Larsen and Jesper Ferkinghoff-Borg. Similarity measures for protein ensembles. PLOS ONE, 4(1):1-13, 01 2009. doi:10.1371/journal.pone.0004203.">ᵃLindorff-Larsen2009</a>]</span>. The implementation and examples
-are described in <span id="id2">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵃTiberti2015</a>]</span>.</p>
+ensembles described in <a class="footnote-reference brackets" href="#footcite-lindorfflarsen2009" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. The implementation and examples
+are described in <a class="footnote-reference brackets" href="#footcite-tiberti2015" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <p>The module includes facilities for handling ensembles and trajectories through
 the <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> class, performing clustering or dimensionality reduction
 of the ensemble space, estimating multivariate probability distributions from
@@ -165,7 +191,7 @@ between ensembles implemented in individual functions:</p>
 <li><p><strong>Clustering based convergence evaluation</strong> : <a class="reference internal" href="encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces_convergence" title="MDAnalysis.analysis.encore.similarity.ces_convergence"><code class="xref py py-func docutils literal notranslate"><span class="pre">ces_convergence()</span></code></a></p></li>
 <li><p><strong>Dimensionality-reduction based convergence evaluation</strong> : <a class="reference internal" href="encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres_convergence" title="MDAnalysis.analysis.encore.similarity.dres_convergence"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres_convergence()</span></code></a></p></li>
 </ul>
-<p>When using this module in published work please cite <span id="id3">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵃTiberti2015</a>]</span>.</p>
+<p>When using this module in published work please cite <a class="footnote-reference brackets" href="#footcite-tiberti2015" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <section id="modules">
 <h2><span class="section-number">4.2.7.1. </span>Modules<a class="headerlink" href="#modules" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
@@ -183,14 +209,16 @@ between ensembles implemented in individual functions:</p>
 <section id="references">
 <h2><span class="section-number">4.2.7.2. </span>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h2>
 <div class="docutils container" id="id4">
-<dl class="citation">
-<dt class="label" id="id33"><span class="brackets"><a class="fn-backref" href="#id1">ᵃLindorff-Larsen2009</a></span></dt>
-<dd><p>Kresten Lindorff-Larsen and Jesper Ferkinghoff-Borg. Similarity measures for protein ensembles. <em>PLOS ONE</em>, 4(1):1–13, 01 2009. <a class="reference external" href="https://doi.org/10.1371/journal.pone.0004203">doi:10.1371/journal.pone.0004203</a>.</p>
-</dd>
-<dt class="label" id="id51"><span class="brackets">ᵃTiberti2015</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id3">2</a>)</span></dt>
-<dd><p>Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. <em>PLOS Computational Biology</em>, 11(10):1–16, 10 2015. <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1004415">doi:10.1371/journal.pcbi.1004415</a>.</p>
-</dd>
-</dl>
+<aside class="footnote brackets" id="footcite-lindorfflarsen2009" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Kresten Lindorff-Larsen and Jesper Ferkinghoff-Borg. Similarity measures for protein ensembles. <em>PLOS ONE</em>, 4(1):1–13, 01 2009. <a class="reference external" href="https://doi.org/10.1371/journal.pone.0004203">doi:10.1371/journal.pone.0004203</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-tiberti2015" role="note">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. <em>PLOS Computational Biology</em>, 11(10):1–16, 10 2015. <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1004415">doi:10.1371/journal.pcbi.1004415</a>.</p>
+</aside>
+</aside>
 </div>
 </section>
 </section>
@@ -210,13 +238,14 @@ between ensembles implemented in individual functions:</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

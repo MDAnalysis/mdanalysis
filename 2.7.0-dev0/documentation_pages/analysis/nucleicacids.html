@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.5.2. Updated nucleic acid analysis — MDAnalysis.analysis.nucleicacids &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -36,15 +45,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,6 +76,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -121,29 +147,30 @@
   <span class="target" id="module-MDAnalysis.analysis.nucleicacids"></span><section id="updated-nucleic-acid-analysis-mdanalysis-analysis-nucleicacids">
 <h1><span class="section-number">4.5.2. </span>Updated nucleic acid analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.nucleicacids" title="MDAnalysis.analysis.nucleicacids"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nucleicacids</span></code></a><a class="headerlink" href="#updated-nucleic-acid-analysis-mdanalysis-analysis-nucleicacids" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Alia Lescoulie</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2022</p>
 </dd>
-<dt class="field-odd">copyright</dt>
+<dt class="field-odd">copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public Licence v3</p>
 </dd>
 </dl>
 <p>The module provides classes for analyzing nucleic acids structures.
 This is an updated, higher performance version of previous nucleic acid tools.
-For applications see <span id="id1">[<a class="reference internal" href="#id15" title="Elizabeth J. Denning, U. Deva Priyakumar, Lennart Nilsson, and Alexander D. Mackerell Jr. Impact of 2-hydroxyl sampling on the conformational properties of rna: update of the charmm all-atom additive force field for rna. Journal of Computational Chemistry, 32(9):1929-1943, 2011. doi:https://doi.org/10.1002/jcc.21777.">ᵇDenning2011</a>, <a class="reference internal" href="#id16" title="Elizabeth J. Denning and Alexander D. MacKerell. Intrinsic contribution of the 2\'-hydroxyl to rna conformational heterogeneity. Journal of the American Chemical Society, 134(5):2800-2806, 2012. PMID: 22242623. doi:10.1021/ja211328g.">ᵇDenning2012</a>]</span>.</p>
+For applications see <a class="footnote-reference brackets" href="#footcite-denning2011" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#footcite-denning2012" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <p class="rubric">References</p>
-<div class="docutils container" id="id2">
-<dl class="citation">
-<dt class="label" id="id15"><span class="brackets"><a class="fn-backref" href="#id1">ᵇDenning2011</a></span></dt>
-<dd><p>Elizabeth J. Denning, U. Deva Priyakumar, Lennart Nilsson, and Alexander D. Mackerell Jr. Impact of 2-hydroxyl sampling on the conformational properties of rna: update of the charmm all-atom additive force field for rna. <em>Journal of Computational Chemistry</em>, 32(9):1929–1943, 2011. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/jcc.21777">doi:https://doi.org/10.1002/jcc.21777</a>.</p>
-</dd>
-<dt class="label" id="id16"><span class="brackets"><a class="fn-backref" href="#id1">ᵇDenning2012</a></span></dt>
-<dd><p>Elizabeth J. Denning and Alexander D. MacKerell. Intrinsic contribution of the 2\'-hydroxyl to rna conformational heterogeneity. <em>Journal of the American Chemical Society</em>, 134(5):2800–2806, 2012. PMID: 22242623. <a class="reference external" href="https://doi.org/10.1021/ja211328g">doi:10.1021/ja211328g</a>.</p>
-</dd>
-</dl>
+<div class="docutils container" id="id3">
+<aside class="footnote brackets" id="footcite-denning2011" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Elizabeth J. Denning, U. Deva Priyakumar, Lennart Nilsson, and Alexander D. Mackerell Jr. Impact of 2-hydroxyl sampling on the conformational properties of rna: update of the charmm all-atom additive force field for rna. <em>Journal of Computational Chemistry</em>, 32(9):1929–1943, 2011. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/jcc.21777">doi:https://doi.org/10.1002/jcc.21777</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-denning2012" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Elizabeth J. Denning and Alexander D. MacKerell. Intrinsic contribution of the 2'-hydroxyl to rna conformational heterogeneity. <em>Journal of the American Chemical Society</em>, 134(5):2800–2806, 2012. PMID: 22242623. <a class="reference external" href="https://doi.org/10.1021/ja211328g">doi:10.1021/ja211328g</a>.</p>
+</aside>
+</aside>
 </div>
 <section id="distances">
 <h2><span class="section-number">4.5.2.1. </span>Distances<a class="headerlink" href="#distances" title="Permalink to this heading"></a></h2>
@@ -157,7 +184,7 @@ superclass for the other nucleic acid distances classes. The distance
 will be measured between atoms sharing an index in the two lists of
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>selection1</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>]</em>) – List of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> containing an atom
 of each nucleic acid being analyzed.</p></li>
@@ -172,7 +199,7 @@ of each nucleic acid being analyzed.</p></li>
 <span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.times" title="Permalink to this definition"></a></dt>
 <dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -188,14 +215,14 @@ selection1 and selection2.</p>
 <p><span class="versionmodified added">New in version 2.4.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the selections given are not the same length</p>
 </dd>
 </dl>
@@ -211,7 +238,7 @@ MDAnalysis 2.5.0. Please use the class attribute <a class="reference internal" h
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -250,7 +277,7 @@ allowing to modify description, position etc of tqdm progressbars</p>
 the Watson-Crick distance between them over the trajectory. Bases are matched by
 their index in the lists given as arguments.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>strand1</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – First list of bases</p></li>
 <li><p><strong>strand2</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – Second list of bases</p></li>
@@ -270,7 +297,7 @@ their index in the lists given as arguments.</p>
 <span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times" title="Permalink to this definition"></a></dt>
 <dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -286,14 +313,14 @@ each each entry pair in strand1 and strand2.</p>
 <p><span class="versionmodified added">New in version 2.4.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the residues given are not amino acids</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the selections given are not the same length</p></li>
@@ -312,7 +339,7 @@ MDAnalysis 2.5.0. Please use the class attribute <a class="reference internal" h
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -361,13 +388,14 @@ allowing to modify description, position etc of tqdm progressbars</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

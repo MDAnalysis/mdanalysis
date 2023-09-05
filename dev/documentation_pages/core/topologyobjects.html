@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>11.3.2. Core Topology Objects — MDAnalysis.core.topologyobjects &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -36,15 +45,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,6 +76,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -127,7 +153,7 @@ Atom 2 is the apex of the angle</p>
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
 <li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
@@ -212,7 +238,7 @@ bond was guessed.</p>
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
 <li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
@@ -237,7 +263,7 @@ bond was guessed.</p>
 <dt class="sig sig-object py" id="MDAnalysis.core.topologyobjects.Bond.partner">
 <span class="sig-name descname"><span class="pre">partner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Atom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Bond.partner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Bond.partner" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>the other <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> in this</p></li>
 <li><p><em>bond</em></p></li>
@@ -271,7 +297,7 @@ bond was guessed.</p>
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
 <li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
@@ -301,7 +327,7 @@ and stores atoms in <code class="xref py py-attr docutils literal notranslate"><
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
 <li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
@@ -385,7 +411,7 @@ your software.</p>
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
 <li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
@@ -448,7 +474,7 @@ and 2 having the bond in their <code class="xref py py-attr docutils literal not
 <p>Two <a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyDict" title="MDAnalysis.core.topologyobjects.TopologyDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyDict</span></code></a> instances can be combined using
 addition and it will not create any duplicate bonds in the process.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>members</strong> – A list of <a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject" title="MDAnalysis.core.topologyobjects.TopologyObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a> instances</p>
 </dd>
 </dl>
@@ -528,7 +554,7 @@ indices property and to_indices()</p>
 <dd><p>Calculates the angle in radians formed between a bond
 between atoms 1 and 2 and a bond between atoms 2 &amp; 3</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>result</strong> (<em>array_like</em>) – allows a predefined results array to be used, note that this
 will be overwritten</p></li>
@@ -537,7 +563,7 @@ will be overwritten</p></li>
 atoms might require minimum image convention</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>angles</strong> (<em>ndarray</em>)</p></li>
 <li><p><em>.. versionchanged :: 0.9.0</em> – Added <em>pbc</em> option (default <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
@@ -577,7 +603,7 @@ atoms might require minimum image convention</p></li>
 <dd><p>Retrieve all bonds from within this TopologyGroup that are within
 the AtomGroup which is passed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ag</strong> (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <cite>:class:~MDAnalysis.core.groups.AtomGroup</cite> to intersect
 with.</p></li>
@@ -596,7 +622,7 @@ AtomGroup. [<code class="docutils literal notranslate"><span class="pre">False</
 <span class="sig-name descname"><span class="pre">bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#TopologyGroup.bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.TopologyGroup.bonds" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the distance between all bonds in this TopologyGroup</p>
 <dl class="field-list simple">
-<dt class="field-odd">Keywords</dt>
+<dt class="field-odd">Keywords<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><em>pbc</em></dt><dd><p>apply periodic boundary conditions when calculating distance
 [False]</p>
@@ -618,7 +644,7 @@ group.</p>
 <p>Defined as the angle between a plane formed by atoms 1, 2 and
 3 and a plane formed by atoms 2, 3 and 4.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>result</strong> (<em>array_like</em>) – allows a predefined results array to be used, note that this
 will be overwritten</p></li>
@@ -627,7 +653,7 @@ will be overwritten</p></li>
 atoms might require minimum image convention</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>angles</strong> (<em>ndarray</em>)</p></li>
 <li><p><em>.. versionchanged:: 0.9.0</em> – Added <em>pbc</em> option (default <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
@@ -646,7 +672,7 @@ entries in universe._topology.
 Note that because bonds are sorted as they are initialised, the order
 that atoms are defined in each entry might be reversed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><strong>indices</strong> (<em>tuple</em>) – A tuple of tuples which define the contents of this
 TopologyGroup in terms of the atom numbers.  (0 based
@@ -693,7 +719,7 @@ entries in universe._topology.
 Note that because bonds are sorted as they are initialised, the order
 that atoms are defined in each entry might be reversed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><strong>indices</strong> (<em>tuple</em>) – A tuple of tuples which define the contents of this
 TopologyGroup in terms of the atom numbers.  (0 based
@@ -733,7 +759,7 @@ accessed.</p>
 <span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#TopologyGroup.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.TopologyGroup.values" title="Permalink to this definition"></a></dt>
 <dd><p>Return the size of each object in this Group</p>
 <dl class="field-list simple">
-<dt class="field-odd">Keywords</dt>
+<dt class="field-odd">Keywords<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><em>pbc</em></dt><dd><p>apply periodic boundary conditions when calculating distance
 [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
@@ -772,7 +798,7 @@ via the <code class="docutils literal notranslate"><span class="pre">is_guessed<
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
 <li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
@@ -824,7 +850,7 @@ numbers are involved.</p>
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
 <li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
@@ -843,7 +869,7 @@ numbers are involved.</p>
 <dt class="sig sig-object py" id="MDAnalysis.core.topologyobjects.UreyBradley.partner">
 <span class="sig-name descname"><span class="pre">partner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Atom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#UreyBradley.partner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.UreyBradley.partner" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p>the other <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> in this</p></li>
 <li><p><em>interaction</em></p></li>
@@ -877,13 +903,14 @@ numbers are involved.</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

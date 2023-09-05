@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -37,15 +46,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -53,6 +77,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -124,13 +150,13 @@
   <span class="target" id="module-MDAnalysis.analysis.dihedrals"></span><section id="dihedral-angles-analysis-mdanalysis-analysis-dihedrals">
 <h1><span class="section-number">4.7.1.3. </span>Dihedral angles analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.dihedrals" title="MDAnalysis.analysis.dihedrals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a><a class="headerlink" href="#dihedral-angles-analysis-mdanalysis-analysis-dihedrals" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Henry Mull</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2018</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License v2</p>
 </dd>
 </dl>
@@ -175,7 +201,7 @@ the test data files:</p>
 <section id="ramachandran-analysis">
 <h3><span class="section-number">4.7.1.3.1.2. </span>Ramachandran analysis<a class="headerlink" href="#ramachandran-analysis" title="Permalink to this heading"></a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramachandran</span></code></a> class allows for the
-quick calculation of classical Ramachandran plots <span id="id1">[<a class="reference internal" href="#id45" title="G.N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan. Stereochemistry of polypeptide chain configurations. Journal of Molecular Biology, 7(1):95-99, 1963. URL: https://www.sciencedirect.com/science/article/pii/S0022283663800236, doi:https://doi.org/10.1016/S0022-2836(63)80023-6.">Ramachandran1963</a>]</span> in
+quick calculation of classical Ramachandran plots <a class="footnote-reference brackets" href="#footcite-ramachandran1963" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> in
 the backbone <span class="math notranslate nohighlight">\(phi\)</span> and <span class="math notranslate nohighlight">\(psi\)</span> angles. Unlike the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedral</span></code> class which takes a list of
 <cite>atomgroups</cite>, this class only needs a list of residues or atoms from those
@@ -194,12 +220,12 @@ residues. The previous example can repeated with:</p>
 </pre></div>
 </div>
 <p>as shown in the example <a class="reference internal" href="#figure-ramachandran"><span class="std std-ref">Ramachandran plot figure</span></a>.</p>
-<figure class="align-default" id="id73">
+<figure class="align-default" id="id7">
 <span id="figure-ramachandran"></span><a class="reference internal image-reference" href="../../_images/rama_demo_plot.png"><img alt="Ramachandran plot" src="../../_images/rama_demo_plot.png" style="width: 240.0px; height: 240.0px;" /></a>
 <figcaption>
 <p><span class="caption-text">Ramachandran plot for residues 5 to 10 of AdK, sampled from the AdK test
 trajectory (XTC). The contours in the background are the “allowed region”
-and the “marginally allowed” regions.</span><a class="headerlink" href="#id73" title="Permalink to this image"></a></p>
+and the “marginally allowed” regions.</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>To plot the data yourself, the angles can be accessed using
@@ -215,18 +241,18 @@ only one <cite>altloc</cite> for the atoms with more than one (<code class="docu
 </section>
 <section id="janin-analysis">
 <h3><span class="section-number">4.7.1.3.1.3. </span>Janin analysis<a class="headerlink" href="#janin-analysis" title="Permalink to this heading"></a></h3>
-<p>Janin plots <span id="id2">[<a class="reference internal" href="#id32" title="Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard Maigret. Conformation of amino acid side-chains in proteins. Journal of Molecular Biology, 125(3):357-386, 1978. URL: https://www.sciencedirect.com/science/article/pii/0022283678904084, doi:https://doi.org/10.1016/0022-2836(78)90408-4.">Janin1978</a>]</span> for side chain conformations (<span class="math notranslate nohighlight">\(\chi_1\)</span>
+<p>Janin plots <a class="footnote-reference brackets" href="#footcite-janin1978" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> for side chain conformations (<span class="math notranslate nohighlight">\(\chi_1\)</span>
 and <span class="math notranslate nohighlight">\(chi_2\)</span> angles) can be created with the
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Janin</span></code></a> class. It works in the same way,
 only needing a list of residues; see the <a class="reference internal" href="#figure-janin"><span class="std std-ref">Janin plot figure</span></a> as an example.</p>
 <p>The data for the angles can be accessed in the attribute
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.results.angles</span></code></a>.</p>
-<figure class="align-default" id="id74">
+<figure class="align-default" id="id8">
 <span id="figure-janin"></span><a class="reference internal image-reference" href="../../_images/janin_demo_plot.png"><img alt="Janin plot" src="../../_images/janin_demo_plot.png" style="width: 240.0px; height: 240.0px;" /></a>
 <figcaption>
 <p><span class="caption-text">Janin plot for all residues of AdK, sampled from the AdK test trajectory
 (XTC). The contours in the background are the “allowed region” and the
-“marginally allowed” regions for all possible residues.</span><a class="headerlink" href="#id74" title="Permalink to this image"></a></p>
+“marginally allowed” regions for all possible residues.</span><a class="headerlink" href="#id8" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <div class="admonition note">
@@ -249,12 +275,12 @@ and <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.plo
 (<a class="reference internal" href="data.html#MDAnalysis.analysis.data.filenames.Rama_ref" title="MDAnalysis.analysis.data.filenames.Rama_ref"><code class="xref py py-data docutils literal notranslate"><span class="pre">Rama_ref</span></code></a>) and Janin reference data
 (<a class="reference internal" href="data.html#MDAnalysis.analysis.data.filenames.Janin_ref" title="MDAnalysis.analysis.data.filenames.Janin_ref"><code class="xref py py-data docutils literal notranslate"><span class="pre">Janin_ref</span></code></a>) were made using data
 obtained from a large selection of 500 PDB files, and were analyzed using these
-classes <span id="id3">[<a class="reference internal" href="#id44" title="Henry Mull and Oliver Beckstein. Technical Report: SPIDAL Summer REU 2018 Dihedral Analysis in MDAnalysis. 8 2018. URL: https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296, doi:10.6084/m9.figshare.6957296.v1.">Mull2018</a>]</span>. The allowed and marginally allowed regions of the
+classes <a class="footnote-reference brackets" href="#footcite-mull2018" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. The allowed and marginally allowed regions of the
 Ramachandran reference plot have cutoffs set to include 90% and 99% of the data
 points, and the Janin reference plot has cutoffs for 90% and 98% of the data
 points. The list of PDB files used for the reference plots was taken from
-<span id="id4">[<a class="reference internal" href="#id37" title="Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III, Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant, Jane S. Richardson, and David C. Richardson. Structure validation by c$/alpha$ geometry: ψ,φ and cβ deviation. Proteins: Structure, Function, and Bioinformatics, 50(3):437-450, 2003. doi:https://doi.org/10.1002/prot.10286.">Lovell2003</a>]</span> and information about general Janin regions was taken from
-<span id="id5">[<a class="reference internal" href="#id32" title="Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard Maigret. Conformation of amino acid side-chains in proteins. Journal of Molecular Biology, 125(3):357-386, 1978. URL: https://www.sciencedirect.com/science/article/pii/0022283678904084, doi:https://doi.org/10.1016/0022-2836(78)90408-4.">Janin1978</a>]</span>.</p>
+<a class="footnote-reference brackets" href="#footcite-lovell2003" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> and information about general Janin regions was taken from
+<a class="footnote-reference brackets" href="#footcite-janin1978" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 </section>
 </section>
 <section id="analysis-classes">
@@ -277,11 +303,11 @@ it must be given as a list of one atomgroup.</p>
 <a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>atomgroups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>]</em>) – a list of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> for which
 the dihedral angles are calculated</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If any atomgroups do not contain 4 atoms</p>
 </dd>
 </dl>
@@ -311,7 +337,7 @@ an <code class="docutils literal notranslate"><span class="pre">n_frames×len(at
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -352,7 +378,7 @@ corresponding to <cite>atomgroup</cite> for each time step in the trajectory. A
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code> is generated from <cite>atomgroup</cite> which is
 compared to the protein to determine if it is a legitimate selection.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><em>ResidueGroup</em></a>) – atoms for residues for which <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> are
 calculated</p></li>
@@ -381,7 +407,7 @@ atoms:</p>
 <p>The above analysis will calculate angles from a “phi” selection of
 CX’-NT-S-CX and “psi” selections of NT-S-CX-NT’.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the selection of residues is not contained within the protein
     and <code class="docutils literal notranslate"><span class="pre">check_protein</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
@@ -430,7 +456,7 @@ content <code class="docutils literal notranslate"><span class="pre">[[[phi,</sp
 <p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Ramachandran.results.angles</span></code></a> is plotted onto
 the same graph.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</p></li>
@@ -439,10 +465,10 @@ marginally allowed regions</p></li>
 <li><p><strong>kwargs</strong> (<em>optional</em>) – All other kwargs are passed to <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.7.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.scatter()</span></code></a>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ax</strong> – Axes with the plot, either <cite>ax</cite> or the current axes.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a></p>
 </dd>
 </dl>
@@ -453,7 +479,7 @@ marginally allowed regions</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -504,7 +530,7 @@ altloc attributes which can add duplicate atoms to the selection and must
 be removed.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><em>ResidueGroup</em></a>) – atoms for residues for which <span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> are
 calculated</p></li>
@@ -516,7 +542,7 @@ have non-standard amino acids then adjust this selection to include
 them</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the final selection of residues is not contained within the
     protein (as determined by
@@ -560,7 +586,7 @@ with content <code class="docutils literal notranslate"><span class="pre">[[[chi
 <p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.results.angles</span></code></a> is plotted onto the
 same graph.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</p></li>
@@ -569,10 +595,10 @@ allowed regions</p></li>
 <li><p><strong>kwargs</strong> (<em>optional</em>) – All other kwargs are passed to <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.7.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.scatter()</span></code></a>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ax</strong> – Axes with the plot, either <cite>ax</cite> or the current axes.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a></p>
 </dd>
 </dl>
@@ -583,7 +609,7 @@ allowed regions</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -616,20 +642,24 @@ allowing to modify description, position etc of tqdm progressbars</p>
 
 <p class="rubric">References</p>
 <div class="docutils container" id="id6">
-<dl class="citation">
-<dt class="label" id="id45"><span class="brackets"><a class="fn-backref" href="#id1">Ramachandran1963</a></span></dt>
-<dd><p>G.N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan. Stereochemistry of polypeptide chain configurations. <em>Journal of Molecular Biology</em>, 7(1):95–99, 1963. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022283663800236">https://www.sciencedirect.com/science/article/pii/S0022283663800236</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/S0022-2836(63)80023-6">doi:https://doi.org/10.1016/S0022-2836(63)80023-6</a>.</p>
-</dd>
-<dt class="label" id="id32"><span class="brackets">Janin1978</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id5">2</a>)</span></dt>
-<dd><p>Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard Maigret. Conformation of amino acid side-chains in proteins. <em>Journal of Molecular Biology</em>, 125(3):357–386, 1978. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/0022283678904084">https://www.sciencedirect.com/science/article/pii/0022283678904084</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/0022-2836(78)90408-4">doi:https://doi.org/10.1016/0022-2836(78)90408-4</a>.</p>
-</dd>
-<dt class="label" id="id44"><span class="brackets"><a class="fn-backref" href="#id3">Mull2018</a></span></dt>
-<dd><p>Henry Mull and Oliver Beckstein. Technical Report: SPIDAL Summer REU 2018 Dihedral Analysis in MDAnalysis. 8 2018. URL: <a class="reference external" href="https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296">https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296</a>, <a class="reference external" href="https://doi.org/10.6084/m9.figshare.6957296.v1">doi:10.6084/m9.figshare.6957296.v1</a>.</p>
-</dd>
-<dt class="label" id="id37"><span class="brackets"><a class="fn-backref" href="#id4">Lovell2003</a></span></dt>
-<dd><p>Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III, Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant, Jane S. Richardson, and David C. Richardson. Structure validation by c$/alpha$ geometry: ψ,φ and cβ deviation. <em>Proteins: Structure, Function, and Bioinformatics</em>, 50(3):437–450, 2003. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/prot.10286">doi:https://doi.org/10.1002/prot.10286</a>.</p>
-</dd>
-</dl>
+<aside class="footnote brackets" id="footcite-ramachandran1963" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>G.N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan. Stereochemistry of polypeptide chain configurations. <em>Journal of Molecular Biology</em>, 7(1):95–99, 1963. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022283663800236">https://www.sciencedirect.com/science/article/pii/S0022283663800236</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/S0022-2836(63)80023-6">doi:https://doi.org/10.1016/S0022-2836(63)80023-6</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-janin1978" role="note">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id5">2</a>)</span>
+<p>Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard Maigret. Conformation of amino acid side-chains in proteins. <em>Journal of Molecular Biology</em>, 125(3):357–386, 1978. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/0022283678904084">https://www.sciencedirect.com/science/article/pii/0022283678904084</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/0022-2836(78)90408-4">doi:https://doi.org/10.1016/0022-2836(78)90408-4</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-mull2018" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>Henry Mull and Oliver Beckstein. Technical Report: SPIDAL Summer REU 2018 Dihedral Analysis in MDAnalysis. 8 2018. URL: <a class="reference external" href="https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296">https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296</a>, <a class="reference external" href="https://doi.org/10.6084/m9.figshare.6957296.v1">doi:10.6084/m9.figshare.6957296.v1</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-lovell2003" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">4</a><span class="fn-bracket">]</span></span>
+<p>Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III, Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant, Jane S. Richardson, and David C. Richardson. Structure validation by c$/alpha$ geometry: ψ,φ and cβ deviation. <em>Proteins: Structure, Function, and Bioinformatics</em>, 50(3):437–450, 2003. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/prot.10286">doi:https://doi.org/10.1002/prot.10286</a>.</p>
+</aside>
+</aside>
 </div>
 </section>
 </section>
@@ -649,13 +679,14 @@ allowing to modify description, position etc of tqdm progressbars</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

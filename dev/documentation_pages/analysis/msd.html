@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.7.2.2. Mean Squared Displacement — MDAnalysis.analysis.msd &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -37,15 +46,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -53,6 +77,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -123,13 +149,13 @@
   <span class="target" id="module-MDAnalysis.analysis.msd"></span><section id="mean-squared-displacement-mdanalysis-analysis-msd">
 <h1><span class="section-number">4.7.2.2. </span>Mean Squared Displacement — <a class="reference internal" href="#module-MDAnalysis.analysis.msd" title="MDAnalysis.analysis.msd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a><a class="headerlink" href="#mean-squared-displacement-mdanalysis-analysis-msd" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Authors</dt>
+<dt class="field-odd">Authors<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Hugo MacDermott-Opeskin</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License v2</p>
 </dd>
 </dl>
@@ -137,7 +163,7 @@
 by the Einstein relation. MSDs can be used to characterize the speed at
 which particles move and has its roots in the study of Brownian motion.
 For a full explanation of the theory behind MSDs and the subsequent calculation
-of self-diffusivities the reader is directed to <span id="id1">[<a class="reference internal" href="#id44" title="Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. Living Journal of Computational Molecular Science, 1(1):6324, Dec. 2018. URL: https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324, doi:10.33011/livecoms.1.1.6324.">Maginn2018</a>]</span>.
+of self-diffusivities the reader is directed to <a class="footnote-reference brackets" href="#footcite-maginn2019" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
 MSDs can be computed from the following expression, known as the
 <strong>Einstein formula</strong>:</p>
 <div class="math notranslate nohighlight">
@@ -229,7 +255,7 @@ determine self-diffusivity. This linear segment represents the so called
 excluded along with poorly averaged data at long time-lags. We can select the
 “middle” of the MSD by indexing the MSD and the time-lags. Appropriately
 linear segments of the MSD can be confirmed with a log-log plot as is often
-reccomended <span id="id6">[<a class="reference internal" href="#id44" title="Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. Living Journal of Computational Molecular Science, 1(1):6324, Dec. 2018. URL: https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324, doi:10.33011/livecoms.1.1.6324.">Maginn2018</a>]</span> where the “middle” segment can be identified
+reccomended <a class="footnote-reference brackets" href="#footcite-maginn2019" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> where the “middle” segment can be identified
 as having a slope of 1.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">lagtimes</span><span class="p">,</span> <span class="n">msd</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -290,26 +316,29 @@ These include specific instructions around simulation settings, using
 unwrapped trajectories and maintaining a relatively small elapsed time between
 saved frames. Additionally, corrections for finite size effects are sometimes
 employed along with various means of estimating errors
-<span id="id7">[<a class="reference internal" href="#id59" title="In-Chul Yeh and Gerhard Hummer. System-size dependence of diffusion coefficients and viscosities from molecular dynamics simulations with periodic boundary conditions. The Journal of Physical Chemistry B, 108(40):15873-15879, 2004. doi:10.1021/jp0477147.">Yeh2004</a>, <a class="reference internal" href="#id18" title="Sören von Bülow, Jakob Tómas Bullerjahn, and Gerhard Hummer. Systematic errors in diffusion coefficients from long-time molecular dynamics simulations at constant pressure. The Journal of Chemical Physics, 153(2):021101, 2020. doi:10.1063/5.0008316.">von Bülow2020</a>]</span> The reader is directed to the following review,
-which describes many of the common pitfalls <span id="id8">[<a class="reference internal" href="#id44" title="Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. Living Journal of Computational Molecular Science, 1(1):6324, Dec. 2018. URL: https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324, doi:10.33011/livecoms.1.1.6324.">Maginn2018</a>]</span>. There are
+<a class="footnote-reference brackets" href="#footcite-yeh2004" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#footcite-bulow2020" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> The reader is directed to the following review,
+which describes many of the common pitfalls <a class="footnote-reference brackets" href="#footcite-maginn2019" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. There are
 other ways to compute self-diffusivity, such as from a Green-Kubo integral. At
 this point in time, these methods are beyond the scope of this module.</p>
 <p>Note also that computation of MSDs is highly memory intensive. If this is
 proving a problem, judicious use of the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords
 to control which frames are incorporated may be required.</p>
 <p class="rubric">References</p>
-<div class="docutils container" id="id9">
-<dl class="citation">
-<dt class="label" id="id44"><span class="brackets">Maginn2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id6">2</a>,<a href="#id8">3</a>)</span></dt>
-<dd><p>Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. <em>Living Journal of Computational Molecular Science</em>, 1(1):6324, Dec. 2018. URL: <a class="reference external" href="https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324">https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324</a>, <a class="reference external" href="https://doi.org/10.33011/livecoms.1.1.6324">doi:10.33011/livecoms.1.1.6324</a>.</p>
-</dd>
-<dt class="label" id="id59"><span class="brackets"><a class="fn-backref" href="#id7">Yeh2004</a></span></dt>
-<dd><p>In-Chul Yeh and Gerhard Hummer. System-size dependence of diffusion coefficients and viscosities from molecular dynamics simulations with periodic boundary conditions. <em>The Journal of Physical Chemistry B</em>, 108(40):15873–15879, 2004. <a class="reference external" href="https://doi.org/10.1021/jp0477147">doi:10.1021/jp0477147</a>.</p>
-</dd>
-<dt class="label" id="id18"><span class="brackets"><a class="fn-backref" href="#id7">von Bülow2020</a></span></dt>
-<dd><p>Sören von Bülow, Jakob Tómas Bullerjahn, and Gerhard Hummer. Systematic errors in diffusion coefficients from long-time molecular dynamics simulations at constant pressure. <em>The Journal of Chemical Physics</em>, 153(2):021101, 2020. <a class="reference external" href="https://doi.org/10.1063/5.0008316">doi:10.1063/5.0008316</a>.</p>
-</dd>
-</dl>
+<div class="docutils container" id="id10">
+<aside class="footnote brackets" id="footcite-maginn2019" role="note">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id6">2</a>,<a role="doc-backlink" href="#id9">3</a>)</span>
+<p>Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. <em>Living Journal of Computational Molecular Science</em>, 1(1):6324, Dec. 2018. URL: <a class="reference external" href="https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324">https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324</a>, <a class="reference external" href="https://doi.org/10.33011/livecoms.1.1.6324">doi:10.33011/livecoms.1.1.6324</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-yeh2004" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">2</a><span class="fn-bracket">]</span></span>
+<p>In-Chul Yeh and Gerhard Hummer. System-size dependence of diffusion coefficients and viscosities from molecular dynamics simulations with periodic boundary conditions. <em>The Journal of Physical Chemistry B</em>, 108(40):15873–15879, 2004. <a class="reference external" href="https://doi.org/10.1021/jp0477147">doi:10.1021/jp0477147</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-bulow2020" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">3</a><span class="fn-bracket">]</span></span>
+<p>Sören von Bülow, Jakob Tómas Bullerjahn, and Gerhard Hummer. Systematic errors in diffusion coefficients from long-time molecular dynamics simulations at constant pressure. <em>The Journal of Chemical Physics</em>, 153(2):021101, 2020. <a class="reference external" href="https://doi.org/10.1063/5.0008316">doi:10.1063/5.0008316</a>.</p>
+</aside>
+</aside>
 </div>
 </section>
 <section id="classes">
@@ -319,7 +348,7 @@ to control which frames are incorporated may be required.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.msd.</span></span><span class="sig-name descname"><span class="pre">EinsteinMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Permalink to this definition"></a></dt>
 <dd><p>Class to calculate Mean Squared Displacement by the Einstein relation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.
 Note that <code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code> instances are not accepted.</p></li>
@@ -338,7 +367,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <span class="sig-name descname"><span class="pre">dim_fac</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.dim_fac" title="Permalink to this definition"></a></dt>
 <dd><p>Dimensionality <span class="math notranslate nohighlight">\(d\)</span> of the MSD.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
@@ -349,7 +378,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">timeseries</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries" title="Permalink to this definition"></a></dt>
 <dd><p>The averaged MSD over all the particles with respect to lag-time.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
@@ -360,7 +389,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">msds_by_particle</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle" title="Permalink to this definition"></a></dt>
 <dd><p>The MSD of each individual particle with respect to lag-time.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
@@ -371,7 +400,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <span class="sig-name descname"><span class="pre">ag</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.ag" title="Permalink to this definition"></a></dt>
 <dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> resulting from your selection</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></p>
 </dd>
 </dl>
@@ -382,7 +411,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.n_frames" title="Permalink to this definition"></a></dt>
 <dd><p>Number of frames included in the analysis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
@@ -393,7 +422,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <span class="sig-name descname"><span class="pre">n_particles</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.n_particles" title="Permalink to this definition"></a></dt>
 <dd><p>Number of particles MSD was calculated over.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
@@ -403,7 +432,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
@@ -420,7 +449,7 @@ The tidynamics package is required for <cite>fft=True</cite>.</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -469,13 +498,14 @@ allowing to modify description, position etc of tqdm progressbars</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

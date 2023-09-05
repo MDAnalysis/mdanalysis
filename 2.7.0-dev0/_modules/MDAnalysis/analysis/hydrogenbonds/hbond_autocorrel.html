@@ -1,3 +1,15 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
@@ -5,17 +17,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
         <script src="../../../../_static/js/versions.js"></script>
@@ -33,15 +42,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../../../index.html">
-            
-              <img src="../../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../../../index.html">
+  
+    <img src="../../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -49,6 +73,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
@@ -159,15 +185,17 @@
 <span class="sd">using 2 exponents for the continuous lifetime and 3 for the intermittent</span>
 <span class="sd">lifetime.</span>
 
-<span class="sd">    :math:`C_x(t) = A_1 \\exp( - t / \\tau_1)</span>
+<span class="sd">.. math::</span>
+<span class="sd">    C_x(t) = A_1 \\exp( - t / \\tau_1)</span>
 <span class="sd">    + A_2 \\exp( - t / \\tau_2)</span>
-<span class="sd">    [+ A_3 \\exp( - t / \\tau_3)]`</span>
+<span class="sd">    [+ A_3 \\exp( - t / \\tau_3)]</span>
 
 <span class="sd">Where the final pre expoential factor :math:`A_n` is subject to the condition:</span>
 
-<span class="sd">    :math:`A_n = 1 - \\sum\\limits_{i=1}^{n-1} A_i`</span>
+<span class="sd">.. math::</span>
+<span class="sd">    A_n = 1 - \\sum\\limits_{i=1}^{n-1} A_i</span>
 
-<span class="sd">For further details see :cite:p:`Gowers2015`.</span>
+<span class="sd">For further details see :footcite:p:`Gowers2015`.</span>
 
 <span class="sd">Input</span>
 <span class="sd">-----</span>
@@ -234,13 +262,13 @@
 <span class="sd">All results of the analysis are available through the *solution* attribute.</span>
 <span class="sd">This is a dictionary with the following keys</span>
 
-<span class="sd">- *results*  The raw results of the time autocorrelation function.</span>
-<span class="sd">- *time*     Time axis, in ps, for the results.</span>
-<span class="sd">- *fit*      Results of the exponential curve fitting procedure. For the</span>
+<span class="sd">- *results*:  The raw results of the time autocorrelation function.</span>
+<span class="sd">- *time*:     Time axis, in ps, for the results.</span>
+<span class="sd">- *fit*:      Results of the exponential curve fitting procedure. For the</span>
 <span class="sd">             *continuous* lifetime these are (A1, tau1, tau2), for the</span>
 <span class="sd">             *intermittent* lifetime these are (A1, A2, tau1, tau2, tau3).</span>
-<span class="sd">- *tau*      Calculated time constant from the fit.</span>
-<span class="sd">- *estimate* Estimated values generated by the calculated fit.</span>
+<span class="sd">- *tau*:      Calculated time constant from the fit.</span>
+<span class="sd">- *estimate*: Estimated values generated by the calculated fit.</span>
 
 <span class="sd">The *results* and *time* values are only filled after the :meth:`run` method,</span>
 <span class="sd">*fit*, *tau* and *estimate* are filled after the :meth:`solve` method has been</span>
@@ -718,13 +746,14 @@
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

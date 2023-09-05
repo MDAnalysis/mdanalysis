@@ -1,3 +1,15 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
@@ -5,17 +17,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.coordinates.TNG &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
@@ -33,15 +42,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../../index.html">
-            
-              <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -49,6 +73,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
@@ -123,7 +149,7 @@
 <span class="sd">==========================================================</span>
 
 
-<span class="sd">The TNG format :cite:p:`Lundborg2014` is a format used in `GROMACS`_ for</span>
+<span class="sd">The TNG format :footcite:p:`Lundborg2014` is a format used in `GROMACS`_ for</span>
 <span class="sd">storage of trajectory and topology information. The TNG format allows a wide</span>
 <span class="sd">range of compression algorithms and unlike the compressed XTC format can also</span>
 <span class="sd">store velocities and forces in addition to positions.</span>
@@ -141,7 +167,7 @@
 <span class="sd">the virial and pressure components to the molecular topology of the system.</span>
 <span class="sd">This is enabled by a block based system in which binary flags indicate the</span>
 <span class="sd">presence or absence of various data blocks. The structure of a TNG file is</span>
-<span class="sd">provided  in the `TNG specification`_. The TNG paper :cite:p:`Lundborg2014` and</span>
+<span class="sd">provided  in the `TNG specification`_. The TNG paper :footcite:p:`Lundborg2014` and</span>
 <span class="sd">the `pytng documentation`_ are also good resources. The user is encouraged to</span>
 <span class="sd">read the full list of `TNG blocks`_ to understand the full power of the TNG</span>
 <span class="sd">format.</span>
@@ -167,11 +193,7 @@
 <span class="sd">References</span>
 <span class="sd">----------</span>
 
-<span class="sd">.. bibliography::</span>
-<span class="sd">    :filter: False</span>
-<span class="sd">    :style: MDA</span>
-
-<span class="sd">    Lundborg2014</span>
+<span class="sd">.. footbibliography::</span>
 
 
 <span class="sd">.. Links</span>
@@ -213,7 +235,7 @@
 <div class="viewcode-block" id="TNGReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader">[docs]</a><span class="k">class</span> <span class="nc">TNGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reader for the TNG format</span>
 
-<span class="sd">    The TNG format :cite:p:`Lundborg2014` is a format used in `GROMACS`_ for</span>
+<span class="sd">    The TNG format :footcite:p:`Lundborg2014` is a format used in `GROMACS`_ for</span>
 <span class="sd">    storage of trajectory and topology information. This reader is are based on</span>
 <span class="sd">    the `pytng`_ package for reading TNG files. The reader is directed to the</span>
 <span class="sd">    `pytng documentation`_ and `TNG specification`_ for further reading.</span>
@@ -627,13 +649,14 @@
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

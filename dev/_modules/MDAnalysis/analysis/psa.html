@@ -1,3 +1,15 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
@@ -5,17 +17,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.psa &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
@@ -33,15 +42,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../../index.html">
-            
-              <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -49,6 +73,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
@@ -130,7 +156,7 @@
 
 <span class="sd">The module contains code to calculate the geometric similarity of trajectories</span>
 <span class="sd">using path metrics such as the Hausdorff or Fréchet distances</span>
-<span class="sd">:cite:p:`Seyler2015`. The path metrics are functions of two paths and return a</span>
+<span class="sd">:footcite:p:`Seyler2015`. The path metrics are functions of two paths and return a</span>
 <span class="sd">nonnegative number, i.e., a distance. Two paths are identical if their distance</span>
 <span class="sd">is zero, and large distances indicate dissimilarity. Each path metric is a</span>
 <span class="sd">function of the individual points (e.g., coordinate snapshots) that comprise</span>
@@ -156,15 +182,6 @@
 <span class="sd">a set of trajectories, including doing proper alignment,</span>
 <span class="sd">performing distance comparisons, and generating heat</span>
 <span class="sd">map-dendrogram plots from hierarchical clustering.</span>
-
-
-<span class="sd">.. Rubric:: References</span>
-
-<span class="sd">.. bibliography::</span>
-<span class="sd">    :filter: False</span>
-<span class="sd">    :style: MDA</span>
-
-<span class="sd">    Seyler2015</span>
 
 <span class="sd">.. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial</span>
 
@@ -300,6 +317,10 @@
 <span class="sd">.. |2D| replace:: :math:`N_p\times 3N`</span>
 <span class="sd">.. |Np| replace:: :math:`N_p`</span>
 
+
+<span class="sd">.. Rubric:: References</span>
+
+<span class="sd">.. footbibliography::</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -517,17 +538,9 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    :func:`scipy.spatial.distance.directed_hausdorff` is an optimized</span>
-<span class="sd">    implementation of the early break algorithm of :cite:p:`Taha2015`; the</span>
+<span class="sd">    implementation of the early break algorithm of :footcite:p:`Taha2015`; the</span>
 <span class="sd">    latter code is used here to calculate the symmetric Hausdorff</span>
 <span class="sd">    distance with an RMSD metric</span>
-
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    .. bibliography::</span>
-<span class="sd">        :filter: False</span>
-<span class="sd">        :style: MDA</span>
-
-<span class="sd">        Taha2015</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N_p</span><span class="p">,</span> <span class="n">axis_p</span> <span class="o">=</span> <span class="n">get_coord_axes</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
@@ -591,7 +604,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The weighted average Hausdorff distance is not a true metric (it does not</span>
-<span class="sd">    obey the triangle inequality); see :cite:p:`Seyler2015` for further</span>
+<span class="sd">    obey the triangle inequality); see :footcite:p:`Seyler2015` for further</span>
 <span class="sd">    details.</span>
 
 
@@ -650,7 +663,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The average Hausdorff distance is not a true metric (it does not obey the</span>
-<span class="sd">    triangle inequality); see :cite:p:`Seyler2015` for further details.</span>
+<span class="sd">    triangle inequality); see :footcite:p:`Seyler2015` for further details.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">get_coord_axes</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
@@ -688,7 +701,7 @@
 <span class="sd">    - Hausdorff neighbors are those points on the two paths that are separated by</span>
 <span class="sd">      the Hausdorff distance. They are the farthest nearest neighbors and are</span>
 <span class="sd">      maximally different in the sense of the Hausdorff distance</span>
-<span class="sd">      :cite:p:`Seyler2015`.</span>
+<span class="sd">      :footcite:p:`Seyler2015`.</span>
 <span class="sd">    - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the</span>
 <span class="sd">      hausdorff neighbors.</span>
 
@@ -752,23 +765,9 @@
 <span class="sd">    -----</span>
 
 <span class="sd">    The discrete Fréchet metric is an approximation to the continuous Fréchet</span>
-<span class="sd">    metric :cite:p:`Frechet1906,Alt1995`. The calculation of the continuous</span>
+<span class="sd">    metric :footcite:p:`Frechet1906,Alt1995`. The calculation of the continuous</span>
 <span class="sd">    Fréchet distance is implemented with the dynamic programming algorithm of</span>
-<span class="sd">    :cite:p:`EiterMannila1994,EiterMannila1997`.</span>
-
-
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-
-<span class="sd">    .. bibliography::</span>
-<span class="sd">        :filter: False</span>
-<span class="sd">        :style: MDA</span>
-
-<span class="sd">        Frechet1906</span>
-<span class="sd">        Alt1995</span>
-<span class="sd">        EiterMannila1994</span>
-<span class="sd">        EiterMannila1997</span>
-
+<span class="sd">    :footcite:p:`EiterMannila1994,EiterMannila1997`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2340,13 +2339,14 @@
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

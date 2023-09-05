@@ -1,3 +1,15 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
@@ -5,17 +17,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.diffusionmap &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
@@ -33,15 +42,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../../index.html">
-            
-              <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -49,6 +73,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
@@ -139,7 +165,7 @@
 <span class="sd">reduction.</span>
 
 <span class="sd">More details about diffusion maps are in</span>
-<span class="sd">:cite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.</span>
+<span class="sd">:footcite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.</span>
 
 <span class="sd">.. _Diffusion-Map-tutorial:</span>
 
@@ -160,7 +186,7 @@
 <span class="sd">   from MDAnalysis.tests.datafiles import PSF, DCD</span>
 
 <span class="sd">Given a universe or atom group, we can create and eigenvalue decompose</span>
-<span class="sd">the Diffusion Matrix from that trajectory using :class:`DiffusionMap`:: and get</span>
+<span class="sd">the Diffusion Matrix from that trajectory using :class:`DiffusionMap` and get</span>
 <span class="sd">the corresponding eigenvalues and eigenvectors.</span>
 
 <span class="sd">.. code-block:: python</span>
@@ -168,7 +194,7 @@
 <span class="sd">   u = mda.Universe(PSF,DCD)</span>
 
 <span class="sd">We leave determination of the appropriate scale parameter epsilon to the user,</span>
-<span class="sd">:cite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors</span>
+<span class="sd">:footcite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors</span>
 <span class="sd">of a trajectory frame, whereas others simple use a trial-and-error approach</span>
 <span class="sd">with a constant epsilon. Currently, the constant epsilon method is implemented</span>
 <span class="sd">by MDAnalysis.</span>
@@ -221,24 +247,16 @@
 <span class="sd">----------</span>
 
 <span class="sd">If you use this Dimension Reduction method in a publication, please</span>
-<span class="sd">cite :cite:p:`Coifman-Lafon`.</span>
+<span class="sd">cite :footcite:p:`Coifman-Lafon`.</span>
 
 <span class="sd">If you choose the default metric, this module uses the fast QCP algorithm</span>
-<span class="sd">:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD)</span>
+<span class="sd">:footcite:p:`Theobald2005` to calculate the root mean square distance (RMSD)</span>
 <span class="sd">between two coordinate sets (as implemented in</span>
 <span class="sd">:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this</span>
-<span class="sd">module in published work please :cite:p:`Theobald2005`.</span>
+<span class="sd">module in published work please :footcite:p:`Theobald2005`.</span>
 
 
-<span class="sd">.. bibliography::</span>
-<span class="sd">    :filter: False</span>
-<span class="sd">    :style: MDA</span>
-
-<span class="sd">    Coifman-Lafon</span>
-<span class="sd">    deLaPorte2008</span>
-<span class="sd">    Clementi2011</span>
-<span class="sd">    Ferguson2011</span>
-<span class="sd">    Theobald2005</span>
+<span class="sd">.. footbibliography::</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -426,7 +444,7 @@
 <span class="sd">        epsilon : Float</span>
 <span class="sd">            Specifies the method used for the choice of scale parameter in the</span>
 <span class="sd">            diffusion map. More information in</span>
-<span class="sd">            :cite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.</span>
+<span class="sd">            :footcite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Parameters to be passed for the initialization of a</span>
 <span class="sd">            :class:`DistanceMatrix`.</span>
@@ -492,7 +510,7 @@
 <span class="sd">        Return</span>
 <span class="sd">        ------</span>
 <span class="sd">        diffusion_space : array (n_frames, n_eigenvectors)</span>
-<span class="sd">            The diffusion map embedding as defined by :cite:p:`Ferguson2011`.</span>
+<span class="sd">            The diffusion map embedding as defined by :footcite:p:`Ferguson2011`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eigenvectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n_eigenvectors</span><span class="o">+</span><span class="mi">1</span><span class="p">,]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenvalues</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n_eigenvectors</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="n">time</span><span class="p">))</span></div></div>
@@ -509,13 +527,14 @@
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.8. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -36,15 +45,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,6 +76,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -132,14 +158,14 @@ scaling, shearing, projecting, orthogonalizing, and superimposing arrays of
 Euler angles, and quaternions. Also includes an Arcball control object and
 functions to decompose transformation matrices.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Authors</dt>
+<dt class="field-odd">Authors<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="http://www.lfd.uci.edu/~gohlke/">Christoph Gohlke</a>,
 Laboratory for Fluorescence Dynamics, University of California, Irvine</p>
 </dd>
-<dt class="field-even">Version</dt>
+<dt class="field-even">Version<span class="colon">:</span></dt>
 <dd class="field-even"><p>2010.05.10</p>
 </dd>
-<dt class="field-odd">Licence</dt>
+<dt class="field-odd">Licence<span class="colon">:</span></dt>
 <dd class="field-odd"><p>BSD 3-clause</p>
 </dd>
 </dl>
@@ -189,24 +215,6 @@ by ‘z’, or ‘z’ is followed by ‘x’. Otherwise odd (1).</p></li>
 </ul>
 </div></blockquote>
 <p class="rubric">References</p>
-<div class="docutils container" id="id1">
-<ol class="arabic simple" start="1">
-<li id="id53"><p>Ronald Goldman. Matrices and transformations. In <em>Graphics Gems I</em>, pages 472–475. Morgan Kaufmann, USA, 1990.</p></li>
-<li id="id54"><p>Ken Shoemake. Uniform random rotations. In David Kirk, editor, <em>Graphics Gems III</em>, pages 124–132. Academic Press, 1992.</p></li>
-<li id="id55"><p>Charles F.F. Karney. Quaternions in molecular modeling. <em>Journal of Molecular Graphics and Modelling</em>, 25(5):595–604, 2007. <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.jmgm.2006.04.002">doi:https://doi.org/10.1016/j.jmgm.2006.04.002</a>.</p></li>
-<li id="id56"><p>Itzhack Y. Bar-Itzhack. New method for extracting the quaternion from a rotation matrix. <em>Journal of Guidance, Control, and Dynamics</em>, 23(6):1085–1087, 2000. <a class="reference external" href="https://doi.org/10.2514/2.4654">doi:10.2514/2.4654</a>.</p></li>
-<li id="id57"><p>Ronald N. Goldman. Vii.4 - more matrices and transformations: shear and pseudo-perspective. In JAMES ARVO, editor, <em>Graphics Gems II</em>, pages 338–341. Morgan Kaufmann, San Diego, 1991. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/B9780080507545500724">https://www.sciencedirect.com/science/article/pii/B9780080507545500724</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/B978-0-08-050754-5.50072-4">doi:https://doi.org/10.1016/B978-0-08-050754-5.50072-4</a>.</p></li>
-<li id="id58"><p>Spencer W. Thomas. Vii.1 - decomposing a matrix into simple transformations. In JAMES ARVO, editor, <em>Graphics Gems II</em>, pages 320–323. Morgan Kaufmann, San Diego, 1991. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/B9780080507545500694">https://www.sciencedirect.com/science/article/pii/B9780080507545500694</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/B978-0-08-050754-5.50069-4">doi:https://doi.org/10.1016/B978-0-08-050754-5.50069-4</a>.</p></li>
-<li id="id59"><p>Ronald N. Goldman. Vii.2 - recovering the data from the transformation matrix. In James Arvo, editor, <em>Graphics Gems II</em>, pages 324–331. Morgan Kaufmann, San Diego, 1991. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/B9780080507545500700">https://www.sciencedirect.com/science/article/pii/B9780080507545500700</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/B978-0-08-050754-5.50070-0">doi:https://doi.org/10.1016/B978-0-08-050754-5.50070-0</a>.</p></li>
-<li id="id60"><p>Ken Shoemake. Euler angle conversion. In Paul S. Heckbert, editor, <em>Graphics Gems IV</em>, pages 222–229. Morgan Kaufmann, 1994.</p></li>
-<li id="id61"><p>Ken Shoemake. Arcball rotation control. In Paul S. Heckbert, editor, <em>Graphics Gems IV</em>, pages 175–192. Morgan Kaufmann, 1994.</p></li>
-<li id="id62"><p>Ken Shoemake. Quaternions. In URL: <a class="reference external" href="https://www.ljll.math.upmc.fr/~frey/papers/scientific%20visualisation/Shoemake%20K.,%20Quaternions.pdf">https://www.ljll.math.upmc.fr/~frey/papers/scientific%20visualisation/Shoemake%20K.,%20Quaternions.pdf</a>.</p></li>
-<li id="id63"><p>James Diebel. Representing attitude: euler angles, unit quaternions, and rotation vectors. In 2006.</p></li>
-<li id="id64"><p>W. Kabsch. A discussion of the solution for the best rotation to relate two sets of vectors. <em>Acta Crystallographica Section A</em>, 34(5):827–828, Sep 1978. URL: <a class="reference external" href="https://doi.org/10.1107/S0567739478001680">https://doi.org/10.1107/S0567739478001680</a>, <a class="reference external" href="https://doi.org/10.1107/S0567739478001680">doi:10.1107/S0567739478001680</a>.</p></li>
-<li id="id65"><p>Berthold Horn. Closed-form solution of absolute orientation using unit quaternions. <em>Journal of the Optical Society A</em>, 4:629–642, 04 1987. <a class="reference external" href="https://doi.org/10.1364/JOSAA.4.000629">doi:10.1364/JOSAA.4.000629</a>.</p></li>
-<li id="id66"><p>JMP van Waveren. From quaternion to matrix and back. In 2005. URL: <a class="reference external" href="http://www.intel.com/cd/ids/developer/asmo-na/eng/293748.htm">http://www.intel.com/cd/ids/developer/asmo-na/eng/293748.htm</a>.</p></li>
-</ol>
-</div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.transformations</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -549,16 +557,16 @@ point, normal, direction, perspective, and pseudo.</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.transformations.</span></span><span class="sig-name descname"><span class="pre">rotaxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#rotaxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.rotaxis" title="Permalink to this definition"></a></dt>
 <dd><p>Return the rotation axis to rotate vector a into b.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array_like</em>) – two vectors</p></li>
 <li><p><strong>b</strong> (<em>array_like</em>) – two vectors</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>c</strong> – vector to rotate a into b</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
@@ -645,13 +653,14 @@ point, normal, direction, perspective, and pseudo.</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

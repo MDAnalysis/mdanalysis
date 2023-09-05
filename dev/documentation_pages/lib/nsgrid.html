@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.4. Neighbor search library — MDAnalysis.lib.nsgrid &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -37,15 +46,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -53,6 +77,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -143,7 +169,7 @@ was used as reference to write this file.</p>
 <h2><span class="section-number">13.2.4.2. </span>About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this heading"></a></h2>
 <p>The neighbor search implemented here is based on
 <a class="reference external" href="https://en.wikipedia.org/wiki/Cell_lists">cell lists</a> which allow
-computation of pairs <a class="footnote-reference brackets" href="#id2" id="id1">1</a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
+computation of pairs <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
 of <span class="math notranslate nohighlight">\(O(N^2)\)</span>. The basic algorithm is described in
 Appendix F,  Page 552 of
 <code class="docutils literal notranslate"><span class="pre">Understanding</span> <span class="pre">Molecular</span> <span class="pre">Dynamics:</span> <span class="pre">From</span> <span class="pre">Algorithm</span> <span class="pre">to</span> <span class="pre">Applications</span></code> by Frenkel and Smit.</p>
@@ -154,11 +180,12 @@ domain followed by distance evaluations within the identified cell and
 neighboring cells only. Care must be taken to ensure that <cite>cellsize</cite> is
 greater than the desired search distance, otherwise all of the neighbours might
 not reflect in the results.</p>
-<dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>a pair correspond to two particles that are considered as neighbors .</p>
-</dd>
-</dl>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>a pair correspond to two particles that are considered as neighbors .</p>
+</aside>
+</aside>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.19.0.</span></p>
 </div>
@@ -189,7 +216,7 @@ to construct a pseudo box. Subsequently, the origin should also be
 shifted to <code class="docutils literal notranslate"><span class="pre">[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin]</span></code>. These arguments must be provided
 to the function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired cutoff distance</p></li>
 <li><p><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><em>numpy.ndarray</em></a>) – atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for <code class="docutils literal notranslate"><span class="pre">N</span></code> atoms.
@@ -243,16 +270,16 @@ neighbors.</p>
 <p>PBC-aware/non PBC-aware calculations are automatically enabled during
 the instantiation of :class:FastNS.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>search_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><em>numpy.ndarray</em></a>) – Query coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> where
 <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of queries</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
 can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pairs()</span></code></a> and
 <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pair_distances()</span></code></a>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></p>
 </dd>
 </dl>
@@ -273,12 +300,12 @@ in hald the time. Although the algorithm is still the same, but
 the distance checks can be reduced to half in this particular case
 as every pair need not be evaluated twice.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
 can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pairs()</span></code></a> and
 <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pair_distances()</span></code></a>.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></p>
 </dd>
 </dl>
@@ -303,11 +330,11 @@ Every element <code class="docutils literal notranslate"><span class="pre">[i]</
 <code class="docutils literal notranslate"><span class="pre">pairs[i,</span> <span class="pre">0]</span></code> and <code class="docutils literal notranslate"><span class="pre">pairs[i,</span> <span class="pre">1]</span></code>, where pairs is the array
 obtained from <code class="docutils literal notranslate"><span class="pre">get_pairs()</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>distances</strong> – distances between pairs of query and initial
 atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">N</span></code></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -328,11 +355,11 @@ atom positions such that <code class="docutils literal notranslate"><span class=
 atoms while <code class="docutils literal notranslate"><span class="pre">configuration</span></code> coontains the position of group of
 atoms used to search against  the query atoms.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pairs</strong> – pairs of atom indices of neighbors from query
 and initial atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">2)</span></code></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -356,13 +383,14 @@ and initial atom coordinates of shape <code class="docutils literal notranslate"
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

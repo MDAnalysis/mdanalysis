@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.9.1. Diffusion map — MDAnalysis.analysis.diffusionmap &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -37,15 +46,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -53,6 +77,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -123,13 +149,13 @@
   <span class="target" id="module-MDAnalysis.analysis.diffusionmap"></span><section id="diffusion-map-mdanalysis-analysis-diffusionmap">
 <h1><span class="section-number">4.9.1. </span>Diffusion map — <a class="reference internal" href="#module-MDAnalysis.analysis.diffusionmap" title="MDAnalysis.analysis.diffusionmap"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a><a class="headerlink" href="#diffusion-map-mdanalysis-analysis-diffusionmap" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Authors</dt>
+<dt class="field-odd">Authors<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Eugen Hruska, John Detlefs</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2016</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License v2</p>
 </dd>
 </dl>
@@ -145,9 +171,9 @@ locally. The order of the sampled structures in the trajectory is irrelevant.</p
 <p>The <a class="reference internal" href="#diffusion-map-tutorial"><span class="std std-ref">Diffusion Map tutorial</span></a> shows how to use diffusion map for dimension
 reduction.</p>
 <p>More details about diffusion maps are in
-<span id="id1">[<a class="reference internal" href="#id59" title="J Porte, Ben Herbst, Willy Hereman, and Stéfan van der Walt. An introduction to diffusion maps. In 11 2008.">Porte2008</a>, <a class="reference internal" href="#id36" title="Ronald R. Coifman and Stéphane Lafon. Diffusion maps. Applied and Computational Harmonic Analysis, 21(1):5-30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: https://www.sciencedirect.com/science/article/pii/S1063520306000546, doi:https://doi.org/10.1016/j.acha.2006.04.006.">Coifman2006</a>, <a class="reference internal" href="#id25" title="Andrew L. Ferguson, Athanassios Z. Panagiotopoulos, Ioannis G. Kevrekidis, and Pablo G. Debenedetti. Nonlinear dimensionality reduction in molecular simulation: the diffusion map approach. Chemical Physics Letters, 509(1):1-11, 2011. URL: https://www.sciencedirect.com/science/article/pii/S0009261411004957, doi:https://doi.org/10.1016/j.cplett.2011.04.066.">Ferguson2011</a>, <a class="reference internal" href="#id20" title="Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. The Journal of Chemical Physics, 134(12):124116, 2011. doi:10.1063/1.3569857.">Rohrdanz2011</a>]</span>.</p>
+<a class="footnote-reference brackets" href="#footcite-delaporte2008" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#footcite-coifman-lafon" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#footcite-ferguson2011" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#footcite-clementi2011" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
 <section id="diffusion-map-tutorial">
-<span id="id2"></span><h2><span class="section-number">4.9.1.1. </span>Diffusion Map tutorial<a class="headerlink" href="#diffusion-map-tutorial" title="Permalink to this heading"></a></h2>
+<span id="id5"></span><h2><span class="section-number">4.9.1.1. </span>Diffusion Map tutorial<a class="headerlink" href="#diffusion-map-tutorial" title="Permalink to this heading"></a></h2>
 <p>The example uses files provided as part of the MDAnalysis test suite
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">PSF</span></code> and
 <code class="xref py py-data docutils literal notranslate"><span class="pre">DCD</span></code>). This tutorial shows how to use the
@@ -159,13 +185,13 @@ Diffusion Map class.</p>
 </pre></div>
 </div>
 <p>Given a universe or atom group, we can create and eigenvalue decompose
-the Diffusion Matrix from that trajectory using <a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DiffusionMap" title="MDAnalysis.analysis.diffusionmap.DiffusionMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionMap</span></code></a>:: and get
+the Diffusion Matrix from that trajectory using <a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DiffusionMap" title="MDAnalysis.analysis.diffusionmap.DiffusionMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionMap</span></code></a> and get
 the corresponding eigenvalues and eigenvectors.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We leave determination of the appropriate scale parameter epsilon to the user,
-<span id="id3">[<a class="reference internal" href="#id20" title="Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. The Journal of Chemical Physics, 134(12):124116, 2011. doi:10.1063/1.3569857.">Rohrdanz2011</a>]</span> uses a complex method involving the k-nearest-neighbors
+<a class="footnote-reference brackets" href="#footcite-clementi2011" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> uses a complex method involving the k-nearest-neighbors
 of a trajectory frame, whereas others simple use a trial-and-error approach
 with a constant epsilon. Currently, the constant epsilon method is implemented
 by MDAnalysis.</p>
@@ -215,7 +241,7 @@ trajectory.</p>
 <span class="sig-name descname"><span class="pre">eigenvalues</span></span><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DiffusionMap.eigenvalues" title="Permalink to this definition"></a></dt>
 <dd><p>Eigenvalues of the diffusion map</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>array (n_frames,)</p>
 </dd>
 </dl>
@@ -239,7 +265,7 @@ the collective coordinates.</p>
 <p><span class="versionmodified changed">Changed in version 2.2.0: </span><a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DiffusionMap" title="MDAnalysis.analysis.diffusionmap.DiffusionMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionMap</span></code></a> now also accepts <cite>AtomGroup</cite>.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<em>MDAnalysis Universe</em><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><em>DistanceMatrix object.</em>) – Can be a Universe or AtomGroup, in which case one must supply kwargs for the
 initialization of a DistanceMatrix. Otherwise, this can be a
@@ -247,7 +273,7 @@ DistanceMatrix already initialized. Either way, this will be made
 into a diffusion kernel.</p></li>
 <li><p><strong>epsilon</strong> (<em>Float</em>) – Specifies the method used for the choice of scale parameter in the
 diffusion map. More information in
-<span id="id4">[<a class="reference internal" href="#id36" title="Ronald R. Coifman and Stéphane Lafon. Diffusion maps. Applied and Computational Harmonic Analysis, 21(1):5-30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: https://www.sciencedirect.com/science/article/pii/S1063520306000546, doi:https://doi.org/10.1016/j.acha.2006.04.006.">Coifman2006</a>, <a class="reference internal" href="#id25" title="Andrew L. Ferguson, Athanassios Z. Panagiotopoulos, Ioannis G. Kevrekidis, and Pablo G. Debenedetti. Nonlinear dimensionality reduction in molecular simulation: the diffusion map approach. Chemical Physics Letters, 509(1):1-11, 2011. URL: https://www.sciencedirect.com/science/article/pii/S0009261411004957, doi:https://doi.org/10.1016/j.cplett.2011.04.066.">Ferguson2011</a>, <a class="reference internal" href="#id20" title="Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. The Journal of Chemical Physics, 134(12):124116, 2011. doi:10.1063/1.3569857.">Rohrdanz2011</a>]</span>, Default: 1.</p></li>
+<a class="footnote-reference brackets" href="#footcite-coifman-lafon" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#footcite-ferguson2011" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a><a class="footnote-reference brackets" href="#footcite-clementi2011" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>, Default: 1.</p></li>
 <li><p><strong>**kwargs</strong> – Parameters to be passed for the initialization of a
 <a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix" title="MDAnalysis.analysis.diffusionmap.DistanceMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceMatrix</span></code></a>.</p></li>
 </ul>
@@ -263,7 +289,7 @@ using a given metric</p>
 <p>A distance matrix can be initialized on its own and used as an
 initialization argument in <a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DiffusionMap" title="MDAnalysis.analysis.diffusionmap.DiffusionMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionMap</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<cite>~MDAnalysis.core.universe.Universe</cite> or <cite>~MDAnalysis.core.groups.AtomGroup</cite>) – The MD Trajectory for dimension reduction, remember that
 computational cost of eigenvalue decomposition
@@ -293,7 +319,7 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 <span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix.atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Selected atoms in trajectory subject to dimension reduction</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>~MDAnalysis.core.groups.AtomGroup</cite></p>
 </dd>
 </dl>
@@ -308,7 +334,7 @@ This matrix is symmetric with zeros on the diagonal.</p>
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a>, (n_frames, n_frames)</p>
 </dd>
 </dl>
@@ -322,7 +348,7 @@ This matrix is symmetric with zeros on the diagonal.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix.results.dist_matrix" title="MDAnalysis.analysis.diffusionmap.DistanceMatrix.results.dist_matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.dist_matrix</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a>, (n_frames, n_frames)</p>
 </dd>
 </dl>
@@ -363,30 +389,38 @@ dmap.run()</p>
 
 <p class="rubric">References</p>
 <p>If you use this Dimension Reduction method in a publication, please
-cite <span id="id5">[<a class="reference internal" href="#id36" title="Ronald R. Coifman and Stéphane Lafon. Diffusion maps. Applied and Computational Harmonic Analysis, 21(1):5-30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: https://www.sciencedirect.com/science/article/pii/S1063520306000546, doi:https://doi.org/10.1016/j.acha.2006.04.006.">Coifman2006</a>]</span>.</p>
+cite <a class="footnote-reference brackets" href="#footcite-coifman-lafon" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <p>If you choose the default metric, this module uses the fast QCP algorithm
-<span id="id6">[<a class="reference internal" href="#id54" title="Douglas L. Theobald. Rapid calculation of RMSDs using a quaternion-based characteristic polynomial. Acta Crystallographica Section A, 61(4):478–480, Jul 2005. doi:10.1107/S0108767305015266.">Theobald2005</a>]</span> to calculate the root mean square distance (RMSD)
+<a class="footnote-reference brackets" href="#footcite-theobald2005" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> to calculate the root mean square distance (RMSD)
 between two coordinate sets (as implemented in
 <a class="reference internal" href="../lib/qcprot.html#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix()</span></code></a>).  When using this
-module in published work please <span id="id7">[<a class="reference internal" href="#id54" title="Douglas L. Theobald. Rapid calculation of RMSDs using a quaternion-based characteristic polynomial. Acta Crystallographica Section A, 61(4):478–480, Jul 2005. doi:10.1107/S0108767305015266.">Theobald2005</a>]</span>.</p>
-<div class="docutils container" id="id8">
-<dl class="citation">
-<dt class="label" id="id59"><span class="brackets"><a class="fn-backref" href="#id1">Porte2008</a></span></dt>
-<dd><p>J Porte, Ben Herbst, Willy Hereman, and Stéfan van der Walt. An introduction to diffusion maps. In 11 2008.</p>
-</dd>
-<dt class="label" id="id36"><span class="brackets">Coifman2006</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>,<a href="#id5">3</a>)</span></dt>
-<dd><p>Ronald R. Coifman and Stéphane Lafon. Diffusion maps. <em>Applied and Computational Harmonic Analysis</em>, 21(1):5–30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S1063520306000546">https://www.sciencedirect.com/science/article/pii/S1063520306000546</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.acha.2006.04.006">doi:https://doi.org/10.1016/j.acha.2006.04.006</a>.</p>
-</dd>
-<dt class="label" id="id25"><span class="brackets">Ferguson2011</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>)</span></dt>
-<dd><p>Andrew L. Ferguson, Athanassios Z. Panagiotopoulos, Ioannis G. Kevrekidis, and Pablo G. Debenedetti. Nonlinear dimensionality reduction in molecular simulation: the diffusion map approach. <em>Chemical Physics Letters</em>, 509(1):1–11, 2011. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0009261411004957">https://www.sciencedirect.com/science/article/pii/S0009261411004957</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.cplett.2011.04.066">doi:https://doi.org/10.1016/j.cplett.2011.04.066</a>.</p>
-</dd>
-<dt class="label" id="id20"><span class="brackets">Rohrdanz2011</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id3">2</a>,<a href="#id4">3</a>)</span></dt>
-<dd><p>Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. <em>The Journal of Chemical Physics</em>, 134(12):124116, 2011. <a class="reference external" href="https://doi.org/10.1063/1.3569857">doi:10.1063/1.3569857</a>.</p>
-</dd>
-<dt class="label" id="id54"><span class="brackets">Theobald2005</span><span class="fn-backref">(<a href="#id6">1</a>,<a href="#id7">2</a>)</span></dt>
-<dd><p>Douglas L. Theobald. Rapid calculation of RMSDs using a quaternion-based characteristic polynomial. <em>Acta Crystallographica Section A</em>, 61(4):478–480, Jul 2005. <a class="reference external" href="https://doi.org/10.1107/S0108767305015266">doi:10.1107/S0108767305015266</a>.</p>
-</dd>
-</dl>
+module in published work please <a class="footnote-reference brackets" href="#footcite-theobald2005" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.</p>
+<div class="docutils container" id="id13">
+<aside class="footnote brackets" id="footcite-delaporte2008" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>J Porte, Ben Herbst, Willy Hereman, and Stéfan van der Walt. An introduction to diffusion maps. In 11 2008.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-coifman-lafon" role="note">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id7">2</a>,<a role="doc-backlink" href="#id10">3</a>)</span>
+<p>Ronald R. Coifman and Stéphane Lafon. Diffusion maps. <em>Applied and Computational Harmonic Analysis</em>, 21(1):5–30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S1063520306000546">https://www.sciencedirect.com/science/article/pii/S1063520306000546</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.acha.2006.04.006">doi:https://doi.org/10.1016/j.acha.2006.04.006</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-ferguson2011" role="note">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id8">2</a>)</span>
+<p>Andrew L. Ferguson, Athanassios Z. Panagiotopoulos, Ioannis G. Kevrekidis, and Pablo G. Debenedetti. Nonlinear dimensionality reduction in molecular simulation: the diffusion map approach. <em>Chemical Physics Letters</em>, 509(1):1–11, 2011. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0009261411004957">https://www.sciencedirect.com/science/article/pii/S0009261411004957</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.cplett.2011.04.066">doi:https://doi.org/10.1016/j.cplett.2011.04.066</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-clementi2011" role="note">
+<span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id6">2</a>,<a role="doc-backlink" href="#id9">3</a>)</span>
+<p>Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. <em>The Journal of Chemical Physics</em>, 134(12):124116, 2011. <a class="reference external" href="https://doi.org/10.1063/1.3569857">doi:10.1063/1.3569857</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-theobald2005" role="note">
+<span class="label"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id11">1</a>,<a role="doc-backlink" href="#id12">2</a>)</span>
+<p>Douglas L. Theobald. Rapid calculation of RMSDs using a quaternion-based characteristic polynomial. <em>Acta Crystallographica Section A</em>, 61(4):478–480, Jul 2005. <a class="reference external" href="https://doi.org/10.1107/S0108767305015266">doi:10.1107/S0108767305015266</a>.</p>
+</aside>
+</aside>
 </div>
 </section>
 </section>
@@ -406,13 +440,14 @@ module in published work please <span id="id7">[<a class="reference internal" hr
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

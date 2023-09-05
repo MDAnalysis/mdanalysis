@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -37,15 +46,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -53,6 +77,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -129,13 +155,13 @@
   <span class="target" id="module-MDAnalysis.analysis.bat"></span><section id="bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat">
 <h1><span class="section-number">4.2.8. </span>Bond-Angle-Torsion coordinates analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.bat" title="MDAnalysis.analysis.bat"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><a class="headerlink" href="#bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Soohaeng Yoo Willow and David Minh</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License, v2 or any higher version</p>
 </dd>
 </dl>
@@ -144,11 +170,11 @@
 </div>
 <p>This module contains classes for interconverting between Cartesian and an
 internal coordinate system, Bond-Angle-Torsion (BAT) coordinates
-<span id="id1">[<a class="reference internal" href="#id14" title="Chia-En Chang, Michael J. Potter, and Michael K. Gilson. Calculation of molecular configuration integrals. The Journal of Physical Chemistry B, 107(4):1048-1055, 2003. doi:10.1021/jp027149c.">Chang2003</a>]</span>, for a given set of atoms or residues. This coordinate
+<a class="footnote-reference brackets" href="#footcite-chang2003" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, for a given set of atoms or residues. This coordinate
 system is designed to be complete, non-redundant, and minimize correlations
 between degrees of freedom. Complete and non-redundant means that for N atoms
 there will be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions, as described in <span id="id2">[<a class="reference internal" href="#id29" title="Simon Hikiri, Takashi Yoshidome, and Mitsunori Ikeguchi. Computational methods for configurational entropy using internal and cartesian coordinates. Journal of Chemical Theory and Computation, 12(12):5990-6000, 2016. PMID: 27951672. doi:10.1021/acs.jctc.6b00563.">Hikiri2016</a>]</span>.</p>
+minimized by using improper torsions, as described in <a class="footnote-reference brackets" href="#footcite-hikiri2016" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <p>More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
 a pair of bonds to a central atom. Torsion refers to the torsion angle.
@@ -166,7 +192,7 @@ specified by the axis-angle convention. The rotation axis is a normalized vector
 pointing from the first to second atom. It is described by the polar angle,
 <span class="math notranslate nohighlight">\(\phi\)</span>, and azimuthal angle, <span class="math notranslate nohighlight">\(\theta\)</span>. <span class="math notranslate nohighlight">\(\omega\)</span> is a third angle
 that describes the rotation of the third atom about the axis.</p>
-<p>This module was adapted from AlGDock <span id="id3">[<a class="reference internal" href="#id41" title="David D. L. Minh. Alchemical grid dock (algdock): binding free energy calculations between flexible ligands and rigid receptors. Journal of Computational Chemistry, 41(7):715-730, 2020. doi:https://doi.org/10.1002/jcc.26036.">Minh2020</a>]</span>.</p>
+<p>This module was adapted from AlGDock <a class="footnote-reference brackets" href="#footcite-minh2020" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -235,15 +261,14 @@ previous snippet has been executed.</p>
 </section>
 <section id="analysis-classes">
 <h2><span class="section-number">4.2.8.2. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading"></a></h2>
-<blockquote>
-<div><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.bat.</span></span><span class="sig-name descname"><span class="pre">BAT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_atom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate BAT coordinates for the specified AtomGroup.</p>
 <p>Bond-Angle-Torsions (BAT) internal coordinates will be computed for
 the group of atoms and all frame in the trajectory belonging to <cite>ag</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Group of atoms for which the BAT coordinates are calculated.
 <cite>ag</cite> must have a bonds attribute.
@@ -260,7 +285,7 @@ If filename is not <code class="docutils literal notranslate"><span class="pre">
 instead of being recalculated using the run() method.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.11)"><strong>AttributeError</strong></a> – If <cite>ag</cite> does not contain a bonds attribute</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If <cite>ag</cite> contains more than one molecule</p></li>
@@ -293,18 +318,18 @@ all the other bond angles, and then all the other torsion angles.</p>
 <p>One application of this function is to determine the new
 Cartesian coordinates after modifying a specific torsion angle.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>bat_frame</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><em>numpy.ndarray</em></a>) – an array with dimensions (3N,) with external then internal
 degrees of freedom based on the root atoms, followed by the bond,
 angle, and (proper and improper) torsion coordinates.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>XYZ</strong> – an array with dimensions (N,3) with Cartesian coordinates. The first
 dimension has the same ordering as the AtomGroup used to initialize
 the class. The molecule will be whole opposed to wrapped around a
 periodic boundary.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -321,7 +346,7 @@ periodic boundary.</p>
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.load" title="Permalink to this definition"></a></dt>
 <dd><p>Loads the bat trajectory from a file in numpy binary format</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of numpy binary file</p></li>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
@@ -344,7 +369,7 @@ periodic boundary.</p>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -388,20 +413,21 @@ allowing to modify description, position etc of tqdm progressbars</p>
 
 </dd></dl>
 
-</div></blockquote>
 <p class="rubric">References</p>
 <div class="docutils container" id="id4">
-<dl class="citation">
-<dt class="label" id="id14"><span class="brackets"><a class="fn-backref" href="#id1">Chang2003</a></span></dt>
-<dd><p>Chia-En Chang, Michael J. Potter, and Michael K. Gilson. Calculation of molecular configuration integrals. <em>The Journal of Physical Chemistry B</em>, 107(4):1048–1055, 2003. <a class="reference external" href="https://doi.org/10.1021/jp027149c">doi:10.1021/jp027149c</a>.</p>
-</dd>
-<dt class="label" id="id29"><span class="brackets"><a class="fn-backref" href="#id2">Hikiri2016</a></span></dt>
-<dd><p>Simon Hikiri, Takashi Yoshidome, and Mitsunori Ikeguchi. Computational methods for configurational entropy using internal and cartesian coordinates. <em>Journal of Chemical Theory and Computation</em>, 12(12):5990–6000, 2016. PMID: 27951672. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.6b00563">doi:10.1021/acs.jctc.6b00563</a>.</p>
-</dd>
-<dt class="label" id="id41"><span class="brackets"><a class="fn-backref" href="#id3">Minh2020</a></span></dt>
-<dd><p>David D. L. Minh. Alchemical grid dock (algdock): binding free energy calculations between flexible ligands and rigid receptors. <em>Journal of Computational Chemistry</em>, 41(7):715–730, 2020. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/jcc.26036">doi:https://doi.org/10.1002/jcc.26036</a>.</p>
-</dd>
-</dl>
+<aside class="footnote brackets" id="footcite-chang2003" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Chia-En Chang, Michael J. Potter, and Michael K. Gilson. Calculation of molecular configuration integrals. <em>The Journal of Physical Chemistry B</em>, 107(4):1048–1055, 2003. <a class="reference external" href="https://doi.org/10.1021/jp027149c">doi:10.1021/jp027149c</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-hikiri2016" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Simon Hikiri, Takashi Yoshidome, and Mitsunori Ikeguchi. Computational methods for configurational entropy using internal and cartesian coordinates. <em>Journal of Chemical Theory and Computation</em>, 12(12):5990–6000, 2016. PMID: 27951672. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.6b00563">doi:10.1021/acs.jctc.6b00563</a>.</p>
+</aside>
+<aside class="footnote brackets" id="footcite-minh2020" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>David D. L. Minh. Alchemical grid dock (algdock): binding free energy calculations between flexible ligands and rigid receptors. <em>Journal of Computational Chemistry</em>, 41(7):715–730, 2020. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/jcc.26036">doi:https://doi.org/10.1002/jcc.26036</a>.</p>
+</aside>
+</aside>
 </div>
 </section>
 </section>
@@ -421,13 +447,14 @@ allowing to modify description, position etc of tqdm progressbars</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

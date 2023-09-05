@@ -1,3 +1,15 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
@@ -5,17 +17,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.dihedrals &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
@@ -33,15 +42,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../../index.html">
-            
-              <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -49,6 +73,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
@@ -169,7 +195,7 @@
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
 
 <span class="sd">The :class:`~MDAnalysis.analysis.dihedrals.Ramachandran` class allows for the</span>
-<span class="sd">quick calculation of classical Ramachandran plots :cite:p:`Ramachandran1963` in</span>
+<span class="sd">quick calculation of classical Ramachandran plots :footcite:p:`Ramachandran1963` in</span>
 <span class="sd">the backbone :math:`phi` and :math:`psi` angles. Unlike the</span>
 <span class="sd">:class:`~MDanalysis.analysis.dihedrals.Dihedral` class which takes a list of</span>
 <span class="sd">`atomgroups`, this class only needs a list of residues or atoms from those</span>
@@ -214,7 +240,7 @@
 <span class="sd">Janin analysis</span>
 <span class="sd">~~~~~~~~~~~~~~</span>
 
-<span class="sd">Janin plots :cite:p:`Janin1978` for side chain conformations (:math:`\chi_1`</span>
+<span class="sd">Janin plots :footcite:p:`Janin1978` for side chain conformations (:math:`\chi_1`</span>
 <span class="sd">and :math:`chi_2` angles) can be created with the</span>
 <span class="sd">:class:`~MDAnalysis.analysis.dihedrals.Janin` class. It works in the same way,</span>
 <span class="sd">only needing a list of residues; see the :ref:`Janin plot figure</span>
@@ -255,12 +281,12 @@
 <span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data</span>
 <span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data</span>
 <span class="sd">obtained from a large selection of 500 PDB files, and were analyzed using these</span>
-<span class="sd">classes :cite:p:`Mull2018`. The allowed and marginally allowed regions of the</span>
+<span class="sd">classes :footcite:p:`Mull2018`. The allowed and marginally allowed regions of the</span>
 <span class="sd">Ramachandran reference plot have cutoffs set to include 90% and 99% of the data</span>
 <span class="sd">points, and the Janin reference plot has cutoffs for 90% and 98% of the data</span>
 <span class="sd">points. The list of PDB files used for the reference plots was taken from</span>
-<span class="sd">:cite:p:`Lovell2003` and information about general Janin regions was taken from</span>
-<span class="sd">:cite:p:`Janin1978`.</span>
+<span class="sd">:footcite:p:`Lovell2003` and information about general Janin regions was taken from</span>
+<span class="sd">:footcite:p:`Janin1978`.</span>
 
 
 
@@ -333,14 +359,7 @@
 <span class="sd">References</span>
 <span class="sd">----------</span>
 
-<span class="sd">.. bibliography::</span>
-<span class="sd">    :filter: False</span>
-<span class="sd">    :style: MDA</span>
-
-<span class="sd">    Ramachandran1963</span>
-<span class="sd">    Janin1978</span>
-<span class="sd">    Lovell2003</span>
-<span class="sd">    Mull2018</span>
+<span class="sd">.. footbibliography::</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -764,13 +783,14 @@
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

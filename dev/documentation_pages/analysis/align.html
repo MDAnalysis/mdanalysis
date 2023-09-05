@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.1. Coordinate fitting and alignment — MDAnalysis.analysis.align &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -37,15 +46,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -53,6 +77,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -131,13 +157,13 @@
   <span class="target" id="module-MDAnalysis.analysis.align"></span><section id="coordinate-fitting-and-alignment-mdanalysis-analysis-align">
 <h1><span class="section-number">4.2.1. </span>Coordinate fitting and alignment — <a class="reference internal" href="#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a><a class="headerlink" href="#coordinate-fitting-and-alignment-mdanalysis-analysis-align" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Oliver Beckstein, Joshua Adelman</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2010–2013</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -303,7 +329,7 @@ index and therefore destroy the correspondence between the two groups.
 <strong>It is safest not to mix ordered AtomGroups with selection strings.</strong></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mobile</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – structure to be aligned, a
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or a whole
@@ -360,7 +386,7 @@ protein, ligands and the surrounding water)</p>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>old_rmsd</strong> (<em>float</em>) – RMSD before spatial alignment</p></li>
 <li><p><strong>new_rmsd</strong> (<em>float</em>) – RMSD after spatial alignment</p></li>
@@ -412,7 +438,7 @@ current frame.</p>
 on <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="MDAnalysis.analysis.align.AlignTraj.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a>.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mobile</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe containing trajectory to be fitted to reference</p></li>
 <li><p><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe containing trajectory frame to be used as reference</p></li>
@@ -446,7 +472,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <span class="sig-name descname"><span class="pre">reference_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.reference_atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Atoms of the reference structure to be aligned against</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></p>
 </dd>
 </dl>
@@ -457,7 +483,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <span class="sig-name descname"><span class="pre">mobile_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.mobile_atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Atoms inside each trajectory frame to be rmsd_aligned</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></p>
 </dd>
 </dl>
@@ -472,7 +498,7 @@ and reference_atoms after superposition and minimimization of rmsd</p>
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
@@ -487,7 +513,7 @@ and reference_atoms after superposition and minimimization of rmsd</p>
 <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="MDAnalysis.analysis.align.AlignTraj.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
@@ -499,7 +525,7 @@ and reference_atoms after superposition and minimimization of rmsd</p>
 <dd><p>String reflecting the filename of the file where the aligned
 positions will be written to upon running RMSD alignment</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
@@ -565,7 +591,7 @@ current frame.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mobile</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe containing trajectory to be fitted to reference</p></li>
 <li><p><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> (</em><em>optional</em><em>)</em>) – Universe containing trajectory frame to be used as reference</p></li>
@@ -598,7 +624,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <span class="sig-name descname"><span class="pre">reference_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.reference_atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Atoms of the reference structure to be aligned against</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></p>
 </dd>
 </dl>
@@ -609,7 +635,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <span class="sig-name descname"><span class="pre">mobile_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.mobile_atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Atoms inside each trajectory frame to be rmsd_aligned</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></p>
 </dd>
 </dl>
@@ -623,7 +649,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code></p>
 </dd>
 </dl>
@@ -638,7 +664,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.universe" title="MDAnalysis.analysis.align.AverageStructure.results.universe"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.universe</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code></p>
 </dd>
 </dl>
@@ -652,7 +678,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray(dtype=float)</p>
 </dd>
 </dl>
@@ -667,7 +693,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.positions" title="MDAnalysis.analysis.align.AverageStructure.results.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.positions</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>np.ndarray(dtype=float)</p>
 </dd>
 </dl>
@@ -681,7 +707,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -696,7 +722,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.rmsd" title="MDAnalysis.analysis.align.AverageStructure.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -708,7 +734,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <dd><p>String reflecting the filename of the file where the average
 structure is written</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
@@ -744,7 +770,7 @@ vector <cite>b</cite> (i.e., <cite>b</cite> is the reference structure):</p>
 <div class="math notranslate nohighlight">
 \[\mathbf{b} = \mathsf{R} \cdot \mathbf{a}\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array_like</em>) – coordinates that are to be rotated (“mobile set”); array of N atoms
 of shape N*3 as generated by, e.g.,
@@ -755,7 +781,7 @@ e.g., <a class="reference internal" href="../core/groups.html#MDAnalysis.core.gr
 masses of the atoms)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>R</strong> (<em>ndarray</em>) – rotation matrix</p></li>
 <li><p><strong>rmsd</strong> (<em>float</em>) – RMSD between <cite>a</cite> and <cite>b</cite> before rotation</p></li>
@@ -806,7 +832,7 @@ normal users.</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">_fit_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mobile_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mobile_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#_fit_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align._fit_to" title="Permalink to this definition"></a></dt>
 <dd><p>Perform an rmsd-fitting to determine rotation matrix and align atoms</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mobile_coordinates</strong> (<em>ndarray</em>) – Coordinates of atoms to be aligned</p></li>
 <li><p><strong>ref_coordinates</strong> (<em>ndarray</em>) – Coordinates of atoms to be fit against</p></li>
@@ -819,7 +845,7 @@ of the <cite>array_like</cite> as a weight for the corresponding atom in
 <cite>mobile_coordinates</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>mobile_atoms</strong> (<em>AtomGroup</em>) – AtomGroup of translated and rotated atoms</p></li>
 <li><p><strong>min_rmsd</strong> (<em>float</em>) – Minimum rmsd of coordinates</p></li>
@@ -872,7 +898,7 @@ sequence of resids as they appear in the topology in <cite>ref_resids</cite> or
 <p>(This translation table <em>is</em> combined with any value for
 <cite>ref_offset</cite> or <cite>target_offset</cite>!)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fastafilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>path to filename</em>) – FASTA file with first sequence as reference and
 second the one to be aligned (ORDER IS IMPORTANT!)</p></li>
@@ -900,12 +926,12 @@ with the suffix ‘.dnd’ instead of ‘.aln’</p></li>
 needed for <cite>is_aligned</cite> = <code class="docutils literal notranslate"><span class="pre">False</span></code>, default: “ClustalW2”</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>select_dict</strong> – dictionary with ‘reference’ and ‘mobile’ selection string
 that can be used immediately in <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlignTraj</span></code></a> as
 <code class="docutils literal notranslate"><span class="pre">select=select_dict</span></code>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
@@ -932,7 +958,7 @@ should be suitable for two similar sequences. For sequences with
 low sequence identity, more specialized tools such as clustalw,
 muscle, tcoffee, or similar should be used.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mobile</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Atom group to be aligned</p></li>
 <li><p><strong>reference</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Atom group to be aligned against</p></li>
@@ -944,11 +970,11 @@ for sequences with low identity, default : -2</p></li>
 <li><p><strong>gapextension_penalty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default -0.1</em>) – penalty for extending a gap, default: -0.1</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>alignment</strong> – Tuple of top sequence matching output <cite>(‘Sequence A’, ‘Sequence B’, score,
 begin, end)</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
 </dd>
 </dl>
@@ -1010,7 +1036,7 @@ by more than <cite>tol_mass</cite> the test is considered failed and a
 <p>The log file (see <a class="reference internal" href="../lib/log.html#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.start_logging()</span></code></a>) will contain detailed
 information about mismatches.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ag1</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – First <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instance that is
 compared</p></li>
@@ -1037,16 +1063,16 @@ for details.</p>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>(g1, g2)</strong> – Tuple with <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 instances that match, atom by atom. The groups are either the
 original groups if all matched or slices of the original
 groups.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.SelectionError" title="MDAnalysis.exceptions.SelectionError"><strong>SelectionError</strong></a> – Error raised if the number of residues does not match or if in the final
     matching masses differ by more than <em>tol</em>.</p>
 </dd>
@@ -1083,13 +1109,14 @@ global alignment is too expensive).</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

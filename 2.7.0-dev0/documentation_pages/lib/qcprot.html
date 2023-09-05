@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -36,15 +45,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,6 +76,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -126,19 +152,19 @@
   <span class="target" id="module-MDAnalysis.lib.qcprot"></span><section id="fast-qcp-rmsd-structure-alignment-mdanalysis-lib-qcprot">
 <h1><span class="section-number">13.2.9. </span>Fast QCP RMSD structure alignment — <a class="reference internal" href="#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a><a class="headerlink" href="#fast-qcp-rmsd-structure-alignment-mdanalysis-lib-qcprot" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Joshua L. Adelman, University of Pittsburgh</p>
 </dd>
-<dt class="field-even">Author</dt>
+<dt class="field-even">Author<span class="colon">:</span></dt>
 <dd class="field-even"><p>Robert R. Delgado, Cornell University and Arizona State University</p>
 </dd>
-<dt class="field-odd">Contact</dt>
+<dt class="field-odd">Contact<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="mailto:jla65&#37;&#52;&#48;pitt&#46;edu">jla65<span>&#64;</span>pitt<span>&#46;</span>edu</a></p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2011, 2016</p>
 </dd>
-<dt class="field-odd">Licence</dt>
+<dt class="field-odd">Licence<span class="colon">:</span></dt>
 <dd class="field-odd"><p>BSD</p>
 </dd>
 </dl>
@@ -164,18 +190,20 @@ coordinate arrays: shape (N, 3)</p>
 <p class="rubric">References</p>
 <p>If you use this QCP rotation calculation method in a publication, please
 reference:</p>
-<dl class="citation">
-<dt class="label" id="theobald2005"><span class="brackets"><a class="fn-backref" href="#id1">Theobald2005</a></span></dt>
-<dd><p>Douglas L. Theobald (2005)
+<div role="list" class="citation-list">
+<div class="citation" id="theobald2005" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Theobald2005</a><span class="fn-bracket">]</span></span>
+<p>Douglas L. Theobald (2005)
 “Rapid calculation of RMSD using a quaternion-based characteristic
 polynomial.”  Acta Crystallographica A 61(4):478-480.</p>
-</dd>
-<dt class="label" id="liu2010"><span class="brackets"><a class="fn-backref" href="#id2">Liu2010</a></span></dt>
-<dd><p>Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald (2010)
+</div>
+<div class="citation" id="liu2010" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Liu2010</a><span class="fn-bracket">]</span></span>
+<p>Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald (2010)
 “Fast determination of the optimal rotational matrix for macromolecular
 superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
-</dd>
-</dl>
+</div>
+</div>
 <section id="functions">
 <h2><span class="section-number">13.2.9.1. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
 <p>Users will typically use the <a class="reference internal" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">CalcRMSDRotationalMatrix()</span></code></a> function.</p>
@@ -184,7 +212,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">CalcRMSDRotationalMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the RMSD &amp; rotational matrix.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ref</strong> (<em>ndarray</em>) – reference structure coordinates, shape (N, 3)</p></li>
 <li><p><strong>conf</strong> (<em>ndarray</em>) – condidate structure coordinates, shape (N, 3)</p></li>
@@ -193,7 +221,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <li><p><strong>weights</strong> (<em>ndarray</em><em> or </em><em>None</em>) – weights for each component</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>rmsd</strong> (<em>float</em>) – RMSD value</p></li>
 <li><p><em>.. versionchanged:: 0.16.0</em> – Array size changed from 3xN to Nx3.</p></li>
@@ -209,7 +237,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">InnerProduct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.InnerProduct" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the inner product of two structures.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>A</strong> (<em>ndarray</em>) – result inner product array, modified in place</p></li>
 <li><p><strong>coords1</strong> (<em>ndarray</em>) – reference structure</p></li>
@@ -218,7 +246,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <li><p><strong>weight</strong> (<em>ndarray</em><em> or </em><em>None</em>) – used to calculate weighted inner product</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>E0</strong> (<em>float</em>)</p></li>
 <li><p>0.5 * (G1 + G2), can be used as input for <a class="reference internal" href="#MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation" title="MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation"><code class="xref py py-func docutils literal notranslate"><span class="pre">FastCalcRMSDAndRotation()</span></code></a></p></li>
@@ -245,7 +273,7 @@ function.</p></li>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.qcprot.</span></span><span class="sig-name descname"><span class="pre">FastCalcRMSDAndRotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the RMSD, and/or the optimal rotation matrix.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rot</strong> (<em>ndarray</em><em> or </em><em>None</em>) – result rotation matrix, modified inplace</p></li>
 <li><p><strong>A</strong> (<em>ndarray</em>) – the inner product of two structures</p></li>
@@ -253,10 +281,10 @@ function.</p></li>
 <li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of the system</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>rmsd</strong> – RMSD value for two structures</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>double</p>
 </dd>
 </dl>
@@ -287,13 +315,14 @@ double precision for QCP algorithm</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

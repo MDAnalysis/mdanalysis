@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.7.1.2. HELANAL — analysis of protein helices &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -36,15 +45,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,6 +76,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -123,13 +149,13 @@
   <span class="target" id="module-MDAnalysis.analysis.helix_analysis"></span><section id="helanal-analysis-of-protein-helices">
 <h1><span class="section-number">4.7.1.2. </span>HELANAL — analysis of protein helices<a class="headerlink" href="#helanal-analysis-of-protein-helices" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Lily Wang</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2020</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -143,18 +169,20 @@
 Cα atoms. It can determine local structural features such as the local
 helical twist and rise, virtual torsion angle, local helix origins and
 bending angles between successive local helix axes.</p>
-<dl class="citation">
-<dt class="label" id="sugeta1967"><span class="brackets"><a class="fn-backref" href="#id2">Sugeta1967</a></span></dt>
-<dd><p>Sugeta, H. and Miyazawa, T. 1967. General method for
+<div role="list" class="citation-list">
+<div class="citation" id="sugeta1967" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Sugeta1967</a><span class="fn-bracket">]</span></span>
+<p>Sugeta, H. and Miyazawa, T. 1967. General method for
 calculating helical parameters of polymer chains from bond lengths, bond
 angles and internal rotation angles. <em>Biopolymers</em> 5 673 - 679</p>
-</dd>
-<dt class="label" id="bansal2000"><span class="brackets"><a class="fn-backref" href="#id1">Bansal2000</a></span></dt>
-<dd><p>Bansal M, Kumar S, Velavan R. 2000.
+</div>
+<div class="citation" id="bansal2000" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Bansal2000</a><span class="fn-bracket">]</span></span>
+<p>Bansal M, Kumar S, Velavan R. 2000.
 HELANAL - A program to characterise helix geometry in proteins.
 <em>J Biomol Struct Dyn.</em>  17(5):811-819.</p>
-</dd>
-</dl>
+</div>
+</div>
 <section id="example-use">
 <h2><span class="section-number">4.7.1.2.1. </span>Example use<a class="headerlink" href="#example-use" title="Permalink to this heading"></a></h2>
 <p>You can pass in a single selection:</p>
@@ -176,12 +204,281 @@ in multiple selection strings:</p>
                                   <span class="s1">&#39;name CA and resnum 200-230&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">helix_analysis()</span></code> function will carry out helix analysis on
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.helix_analysis.helix_analysis" title="MDAnalysis.analysis.helix_analysis.helix_analysis"><code class="xref py py-func docutils literal notranslate"><span class="pre">helix_analysis()</span></code></a> function will carry out helix analysis on
 atom positions, treating each row of coordinates as an alpha-carbon
 equivalent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hel_xyz</span> <span class="o">=</span> <span class="n">hel</span><span class="o">.</span><span class="n">helix_analysis</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
+</section>
+<section id="classes">
+<h2><span class="section-number">4.7.1.2.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.helix_analysis.</span></span><span class="sig-name descname"><span class="pre">HELANAL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten_single_helix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_residue_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helix_analysis.html#HELANAL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL" title="Permalink to this definition"></a></dt>
+<dd><p>Perform HELANAL helix analysis on your trajectory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The Universe or AtomGroup to apply the analysis to.</p></li>
+<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>iterable</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The selection string to create an atom selection that the HELANAL
+analysis is applied to. Note that HELANAL is designed to work on the
+alpha-carbon atoms of protein residues. If you pass in multiple
+selections, the selections will be analysed separately.</p></li>
+<li><p><strong>ref_axis</strong> (<em>array-like</em><em> of </em><em>length 3</em><em>, </em><em>optional</em>) – The reference axis used to calculate the tilt of the vector
+of best fit, and the local screw angles.</p></li>
+<li><p><strong>flatten_single_helix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to flatten results if only one selection is passed.</p></li>
+<li><p><strong>split_residue_sequences</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to split the residue sequence into individual helices.
+This keyword only applies if a residue gap is present in the
+AtomGroup generated by a <code class="docutils literal notranslate"><span class="pre">select</span></code> string.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the residues will be analysed as a single helix.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, each group of consecutive residues will be treated
+as a separate helix.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on more logging and debugging.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_twists">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_twists</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_twists" title="Permalink to this definition"></a></dt>
+<dd><p>The local twist angle from atom i+1 to i+2.
+Each array has shape (n_frames, n_residues-3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_nres_per_turn">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_nres_per_turn</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_nres_per_turn" title="Permalink to this definition"></a></dt>
+<dd><p>Number of residues per turn, based on local_twist.
+Each array has shape (n_frames, n_residues-3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_axes">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_axes</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_axes" title="Permalink to this definition"></a></dt>
+<dd><p>The length-wise helix axis of the local window.
+Each array has shape (n_frames, n_residues-3, 3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_heights">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_heights</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_heights" title="Permalink to this definition"></a></dt>
+<dd><p>The rise of each local helix.
+Each array has shape (n_frames, n_residues-3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_helix_directions">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_helix_directions</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_helix_directions" title="Permalink to this definition"></a></dt>
+<dd><p>The unit vector from each local origin to atom i+1.
+Each array has shape (n_frames, n_residues-2, 3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_origins">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_origins</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_origins" title="Permalink to this definition"></a></dt>
+<dd><p>The projected origin for each helix.
+Each array has shape (n_frames, n_residues-2, 3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_screw_angles">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_screw_angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_screw_angles" title="Permalink to this definition"></a></dt>
+<dd><p>The local screw angle for each helix.
+Each array has shape (n_frames, n_residues-2)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.local_bends">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">local_bends</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.local_bends" title="Permalink to this definition"></a></dt>
+<dd><p>The angles between local helix axes, 3 windows apart.
+Each array has shape (n_frames, n_residues-6)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.all_bends">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">all_bends</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.all_bends" title="Permalink to this definition"></a></dt>
+<dd><p>The angles between local helix axes.
+Each array has shape (n_frames, n_residues-3, n_residues-3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.global_axis">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">global_axis</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.global_axis" title="Permalink to this definition"></a></dt>
+<dd><p>The length-wise axis for the overall helix. This points at
+the first helix window in the helix, so it runs opposite to
+the direction of the residue numbers.
+Each array has shape (n_frames, 3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.global_tilts">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">global_tilts</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.global_tilts" title="Permalink to this definition"></a></dt>
+<dd><p>The angle between the global axis and the reference axis.
+Each array has shape (n_frames,)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.HELANAL.results.summary">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">summary</span></span><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.HELANAL.results.summary" title="Permalink to this definition"></a></dt>
+<dd><p>Summary of stats for each property: the mean, the sample
+standard deviation, and the mean absolute deviation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of dicts</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">4.7.1.2.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.helix_analysis">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.helix_analysis.</span></span><span class="sig-name descname"><span class="pre">helix_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helix_analysis.html#helix_analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.helix_analysis" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate helix properties from atomic coordinates.</p>
+<p>Each property is calculated from a sliding window of 4 atoms,
+from i to i+3. Any property whose name begins with ‘local’ is a
+property of a sliding window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (N, 3)) – Atomic coordinates.</p></li>
+<li><p><strong>ref_axis</strong> (<em>array-like</em><em> of </em><em>length 3</em><em>, </em><em>optional</em>) – The reference axis used to calculate the tilt of the vector
+of best fit, and the local screw angles.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>local_twists<span class="classifier">array, shape (N-3,)</span></dt><dd><p>local twist angle from atom i+1 to i+2</p>
+</dd>
+<dt>local_nres_per_turn<span class="classifier">array, shape (N-3,)</span></dt><dd><p>number of residues per turn, based on local_twist</p>
+</dd>
+<dt>local_axes<span class="classifier">array, shape (N-3, 3)</span></dt><dd><p>the length-wise helix axis of the local window</p>
+</dd>
+<dt>local_bends<span class="classifier">array, shape (N-6,)</span></dt><dd><p>the angles between local helix angles, 3 windows apart</p>
+</dd>
+<dt>local_heights<span class="classifier">array, shape (N-3,)</span></dt><dd><p>the rise of each local helix</p>
+</dd>
+<dt>local_helix_directions<span class="classifier">array, shape (N-2, 3)</span></dt><dd><p>the unit vector from each local origin to atom i+1</p>
+</dd>
+<dt>local_origins<span class="classifier">array, shape (N-2, 3)</span></dt><dd><p>the projected origin for each helix</p>
+</dd>
+<dt>all_bends<span class="classifier">array, shape (N-3, N-3)</span></dt><dd><p>angles between each local axis</p>
+</dd>
+<dt>global_axis<span class="classifier">array, shape (3,)</span></dt><dd><p>vector of best fit through origins, pointing at the first origin.</p>
+</dd>
+<dt>local_screw_angles<span class="classifier">array, shape (N-2,)</span></dt><dd><p>cylindrical azimuth angle to plane of global_axis and ref_axis</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict with the following keys</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.vector_of_best_fit">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.helix_analysis.</span></span><span class="sig-name descname"><span class="pre">vector_of_best_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helix_analysis.html#vector_of_best_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.vector_of_best_fit" title="Permalink to this definition"></a></dt>
+<dd><p>Fit vector through the centered coordinates,
+pointing to the first coordinate (i.e. upside-down).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>coordinates</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (N, 3)) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Vector of best fit.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (3,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.helix_analysis.local_screw_angles">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.helix_analysis.</span></span><span class="sig-name descname"><span class="pre">local_screw_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">helix_directions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helix_analysis.html#local_screw_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.helix_analysis.local_screw_angles" title="Permalink to this definition"></a></dt>
+<dd><p>Cylindrical azimuth angles between the local direction vectors,
+as projected onto the cross-section of the helix, from (-pi, pi].
+The origin (angle=0) is set to the plane of global_axis and ref_axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>global_axis</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (3,)) – Vector of best fit. Screw angles are calculated perpendicular to
+this axis.</p></li>
+<li><p><strong>ref_axis</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (3,)) – Reference length-wise axis. One of the reference vectors is
+orthogonal to this axis.</p></li>
+<li><p><strong>helix_directions</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (N, 3)) – array of vectors representing the local direction of each
+helix window.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array of screw angles.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (N,)</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -200,13 +497,14 @@ equivalent:</p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>

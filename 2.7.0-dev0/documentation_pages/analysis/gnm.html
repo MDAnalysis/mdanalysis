@@ -1,22 +1,31 @@
+
+
+
+  
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.7.1.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+      <link rel="stylesheet" href="../../_static/site.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -37,15 +46,30 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
 
-          
-          
-          <a href="../../index.html">
-            
-              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                2.7.0-dev0
-              </div>
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0-dev0
+    </div>
+  
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -53,6 +77,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
@@ -124,18 +150,18 @@
   <span class="target" id="module-MDAnalysis.analysis.gnm"></span><section id="elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm">
 <h1><span class="section-number">4.7.1.1. </span>Elastic network analysis of MD trajectories — <a class="reference internal" href="#module-MDAnalysis.analysis.gnm" title="MDAnalysis.analysis.gnm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a><a class="headerlink" href="#elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Benjamin Hall &lt;<a class="reference external" href="mailto:benjamin&#46;a&#46;hall&#37;&#52;&#48;ucl&#46;ac&#46;uk">benjamin<span>&#46;</span>a<span>&#46;</span>hall<span>&#64;</span>ucl<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;</p>
 </dd>
-<dt class="field-even">Year</dt>
+<dt class="field-even">Year<span class="colon">:</span></dt>
 <dd class="field-even"><p>2011</p>
 </dd>
-<dt class="field-odd">Copyright</dt>
+<dt class="field-odd">Copyright<span class="colon">:</span></dt>
 <dd class="field-odd"><p>GNU Public License v2 or later</p>
 </dd>
 </dl>
 <p>Analyse a trajectory using elastic network models, following the approach of
-<span id="id1">[<a class="reference internal" href="#id27" title="Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and Philip C. Biggin. Characterization of protein conformational states by normal-mode frequencies. Journal of the American Chemical Society, 129(37):11394-11401, 2007. PMID: 17715919. doi:10.1021/ja071797y.">Hall2007</a>]</span>.</p>
+<a class="footnote-reference brackets" href="#footcite-hall2007" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <p>An example is provided in the MDAnalysis <a class="reference external" href="https://github.com/MDAnalysis/MDAnalysisCookbook">Cookbook</a>, listed as <a class="reference external" href="https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/GNMExample.py">GNMExample</a>.</p>
 <p>The basic approach is to pass a trajectory to <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">GNMAnalysis</span></code></a> and then run
 the analysis:</p>
@@ -151,14 +177,15 @@ the analysis:</p>
 </pre></div>
 </div>
 <p>The results are found in <code class="xref py py-attr docutils literal notranslate"><span class="pre">GNMAnalysis.results</span></code>, which can be
-used for further processing (see <span id="id2">[<a class="reference internal" href="#id27" title="Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and Philip C. Biggin. Characterization of protein conformational states by normal-mode frequencies. Journal of the American Chemical Society, 129(37):11394-11401, 2007. PMID: 17715919. doi:10.1021/ja071797y.">Hall2007</a>]</span>).</p>
+used for further processing (see <a class="footnote-reference brackets" href="#footcite-hall2007" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>).</p>
 <p class="rubric">References</p>
 <div class="docutils container" id="id3">
-<dl class="citation">
-<dt class="label" id="id27"><span class="brackets">Hall2007</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
-<dd><p>Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and Philip C. Biggin. Characterization of protein conformational states by normal-mode frequencies. <em>Journal of the American Chemical Society</em>, 129(37):11394–11401, 2007. PMID: 17715919. <a class="reference external" href="https://doi.org/10.1021/ja071797y">doi:10.1021/ja071797y</a>.</p>
-</dd>
-</dl>
+<aside class="footnote brackets" id="footcite-hall2007" role="note">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
+<p>Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and Philip C. Biggin. Characterization of protein conformational states by normal-mode frequencies. <em>Journal of the American Chemical Society</em>, 129(37):11394–11401, 2007. PMID: 17715919. <a class="reference external" href="https://doi.org/10.1021/ja071797y">doi:10.1021/ja071797y</a>.</p>
+</aside>
+</aside>
 </div>
 <section id="analysis-tasks">
 <h2><span class="section-number">4.7.1.1.1. </span>Analysis tasks<a class="headerlink" href="#analysis-tasks" title="Permalink to this heading"></a></h2>
@@ -171,7 +198,7 @@ calculated.  By default, this stores the dominant eigenvector
 and its associated eigenvalue; either can be used to monitor
 conformational change in a simulation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Analyze the full trajectory in the universe.</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string</p></li>
@@ -192,7 +219,7 @@ double counting. No checks are applied.</p></li>
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results.times" title="Permalink to this definition"></a></dt>
 <dd><p>simulation times used in analysis</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -203,7 +230,7 @@ double counting. No checks are applied.</p></li>
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">eigenvalues</span></span><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results.eigenvalues" title="Permalink to this definition"></a></dt>
 <dd><p>calculated eigenvalues</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -214,7 +241,7 @@ double counting. No checks are applied.</p></li>
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">eigenvectors</span></span><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results.eigenvectors" title="Permalink to this definition"></a></dt>
 <dd><p>calculated eigenvectors</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -243,10 +270,10 @@ store results as attributes <code class="docutils literal notranslate"><span cla
 near-neighbours and then calculating which are are within
 the cutoff.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the resulting Kirchhoff matrix</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>array</p>
 </dd>
 </dl>
@@ -262,7 +289,7 @@ the cutoff.</p>
 constructed from the close contacts between individual atoms
 in different residues.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Analyze the full trajectory in the universe.</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string</p></li>
@@ -281,7 +308,7 @@ the atoms that form a contact.</p></li>
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.times" title="Permalink to this definition"></a></dt>
 <dd><p>simulation times used in analysis</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -292,7 +319,7 @@ the atoms that form a contact.</p></li>
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">eigenvalues</span></span><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.eigenvalues" title="Permalink to this definition"></a></dt>
 <dd><p>calculated eigenvalues</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -303,7 +330,7 @@ the atoms that form a contact.</p></li>
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">eigenvectors</span></span><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.eigenvectors" title="Permalink to this definition"></a></dt>
 <dd><p>calculated eigenvectors</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -338,10 +365,10 @@ store results as attributes <code class="docutils literal notranslate"><span cla
 near-neighbours and then calculating which are are within
 the cutoff.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the resulting Kirchhoff matrix</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>array</p>
 </dd>
 </dl>
@@ -364,7 +391,7 @@ to search the neighbouring boxes to find the particles within the <cite>cutoff</
 <p>Observed a 6x speed up for a smallish protein with ~300 residues; this
 should get better with bigger systems.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>positions</strong> (<em>array</em>) – coordinates of the atoms</p></li>
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – find particles with distance less than <cite>cutoff</cite> from each other; the
@@ -401,13 +428,14 @@ grid will consist of boxes with sides of at least length <cite>cutoff</cite></p>
   </div>
 
   
- 
+
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
     to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
     <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </div>
+
 
 
 </footer>
