@@ -78,6 +78,8 @@ from .base import AnalysisBase, Results
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
 
+# Deprecation: In 3.0.0 change type to just
+# ResidueClass = ResidueGroup
 ResidueClass = Union[List[Residue], ResidueGroup]
 r"""A type alias for :code:`Union[Residue, ResidueGroup]`
 
