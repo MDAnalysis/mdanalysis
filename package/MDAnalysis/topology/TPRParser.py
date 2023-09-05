@@ -113,7 +113,7 @@ Development notes
 The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:
 
-* Atoms: number, name, type, resname, resid, segid, mass, charge, element
+* Atoms: number, name, type, resname, resid, segid, chainID, mass, charge, element
   [residue, segment, radius, bfactor, resnum, moltype]
 * Bonds
 * Angles
