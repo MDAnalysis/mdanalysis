@@ -93,45 +93,6 @@ def square(x):
     """
     return x**2
 
-# class TestParallelExecutor:
-#     @pytest.mark.parametrize(
-#         "backend,n_workers,client",
-#         [
-#             (b, n, c)
-#             for b in [
-#                 "local",
-#                 "multiprocessing",
-#                 "dask",
-#                 "dask.distributed",
-#                 "nonexistent_module_X",
-#                 None,
-#             ]
-#             for n in (-1, None, 1, 2, 3)
-#             for c in (None, get_running_dask_client(), object)
-#         ],
-#     )
-#     def test_combinations(self, backend, n_workers, client):
-#         failing_conditions = [
-#             backend not in base.ParallelExecutor.available_backends,
-#             backend is None and client is None,
-#             backend is not None and client is not None,
-#             backend == 'dask.distributed',
-#             n_workers is None,
-#             isinstance(n_workers, int) and n_workers < 0,
-#             backend not in ['local', None] and not is_installed(backend),
-#         ]
-#         raised = ValueError if any(failing_conditions) else FinallyRaised
-#         with pytest.raises(raised):
-#             executor = base.ParallelExecutor(
-#                 backend=backend, n_workers=n_workers, client=client
-#             )
-#             func = square
-#             arr = list(range(10))
-#             correct_results = list(map(func, arr))
-#             computed_results = executor.apply(func, arr)
-#             assert computed_results == correct_results
-#             raise FinallyRaised
-
 
 class Test_Results:
 
