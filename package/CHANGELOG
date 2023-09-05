@@ -31,6 +31,8 @@ Enhancements
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
+  * Add support for reading chainID info from GROMACS TPR topologies (PR #4281)
+
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
