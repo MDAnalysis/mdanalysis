@@ -30,7 +30,7 @@ The consequence of this is that particles will diffuse across periodic boundarie
 needed. This unwrapping method is suitable as a preprocessing step to calculate
 molecular diffusion, or more commonly to keep multi-domain proteins whole during trajectory
 analysis.
-The algorithm used is based on :cite:p:`Kulke2022`.
+The algorithm used is based on :footcite:p:`Kulke2022`.
 
 .. autoclass:: NoJump
 
@@ -47,7 +47,7 @@ class NoJump(TransformationBase):
     """
     Returns transformed coordinates for the given timestep so that an atom
     does not move more than half the periodic box size between two timesteps, and will move
-    across periodic boundary edges. The algorithm used is based on :cite:p:`Kulke2022`,
+    across periodic boundary edges. The algorithm used is based on :footcite:p:`Kulke2022`,
     equation B6 for non-orthogonal systems, so it is general to most applications where
     molecule trajectories should not "jump" from one side of a periodic box to another.
     
@@ -85,11 +85,7 @@ class NoJump(TransformationBase):
 
     References
     ----------
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        Kulke2022
+    .. footbibliography::
 
     """
 

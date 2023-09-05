@@ -34,6 +34,15 @@ Guesses the following attributes:
  - Masses
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
+
+Classes
+-------
+
+.. autoclass:: ConfigParser
+
+.. autoclass:: HistoryParser
+
+
 """
 import numpy as np
 
