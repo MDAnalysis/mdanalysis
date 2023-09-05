@@ -67,6 +67,7 @@ from ...core.topologyattrs import (
     Moltypes,
     Molnums,
     Segids,
+    ChainIDs,
     Bonds,
     Angles,
     Dihedrals,
@@ -308,6 +309,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
 
     atomids = []
     segids = []
+    chainIDs = []
     resids = []
     resnames = []
     atomnames = []
@@ -328,11 +330,13 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         # naming is kind of arbitrary
         molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
         segid = f"seg_{i}_{molblock}"
+        chainID = molblock[14:] if molblock[:14] == "Protein_chain_" else molblock
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
                 atomids.append(atomkind.id + atom_start_ndx)
                 segids.append(segid)
+                chainIDs.append(chainID)
                 resids.append(atomkind.resid + res_start_ndx)
                 resnames.append(atomkind.resname.decode())
                 atomnames.append(atomkind.name.decode())
@@ -362,6 +366,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     moltypes = np.array(moltypes, dtype=object)
     molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
+    chainIDs = np.array(chainIDs, dtype=object)
     resids = np.array(resids, dtype=np.int32)
     if tpr_resid_from_one:
         resids += 1
@@ -371,13 +376,15 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
      (new_resnames,
       new_moltypes,
       new_molnums,
-      perres_segids
+      perres_segids,
+      perres_chainIDs
       )
      ) = squash_by(resids,
                    resnames,
                    moltypes,
                    molnums,
-                   segids)
+                   segids,
+                   chainIDs)
     residueids = Resids(new_resids)
     residuenames = Resnames(new_resnames)
     residue_moltypes = Moltypes(new_moltypes)
@@ -385,13 +392,15 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
 
     segidx, perseg_segids = squash_by(perres_segids)[:2]
     segids = Segids(perseg_segids)
+    chainIDs = ChainIDs(chainIDs)
+
 
     top = Topology(len(atomids), len(new_resids), len(perseg_segids),
                    attrs=[atomids, atomnames, atomtypes,
                           charges, masses,
                           residueids, residuenames,
                           residue_moltypes, residue_molnums,
-                          segids],
+                          segids, chainIDs],
                    atom_resindex=residx,
                    residue_segindex=segidx)
     top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))

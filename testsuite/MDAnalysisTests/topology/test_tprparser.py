@@ -70,7 +70,7 @@ BONDED_TPRS = (
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
     expected_attrs = ['ids', 'names', 'elements',
-                      'resids', 'resnames',
+                      'resids', 'resnames', 'chainIDs',
                       'moltypes', 'molnums', 'charges',
                       'bonds', 'angles', 'dihedrals', 'impropers']
 
