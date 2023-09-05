@@ -2,7 +2,7 @@ from collections import UserDict
 import numpy as np
 from importlib import import_module
 import warnings
-from typing import Callable, Iterable, Sequence
+from typing import Callable, Iterable, Sequence, Union
 
 from MDAnalysis.lib.util import is_installed
 
@@ -98,6 +98,95 @@ class Results(UserDict):
         self.data = state
 
 
+class BackendBase:
+    def __init__(self, n_workers: int):
+        self.n_workers = n_workers
+        self._validate()
+
+    def _get_checks(self):
+        return {
+            isinstance(self.n_workers, int)
+            and self.n_workers > 0: f"n_workers should be positive integer, got {self.n_workers=}",
+        }
+
+    def _get_warnings(self):
+        return dict()
+
+    def _validate(self):
+        for check, msg in self._get_checks().items():
+            if not check:
+                raise ValueError(msg)
+        for check, msg in self._get_warnings().items():
+            if not check:
+                warnings.warn(msg)
+
+    def apply(self, func: Callable, computations: list) -> list:
+        raise NotImplementedError("Should be re-implemented in subclasses")
+
+
+class BackendSerial(BackendBase):
+    def _get_warnigns(self):
+        return {self.n_workers > 1, "n_workers > 1 will be ignored while executing with backend='serial'"}
+
+    def apply(self, func: Callable, computations: list) -> list:
+        return [func(task) for task in computations]
+
+
+class BackendMultiprocessing(BackendBase):
+    def apply(self, func: Callable, computations: list) -> list:
+        from multiprocessing import Pool
+
+        with Pool(processes=self.n_workers) as pool:
+            results = pool.map(func, computations)
+        return results
+
+
+class BackendDask(BackendBase):
+    def apply(self, func: Callable, computations: list) -> list:
+        from dask.delayed import delayed
+        import dask
+
+        computations = [delayed(func)(task) for task in computations]
+        results = dask.compute(computations, scheduler="processes", chunksize=1, n_workers=self.n_workers)[0]
+        return results
+
+    def _get_checks(self):
+        base_checks = super()._get_checks()
+        checks = {is_installed("dask"): "module 'dask' should be installed: run 'python3 -m pip install dask"}
+        return base_checks | checks
+
+
+class BackendDaskDistributed(BackendBase):
+    def __init__(self, client, n_workers: int = None):
+        self.client = client
+        self.n_workers = n_workers
+        self._validate()
+        self.n_workers = sum(client.nthreads().values())
+
+    def _get_checks(self):
+        from dask.distributed import Client
+
+        checks = {
+            is_installed("dask.distributed"): "module 'dask' should be installed: run 'python3 -m pip install dask",
+            isinstance(
+                self.client, Client
+            ): f"self.client should be instance of dask.distributed.Client, got {type(self.client)=}",
+        }
+        return checks
+
+    def _get_warnings(self):
+        return {
+            self.n_workers
+            is not None: "n_workers will be ignored with 'dask.distributed' backend and deduced from self.client directly",
+        }
+
+    def apply(self, func: Callable, computations: list) -> list:
+        from dask.delayed import delayed
+
+        computations = [delayed(func)(task) for task in computations]
+        return [obj.result() for obj in self.client.compute(computations)]
+
+
 class ParallelExecutor:
     r"""Executor object that abstracts away running parallel computations
     with various backends. Mainly is used for AnalysisBase, but can be used for other purposes as well."""
@@ -116,47 +205,28 @@ class ParallelExecutor:
         """
         return ("local", "multiprocessing", "dask", "dask.distributed")
 
-    def __init__(self, backend: str, n_workers: int, client: object = None):
-        """Generates an instance of a ParallelExecutor class, setting up correct
-        computation parameters upon initialization.
+    def __init__(self, backend: Union[str, BackendBase], n_workers: int):
+        # checks = {
+        #     f"Should have only one of 'client' and 'backend' as non-None value, got {client=} and {backend=}": sum(
+        #         (val is None for val in (client, backend))
+        #     )
+        #     != 1,
+        #     f"'client' must be dask.distributed.Client instance, got {type(client)=}": client is not None
+        #     and not is_valid_distributed_client(client),
+        #     "if using dask.distributed backend, should set 'backend=None' and provide client argument": client is None
+        #     and backend == "dask.distributed",
+        #     f"'backend' should be one of the available backends {self.available_backends=}, got {backend=}": backend
+        #     is not None
+        #     and backend not in self.available_backends,
+        #     f"'n_workers' must be a positive integer, got {n_workers=}": not (
+        #         isinstance(n_workers, int) and n_workers > 0
+        #     ),
+        #     f"backend {backend} is not installed, please run 'python3 -m pip install {backend} to fix this": backend
+        #     not in ["local", None]
+        #     and not is_installed(backend),
+        # }
 
-        Parameters
-        ----------
-        backend : str
-            type of backend (one of `self.available_backends`)
-        n_workers : int
-            number of workers to split the workload between
-        client : object, optional
-            pre-configured client for running computations, by default None
-
-        Raises
-        ------
-        ValueError
-            Configuration is correct if n_workers > 0 and integer, 'backend' is in `available_backends`
-            and respective module is installed, or there is a pre-configured `client`
-            which is an instance of `dask.distributed.Client`. Any other configuration gets error.
-        """
-        errors = {
-            f"Should have only one of 'client' and 'backend' as non-None value, got {client=} and {backend=}": sum(
-                (val is None for val in (client, backend))
-            )
-            != 1,
-            f"'client' must be dask.distributed.Client instance, got {type(client)=}": client is not None
-            and not is_valid_distributed_client(client),
-            "if using dask.distributed backend, should set 'backend=None' and provide client argument": client is None
-            and backend == "dask.distributed",
-            f"'backend' should be one of the available backends {self.available_backends=}, got {backend=}": backend
-            is not None
-            and backend not in self.available_backends,
-            f"'n_workers' must be a positive integer, got {n_workers=}": not (
-                isinstance(n_workers, int) and n_workers > 0
-            ),
-            f"backend {backend} is not installed, please run 'python3 -m pip install {backend} to fix this": backend
-            not in ["local", None]
-            and not is_installed(backend),
-        }
-
-        for message, failing_condition in errors.items():
+        for message, failing_condition in checks.items():
             if failing_condition:
                 raise ValueError(message)
 

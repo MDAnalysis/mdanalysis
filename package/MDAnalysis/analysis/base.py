@@ -124,6 +124,7 @@ tools if only the single-frame analysis function needs to be written.
 import inspect
 import itertools
 import logging
+import warnings
 from functools import partial
 from typing import Callable, Iterable, Sequence
 
@@ -132,7 +133,15 @@ from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 
-from .parallel import ParallelExecutor, Results, ResultsGroup
+from .parallel import (
+    ParallelExecutor,
+    Results,
+    ResultsGroup,
+    BackendDask,
+    BackendDaskDistributed,
+    BackendMultiprocessing,
+    BackendSerial,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -411,7 +420,7 @@ class AnalysisBase(object):
 
         return np.array_split(enumerated_frames, n_parts)
 
-    def _configure_client(self, backend: str, n_workers: int, client):
+    def _configure_backend(self, backend: str, n_workers: int):
         """
         Configure parameters necessary for running a distributed workload.
 
@@ -435,10 +444,15 @@ class AnalysisBase(object):
         client : ParallelExecutor
             a ParallelExecutor instance, configured with given parameters
         """
-        backend_eval = 'dask.distributed' if client is not None else backend
-        if backend_eval is not None and backend_eval not in self.available_backends:
-            raise ValueError(f"backend={backend_eval} is not in {self.available_backends=} for class {self.__class__.__name__}")
-        return ParallelExecutor(backend=backend, n_workers=n_workers, client=client)
+        builtin_backends = {'local': BackendSerial, 'multiprocessing': BackendMultiprocessing, 'dask': BackendDask}
+
+        backend_class = builtin_backends.get(backend, None)
+        if backend_class is not None:
+            return backend_class(n_workers=n_workers)
+
+        if not hasattr(backend, 'apply'):
+            raise ValueError("{backend=} is invalid: should have 'apply' method")
+        return backend
 
     def run(
         self,
@@ -451,7 +465,6 @@ class AnalysisBase(object):
         n_parts: int = None,
         backend: str = None,
         *,
-        client: object = None,
         progressbar_kwargs={},
     ):
         """Perform the calculation
@@ -501,19 +514,20 @@ class AnalysisBase(object):
             allowing to modify description, position etc of tqdm progressbars
         """
         # default to local execution
-        backend = 'local' if backend is None and client is None else backend
+        backend = 'local' if backend is None else backend
 
-        if progressbar_kwargs and ((client is not None) or (backend not in (None, "local"))):
-            raise NotImplementedError("Can not display progressbar with non-local backend")
+        if progressbar_kwargs and backend != 'local':
+            raise ValueError("Can not display progressbar with non-local backend")
 
-        if n_workers is None:
-            n_workers = sum(client.nthreads().values()) if client else 1
+        n_workers = 1 if n_workers is None else n_workers
 
-        # validate input parameters
+        # set n_parts and check that is has a reasonable value
         n_parts = n_workers if n_parts is None else n_parts
 
         # do this as early as possible to check client parameters before any computations occur
-        executor = self._configure_client(backend=backend, n_workers=n_workers, client=client)
+        executor = self._configure_backend(backend=backend, n_workers=n_workers)
+        if hasattr(executor, 'n_workers') and n_parts < executor.n_workers:  # using executor's value here for non-default executors
+            warnings.warn('likely running not at full capacity: {executor.n_workers=} is greater than {n_parts=}')
 
         # start preparing the run
         worker_func = partial(self._compute, progressbar_kwargs=progressbar_kwargs, verbose=verbose)

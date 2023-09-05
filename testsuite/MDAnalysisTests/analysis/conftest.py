@@ -13,7 +13,7 @@ from MDAnalysisTests.analysis.test_base import (
 )
 from MDAnalysis.analysis.rms import RMSD, RMSF
 
-from MDAnalysis.analysis.parallel import ParallelExecutor
+from MDAnalysis.analysis.parallel import BackendDaskDistributed
 from MDAnalysis.lib.util import is_installed
 
 
@@ -73,9 +73,9 @@ def generate_client_fixture(cls):
     @pytest.fixture(scope="module", params=params)
     def generated_fixture(request, dask_client_1, dask_client_2):
         if request.param == "dask_client_1":
-            request.param = {"client": dask_client_1}
+            request.param = {"backend": BackendDaskDistributed(client=dask_client_1)}
         elif request.param == "dask_client_2":
-            request.param = {"client": dask_client_2}
+            request.param = {"backend": BackendDaskDistributed(client=dask_client_2)}
         return request.param
 
     return generated_fixture
