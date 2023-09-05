@@ -69,8 +69,9 @@ Changes
     as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
 
 Deprecations
-  * added `DeprecationWarning` to `analysis.nucleicacids.WatsonCrickDist` when
-    `List[Residue]` is given instead of `ResidueGroup`
+  * using `List[Residue]` as input for `analysis.nucleicacids.WatsonCrickDist()` is 
+    deprecated and will be removed in release 3.0.0; instead use a `ResidueGroup` 
+    (Issue #3720, PR #3735)
 
 
 08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
