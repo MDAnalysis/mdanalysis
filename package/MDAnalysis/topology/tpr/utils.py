@@ -376,15 +376,13 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
      (new_resnames,
       new_moltypes,
       new_molnums,
-      perres_segids,
-      perres_chainIDs
+      perres_segids
       )
      ) = squash_by(resids,
                    resnames,
                    moltypes,
                    molnums,
-                   segids,
-                   chainIDs)
+                   segids)
     residueids = Resids(new_resids)
     residuenames = Resnames(new_resnames)
     residue_moltypes = Moltypes(new_moltypes)
@@ -394,15 +392,26 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     segids = Segids(perseg_segids)
     chainIDs = ChainIDs(chainIDs)
 
-
-    top = Topology(len(atomids), len(new_resids), len(perseg_segids),
-                   attrs=[atomids, atomnames, atomtypes,
-                          charges, masses,
-                          residueids, residuenames,
-                          residue_moltypes, residue_molnums,
-                          segids, chainIDs],
-                   atom_resindex=residx,
-                   residue_segindex=segidx)
+    top = Topology(
+        len(atomids),
+        len(new_resids),
+        len(perseg_segids),
+        attrs=[
+            atomids,
+            atomnames,
+            atomtypes,
+            charges,
+            masses,
+            residueids,
+            residuenames,
+            residue_moltypes,
+            residue_molnums,
+            segids,
+            chainIDs,
+        ],
+        atom_resindex=residx,
+        residue_segindex=segidx,
+    )
     top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
     top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
     top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals
