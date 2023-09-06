@@ -32,8 +32,19 @@ class TestPDBQT(ParserBase):
     parser = mda.topology.PDBQTParser.PDBQTParser
     ref_filename = PDBQT_input
     expected_attrs = [
-        'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
-        'segids', 'record_types', 'icodes', 'occupancies', 'tempfactors'
+        "ids",
+        "names",
+        "charges",
+        "types",
+        "altLocs",
+        "resids",
+        "resnames",
+        "segids",
+        "chainIDs",
+        "record_types",
+        "icodes",
+        "occupancies",
+        "tempfactors",
     ]
     guessed_attrs = ['masses']
     expected_n_atoms = 1805
