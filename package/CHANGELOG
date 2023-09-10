@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers,
+          lilyminium
 
  * 2.7.0
 
@@ -24,6 +25,7 @@ Fixes
     their original type value (np.float64 and np.nan) (PR #4272)
   * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
     RMSD of None
+  * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
 
 Enhancements
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
