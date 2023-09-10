@@ -59,8 +59,9 @@ class ConfigParser(TopologyReaderBase):
     """DL_Poly CONFIG file parser
 
     .. versionadded:: 0.10.1
-    .. versionchanged:: 2.5.0
-      removed type and mass guessing (guessing takes place now inside the universe only)
+    .. versionchanged:: 2.7.0
+       Removed type and mass guessing (attributes guessing takes place now
+       through universe.guess_TopologyAttributes() API).
     """
     format = 'CONFIG'
 

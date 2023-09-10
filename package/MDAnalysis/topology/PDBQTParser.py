@@ -97,8 +97,9 @@ class PDBQTParser(TopologyReaderBase):
 
     .. versionchanged:: 0.18.0
        Added parsing of Record types
-    .. versionchanged:: 2.5.0
-      removed mass guessing (guessing takes place now inside the universe only)
+    .. versionchanged:: 2.7.0
+        Removed mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttributes() API).
 
     """
     format = 'PDBQT'

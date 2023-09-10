@@ -515,7 +515,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
     @classmethod
     def is_value_missing(self, value):
         """check if an attribute has a missing value
-        .. versionadded:: 2.5.0
+        .. versionadded:: 2.7.0
         """
         if hasattr(self, 'missing_value_label'):
             return value == self.missing_value_label
@@ -1998,7 +1998,7 @@ class Masses(AtomAttr):
     @classmethod
     def is_value_missing(self, value):
         """check if an attribute has a missing value
-        .. versionadded:: 2.5.0
+        .. versionadded:: 2.7.0
         """
         return np.isnan(value)
 

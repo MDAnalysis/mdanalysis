@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers,
+         aya9aladdin
 
  * 2.7.0
 
@@ -31,6 +32,12 @@ Enhancements
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
+  * Removed type and mass guessing processes from all parsers
+  *  Added guess_topologyAttributes() API to the universe to hande attribute guessing.
+  * Removed type guessing from RDKit converter
+  * Assigned type attribute to be equal to the element attribute, if type is
+    not provided for RDKit converter
+
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis

@@ -331,14 +331,13 @@ class Universe(object):
         ``topology`` and ``trajectory`` are reserved upon unpickle.
 
     .. versionchanged:: 2.5.0
-      added :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API
-      guessing masses and atom types when topology
-      is read from a registered parser
-
-
-    .. versionchanged:: 2.5.0
         Added fudge_factor and lower_bound parameters for use with
         *guess_bonds*.
+
+    .. versionchanged:: 2.7.0
+        Added :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API
+        guessing masses and atom types after topology
+        is read from a registered parser.
 
     """
 
@@ -1525,7 +1524,7 @@ class Universe(object):
 
             u.guess_TopologyAttributes(context='default', to_guess=['masses', 'types'])
 
-        .. versionadded:: 2.4.0
+        .. versionadded:: 2.7.0
 
         """
         if not context:

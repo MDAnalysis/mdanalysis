@@ -194,6 +194,9 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 2.5.0
        Formal charges will not be populated if an unknown entry is encountered,
        instead a UserWarning is emitted.
+    .. versionchanged:: 2.7.0
+        Removed type and mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttributes() API).
     """
     format = ['PDB', 'ENT']
 

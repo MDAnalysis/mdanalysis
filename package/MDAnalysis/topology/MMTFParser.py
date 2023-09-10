@@ -38,8 +38,9 @@ attribute on Universe.
 .. versionchanged:: 2.0.0
    Aliased ``bfactors`` topologyattribute to ``tempfactors``.
    ``tempfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
-.. versionchanged:: 2.5.0
-   removed mass guessing (guessing takes place now inside the universe only)
+.. versionchanged:: 2.7.0
+    Removed mass guessing (attributes guessing takes place now
+    through universe.guess_TopologyAttributes() API).
 
 Reads the following topology attributes:
 

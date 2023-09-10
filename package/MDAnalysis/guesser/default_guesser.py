@@ -79,7 +79,7 @@ class DefaultGuesser(GuesserBase):
 
         u = mda.Universe(two_water_gro, context = 'default', to_guess=['bonds'])
 
-    .. versionadded:: 2.5.0
+    .. versionadded:: 2.7.0
 
     """
     context = 'default'
