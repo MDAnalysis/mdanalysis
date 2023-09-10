@@ -34,7 +34,7 @@ Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 
 
 Analyse a trajectory using elastic network models, following the approach of
-:cite:p:`Hall2007`.
+:footcite:p:`Hall2007`.
 
 An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
 
@@ -58,15 +58,11 @@ the analysis:
 
 
 The results are found in :attr:`GNMAnalysis.results`, which can be
-used for further processing (see :cite:p:`Hall2007`).
+used for further processing (see :footcite:p:`Hall2007`).
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Hall2007
+.. footbibliography::
 
 
 Analysis tasks

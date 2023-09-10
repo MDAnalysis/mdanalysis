@@ -31,11 +31,11 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 
 This module contains classes for interconverting between Cartesian and an
 internal coordinate system, Bond-Angle-Torsion (BAT) coordinates
-:cite:p:`Chang2003`, for a given set of atoms or residues. This coordinate
+:footcite:p:`Chang2003`, for a given set of atoms or residues. This coordinate
 system is designed to be complete, non-redundant, and minimize correlations
 between degrees of freedom. Complete and non-redundant means that for N atoms
 there will be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions, as described in :cite:p:`Hikiri2016`.
+minimized by using improper torsions, as described in :footcite:p:`Hikiri2016`.
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -56,7 +56,7 @@ pointing from the first to second atom. It is described by the polar angle,
 :math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
 that describes the rotation of the third atom about the axis.
 
-This module was adapted from AlGDock :cite:p:`Minh2020`.
+This module was adapted from AlGDock :footcite:p:`Minh2020`.
 
 
 See Also
@@ -129,7 +129,7 @@ Store data to the disk and load it again::
 
 Analysis classes
 ----------------
- .. autoclass:: BAT
+.. autoclass:: BAT
     :members:
     :inherited-members:
 
@@ -154,13 +154,7 @@ Analysis classes
 References
 ----------
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Chang2003
-    Hikiri2016
-    Minh2020
+.. footbibliography::
 
 """
 import logging

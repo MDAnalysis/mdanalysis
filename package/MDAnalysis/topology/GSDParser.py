@@ -52,7 +52,6 @@ Classes
 
 """
 import os
-import gsd.hoomd
 import numpy as np
 
 from .base import TopologyReaderBase
@@ -73,6 +72,13 @@ from ..core.topologyattrs import (
     Resnames,
     Segids,
 )
+
+try:
+    import gsd.hoomd
+except ImportError:
+    HAS_GSD = False
+else:
+    HAS_GSD = True
 
 
 class GSDParser(TopologyReaderBase):
@@ -100,6 +106,14 @@ class GSDParser(TopologyReaderBase):
     """
     format = 'GSD'
 
+    def __init__(self, filename):
+
+        if not HAS_GSD:
+            errmsg = ("GSDParser: To read a Topology from a Hoomd GSD "
+                      "file, please install gsd")
+            raise ImportError(errmsg)
+        super(GSDParser, self).__init__(filename)
+
     def parse(self, **kwargs):
         """Parse Hoomd GSD file
 
@@ -107,7 +121,7 @@ class GSDParser(TopologyReaderBase):
         """
         attrs = {}
 
-        with gsd.hoomd.open(self.filename,mode='rb') as t :
+        with gsd.hoomd.open(self.filename, mode='r') as t :
             # Here it is assumed that the particle data does not change in the
             # trajectory.
             snap = t[0]

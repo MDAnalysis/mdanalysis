@@ -40,7 +40,7 @@ deduced.
 
 See Also
 --------
-`MDAnalysis.coordinates.PDBQT`
+:class:`MDAnalysis.coordinates.PDBQT`
 
 
 Classes

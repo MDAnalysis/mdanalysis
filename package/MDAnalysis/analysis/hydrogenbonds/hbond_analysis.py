@@ -59,12 +59,12 @@ Options:
 Output
 ------
 
-  - *frame* : frame at which a hydrogen bond was found
-  - *donor id* : atom id of the hydrogen bond donor atom
-  - *hydrogen id* : atom id of the hydrogen bond hydrogen atom
-  - *acceptor id* : atom id of the hydrogen bond acceptor atom
-  - *distance* (Å): length of the hydrogen bond
-  - *angle* (degrees): angle of the hydrogen bond
+- *frame* : frame at which a hydrogen bond was found
+- *donor id* : atom id of the hydrogen bond donor atom
+- *hydrogen id* : atom id of the hydrogen bond hydrogen atom
+- *acceptor id* : atom id of the hydrogen bond acceptor atom
+- *distance* (Å): length of the hydrogen bond
+- *angle* (degrees): angle of the hydrogen bond
 
 Hydrogen bond data are returned in a :class:`numpy.ndarray` on a "one line, one observation" basis
 and can be accessed via :attr:`HydrogenBondAnalysis.results.hbonds`::
@@ -249,6 +249,10 @@ from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel import find_hydrogen_donors
 
 from ...due import due, Doi
+
+
+logger = logging.getLogger(__name__)
+
 
 due.cite(Doi("10.1039/C9CP01532A"),
          description="Hydrogen bond analysis implementation",
@@ -676,16 +680,16 @@ class HydrogenBondAnalysis(AnalysisBase):
             # Find donors in G1 and acceptors in G2
             mask[
                     np.logical_and(
-                        np.in1d(donors.indices, group1.indices),
-                        np.in1d(acceptors.indices, group2.indices)
+                        np.isin(donors.indices, group1.indices),
+                        np.isin(acceptors.indices, group2.indices)
                     )
             ] = True
 
             # Find acceptors in G1 and donors in G2
             mask[
                 np.logical_and(
-                    np.in1d(acceptors.indices, group1.indices),
-                    np.in1d(donors.indices, group2.indices)
+                    np.isin(acceptors.indices, group1.indices),
+                    np.isin(donors.indices, group2.indices)
                 )
             ] = True
 
@@ -838,25 +842,25 @@ class HydrogenBondAnalysis(AnalysisBase):
         """
 
         if self.results.hbonds is None:
-            logging.error(
+            logger.error(
                 "Autocorrelation analysis of hydrogen bonds cannot be done"
                 "before the hydrogen bonds are found"
             )
-            logging.error(
+            logger.error(
                 "Autocorrelation: Please use the .run() before calling this"
                 "function"
             )
             raise NoDataError(".hbonds attribute is None: use .run() first")
 
         if self.step != 1:
-            logging.warning(
+            logger.warning(
                 "Autocorrelation: Hydrogen bonds were computed with step > 1."
             )
-            logging.warning(
+            logger.warning(
                 "Autocorrelation: We recommend recomputing hydrogen bonds with"
                 " step = 1."
             )
-            logging.warning(
+            logger.warning(
                 "Autocorrelation: if you would like to allow bonds to break"
                 " and reform, please use 'intermittency'"
             )

@@ -169,13 +169,18 @@ class PDBReader(base.ReaderBase):
     The following *PDB records* are parsed (see `PDB coordinate section`_ for
     details):
 
-     - *CRYST1* for unitcell A,B,C, alpha,beta,gamma
-     - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
-     - *HEADER* (:attr:`header`), *TITLE* (:attr:`title`), *COMPND*
-       (:attr:`compound`), *REMARK* (:attr:`remarks`)
-     - all other lines are ignored
+    - *CRYST1* for unitcell A,B,C, alpha,beta,gamma
+    - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
+    - *HEADER* (:attr:`header`), *TITLE* (:attr:`title`), *COMPND*
+        (:attr:`compound`), *REMARK* (:attr:`remarks`)
+    - all other lines are ignored
 
-    Reads multi-`MODEL`_ PDB files as trajectories.
+    
+    Reads multi-`MODEL`_ PDB files as trajectories.  The `Timestep.data` dictionary
+    holds the occupancy and tempfactor (bfactor) values for each atom for a given frame.
+    These attributes are commonly appropriated to store other time varying properties
+    and so they are exposed here. Note this does not update the `AtomGroup` attributes,
+    as the topology does not change with trajectory iteration.
 
     .. _PDB-formatted:
        http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
@@ -231,6 +236,7 @@ class PDBReader(base.ReaderBase):
     :class:`PDBWriter`
     :class:`PDBReader`
 
+    
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
        * New :attr:`title` (list with all TITLE lines).
@@ -239,8 +245,11 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
     .. versionchanged:: 1.0.0
-       Raise user warning for CRYST1_ record with unitary valuse
+       Raise user warning for CRYST1_ record with unitary values
        (cubic box with sides of 1 Å) and do not set cell dimensions.
+    .. versionchanged:: 2.5.0
+       Tempfactors (aka bfactors) are now read into the ts.data dictionary each
+       frame.  Occupancies are also read into this dictionary.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -384,9 +393,14 @@ class PDBReader(base.ReaderBase):
         raised and cell dimensions are set to
         :code:`np.zeros(6)` (see Issue #2698)
 
+
         .. versionchanged:: 1.0.0
            Raise user warning for CRYST1_ record with unitary valuse
            (cubic box with sides of 1 Å) and do not set cell dimensions.
+        .. versionchanged:: 2.5.0
+           When seen, `ts.data` is populated with tempfactor information at
+           each frame read. If any atom has a non-parsable (i.e. non float)
+           value in the tempfactor field, the entry is left as `1.0`.
         """
         try:
             start = self._start_offsets[frame]
@@ -395,7 +409,9 @@ class PDBReader(base.ReaderBase):
             raise IOError from None
 
         pos = 0
-        occupancy = np.ones(self.n_atoms)
+        occupancy = np.zeros(self.n_atoms)
+        tempfactor = np.ones(self.n_atoms)
+        saw_tempfactor = False
 
         # Seek to start and read until start of next frame
         self._pdbfile.seek(start)
@@ -406,13 +422,18 @@ class PDBReader(base.ReaderBase):
             if line[:6] in ('ATOM  ', 'HETATM'):
                 # we only care about coordinates
                 tmp_buf.append([line[30:38], line[38:46], line[46:54]])
-                # TODO import bfactors - might these change?
                 try:
                     # does an implicit str -> float conversion
                     occupancy[pos] = line[54:60]
                 except ValueError:
                     # Be tolerant for ill-formated or empty occupancies
                     pass
+                try:
+                    tempfactor[pos] = line[60:66]
+                except ValueError:
+                    pass
+                else:
+                    saw_tempfactor = True
                 pos += 1
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
@@ -454,6 +475,9 @@ class PDBReader(base.ReaderBase):
                 self.convert_pos_from_native(self.ts.dimensions[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
+        if saw_tempfactor:
+            self.ts.data['tempfactor'] = tempfactor
+
         return self.ts
 
     def close(self):

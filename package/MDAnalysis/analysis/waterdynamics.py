@@ -32,27 +32,18 @@
 
 This module provides functions to analyze water dynamics trajectories and water
 interactions with other molecules.  The functions in this module are: water
-orientational relaxation (WOR) :cite:p:`Yeh1999`, hydrogen bond lifetimes (HBL)
-:cite:p:`Rapaport1983`, angular distribution (AD) :cite:p:`Grigera1995`, mean
-square displacement (MSD) :cite:p:`Brodka1994` and survival probability (SP)
-:cite:p:`Liu2004`.
+orientational relaxation (WOR) :footcite:p:`Yeh1999`, hydrogen bond lifetimes (HBL)
+:footcite:p:`Rapaport1983`, angular distribution (AD) :footcite:p:`Grigera1995`, mean
+square displacement (MSD) :footcite:p:`Brodka1994` and survival probability (SP)
+:footcite:p:`Liu2004`.
 
 For more information about this type of analysis please refer to
-:cite:p:`ArayaSecchi2014` (water in a protein cavity) and
-:cite:p:`Milischuk2011` (water in a nanopore).
+:footcite:p:`ArayaSecchi2014` (water in a protein cavity) and
+:footcite:p:`Milischuk2011` (water in a nanopore).
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Rapaport1983
-    Yeh1999
-    Grigera1995
-    Liu2004
-    Brodka1994
-    Milischuk2011
+.. footbibliography::
 
 
 Example use of the analysis classes
@@ -384,7 +375,7 @@ class WaterOrientationalRelaxation(object):
     r"""Water orientation relaxation analysis
 
     Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
-    Yeh and Chung-Yuan Mou :cite:p:`Yeh1999`. WaterOrientationalRelaxation
+    Yeh and Chung-Yuan Mou :footcite:p:`Yeh1999`. WaterOrientationalRelaxation
     indicates "how fast" water molecules are rotating or changing direction.
     This is a time correlation function given by:
 
@@ -885,15 +876,17 @@ class MeanSquareDisplacement(object):
 
 class SurvivalProbability(object):
     r"""
-    Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
-    The SP is given by:
+    Survival Probability (SP) gives the probability for a group of particles to remain
+    in a certain region. The SP is given by:
 
     .. math::
-        P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}
+        P(\tau) = \langle \frac{ N(t, t + \tau )} { N(t) }\rangle
 
-    where :math:`T` is the maximum time of simulation, :math:`\tau` is the
-    timestep, :math:`N(t)` the number of particles at time :math:`t`, and
-    :math:`N(t, t+\tau)` is the number of particles at every frame from :math:`t` to `\tau`.
+    where :math:`\tau` is the timestep, :math:`N(t)` the number of particles at time 
+    :math:`t`, and :math:`N(t, t+\tau)` is the number of particles at every frame from 
+    :math:`t` to :math:`t + \tau`. The angular brackets represent an average over all time 
+    origins, :math:`t`. See :func:`MDAnalysis.lib.correlations.autocorrelation` for
+    technical details.
 
 
     Parameters
@@ -902,7 +895,8 @@ class SurvivalProbability(object):
       Universe object
     select : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
+      define the region/zone where to analyze, e.g.: "resname SOL and around 5 
+      (resid 10)". See `SP-examples`_.
     verbose : Boolean, optional
       When True, prints progress and comments to the console.
 
@@ -928,6 +922,8 @@ class SurvivalProbability(object):
        The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now
        changed behaviour and will act in an `exclusive` manner (instead of it's
        previous `inclusive` behaviour),
+    .. versionchanged:: 2.7.0
+       Updated docs to align with discrete autocorrelation function.
     """
 
     def __init__(self, universe, select, verbose=False):

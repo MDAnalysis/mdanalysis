@@ -87,7 +87,7 @@ if sys.version_info[:2] < (3, 9):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.5.0-dev0"
+    RELEASE = "2.7.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
@@ -128,7 +128,7 @@ if __name__ == '__main__':
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL-2.0-or-later',
+          license='GPL-3.0-or-later',
           classifiers=CLASSIFIERS,
           packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',

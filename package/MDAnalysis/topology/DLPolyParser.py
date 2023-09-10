@@ -31,6 +31,15 @@ DLPoly files have the following Attributes:
  - Atomids
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
+
+Classes
+-------
+
+.. autoclass:: ConfigParser
+
+.. autoclass:: HistoryParser
+
+
 """
 import numpy as np
 

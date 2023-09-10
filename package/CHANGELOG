@@ -13,15 +13,132 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers
 
-??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
+ * 2.7.0
+
+Fixes
+  * Fix `NoJump` unwrapping for jumps on the second frame in a
+    trajectory (PR #4258, Issue #4257)
+  * Deprecated np.float_ and np.NaN aliases have been replaced with
+    their original type value (np.float64 and np.nan) (PR #4272)
+  * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
+    RMSD of None
+
+Enhancements
+  * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
+    inputs
+  * Added a warning about charge neutrality to the documentation of
+    `DielectricConstant` (Issue #4262, PR #4263)
+  * Add support for reading chainID info from prmtop amber topologies (PR #4007)
+
+Changes
+  * The `mda-xdrlib` module is now a core dependency of MDAnalysis
+    replacing the now deprecated `xdrlib` core Python library
+    (PR #4271)
+  * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+
+Deprecations
+  * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
+    use converters.base.ConvertBase instead (Issue #3404)
+
+
+28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+
+ * 2.6.1
+
+Fixes
+  * Fix Atom type guessing error (PR #4168, Issue #4167)
+
+Enhancements
+  * Allow `set_dimensions` transformation to handle NPT trajectories (PR #4258)
+
+Changes
+  * Reverts PR #4108, builds are now again made using the oldest
+    supported NumPy version.
+  * NumPy `in1d` replaced with `isin` in preparation for NumPy
+    `2.0` (PR #4255)
+  * Update documentation for SurvivalProbabilty to be more clear
+    (Issue #4247)
+  * Cython DEF statments have been replaced with compile time integer constants
+    as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
+
+Deprecations
+
+
+08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
+         ztimol, orbeckst
+
+ * 2.6.0
+
+Fixes
+  * Fix AtomGroup.center_of_charge(..., unwrap=True) giving
+    inconsistent (but scientifically correct) results on Intel macOS
+    (Issue #4211)
+  * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
+  * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
+    (PR #4163, Issue #4159)
+
+Enhancements
+  * Added a `exclude_same` kwarg to InterRDF (PR #4161)
+  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
+    (Issue #3546)
+
+Changes
+  * Package builds are now made using NumPy 1.25 or higher. This provides
+    backwards runtime compatibility with older NumPy builds within the limit
+    of NEP29 (PR #4108).
+  * Removed `-ffast-math` compiler flag to avoid potentially incorrect
+    floating point results in MDAnalysis *and* other codes when
+    MDAnalysis shared libraries are loaded --- see 
+    https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html
+    (Issues #3821, #4211)
+  * Atom ID representation order updated to match that of associated
+    AtomGroup indices.
+    (PR #4191, Issue #4181)
+  * Package license has been updated to GPLv3+ to better reflect the
+    compatibility of GPLv2+ with Apache and GPLv3 licenced codes (PR #4219).
+  * All new contributions are now made under LGPLv2.1+ (PR #4219).
+  * Support for GSD is now limited to version 3.0.1 and above. Alongside this
+    change, support for schema 1.3 files has been dropped (PR #4153)
+  * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
+  * As per NEP29 the minimum supported version has been raised to 1.22. We
+    have opted to pin to a minimum of 1.22.3 to avoid known issues on some
+    platforms.
+  * GSD is no longer a core dependency of MDAnalysis. It must be installed
+    independently if you wish to read HOOMD trajectory files.
+    (PR #4174, Issue #3819)
+
+Deprecations
+  * Incorrectly spelt Boltzmann unit entry will be removed in version 2.8.0
+    (PR #4230, Issue #4229)
+  * The hole2 module is deprecated in favour of the the MDAKit:
+    https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
+  * MDAnalysis no longer officially supports 32 bit installations (they are
+    no longer tested in our continuous integration pipelines). Note: whilst
+    no code changes have been made to disable 32 bit, although it is known that
+    new versions of most MDAnalysis core dependencies no longer release
+    32 bit compatible versions. (Issue #3858, PR #4176)
+
+
+05/28/23 IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
-         SophiaRuan, g2707, p-j-smith, tylerjereddy
+         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers,
+         cbouy
 
  * 2.5.0
 
 Fixes
+  * Fixed using 'rb' mode inside GSDReader to avoid FutureWarning from GSDFile (Issue #4152)
+  * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
+    (Issue #3657 #4008 PR #3906)
+  * Fix the `heavy` distance_type for water bridge analysis where distance
+    is not correctly assigned when more than one hydrogen is bonded to a
+    heavy atom (Issue #4040, PR #4066).
+  * PDB topology parser no longer fails when encountering unknown formal
+    charges and instead simply does not populate attribute (Issue #4027)
   * Added support for Cython 3.0.0b2 (PR #4129)
   * Ensure 'HydrogenBondAnalysis' returns the correct distances when using the
     'between' keyword (PR #4092)
@@ -46,6 +163,18 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * ARM64 (osx and linux) wheels now uploaded on release (Issue #4054)
+  * Add simple atomic distance analysis to `analysis.atomicdistances` with
+    new class `AtomicDistances` (Issue #3654)
+  * Add kwarg `n_frames` to class method `empty()` in
+    `MDAnalysis.core.universe`, enabling creation of a `Universe` with
+    multiple frames from scratch (PR #4140)
+  * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
+    each atom *for each frame*. If an entry is missing for a given atom,
+    this will default to a `1.0` value. Note, this does not affect the
+    topology (i.e. `AtomGroup.tempfactors` is not dynamically updated.
+    (Issue #3825, PR #3988)
+  * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)
   * Improved speed of chi1_selection (PR #4109)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
     to modify description, position etc of tqdm progressbars.
@@ -59,9 +188,6 @@ Enhancements
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
-  * Add a new guessing system through the universe's 
-    guess_topologyAttributes() API. (PR #3753)
-  * Add DefaultGuesser class as a context-free guesser
 
 Changes
   * As per NEP29 the minimum supported Python version has been raised to 3.9
@@ -77,14 +203,17 @@ Changes
     analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
     removed. Please use the `results.pair_distances` and `times` attributes
     instead (Issue #3744)
-  * Removed type and mass guessing processes from all parsers, and transferred
-    Those guessing to takes place inside the universe through the new 
-    guess_topologyAttributes() API.
-  * Removed type guessing from RDKit converter
-  * Assigned type attribute to be equal to the element attribute, if type is
-    not provided for RDKit converter
-
-Deprecations
+  * RDKitConverter changes (part of Issue #3996):
+    * moved some variables (`MONATOMIC_CATION_CHARGES `and
+      `STANDARDIZATION_REACTIONS`) out of the related functions to allow users
+      fine tuning them if necessary.
+    * changed the sorting of heavy atoms when inferring bond orders and
+      charges: previously only based on the number of unpaired electrons, now
+      based on this and the number of heavy atom neighbors.
+    * use RDKit's `RunReactantInPlace` for the standardization reactions, which
+      should result in a significant speed improvement as we don't need to use
+      bespoke code to transfer atomic properties from the non-standardized mol
+      to the standardized one.
 
 
 03/29/23 richardjgowers, IAlibay

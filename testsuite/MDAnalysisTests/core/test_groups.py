@@ -1646,7 +1646,7 @@ class TestGetConnectionsAtoms(object):
         cxns = ag.get_connections(typename, outside=False)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert np.all(np.in1d(indices, ag.indices))
+        assert np.all(np.isin(indices, ag.indices))
 
     @pytest.mark.parametrize("typename, n_atoms", [
         ("bonds", 13),
@@ -1658,7 +1658,7 @@ class TestGetConnectionsAtoms(object):
         cxns = ag.get_connections(typename, outside=True)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert not np.all(np.in1d(indices, ag.indices))
+        assert not np.all(np.isin(indices, ag.indices))
 
     def test_invalid_connection_error(self, tpr):
         with pytest.raises(AttributeError, match="does not contain"):
@@ -1708,7 +1708,7 @@ class TestGetConnectionsResidues(object):
         cxns = ag.get_connections(typename, outside=False)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert np.all(np.in1d(indices, ag.atoms.indices))
+        assert np.all(np.isin(indices, ag.atoms.indices))
 
     @pytest.mark.parametrize("typename, n_atoms", [
         ("bonds", 158),
@@ -1720,7 +1720,7 @@ class TestGetConnectionsResidues(object):
         cxns = ag.get_connections(typename, outside=True)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert not np.all(np.in1d(indices, ag.atoms.indices))
+        assert not np.all(np.isin(indices, ag.atoms.indices))
 
     def test_invalid_connection_error(self, tpr):
         with pytest.raises(AttributeError, match="does not contain"):
@@ -1746,7 +1746,7 @@ def test_topologygroup_gets_connections_inside(tpr, typename, n_inside):
     cxns = getattr(ag, typename)
     assert len(cxns) == n_inside
     indices = np.ravel(cxns.to_indices())
-    assert np.all(np.in1d(indices, ag.indices))
+    assert np.all(np.isin(indices, ag.indices))
 
 
 @pytest.mark.parametrize("typename, n_outside", [

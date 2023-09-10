@@ -34,11 +34,7 @@ These are usually read by the TopologyParser.
 References
 ----------
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Gray1984
+.. footbibliography::
 
 """
 
@@ -1243,7 +1239,7 @@ class Atomnames(AtomStringAttr):
         """
         names = [n_name, ca_name, cb_name, cg_name]
         atnames = residue.atoms.names
-        ags = [residue.atoms[np.in1d(atnames, n.split())] for n in names]
+        ags = [residue.atoms[np.isin(atnames, n.split())] for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
@@ -1276,13 +1272,13 @@ class Atomnames(AtomStringAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(np.in1d(r.atoms.names, n.split())) == 1
+        keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
                     for n in names) for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
         atnames = residues.atoms.names
-        ags = [residues.atoms[np.in1d(atnames, n.split())] for n in names]
+        ags = [residues.atoms[np.isin(atnames, n.split())] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
@@ -2481,7 +2477,7 @@ class Charges(AtomAttr):
     transplants[GroupBase].append(('quadrupole_tensor', quadrupole_tensor))
 
     def quadrupole_moment(group, **kwargs):
-        r"""Quadrupole moment of the group according to :cite:p:`Gray1984`.
+        r"""Quadrupole moment of the group according to :footcite:p:`Gray1984`.
          
         .. math::
             Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}

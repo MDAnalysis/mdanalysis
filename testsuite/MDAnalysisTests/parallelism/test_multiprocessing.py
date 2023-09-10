@@ -32,6 +32,7 @@ from numpy.testing import assert_equal
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 from MDAnalysis.coordinates.core import get_reader_for
+from MDAnalysis.coordinates.GSD import HAS_GSD
 from MDAnalysis.analysis.rms import RMSD
 
 from MDAnalysisTests.datafiles import (
@@ -73,7 +74,10 @@ from MDAnalysisTests.datafiles import (
     (XYZ_bz2,),  # .bz2
     (GMS_SYMOPT,),  # .gms
     (GMS_ASYMOPT,),  # .gz
-    (GSD_long,),
+    pytest.param(
+        (GSD_long,),
+        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+    ),
     (NCDF,),
     (np.arange(150).reshape(5, 10, 3).astype(np.float64),),
     (GRO, [GRO, GRO, GRO, GRO, GRO]),
@@ -171,7 +175,10 @@ def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
     ('LAMMPSDUMP', LAMMPSDUMP, dict()),
     ('GMS', GMS_ASYMOPT, dict()),
     ('GRO', GRO, dict()),
-    ('GSD', GSD, dict()),
+    pytest.param(
+        ('GSD', GSD, dict()),
+        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+    ),
     ('MMTF', MMTF, dict()),
     ('MOL2', mol2_molecules, dict()),
     ('PDB', PDB_small, dict()),

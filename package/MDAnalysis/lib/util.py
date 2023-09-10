@@ -338,9 +338,10 @@ def anyopen(datasource, mode='rt', reset=True):
         a file (from :class:`file` or :func:`open`) or a stream (e.g. from
         :func:`urllib2.urlopen` or :class:`io.StringIO`)
     mode: {'r', 'w', 'a'} (optional)
-        Open in r(ead), w(rite) or a(ppen) mode. More complicated
-        modes ('r+', 'w+', ...) are not supported; only the first letter of
-        `mode` is used and thus any additional modifiers are silently ignored.
+        Open in r(ead), w(rite) or a(ppend) mode. This string is directly
+        passed to the file opening handler (either Python's openfe, bz2, or
+        gzip). More complex modes are supported if the file opening handler
+        supports it.
     reset: bool (optional)
         try to read (`mode` 'r') the stream from the start
 
@@ -1314,9 +1315,9 @@ def fixedwidth_bins(delta, xmin, xmax):
     """
     if not np.all(xmin < xmax):
         raise ValueError('Boundaries are not sane: should be xmin < xmax.')
-    _delta = np.asarray(delta, dtype=np.float_)
-    _xmin = np.asarray(xmin, dtype=np.float_)
-    _xmax = np.asarray(xmax, dtype=np.float_)
+    _delta = np.asarray(delta, dtype=np.float64)
+    _xmin = np.asarray(xmin, dtype=np.float64)
+    _xmax = np.asarray(xmax, dtype=np.float64)
     _length = _xmax - _xmin
     N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end

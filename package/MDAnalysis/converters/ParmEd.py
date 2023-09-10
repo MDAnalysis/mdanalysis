@@ -81,13 +81,14 @@ import functools
 import itertools
 import warnings
 
-from ..coordinates import base
 from ..guesser.tables import SYMB2Z
+from . import base
+from ..coordinates.base import SingleFrameReaderBase
 from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 
-class ParmEdReader(base.SingleFrameReaderBase):
+class ParmEdReader(SingleFrameReaderBase):
     """Coordinate reader for ParmEd."""
     format = 'PARMED'
 

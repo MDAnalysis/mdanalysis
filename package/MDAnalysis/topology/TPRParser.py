@@ -158,7 +158,6 @@ Versions prior to Gromacs 4.0.x are not supported.
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
 
-import xdrlib
 
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
