@@ -352,13 +352,19 @@ class WatsonCrickDist(NucPairDist):
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
                  **kwargs) -> None:
-        
-        if isinstance(strand1, list) or isinstance(strand2, list):
-            warnings.warn(
-                DeprecationWarning("ResidueGroup should be used instead of giving a Residue list")
+
+        resid_warning = lambda strand :  warnings.warn(
+                DeprecationWarning(
+                    f"ResidueGroup should be used for {strand} instead of giving a Residue list"
+                    )
                 )
-        
+
+        if isinstance(strand1, list):
+            resid_warning(strand1) 
             strand1: ResidueGroup = ResidueGroup(strand1)
+
+        if isinstance(strand2, list):
+            resid_warning(strand2)
             strand2: ResidueGroup = ResidueGroup(strand2)
         
          
