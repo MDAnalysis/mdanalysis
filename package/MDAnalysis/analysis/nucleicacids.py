@@ -81,7 +81,7 @@ from MDAnalysis.core.groups import Residue, ResidueGroup
 # Deprecation: In 3.0.0 change type to just
 # ResidueClass = ResidueGroup
 ResidueClass = Union[List[Residue], ResidueGroup]
-r"""A type alias for :code:`Union[Residue, ResidueGroup]`
+r"""A type alias for :code:`Union[List[Residue], ResidueGroup]`
 
 Used as an alias for methods where either class is acceptable.
 """
@@ -263,9 +263,19 @@ class NucPairDist(AnalysisBase):
 class WatsonCrickDist(NucPairDist):
     r"""Watson-Crick basepair distance for selected residues over a trajectory.
 
-    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and calculates
-    the Watson-Crick distance between them over the trajectory. Bases are matched by
-    their index in the lists given as arguments.
+    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects or two lists of
+    :class:`~MDAnalysis.core.groups.Residue` and calculates the distance between the
+    nitrogen atoms in the Watson-Crick hydrogen bond over the trajectory.
+    Bases are matched either by their index in the two 
+    :class:`~MDAnalysis.core.groups.ResidueGroup` provided as arguments, or based on
+    the indices of the provided lists of :class:`~MDAnalysis.core.groups.Residue` 
+    objects depending on which is provided.
+
+    .. note::
+        Support for :class:`~MDAnalysis.core.groups.Residue` is slated for
+        deprecation and will raise a warning when used. It still works but
+        :class:`~MDAnalysis.core.groups.ResidueGroup` is preferred.
+        See :ref:`Deprecation Notice` and :ref:`Deprecation Warning` for more info.
 
     Parameters
     ----------
@@ -308,8 +318,9 @@ class WatsonCrickDist(NucPairDist):
     Raises
     ------
     DeprecationWarning
-        If a lits of :class:`~MDAnalysis.core.groups.Residue` is given for
-        :attr:`strand1` of :attr:`strand2` instead of a
+    .. _Deprecation Warning
+        If a list of :class:`~MDAnalysis.core.groups.Residue` is given for
+        `strand1` of `strand2` instead of a
         :class:`~MDAnalysis.core.groups.ResidueGroup`
     ValueError
         If the selections given are not the same length
@@ -329,8 +340,10 @@ class WatsonCrickDist(NucPairDist):
        MDAnalysis 2.5.0. Please use the class attribute :attr:`times` instead.
 
     .. versionchanged:: 2.7.0
-        Deprecated the use of :attr:`List[Residue]` instead use
-        :class:`~MDAnalysis.core.groups.ResidueGroup`.
+    .. _Deprecation Notice
+        `strand1` and `strand2` now also accept a ::class:`~MDAnalysis.core.groups.ResidueGroup` as input.
+        The previous input type, ``List[Residue]`` is still supported, but it is 
+        **deprecated** and will be removed in release 3.0.0.
 
     """
 
@@ -341,7 +354,10 @@ class WatsonCrickDist(NucPairDist):
                  **kwargs) -> None:
         
         if isinstance(strand1, list) or isinstance(strand2, list):
-            raise DeprecationWarning("ResidueGroup should be used instead of giving a Residue list")
+            warnings.warn(
+                DeprecationWarning("ResidueGroup should be used instead of giving a Residue list")
+                )
+        
             strand1: ResidueGroup = ResidueGroup(strand1)
             strand2: ResidueGroup = ResidueGroup(strand2)
         
@@ -358,10 +374,10 @@ class WatsonCrickDist(NucPairDist):
 class MinorPairDist(NucPairDist):
     r"""Minor-Pair basepair distance for selected residues over a trajectory.
 
-    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and
-    calculates the Watson-Crick distance between them over the trajectory.
-    Bases are matched by their index in the lists given as arguments.
-
+    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and
+    calculates the Minor-groove hydrogen bond length between the nitrogen and oxygen
+    atoms over the trajectory. Bases are matched by their index
+    in the two :class:`~MDAnalysis.core.groups.ResidueGroup` provided as arguments.
     Parameters
     ----------
     strand1: List[Residue]
@@ -433,9 +449,10 @@ class MinorPairDist(NucPairDist):
 class MajorPairDist(NucPairDist):
     r"""Minor-Pair basepair distance for selected residues over a trajectory.
 
-    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and
-    calculates the Watson-Crick distance between them over the trajectory.
-    Bases are matched by their index in the lists given as arguments.
+    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and
+    calculates the Major-groove hydrogen bond length between the nitrogen
+    and oxygen atoms over the trajectory. Bases are matched by their index
+    in the two :class:`~MDAnalysis.core.groups.ResidueGroup` provided as arguments.
 
     Parameters
     ----------
