@@ -394,18 +394,16 @@
 <span class="sd">All water bridges between arginine and aspartic acid can be analysed with ::</span>
 
 <span class="sd">  import MDAnalysis</span>
-<span class="sd">  import MDAnalysis.analysis.hbonds</span>
+<span class="sd">  from MDAnalysis.analysis.hydrogenbonds import WaterBridgeAnalysis</span>
 
 <span class="sd">  u = MDAnalysis.Universe(&#39;topology&#39;, &#39;trajectory&#39;)</span>
-<span class="sd">  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, &#39;resname ARG&#39;,</span>
-<span class="sd">                                                     &#39;resname ASP&#39;)</span>
+<span class="sd">  w = WaterBridgeAnalysis(u, &#39;resname ARG&#39;, &#39;resname ASP&#39;)</span>
 <span class="sd">  w.run()</span>
 
 <span class="sd">The maximum number of bridging waters detected can be changed using the order</span>
 <span class="sd">keyword. ::</span>
 
-<span class="sd">  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, &#39;resname ARG&#39;,</span>
-<span class="sd">                                                     &#39;resname ASP&#39;, order=3)</span>
+<span class="sd">  w = WaterBridgeAnalysis(u, &#39;resname ARG&#39;, &#39;resname ASP&#39;, order=3)</span>
 
 <span class="sd">Thus, a maximum of three bridging waters will be detected.</span>
 

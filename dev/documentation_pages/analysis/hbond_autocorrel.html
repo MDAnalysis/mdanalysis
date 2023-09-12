@@ -210,11 +210,11 @@ this will mean that each oxygen appears twice in the <strong>donors</strong> Ato
 The function <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors" title="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_hydrogen_donors()</span></code></a> can be used to construct the donor
 AtomGroup</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hydrogenbonds</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">waterPSF</span><span class="p">,</span> <span class="n">waterDCD</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">waterPSF</span><span class="p">,</span> <span class="n">waterDCD</span><span class="p">)</span>
 <span class="n">hydrogens</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name H*&#39;</span><span class="p">)</span>
-<span class="n">donors</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">)</span>
+<span class="n">donors</span> <span class="o">=</span> <span class="n">hydrogenbonds</span><span class="o">.</span><span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that this requires the Universe to have bond information.  If this isn’t
@@ -222,7 +222,7 @@ present in the topology file, the
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds" title="MDAnalysis.core.groups.AtomGroup.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.guess_bonds()</span></code></a> method can be used
 as so</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hydrogenbonds</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">GRO</span>
 <span class="c1"># we could load the Universe with guess_bonds=True</span>
 <span class="c1"># but this would guess **all** bonds</span>
@@ -233,7 +233,7 @@ as so</p>
 <span class="n">water</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">()</span>
 <span class="n">hydrogens</span> <span class="o">=</span> <span class="n">water</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;type H&#39;</span><span class="p">)</span>
 <span class="c1"># this is now possible as we guessed the bonds</span>
-<span class="n">donors</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">)</span>
+<span class="n">donors</span> <span class="o">=</span> <span class="n">hydrogenbonds</span><span class="o">.</span><span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The keyword <strong>exclusions</strong> allows a tuple of array addresses to be provided,
@@ -280,7 +280,7 @@ sample point within this time window (this relies upon the trajectory being
 sampled frequently enough).  This process is repeated for 20 different start
 points to build a better average.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hbonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hydrogenbonds</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">TRZ_psf</span><span class="p">,</span> <span class="n">TRZ</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="c1"># load system</span>
@@ -290,7 +290,7 @@ points to build a better average.</p>
 <span class="n">N</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
 <span class="n">O</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="c1"># create analysis object</span>
-<span class="n">hb_ac</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="n">u</span><span class="p">,</span>
+<span class="n">hb_ac</span> <span class="o">=</span> <span class="n">hydrogenbonds</span><span class="o">.</span><span class="n">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="n">u</span><span class="p">,</span>
             <span class="n">acceptors</span><span class="o">=</span><span class="n">O</span><span class="p">,</span> <span class="n">hydrogens</span><span class="o">=</span><span class="n">H</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="n">N</span><span class="p">,</span>
             <span class="n">bond_type</span><span class="o">=</span><span class="s1">&#39;continuous&#39;</span><span class="p">,</span>
             <span class="n">sample_time</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nruns</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>

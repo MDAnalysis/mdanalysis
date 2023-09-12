@@ -210,11 +210,11 @@
 <span class="sd">::</span>
 
 <span class="sd">  import MDAnalysis as mda</span>
-<span class="sd">  from MDAnalysis.analysis import hbonds</span>
+<span class="sd">  from MDAnalysis.analysis import hydrogenbonds</span>
 <span class="sd">  from MDAnalysis.tests.datafiles import waterPSF, waterDCD</span>
 <span class="sd">  u = mda.Universe(waterPSF, waterDCD)</span>
 <span class="sd">  hydrogens = u.select_atoms(&#39;name H*&#39;)</span>
-<span class="sd">  donors = hbonds.find_hydrogen_donors(hydrogens)</span>
+<span class="sd">  donors = hydrogenbonds.find_hydrogen_donors(hydrogens)</span>
 
 
 <span class="sd">Note that this requires the Universe to have bond information.  If this isn&#39;t</span>
@@ -224,7 +224,7 @@
 <span class="sd">::</span>
 
 <span class="sd">  import MDAnalysis as mda</span>
-<span class="sd">  from MDAnalysis.analysis import hbonds</span>
+<span class="sd">  from MDAnalysis.analysis import hydrogenbonds</span>
 <span class="sd">  from MDAnalysis.tests.datafiles import GRO</span>
 <span class="sd">  # we could load the Universe with guess_bonds=True</span>
 <span class="sd">  # but this would guess **all** bonds</span>
@@ -235,7 +235,7 @@
 <span class="sd">  water.guess_bonds()</span>
 <span class="sd">  hydrogens = water.select_atoms(&#39;type H&#39;)</span>
 <span class="sd">  # this is now possible as we guessed the bonds</span>
-<span class="sd">  donors = hbonds.find_hydrogen_donors(hydrogens)</span>
+<span class="sd">  donors = hydrogenbonds.find_hydrogen_donors(hydrogens)</span>
 
 
 <span class="sd">The keyword **exclusions** allows a tuple of array addresses to be provided,</span>
@@ -289,7 +289,7 @@
 <span class="sd">::</span>
 
 <span class="sd">  import MDAnalysis as mda</span>
-<span class="sd">  from MDAnalysis.analysis import hbonds</span>
+<span class="sd">  from MDAnalysis.analysis import hydrogenbonds</span>
 <span class="sd">  from MDAnalysis.tests.datafiles import TRZ_psf, TRZ</span>
 <span class="sd">  import matplotlib.pyplot as plt</span>
 <span class="sd">  # load system</span>
@@ -299,7 +299,7 @@
 <span class="sd">  N = u.select_atoms(&#39;name N&#39;)</span>
 <span class="sd">  O = u.select_atoms(&#39;name O&#39;)</span>
 <span class="sd">  # create analysis object</span>
-<span class="sd">  hb_ac = hbonds.HydrogenBondAutoCorrel(u,</span>
+<span class="sd">  hb_ac = hydrogenbonds.HydrogenBondAutoCorrel(u,</span>
 <span class="sd">              acceptors=O, hydrogens=H, donors=N,</span>
 <span class="sd">              bond_type=&#39;continuous&#39;,</span>
 <span class="sd">              sample_time=2.0, nsamples=1000, nruns=20)</span>
@@ -339,7 +339,7 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1063/1.4922445&quot;</span><span class="p">),</span>
          <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hydrogen bonding autocorrelation time&quot;</span><span class="p">,</span>
-         <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.hbonds.hbond_autocorrel&#39;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">del</span> <span class="n">Doi</span>
 
