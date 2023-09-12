@@ -237,7 +237,7 @@ class PDBQTWriter(base.WriterBase):
 
         Note
         ----
-        The first letter of the
+        The last letter of the
         :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
         chainID.
 
