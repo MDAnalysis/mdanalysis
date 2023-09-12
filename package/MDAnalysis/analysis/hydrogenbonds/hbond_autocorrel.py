@@ -87,11 +87,11 @@ AtomGroup
 ::
 
   import MDAnalysis as mda
-  from MDAnalysis.analysis import hbonds
+  from MDAnalysis.analysis import hydrogenbonds
   from MDAnalysis.tests.datafiles import waterPSF, waterDCD
   u = mda.Universe(waterPSF, waterDCD)
   hydrogens = u.select_atoms('name H*')
-  donors = hbonds.find_hydrogen_donors(hydrogens)
+  donors = hydrogenbonds.find_hydrogen_donors(hydrogens)
 
 
 Note that this requires the Universe to have bond information.  If this isn't
@@ -101,7 +101,7 @@ as so
 ::
 
   import MDAnalysis as mda
-  from MDAnalysis.analysis import hbonds
+  from MDAnalysis.analysis import hydrogenbonds
   from MDAnalysis.tests.datafiles import GRO
   # we could load the Universe with guess_bonds=True
   # but this would guess **all** bonds
@@ -112,7 +112,7 @@ as so
   water.guess_bonds()
   hydrogens = water.select_atoms('type H')
   # this is now possible as we guessed the bonds
-  donors = hbonds.find_hydrogen_donors(hydrogens)
+  donors = hydrogenbonds.find_hydrogen_donors(hydrogens)
 
 
 The keyword **exclusions** allows a tuple of array addresses to be provided,
@@ -166,7 +166,7 @@ points to build a better average.
 ::
 
   import MDAnalysis as mda
-  from MDAnalysis.analysis import hbonds
+  from MDAnalysis.analysis import hydrogenbonds
   from MDAnalysis.tests.datafiles import TRZ_psf, TRZ
   import matplotlib.pyplot as plt
   # load system
@@ -176,7 +176,7 @@ points to build a better average.
   N = u.select_atoms('name N')
   O = u.select_atoms('name O')
   # create analysis object
-  hb_ac = hbonds.HydrogenBondAutoCorrel(u,
+  hb_ac = hydrogenbonds.HydrogenBondAutoCorrel(u,
               acceptors=O, hydrogens=H, donors=N,
               bond_type='continuous',
               sample_time=2.0, nsamples=1000, nruns=20)
@@ -216,7 +216,7 @@ from MDAnalysis.core.groups import requires
 from MDAnalysis.due import due, Doi
 due.cite(Doi("10.1063/1.4922445"),
          description="Hydrogen bonding autocorrelation time",
-         path='MDAnalysis.analysis.hbonds.hbond_autocorrel',
+         path='MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel',
 )
 del Doi
 
