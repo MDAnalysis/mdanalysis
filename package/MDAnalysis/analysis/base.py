@@ -429,7 +429,6 @@ class AnalysisBase(object):
 
         backend_class = builtin_backends.get(backend, None)
         available_backend_classes = [builtin_backends.get(b) for b in self.available_backends]
-        print(available_backend_classes)
 
         # check for serial-only classes
         if not self._is_parallelizable and backend_class is not BackendSerial:
@@ -440,7 +439,7 @@ class AnalysisBase(object):
             raise ValueError(f"Must specify 'unsafe=True' if you want to use a custom {backend_class=} for {self.__class__}")
 
         # check for the presence of parallelizable transformations
-        if self._is_parallelizable and any((t.parallelizable for t in self._trajectory.transformations)):
+        if backend_class is not BackendSerial and any((t.parallelizable for t in self._trajectory.transformations)):
             raise ValueError("Trajectory should not have associated parallelizable transformations")
 
         # conclude mapping from string to backend class
@@ -463,6 +462,7 @@ class AnalysisBase(object):
         n_parts: int = None,
         backend: str = None,
         *,
+        unsafe: bool = False,
         progressbar_kwargs={},
     ):
         """Perform the calculation
@@ -523,7 +523,7 @@ class AnalysisBase(object):
         n_parts = n_workers if n_parts is None else n_parts
 
         # do this as early as possible to check client parameters before any computations occur
-        executor = self._configure_backend(backend=backend, n_workers=n_workers)
+        executor = self._configure_backend(backend=backend, n_workers=n_workers, unsafe=unsafe)
         if hasattr(executor, 'n_workers') and n_parts < executor.n_workers:  # using executor's value here for non-default executors
             warnings.warn(f'likely running not at full capacity: {executor.n_workers=} is greater than {n_parts=}')
 

@@ -202,7 +202,7 @@ class ResultsGroup:
 
     @staticmethod
     def ndarray_mean(arrs: np.ndarray):
-        return np.array(arrs).sum(axis=0)
+        return np.array(arrs).mean(axis=0)
 
     @staticmethod
     def float_mean(floats: list[float]):

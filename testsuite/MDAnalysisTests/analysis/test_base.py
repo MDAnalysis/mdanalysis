@@ -20,21 +20,18 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from collections import UserDict
 import pickle
-
-import pytest
-
-import numpy as np
-
-from numpy.testing import assert_equal, assert_almost_equal
+from collections import UserDict
 
 import MDAnalysis as mda
-from MDAnalysis.analysis import base
-
-from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
-from MDAnalysisTests.util import no_deprecated_call
+import numpy as np
+import pytest
+from MDAnalysis.analysis import base, parallel
 from MDAnalysis.lib.util import is_installed
+from MDAnalysisTests.datafiles import DCD, PSF, TPR, XTC
+from MDAnalysisTests.util import no_deprecated_call
+from numpy.testing import assert_almost_equal, assert_equal
+
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
@@ -75,121 +72,6 @@ class OldAPIAnalysis(base.AnalysisBase):
     def _prepare(self):
         self.results = base.Results()
 
-class FinallyRaised(Exception):
-    pass
-
-
-class Test_Results:
-
-    @pytest.fixture
-    def results(self):
-        return base.Results(a=1, b=2)
-
-    def test_get(self, results):
-        assert results.a == results["a"] == 1
-
-    def test_no_attr(self, results):
-        msg = "'Results' object has no attribute 'c'"
-        with pytest.raises(AttributeError, match=msg):
-            results.c
-
-    def test_set_attr(self, results):
-        value = [1, 2, 3, 4]
-        results.c = value
-        assert results.c is results["c"] is value
-
-    def test_set_key(self, results):
-        value = [1, 2, 3, 4]
-        results["c"] = value
-        assert results.c is results["c"] is value
-
-    @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
-    def test_existing_dict_attr(self, results, key):
-        msg = f"'{key}' is a protected dictionary attribute"
-        with pytest.raises(AttributeError, match=msg):
-            results[key] = None
-
-    @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
-    def test_wrong_init_type(self, key):
-        msg = f"'{key}' is a protected dictionary attribute"
-        with pytest.raises(AttributeError, match=msg):
-            base.Results(**{key: None})
-
-    @pytest.mark.parametrize('key', ("0123", "0j", "1.1", "{}", "a b"))
-    def test_weird_key(self, results, key):
-        msg = f"'{key}' is not a valid attribute"
-        with pytest.raises(ValueError, match=msg):
-            results[key] = None
-
-    def test_setattr_modify_item(self, results):
-        mylist = [1, 2]
-        mylist2 = [3, 4]
-        results.myattr = mylist
-        assert results.myattr is mylist
-        results["myattr"] = mylist2
-        assert results.myattr is mylist2
-        mylist2.pop(0)
-        assert len(results.myattr) == 1
-        assert results.myattr is mylist2
-
-    def test_setitem_modify_item(self, results):
-        mylist = [1, 2]
-        mylist2 = [3, 4]
-        results["myattr"] = mylist
-        assert results.myattr is mylist
-        results.myattr = mylist2
-        assert results.myattr is mylist2
-        mylist2.pop(0)
-        assert len(results["myattr"]) == 1
-        assert results["myattr"] is mylist2
-
-    def test_delattr(self, results):
-        assert hasattr(results, "a")
-        delattr(results, "a")
-        assert not hasattr(results, "a")
-
-    def test_missing_delattr(self, results):
-        assert not hasattr(results, "d")
-        msg = "'Results' object has no attribute 'd'"
-        with pytest.raises(AttributeError, match=msg):
-            delattr(results, "d")
-
-    def test_pop(self, results):
-        assert hasattr(results, "a")
-        results.pop("a")
-        assert not hasattr(results, "a")
-
-    def test_update(self, results):
-        assert not hasattr(results, "spudda")
-        results.update({"spudda": "fett"})
-        assert results.spudda == "fett"
-
-    def test_update_data_fail(self, results):
-        msg = f"'data' is a protected dictionary attribute"
-        with pytest.raises(AttributeError, match=msg):
-            results.update({"data": 0})
-
-    def test_pickle(self, results):
-        results_p = pickle.dumps(results)
-        results_new = pickle.loads(results_p)
-
-    @pytest.mark.parametrize("args, kwargs, length", [
-        (({"darth": "tater"},), {}, 1),
-        ([], {"darth": "tater"}, 1),
-        (({"darth": "tater"},), {"yam": "solo"}, 2),
-        (({"darth": "tater"},), {"darth": "vader"}, 1),
-    ])
-    def test_initialize_arguments(self, args, kwargs, length):
-        results = base.Results(*args, **kwargs)
-        ref = dict(*args, **kwargs)
-        assert ref == results
-        assert len(results) == length
-
-    def test_different_instances(self, results):
-        new_results = base.Results(darth="tater")
-        assert new_results.data is not results.data
-
-
 
 @pytest.fixture(scope='module')
 def u():
@@ -199,6 +81,66 @@ def u():
 FRAMES_ERR = 'AnalysisBase.frames is incorrect'
 TIMES_ERR = 'AnalysisBase.times is incorrect'
 
+class Parallelizable(FrameAnalysis):
+    _is_parallelizable = True
+
+class SerialOnly(FrameAnalysis):
+    _is_parallelizable = False
+
+class ParallelizableWithDaskOnly(FrameAnalysis):
+    _is_parallelizable = True
+    available_backends = ('dask',)
+
+class CustomSerialBackend(parallel.BackendBase):
+    def apply(self, func, computations):
+        return [func(task) for task in computations]
+
+@pytest.mark.parametrize('run_class,backend,n_workers', [
+    (Parallelizable, 'not-existing-backend', 2),
+    (Parallelizable, 'not-existing-backend', None),
+    (SerialOnly, 'not-existing-backend', 2),
+    (SerialOnly, 'not-existing-backend', None),
+    (SerialOnly, 'multiprocessing', 2),
+    (SerialOnly, 'dask', None),
+    (ParallelizableWithDaskOnly, 'multiprocessing', None),
+    (ParallelizableWithDaskOnly, 'multiprocessing', 2),
+])
+def test_backend_configuration_fails(u, run_class, backend, n_workers):
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    with pytest.raises(ValueError):
+        _ = run_class(u.trajectory).run(backend=backend, n_workers=n_workers, stop=0)
+
+@pytest.mark.parametrize('run_class,backend,n_workers', [
+    (Parallelizable, CustomSerialBackend, 2),
+    (ParallelizableWithDaskOnly, CustomSerialBackend, 2),
+])
+def test_backend_configuration_works_when_unsafe(u, run_class, backend, n_workers):
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    backend_instance = backend(n_workers=n_workers)
+    _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, stop=0, unsafe=True)
+
+@pytest.mark.parametrize('run_class,backend,n_workers', [
+    (Parallelizable, CustomSerialBackend, 1),
+    (ParallelizableWithDaskOnly, CustomSerialBackend, 1),
+])
+def test_custom_backend_works(u, run_class, backend, n_workers):
+    backend_instance = backend(n_workers=n_workers)
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsafe=True)
+
+@pytest.mark.parametrize('run_class,backend,n_workers', [
+    (SerialOnly, CustomSerialBackend, 1),
+    (SerialOnly, 'multiprocessing', 1),
+    (SerialOnly, 'dask', 1),
+])
+def test_fails_for_unparallelizable(u, run_class, backend, n_workers):
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    with pytest.raises(ValueError):
+        if not isinstance(backend, str):
+            backend_instance = backend(n_workers=n_workers)
+            _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsafe=True)
+        else:
+            _ = run_class(u.trajectory).run(backend=backend, n_workers=n_workers, unsafe=True)
 
 @pytest.mark.parametrize('run_kwargs,frames', [
     ({}, np.arange(98)),
@@ -245,6 +187,17 @@ def test_frame_fail(u, run_kwargs, client_FrameAnalysis):
     with pytest.raises(ValueError, match=msg):
         an.run(**client_FrameAnalysis, **run_kwargs)
 
+def test_parallelizable_transformations():
+    from MDAnalysis.transformations import NoJump
+    u = mda.Universe(XTC)
+    u.trajectory.add_transformations(NoJump(parallelizable=True))
+
+    # test that serial works
+    FrameAnalysis(u.trajectory).run()
+
+    # test that parallel fails
+    with pytest.raises(ValueError):
+        FrameAnalysis(u.trajectory).run(backend='multiprocessing')
 
 def test_frame_bool_fail(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
