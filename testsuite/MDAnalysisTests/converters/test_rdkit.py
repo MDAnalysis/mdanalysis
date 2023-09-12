@@ -30,7 +30,6 @@ from MDAnalysis.guesser.default_guesser import DefaultGuesser
 
 import numpy as np
 import pytest
-from MDAnalysis.topology.guessers import guess_atom_element
 from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
 from MDAnalysisTests.util import import_not_available
 from numpy.testing import assert_allclose, assert_equal

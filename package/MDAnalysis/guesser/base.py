@@ -141,23 +141,21 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
-            attr = np.array(getattr(self._universe.atoms, attr_to_guess, None))
+            attr_values = np.array(getattr(self._universe.atoms, attr_to_guess, None))
 
-            emptyAttrs = []
+            empty_values = []
             top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
-            emptyAttrs_indices = []
-            for i, a in enumerate(attr):
-                value_missing = top_attr.is_value_missing(a)
-                emptyAttrs.append(value_missing)
-                if value_missing:
-                    emptyAttrs_indices.append(i)
 
-            if True in emptyAttrs:
+            for a in attr_values:
+                value_missing = top_attr.is_value_missing(a)
+                empty_values.append(value_missing)
+
+            if True in empty_values:
                 # pass to the guesser_method indecies of attributes that have
                 # empty values to be guessed
-                attr[emptyAttrs] = self._guesser_methods[attr_to_guess](
-                    partial_guess=emptyAttrs_indices)
-                return attr
+                attr_values[empty_values] = self._guesser_methods[attr_to_guess](
+                    partial_guess=empty_values)
+                return attr_values
 
             else:
                 logger.info(

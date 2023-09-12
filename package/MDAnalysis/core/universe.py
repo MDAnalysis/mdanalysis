@@ -239,7 +239,7 @@ class Universe(object):
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
     context: string or Guesser, default ``default``
-        Type of the Guesser to be used in guessing different attributes
+        Type of the Guesser to be used in attributes guessing
     to_guess: list, (optional), defualt ``['types', 'masses']``
               (in future versions types and masses will be removed)
         Attributes to be guessed (these attributes will be either guessed
@@ -1501,8 +1501,6 @@ class Universe(object):
         Guess and add attributes through a specific context-aware guesser.
          .. _guess_TopologyAttributes:
 
-        guess and add attributes through a specific context-aware guesser.
-
         Parameters
         ----------
         context: string or Guesser class
@@ -1550,13 +1548,13 @@ class Universe(object):
                     for attr in to_guess:
                         if any(attr == a for a in self._topology_atrrs):
                             logger.info(
-                                'The attribute {} have already been read '
+                                f'The attribute {attr} have already been read '
                                 'from the topology file. The guesser will '
                                 'only guess empty values for this attribute, '
                                 'if any exists. To overwrite it by completely '
                                 'guessed values, you can pass the attribute to'
                                 ' the force_guess parameter instead of '
-                                'the to_guess one' .format(attr))
+                                'the to_guess one')
 
                     for attr in total_guess:
                         fg = True if attr in force_guess else False
@@ -1567,8 +1565,8 @@ class Universe(object):
                                 self._add_topology_objects(
                                     attr, values, guessed=True)
                             else:
-                                tcls = _TOPOLOGY_ATTRS[attr](values, True)
-                                self.add_TopologyAttr(tcls)
+                                guessed_attr = _TOPOLOGY_ATTRS[attr](values, True)
+                                self.add_TopologyAttr(guessed_attr)
                             logger.info(
                                 f'attribute {attr} has been guessed'
                                 ' successfully.')

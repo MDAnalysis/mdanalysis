@@ -137,11 +137,12 @@ class DefaultGuesser(GuesserBase):
                             "there is no reference attributes in this universe"
                             "to guess mass from")
 
-        atoms_indices = partial_guess if partial_guess else list(
-            range(len(atoms)))
+        if partial_guess:
+            atoms = atoms[partial_guess] 
+
         self.validate_atom_types(atoms)
-        masses = np.array([self.get_atom_mass(atoms[atom_t])
-                           for atom_t in atoms_indices], dtype=np.float64)
+        masses = np.array([self.get_atom_mass(atom)
+                           for atom in atoms], dtype=np.float64)
         return masses
 
     def validate_atom_types(self, atom_types):
@@ -232,18 +233,18 @@ class DefaultGuesser(GuesserBase):
                         "to guess types from")
 
         if masses is not None:
-            atoms_indices = partial_guess if partial_guess else list(
-                range(len(masses)))
+            if partial_guess:
+                masses = masses[partial_guess] 
 
-            return np.array([self.guess_element_from_mass(masses[n])
-                             for n in atoms_indices], dtype=object)
+            return np.array([self.guess_element_from_mass(mass)
+                             for mass in masses], dtype=object)
 
         else:
-            atoms_indices = partial_guess if partial_guess else list(
-                range(len(atoms)))
+            if partial_guess:
+                atoms = atoms[partial_guess] 
 
-            return np.array([self.guess_atom_element(atoms[n])
-                            for n in atoms_indices], dtype=object)
+            return np.array([self.guess_atom_element(atom)
+                            for atom in atoms], dtype=object)
 
     NUMBERS = re.compile(r'[0-9]')  # match numbers
     SYMBOLS = re.compile(r'[*+-]')  # match *, +, -

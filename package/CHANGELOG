@@ -33,11 +33,19 @@ Enhancements
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
-  * Removed type and mass guessing processes from all parsers
-  *  Added guess_topologyAttributes() API to the universe to hande attribute guessing.
-  * Removed type guessing from RDKit converter
+  * Removed type and mass guessing processes from all parsers (pr #3753)
+  * Added guess_topologyAttributes() API to the universe to hande 
+    attribute guessing (pr #3753)
+  * Added the DefaultGuesser, which is a general-purpose gusser with the same 
+    functionalities as the existing guesser.py methods (pr #3753)
+  * Added the ability to guess elements from masses if exists through
+    the guess_element_from_mass() method in the DefaultGuesser (pr #3753)
+  * Removed type guessing from RDKit converter (pr #3753)
   * Assigned type attribute to be equal to the element attribute, if type is
-    not provided for RDKit converter
+    not provided for RDKit converter (pr #3753)
+  * Added is_value_missing attribute to topology attributes to check for missing
+    values (pr #3753)
+  
 
 
 Changes
