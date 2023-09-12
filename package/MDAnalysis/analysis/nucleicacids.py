@@ -322,6 +322,9 @@ class WatsonCrickDist(NucPairDist):
         If a list of :class:`~MDAnalysis.core.groups.Residue` is given for
         `strand1` of `strand2` instead of a
         :class:`~MDAnalysis.core.groups.ResidueGroup`
+    TypeError
+        If the provided list of :class:`~MDAnalysis.core.Residue` contains
+        non-Residue elements
     ValueError
         If the selections given are not the same length
     ValueError:
@@ -353,20 +356,25 @@ class WatsonCrickDist(NucPairDist):
                  t_name: str = 'T', c_name: str = 'C',
                  **kwargs) -> None:
 
-        resid_warning = lambda strand :  warnings.warn(
-                DeprecationWarning(
-                    f"ResidueGroup should be used for {strand} instead of giving a Residue list"
+        def verify_strand(strand: ResidueClass) -> ResidueGroup:
+            # Helper method to verify the strands
+            
+            if isinstance(strand, list):  # Checking if a list is given
+                if not all(isinstance(resid, Residue) for resid in strand):  # verify list is only Residues
+                    raise TypeError(f"{strand} contains non-Residue elements")  
+
+                warnings.warn(
+                    DeprecationWarning(
+                        f"ResidueGroup should be used for {strand} instead of giving a Residue list"
+                        )
                     )
-                )
 
-        if isinstance(strand1, list):
-            resid_warning(strand1) 
-            strand1: ResidueGroup = ResidueGroup(strand1)
+                strand: ResidueGroup = ResidueGroup(strand)  # Convert to a ResidueGroup
+            
+            return strand
 
-        if isinstance(strand2, list):
-            resid_warning(strand2)
-            strand2: ResidueGroup = ResidueGroup(strand2)
-        
+        strand1: ResidueGroup = verify_strand(strand1) 
+        strand2: ResidueGroup = verify_strand(strand2)
          
         strand_atomgroups: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = self.select_strand_atoms(
             strand1, strand2, n1_name, n3_name, 
