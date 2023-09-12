@@ -33,13 +33,14 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
-from MDAnalysisTests.util import no_deprecated_call, get_running_dask_client
+from MDAnalysisTests.util import no_deprecated_call
 from MDAnalysis.lib.util import is_installed
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
 
-    available_backends = ['local', 'dask', 'dask.distributed', 'multiprocessing']
+    available_backends = ['serial', 'dask', 'multiprocessing']
+    _is_parallelizable = True
 
     def __init__(self, reader, **kwargs):
         super(FrameAnalysis, self).__init__(reader, **kwargs)
@@ -76,22 +77,6 @@ class OldAPIAnalysis(base.AnalysisBase):
 
 class FinallyRaised(Exception):
     pass
-
-def square(x):
-    """Testing function for TestParallelExecutor 
-    added here to avoide pickle problems with multiprocessing
-
-    Parameters
-    ----------
-    x : int
-        number to be squared
-
-    Returns
-    -------
-    int
-        square of the number
-    """
-    return x**2
 
 
 class Test_Results:

@@ -364,7 +364,12 @@ class RMSD(AnalysisBase):
     @classmethod
     @property
     def available_backends(cls):
-        return ('local', 'multiprocessing', 'dask', 'dask.distributed')
+        return ('serial', 'multiprocessing', 'dask',)
+
+    @classmethod
+    @property
+    def _is_parallelizable(cls):
+        return True
 
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, weights=None, weights_groupselections=False,
@@ -752,8 +757,8 @@ class RMSF(AnalysisBase):
     @classmethod
     @property
     def available_backends(cls):
-        return ('local',)
-    
+        return ('serial',)
+
     def __init__(self, atomgroup, **kwargs):
         r"""Parameters
         ----------

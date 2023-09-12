@@ -7,14 +7,6 @@ from typing import Callable, Iterable, Sequence, Union
 from MDAnalysis.lib.util import is_installed
 
 
-def is_valid_distributed_client(client: object):
-    try:
-        import dask.distributed as distributed
-    except ImportError:
-        return False
-    return isinstance(client, distributed.Client)
-
-
 class Results(UserDict):
     r"""Container object for storing results.
 
@@ -154,56 +146,6 @@ class BackendDask(BackendBase):
         base_checks = super()._get_checks()
         checks = {is_installed("dask"): "module 'dask' should be installed: run 'python3 -m pip install dask"}
         return base_checks | checks
-
-
-class BackendDaskDistributed(BackendBase):
-    def __init__(self, client, n_workers: int = None):
-        self.client = client
-        self.n_workers = n_workers
-        self._validate()
-        self.n_workers = sum(client.nthreads().values())
-
-    def _get_checks(self):
-        from dask.distributed import Client
-
-        checks = {
-            is_installed("dask.distributed"): "module 'dask' should be installed: run 'python3 -m pip install dask",
-            isinstance(
-                self.client, Client
-            ): f"self.client should be instance of dask.distributed.Client, got {type(self.client)=}",
-        }
-        return checks
-
-    def _get_warnings(self):
-        return {
-            self.n_workers
-            is not None: "n_workers will be ignored with 'dask.distributed' backend and deduced from self.client directly",
-        }
-
-    def apply(self, func: Callable, computations: list) -> list:
-        from dask.delayed import delayed
-
-        computations = [delayed(func)(task) for task in computations]
-        return [obj.result() for obj in self.client.compute(computations)]
-
-
-class ParallelExecutor:
-    r"""Executor object that abstracts away running parallel computations
-    with various backends. Mainly is used for AnalysisBase, but can be used for other purposes as well."""
-
-    @classmethod
-    @property
-    def available_backends(cls):
-        """Declares backends that are implemented for parallel execution.
-        Importantly, backend names are the same as packages you must import
-        in order to run them -- e.g. to run 'dask.distributed', you need to run 'import dask.distributed'
-
-        Returns
-        -------
-        list[str]
-            list of available backends as strings
-        """
-        return ("local", "multiprocessing", "dask", "dask.distributed")
 
 
 class ResultsGroup:

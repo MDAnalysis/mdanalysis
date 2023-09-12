@@ -134,13 +134,12 @@ from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 
 from .parallel import (
-    ParallelExecutor,
     Results,
     ResultsGroup,
     BackendDask,
-    BackendDaskDistributed,
     BackendMultiprocessing,
     BackendSerial,
+    BackendBase
 )
 
 logger = logging.getLogger(__name__)
@@ -241,7 +240,12 @@ class AnalysisBase(object):
     @classmethod
     @property
     def available_backends(cls):
-        return ("local",)
+        return ("serial",)
+
+    @classmethod
+    @property
+    def _is_parallelizable(cls):
+        return False
 
     def __init__(self, trajectory, verbose=False, **kwargs):
         self._trajectory = trajectory
@@ -420,36 +424,30 @@ class AnalysisBase(object):
 
         return np.array_split(enumerated_frames, n_parts)
 
-    def _configure_backend(self, backend: str, n_workers: int):
-        """
-        Configure parameters necessary for running a distributed workload.
-
-        Parameters
-        ----------
-        backend : str, optional
-            scheduling type:
-              - 'dask' implies `dask` scheduler (need to install MDAnalysis[dask] for that to work)
-              - 'multiprocessing' works with standard python multiprocessing module
-              - None if you want to run things locally
-        n_workers : int, optional
-            number of workers (local or remote processes).
-
-        Raises
-        ------
-        ValueError
-            if backend is not available for current class
-
-        Returns
-        -------
-        client : ParallelExecutor
-            a ParallelExecutor instance, configured with given parameters
-        """
-        builtin_backends = {'local': BackendSerial, 'multiprocessing': BackendMultiprocessing, 'dask': BackendDask}
+    def _configure_backend(self, backend: str | BackendBase, n_workers: int, unsafe: bool = False):
+        builtin_backends = {'serial': BackendSerial, 'multiprocessing': BackendMultiprocessing, 'dask': BackendDask}
 
         backend_class = builtin_backends.get(backend, None)
+        available_backend_classes = [builtin_backends.get(b) for b in self.available_backends]
+        print(available_backend_classes)
+
+        # check for serial-only classes
+        if not self._is_parallelizable and backend_class is not BackendSerial:
+            raise ValueError(f"Can not parallelize class {self.__class__}")
+
+        # make sure user enabled 'unsafe=True' for custom classes
+        if not unsafe and self._is_parallelizable and backend_class not in available_backend_classes:
+            raise ValueError(f"Must specify 'unsafe=True' if you want to use a custom {backend_class=} for {self.__class__}")
+
+        # check for the presence of parallelizable transformations
+        if self._is_parallelizable and any((t.parallelizable for t in self._trajectory.transformations)):
+            raise ValueError("Trajectory should not have associated parallelizable transformations")
+
+        # conclude mapping from string to backend class
         if backend_class is not None:
             return backend_class(n_workers=n_workers)
 
+        # or return the class itself after ensuring it has apply method
         if not hasattr(backend, 'apply'):
             raise ValueError("{backend=} is invalid: should have 'apply' method")
         return backend
@@ -490,7 +488,7 @@ class AnalysisBase(object):
         progressbar_kwargs : dict, optional
             ProgressBar keywords with custom parameters regarding progress bar position, etc;
             see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
-            Available only for `backend='local'`
+            Available only for `backend='serial'`
 
         backend : str, optional
             Enables parallel execution of :meth:`AnalysisBase.run`. To list all available backends for your class,
@@ -513,11 +511,11 @@ class AnalysisBase(object):
             Add `progressbar_kwargs` parameter,
             allowing to modify description, position etc of tqdm progressbars
         """
-        # default to local execution
-        backend = 'local' if backend is None else backend
+        # default to serial execution
+        backend = 'serial' if backend is None else backend
 
-        if progressbar_kwargs and backend != 'local':
-            raise ValueError("Can not display progressbar with non-local backend")
+        if progressbar_kwargs and backend != 'serial':
+            raise ValueError("Can not display progressbar with non-serial backend")
 
         n_workers = 1 if n_workers is None else n_workers
 
@@ -527,7 +525,7 @@ class AnalysisBase(object):
         # do this as early as possible to check client parameters before any computations occur
         executor = self._configure_backend(backend=backend, n_workers=n_workers)
         if hasattr(executor, 'n_workers') and n_parts < executor.n_workers:  # using executor's value here for non-default executors
-            warnings.warn('likely running not at full capacity: {executor.n_workers=} is greater than {n_parts=}')
+            warnings.warn(f'likely running not at full capacity: {executor.n_workers=} is greater than {n_parts=}')
 
         # start preparing the run
         worker_func = partial(self._compute, progressbar_kwargs=progressbar_kwargs, verbose=verbose)
@@ -616,7 +614,7 @@ class AnalysisFromFunction(AnalysisBase):
     @property
     def available_backends(cls):
         # multiprocessing won't work because of pickling problems
-        return ("local", "dask", "dask.distributed")
+        return ("serial", "dask")
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
         if (trajectory is not None) and (not isinstance(
