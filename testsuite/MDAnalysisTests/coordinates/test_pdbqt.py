@@ -44,6 +44,12 @@ class TestPDBQT(object):
         sel = universe.select_atoms('segid B')
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
+    def test_chainID(self, universe):
+        sel = universe.select_atoms('chainID A')
+        assert_equal(sel.n_atoms, 909, "failed to chainID segment A")
+        sel = universe.select_atoms('chainID B')
+        assert_equal(sel.n_atoms, 896, "failed to chainID segment B")
+
     def test_protein(self, universe):
         sel = universe.select_atoms('protein')
         assert_equal(sel.n_atoms, 1805, "failed to select protein")
