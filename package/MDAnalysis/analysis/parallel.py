@@ -91,20 +91,79 @@ class Results(UserDict):
 
 
 class BackendBase:
+    """Base class for backend implementation
+
+    Examples
+    --------
+    >>> # implement a thread-based backend
+    >>> from MDAnalysis.analysis.parallel import BackendBase
+    >>> class ThreadsBackend(BackendBase):
+            def apply(self, func, computations):
+                from multiprocessing.dummy import Pool
+
+                with Pool(processes=self.n_workers) as pool:
+                    results = pool.map(func, computations)
+                return results
+    >>> from MDAnalysis.analysis.rms import RMSD
+    >>> R = RMSD(...) # setup the run
+    >>> n_workers = 2
+    >>> backend = ThreadsBackend(n_workers=n_workers)
+    >>> R.run(backend=backend)
+
+    .. versionadded:: 2.7.0
+    """
     def __init__(self, n_workers: int):
+        """Initializes an instance and performs checks for its validity,
+        such as n_workers and possibly other ones.
+
+        Parameters
+        ----------
+        n_workers : int
+            positive integer with number of workers (usually, processes) to split the work between
+
+        .. versionadded: 2.7.0
+        """
         self.n_workers = n_workers
         self._validate()
 
     def _get_checks(self):
+        """Get dictionary with `condition: error_message` pairs that ensure the validity of the backend instance
+
+        Returns
+        -------
+        dict
+            dictionary with `condition: error_message` pairs that will get checked during _validate() run
+
+        .. versionadded: 2.7.0
+        """
         return {
             isinstance(self.n_workers, int)
             and self.n_workers > 0: f"n_workers should be positive integer, got {self.n_workers=}",
         }
 
     def _get_warnings(self):
+        """Get dictionary with `condition: warning_message` pairs that ensure the good usage of the backend instance
+
+        Returns
+        -------
+        dict
+            dictionary with `condition: warning_message` pairs that will get checked during _validate() run
+
+        .. versionadded: 2.7.0
+        """
         return dict()
 
     def _validate(self):
+        """Check correctness (e.g. `dask` is installed if using `backend='dask'`)
+        and good usage (e.g. `n_workers=1` if backend is serial) of the backend
+
+        Raises
+        ------
+        ValueError
+            if one of the conditions in :meth:`self._get_checks()` is True
+
+        .. versionadded: 2.7.0
+        """
         for check, msg in self._get_checks().items():
             if not check:
                 raise ValueError(msg)
@@ -113,10 +172,32 @@ class BackendBase:
                 warnings.warn(msg)
 
     def apply(self, func: Callable, computations: list) -> list:
+        """Main function that will get called when using an instance of an object, mapping function to all tasks
+        in the `computations` list. Should effectively be equivalent to running [func(item) for item in computations]
+        while using the parallel backend capabilities.
+
+        Parameters
+        ----------
+        func : Callable
+            function to be called on each of the tasks in computations list
+        computations : list
+            computation tasks to apply function to
+
+        Returns
+        -------
+        list
+            list of results of the function
+   
+        .. versionadded: 2.7.0
+        """
         raise NotImplementedError("Should be re-implemented in subclasses")
 
 
 class BackendSerial(BackendBase):
+    """A built-in backend that does serial execution of the function, without any parallelization
+
+    .. versionadded: 2.7.0
+    """
     def _get_warnigns(self):
         return {self.n_workers > 1, "n_workers > 1 will be ignored while executing with backend='serial'"}
 
@@ -125,6 +206,10 @@ class BackendSerial(BackendBase):
 
 
 class BackendMultiprocessing(BackendBase):
+    """A built-in backend that executes a given function using multiprocessing.Pool.map method
+
+    .. versionadded: 2.7.0
+    """
     def apply(self, func: Callable, computations: list) -> list:
         from multiprocessing import Pool
 
@@ -134,6 +219,11 @@ class BackendMultiprocessing(BackendBase):
 
 
 class BackendDask(BackendBase):
+    """A built-in backend that executes a given function using dask.delayed.compute method with `scheduler='processes'`
+    and `chunksize=1`. Requires `dask` module to be installed.
+
+    .. versionadded: 2.7.0
+    """
     def apply(self, func: Callable, computations: list) -> list:
         from dask.delayed import delayed
         import dask
@@ -144,12 +234,15 @@ class BackendDask(BackendBase):
 
     def _get_checks(self):
         base_checks = super()._get_checks()
-        checks = {is_installed("dask"): "module 'dask' should be installed: run 'python3 -m pip install dask"}
+        checks = {is_installed("dask"): "module 'dask' should be installed: run 'python3 -m pip install dask'"}
         return base_checks | checks
 
 
 class ResultsGroup:
-    """Simple class that does aggregation of the results from independent remote workers in AnalysisBase"""
+    """Simple class that does aggregation of the results from independent remote workers in AnalysisBase
+
+    .. versionadded: 2.7.0
+    """
 
     def __init__(self, lookup: dict[str, Callable] = None):
         """Initializes the class, saving aggregation functions in _lookup attribute.
@@ -158,6 +251,8 @@ class ResultsGroup:
         ----------
         lookup : dict[str, Callable], optional
             aggregation functions lookup dict, by default None
+
+        .. versionadded: 2.7.0
         """
         self._lookup = lookup
 
@@ -179,6 +274,8 @@ class ResultsGroup:
         ------
         ValueError
             if no aggregation function for a key is found and do_raise = True
+
+        .. versionadded: 2.7.0
         """
         if len(objects) == 1:
             rv = objects[0]
@@ -194,16 +291,64 @@ class ResultsGroup:
 
     @staticmethod
     def flatten_sequence(arrs: list[list]):
+        """Flatten a list of lists into a list
+
+        Parameters
+        ----------
+        arrs : list[list]
+            list of lists
+
+        Returns
+        -------
+        list
+            flattened list
+        """
         return [item for sublist in arrs for item in sublist]
 
     @staticmethod
-    def ndarray_sum(arrs: np.ndarray):
+    def ndarray_sum(arrs: list[np.ndarray]):
+        """sums an ndarray along `axis=0`
+
+        Parameters
+        ----------
+        arrs : list[np.ndarray]
+            list of input arrays. Must have the same shape.
+
+        Returns
+        -------
+        np.ndarray
+            sum of input arrays
+        """
         return np.array(arrs).sum(axis=0)
 
     @staticmethod
-    def ndarray_mean(arrs: np.ndarray):
+    def ndarray_mean(arrs: list[np.ndarray]):
+        """calculates mean of input ndarrays along `axis=0`
+
+        Parameters
+        ----------
+        arrs : list[np.ndarray]
+            list of input arrays. Must have the same shape.
+
+        Returns
+        -------
+        np.ndarray
+            mean of input arrays
+        """
         return np.array(arrs).mean(axis=0)
 
     @staticmethod
     def float_mean(floats: list[float]):
-        return sum(floats) / len(floats)
+        """calculates mean of input float values
+
+        Parameters
+        ----------
+        floats : list[float]
+            list of float values
+
+        Returns
+        -------
+        float
+            mean value
+        """
+        return np.array(floats).mean()
