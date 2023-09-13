@@ -12,45 +12,7 @@ from MDAnalysisTests.analysis.test_base import (
     OldAPIAnalysis,
 )
 from MDAnalysis.analysis.rms import RMSD, RMSF
-
 from MDAnalysis.lib.util import is_installed
-
-
-@pytest.fixture(scope="module")
-def dask_client_1():
-    if not is_installed("dask"):
-        yield "NoClient"
-    else:
-        import dask
-
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", UserWarning)
-            lc = dask.distributed.serialCluster(
-                n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None
-            )
-            client = dask.distributed.Client(lc)
-            yield client
-            lc.close()
-            client.close()
-
-
-@pytest.fixture(scope="module")
-def dask_client_2():
-    if not is_installed("dask"):
-        yield "NoClient"
-    else:
-        import dask
-
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", UserWarning)
-
-            lc = dask.distributed.serialCluster(
-                n_workers=1, processes=True, threads_per_worker=1, dashboard_address=None
-            )
-            client = dask.distributed.Client(lc)
-            yield client
-            lc.close()
-            client.close()
 
 
 def generate_client_fixture(cls):
