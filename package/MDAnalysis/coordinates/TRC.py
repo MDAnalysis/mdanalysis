@@ -146,8 +146,6 @@ class TRCReader(base.ReaderBase):
         atom_len = 0
         frame_counter = 0  
         frame_len = 0   
-          
-        offset = 0
  
         l_timestep_offset = []
         l_timestep_timevalues = []
@@ -156,14 +154,16 @@ class TRCReader(base.ReaderBase):
         # Loop through the file and save position of datablocks
         #        
         with util.anyopen(self.filename) as f:
-            for line in f:
+            while(True): 
+                line = f.readline()
+                if (line=='') or (line==b''): break; #EOF
                 #
                 # Timestep-Block
                 #
                 if "TIMESTEP" in line:
                     in_timestep_block = True    
                     lastblock_was_timestep = True
-                    l_timestep_offset.append(int(offset) + len(line))     
+                    l_timestep_offset.append(f.tell())     
                 
                 elif (lastblock_was_timestep == True):
                     l_timestep_timevalues.append(float(line.split()[1]))
@@ -189,7 +189,6 @@ class TRCReader(base.ReaderBase):
                     atom_len = atom_counter
                     in_positionred_block = False
                     
-                offset += len(line)
                 frame_len = frame_counter
 
         traj_properties["n_atoms"] = atom_len
@@ -271,8 +270,8 @@ class TRCReader(base.ReaderBase):
         """read frame i"""
         self._frame = i - 1
 
-        #Move position in file just (-1 step) before the beginning of the block 
-        self.trcfile.seek(self.traj_properties["l_timestep_offset"][i]-1, 0)
+        #Move position in file just (-2 byte) before the beginning of the block 
+        self.trcfile.seek(self.traj_properties["l_timestep_offset"][i]-2, 0)
 
         return self._read_next_timestep()
 
