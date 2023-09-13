@@ -126,7 +126,7 @@ import itertools
 import logging
 import warnings
 from functools import partial
-from typing import Callable, Iterable, Sequence
+from typing import Callable, Iterable, Sequence, Union
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -424,7 +424,7 @@ class AnalysisBase(object):
 
         return np.array_split(enumerated_frames, n_parts)
 
-    def _configure_backend(self, backend: str | BackendBase, n_workers: int, unsafe: bool = False):
+    def _configure_backend(self, backend: Union[str, BackendBase], n_workers: int, unsafe: bool = False):
         builtin_backends = {'serial': BackendSerial, 'multiprocessing': BackendMultiprocessing, 'dask': BackendDask}
 
         backend_class = builtin_backends.get(backend, None)
