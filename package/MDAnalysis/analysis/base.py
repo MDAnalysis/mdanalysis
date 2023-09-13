@@ -558,7 +558,6 @@ class AnalysisBase(object):
         """
         return ResultsGroup(lookup=None)
 
-
 class AnalysisFromFunction(AnalysisBase):
     r"""Create an :class:`AnalysisBase` from a function working on AtomGroups
 
@@ -613,8 +612,13 @@ class AnalysisFromFunction(AnalysisBase):
     @classmethod
     @property
     def available_backends(cls):
-        # multiprocessing won't work because of pickling problems
+        # multiprocessing won't work because self.function won't get pickled
         return ("serial", "dask")
+
+    @classmethod
+    @property
+    def _is_parallelizable(cls):
+        return True
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
         if (trajectory is not None) and (not isinstance(
