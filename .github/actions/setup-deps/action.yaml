@@ -58,8 +58,6 @@ inputs:
     default: 'clustalw=2.1'
   dask:
     default: 'dask'
-  dask-distributed:
-    default: 'dask[distributed]'
   distopia:
     default: 'distopia>=0.2.0'
   h5py:

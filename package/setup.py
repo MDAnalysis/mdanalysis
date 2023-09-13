@@ -666,7 +666,6 @@ if __name__ == '__main__':
               ],
               'parallel': [
                 'dask',  # for parallelised execution using `dask` as a backend
-                'dask[distributed]',  # for parallelised execution using `dask.distributed` with pre-configured Client
               ]
           },
           test_suite="MDAnalysisTests",

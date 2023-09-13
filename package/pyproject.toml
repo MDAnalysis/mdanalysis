@@ -98,7 +98,6 @@ doc = [
 ]
 parallel = [
     "dask",
-    "dask[distributed]",
 ]
 
 
