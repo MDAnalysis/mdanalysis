@@ -902,7 +902,6 @@ class RMSF(AnalysisBase):
         if not (self.results.rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
-    
     @property
     def rmsf(self):
         wmsg = ("The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and "
