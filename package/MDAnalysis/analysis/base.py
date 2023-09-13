@@ -313,7 +313,7 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         if frames is not None:
             if not all(opt is None for opt in [start, stop, step]):
-                raise ValueError("start/stop/step cannot be combined with " "frames")
+                raise ValueError("start/stop/step cannot be combined with frames")
             slicer = frames
         else:
             start, stop, step = trajectory.check_slice_indices(start, stop, step)
@@ -605,7 +605,8 @@ class AnalysisBase(object):
         return self
 
     def _get_aggregator(self):
-        """Returns a default aggregator that takes entire results if there is a single object, and raises ValueError otherwise
+        """Returns a default aggregator that takes entire results if there is a single object, 
+        and raises ValueError otherwise
 
         Returns
         -------

@@ -128,6 +128,19 @@ def test_custom_backend_works(u, run_class, backend, n_workers):
     u = mda.Universe(TPR, XTC)  # dt = 100
     _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsafe=True)
 
+@pytest.mark.parametrize('run_class,backend_instance,n_workers', [
+    (Parallelizable, map, 1),
+    (SerialOnly, list, 1),
+    (ParallelizableWithDaskOnly, object, 1),
+])
+def test_fails_incorrect_custom_backend(u, run_class, backend_instance, n_workers):
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    with pytest.raises(ValueError):
+        _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsafe=True)
+
+    with pytest.raises(ValueError):
+        _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers)
+
 @pytest.mark.parametrize('run_class,backend,n_workers', [
     (SerialOnly, CustomSerialBackend, 1),
     (SerialOnly, 'multiprocessing', 1),
