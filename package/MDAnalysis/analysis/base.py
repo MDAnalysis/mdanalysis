@@ -133,14 +133,7 @@ from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 
-from .parallel import (
-    Results,
-    ResultsGroup,
-    BackendDask,
-    BackendMultiprocessing,
-    BackendSerial,
-    BackendBase
-)
+from .parallel import Results, ResultsGroup, BackendDask, BackendMultiprocessing, BackendSerial, BackendBase
 
 logger = logging.getLogger(__name__)
 
@@ -235,6 +228,11 @@ class AnalysisBase(object):
     .. versionchanged:: 2.0.0
         Added :attr:`results`
 
+    .. versionadded:: 2.7.0
+        Added ability to run analysis in parallel using either a built-in backend (`multiprocessing` or `dask`)
+        of a custom `parallel.BackendBase` instance with an implemented `apply` method that is used to run
+        the computations.
+
     """
 
     @classmethod
@@ -242,11 +240,13 @@ class AnalysisBase(object):
     def available_backends(cls):
         """Tuple with backends supported by the core library for a given class.
         User can pass either one of these values as `backend=...` to :meth:`run()` method,
-        or a custom object that has `apply` method (see documentation for :meth:`run()`).
+        or a custom object that has `apply` method (see documentation for :meth:`run()`):
+         - 'serial': no parallelization
+         - 'multiprocessing': parallelization using `multiprocessing.Pool`
+         - 'dask': parallelization using `dask.delayed.compute()`. Requires installation of `mdanalysis[parallel]`
 
-        'serial': no parallelization
-        'multiprocessing': parallelization using `multiprocessing.Pool`
-        'dask': parallelization using `dask.delayed.compute()`. Requires installation of `mdanalysis[parallel]`
+        If you want to add your own backend to an existing class, either pass a `parallel.BackendBase` subclass
+        (see its documentation to learn how to implement it properly).
 
         Returns
         -------
@@ -424,7 +424,7 @@ class AnalysisBase(object):
             list of (n, 2) shaped np.ndarrays with frame indices and numbers
 
         .. versionadded:: 2.7.0
-        """ 
+        """
         if frames is None:
             start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
             used_frames = np.arange(start, stop, step)
@@ -460,7 +460,7 @@ class AnalysisBase(object):
         Returns
         -------
         BackendBase
-            instance of a `BackendBase` class that will be used for computations 
+            instance of a `BackendBase` class that will be used for computations
 
         Raises
         ------
@@ -475,7 +475,7 @@ class AnalysisBase(object):
 
         .. versionadded:: 2.7.0
         """
-        builtin_backends = {'serial': BackendSerial, 'multiprocessing': BackendMultiprocessing, 'dask': BackendDask}
+        builtin_backends = {"serial": BackendSerial, "multiprocessing": BackendMultiprocessing, "dask": BackendDask}
 
         backend_class = builtin_backends.get(backend, backend)
         available_backend_classes = [builtin_backends.get(b) for b in self.available_backends]
@@ -486,7 +486,9 @@ class AnalysisBase(object):
 
         # make sure user enabled 'unsafe=True' for custom classes
         if not unsafe and self._is_parallelizable and backend_class not in available_backend_classes:
-            raise ValueError(f"Must specify 'unsafe=True' if you want to use a custom {backend_class=} for {self.__class__}")
+            raise ValueError(
+                f"Must specify 'unsafe=True' if you want to use a custom {backend_class=} for {self.__class__}"
+            )
 
         # check for the presence of parallelizable transformations
         if backend_class is not BackendSerial and any((t.parallelizable for t in self._trajectory.transformations)):
@@ -497,8 +499,10 @@ class AnalysisBase(object):
             return backend_class(n_workers=n_workers)
 
         # or pass along an instance of the class itself after ensuring it has apply method
-        if not isinstance(backend, BackendBase) or not hasattr(backend, 'apply'):
-            raise ValueError(f"{backend=} is invalid: should have 'apply' method and be instance of MDAnalysis.analysis.parallel.BackendBase")
+        if not isinstance(backend, BackendBase) or not hasattr(backend, "apply"):
+            raise ValueError(
+                f"{backend=} is invalid: should have 'apply' method and be instance of MDAnalysis.analysis.parallel.BackendBase"
+            )
         return backend
 
     def run(
@@ -510,7 +514,7 @@ class AnalysisBase(object):
         verbose: bool = None,
         n_workers: int = None,
         n_parts: int = None,
-        backend: str = None,
+        backend: Union[str, BackendBase] = None,
         *,
         unsafe: bool = False,
         progressbar_kwargs={},
@@ -540,8 +544,9 @@ class AnalysisBase(object):
             ProgressBar keywords with custom parameters regarding progress bar position, etc;
             see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
             Available only for `backend='serial'`
-        backend : Union[str, BackendBase]
-            backend to be used:
+        backend : Union[str, BackendBase], optional
+            By default, performs calculations in a serial fashion.
+            Otherwise, user can choose a backend:
                - `str` is matched to a builtin backend (one of `serial`, `multiprocessing` and `dask`)
                - `BackendBase` subclass is checked for the presence of `apply` method
         n_workers : int
@@ -561,9 +566,9 @@ class AnalysisBase(object):
             allowing to modify description, position etc of tqdm progressbars
         """
         # default to serial execution
-        backend = 'serial' if backend is None else backend
+        backend = "serial" if backend is None else backend
 
-        if progressbar_kwargs and backend != 'serial':
+        if progressbar_kwargs and backend != "serial":
             raise ValueError("Can not display progressbar with non-serial backend")
 
         n_workers = 1 if n_workers is None else n_workers
@@ -573,8 +578,10 @@ class AnalysisBase(object):
 
         # do this as early as possible to check client parameters before any computations occur
         executor = self._configure_backend(backend=backend, n_workers=n_workers, unsafe=unsafe)
-        if hasattr(executor, 'n_workers') and n_parts < executor.n_workers:  # using executor's value here for non-default executors
-            warnings.warn(f'likely running not at full capacity: {executor.n_workers=} is greater than {n_parts=}')
+        if (
+            hasattr(executor, "n_workers") and n_parts < executor.n_workers
+        ):  # using executor's value here for non-default executors
+            warnings.warn(f"likely running not at full capacity: {executor.n_workers=} is greater than {n_parts=}")
 
         # start preparing the run
         worker_func = partial(self._compute, progressbar_kwargs=progressbar_kwargs, verbose=verbose)
@@ -608,6 +615,7 @@ class AnalysisBase(object):
         .. versionadded:: 2.7.0
         """
         return ResultsGroup(lookup=None)
+
 
 class AnalysisFromFunction(AnalysisBase):
     r"""Create an :class:`AnalysisBase` from a function working on AtomGroups
@@ -672,8 +680,7 @@ class AnalysisFromFunction(AnalysisBase):
         return True
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
-        if (trajectory is not None) and (not isinstance(
-                trajectory, coordinates.base.ProtoReader)):
+        if (trajectory is not None) and (not isinstance(trajectory, coordinates.base.ProtoReader)):
             args = (trajectory,) + args
             trajectory = None
 
@@ -698,7 +705,7 @@ class AnalysisFromFunction(AnalysisBase):
         self.results.timeseries = []
 
     def _get_aggregator(self):
-        return ResultsGroup({'timeseries': ResultsGroup.flatten_sequence})
+        return ResultsGroup({"timeseries": ResultsGroup.flatten_sequence})
 
     def _single_frame(self):
         self.results.timeseries.append(self.function(*self.args, **self.kwargs))
@@ -762,8 +769,7 @@ def analysis_class(function):
 
     class WrapperClass(AnalysisFromFunction):
         def __init__(self, trajectory=None, *args, **kwargs):
-            super(WrapperClass, self).__init__(function, trajectory,
-                                               *args, **kwargs)
+            super(WrapperClass, self).__init__(function, trajectory, *args, **kwargs)
 
     return WrapperClass
 
@@ -801,9 +807,7 @@ def _filter_baseanalysis_kwargs(function, kwargs):
         base_argspec = inspect.getargspec(AnalysisBase.__init__)
 
     n_base_defaults = len(base_argspec.defaults)
-    base_kwargs = {name: val
-                   for name, val in zip(base_argspec.args[-n_base_defaults:],
-                                        base_argspec.defaults)}
+    base_kwargs = {name: val for name, val in zip(base_argspec.args[-n_base_defaults:], base_argspec.defaults)}
 
     try:
         # pylint: disable=deprecated-method
@@ -816,7 +820,8 @@ def _filter_baseanalysis_kwargs(function, kwargs):
         if base_kw in argspec.args:
             raise ValueError(
                 "argument name '{}' clashes with AnalysisBase argument."
-                "Now allowed are: {}".format(base_kw, base_kwargs.keys()))
+                "Now allowed are: {}".format(base_kw, base_kwargs.keys())
+            )
 
     base_args = {}
     for argname, default in base_kwargs.items():

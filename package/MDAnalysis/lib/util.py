@@ -205,6 +205,7 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import importlib
 
 import mmtf
 import numpy as np
@@ -2555,7 +2556,6 @@ def is_installed(modulename: str):
         list of module names to ignore when checking -- will return True
         if modulename is in ignore_names
     """
-    import importlib
     try:
         importlib.import_module(modulename)
     except ImportError:

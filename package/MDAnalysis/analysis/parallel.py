@@ -91,7 +91,12 @@ class Results(UserDict):
 
 
 class BackendBase:
-    """Base class for backend implementation
+    """Base class for backend implementation. Initializes an instance and performs checks for its validity, such as n_workers and possibly other ones.
+
+    Parameters
+    ----------
+    n_workers : int
+        positive integer with number of workers (usually, processes) to split the work between
 
     Examples
     --------
@@ -112,17 +117,8 @@ class BackendBase:
 
     .. versionadded:: 2.7.0
     """
+
     def __init__(self, n_workers: int):
-        """Initializes an instance and performs checks for its validity,
-        such as n_workers and possibly other ones.
-
-        Parameters
-        ----------
-        n_workers : int
-            positive integer with number of workers (usually, processes) to split the work between
-
-        .. versionadded: 2.7.0
-        """
         self.n_workers = n_workers
         self._validate()
 
@@ -187,7 +183,7 @@ class BackendBase:
         -------
         list
             list of results of the function
-   
+
         .. versionadded: 2.7.0
         """
         raise NotImplementedError("Should be re-implemented in subclasses")
@@ -198,6 +194,7 @@ class BackendSerial(BackendBase):
 
     .. versionadded: 2.7.0
     """
+
     def _get_warnigns(self):
         return {self.n_workers > 1, "n_workers > 1 will be ignored while executing with backend='serial'"}
 
@@ -210,6 +207,7 @@ class BackendMultiprocessing(BackendBase):
 
     .. versionadded: 2.7.0
     """
+
     def apply(self, func: Callable, computations: list) -> list:
         from multiprocessing import Pool
 
@@ -224,6 +222,7 @@ class BackendDask(BackendBase):
 
     .. versionadded: 2.7.0
     """
+
     def apply(self, func: Callable, computations: list) -> list:
         from dask.delayed import delayed
         import dask
@@ -239,41 +238,61 @@ class BackendDask(BackendBase):
 
 
 class ResultsGroup:
-    """Simple class that does aggregation of the results from independent remote workers in AnalysisBase
+    """
+    Management and aggregation of results stored in :class:`Result` instances.
+
+    A :class:`ResultsGroup` is an optional description for :class:`Result` "dictionaries"
+    that are used in analysis classes based on :class:`AnalysisBase`. For each *key* in a
+    :class:`Result` it describes how multiple pieces of the data held under the key are
+    to be aggregated. This approach is necessary when parts of a trajectory are analyzed
+    independently (e.g., in parallel) and then need to me merged (with :meth:`merge`) to
+    obtain a complete data set.
+
+    Parameters
+    ----------
+    lookup : dict[str, Callable], optional
+        aggregation functions lookup dict, by default None
+
+    Examples
+    --------
+    >>> from MDAnalysis.analysis.parallel import ResultsGroup, Results
+    >>> group = ResultsGroup(lookup={'mass': ResultsGroup.float_mean})
+    >>> obj1 = Results(mass=1)
+    >>> obj2 = Results(mass=3)
+    >>> group.merge([obj1, obj2])
+    {'mass': 2.0}
+
+    >>> # you can also set `lookup[attribute]=None` to those attributes that you want to skip
+    >>> lookup = {'mass': ResultsGroup.float_mean, 'trajectory': None}
+    >>> group = ResultsGroup(lookup)
+    >>> objects = [Results(mass=1, skip=None), Results(mass=3, skip=object)]
+    >>> group.merge(objects, require_all_aggregators=False)
+    {'mass': 2.0}
 
     .. versionadded: 2.7.0
     """
 
     def __init__(self, lookup: dict[str, Callable] = None):
-        """Initializes the class, saving aggregation functions in _lookup attribute.
-
-        Parameters
-        ----------
-        lookup : dict[str, Callable], optional
-            aggregation functions lookup dict, by default None
-
-        .. versionadded: 2.7.0
-        """
         self._lookup = lookup
 
-    def merge(self, objects: Sequence[Results], do_raise: bool = True) -> Results:
-        """Merge results into a single object.
-        If objects contain single element, returns it while ignoring _lookup attribute.
+    def merge(self, objects: Sequence[Results], require_all_aggregators: bool = True) -> Results:
+        """Merge results into a single object. If objects contain single element, returns it while ignoring _lookup attribute.
 
         Parameters
         ----------
-        do_raise : bool, optional
-            if you want to raise an exception when no aggregation function for a particular argument is found, by default True
+        require_all_aggregators : bool, optional
+            if you want to raise an exception when no aggregation function for a particular argument is found, by default True.
+            Allows to skip aggregation for the parameters that aren't needed in the final object:
 
         Returns
         -------
         Results
-            merged Result object
+            merged Results object
 
         Raises
         ------
         ValueError
-            if no aggregation function for a key is found and do_raise = True
+            if no aggregation function for a key is found and `require_all_aggregators=True`
 
         .. versionadded: 2.7.0
         """
@@ -283,10 +302,12 @@ class ResultsGroup:
             rv = Results()
             for key in objects[0].keys():
                 agg_function = self._lookup.get(key, None)
-                if agg_function is None and do_raise:
-                    raise ValueError(f"No aggregation function for {key=}")
-                results_of_t = [obj[key] for obj in objects]
-                rv[key] = agg_function(results_of_t)
+                if agg_function is not None:
+                    results_of_t = [obj[key] for obj in objects]
+                    rv[key] = agg_function(results_of_t)
+                else:
+                    if require_all_aggregators:
+                        raise ValueError(f"No aggregation function for {key=}")
         return rv
 
     @staticmethod
