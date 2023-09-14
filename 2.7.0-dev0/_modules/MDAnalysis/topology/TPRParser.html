@@ -2,6 +2,10 @@
 
 
   
+    
+  
+
+
 
 
 <head>
@@ -236,7 +240,7 @@
 <span class="sd">The TPR reader is a pure-python implementation of a basic TPR</span>
 <span class="sd">parser. Currently the following sections of the topology are parsed:</span>
 
-<span class="sd">* Atoms: number, name, type, resname, resid, segid, mass, charge, element</span>
+<span class="sd">* Atoms: number, name, type, resname, resid, segid, chainID, mass, charge, element</span>
 <span class="sd">  [residue, segment, radius, bfactor, resnum, moltype]</span>
 <span class="sd">* Bonds</span>
 <span class="sd">* Angles</span>
@@ -277,6 +281,12 @@
 <span class="sd">   recognized have their element attribute set to an empty string. If none of</span>
 <span class="sd">   the elements are recognized, then the `elements` attribute is not set in the</span>
 <span class="sd">   topology.</span>
+
+<span class="sd">.. versionchanged:: 2.7.0</span>
+<span class="sd">   If the TPR molblock is named &quot;Protein_chain_XXX&quot; then we assume that XXX is </span>
+<span class="sd">   describing the chain of a protein (in the sense of the PDB chainID) and set</span>
+<span class="sd">   the topology attribute `chainID` to &quot;XXX&quot;. In all other cases, the chainID</span>
+<span class="sd">   remains the full molblock name. The `segID` is never changed.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Zhuyi Xue&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;GNU Public Licence, v2&quot;</span>

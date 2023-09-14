@@ -2,6 +2,10 @@
 
 
   
+    
+  
+
+
 
 
 <head>
@@ -532,7 +536,7 @@ resids are indexed from 0 or 1. Default <code class="docutils literal notranslat
 <p>The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:</p>
 <ul class="simple">
-<li><p>Atoms: number, name, type, resname, resid, segid, mass, charge, element
+<li><p>Atoms: number, name, type, resname, resid, segid, chainID, mass, charge, element
 [residue, segment, radius, bfactor, resnum, moltype]</p></li>
 <li><p>Bonds</p></li>
 <li><p>Angles</p></li>
@@ -559,6 +563,12 @@ a valid element symbol. In that case, atoms for which the element is not
 recognized have their element attribute set to an empty string. If none of
 the elements are recognized, then the <cite>elements</cite> attribute is not set in the
 topology.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>If the TPR molblock is named “Protein_chain_XXX” then we assume that XXX is
+describing the chain of a protein (in the sense of the PDB chainID) and set
+the topology attribute <cite>chainID</cite> to “XXX”. In all other cases, the chainID
+remains the full molblock name. The <cite>segID</cite> is never changed.</p>
 </div>
 </section>
 </section>

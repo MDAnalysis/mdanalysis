@@ -2,6 +2,10 @@
 
 
   
+    
+  
+
+
 
 
 <head>
@@ -190,6 +194,7 @@
     <span class="n">Moltypes</span><span class="p">,</span>
     <span class="n">Molnums</span><span class="p">,</span>
     <span class="n">Segids</span><span class="p">,</span>
+    <span class="n">ChainIDs</span><span class="p">,</span>
     <span class="n">Bonds</span><span class="p">,</span>
     <span class="n">Angles</span><span class="p">,</span>
     <span class="n">Dihedrals</span><span class="p">,</span>
@@ -431,6 +436,7 @@
 
     <span class="n">atomids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">segids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">chainIDs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">resids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">resnames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">atomnames</span> <span class="o">=</span> <span class="p">[]</span>
@@ -451,11 +457,13 @@
         <span class="c1"># naming is kind of arbitrary</span>
         <span class="n">molblock</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">moltypes</span><span class="p">[</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_type</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="n">segid</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;seg_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">molblock</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">chainID</span> <span class="o">=</span> <span class="n">molblock</span><span class="p">[</span><span class="mi">14</span><span class="p">:]</span> <span class="k">if</span> <span class="n">molblock</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Protein_chain_&quot;</span> <span class="k">else</span> <span class="n">molblock</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_nmol</span><span class="p">):</span>
             <span class="n">mt</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">moltypes</span><span class="p">[</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_type</span><span class="p">]</span>  <span class="c1"># mt: molecule type</span>
             <span class="k">for</span> <span class="n">atomkind</span> <span class="ow">in</span> <span class="n">mt</span><span class="o">.</span><span class="n">atomkinds</span><span class="p">:</span>
                 <span class="n">atomids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomkind</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">atom_start_ndx</span><span class="p">)</span>
                 <span class="n">segids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segid</span><span class="p">)</span>
+                <span class="n">chainIDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chainID</span><span class="p">)</span>
                 <span class="n">resids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomkind</span><span class="o">.</span><span class="n">resid</span> <span class="o">+</span> <span class="n">res_start_ndx</span><span class="p">)</span>
                 <span class="n">resnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomkind</span><span class="o">.</span><span class="n">resname</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
                 <span class="n">atomnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomkind</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
@@ -485,6 +493,7 @@
     <span class="n">moltypes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">moltypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
     <span class="n">molnums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molnums</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
     <span class="n">segids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">segids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">chainIDs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">chainIDs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
     <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">tpr_resid_from_one</span><span class="p">:</span>
         <span class="n">resids</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -508,15 +517,28 @@
 
     <span class="n">segidx</span><span class="p">,</span> <span class="n">perseg_segids</span> <span class="o">=</span> <span class="n">squash_by</span><span class="p">(</span><span class="n">perres_segids</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">segids</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">perseg_segids</span><span class="p">)</span>
+    <span class="n">chainIDs</span> <span class="o">=</span> <span class="n">ChainIDs</span><span class="p">(</span><span class="n">chainIDs</span><span class="p">)</span>
 
-    <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atomids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_resids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">perseg_segids</span><span class="p">),</span>
-                   <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="n">atomids</span><span class="p">,</span> <span class="n">atomnames</span><span class="p">,</span> <span class="n">atomtypes</span><span class="p">,</span>
-                          <span class="n">charges</span><span class="p">,</span> <span class="n">masses</span><span class="p">,</span>
-                          <span class="n">residueids</span><span class="p">,</span> <span class="n">residuenames</span><span class="p">,</span>
-                          <span class="n">residue_moltypes</span><span class="p">,</span> <span class="n">residue_molnums</span><span class="p">,</span>
-                          <span class="n">segids</span><span class="p">],</span>
-                   <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
-                   <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">)</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">atomids</span><span class="p">),</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">new_resids</span><span class="p">),</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">perseg_segids</span><span class="p">),</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">atomids</span><span class="p">,</span>
+            <span class="n">atomnames</span><span class="p">,</span>
+            <span class="n">atomtypes</span><span class="p">,</span>
+            <span class="n">charges</span><span class="p">,</span>
+            <span class="n">masses</span><span class="p">,</span>
+            <span class="n">residueids</span><span class="p">,</span>
+            <span class="n">residuenames</span><span class="p">,</span>
+            <span class="n">residue_moltypes</span><span class="p">,</span>
+            <span class="n">residue_molnums</span><span class="p">,</span>
+            <span class="n">segids</span><span class="p">,</span>
+            <span class="n">chainIDs</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">Bonds</span><span class="p">([</span><span class="n">bond</span> <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bonds</span> <span class="k">if</span> <span class="n">bond</span><span class="p">]))</span>
     <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">Angles</span><span class="p">([</span><span class="n">angle</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">angles</span> <span class="k">if</span> <span class="n">angle</span><span class="p">]))</span>
     <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">Dihedrals</span><span class="p">([</span><span class="n">dihedral</span> <span class="k">for</span> <span class="n">dihedral</span> <span class="ow">in</span> <span class="n">dihedrals</span>
