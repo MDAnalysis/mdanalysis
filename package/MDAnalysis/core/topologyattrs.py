@@ -34,11 +34,7 @@ These are usually read by the TopologyParser.
 References
 ----------
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Gray1984
+.. footbibliography::
 
 """
 
@@ -2464,7 +2460,7 @@ class Charges(AtomAttr):
     transplants[GroupBase].append(('quadrupole_tensor', quadrupole_tensor))
 
     def quadrupole_moment(group, **kwargs):
-        r"""Quadrupole moment of the group according to :cite:p:`Gray1984`.
+        r"""Quadrupole moment of the group according to :footcite:p:`Gray1984`.
          
         .. math::
             Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}

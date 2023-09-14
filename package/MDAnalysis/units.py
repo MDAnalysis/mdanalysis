@@ -150,11 +150,7 @@ Data
 References and footnotes
 ------------------------
 
-.. bibliography::
-   :filter: False
-   :style: MDA
-
-   Jorgensen1998
+.. footbibliography::
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -227,7 +223,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values at T=298K, P=1atm :cite:p:`Jorgensen1998`.
+#: water density values at T=298K, P=1atm :footcite:p:`Jorgensen1998`.
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -376,7 +372,7 @@ def get_conversion_factor(unit_type, u1, u2):
 
     Conversion of :math:`X` (in u1) to :math:`X'` (in u2):
 
-       :math:`X'` = conversion_factor * :math:`X`
+    :math:`X'` = conversion_factor * :math:`X`
     """
     # x is in u1: from u1 to b:  x'  = x  / factor[u1]
     #             from b  to u2: x'' = x' * factor[u2]
