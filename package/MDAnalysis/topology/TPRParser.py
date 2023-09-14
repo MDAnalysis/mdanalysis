@@ -154,6 +154,12 @@ Versions prior to Gromacs 4.0.x are not supported.
    recognized have their element attribute set to an empty string. If none of
    the elements are recognized, then the `elements` attribute is not set in the
    topology.
+
+.. versionchanged:: 2.7.0
+   If the TPR molblock is named "Protein_chain_XXX" then we assume that XXX is 
+   describing the chain of a protein (in the sense of the PDB chainID) and set
+   the topology attribute `chainID` to "XXX". In all other cases, the chainID
+   remains the full molblock name. The `segID` is never changed.
 """
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
