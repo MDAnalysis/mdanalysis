@@ -235,6 +235,9 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | the first frame present will be read.                |
    | [#a]_         |           |       | Module :mod:`MDAnalysis.coordinates.GRO`             |
    +---------------+-----------+-------+------------------------------------------------------+
+   | GROMOS11      | trc       |  r    | basic GROMOS11 trajectories for coordinates.         |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TRC`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | CHARMM        | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
    | CARD [#a]_    |           |       | either standard or EXTended format. Module           |
    |               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
