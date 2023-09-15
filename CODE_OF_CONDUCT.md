@@ -112,12 +112,12 @@ at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
 ## Reporting
 
 If someone makes you or any other contributor feel unsafe or unwelcome, please
-report this in a timely manner. Code of conduct violations reduce the value of
+report this in a timely manner. Code of conduct (CoC) violations reduce the value of
 the community for everyone and we take them seriously. All complaints will be
 reviewed and investigated and will result in a response that is deemed necessary
 and appropriate to the circumstances.
 
-You can file a report by filling out [this form][conduct-form]. The project team is obligated to maintain
+You can file a report by filling out [this form][conduct-form]. The CoC Committee is obligated to maintain
 confidentiality with regard to the reporter of an incident.
 
 The online form gives you the option to keep your report anonymous or request
@@ -130,9 +130,9 @@ community.
 
 ## Enforcement
 
-When a report is sent to us we will reply as soon as possible to confirm receipt;
-we strive to answer in less than 24 hours. We will review the incident and
-determine, to the best of our ability
+When a report is filed, the CoC Committee will reply as soon as possible to confirm receipt;
+we strive to answer in less than 24 hours. The CoC Committee will review the incident and
+determine, to the best of its ability
 
 - what happened
 - whether this event constitutes a code of conduct violation
@@ -141,11 +141,10 @@ determine, to the best of our ability
 
 This information will be collected in writing. We strive to reach a resolution
 within a week of confirmation. Once a resolution has been agreed upon, but before it is
-enacted, we will contact the original reporter and any other affected parties
+enacted, the CoC Committee will contact the original reporter and any other affected parties
 and explain the proposed resolution. We will ask if this resolution is
 acceptable and note feedback for the record. We are, however, not required to act
 on this feedback.
-
 
 ## Acknowledgment
 
