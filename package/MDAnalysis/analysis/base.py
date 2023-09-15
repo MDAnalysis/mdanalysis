@@ -369,17 +369,16 @@ class AnalysisBase(object):
         verbose = getattr(self, "_verbose", False) if verbose is None else verbose
 
         frames = indexed_frames[:, 1]
-        print(frames)
 
         logger.info("Starting preparation")
         self._setup_frames(trajectory=self._trajectory, frames=frames)
         self._prepare()
-        if len(indexed_frames) == 0:  # if `frames` were empty in `run` or `stop=0`
+        if len(frames) == 0:  # if `frames` were empty in `run` or `stop=0`
             return self
 
-        trajectory = self._trajectory[frames]
+        trajectory = self._sliced_trajectory
         for idx, ts in enumerate(ProgressBar(trajectory, verbose=verbose, **progressbar_kwargs)):
-            self._frame_index = idx
+            self._frame_index = idx  # accessed later by subclasses
             self._ts = ts
             self.frames[idx] = ts.frame
             self.times[idx] = ts.time
@@ -584,7 +583,6 @@ class AnalysisBase(object):
         # start preparing the run
         worker_func = partial(self._compute, progressbar_kwargs=progressbar_kwargs, verbose=verbose)
         self._setup_frames(trajectory=self._trajectory, start=start, stop=stop, step=step, frames=frames)
-        self._prepare()
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
