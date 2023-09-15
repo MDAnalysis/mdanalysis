@@ -117,9 +117,7 @@ the community for everyone and we take them seriously. All complaints will be
 reviewed and investigated and will result in a response that is deemed necessary
 and appropriate to the circumstances.
 
-You can file a report by emailing
-the [*Conduct-mail*][conduct-mail] or by
-filing out [this form][conduct-form]. The project team is obligated to maintain
+You can file a report by filling out [this form][conduct-form]. The project team is obligated to maintain
 confidentiality with regard to the reporter of an incident.
 
 The online form gives you the option to keep your report anonymous or request
