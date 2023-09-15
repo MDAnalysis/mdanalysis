@@ -210,6 +210,7 @@ __all__ = [
     "legacy_DCD_NAMD_coords",  # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords",  # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD", "GSD_bonds", "GSD_long",
+    "TRC_PDB", "TRC_TRAJ1", "TRC_TRAJ2", # 2x 3 frames of trajectory from GROMOS11 tutorial
     "GRO_MEMPROT", "XTC_MEMPROT",  # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray",  # time series of single dihedral
     "RamaArray", "GLYRamaArray",  # time series of phi/psi angles
@@ -596,6 +597,10 @@ ALIGN_UNBOUND = (_data_ref / 'analysis/align_unbound.pdb.gz').as_posix()
 GSD = (_data_ref / 'example.gsd').as_posix()
 GSD_bonds = (_data_ref / 'example_bonds.gsd').as_posix()
 GSD_long = (_data_ref / 'example_longer.gsd').as_posix()
+
+TRC_PDB = (_data_ref / 'gromos11/gromos11_tutorial.pdb').as_posix()
+TRC_TRAJ1 = (_data_ref / 'gromos11/gromos11_tutorial_1.trc.gz').as_posix()
+TRC_TRAJ2 = (_data_ref / 'gromos11/gromos11_tutorial_2.trc.gz').as_posix()
 
 DihedralArray = (_data_ref / 'adk_oplsaa_dihedral.npy').as_posix()
 DihedralsArray = (_data_ref / 'adk_oplsaa_dihedral_list.npy').as_posix()

@@ -108,18 +108,18 @@ class TRCReader(base.ReaderBase):
         
         ts.dimensions = frameDat["dimensions"]
         ts.positions = frameDat["positions"]
-        
+
         #
         # Convert the units
         #        
         if self.convert_units:
             if ts.has_positions:
-                self.convert_pos_from_native(self.ts._pos)
-            if self.ts.dimensions is not None:
-                self.convert_pos_from_native(self.ts.dimensions[:3])
-            if self.ts.has_velocities:
-                self.convert_velocities_from_native(self.ts._velocities)
-                
+                self.convert_pos_from_native(ts.positions)
+            if ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
+            if ts.has_velocities:
+                self.convert_velocities_from_native(ts.velocities)
+      
         return ts
     
     def read_traj_properties(self):
@@ -210,7 +210,7 @@ class TRCReader(base.ReaderBase):
                 if (line == '') or (line == b''): break  # EOF
                 if (f.tell() in l_timestep_offset):
                     tmp_step, tmp_time = f.readline().split()
-                    frameDat["step"] = int(tmp_step)
+                    frameDat["step"] = int(round(float(tmp_step)))
                     frameDat["time"] = float(tmp_time)
                     
                 elif ("POSITIONRED" in line): 
@@ -225,7 +225,8 @@ class TRCReader(base.ReaderBase):
                             tmp_buf.append(coords_str.split())
                         
                     if (np.array(tmp_buf).shape[0] == self.n_atoms):
-                        frameDat["positions"] = tmp_buf
+                        frameDat["positions"] = np.asarray(tmp_buf, 
+                                                           dtype=np.float64)
                     else:
                         raise ValueError("The trajectory contains \
                                          the wrong number of atoms!")                 
