@@ -220,8 +220,13 @@ class TestLAMMPSDATAWriter_molecule_tag(object):
                      err_msg="resids different after writing",)
 
 
-def test_datawriter_universe(tmpdir):
-    fn = str(tmpdir.join('out.data'))
+@pytest.mark.parametrize('filename', ['out.data', 'out.data.bz2', 'out.data.gz'])
+def test_datawriter_universe(filename, tmpdir):
+    """
+    Test roundtrip on datawriter, and also checks compressed files
+    can be written (see #4159).
+    """
+    fn = str(tmpdir.join(filename))
 
     u = mda.Universe(LAMMPSdata_mini)
 

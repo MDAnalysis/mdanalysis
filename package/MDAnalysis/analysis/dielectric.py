@@ -65,6 +65,10 @@ class DielectricConstant(AnalysisBase):
     the usual case if electrostatics are handled with a Ewald summation
     technique. See [Neumann1983]_ for details on the derivation.
 
+    .. warning::
+      Applying this class requires that no free charges, such as ions or
+      charged fragments, are present in the simulation.
+
     Parameters
     ----------
     atomgroup : MDAnalysis.core.groups.AtomGroup
@@ -159,7 +163,7 @@ class DielectricConstant(AnalysisBase):
         self.results.fluct = self.results.M2 - self.results.M * self.results.M
 
         self.results.eps = self.results.fluct / (
-              convert(constants["Boltzman_constant"], "kJ/mol", "eV") *
+              convert(constants["Boltzmann_constant"], "kJ/mol", "eV") *
               self.temperature * self.volume * constants["electric_constant"])
 
         self.results.eps_mean = self.results.eps.mean()

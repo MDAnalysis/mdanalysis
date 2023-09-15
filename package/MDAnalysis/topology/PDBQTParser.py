@@ -40,7 +40,7 @@ deduced. Masses are guessed and set to 0 if unknown.
 
 See Also
 --------
-`MDAnalysis.coordinates.PDBQT`
+:class:`MDAnalysis.coordinates.PDBQT`
 
 
 Classes

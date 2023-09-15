@@ -38,18 +38,13 @@ Generation and Analysis of X3DNA helicoidal parameter profiles --- :mod:`MDAnaly
 .. _`issue 906`: https://github.com/MDAnalysis/mdanalysis/issues/906
 
 With the help of this module, X3DNA_ can be run on frames in a trajectory. Data
-can be combined and analyzed. X3DNA_ :cite:p:`Lu2003,Lu2008` must be installed
+can be combined and analyzed. X3DNA_ :footcite:p:`Lu2003,Lu2008` must be installed
 separately.
 
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Lu2003
-    Lu2008
+.. footbibliography::
 
 .. _X3DNA: http://x3dna.org/
 
