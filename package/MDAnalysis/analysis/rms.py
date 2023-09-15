@@ -682,7 +682,7 @@ class RMSD(AnalysisBase):
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _get_aggregator(self):
-        return ResultsGroup(lookup={'rmsd': ResultsGroup.ndarray_sum})
+        return ResultsGroup(lookup={'rmsd': ResultsGroup.ndarray_vstack})
 
     def _single_frame(self):
         mobile_com = self.mobile_atoms.center(self.weights_select).astype(np.float64)
