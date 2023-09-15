@@ -128,6 +128,11 @@ You may also follow [NumFOCUS’s Code of Conduct violation reporting][NF-conduc
 guidelines if you would like to contact a third-party outside of the MDAnalysis 
 community.
 
+### Reporting at MDAnalysis Events and Meetups
+If you are attending an MDAnalysis event or meetup and wish to make a report, you may contact the ombudspersons (who will identify themselves at the event) or other event staff/meetup organizers so that they can take any appropriate immediate response. If you would prefer not to do that, please [submit a report][conduct-form] to MDAnalysis. 
+
+Ombudspeople and event staff/meetup organizers will be happy to help participants contact venue security or local law enforcement, provide escorts, or otherwise assist those experiencing harassment to feel safe for the duration of the event/meetup.
+
 ## Enforcement
 
 When a report is filed, the CoC Committee will reply as soon as possible to confirm receipt;
