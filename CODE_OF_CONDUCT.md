@@ -159,8 +159,7 @@ on this feedback.
 
 ## Acknowledgment
 
-Original text courtesy of
-the
+Original text courtesy of [*NumFOCUS*](https://numfocus.org/code-of-conduct) and the
 [*Speak Up!*](http://web.archive.org/web/20141109123859/http://speakup.io/coc.html),
 [*Django*](https://www.djangoproject.com/conduct),
 [*Contributor Covenant*](http://contributor-covenant.org/),
