@@ -135,6 +135,12 @@ Ombudspeople and event staff/meetup organizers will be happy to help participant
 
 ## Enforcement
 
+All reports of breaches of the code of conduct will be investigated and handled by the **MDAnalysis Code of Conduct Committee**. The current MDAnalysis Code of Conduct Committee consists of:
+- Jenna Swarthout Goddard (@jennaswa)
+- Micaela Matta (@micaela-matta)
+- Richard Gowers (@richardjgowers)
+In the event of any conflict of interest, the affected committee member will immediately notify the rest of the committee and recuse themselves if necessary.
+
 When a report is filed, the CoC Committee will reply as soon as possible to confirm receipt;
 we strive to answer in less than 24 hours. The CoC Committee will review the incident and
 determine, to the best of its ability
