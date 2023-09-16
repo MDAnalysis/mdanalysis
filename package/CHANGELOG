@@ -35,7 +35,9 @@ Enhancements
     `DielectricConstant` (Issue #4262, PR #4263)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
   * Add support for reading chainID info from GROMACS TPR topologies 
-    (Issue #3994, PR #4281)
+    (Issue #3994, PR #4281)  
+  * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
+    PR #4284)
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis

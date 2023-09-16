@@ -75,6 +75,7 @@ from ..core.topologyattrs import (
     Resnums,
     Resnames,
     Segids,
+    ChainIDs,
     Tempfactors,
 )
 
@@ -88,7 +89,7 @@ class PDBQTParser(TopologyReaderBase):
      - atom names
      - altLocs
      - resnames
-     - chainIDs (becomes segid)
+     - chainIDs (assigned to segid as well)
      - resids
      - record_types (ATOM/HETATM)
      - icodes
@@ -165,6 +166,8 @@ class PDBQTParser(TopologyReaderBase):
         icodes = np.array(icodes, dtype=object)
         resnames = np.array(resnames, dtype=object)
         chainids = np.array(chainids, dtype=object)
+
+        attrs.append(ChainIDs(chainids))
 
         residx, (resids, icodes, resnames, chainids) = change_squash(
             (resids, icodes), (resids, icodes, resnames, chainids))
