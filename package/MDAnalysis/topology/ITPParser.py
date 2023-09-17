@@ -474,9 +474,11 @@ class ITPParser(TopologyReaderBase):
 
     .. versionchanged:: 2.2.0
       no longer adds angles for water molecules with SETTLE constraint
-    .. versionchanged:: 2.4.0
-      removed mass guessing (guessing takes place now inside universe)
-      Added guessed elements if all elements are valid
+    .. versionchanged:: 2.7.0
+      Removed mass guessing (attributes guessing takes place now
+      through universe.guess_TopologyAttributes() API).
+      Added guessed elements if all elements are valid to preserve partial
+      mass guessing behavior
     """
     format = 'ITP'
 

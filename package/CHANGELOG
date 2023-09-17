@@ -43,14 +43,14 @@ Enhancements
     attribute guessing (pr #3753)
   * Added the DefaultGuesser, which is a general-purpose gusser with the same 
     functionalities as the existing guesser.py methods (pr #3753)
-  * Added the ability to guess elements from masses if exists through
-    the guess_element_from_mass() method in the DefaultGuesser (pr #3753)
-  * Removed type guessing from RDKit converter (pr #3753)
-  * Assigned type attribute to be equal to the element attribute, if type is
-    not provided for RDKit converter (pr #3753)
-  * Added is_value_missing attribute to topology attributes to check for missing
+  * Removed type guessing from RDKitParser and assigned type attribute
+    to be equal to the element attribute, if type is not provided (pr #3753)
+  * Added is_value_missing() to `topology attributes` to check for missing
     values (pr #3753)
-  
+  * Added the `Element` attribute if all names are valid element symbols for TXYZParser
+    (pr #3753)
+  * Added guessed `Element` attribute to the ITPParser to preserve old mass partial 
+    guessing behavior from being broken (pr #3753)
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
@@ -61,6 +61,8 @@ Changes
 Deprecations
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
+  * Unknown masses are set to 0.0 for current version, this will be depracated in
+    version 3.0.0 and replaced by Masse's no_value_label (np.nan) (pr #3753)
 
 
 28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy

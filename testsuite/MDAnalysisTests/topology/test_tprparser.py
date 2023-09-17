@@ -72,6 +72,8 @@ class TPRAttrs(ParserBase):
 
     expected_attrs = [
         "ids",
+        "types",
+        "masses",
         "names",
         "elements",
         "resids",

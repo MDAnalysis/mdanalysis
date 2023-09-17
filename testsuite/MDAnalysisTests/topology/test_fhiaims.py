@@ -26,15 +26,23 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import FHIAIMS
+from MDAnalysis.guesser import DefaultGuesser
+import pytest
+
+
 
 class TestFHIAIMS(ParserBase):
     parser = mda.topology.FHIAIMSParser.FHIAIMSParser
-    expected_attrs = ['names', 'elements', 'types']
+    expected_attrs = ['names', 'elements']
     guessed_attrs = ['masses', 'types']
     expected_n_residues = 1
     expected_n_segments = 1
     expected_n_atoms = 6
     ref_filename = FHIAIMS
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=top.names.values)
 
     def test_names(self, top):
         assert_equal(top.names.values,

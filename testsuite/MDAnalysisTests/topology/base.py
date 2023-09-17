@@ -111,13 +111,13 @@ class ParserBase(object):
     @pytest.mark.skipif('names' not in expected_attrs,
                         reason="topology doesn't have names attribute")
     def test_guessed_types(self, filename, guessed_types):
-        """check that guessed types from universe creation have the same
-        values as the type guessing that used to happen inisde the parser"""
+        """check that type values from universe creation have the same
+        expected values after removing mass and type guessing from parsers"""
         u = mda.Universe(filename)
         assert_equal(u.atoms.types, guessed_types)
 
     def test_guessed_masses(self, filename, guessed_masses):
-        """check that guessed masses from universe creation have the same
-        values as the masses guessing that used to happen inisde the parser"""
+        """check that mass values from universe creation have the same expected
+        values after removing mass and type guessing from parsers"""
         u = mda.Universe(filename)
         assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)

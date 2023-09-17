@@ -119,6 +119,10 @@ class TestDLPHistoryMinimal(DLPBase):
     ref_filename = DLP_HISTORY_minimal
     format = 'HISTORY'
 
+class TestDLPHistoryMinimal(DLPBase):
+    parser = mda.topology.DLPolyParser.HistoryParser
+    ref_filename = DLP_HISTORY_minimal_cell
+    format = 'HISTORY'
 
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser

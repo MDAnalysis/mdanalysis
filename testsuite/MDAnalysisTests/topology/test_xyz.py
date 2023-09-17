@@ -30,13 +30,20 @@ from MDAnalysisTests.datafiles import (
     XYZ_mini,
 )
 
+from MDAnalysis.guesser import DefaultGuesser
+import pytest
+
 
 class XYZBase(ParserBase):
     parser = mda.topology.XYZParser.XYZParser
     expected_n_residues = 1
     expected_n_segments = 1
-    expected_attrs = ['names', 'elements', 'types']
-    guessed_attrs = ['masses']
+    expected_attrs = ['names', 'elements']
+    guessed_attrs = ['masses', 'types']
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=top.names.values)
 
 class TestXYZMini(XYZBase):
     ref_filename = XYZ_mini
