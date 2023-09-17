@@ -10,11 +10,12 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting
   * accompany each entry with github issue/PR number (Issue #xyz)
-  * release numbers follow "Semantic Versioning" http://semver.org
+  * release numbers follow "Semantic Versioning" https://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers,
-         lilyminium, aya9aladdin
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith,
+         richardjgowers, lilyminium, aya9aladdin
+
 
  * 2.7.0
 
@@ -29,10 +30,14 @@ Fixes
 
 Enhancements
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
-    inputs
+    inputs (PR #4273, part of #3927)
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
+  * Add support for reading chainID info from GROMACS TPR topologies 
+    (Issue #3994, PR #4281)  
+  * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
+    PR #4284)
   * Removed type and mass guessing processes from all parsers (pr #3753)
   * Added guess_topologyAttributes() API to the universe to hande 
     attribute guessing (pr #3753)
@@ -46,7 +51,6 @@ Enhancements
   * Added is_value_missing attribute to topology attributes to check for missing
     values (pr #3753)
   
-
 
 Changes
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
