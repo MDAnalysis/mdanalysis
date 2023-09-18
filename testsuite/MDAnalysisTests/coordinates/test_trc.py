@@ -27,13 +27,14 @@ from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.TRC import TRCReader
-from MDAnalysisTests.datafiles import TRC_PDB, TRC_TRAJ1, TRC_TRAJ2
+from MDAnalysisTests.datafiles import TRC_PDB_VAC, TRC_TRAJ1_VAC, TRC_TRAJ2_VAC
+from MDAnalysisTests.datafiles import TRC_PDB_SOLV, TRC_TRAJ_SOLV
 
 
-class TestTRCReader:
+class TestTRCReaderVacuumBox:
     @pytest.fixture(scope='class')
     def TRC_U(self):
-        return mda.Universe(TRC_PDB, [TRC_TRAJ1, TRC_TRAJ2], 
+        return mda.Universe(TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC], 
                             format="TRC", continuous=True)
 
     def test_initial_frame_is_0(self, TRC_U):
@@ -52,14 +53,14 @@ class TestTRCReader:
                             [0.37026654, 22.78805010, 3.69695262])
     
     def test_trc_dimensions(self, TRC_U):
-        ts = TRC_U.trajectory[0]
-        assert_allclose(
-            ts.dimensions,
-            [30.70196350, 30.70196350, 30.70196350, 90., 90., 90.]
-        )
+        assert TRC_U.trajectory[0].dimensions is None
 
     def test_trc_n_frames(self, TRC_U):
         assert len(TRC_U.trajectory) == 6
+        assert (TRC_U.trajectory.n_frames) == 6
+
+    def test_trc_n_atoms(self, TRC_U):
+        assert (TRC_U.trajectory.n_atoms) == 73
 
     def test_trc_frame(self, TRC_U):
         assert TRC_U.trajectory[0].frame == 0
@@ -74,7 +75,7 @@ class TestTRCReader:
         assert TRC_U.trajectory[4].data['step'] == 10000
         
     def test_periodic(self, TRC_U):
-        assert_equal(TRC_U.trajectory.periodic, True)
+        assert_equal(TRC_U.trajectory.periodic, False)
 
     def test_rewind(self, TRC_U):
         TRC_U.trajectory[0]
@@ -111,3 +112,29 @@ class TestTRCReader:
         TRC_U.trajectory._reopen()
         TRC_U.trajectory[4]
         assert TRC_U.trajectory.ts.frame == 4
+
+
+class TestTRCReaderSolvatedBox:
+    @pytest.fixture(scope='class')
+    def TRC_U(self):
+        return mda.Universe(TRC_PDB_SOLV, TRC_TRAJ_SOLV,
+                            format="TRC")
+
+    def test_trc_n_atoms(self, TRC_U):
+        assert (TRC_U.trajectory.n_atoms) == 2797
+
+    def test_periodic(self, TRC_U):
+        assert_equal(TRC_U.trajectory.periodic, True)
+
+    def test_trc_dimensions(self, TRC_U):
+        ts = TRC_U.trajectory[1]
+        assert_allclose(
+            ts.dimensions,
+            [30.54416298, 30.54416298, 30.54416298, 90., 90., 90.]
+        )
+
+    def test_open_twice(self, TRC_U):
+        TRC_U.trajectory._reopen()
+        with pytest.raises(IOError): 
+            TRC_U.trajectory.open_trajectory()
+

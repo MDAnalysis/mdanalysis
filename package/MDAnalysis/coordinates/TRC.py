@@ -296,7 +296,6 @@ class TRCReader(base.ReaderBase):
         return self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
-
         if ts is None:
             ts = self.ts
         
