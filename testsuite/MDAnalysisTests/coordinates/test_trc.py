@@ -21,7 +21,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-from numpy.testing import assert_almost_equal
+import numpy as np
+from numpy.testing import assert_allclose
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.TRC import TRCReader
@@ -33,20 +35,25 @@ class TestTRCReader:
     def TRC_U(self):
         return mda.Universe(TRC_PDB, [TRC_TRAJ1, TRC_TRAJ2], 
                             format="TRC", continuous=True)
-    
+
+    def test_initial_frame_is_0(self, TRC_U):
+        assert_equal(TRC_U.trajectory.ts.frame, 0,
+                     "The initial frame is not 0 but {0}".format(
+                         TRC_U.trajectory.ts.frame))
+            
     def test_trc_positions(self, TRC_U):
         # first frame first particle
         TRC_U.trajectory[0]
-        assert_almost_equal(TRC_U.atoms.positions[0],
+        assert_allclose(TRC_U.atoms.positions[0],
                             [2.19782507, 24.65064345, 29.39783426])
         # second frame first particle
-        TRC_U.trajectory[5]
-        assert_almost_equal(TRC_U.atoms.positions[0],
+        TRC_U.trajectory[4]
+        assert_allclose(TRC_U.atoms.positions[0],
                             [0.37026654, 22.78805010, 3.69695262])
     
     def test_trc_dimensions(self, TRC_U):
         ts = TRC_U.trajectory[0]
-        assert_almost_equal(
+        assert_allclose(
             ts.dimensions,
             [30.70196350, 30.70196350, 30.70196350, 90., 90., 90.]
         )
@@ -65,3 +72,42 @@ class TestTRCReader:
     def test_trc_data_step(self, TRC_U):
         assert TRC_U.trajectory[0].data['step'] == 0
         assert TRC_U.trajectory[4].data['step'] == 10000
+        
+    def test_periodic(self, TRC_U):
+        assert_equal(TRC_U.trajectory.periodic, True)
+
+    def test_rewind(self, TRC_U):
+        TRC_U.trajectory[0]
+        trc = TRC_U.trajectory
+        trc.next()
+        trc.next()  
+        trc.next()
+        trc.next()
+        assert_equal(trc.ts.frame, 4,
+                     "trajectory.next() did not forward to frameindex 2")
+        trc.rewind()
+        assert_equal(trc.ts.frame, 0, "trajectory.rewind() failed " \
+                                      "to rewind to first frame")
+        
+        assert np.any(TRC_U.atoms.positions != 0), "The atom positions " \
+                                                   "are not populated"
+
+    def test_random_access(self, TRC_U):
+        TRC_U.trajectory[0]
+        pos0 = TRC_U.atoms[0].position
+        TRC_U.trajectory.next()
+        TRC_U.trajectory.next()
+        pos2 = TRC_U.atoms[0].position
+
+        TRC_U.trajectory[0]
+
+        assert_equal(TRC_U.atoms[0].position, pos0)
+
+        TRC_U.trajectory[2]
+
+        assert_equal(TRC_U.atoms[0].position, pos2)
+
+    def test_read_frame_reopens(self, TRC_U):
+        TRC_U.trajectory._reopen()
+        TRC_U.trajectory[4]
+        assert TRC_U.trajectory.ts.frame == 4
