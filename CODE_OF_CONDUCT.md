@@ -139,6 +139,7 @@ All reports of breaches of the code of conduct will be investigated and handled 
 - Jenna Swarthout Goddard (@jennaswa)
 - Micaela Matta (@micaela-matta)
 - Richard Gowers (@richardjgowers)
+
 In the event of any conflict of interest, the affected committee member will immediately notify the rest of the committee and recuse themselves.
 
 When a report is filed, the CoC Committee will reply as soon as possible to confirm receipt;
