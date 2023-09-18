@@ -210,7 +210,7 @@ __all__ = [
     "legacy_DCD_NAMD_coords",  # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords",  # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD", "GSD_bonds", "GSD_long",
-    "TRC_PDB_VAC", "TRC_TRAJ1_VAC", "TRC_TRAJ1_VAC",  # 2x 3 frames of vacuum trajectory from GROMOS11 tutorial
+    "TRC_PDB_VAC", "TRC_TRAJ1_VAC", "TRC_TRAJ2_VAC",  # 2x 3 frames of vacuum trajectory from GROMOS11 tutorial
     "TRC_PDB_SOLV", "TRC_TRAJ_SOLV",  # 2 frames of solvated trajectory from GROMOS11 tutorial
     "GRO_MEMPROT", "XTC_MEMPROT",  # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray",  # time series of single dihedral
