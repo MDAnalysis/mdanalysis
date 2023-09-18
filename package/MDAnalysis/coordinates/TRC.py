@@ -20,13 +20,31 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-TRC trajectory files --- :mod:`MDAnalysis.coordinates.TRC`
-==========================================================
 
-Read GROMOS11 TRC trajectories.
 
---------
+"""GROMOS11 trajectory reader --- :mod:`MDAnalysis.coordinates.TRC`
+====================================================================
+
+Reads coordinates, timesteps and box-sizes from GROMOS11 TRC trajectories.
+
+To load the trajectory into :class:`~MDAnalysis.core.universe.Universe`,
+you need to provide topology information using a pdb::
+
+    import MDAnalysis as mda
+    u = mda.Universe("topology.pdb", ["md_1.trc.gz","md_2.trc.gz"], 
+    format="TRC", continuous=True)
+
+.. Note::
+   -----
+   The reader is capable to read the blocks "TIMESTEP", "POSITIONRED" and 
+   "GENBOX" from the trajectory.
+
+Classes
+-------
+
+.. autoclass:: TRCReader
+   :members:
+
 """
 
 import os
@@ -45,8 +63,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.GROMOS11")
 
 
 class TRCReader(base.ReaderBase):
-    """Reader for the GROMOS11 format
-    This reader is used with trajectories from the GROMOS11 software.
+    """Coordinate reader for the GROMOS11 format
     """
 
     format = 'TRC'
@@ -63,7 +80,7 @@ class TRCReader(base.ReaderBase):
         self.compression = ext[1:] if ext[1:] != "trj" else None
 
         # Read and calculate some information about the trajectory
-        self.traj_properties = self.read_traj_properties()
+        self.traj_properties = self._read_traj_properties()
                 
         self._cache = {}
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
@@ -76,6 +93,7 @@ class TRCReader(base.ReaderBase):
     @property
     @cached('n_atoms')
     def n_atoms(self):
+        """The number of atoms in one frame."""
         try:
             return self._read_atom_count()
         except IOError:
@@ -88,6 +106,7 @@ class TRCReader(base.ReaderBase):
     @property
     @cached('n_frames')
     def n_frames(self):
+        """The number of frames in the trajectory."""
         try:
             return self._read_frame_count()
         except IOError:
@@ -121,7 +140,7 @@ class TRCReader(base.ReaderBase):
       
         return ts
     
-    def read_traj_properties(self):
+    def _read_traj_properties(self):
         """
         * Reads the number of atoms per frame (n_atoms)
         * Reads the number of frames (n_frames) 
@@ -193,7 +212,7 @@ class TRCReader(base.ReaderBase):
 
         return traj_properties
 
-    def read_GROMOS11_trajectory(self, _frame):
+    def _read_GROMOS11_trajectory(self, _frame):
     
         frameDat = {}
         f = self.trcfile
@@ -285,13 +304,14 @@ class TRCReader(base.ReaderBase):
         if (self._frame >= self.n_frames):
             raise EOFError('Trying to go over trajectory limit')
 
-        raw_framedata = self.read_GROMOS11_trajectory(self._frame)        
+        raw_framedata = self._read_GROMOS11_trajectory(self._frame)        
         self._frame_to_ts(raw_framedata, ts)
         self.ts = ts
         
         return ts
         
     def _reopen(self):
+        """Close and reopen the trajectory"""
         self.close()
         self.open_trajectory()
 
@@ -312,7 +332,7 @@ class TRCReader(base.ReaderBase):
         return self.trcfile
 
     def close(self):
-        """Close trc trajectory file if it was open."""
+        """Close the trc trajectory file if it was open."""
         if self.trcfile is None:
             return
         self.trcfile.close()
