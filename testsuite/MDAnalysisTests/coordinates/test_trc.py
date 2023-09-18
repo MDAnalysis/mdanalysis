@@ -46,7 +46,7 @@ class TestTRCReader:
         TRC_U.trajectory[0]
         assert_allclose(TRC_U.atoms.positions[0],
                             [2.19782507, 24.65064345, 29.39783426])
-        # second frame first particle
+        # fith frame first particle
         TRC_U.trajectory[4]
         assert_allclose(TRC_U.atoms.positions[0],
                             [0.37026654, 22.78805010, 3.69695262])
@@ -84,7 +84,7 @@ class TestTRCReader:
         trc.next()
         trc.next()
         assert_equal(trc.ts.frame, 4,
-                     "trajectory.next() did not forward to frameindex 2")
+                     "trajectory.next() did not forward to frameindex 4")
         trc.rewind()
         assert_equal(trc.ts.frame, 0, "trajectory.rewind() failed " \
                                       "to rewind to first frame")

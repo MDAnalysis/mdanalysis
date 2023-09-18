@@ -94,7 +94,6 @@ class TRCReader(base.ReaderBase):
             return 0
 
     def _read_frame_count(self):
-        # Right now this is always the atom count of the last frame
         n_frames = self.traj_properties["n_frames"] 
         return n_frames
                 
@@ -126,7 +125,7 @@ class TRCReader(base.ReaderBase):
         """
         * Reads the number of atoms per frame (n_atoms)
         * Reads the number of frames (n_frames) 
-        * Startposition of the timestep block 
+        * Reads the startposition of the timestep block 
           for each frame (l_timestep_offset) 
         """
         
@@ -145,12 +144,13 @@ class TRCReader(base.ReaderBase):
         l_timestep_timevalues = []
         
         #
-        # Loop through the file and save position of datablocks
+        # Loop through the file and save positions of datablocks
         #        
         with util.anyopen(self.filename) as f:
             while (True): 
                 line = f.readline() 
                 if (line == '') or (line == b''): break  # EOF
+
                 # 
                 # Timestep-Block
                 # 
@@ -303,7 +303,7 @@ class TRCReader(base.ReaderBase):
         # Reload trajectory file
         self.trcfile = util.anyopen(self.filename)
 
-        # reset ts
+        # Reset ts
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         
         # Set frame to -1, so next timestep is zero
