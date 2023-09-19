@@ -16,7 +16,7 @@ requires = [
     "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
     # For unreleased versions of Python there is currently no known supported
     # NumPy version. In that case we just let it be a bare NumPy install
-    "numpy<2.0; python_version>='3.12'",
+     "numpy<2.0; python_version>='3.13'",
     "setuptools>=68.0",
     "wheel",
 ]
