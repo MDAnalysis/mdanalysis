@@ -112,14 +112,12 @@ at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
 ## Reporting
 
 If someone makes you or any other contributor feel unsafe or unwelcome, please
-report this in a timely manner. Code of conduct violations reduce the value of
+report this in a timely manner. Code of conduct (CoC) violations reduce the value of
 the community for everyone and we take them seriously. All complaints will be
 reviewed and investigated and will result in a response that is deemed necessary
 and appropriate to the circumstances.
 
-You can file a report by emailing
-the [*Conduct-mail*][conduct-mail] or by
-filing out [this form][conduct-form]. The project team is obligated to maintain
+You can file a report by filling out [this form][conduct-form]. The CoC Committee is obligated to maintain
 confidentiality with regard to the reporter of an incident.
 
 The online form gives you the option to keep your report anonymous or request
@@ -130,11 +128,23 @@ You may also follow [NumFOCUS’s Code of Conduct violation reporting][NF-conduc
 guidelines if you would like to contact a third-party outside of the MDAnalysis 
 community.
 
+### Reporting at MDAnalysis Events and Meetups
+If you are attending an MDAnalysis event or meetup and wish to make a report, you may contact the ombudspersons (who will identify themselves at the event) or other event staff/meetup organizers so that they can take any appropriate immediate response. If you would prefer not to do that, please [submit a report][conduct-form] to MDAnalysis. 
+
+Ombudspeople and event staff/meetup organizers will be happy to help participants contact venue security or local law enforcement, provide escorts, or otherwise assist those experiencing harassment to feel safe for the duration of the event/meetup.
+
 ## Enforcement
 
-When a report is sent to us we will reply as soon as possible to confirm receipt;
-we strive to answer in less than 24 hours. We will review the incident and
-determine, to the best of our ability
+All reports of breaches of the code of conduct will be investigated and handled by the **MDAnalysis Code of Conduct Committee**. The current MDAnalysis Code of Conduct Committee consists of:
+- Jenna Swarthout Goddard (@jennaswa)
+- Micaela Matta (@micaela-matta)
+- Richard Gowers (@richardjgowers)
+
+In the event of any conflict of interest, the affected committee member will immediately notify the rest of the committee and recuse themselves.
+
+When a report is filed, the CoC Committee will reply as soon as possible to confirm receipt;
+we strive to answer in less than 24 hours. The CoC Committee will review the incident and
+determine, to the best of its ability
 
 - what happened
 - whether this event constitutes a code of conduct violation
@@ -143,16 +153,14 @@ determine, to the best of our ability
 
 This information will be collected in writing. We strive to reach a resolution
 within a week of confirmation. Once a resolution has been agreed upon, but before it is
-enacted, we will contact the original reporter and any other affected parties
+enacted, the CoC Committee will contact the original reporter and any other affected parties
 and explain the proposed resolution. We will ask if this resolution is
 acceptable and note feedback for the record. We are, however, not required to act
 on this feedback.
 
-
 ## Acknowledgment
 
-Original text courtesy of
-the
+Original text courtesy of [*NumFOCUS*](https://numfocus.org/code-of-conduct) and the
 [*Speak Up!*](http://web.archive.org/web/20141109123859/http://speakup.io/coc.html),
 [*Django*](https://www.djangoproject.com/conduct),
 [*Contributor Covenant*](http://contributor-covenant.org/),
