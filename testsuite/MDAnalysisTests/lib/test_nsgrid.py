@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from distutils.util import strtobool
 import os
 
 import pytest
@@ -380,11 +379,10 @@ def test_issue_2670():
 
 def high_mem_tests_enabled():
     """ Returns true if ENABLE_HIGH_MEM_UNIT_TESTS is set to true."""
-    env = os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS", default="0")
-    try:
-        return strtobool(env)
-    except ValueError:
-        return False
+    env = os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS", default="false").lower()
+    if env == 'true':
+        return True
+    return False
 
 
 reason = ("Turned off by default. The test can be enabled by setting "
