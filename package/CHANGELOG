@@ -40,6 +40,9 @@ Enhancements
     PR #4284)
 
 Changes
+  * High memory tests (enabled through the environment variable
+    `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
+    is set to "true") (PR #4295)
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
