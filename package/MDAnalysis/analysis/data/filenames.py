@@ -107,10 +107,12 @@ __all__ = [
     # reference plots for Ramachandran and Janin classes
 ]
 
-from pkg_resources import resource_filename
 
-Rama_ref = resource_filename(__name__, 'rama_ref_data.npy')
-Janin_ref = resource_filename(__name__, 'janin_ref_data.npy')
+from importlib import resources
+
+_base_ref = resources.files('MDAnalysis.analysis.data')
+Rama_ref = (_base_ref / 'rama_ref_data.npy').as_posix()
+Janin_ref = (_base_ref / 'janin_ref_data.npy').as_posix()
 
 # This should be the last line: clean up namespace
-del resource_filename
+del resources
