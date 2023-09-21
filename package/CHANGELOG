@@ -27,6 +27,7 @@ Fixes
   * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
+  * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64

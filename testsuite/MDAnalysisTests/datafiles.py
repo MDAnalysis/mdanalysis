@@ -123,6 +123,7 @@ __all__ = [
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
+    "PDBQT_tyrosol",
     "PDB_multipole",
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
@@ -476,6 +477,7 @@ PQR_icodes = (_data_ref / '1A2C.pqr').as_posix()
 
 PDBQT_input = (_data_ref / 'pdbqt_inputpdbqt.pdbqt').as_posix()
 PDBQT_querypdb = (_data_ref / 'pdbqt_querypdb.pdb').as_posix()
+PDBQT_tyrosol = (_data_ref / 'tyrosol.pdbqt.bz2').as_posix()
 
 FASTA = (_data_ref / 'test.fasta').as_posix()
 HELANAL_BENDING_MATRIX = (_data_ref / 'helanal_bending_matrix_AdK_DIMS_H8.dat').as_posix()
