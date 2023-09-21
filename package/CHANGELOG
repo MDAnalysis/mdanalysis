@@ -10,11 +10,12 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting
   * accompany each entry with github issue/PR number (Issue #xyz)
-  * release numbers follow "Semantic Versioning" http://semver.org
+  * release numbers follow "Semantic Versioning" https://semver.org
 
-------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, richardjgowers,
-         lilyminium
+
+-------------------------------------------------------------------------------
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
+         richardjgowers, lilyminium
 
  * 2.7.0
 
@@ -28,14 +29,21 @@ Fixes
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
 
 Enhancements
+  * Adds external sidebar links (Issue #4296)
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
-    inputs
+    inputs (PR #4273, part of #3927)
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
-  * Adds external sidebar links (Issue #4296)
+  * Add support for reading chainID info from GROMACS TPR topologies 
+    (Issue #3994, PR #4281)  
+  * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
+    PR #4284)
 
 Changes
+  * High memory tests (enabled through the environment variable
+    `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
+    is set to "true") (PR #4295)
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
