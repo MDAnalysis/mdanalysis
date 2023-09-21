@@ -475,9 +475,9 @@ PRM19SBOPC = (_data_ref / 'Amber/ala.ff19SB.OPC.parm7.bz2').as_posix()
 PQR = (_data_ref / 'adk_open.pqr').as_posix()
 PQR_icodes = (_data_ref / '1A2C.pqr').as_posix()
 
-PDBQT_input = (_data_ref / 'pdbqt_inputpdbqt.pdbqt').as_posix()
-PDBQT_querypdb = (_data_ref / 'pdbqt_querypdb.pdb').as_posix()
-PDBQT_tyrosol = (_data_ref / 'tyrosol.pdbqt.bz2').as_posix()
+PDBQT_input = (_data_ref / "pdbqt_inputpdbqt.pdbqt").as_posix()
+PDBQT_querypdb = (_data_ref / "pdbqt_querypdb.pdb").as_posix()
+PDBQT_tyrosol = (_data_ref / "tyrosol.pdbqt.bz2").as_posix()
 
 FASTA = (_data_ref / 'test.fasta').as_posix()
 HELANAL_BENDING_MATRIX = (_data_ref / 'helanal_bending_matrix_AdK_DIMS_H8.dat').as_posix()

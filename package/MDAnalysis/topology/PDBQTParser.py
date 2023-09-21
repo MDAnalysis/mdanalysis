@@ -106,7 +106,8 @@ class PDBQTParser(TopologyReaderBase):
        Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,
        are now ignored. See Autodock's `reference`_.
 
-       .. _reference: https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
+       .. _reference: https://autodock.scripps.edu/wp-content/uploads/sites/\
+       56/2021/10/AutoDock4.2.6_UserGuide.pdf
     """
     format = 'PDBQT'
 
