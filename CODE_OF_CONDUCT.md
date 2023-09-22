@@ -7,6 +7,7 @@ free from harassment.
 **Table of Contents**
 
 - [MDAnalysis Code of Conduct and Community Guidelines](#mdanalysis-code-of-conduct-and-community-guidelines)
+- [Diversity, Equity, and Inclusion Statement](#diversity-equity-and-inclusion-statement)
 - [Reporting](#reporting)
 - [Enforcement](#enforcement)
 - [Acknowledgment](#acknowledgment)
