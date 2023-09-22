@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -222,7 +234,9 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">version</span>
 
 
-<div class="viewcode-block" id="start_logging"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.start_logging">[docs]</a><span class="k">def</span> <span class="nf">start_logging</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="o">.</span><span class="n">__version__</span><span class="p">):</span>
+<div class="viewcode-block" id="start_logging">
+<a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.start_logging">[docs]</a>
+<span class="k">def</span> <span class="nf">start_logging</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="o">.</span><span class="n">__version__</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Start logging of messages to file and console.</span>
 
 <span class="sd">    The default logfile is named `MDAnalysis.log` and messages are</span>
@@ -233,14 +247,20 @@
         <span class="s2">&quot;MDAnalysis </span><span class="si">%s</span><span class="s2"> STARTED logging to </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">logfile</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="stop_logging"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.stop_logging">[docs]</a><span class="k">def</span> <span class="nf">stop_logging</span><span class="p">():</span>
+
+<div class="viewcode-block" id="stop_logging">
+<a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.stop_logging">[docs]</a>
+<span class="k">def</span> <span class="nf">stop_logging</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Stop logging to logfile and console.&quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MDAnalysis STOPPED logging&quot;</span><span class="p">)</span>
     <span class="n">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>  <span class="c1"># this _should_ do the job...</span></div>
 
 
-<div class="viewcode-block" id="create"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.create">[docs]</a><span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">logger_name</span><span class="o">=</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="create">
+<a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.create">[docs]</a>
+<span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">logger_name</span><span class="o">=</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a top level logger.</span>
 
 <span class="sd">    - The file logger logs everything (including DEBUG).</span>
@@ -279,7 +299,10 @@
     <span class="k">return</span> <span class="n">logger</span></div>
 
 
-<div class="viewcode-block" id="clear_handlers"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.clear_handlers">[docs]</a><span class="k">def</span> <span class="nf">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+
+<div class="viewcode-block" id="clear_handlers">
+<a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.clear_handlers">[docs]</a>
+<span class="k">def</span> <span class="nf">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;clean out handlers in the library top level logger</span>
 
 <span class="sd">    (only important for reload/debug cycles...)</span>
@@ -289,7 +312,10 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="NullHandler"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler">[docs]</a><span class="k">class</span> <span class="nc">NullHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NullHandler">
+<a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler">[docs]</a>
+<span class="k">class</span> <span class="nc">NullHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Silent Handler.</span>
 
 <span class="sd">    Useful as a default::</span>
@@ -301,11 +327,17 @@
 <span class="sd">    see the advice on logging and libraries in</span>
 <span class="sd">    http://docs.python.org/library/logging.html?#configuring-logging-for-a-library</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="NullHandler.emit"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
+<div class="viewcode-block" id="NullHandler.emit">
+<a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler.emit">[docs]</a>
+    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</div>
 
 
-<div class="viewcode-block" id="ProgressBar"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressBar">[docs]</a><span class="k">class</span> <span class="nc">ProgressBar</span><span class="p">(</span><span class="n">tqdm</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ProgressBar">
+<a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressBar">[docs]</a>
+<span class="k">class</span> <span class="nc">ProgressBar</span><span class="p">(</span><span class="n">tqdm</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Display a visual progress bar and time estimate.</span>
 
 <span class="sd">    The :class:`ProgressBar` decorates an iterable object, returning an</span>
@@ -468,6 +500,7 @@
         <span class="c1"># disable should take precedence over verbose if both are set</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;disable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;disable&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ProgressBar</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

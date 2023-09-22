@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -198,7 +210,9 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_CONVERTERS</span>
 
 
-<div class="viewcode-block" id="Accessor"><a class="viewcode-back" href="../../../documentation_pages/core/accessors.html#MDAnalysis.core.accessors.Accessor">[docs]</a><span class="k">class</span> <span class="nc">Accessor</span><span class="p">:</span>
+<div class="viewcode-block" id="Accessor">
+<a class="viewcode-back" href="../../../documentation_pages/core/accessors.html#MDAnalysis.core.accessors.Accessor">[docs]</a>
+<span class="k">class</span> <span class="nc">Accessor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Used to pass data between two classes</span>
 
 <span class="sd">    Parameters</span>
@@ -243,7 +257,10 @@
         <span class="k">return</span> <span class="n">wrapped</span></div>
 
 
-<div class="viewcode-block" id="ConverterWrapper"><a class="viewcode-back" href="../../../documentation_pages/core/accessors.html#MDAnalysis.core.accessors.ConverterWrapper">[docs]</a><span class="k">class</span> <span class="nc">ConverterWrapper</span><span class="p">:</span>
+
+<div class="viewcode-block" id="ConverterWrapper">
+<a class="viewcode-back" href="../../../documentation_pages/core/accessors.html#MDAnalysis.core.accessors.ConverterWrapper">[docs]</a>
+<span class="k">class</span> <span class="nc">ConverterWrapper</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert :class:`AtomGroup` to a structure from another Python</span>
 <span class="sd">    package.</span>
 
@@ -331,6 +348,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">package</span><span class="si">!r}</span><span class="s2"> converter found. Available: &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_CONVERTERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">convert</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

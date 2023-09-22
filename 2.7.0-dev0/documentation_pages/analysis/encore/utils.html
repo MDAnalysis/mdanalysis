@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7.1.7. Utility functions for ENCORE &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
@@ -159,15 +171,15 @@
            <div itemprop="articleBody">
              
   <section id="module-MDAnalysis.analysis.encore.utils">
-<span id="utility-functions-for-encore"></span><h1><span class="section-number">4.2.7.1.7. </span>Utility functions for ENCORE<a class="headerlink" href="#module-MDAnalysis.analysis.encore.utils" title="Permalink to this heading"></a></h1>
+<span id="utility-functions-for-encore"></span><h1><span class="section-number">4.2.7.1.7. </span>Utility functions for ENCORE<a class="headerlink" href="#module-MDAnalysis.analysis.encore.utils" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">ParallelCalculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">ParallelCalculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation" title="Link to this definition"></a></dt>
 <dd><p>Generic parallel calculation class. Can use arbitrary functions,
 arguments to functions and kwargs to functions.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation.n_jobs">
-<span class="sig-name descname"><span class="pre">n_jobs</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.n_jobs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">n_jobs</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.n_jobs" title="Link to this definition"></a></dt>
 <dd><p>Number of cores to be used for parallel calculation. If -1 use all
 available cores.</p>
 <dl class="field-list simple">
@@ -179,7 +191,7 @@ available cores.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation.function">
-<span class="sig-name descname"><span class="pre">function</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">function</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="Link to this definition"></a></dt>
 <dd><p>Function to be run in parallel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -190,7 +202,7 @@ available cores.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation.args">
-<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.args" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.args" title="Link to this definition"></a></dt>
 <dd><p>Each tuple contains the arguments that will be passed to
 function(). This means that a call to function() is performed for
 each tuple. function is called as function(*args, **kwargs). Runs
@@ -204,7 +216,7 @@ are distributed on the requested numbers of cores.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation.kwargs">
-<span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.kwargs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.kwargs" title="Link to this definition"></a></dt>
 <dd><p>Each tuple contains the named arguments that will be passed to
 function, similarly as described for the args attribute.</p>
 <dl class="field-list simple">
@@ -216,7 +228,7 @@ function, similarly as described for the args attribute.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation.nruns">
-<span class="sig-name descname"><span class="pre">nruns</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.nruns" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">nruns</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.nruns" title="Link to this definition"></a></dt>
 <dd><p>Number of runs to be performed. Must be equal to len(args) and
 len(kwargs).</p>
 <dl class="field-list simple">
@@ -241,7 +253,7 @@ class description.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.run" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.run" title="Link to this definition"></a></dt>
 <dd><p>Run parallel calculation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -258,7 +270,7 @@ is the return of function(*args[3], **kwargs[3]).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation.worker">
-<span class="sig-name descname"><span class="pre">worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation.worker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.worker" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation.worker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation.worker" title="Link to this definition"></a></dt>
 <dd><p>Generic worker. Will run function with the prescribed args and kwargs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -276,7 +288,7 @@ finished</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.TriangularMatrix">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">TriangularMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loadfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">TriangularMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loadfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="Link to this definition"></a></dt>
 <dd><p>Triangular matrix class. This class is designed to provide a
 memory-efficient representation of a triangular matrix that still behaves
 as a square symmetric one. The class wraps a numpy.array object,
@@ -300,13 +312,13 @@ ignored); size has to be provided though.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.TriangularMatrix.as_array">
-<span class="sig-name descname"><span class="pre">as_array</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix.as_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix.as_array" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">as_array</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix.as_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix.as_array" title="Link to this definition"></a></dt>
 <dd><p>Return standard numpy array equivalent</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.TriangularMatrix.loadz">
-<span class="sig-name descname"><span class="pre">loadz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix.loadz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix.loadz" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">loadz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix.loadz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix.loadz" title="Link to this definition"></a></dt>
 <dd><p>Load matrix from the npz compressed numpy format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -317,7 +329,7 @@ ignored); size has to be provided though.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.TriangularMatrix.savez">
-<span class="sig-name descname"><span class="pre">savez</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix.savez"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix.savez" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">savez</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#TriangularMatrix.savez"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.TriangularMatrix.savez" title="Link to this definition"></a></dt>
 <dd><p>Save matrix in the npz compressed numpy format. Save metadata and
 data as well.</p>
 <dl class="field-list simple">
@@ -331,7 +343,7 @@ data as well.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.merge_universes">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">merge_universes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#merge_universes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.merge_universes" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">merge_universes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#merge_universes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.merge_universes" title="Link to this definition"></a></dt>
 <dd><p>Merge list of universes into one</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -345,7 +357,7 @@ data as well.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.trm_indices">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">trm_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#trm_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.trm_indices" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">trm_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#trm_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.trm_indices" title="Link to this definition"></a></dt>
 <dd><p>Generate (i,j) indeces of a triangular matrix, between elements a and b.
 The matrix size is automatically determined from the number of elements.
 For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
@@ -362,7 +374,7 @@ For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.trm_indices_diag">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">trm_indices_diag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#trm_indices_diag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.trm_indices_diag" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">trm_indices_diag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#trm_indices_diag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.trm_indices_diag" title="Link to this definition"></a></dt>
 <dd><p>generate (i,j) indeces of a triangular matrix of n rows (or columns),
 with diagonal</p>
 <dl class="field-list simple">
@@ -374,7 +386,7 @@ with diagonal</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.trm_indices_nodiag">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">trm_indices_nodiag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#trm_indices_nodiag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.trm_indices_nodiag" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">trm_indices_nodiag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#trm_indices_nodiag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.trm_indices_nodiag" title="Link to this definition"></a></dt>
 <dd><p>generate (i,j) indeces of a triangular matrix of n rows (or columns),
 without diagonal (e.g. no elements (0,0),(1,1),…,(n,n))</p>
 <dl class="field-list simple">
@@ -386,7 +398,7 @@ without diagonal (e.g. no elements (0,0),(1,1),…,(n,n))</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.cutils.PureRMSD">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.cutils.</span></span><span class="sig-name descname"><span class="pre">PureRMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordsi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordsj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomsn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summasses</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.cutils.PureRMSD" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.cutils.</span></span><span class="sig-name descname"><span class="pre">PureRMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordsi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordsj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomsn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summasses</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.cutils.PureRMSD" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>

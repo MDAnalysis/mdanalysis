@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6.16. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -166,8 +178,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.coordinates.PDBQT"></span><section id="pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt">
-<h1><span class="section-number">6.16. </span>PDBQT structure files in MDAnalysis — <a class="reference internal" href="#module-MDAnalysis.coordinates.PDBQT" title="MDAnalysis.coordinates.PDBQT"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a><a class="headerlink" href="#pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt" title="Permalink to this heading"></a></h1>
+  <section id="pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt">
+<span id="module-MDAnalysis.coordinates.PDBQT"></span><h1><span class="section-number">6.16. </span>PDBQT structure files in MDAnalysis — <a class="reference internal" href="#module-MDAnalysis.coordinates.PDBQT" title="MDAnalysis.coordinates.PDBQT"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a><a class="headerlink" href="#pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt" title="Link to this heading"></a></h1>
 <p>MDAnalysis reads coordinates from <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">PDBQT</a> files and additional optional
 data such as B-factors, partial charge and <a class="reference external" href="http://autodock.scripps.edu/">AutoDock</a> atom types.  It
 is also possible to substitute a PDBQT file for a PSF file in order to
@@ -176,7 +188,7 @@ available in this case).</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PDBQT.PDBQTReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.PDBQT.</span></span><span class="sig-name descname"><span class="pre">PDBQTReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.PDBQT.</span></span><span class="sig-name descname"><span class="pre">PDBQTReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader" title="Link to this definition"></a></dt>
 <dd><p>PDBQTReader that reads a PDBQT-formatted file, no frills.</p>
 <dl class="simple">
 <dt>Records read:</dt><dd><ul class="simple">
@@ -358,7 +370,7 @@ available in this case).</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer">
-<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer" title="Link to this definition"></a></dt>
 <dd><p>Returns a permissive (simple) PDBQTWriter for <em>filename</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -372,7 +384,7 @@ available in this case).</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PDBQT.PDBQTReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -381,7 +393,7 @@ available in this case).</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PDBQT.PDBQTWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.PDBQT.</span></span><span class="sig-name descname"><span class="pre">PDBQTWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.PDBQT.</span></span><span class="sig-name descname"><span class="pre">PDBQTWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="Link to this definition"></a></dt>
 <dd><p>PDBQT writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB</a> 3.2 standard and the <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">PDBQT</a> spec.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.6.0: </span>Files are now written in <cite>wt</cite> mode, and keep extensions, allowing
@@ -389,20 +401,20 @@ for files to be written under compressed formats</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.write" title="Link to this definition"></a></dt>
 <dd><p>Write selection at current trajectory frame to file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

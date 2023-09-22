@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>11.3.1. Core Topology object — MDAnalysis.core.topology &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -145,8 +157,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.core.topology"></span><section id="core-topology-object-mdanalysis-core-topology">
-<h1><span class="section-number">11.3.1. </span>Core Topology object — <a class="reference internal" href="#module-MDAnalysis.core.topology" title="MDAnalysis.core.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><a class="headerlink" href="#core-topology-object-mdanalysis-core-topology" title="Permalink to this heading"></a></h1>
+  <section id="core-topology-object-mdanalysis-core-topology">
+<span id="module-MDAnalysis.core.topology"></span><h1><span class="section-number">11.3.1. </span>Core Topology object — <a class="reference internal" href="#module-MDAnalysis.core.topology" title="MDAnalysis.core.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><a class="headerlink" href="#core-topology-object-mdanalysis-core-topology" title="Link to this heading"></a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.16.0.</span></p>
 </div>
@@ -159,10 +171,10 @@ information and discussions on the new system. The issue number <em>363</em>
 is also being used as a short-hand in discussions to refer to the new
 topology system.</p>
 <section id="classes">
-<h2><span class="section-number">11.3.1.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">11.3.1.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">Topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_resindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_segindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">Topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_resindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_segindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology" title="Link to this definition"></a></dt>
 <dd><p>In-memory, array-based topology database.</p>
 <p>The topology model of MDanalysis features atoms, which must each be a
 member of one residue. Each residue, in turn, must be a member of one
@@ -183,7 +195,7 @@ by this object.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology.add_Residue">
-<span class="sig-name descname"><span class="pre">add_Residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">new_attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_Residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_Residue" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_Residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">new_attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_Residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_Residue" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>residx of the new Residue</p>
@@ -199,7 +211,7 @@ by this object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology.add_Segment">
-<span class="sig-name descname"><span class="pre">add_Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">new_attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_Segment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_Segment" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">new_attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_Segment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_Segment" title="Link to this definition"></a></dt>
 <dd><p>Adds a new Segment to the Topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -222,7 +234,7 @@ by this object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology.add_TopologyAttr">
-<span class="sig-name descname"><span class="pre">add_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_TopologyAttr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.add_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.add_TopologyAttr" title="Link to this definition"></a></dt>
 <dd><p>Add a new TopologyAttr to the Topology.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -233,13 +245,13 @@ by this object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.copy" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.copy" title="Link to this definition"></a></dt>
 <dd><p>Return a deepcopy of this Topology</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology.del_TopologyAttr">
-<span class="sig-name descname"><span class="pre">del_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.del_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.del_TopologyAttr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">del_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology.del_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology.del_TopologyAttr" title="Link to this definition"></a></dt>
 <dd><p>Remove a TopologyAttr from the Topology.</p>
 <p>If it is not present, nothing happens.</p>
 <dl class="field-list simple">
@@ -254,13 +266,13 @@ by this object.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology.guessed_attributes">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">guessed_attributes</span></span><a class="headerlink" href="#MDAnalysis.core.topology.Topology.guessed_attributes" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">guessed_attributes</span></span><a class="headerlink" href="#MDAnalysis.core.topology.Topology.guessed_attributes" title="Link to this definition"></a></dt>
 <dd><p>A list of the guessed attributes in this topology</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology.read_attributes">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_attributes</span></span><a class="headerlink" href="#MDAnalysis.core.topology.Topology.read_attributes" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_attributes</span></span><a class="headerlink" href="#MDAnalysis.core.topology.Topology.read_attributes" title="Link to this definition"></a></dt>
 <dd><p>A list of the attributes read from the topology</p>
 </dd></dl>
 
@@ -268,7 +280,7 @@ by this object.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">TransTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_residues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_segments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_resindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_segindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">TransTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_residues</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_segments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_resindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_segindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable" title="Link to this definition"></a></dt>
 <dd><p>Membership tables with methods to translate indices across levels.</p>
 <p>There are three levels; Atom, Residue and Segment.  Each Atom <strong>must</strong>
 belong in a Residue, each Residue <strong>must</strong> belong to a Segment.</p>
@@ -293,7 +305,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.n_atoms">
-<span class="sig-name descname"><span class="pre">n_atoms</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_atoms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">n_atoms</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_atoms" title="Link to this definition"></a></dt>
 <dd><p>number of atoms in topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -304,7 +316,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.n_residues">
-<span class="sig-name descname"><span class="pre">n_residues</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_residues" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">n_residues</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_residues" title="Link to this definition"></a></dt>
 <dd><p>number of residues in topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -315,7 +327,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.n_segments">
-<span class="sig-name descname"><span class="pre">n_segments</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_segments" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">n_segments</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.n_segments" title="Link to this definition"></a></dt>
 <dd><p>number of segments in topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -326,7 +338,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.size">
-<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.size" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.size" title="Link to this definition"></a></dt>
 <dd><p>tuple <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">n_residues,</span> <span class="pre">n_segments)</span></code> describing the shape of
 the TransTable</p>
 <dl class="field-list simple">
@@ -344,7 +356,7 @@ the TransTable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.atoms2residues">
-<span class="sig-name descname"><span class="pre">atoms2residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.atoms2residues" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">atoms2residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.atoms2residues" title="Link to this definition"></a></dt>
 <dd><p>Get residue indices for each atom.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -361,7 +373,7 @@ the TransTable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.atoms2segments">
-<span class="sig-name descname"><span class="pre">atoms2segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.atoms2segments" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">atoms2segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.atoms2segments" title="Link to this definition"></a></dt>
 <dd><p>Get segment indices for each atom.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -378,25 +390,25 @@ the TransTable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.copy" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.copy" title="Link to this definition"></a></dt>
 <dd><p>Return a deepcopy of this Transtable</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.move_atom">
-<span class="sig-name descname"><span class="pre">move_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.move_atom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.move_atom" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">move_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.move_atom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.move_atom" title="Link to this definition"></a></dt>
 <dd><p>Move aix to be in rix</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.move_residue">
-<span class="sig-name descname"><span class="pre">move_residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.move_residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.move_residue" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">move_residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.move_residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.move_residue" title="Link to this definition"></a></dt>
 <dd><p>Move rix to be in six</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.residues2atoms_1d">
-<span class="sig-name descname"><span class="pre">residues2atoms_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2atoms_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">residues2atoms_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2atoms_1d" title="Link to this definition"></a></dt>
 <dd><p>Get atom indices collectively represented by given residue indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -413,7 +425,7 @@ the TransTable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.residues2atoms_2d">
-<span class="sig-name descname"><span class="pre">residues2atoms_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2atoms_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">residues2atoms_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2atoms_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2atoms_2d" title="Link to this definition"></a></dt>
 <dd><p>Get atom indices represented by each residue index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -432,7 +444,7 @@ in that residue</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.residues2segments">
-<span class="sig-name descname"><span class="pre">residues2segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2segments" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">residues2segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.residues2segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.residues2segments" title="Link to this definition"></a></dt>
 <dd><p>Get segment indices for each residue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -449,7 +461,7 @@ in that residue</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.segments2atoms_1d">
-<span class="sig-name descname"><span class="pre">segments2atoms_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2atoms_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">segments2atoms_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2atoms_1d" title="Link to this definition"></a></dt>
 <dd><p>Get atom indices collectively represented by given segment indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -466,7 +478,7 @@ in that residue</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.segments2atoms_2d">
-<span class="sig-name descname"><span class="pre">segments2atoms_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2atoms_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">segments2atoms_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2atoms_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2atoms_2d" title="Link to this definition"></a></dt>
 <dd><p>Get atom indices represented by each segment index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -485,7 +497,7 @@ in that segment</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.segments2residues_1d">
-<span class="sig-name descname"><span class="pre">segments2residues_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2residues_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">segments2residues_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2residues_1d" title="Link to this definition"></a></dt>
 <dd><p>Get residue indices collectively represented by given segment indices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -502,7 +514,7 @@ in that segment</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.segments2residues_2d">
-<span class="sig-name descname"><span class="pre">segments2residues_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2residues_2d" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">segments2residues_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">six</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.segments2residues_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.segments2residues_2d" title="Link to this definition"></a></dt>
 <dd><p>Get residue indices represented by each segment index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -523,10 +535,10 @@ present in that segment</p>
 
 </section>
 <section id="helper-functions">
-<h2><span class="section-number">11.3.1.2. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">11.3.1.2. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.make_downshift_arrays">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">make_downshift_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upshift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nparents</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#make_downshift_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.make_downshift_arrays" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">make_downshift_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upshift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nparents</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#make_downshift_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.make_downshift_arrays" title="Link to this definition"></a></dt>
 <dd><p>From an upwards translation table, create the opposite direction</p>
 <p>Turns a many to one mapping (eg atoms to residues) to a one to many mapping
 (residues to atoms)</p>

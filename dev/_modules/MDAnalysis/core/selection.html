@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -193,7 +205,9 @@
 <span class="c1">#: Delimiters include &quot;:&quot;, &quot;-&quot;, &quot;to&quot; and can have arbitrary whitespace.</span>
 <span class="n">RANGE_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\s*(?:[:-]| to )\s*&quot;</span>
 
-<div class="viewcode-block" id="is_keyword"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.is_keyword">[docs]</a><span class="k">def</span> <span class="nf">is_keyword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<div class="viewcode-block" id="is_keyword">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.is_keyword">[docs]</a>
+<span class="k">def</span> <span class="nf">is_keyword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Is val a selection keyword?</span>
 
 <span class="sd">    Returns False on any of the following strings:</span>
@@ -208,7 +222,10 @@
             <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="grab_not_keywords"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.grab_not_keywords">[docs]</a><span class="k">def</span> <span class="nf">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+
+<div class="viewcode-block" id="grab_not_keywords">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.grab_not_keywords">[docs]</a>
+<span class="k">def</span> <span class="nf">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pop tokens from the left until you hit a keyword</span>
 
 <span class="sd">    Parameters</span>
@@ -244,7 +261,10 @@
     <span class="k">return</span> <span class="n">values</span></div>
 
 
-<div class="viewcode-block" id="join_separated_values"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.join_separated_values">[docs]</a><span class="k">def</span> <span class="nf">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+
+<div class="viewcode-block" id="join_separated_values">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.join_separated_values">[docs]</a>
+<span class="k">def</span> <span class="nf">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Join range values that are separated by whitespace</span>
 
 <span class="sd">    Parameters</span>
@@ -280,6 +300,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_values</span></div>
+
 
 <span class="n">_SELECTIONDICT</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">_OPERATIONS</span> <span class="o">=</span> <span class="p">{}</span>
@@ -338,7 +359,9 @@
 
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-<div class="viewcode-block" id="return_empty_on_apply"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.return_empty_on_apply">[docs]</a><span class="k">def</span> <span class="nf">return_empty_on_apply</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<div class="viewcode-block" id="return_empty_on_apply">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.return_empty_on_apply">[docs]</a>
+<span class="k">def</span> <span class="nf">return_empty_on_apply</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator to return empty AtomGroups from the apply() function</span>
 <span class="sd">    without evaluating it</span>
@@ -349,6 +372,7 @@
             <span class="k">return</span> <span class="n">group</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_apply</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">_Selectionmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
@@ -407,7 +431,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span>
 
 
-<div class="viewcode-block" id="ByResSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByResSelection">[docs]</a><span class="k">class</span> <span class="nc">ByResSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
+<div class="viewcode-block" id="ByResSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByResSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">ByResSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects all atoms that are in the same segment and residue as selection</span>
 
@@ -424,6 +450,7 @@
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">unique_res</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">AroundSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
@@ -736,7 +763,9 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="SingleCharSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SingleCharSelection">[docs]</a><span class="k">class</span> <span class="nc">SingleCharSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleCharSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SingleCharSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">SingleCharSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;for when an attribute is just a single character, eg RSChirality</span>
 
 <span class="sd">    .. versionadded:: 2.1.0</span>
@@ -756,6 +785,7 @@
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">_ProtoStringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
@@ -789,7 +819,9 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">matches</span><span class="p">)]</span>
 
 
-<div class="viewcode-block" id="AromaticSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AromaticSelection">[docs]</a><span class="k">class</span> <span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<div class="viewcode-block" id="AromaticSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AromaticSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select aromatic atoms.</span>
 
 <span class="sd">    Aromaticity is available in the `aromaticities` attribute and is made</span>
@@ -801,7 +833,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">aromaticities</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="SmartsSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SmartsSelection">[docs]</a><span class="k">class</span> <span class="nc">SmartsSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SmartsSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SmartsSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">SmartsSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select atoms based on SMARTS queries.</span>
 
 <span class="sd">    Uses RDKit to run the query and converts the result to MDAnalysis.</span>
@@ -876,7 +911,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="ResidSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ResidSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
 
 <span class="sd">    Allows the use of &#39;:&#39;, &#39;-&#39; and &#39;to&#39; to specify a range of values</span>
@@ -1004,7 +1042,10 @@
         <span class="k">return</span> <span class="n">mask</span></div>
 
 
-<div class="viewcode-block" id="BoolSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BoolSelection">[docs]</a><span class="k">class</span> <span class="nc">BoolSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BoolSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BoolSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">BoolSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection for boolean values&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
@@ -1034,7 +1075,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="RangeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.RangeSelection">[docs]</a><span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RangeSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.RangeSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Range selection for int values&quot;&quot;&quot;</span>
 
     <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1088,7 +1132,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="FloatRangeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.FloatRangeSelection">[docs]</a><span class="k">class</span> <span class="nc">FloatRangeSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FloatRangeSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.FloatRangeSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">FloatRangeSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Range selection for float values&quot;&quot;&quot;</span>
 
     <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span>
@@ -1122,13 +1169,19 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="ByNumSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByNumSelection">[docs]</a><span class="k">class</span> <span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ByNumSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByNumSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bynum&#39;</span>
     <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
     <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span></div>
 
 
-<div class="viewcode-block" id="ProteinSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ProteinSelection">[docs]</a><span class="k">class</span> <span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ProteinSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ProteinSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Consists of all residues with  recognized residue names.</span>
 
 <span class="sd">    Recognized residue names in :attr:`ProteinSelection.prot_res`.</span>
@@ -1185,7 +1238,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">matches</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="NucleicSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NucleicSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">NucleicSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All atoms in nucleic acid residues with recognized residue names.</span>
 
 <span class="sd">    Recognized residue names:</span>
@@ -1223,7 +1279,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="BackboneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BackboneSelection">[docs]</a><span class="k">class</span> <span class="nc">BackboneSelection</span><span class="p">(</span><span class="n">ProteinSelection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BackboneSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BackboneSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">BackboneSelection</span><span class="p">(</span><span class="n">ProteinSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A BackboneSelection contains all atoms with name &#39;N&#39;, &#39;CA&#39;, &#39;C&#39;, &#39;O&#39;.</span>
 
 <span class="sd">    This excludes OT* on C-termini</span>
@@ -1256,7 +1315,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<div class="viewcode-block" id="NucleicBackboneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicBackboneSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicBackboneSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NucleicBackboneSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicBackboneSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">NucleicBackboneSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains all atoms with name &quot;P&quot;, &quot;C5&#39;&quot;, C3&#39;&quot;, &quot;O3&#39;&quot;, &quot;O5&#39;&quot;.</span>
 
 <span class="sd">    These atoms are only recognized if they are in a residue matched</span>
@@ -1289,7 +1351,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<div class="viewcode-block" id="BaseSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BaseSelection">[docs]</a><span class="k">class</span> <span class="nc">BaseSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BaseSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BaseSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection of atoms in nucleobases.</span>
 
 <span class="sd">    Recognized atom names (from CHARMM):</span>
@@ -1327,7 +1392,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<div class="viewcode-block" id="NucleicSugarSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSugarSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicSugarSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NucleicSugarSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSugarSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">NucleicSugarSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains all atoms with name C1&#39;, C2&#39;, C3&#39;, C4&#39;, O2&#39;, O4&#39;, O3&#39;.</span>
 
 
@@ -1357,7 +1425,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<div class="viewcode-block" id="PropertySelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PropertySelection">[docs]</a><span class="k">class</span> <span class="nc">PropertySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PropertySelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PropertySelection">[docs]</a>
+<span class="k">class</span> <span class="nc">PropertySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Some of the possible properties:</span>
 <span class="sd">    x, y, z, radius, mass,</span>
 
@@ -1482,7 +1553,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="SameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SameSelection">[docs]</a><span class="k">class</span> <span class="nc">SameSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SameSelection">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SameSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">SameSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects all atoms that have the same subkeyword value as any atom in selection</span>
 
@@ -1561,7 +1635,10 @@
             <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="SelectionParser"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser">[docs]</a><span class="k">class</span> <span class="nc">SelectionParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SelectionParser">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser">[docs]</a>
+<span class="k">class</span> <span class="nc">SelectionParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A small parser for selection expressions.  Demonstration of</span>
 <span class="sd">    recursive descent parsing using Precedence climbing (see</span>
 <span class="sd">    http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).  Transforms</span>
@@ -1588,7 +1665,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_shared_state</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="SelectionParser.expect"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.expect">[docs]</a>    <span class="k">def</span> <span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionParser.expect">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.expect">[docs]</a>
+    <span class="k">def</span> <span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Anticipate and remove a given token&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">token</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
@@ -1597,7 +1676,10 @@
                 <span class="s2">&quot;Unexpected token: &#39;</span><span class="si">{0}</span><span class="s2">&#39; Expected: &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">token</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SelectionParser.parse"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SelectionParser.parse">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span>
               <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smarts_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Selection object from a string.</span>
 
@@ -1661,6 +1743,7 @@
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">parsetree</span></div>
 
+
     <span class="k">def</span> <span class="nf">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="n">exp1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_subexp</span><span class="p">()</span>
         <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_OPERATIONS</span> <span class="ow">and</span>
@@ -1689,6 +1772,7 @@
             <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span></div>
 
 
+
 <span class="c1"># The module level instance</span>
 <span class="n">Parser</span> <span class="o">=</span> <span class="n">SelectionParser</span><span class="p">()</span>
 
@@ -1699,7 +1783,9 @@
 <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">_selectors</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selectors</span>
 
 
-<div class="viewcode-block" id="gen_selection_class"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.gen_selection_class">[docs]</a><span class="k">def</span> <span class="nf">gen_selection_class</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">per_object</span><span class="p">):</span>
+<div class="viewcode-block" id="gen_selection_class">
+<a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.gen_selection_class">[docs]</a>
+<span class="k">def</span> <span class="nf">gen_selection_class</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">per_object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection class factory for arbitrary TopologyAttrs.</span>
 
 <span class="sd">    Normally this should not be used except within the codebase</span>
@@ -1790,6 +1876,7 @@
     <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">basecls</span><span class="p">,),</span> <span class="n">basedct</span><span class="p">)</span>
     <span class="nb">setattr</span><span class="p">(</span><span class="n">_selectors</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>  <span class="c1"># stick it in _selectors</span>
     <span class="k">return</span> <span class="bp">cls</span></div>
+
 </pre></div>
 
            </div>

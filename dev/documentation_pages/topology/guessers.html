@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.26. Guessing unknown Topology information — MDAnalysis.topology.guessers &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -167,14 +179,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.topology.guessers"></span><section id="guessing-unknown-topology-information-mdanalysis-topology-guessers">
-<h1><span class="section-number">5.26. </span>Guessing unknown Topology information — <a class="reference internal" href="#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a><a class="headerlink" href="#guessing-unknown-topology-information-mdanalysis-topology-guessers" title="Permalink to this heading"></a></h1>
+  <section id="guessing-unknown-topology-information-mdanalysis-topology-guessers">
+<span id="module-MDAnalysis.topology.guessers"></span><h1><span class="section-number">5.26. </span>Guessing unknown Topology information — <a class="reference internal" href="#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a><a class="headerlink" href="#guessing-unknown-topology-information-mdanalysis-topology-guessers" title="Link to this heading"></a></h1>
 <p>In general <cite>guess_atom_X</cite> returns the guessed value for a single value,
 while <cite>guess_Xs</cite> will work on an array of many atoms.</p>
 <section id="example-uses-of-guessers">
-<h2><span class="section-number">5.26.1. </span>Example uses of guessers<a class="headerlink" href="#example-uses-of-guessers" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">5.26.1. </span>Example uses of guessers<a class="headerlink" href="#example-uses-of-guessers" title="Link to this heading"></a></h2>
 <section id="guessing-elements-from-atom-names">
-<h3><span class="section-number">5.26.1.1. </span>Guessing elements from atom names<a class="headerlink" href="#guessing-elements-from-atom-names" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">5.26.1.1. </span>Guessing elements from atom names<a class="headerlink" href="#guessing-elements-from-atom-names" title="Link to this heading"></a></h3>
 <p>Currently, it is possible to guess elements from atom names using
 <a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a> (or the synonymous <a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_type" title="MDAnalysis.topology.guessers.guess_atom_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_type()</span></code></a>). This can
 be done in the following manner:</p>
@@ -234,7 +246,7 @@ in the following manner:</p>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.get_atom_mass">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">get_atom_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#get_atom_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.get_atom_mass" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">get_atom_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#get_atom_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.get_atom_mass" title="Link to this definition"></a></dt>
 <dd><p>Return the atomic mass in u for <em>element</em>.</p>
 <p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables.masses</span></code></a>.</p>
 <div class="admonition warning">
@@ -248,7 +260,7 @@ in the following manner:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_angles">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bonds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_angles" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bonds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_angles" title="Link to this definition"></a></dt>
 <dd><p>Given a list of Bonds, find all angles that exist between atoms.</p>
 <p>Works by assuming that if atoms 1 &amp; 2 are bonded, and 2 &amp; 3 are bonded,
 then (1,2,3) must be an angle.</p>
@@ -269,7 +281,7 @@ Suitable for use in u._topology</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_aromaticities">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_aromaticities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_aromaticities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_aromaticities" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_aromaticities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_aromaticities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_aromaticities" title="Link to this definition"></a></dt>
 <dd><p>Guess aromaticity of atoms using RDKit</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -289,7 +301,7 @@ Suitable for use in u._topology</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_atom_charge">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_charge" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_charge" title="Link to this definition"></a></dt>
 <dd><p>Guess atom charge from the name.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -299,7 +311,7 @@ Suitable for use in u._topology</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_atom_element">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_element" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_element" title="Link to this definition"></a></dt>
 <dd><p>Guess the element of the atom from the name.</p>
 <p>Looks in dict to see if element is found, otherwise it uses the first
 character in the atomname. The table comes from CHARMM and AMBER atom
@@ -313,7 +325,7 @@ type. Some GROMOS ions have also been added.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_atom_mass">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_mass" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_mass" title="Link to this definition"></a></dt>
 <dd><p>Guess a mass based on the atom name.</p>
 <p><a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a> is used to determine the kind of atom.</p>
 <div class="admonition warning">
@@ -325,7 +337,7 @@ masses you might want to double check.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_atom_type">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_type" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_atom_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_type" title="Link to this definition"></a></dt>
 <dd><p>Guess atom type from the name.</p>
 <p>At the moment, this function simply returns the element, as
 guessed by <a class="reference internal" href="#MDAnalysis.topology.guessers.guess_atom_element" title="MDAnalysis.topology.guessers.guess_atom_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a>.</p>
@@ -337,7 +349,7 @@ guessed by <a class="reference internal" href="#MDAnalysis.topology.guessers.gue
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_bonds">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_bonds" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_bonds" title="Link to this definition"></a></dt>
 <dd><p>Guess if bonds exist between two atoms based on their distance.</p>
 <p>Bond between two atoms is created, if the two atoms are within</p>
 <div class="math notranslate nohighlight">
@@ -396,7 +408,7 @@ rather than replacing entirely.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_dihedrals">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_dihedrals" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_dihedrals" title="Link to this definition"></a></dt>
 <dd><p>Given a list of Angles, find all dihedrals that exist between atoms.</p>
 <p>Works by assuming that if (1,2,3) is an angle, and 3 &amp; 4 are bonded,
 then (1,2,3,4) must be a dihedral.</p>
@@ -414,7 +426,7 @@ Suitable for use in u._topology</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_gasteiger_charges">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_gasteiger_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_gasteiger_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_gasteiger_charges" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_gasteiger_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_gasteiger_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_gasteiger_charges" title="Link to this definition"></a></dt>
 <dd><p>Guess Gasteiger partial charges using RDKit</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -434,7 +446,7 @@ Suitable for use in u._topology</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_improper_dihedrals">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_improper_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_improper_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_improper_dihedrals" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_improper_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_improper_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_improper_dihedrals" title="Link to this definition"></a></dt>
 <dd><p>Given a list of Angles, find all improper dihedrals that exist between
 atoms.</p>
 <p>Works by assuming that if (1,2,3) is an angle, and 2 &amp; 4 are bonded,
@@ -454,7 +466,7 @@ ie the improper dihedral is the angle between the planes formed by
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_masses">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_masses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_masses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_masses" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_masses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_masses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_masses" title="Link to this definition"></a></dt>
 <dd><p>Guess the mass of many atoms based upon their type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -471,7 +483,7 @@ ie the improper dihedral is the angle between the planes formed by
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.guess_types">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_types" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">guess_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_types" title="Link to this definition"></a></dt>
 <dd><p>Guess the atom type of many atoms based on atom name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -488,7 +500,7 @@ ie the improper dihedral is the angle between the planes formed by
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.topology.guessers.validate_atom_types">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">validate_atom_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#validate_atom_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.validate_atom_types" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.guessers.</span></span><span class="sig-name descname"><span class="pre">validate_atom_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#validate_atom_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.validate_atom_types" title="Link to this definition"></a></dt>
 <dd><p>Vaildates the atom types based on whether they are available in our tables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

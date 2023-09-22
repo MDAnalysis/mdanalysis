@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.11.1. Analysis data files &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -150,8 +162,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.data.filenames"></span><section id="analysis-data-files">
-<h1><span class="section-number">4.11.1. </span>Analysis data files<a class="headerlink" href="#analysis-data-files" title="Permalink to this heading"></a></h1>
+  <section id="analysis-data-files">
+<span id="module-MDAnalysis.analysis.data.filenames"></span><h1><span class="section-number">4.11.1. </span>Analysis data files<a class="headerlink" href="#analysis-data-files" title="Link to this heading"></a></h1>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.data</span></code> contains data files that are used as part of
 analysis. These can be experimental or theoretical data. Files are stored
 inside the package and made accessible via variables in
@@ -159,10 +171,10 @@ inside the package and made accessible via variables in
 below, including references to the literature and where they are used inside
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>.</p>
 <section id="data-files">
-<h2><span class="section-number">4.11.1.1. </span>Data files<a class="headerlink" href="#data-files" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.11.1.1. </span>Data files<a class="headerlink" href="#data-files" title="Link to this heading"></a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.data.filenames.Rama_ref">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.data.filenames.</span></span><span class="sig-name descname"><span class="pre">Rama_ref</span></span><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Rama_ref" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.data.filenames.</span></span><span class="sig-name descname"><span class="pre">Rama_ref</span></span><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Rama_ref" title="Link to this definition"></a></dt>
 <dd><p>Reference Ramachandran histogram for
 <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals.Ramachandran</span></code></a>.  The data were
 calculated on a data set of 500 PDB structures taken from
@@ -189,12 +201,12 @@ of analyzed data together with the reference data are shown in
 <figcaption>
 <p><span class="caption-text">Reference Ramachandran plot, with contours that contain 90%
 (“allowed region”) and 99% (“generously allowed region”) of the data points
-from the reference data set.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+from the reference data set.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.data.filenames.Janin_ref">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.data.filenames.</span></span><span class="sig-name descname"><span class="pre">Janin_ref</span></span><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Janin_ref" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.data.filenames.</span></span><span class="sig-name descname"><span class="pre">Janin_ref</span></span><a class="headerlink" href="#MDAnalysis.analysis.data.filenames.Janin_ref" title="Link to this definition"></a></dt>
 <dd><p>Reference Janin histogram for <a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals.Janin</span></code></a>.
 The data were calculated on a data set of 500 PDB structures taken from
 <a class="footnote-reference brackets" href="#footcite-lovell2003" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. This is a numpy array in the <span class="math notranslate nohighlight">\(\chi_1\)</span> and
@@ -220,7 +232,7 @@ analyzed data together with the reference data are shown in
 <figcaption>
 <p><span class="caption-text">Janin reference plot with contours that contain 90% (“allowed region”) and
 98% (“generously allowed region”) of the data points from the reference data
-set.</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+set.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>

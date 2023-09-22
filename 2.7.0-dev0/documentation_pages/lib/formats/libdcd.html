@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.3.2. Low level DCD trajectory reading - MDAnalysis.lib.formats.libdcd &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
@@ -140,8 +152,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.lib.formats.libdcd"></span><section id="low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd">
-<h1><span class="section-number">13.3.2. </span>Low level DCD  trajectory reading - <a class="reference internal" href="#module-MDAnalysis.lib.formats.libdcd" title="MDAnalysis.lib.formats.libdcd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a><a class="headerlink" href="#low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd" title="Permalink to this heading"></a></h1>
+  <section id="low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd">
+<span id="module-MDAnalysis.lib.formats.libdcd"></span><h1><span class="section-number">13.3.2. </span>Low level DCD  trajectory reading - <a class="reference internal" href="#module-MDAnalysis.lib.formats.libdcd" title="MDAnalysis.lib.formats.libdcd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a><a class="headerlink" href="#low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd" title="Link to this heading"></a></h1>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">libdcd</span></code> contains the class <a class="reference internal" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="MDAnalysis.lib.formats.libdcd.DCDFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCDFile</span></code></a> to read and write frames of a
 DCD file. The class tries to behave similar to a normal file object.</p>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">libdcd</span></code> contains the classes <a class="reference internal" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="MDAnalysis.lib.formats.libdcd.DCDFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCDFile</span></code></a>, which can be used to read
@@ -170,7 +182,7 @@ from VMD’s <a class="reference external" href="http://www.ks.uiuc.edu/Research
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.formats.libdcd.</span></span><span class="sig-name descname"><span class="pre">DCDFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.formats.libdcd.</span></span><span class="sig-name descname"><span class="pre">DCDFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="Link to this definition"></a></dt>
 <dd><p>File like wrapper for DCD files</p>
 <p>This class can be similar to the normal file objects in python. The read()
 function will return a frame and all information in it instead of a single
@@ -207,7 +219,7 @@ unitcell information in DCD on the <a class="reference external" href="https://g
 The pickle will store filename, mode, current frame</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield">
-<span class="sig-name descname"><span class="pre">charmm_bitfield</span></span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">charmm_bitfield</span></span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield" title="Link to this definition"></a></dt>
 <dd><p>This DCDFile reader can process files written by different MD simulation
 programs. For files produced by CHARMM or other programs that follow
 the same convention we are reading a special CHARMM bitfield that
@@ -223,13 +235,13 @@ the dcd. The bit flags are:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.close" title="Link to this definition"></a></dt>
 <dd><p>Close the open DCD file</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.header">
-<span class="sig-name descname"><span class="pre">header</span></span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.header" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">header</span></span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.header" title="Link to this definition"></a></dt>
 <dd><p>returns: * <em>dict of header values needed to write new dcd.</em>
 * <strong>natoms</strong> (<em>number of atoms</em>)
 * <strong>istart</strong> (<em>starting frame number</em>)
@@ -241,7 +253,7 @@ the dcd. The bit flags are:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.open" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.open" title="Link to this definition"></a></dt>
 <dd><p>Open a DCD file</p>
 <p>If another DCD file is currently opened it will be closed</p>
 <dl class="field-list simple">
@@ -253,7 +265,7 @@ the dcd. The bit flags are:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.read" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.read" title="Link to this definition"></a></dt>
 <dd><p>Read next dcd frame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -271,7 +283,7 @@ for possible post processing into a common unitcell data structure.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.readframes">
-<span class="sig-name descname"><span class="pre">readframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.readframes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">readframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.readframes" title="Link to this definition"></a></dt>
 <dd><p>read multiple frames at once</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -300,7 +312,7 @@ unitcell data structure.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.seek">
-<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.seek" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.seek" title="Link to this definition"></a></dt>
 <dd><p>Seek to Frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -311,7 +323,7 @@ unitcell data structure.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.tell">
-<span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.tell" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.tell" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>current frame (0-based)</p>
@@ -321,7 +333,7 @@ unitcell data structure.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write" title="Link to this definition"></a></dt>
 <dd><p>write one frame into DCD file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -335,7 +347,7 @@ unitcell data structure.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.write_header">
-<span class="sig-name descname"><span class="pre">write_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remarks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">istart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsavc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_periodic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write_header" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remarks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">istart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsavc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_periodic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write_header" title="Link to this definition"></a></dt>
 <dd><p>Write DCD header</p>
 <p>This function needs to be called before the first frame can be written.</p>
 <dl class="field-list simple">

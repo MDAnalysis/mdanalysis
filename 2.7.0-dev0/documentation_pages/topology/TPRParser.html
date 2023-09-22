@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.21. Gromacs portable run input TPR format parser &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -164,8 +176,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.topology.TPRParser"></span><section id="gromacs-portable-run-input-tpr-format-parser">
-<h1><span class="section-number">5.21. </span>Gromacs portable run input TPR format parser<a class="headerlink" href="#gromacs-portable-run-input-tpr-format-parser" title="Permalink to this heading"></a></h1>
+  <section id="gromacs-portable-run-input-tpr-format-parser">
+<span id="module-MDAnalysis.topology.TPRParser"></span><h1><span class="section-number">5.21. </span>Gromacs portable run input TPR format parser<a class="headerlink" href="#gromacs-portable-run-input-tpr-format-parser" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TPRParser</span></code></a> module allows reading of a
 <a class="reference external" href="http://www.gromacs.org">Gromacs</a> portable run input file (a <a class="reference external" href="http://manual.gromacs.org/current/online/tpr.html">TPR file</a>). Because
 the file format of the TPR file is changing rapidly, not all versions
@@ -173,7 +185,7 @@ are currently supported. The known working versions and the
 approximate Gromacs release numbers are listed in the table
 <a class="reference internal" href="#tpr-format-table"><span class="std std-ref">TPR format versions</span></a>.</p>
 <span id="tpr-format-table"></span><table class="docutils align-default" id="id4">
-<caption><span class="caption-text">TPR format versions and generations read by <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></code>.</span><a class="headerlink" href="#id4" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">TPR format versions and generations read by <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></code>.</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>TPX format</p></th>
 <th class="head"><p>TPX generation</p></th>
@@ -254,7 +266,7 @@ approximate Gromacs release numbers are listed in the table
 </tbody>
 </table>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id1" role="note">
+<aside class="footnote brackets" id="id1" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>*<span class="fn-bracket">]</span></span>
 <p>Files generated by the beta versions of Gromacs 2020 are NOT supported.
 See <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/2428">Issue 2428</a> for more details.</p>
@@ -283,20 +295,20 @@ combined bending-torsion potentials (type 11), tabulated dihedral (type 8)</p></
 <li><p>impropers: improper dihedrals (type 2), periodic improper dihedrals (type 4)</p></li>
 </ul>
 <section id="classes">
-<h2><span class="section-number">5.21.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">5.21.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.TPRParser.</span></span><span class="sig-name descname"><span class="pre">TPRParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.TPRParser.</span></span><span class="sig-name descname"><span class="pre">TPRParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser" title="Link to this definition"></a></dt>
 <dd><p>Read topology information from a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://manual.gromacs.org/current/online/tpr.html">TPR file</a>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -319,7 +331,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -342,7 +354,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -368,7 +380,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -394,7 +406,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -422,7 +434,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -449,7 +461,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -472,7 +484,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -495,7 +507,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.parse">
-<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tpr_resid_from_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.parse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tpr_resid_from_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.parse" title="Link to this definition"></a></dt>
 <dd><p>Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -521,7 +533,7 @@ resids are indexed from 0 or 1. Default <code class="docutils literal notranslat
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -534,7 +546,7 @@ resids are indexed from 0 or 1. Default <code class="docutils literal notranslat
 </div>
 </section>
 <section id="development-notes">
-<h2><span class="section-number">5.21.2. </span>Development notes<a class="headerlink" href="#development-notes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">5.21.2. </span>Development notes<a class="headerlink" href="#development-notes" title="Link to this heading"></a></h2>
 <p>The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:</p>
 <ul class="simple">

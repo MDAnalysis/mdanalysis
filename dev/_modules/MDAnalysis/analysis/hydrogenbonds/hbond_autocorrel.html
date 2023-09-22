@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -350,7 +362,9 @@
 <span class="k">del</span> <span class="n">Doi</span>
 
 
-<div class="viewcode-block" id="find_hydrogen_donors"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">[docs]</a><span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="find_hydrogen_donors">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">[docs]</a>
+<span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the donor atom for each hydrogen</span>
 
@@ -370,7 +384,10 @@
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="HydrogenBondAutoCorrel"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HydrogenBondAutoCorrel">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a>
+<span class="k">class</span> <span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a time autocorrelation of the hydrogen bonds in the system.</span>
 
 <span class="sd">    Parameters</span>
@@ -507,7 +524,9 @@
                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">req_frames</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="HydrogenBondAutoCorrel.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAutoCorrel.run">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run all the required passes</span>
 
 <span class="sd">        Parameters</span>
@@ -547,6 +566,7 @@
             <span class="nb">len</span><span class="p">(</span><span class="n">main_results</span><span class="p">),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_results</span></div>
+
 
     <span class="k">def</span> <span class="nf">_single_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a single pass of the trajectory&quot;&quot;&quot;</span>
@@ -616,7 +636,9 @@
 
         <span class="k">return</span> <span class="n">results</span>
 
-<div class="viewcode-block" id="HydrogenBondAutoCorrel.solve"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAutoCorrel.solve">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">[docs]</a>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit results to an multi exponential decay and integrate to find</span>
 <span class="sd">        characteristic time</span>
 
@@ -735,10 +757,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Solution to results not found&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&lt;MDAnalysis HydrogenBondAutoCorrel analysis measuring the &quot;</span>
                 <span class="s2">&quot;</span><span class="si">{btype}</span><span class="s2"> lifetime of </span><span class="si">{n}</span><span class="s2"> different hydrogens&gt;&quot;</span>
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">btype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">)))</span></div>
+
 </pre></div>
 
            </div>

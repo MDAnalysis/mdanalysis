@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -324,7 +336,9 @@
     <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="discrete_kullback_leibler_divergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence">[docs]</a><span class="k">def</span> <span class="nf">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
+<div class="viewcode-block" id="discrete_kullback_leibler_divergence">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence">[docs]</a>
+<span class="k">def</span> <span class="nf">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Kullback-Leibler divergence between discrete probability distribution.</span>
 <span class="sd">    Notice that since this measure is not symmetric ::</span>
 <span class="sd">    :math:`d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)`</span>
@@ -348,8 +362,11 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xlogy</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pA</span> <span class="o">/</span> <span class="n">pB</span><span class="p">))</span></div>
 
 
+
 <span class="c1"># discrete dJS</span>
-<div class="viewcode-block" id="discrete_jensen_shannon_divergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence">[docs]</a><span class="k">def</span> <span class="nf">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
+<div class="viewcode-block" id="discrete_jensen_shannon_divergence">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence">[docs]</a>
+<span class="k">def</span> <span class="nf">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Jensen-Shannon divergence between discrete probability distributions.</span>
 
 <span class="sd">    Parameters</span>
@@ -371,8 +388,11 @@
                   <span class="n">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pB</span><span class="p">,</span> <span class="p">(</span><span class="n">pA</span> <span class="o">+</span> <span class="n">pB</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">))</span></div>
 
 
+
 <span class="c1"># calculate harmonic similarity</span>
-<div class="viewcode-block" id="harmonic_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.harmonic_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span>
+<div class="viewcode-block" id="harmonic_ensemble_similarity">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.harmonic_ensemble_similarity">[docs]</a>
+<span class="k">def</span> <span class="nf">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span>
                                  <span class="n">sigma2</span><span class="p">,</span>
                                  <span class="n">x1</span><span class="p">,</span>
                                  <span class="n">x2</span><span class="p">):</span>
@@ -422,7 +442,10 @@
     <span class="k">return</span> <span class="n">d_hes</span></div>
 
 
-<div class="viewcode-block" id="clustering_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
+
+<div class="viewcode-block" id="clustering_ensemble_similarity">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">[docs]</a>
+<span class="k">def</span> <span class="nf">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
                                    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clustering ensemble similarity: calculate the probability densities from</span>
 <span class="sd">     the clusters and calculate discrete Jensen-Shannon divergence.</span>
@@ -474,7 +497,10 @@
     <span class="k">return</span> <span class="n">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cumulative_clustering_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">cumulative_clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
+
+<div class="viewcode-block" id="cumulative_clustering_ensemble_similarity">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity">[docs]</a>
+<span class="k">def</span> <span class="nf">cumulative_clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
                                               <span class="n">ens1_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens2_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate clustering ensemble similarity between joined ensembles.</span>
@@ -530,7 +556,10 @@
     <span class="k">return</span> <span class="n">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="gen_kde_pdfs"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs">[docs]</a><span class="k">def</span> <span class="nf">gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
+
+<div class="viewcode-block" id="gen_kde_pdfs">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs">[docs]</a>
+<span class="k">def</span> <span class="nf">gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
                  <span class="n">nsamples</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
@@ -591,7 +620,10 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dimred_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kde1</span><span class="p">,</span> <span class="n">resamples1</span><span class="p">,</span> <span class="n">kde2</span><span class="p">,</span> <span class="n">resamples2</span><span class="p">,</span>
+
+<div class="viewcode-block" id="dimred_ensemble_similarity">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">[docs]</a>
+<span class="k">def</span> <span class="nf">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kde1</span><span class="p">,</span> <span class="n">resamples1</span><span class="p">,</span> <span class="n">kde2</span><span class="p">,</span> <span class="n">resamples2</span><span class="p">,</span>
                                <span class="n">ln_P1_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">ln_P1P2_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P1P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Jensen-Shannon divergence according the Dimensionality</span>
@@ -678,7 +710,10 @@
         <span class="n">ln_P1_exp_P1</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P1</span> <span class="o">+</span> <span class="n">ln_P2_exp_P2</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cumulative_gen_kde_pdfs"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs">[docs]</a><span class="k">def</span> <span class="nf">cumulative_gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
+
+<div class="viewcode-block" id="cumulative_gen_kde_pdfs">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs">[docs]</a>
+<span class="k">def</span> <span class="nf">cumulative_gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
                             <span class="n">nsamples</span><span class="p">,</span> <span class="n">ens_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens_id_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
@@ -752,7 +787,10 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="write_output"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.write_output">[docs]</a><span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">base_fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+
+<div class="viewcode-block" id="write_output">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.write_output">[docs]</a>
+<span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">base_fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
                  <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;dat&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write output matrix with a nice format, to stdout and optionally a file.</span>
@@ -786,7 +824,10 @@
     <span class="n">matrix</span><span class="o">.</span><span class="n">square_print</span><span class="p">(</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="prepare_ensembles_for_convergence_increasing_window"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">[docs]</a><span class="k">def</span> <span class="nf">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
+
+<div class="viewcode-block" id="prepare_ensembles_for_convergence_increasing_window">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">[docs]</a>
+<span class="k">def</span> <span class="nf">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
                                                         <span class="n">window_size</span><span class="p">,</span>
                                                         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -840,7 +881,10 @@
     <span class="k">return</span> <span class="n">tmp_ensembles</span></div>
 
 
-<div class="viewcode-block" id="hes"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.hes">[docs]</a><span class="k">def</span> <span class="nf">hes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+
+<div class="viewcode-block" id="hes">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.hes">[docs]</a>
+<span class="k">def</span> <span class="nf">hes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
         <span class="n">cov_estimator</span><span class="o">=</span><span class="s2">&quot;shrinkage&quot;</span><span class="p">,</span>
         <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span>
@@ -1076,7 +1120,10 @@
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
 
 
-<div class="viewcode-block" id="ces"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces">[docs]</a><span class="k">def</span> <span class="nf">ces</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+
+<div class="viewcode-block" id="ces">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces">[docs]</a>
+<span class="k">def</span> <span class="nf">ces</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
         <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
             <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
@@ -1342,7 +1389,10 @@
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
 
 
-<div class="viewcode-block" id="dres"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres">[docs]</a><span class="k">def</span> <span class="nf">dres</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+
+<div class="viewcode-block" id="dres">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres">[docs]</a>
+<span class="k">def</span> <span class="nf">dres</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
          <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
          <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
              <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
@@ -1608,7 +1658,10 @@
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
 
 
-<div class="viewcode-block" id="ces_convergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces_convergence">[docs]</a><span class="k">def</span> <span class="nf">ces_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
+
+<div class="viewcode-block" id="ces_convergence">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces_convergence">[docs]</a>
+<span class="k">def</span> <span class="nf">ces_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
                     <span class="n">window_size</span><span class="p">,</span>
                     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
                     <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
@@ -1708,7 +1761,10 @@
     <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="dres_convergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres_convergence">[docs]</a><span class="k">def</span> <span class="nf">dres_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
+
+<div class="viewcode-block" id="dres_convergence">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres_convergence">[docs]</a>
+<span class="k">def</span> <span class="nf">dres_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
                      <span class="n">window_size</span><span class="p">,</span>
                      <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
                      <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> \
@@ -1821,6 +1877,7 @@
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">out</span></div>
+
 </pre></div>
 
            </div>

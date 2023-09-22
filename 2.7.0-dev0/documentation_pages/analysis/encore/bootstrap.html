@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
@@ -158,8 +170,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.encore.bootstrap"></span><section id="bootstrap-procedures-mdanalysis-analysis-ensemble-bootstrap">
-<h1><span class="section-number">4.2.7.1.6. </span>bootstrap procedures — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.ensemble.bootstrap</span></code><a class="headerlink" href="#bootstrap-procedures-mdanalysis-analysis-ensemble-bootstrap" title="Permalink to this heading"></a></h1>
+  <section id="bootstrap-procedures-mdanalysis-analysis-ensemble-bootstrap">
+<span id="module-MDAnalysis.analysis.encore.bootstrap"></span><h1><span class="section-number">4.2.7.1.6. </span>bootstrap procedures — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.ensemble.bootstrap</span></code><a class="headerlink" href="#bootstrap-procedures-mdanalysis-analysis-ensemble-bootstrap" title="Link to this heading"></a></h1>
 <p>The module contains functions for bootstrapping either ensembles (Universe
 objects) or distance matrices, by resampling with replacement.</p>
 <dl class="field-list simple">
@@ -173,7 +185,7 @@ objects) or distance matrices, by resampling with replacement.</p>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.bootstrap.bootstrapped_matrix">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.bootstrap.</span></span><span class="sig-name descname"><span class="pre">bootstrapped_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#bootstrapped_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.bootstrapped_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.bootstrap.</span></span><span class="sig-name descname"><span class="pre">bootstrapped_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#bootstrapped_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.bootstrapped_matrix" title="Link to this definition"></a></dt>
 <dd><p>Bootstrap an input square matrix. The resulting matrix will have the same
 shape as the original one, but the order of its elements will be drawn
 (with repetition). Separately bootstraps each ensemble.</p>
@@ -195,7 +207,7 @@ shape as the original one, but the order of its elements will be drawn
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.bootstrap.</span></span><span class="sig-name descname"><span class="pre">get_distance_matrix_bootstrap_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#get_distance_matrix_bootstrap_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.bootstrap.</span></span><span class="sig-name descname"><span class="pre">get_distance_matrix_bootstrap_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#get_distance_matrix_bootstrap_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples" title="Link to this definition"></a></dt>
 <dd><p>Calculates distance matrices corresponding to bootstrapped ensembles, by
 resampling with replacement.</p>
 <dl class="field-list simple">
@@ -219,7 +231,7 @@ ensembles are bootstrapped independently)</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.bootstrap.</span></span><span class="sig-name descname"><span class="pre">get_ensemble_bootstrap_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#get_ensemble_bootstrap_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.bootstrap.</span></span><span class="sig-name descname"><span class="pre">get_ensemble_bootstrap_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#get_ensemble_bootstrap_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples" title="Link to this definition"></a></dt>
 <dd><p>Generates a bootstrapped ensemble by resampling with replacement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

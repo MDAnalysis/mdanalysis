@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7.1.2. Clustering &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
@@ -159,9 +171,9 @@
            <div itemprop="articleBody">
              
   <section id="module-MDAnalysis.analysis.encore.clustering.cluster">
-<span id="clustering"></span><h1><span class="section-number">4.2.7.1.2. </span>Clustering<a class="headerlink" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="Permalink to this heading"></a></h1>
+<span id="clustering"></span><h1><span class="section-number">4.2.7.1.2. </span>Clustering<a class="headerlink" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="Link to this heading"></a></h1>
 <section id="clustering-frontend-mdanalysis-analysis-encore-clustering-cluster">
-<h2><span class="section-number">4.2.7.1.2.1. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="MDAnalysis.analysis.encore.clustering.cluster"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.cluster</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-cluster" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.7.1.2.1. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="MDAnalysis.analysis.encore.clustering.cluster"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.cluster</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-cluster" title="Link to this heading"></a></h2>
 <p>The module defines a function serving as front-end for various clustering
 algorithms, wrapping them to allow them to be used interchangably.</p>
 <dl class="field-list simple">
@@ -175,7 +187,7 @@ algorithms, wrapping them to allow them to be used interchangably.</p>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.cluster.cluster">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.cluster.</span></span><span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/cluster.html#cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.cluster.cluster" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.cluster.</span></span><span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/cluster.html#cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.cluster.cluster" title="Link to this definition"></a></dt>
 <dd><p>Cluster frames from one or more ensembles, using one or more
 clustering methods. The function optionally takes pre-calculated distances
 matrices as an argument. Note that not all clustering procedure can work
@@ -267,8 +279,8 @@ members of the two first clusters</p>
 </div>
 </dd></dl>
 
-<span class="target" id="module-MDAnalysis.analysis.encore.clustering.ClusterCollection"></span><section id="cluster-representation-mdanalysis-analysis-encore-clustering-clustercollection">
-<h2><span class="section-number">4.2.7.1.2.2. </span>Cluster representation — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusterCollection" title="MDAnalysis.analysis.encore.clustering.ClusterCollection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection</span></code></a><a class="headerlink" href="#cluster-representation-mdanalysis-analysis-encore-clustering-clustercollection" title="Permalink to this heading"></a></h2>
+<section id="cluster-representation-mdanalysis-analysis-encore-clustering-clustercollection">
+<span id="module-MDAnalysis.analysis.encore.clustering.ClusterCollection"></span><h2><span class="section-number">4.2.7.1.2.2. </span>Cluster representation — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusterCollection" title="MDAnalysis.analysis.encore.clustering.ClusterCollection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection</span></code></a><a class="headerlink" href="#cluster-representation-mdanalysis-analysis-encore-clustering-clustercollection" title="Link to this heading"></a></h2>
 <p>The module contains the Cluster and ClusterCollection classes which are
 designed to store results from clustering algorithms.</p>
 <dl class="field-list simple">
@@ -282,11 +294,11 @@ designed to store results from clustering algorithms.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection.</span></span><span class="sig-name descname"><span class="pre">Cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#Cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection.</span></span><span class="sig-name descname"><span class="pre">Cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centroid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#Cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster" title="Link to this definition"></a></dt>
 <dd><p>Generic Cluster class for clusters with centroids.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.id">
-<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.id" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.id" title="Link to this definition"></a></dt>
 <dd><p>Cluster ID number. Useful for the ClustersCollection class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -297,7 +309,7 @@ designed to store results from clustering algorithms.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.metadata" title="Link to this definition"></a></dt>
 <dd><p>dict of lists or numpy.array, containing metadata for the cluster
 elements. The iterable must return the same number of elements as
 those that belong to the cluster.</p>
@@ -310,7 +322,7 @@ those that belong to the cluster.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.size">
-<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.size" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.size" title="Link to this definition"></a></dt>
 <dd><p>number of elements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -321,7 +333,7 @@ those that belong to the cluster.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.centroid">
-<span class="sig-name descname"><span class="pre">centroid</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.centroid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">centroid</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.centroid" title="Link to this definition"></a></dt>
 <dd><p>cluster centroid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -332,7 +344,7 @@ those that belong to the cluster.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.elements">
-<span class="sig-name descname"><span class="pre">elements</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.elements" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">elements</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster.elements" title="Link to this definition"></a></dt>
 <dd><p>array containing the cluster elements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -360,13 +372,13 @@ must have the same length as the elements array.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection.</span></span><span class="sig-name descname"><span class="pre">ClusterCollection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#ClusterCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection.</span></span><span class="sig-name descname"><span class="pre">ClusterCollection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#ClusterCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection" title="Link to this definition"></a></dt>
 <dd><p>Clusters collection class; this class represents the results of a full
 clustering run. It stores a group of clusters defined as
 encore.clustering.Cluster objects.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.clusters">
-<span class="sig-name descname"><span class="pre">clusters</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.clusters" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">clusters</span></span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.clusters" title="Link to this definition"></a></dt>
 <dd><p>list of of Cluster objects which are part of the Cluster collection</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -400,7 +412,7 @@ size as the elements array, with one value per element.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_centroids">
-<span class="sig-name descname"><span class="pre">get_centroids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#ClusterCollection.get_centroids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_centroids" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_centroids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#ClusterCollection.get_centroids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_centroids" title="Link to this definition"></a></dt>
 <dd><p>Get the centroids of the clusters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -415,7 +427,7 @@ size as the elements array, with one value per element.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_ids">
-<span class="sig-name descname"><span class="pre">get_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#ClusterCollection.get_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_ids" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html#ClusterCollection.get_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_ids" title="Link to this definition"></a></dt>
 <dd><p>Get the ID numbers of the clusters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -430,8 +442,8 @@ size as the elements array, with one value per element.</p></li>
 
 </dd></dl>
 
-<span class="target" id="module-MDAnalysis.analysis.encore.clustering.ClusteringMethod"></span><section id="clustering-frontend-mdanalysis-analysis-encore-clustering-clusteringmethod">
-<h2><span class="section-number">4.2.7.1.2.3. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-clusteringmethod" title="Permalink to this heading"></a></h2>
+<section id="clustering-frontend-mdanalysis-analysis-encore-clustering-clusteringmethod">
+<span id="module-MDAnalysis.analysis.encore.clustering.ClusteringMethod"></span><h2><span class="section-number">4.2.7.1.2.3. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-clusteringmethod" title="Link to this heading"></a></h2>
 <p>The module defines classes for interfacing to various clustering algorithms.
 One has been implemented natively, and will always be available, while
 others are available only if scikit-learn is installed</p>
@@ -446,7 +458,7 @@ others are available only if scikit-learn is installed</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">AffinityPropagation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#AffinityPropagation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagation" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">AffinityPropagation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#AffinityPropagation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagation" title="Link to this definition"></a></dt>
 <dd><p>Interface to the Affinity propagation clustering procedure implemented
 in sklearn.</p>
 <dl class="field-list simple">
@@ -471,7 +483,7 @@ clustering.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">AffinityPropagationNative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#AffinityPropagationNative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">AffinityPropagationNative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#AffinityPropagationNative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative" title="Link to this definition"></a></dt>
 <dd><p>Interface to the natively implemented Affinity propagation procedure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -496,13 +508,13 @@ clustering.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusteringMethod.ClusteringMethod">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">ClusteringMethod</span></span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#ClusteringMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.ClusteringMethod" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">ClusteringMethod</span></span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#ClusteringMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.ClusteringMethod" title="Link to this definition"></a></dt>
 <dd><p>Base class for any Clustering Method</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusteringMethod.DBSCAN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">DBSCAN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#DBSCAN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.DBSCAN" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">DBSCAN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#DBSCAN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.DBSCAN" title="Link to this definition"></a></dt>
 <dd><p>Interface to the DBSCAN clustering procedure implemented in sklearn.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -530,7 +542,7 @@ Note that weights are absolute, and default to 1.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">KMeans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'k-means++'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#KMeans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">KMeans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'k-means++'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#KMeans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -567,7 +579,7 @@ the data mean.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans.accepts_distance_matrix">
-<span class="sig-name descname"><span class="pre">accepts_distance_matrix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans.accepts_distance_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">accepts_distance_matrix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans.accepts_distance_matrix" title="Link to this definition"></a></dt>
 <dd><p>Interface to the KMeans clustering procedure implemented in sklearn.</p>
 </dd></dl>
 
@@ -575,15 +587,15 @@ the data mean.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.ClusteringMethod.encode_centroid_info">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">encode_centroid_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_centers_indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#encode_centroid_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.encode_centroid_info" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod.</span></span><span class="sig-name descname"><span class="pre">encode_centroid_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clusters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_centers_indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html#encode_centroid_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.ClusteringMethod.encode_centroid_info" title="Link to this definition"></a></dt>
 <dd><p>Adjust cluster indices to include centroid information
 as described in documentation for ClusterCollection</p>
 </dd></dl>
 
 <section id="clustering-algorithms">
-<h2><span class="section-number">4.2.7.1.2.4. </span>Clustering algorithms<a class="headerlink" href="#clustering-algorithms" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.7.1.2.4. </span>Clustering algorithms<a class="headerlink" href="#clustering-algorithms" title="Link to this heading"></a></h2>
 <p>The following clustering algorithms are always available:</p>
-<span class="target" id="module-MDAnalysis.analysis.encore.clustering.affinityprop"></span><p>Cython wrapper for the C implementation of the Affinity Perturbation clustering algorithm.</p>
+<p id="module-MDAnalysis.analysis.encore.clustering.affinityprop">Cython wrapper for the C implementation of the Affinity Perturbation clustering algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
@@ -591,7 +603,7 @@ as described in documentation for ClusterCollection</p>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.affinityprop.</span></span><span class="sig-name descname"><span class="pre">AffinityPropagation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.clustering.affinityprop.</span></span><span class="sig-name descname"><span class="pre">AffinityPropagation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.affinityprop.AffinityPropagation" title="Link to this definition"></a></dt>
 <dd><p>Affinity propagation clustering algorithm. This class is a Cython wrapper around the Affinity propagation algorithm, which is implement as a C library (see ap.c). The implemented algorithm is described in the paper:</p>
 <p>Clustering by Passing Messages Between Data Points.
 Brendan J. Frey and Delbert Dueck, University of Toronto

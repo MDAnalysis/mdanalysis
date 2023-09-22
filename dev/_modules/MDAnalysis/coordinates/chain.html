@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -287,7 +299,9 @@
                                   <span class="s2">&quot;supported for formats: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">allowed</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="ChainReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader">[docs]</a><span class="k">class</span> <span class="nc">ChainReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader">[docs]</a>
+<span class="k">class</span> <span class="nc">ChainReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader that concatenates multiple trajectories on the fly.</span>
 
 <span class="sd">    The :class:`ChainReader` is used by MDAnalysis internally to</span>
@@ -510,7 +524,9 @@
                 <span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span> <span class="ow">and</span>
                 <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">isstream</span><span class="p">(</span><span class="n">thing</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ChainReader._get_local_frame"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get_local_frame">[docs]</a>    <span class="k">def</span> <span class="nf">_get_local_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<div class="viewcode-block" id="ChainReader._get_local_frame">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get_local_frame">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_local_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find trajectory index and trajectory frame for chained frame `k`.</span>
 
 <span class="sd">        Parameters</span>
@@ -551,6 +567,7 @@
         <span class="n">f</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span></div>
 
+
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1">#  save ts temporarily otherwise it will be changed during rewinding.</span>
@@ -571,17 +588,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span>
 
     <span class="c1"># methods that can change with the current reader</span>
-<div class="viewcode-block" id="ChainReader.convert_time_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_time_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainReader.convert_time_from_native">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_time_from_native">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_reader</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ChainReader.convert_time_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_time_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChainReader.convert_time_to_native">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_time_to_native">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_reader</span><span class="o">.</span><span class="n">convert_time_to_native</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ChainReader.convert_pos_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_pos_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChainReader.convert_pos_from_native">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_pos_from_native">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_reader</span><span class="o">.</span><span class="n">convert_from_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ChainReader.convert_pos_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_pos_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChainReader.convert_pos_to_native">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_pos_to_native">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_reader</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
 
     <span class="c1"># attributes that can change with the current reader</span>
     <span class="c1"># TODO: check that skip_timestep is still supported in all readers</span>
@@ -627,15 +656,23 @@
         <span class="n">trajindex</span><span class="p">,</span> <span class="n">subframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_times</span><span class="p">[:</span><span class="n">trajindex</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">subframe</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="p">[</span><span class="n">trajindex</span><span class="p">]</span>
 
-<div class="viewcode-block" id="ChainReader._apply"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._apply">[docs]</a>    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainReader._apply">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._apply">[docs]</a>
+    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute `method` with `kwargs` for all readers.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">reader</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ChainReader._get"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get">[docs]</a>    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChainReader._get">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get value of `attr` for all readers.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">reader</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ChainReader._get_same"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get_same">[docs]</a>    <span class="k">def</span> <span class="nf">_get_same</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChainReader._get_same">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get_same">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_same</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify that `attr` has the same value for all readers and return value.</span>
 
 <span class="sd">        Parameters</span>
@@ -661,6 +698,7 @@
                              <span class="s2">&quot; (</span><span class="si">{1}</span><span class="s2">):</span><span class="se">\n</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">bad_traj</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">value</span></div>
 
+
     <span class="k">def</span> <span class="nf">__activate_reader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Make reader `i` the active reader.&quot;&quot;&quot;</span>
         <span class="c1"># private method, not to be used by user to avoid a total mess</span>
@@ -674,7 +712,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reader instance from which frames are currently being read.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span><span class="p">]</span>
 
-<div class="viewcode-block" id="ChainReader._read_frame"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._read_frame">[docs]</a>    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainReader._read_frame">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._read_frame">[docs]</a>
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Position trajectory at frame index `frame` and</span>
 <span class="sd">        return :class:`~MDAnalysis.coordinates.timestep.Timestep`.</span>
 
@@ -702,6 +742,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="n">frame</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span></div>
 
+
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
@@ -721,8 +762,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="s1">&#39;rewind&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ChainReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainReader.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
@@ -737,6 +781,7 @@
                     <span class="n">fname</span><span class="o">=</span><span class="n">fnames</span><span class="p">,</span>
                     <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
                     <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

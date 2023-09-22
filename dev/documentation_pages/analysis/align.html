@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.1. Coordinate fitting and alignment — MDAnalysis.analysis.align &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -160,8 +172,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.align"></span><section id="coordinate-fitting-and-alignment-mdanalysis-analysis-align">
-<h1><span class="section-number">4.2.1. </span>Coordinate fitting and alignment — <a class="reference internal" href="#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a><a class="headerlink" href="#coordinate-fitting-and-alignment-mdanalysis-analysis-align" title="Permalink to this heading"></a></h1>
+  <section id="coordinate-fitting-and-alignment-mdanalysis-analysis-align">
+<span id="module-MDAnalysis.analysis.align"></span><h1><span class="section-number">4.2.1. </span>Coordinate fitting and alignment — <a class="reference internal" href="#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a><a class="headerlink" href="#coordinate-fitting-and-alignment-mdanalysis-analysis-align" title="Link to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Oliver Beckstein, Joshua Adelman</p>
@@ -196,7 +208,7 @@ manually and explains the intermediate steps.</p>
 </dl>
 </div>
 <section id="rms-fitting-tutorial">
-<span id="id3"></span><h2><span class="section-number">4.2.1.1. </span>RMS-fitting tutorial<a class="headerlink" href="#rms-fitting-tutorial" title="Permalink to this heading"></a></h2>
+<span id="id3"></span><h2><span class="section-number">4.2.1.1. </span>RMS-fitting tutorial<a class="headerlink" href="#rms-fitting-tutorial" title="Link to this heading"></a></h2>
 <p>The example uses files provided as part of the MDAnalysis test suite
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">PSF</span></code>,
 <code class="xref py py-data docutils literal notranslate"><span class="pre">DCD</span></code>, and
@@ -257,7 +269,7 @@ function</p>
 </div>
 </section>
 <section id="common-usage">
-<h2><span class="section-number">4.2.1.2. </span>Common usage<a class="headerlink" href="#common-usage" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.1.2. </span>Common usage<a class="headerlink" href="#common-usage" title="Link to this heading"></a></h2>
 <p>To <strong>fit a single structure</strong> with <a class="reference internal" href="#MDAnalysis.analysis.align.alignto" title="MDAnalysis.analysis.align.alignto"><code class="xref py py-func docutils literal notranslate"><span class="pre">alignto()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">PDB_small</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mobile</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>     <span class="c1"># we use the first frame</span>
@@ -290,7 +302,7 @@ function and then feed the resulting dictionary to <a class="reference internal"
 <p>(See the documentation of the functions for this advanced usage.)</p>
 </section>
 <section id="functions-and-classes">
-<h2><span class="section-number">4.2.1.3. </span>Functions and Classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.1.3. </span>Functions and Classes<a class="headerlink" href="#functions-and-classes" title="Link to this heading"></a></h2>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.10.0: </span>Function <a class="reference internal" href="rms.html#MDAnalysis.analysis.rms.rmsd" title="MDAnalysis.analysis.rms.rmsd"><code class="xref py py-func docutils literal notranslate"><span class="pre">rmsd()</span></code></a> was removed from
 this module and is now exclusively accessible as
@@ -305,7 +317,7 @@ in favor of <a class="reference internal" href="#MDAnalysis.analysis.align.Align
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.alignto">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">alignto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subselection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#alignto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">alignto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subselection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#alignto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Link to this definition"></a></dt>
 <dd><p>Perform a spatial superposition by minimizing the RMSD.</p>
 <p>Spatially align the group of atoms <cite>mobile</cite> to <cite>reference</cite> by
 doing a RMSD fit on <cite>select</cite> atoms.</p>
@@ -432,7 +444,7 @@ the old behavior was the equivalent of <code class="docutils literal notranslate
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AlignTraj">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">AlignTraj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rmsfit_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#AlignTraj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">AlignTraj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rmsfit_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#AlignTraj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj" title="Link to this definition"></a></dt>
 <dd><p>RMS-align trajectory to a reference structure using a selection.</p>
 <p>Both the reference <cite>reference</cite> and the trajectory <cite>mobile</cite> must be
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> instances. If they contain a trajectory then
@@ -475,7 +487,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AlignTraj.reference_atoms">
-<span class="sig-name descname"><span class="pre">reference_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.reference_atoms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reference_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.reference_atoms" title="Link to this definition"></a></dt>
 <dd><p>Atoms of the reference structure to be aligned against</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -486,7 +498,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AlignTraj.mobile_atoms">
-<span class="sig-name descname"><span class="pre">mobile_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.mobile_atoms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mobile_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.mobile_atoms" title="Link to this definition"></a></dt>
 <dd><p>Atoms inside each trajectory frame to be rmsd_aligned</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -497,7 +509,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AlignTraj.results.rmsd">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="Link to this definition"></a></dt>
 <dd><p>Array of the rmsd values of the least rmsd between the mobile_atoms
 and reference_atoms after superposition and minimimization of rmsd</p>
 <div class="versionadded">
@@ -512,7 +524,7 @@ and reference_atoms after superposition and minimimization of rmsd</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AlignTraj.rmsd">
-<span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.rmsd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.rmsd" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="MDAnalysis.analysis.align.AlignTraj.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -527,7 +539,7 @@ and reference_atoms after superposition and minimimization of rmsd</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AlignTraj.filename">
-<span class="sig-name descname"><span class="pre">filename</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.filename" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">filename</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.filename" title="Link to this definition"></a></dt>
 <dd><p>String reflecting the filename of the file where the aligned
 positions will be written to upon running RMSD alignment</p>
 <dl class="field-list simple">
@@ -575,7 +587,7 @@ removed. These should instead be passed to <code class="xref py py-meth docutils
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">AverageStructure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#AverageStructure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">AverageStructure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#AverageStructure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure" title="Link to this definition"></a></dt>
 <dd><p>RMS-align trajectory to a reference structure using a selection,
 and calculate the average coordinates of the trajectory.</p>
 <p>Both the reference <cite>reference</cite> and the trajectory <cite>mobile</cite> must be
@@ -627,7 +639,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.reference_atoms">
-<span class="sig-name descname"><span class="pre">reference_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.reference_atoms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reference_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.reference_atoms" title="Link to this definition"></a></dt>
 <dd><p>Atoms of the reference structure to be aligned against</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -638,7 +650,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.mobile_atoms">
-<span class="sig-name descname"><span class="pre">mobile_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.mobile_atoms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mobile_atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.mobile_atoms" title="Link to this definition"></a></dt>
 <dd><p>Atoms inside each trajectory frame to be rmsd_aligned</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -649,7 +661,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.results.universe">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">universe</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.universe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">universe</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.universe" title="Link to this definition"></a></dt>
 <dd><p>New Universe with average positions</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
@@ -663,7 +675,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.universe">
-<span class="sig-name descname"><span class="pre">universe</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.universe" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">universe</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.universe" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.universe" title="MDAnalysis.analysis.align.AverageStructure.results.universe"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.universe</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -678,7 +690,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.results.positions">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">positions</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.positions" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">positions</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.positions" title="Link to this definition"></a></dt>
 <dd><p>Average positions</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
@@ -692,7 +704,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.positions">
-<span class="sig-name descname"><span class="pre">positions</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.positions" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">positions</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.positions" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.positions" title="MDAnalysis.analysis.align.AverageStructure.results.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.positions</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -707,7 +719,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.results.rmsd">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.rmsd" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.rmsd" title="Link to this definition"></a></dt>
 <dd><p>Average RMSD per frame</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
@@ -721,7 +733,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.rmsd">
-<span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.rmsd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.rmsd" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.rmsd" title="MDAnalysis.analysis.align.AverageStructure.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -736,7 +748,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.AverageStructure.filename">
-<span class="sig-name descname"><span class="pre">filename</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.filename" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">filename</span></span><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.filename" title="Link to this definition"></a></dt>
 <dd><p>String reflecting the filename of the file where the average
 structure is written</p>
 <dl class="field-list simple">
@@ -768,7 +780,7 @@ stored in a <a class="reference internal" href="base.html#MDAnalysis.analysis.ba
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.rotation_matrix">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#rotation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.rotation_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#rotation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.rotation_matrix" title="Link to this definition"></a></dt>
 <dd><p>Returns the 3x3 rotation matrix <cite>R</cite> for RMSD fitting coordinate
 sets <cite>a</cite> and <cite>b</cite>.</p>
 <p>The rotation matrix <cite>R</cite> transforms vector <cite>a</cite> to overlap with
@@ -829,13 +841,13 @@ this needs to be done by the user.</p>
 
 </section>
 <section id="helper-functions">
-<h2><span class="section-number">4.2.1.4. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.1.4. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Link to this heading"></a></h2>
 <p>The following functions are used by the other functions in this
 module. They are probably of more interest to developers than to
 normal users.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align._fit_to">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">_fit_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mobile_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mobile_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#_fit_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align._fit_to" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">_fit_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mobile_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mobile_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mobile_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#_fit_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align._fit_to" title="Link to this definition"></a></dt>
 <dd><p>Perform an rmsd-fitting to determine rotation matrix and align atoms</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -879,7 +891,7 @@ rotation matrix and the centers according to</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.fasta2select">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">fasta2select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fastafilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_resids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_resids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alnfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">treefilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustalw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'clustalw2'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#fasta2select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.fasta2select" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">fasta2select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fastafilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_resids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_resids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alnfilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">treefilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustalw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'clustalw2'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#fasta2select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.fasta2select" title="Link to this definition"></a></dt>
 <dd><p>Return selection strings that will select equivalent residues.</p>
 <p>The function aligns two sequences provided in a FASTA file and
 constructs MDAnalysis selection strings of the common atoms. When
@@ -953,7 +965,7 @@ the current working directory.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.sequence_alignment">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">sequence_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.align.sequence_alignment" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">sequence_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.align.sequence_alignment" title="Link to this definition"></a></dt>
 <dd><p><cite>sequence_alignment</cite> is deprecated!</p>
 <p>Generate a global sequence alignment between two residue groups.</p>
 <p>The residues in <cite>reference</cite> and <cite>mobile</cite> will be globally aligned.
@@ -1025,7 +1037,7 @@ that can be used in your bioinformatics workflows.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.align.get_matching_atoms">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">get_matching_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ag2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#get_matching_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.get_matching_atoms" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.align.</span></span><span class="sig-name descname"><span class="pre">get_matching_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ag2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#get_matching_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.align.get_matching_atoms" title="Link to this definition"></a></dt>
 <dd><p>Return two atom groups with one-to-one matched atoms.</p>
 <p>The function takes two <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 instances <cite>ag1</cite> and <cite>ag2</cite> and returns two atom groups <cite>g1</cite> and <cite>g2</cite> that

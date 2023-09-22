@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.7.2.2. Mean Squared Displacement — MDAnalysis.analysis.msd &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -152,8 +164,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.msd"></span><section id="mean-squared-displacement-mdanalysis-analysis-msd">
-<h1><span class="section-number">4.7.2.2. </span>Mean Squared Displacement — <a class="reference internal" href="#module-MDAnalysis.analysis.msd" title="MDAnalysis.analysis.msd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a><a class="headerlink" href="#mean-squared-displacement-mdanalysis-analysis-msd" title="Permalink to this heading"></a></h1>
+  <section id="mean-squared-displacement-mdanalysis-analysis-msd">
+<span id="module-MDAnalysis.analysis.msd"></span><h1><span class="section-number">4.7.2.2. </span>Mean Squared Displacement — <a class="reference internal" href="#module-MDAnalysis.analysis.msd" title="MDAnalysis.analysis.msd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a><a class="headerlink" href="#mean-squared-displacement-mdanalysis-analysis-msd" title="Link to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Authors<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Hugo MacDermott-Opeskin</p>
@@ -205,7 +217,7 @@ convert coordinates to the unwrapped convention. In GROMACS for example,
 this can be done using <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">trjconv</span></code> with the <code class="docutils literal notranslate"><span class="pre">-pbc</span> <span class="pre">nojump</span></code> flag.</p>
 </div>
 <section id="computing-an-msd">
-<h2><span class="section-number">4.7.2.2.1. </span>Computing an MSD<a class="headerlink" href="#computing-an-msd" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.7.2.2.1. </span>Computing an MSD<a class="headerlink" href="#computing-an-msd" title="Link to this heading"></a></h2>
 <p>This example computes a 3D MSD for the movement of 100 particles undergoing a
 random walk. Files provided as part of the MDAnalysis test suite are used
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">RANDOM_WALK</span></code> and
@@ -271,7 +283,7 @@ as having a slope of 1.</p>
 a self-diffusivity.</p>
 </section>
 <section id="computing-self-diffusivity">
-<h2><span class="section-number">4.7.2.2.2. </span>Computing Self-Diffusivity<a class="headerlink" href="#computing-self-diffusivity" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.7.2.2.2. </span>Computing Self-Diffusivity<a class="headerlink" href="#computing-self-diffusivity" title="Link to this heading"></a></h2>
 <p>Self-diffusivity is closely related to the MSD.</p>
 <div class="math notranslate nohighlight">
 \[D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d})\]</div>
@@ -295,7 +307,7 @@ is used to demonstrate selection of a MSD segment.</p>
 <p>We have now computed a self-diffusivity!</p>
 </section>
 <section id="combining-multiple-replicates">
-<h2><span class="section-number">4.7.2.2.3. </span>Combining Multiple Replicates<a class="headerlink" href="#combining-multiple-replicates" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.7.2.2.3. </span>Combining Multiple Replicates<a class="headerlink" href="#combining-multiple-replicates" title="Link to this heading"></a></h2>
 <p>It is common practice to combine replicates when calculating MSDs. An example
 of this is shown below using MSD1 and MSD2.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u1</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">RANDOM_WALK_TOPO</span><span class="p">,</span> <span class="n">RANDOM_WALK</span><span class="p">)</span>
@@ -331,16 +343,17 @@ proving a problem, judicious use of the <code class="docutils literal notranslat
 to control which frames are incorporated may be required.</p>
 <p class="rubric">References</p>
 <div class="docutils container" id="id10">
-<aside class="footnote brackets" id="footcite-maginn2019" role="note">
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="footcite-maginn2019" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id6">2</a>,<a role="doc-backlink" href="#id9">3</a>)</span>
 <p>Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. <em>Living Journal of Computational Molecular Science</em>, 1(1):6324, Dec. 2018. URL: <a class="reference external" href="https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324">https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324</a>, <a class="reference external" href="https://doi.org/10.33011/livecoms.1.1.6324">doi:10.33011/livecoms.1.1.6324</a>.</p>
 </aside>
-<aside class="footnote brackets" id="footcite-yeh2004" role="note">
+<aside class="footnote brackets" id="footcite-yeh2004" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">2</a><span class="fn-bracket">]</span></span>
 <p>In-Chul Yeh and Gerhard Hummer. System-size dependence of diffusion coefficients and viscosities from molecular dynamics simulations with periodic boundary conditions. <em>The Journal of Physical Chemistry B</em>, 108(40):15873–15879, 2004. <a class="reference external" href="https://doi.org/10.1021/jp0477147">doi:10.1021/jp0477147</a>.</p>
 </aside>
-<aside class="footnote brackets" id="footcite-bulow2020" role="note">
+<aside class="footnote brackets" id="footcite-bulow2020" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">3</a><span class="fn-bracket">]</span></span>
 <p>Sören von Bülow, Jakob Tómas Bullerjahn, and Gerhard Hummer. Systematic errors in diffusion coefficients from long-time molecular dynamics simulations at constant pressure. <em>The Journal of Chemical Physics</em>, 153(2):021101, 2020. <a class="reference external" href="https://doi.org/10.1063/5.0008316">doi:10.1063/5.0008316</a>.</p>
 </aside>
@@ -348,10 +361,10 @@ to control which frames are incorporated may be required.</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">4.7.2.2.4. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.7.2.2.4. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.msd.</span></span><span class="sig-name descname"><span class="pre">EinsteinMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.msd.</span></span><span class="sig-name descname"><span class="pre">EinsteinMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Link to this definition"></a></dt>
 <dd><p>Class to calculate Mean Squared Displacement by the Einstein relation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -370,7 +383,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.dim_fac">
-<span class="sig-name descname"><span class="pre">dim_fac</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.dim_fac" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dim_fac</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.dim_fac" title="Link to this definition"></a></dt>
 <dd><p>Dimensionality <span class="math notranslate nohighlight">\(d\)</span> of the MSD.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -381,7 +394,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">timeseries</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">timeseries</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries" title="Link to this definition"></a></dt>
 <dd><p>The averaged MSD over all the particles with respect to lag-time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -392,7 +405,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">msds_by_particle</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">msds_by_particle</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle" title="Link to this definition"></a></dt>
 <dd><p>The MSD of each individual particle with respect to lag-time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -403,7 +416,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.ag">
-<span class="sig-name descname"><span class="pre">ag</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.ag" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ag</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.ag" title="Link to this definition"></a></dt>
 <dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> resulting from your selection</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -414,7 +427,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.n_frames">
-<span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.n_frames" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.n_frames" title="Link to this definition"></a></dt>
 <dd><p>Number of frames included in the analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -425,7 +438,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.n_particles">
-<span class="sig-name descname"><span class="pre">n_particles</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.n_particles" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">n_particles</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.n_particles" title="Link to this definition"></a></dt>
 <dd><p>Number of particles MSD was calculated over.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -452,7 +465,7 @@ The tidynamics package is required for <cite>fft=True</cite>.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.run" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.run" title="Link to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

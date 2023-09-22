@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>12.1.1. Streamplots (2D) — MDAnalysis.visualization.streamlines &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -138,8 +150,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.visualization.streamlines"></span><section id="streamplots-2d-mdanalysis-visualization-streamlines">
-<h1><span class="section-number">12.1.1. </span>Streamplots (2D)  — <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a><a class="headerlink" href="#streamplots-2d-mdanalysis-visualization-streamlines" title="Permalink to this heading"></a></h1>
+  <section id="streamplots-2d-mdanalysis-visualization-streamlines">
+<span id="module-MDAnalysis.visualization.streamlines"></span><h1><span class="section-number">12.1.1. </span>Streamplots (2D)  — <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a><a class="headerlink" href="#streamplots-2d-mdanalysis-visualization-streamlines" title="Link to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Authors<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Tyler Reddy and Matthieu Chavent</p>
@@ -164,7 +176,7 @@ use of multiple cores to perform the analyis in parallel (using
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.visualization.streamlines.generate_streamlines">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.visualization.streamlines.</span></span><span class="sig-name descname"><span class="pre">generate_streamlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_spacing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MDA_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_delta_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'maximum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/visualization/streamlines.html#generate_streamlines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.visualization.streamlines.generate_streamlines" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.visualization.streamlines.</span></span><span class="sig-name descname"><span class="pre">generate_streamlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_spacing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MDA_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_delta_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'maximum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/visualization/streamlines.html#generate_streamlines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.visualization.streamlines.generate_streamlines" title="Link to this definition"></a></dt>
 <dd><p>Produce the x and y components of a 2D streamplot data set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -224,7 +236,8 @@ cores)</p></li>
 <img alt="../../_images/testing_streamline.png" src="../../_images/testing_streamline.png" />
 <p class="rubric">References</p>
 <div class="docutils container" id="id2">
-<aside class="footnote brackets" id="footcite-chavent2014" role="note">
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="footcite-chavent2014" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Matthieu Chavent, Tyler Reddy, Joseph Goose, Anna Caroline E. Dahl, John E. Stone, Bruno Jobard, and Mark S. P. Sansom. Methodologies for the analysis of instantaneous lipid diffusion in md simulations of large membrane systems. <em>Faraday Discuss.</em>, 169:455–475, 2014. <a class="reference external" href="https://doi.org/10.1039/C3FD00145H">doi:10.1039/C3FD00145H</a>.</p>
 </aside>

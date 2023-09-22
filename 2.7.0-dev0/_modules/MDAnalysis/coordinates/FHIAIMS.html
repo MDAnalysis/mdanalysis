@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -245,7 +257,9 @@
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">mdamath</span>
 
 
-<div class="viewcode-block" id="FHIAIMSReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader">[docs]</a><span class="k">class</span> <span class="nc">FHIAIMSReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="FHIAIMSReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader">[docs]</a>
+<span class="k">class</span> <span class="nc">FHIAIMSReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for the FHIAIMS geometry format.</span>
 
 <span class="sd">       Single frame reader for the `FHI-AIMS`_ input file format.  Reads</span>
@@ -316,7 +330,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 0-based frame number</span>
 
-<div class="viewcode-block" id="FHIAIMSReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="FHIAIMSReader.Writer">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader.Writer">[docs]</a>
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a FHIAIMSWriter for *filename*.</span>
 
 <span class="sd">        Parameters</span>
@@ -331,10 +347,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
-        <span class="k">return</span> <span class="n">FHIAIMSWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">FHIAIMSWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="FHIAIMSWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter">[docs]</a><span class="k">class</span> <span class="nc">FHIAIMSWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FHIAIMSWriter">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter">[docs]</a>
+<span class="k">class</span> <span class="nc">FHIAIMSWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;FHI-AIMS Writer.</span>
 
 <span class="sd">       Single frame writer for the `FHI-AIMS`_ format.  Writes geometry (3D and</span>
@@ -441,6 +461,7 @@
                 <span class="k">if</span> <span class="n">has_velocities</span><span class="p">:</span>
                     <span class="n">output_fhiaims</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;vel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">vel</span><span class="o">=</span><span class="n">velocities</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]))</span></div>
+
 </pre></div>
 
            </div>

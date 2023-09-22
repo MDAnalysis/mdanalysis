@@ -26,11 +26,11 @@
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../../_static/js/versions.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -164,7 +176,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="Cluster"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster">[docs]</a><span class="k">class</span> <span class="nc">Cluster</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Cluster">
+<a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.Cluster">[docs]</a>
+<span class="k">class</span> <span class="nc">Cluster</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generic Cluster class for clusters with centroids.</span>
 
@@ -265,7 +279,10 @@
                                                                <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span>
                                                                <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ClusterCollection"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection">[docs]</a><span class="k">class</span> <span class="nc">ClusterCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ClusterCollection">
+<a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection">[docs]</a>
+<span class="k">class</span> <span class="nc">ClusterCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clusters collection class; this class represents the results of a full</span>
 <span class="sd">    clustering run. It stores a group of clusters defined as</span>
 <span class="sd">    encore.clustering.Cluster objects.</span>
@@ -337,7 +354,9 @@
 
             <span class="n">idn</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="ClusterCollection.get_ids"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ClusterCollection.get_ids">
+<a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_ids">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the ID numbers of the clusters</span>
 
@@ -349,7 +368,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clusters</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ClusterCollection.get_centroids"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_centroids">[docs]</a>    <span class="k">def</span> <span class="nf">get_centroids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ClusterCollection.get_centroids">
+<a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_centroids">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_centroids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the centroids of the clusters</span>
 
@@ -361,6 +383,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">centroid</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clusters</span><span class="p">]</span></div>
+
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -384,6 +407,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;&lt;ClusterCollection with </span><span class="si">{0}</span><span class="s2"> clusters&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                              <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clusters</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

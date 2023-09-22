@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -357,7 +369,9 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.contacts&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="soft_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.soft_cut_q">[docs]</a><span class="k">def</span> <span class="nf">soft_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">lambda_constant</span><span class="o">=</span><span class="mf">1.8</span><span class="p">):</span>
+<div class="viewcode-block" id="soft_cut_q">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.soft_cut_q">[docs]</a>
+<span class="k">def</span> <span class="nf">soft_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">lambda_constant</span><span class="o">=</span><span class="mf">1.8</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate fraction of native contacts *Q* for a soft cut off</span>
 
 <span class="sd">    The native contact function is defined as :footcite:p:`Best2013`</span>
@@ -394,7 +408,10 @@
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="hard_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.hard_cut_q">[docs]</a><span class="k">def</span> <span class="nf">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+
+<div class="viewcode-block" id="hard_cut_q">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.hard_cut_q">[docs]</a>
+<span class="k">def</span> <span class="nf">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate fraction of native contacts *Q* for a hard cut off.</span>
 
 <span class="sd">    The cutoff can either be a float or a :class:`~numpy.ndarray` of the same</span>
@@ -420,7 +437,10 @@
     <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">r</span><span class="o">.</span><span class="n">size</span></div>
 
 
-<div class="viewcode-block" id="radius_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.radius_cut_q">[docs]</a><span class="k">def</span> <span class="nf">radius_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+
+<div class="viewcode-block" id="radius_cut_q">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.radius_cut_q">[docs]</a>
+<span class="k">def</span> <span class="nf">radius_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;calculate native contacts *Q* based on the single distance radius.</span>
 
 <span class="sd">    Parameters</span>
@@ -441,7 +461,10 @@
     <span class="k">return</span> <span class="n">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="contact_matrix"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.contact_matrix">[docs]</a><span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="contact_matrix">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.contact_matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;calculate contacts from distance matrix</span>
 
 <span class="sd">    Parameters</span>
@@ -467,7 +490,10 @@
     <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="Contacts"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.Contacts">[docs]</a><span class="k">class</span> <span class="nc">Contacts</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Contacts">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.Contacts">[docs]</a>
+<span class="k">class</span> <span class="nc">Contacts</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate contacts based observables.</span>
 
 <span class="sd">    The standard methods used in this class calculate the fraction of native</span>
@@ -626,6 +652,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span></div>
 
 
+
 <span class="k">def</span> <span class="nf">_new_selections</span><span class="p">(</span><span class="n">u_orig</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;create stand alone AGs from selections at frame&quot;&quot;&quot;</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">u_orig</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">u_orig</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -633,7 +660,9 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selections</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="q1q2"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.q1q2">[docs]</a><span class="k">def</span> <span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
+<div class="viewcode-block" id="q1q2">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.q1q2">[docs]</a>
+<span class="k">def</span> <span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a q1-q2 analysis.</span>
 
 <span class="sd">    Compares native contacts between the starting structure and final structure</span>
@@ -665,6 +694,7 @@
     <span class="k">return</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span>
                     <span class="p">(</span><span class="n">first_frame_refs</span><span class="p">,</span> <span class="n">last_frame_refs</span><span class="p">),</span>
                     <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;radius_cut&#39;</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -238,7 +250,9 @@
     <span class="n">HAS_PYTNG</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="TNGReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader">[docs]</a><span class="k">class</span> <span class="nc">TNGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="TNGReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader">[docs]</a>
+<span class="k">class</span> <span class="nc">TNGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reader for the TNG format</span>
 
 <span class="sd">    The TNG format :footcite:p:`Lundborg2014` is a format used in `GROMACS`_ for</span>
@@ -398,11 +412,16 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_additional_blocks_to_read</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TNGReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TNGReader.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;close the reader&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TNGReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="TNGReader.parse_n_atoms">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.parse_n_atoms">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;parse the number of atoms in the TNG trajectory file</span>
 
@@ -422,6 +441,7 @@
         <span class="k">with</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tng</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">tng</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -632,7 +652,9 @@
         <span class="c1"># the file iterator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TNGReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TNGReader.Writer">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.Writer">[docs]</a>
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writer for TNG files</span>
 
 <span class="sd">        Raises</span>
@@ -641,7 +663,9 @@
 <span class="sd">            Currently there is not writer for TNG files pending implementation</span>
 <span class="sd">            upstream in pytng.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;There is currently no writer for TNG files&quot;</span><span class="p">)</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;There is currently no writer for TNG files&quot;</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

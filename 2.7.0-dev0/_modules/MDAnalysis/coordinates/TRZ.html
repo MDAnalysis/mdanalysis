@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -187,7 +199,9 @@
 <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span><span class="p">,</span> <span class="n">triclinic_vectors</span>
 
 
-<div class="viewcode-block" id="TRZReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader">[docs]</a><span class="k">class</span> <span class="nc">TRZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="TRZReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader">[docs]</a>
+<span class="k">class</span> <span class="nc">TRZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads an IBIsCO or YASP trajectory file</span>
 
 <span class="sd">    Attributes</span>
@@ -484,7 +498,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_trz_header</span><span class="p">()</span>  <span class="c1"># Moves to start of first frame</span>
 
-<div class="viewcode-block" id="TRZReader.open_trajectory"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TRZReader.open_trajectory">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.open_trajectory">[docs]</a>
+    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Open the trajectory file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s1">&#39;TRZ file already opened&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -499,20 +515,30 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span></div>
 
-<div class="viewcode-block" id="TRZReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TRZReader.Writer">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.Writer">[docs]</a>
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># guess that they want to write the whole timestep unless told otherwise?</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="k">return</span> <span class="n">TRZWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TRZReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TRZReader.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Close trz file if it was open&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="o">=</span> <span class="kc">None</span></div>
+</div>
 
 
-<div class="viewcode-block" id="TRZWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZWriter">[docs]</a><span class="k">class</span> <span class="nc">TRZWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TRZWriter">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZWriter">[docs]</a>
+<span class="k">class</span> <span class="nc">TRZWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Writes a TRZ format trajectory.</span>
 
 <span class="sd">    Note</span>
@@ -714,12 +740,16 @@
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;vz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_to_native</span><span class="p">(</span><span class="n">vels</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TRZWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TRZWriter.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZWriter.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Close if it was open&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="o">=</span> <span class="kc">None</span></div>
+</div>
+
 </pre></div>
 
            </div>

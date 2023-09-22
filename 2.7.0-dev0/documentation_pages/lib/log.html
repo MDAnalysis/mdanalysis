@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.6. Setting up logging — MDAnalysis.lib.log &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -156,8 +168,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.lib.log"></span><section id="setting-up-logging-mdanalysis-lib-log">
-<h1><span class="section-number">13.2.6. </span>Setting up logging — <a class="reference internal" href="#module-MDAnalysis.lib.log" title="MDAnalysis.lib.log"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a><a class="headerlink" href="#setting-up-logging-mdanalysis-lib-log" title="Permalink to this heading"></a></h1>
+  <section id="setting-up-logging-mdanalysis-lib-log">
+<span id="module-MDAnalysis.lib.log"></span><h1><span class="section-number">13.2.6. </span>Setting up logging — <a class="reference internal" href="#module-MDAnalysis.lib.log" title="MDAnalysis.lib.log"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a><a class="headerlink" href="#setting-up-logging-mdanalysis-lib-log" title="Link to this heading"></a></h1>
 <p>Configure logging for MDAnalysis. Import this module if logging is
 desired in application code.</p>
 <p>Logging to a file and the console is set up by default as described
@@ -190,12 +202,12 @@ optional argument to <a class="reference internal" href="#MDAnalysis.start_loggi
 documentation about using logging.</p>
 </div>
 <section id="convenience-functions">
-<h2><span class="section-number">13.2.6.1. </span>Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.6.1. </span>Convenience functions<a class="headerlink" href="#convenience-functions" title="Link to this heading"></a></h2>
 <p>Two convenience functions at the top level make it easy to start and
 stop the default <em>MDAnalysis</em> logger.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.start_logging">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.</span></span><span class="sig-name descname"><span class="pre">start_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis.log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2.7.0-dev0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.start_logging" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.</span></span><span class="sig-name descname"><span class="pre">start_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis.log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2.7.0-dev0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.start_logging" title="Link to this definition"></a></dt>
 <dd><p>Start logging of messages to file and console.</p>
 <p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
 logged with the tag <em>MDAnalysis</em>.</p>
@@ -203,13 +215,13 @@ logged with the tag <em>MDAnalysis</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.stop_logging">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.</span></span><span class="sig-name descname"><span class="pre">stop_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#stop_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.stop_logging" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.</span></span><span class="sig-name descname"><span class="pre">stop_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#stop_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.stop_logging" title="Link to this definition"></a></dt>
 <dd><p>Stop logging to logfile and console.</p>
 </dd></dl>
 
 </section>
 <section id="other-functions-and-classes-for-logging-purposes">
-<h2><span class="section-number">13.2.6.2. </span>Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.6.2. </span>Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Link to this heading"></a></h2>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>Deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressMeter</span></code> has now been removed.</p>
 </div>
@@ -217,7 +229,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.log.NullHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">NullHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#NullHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.NullHandler" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">NullHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#NullHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.NullHandler" title="Link to this definition"></a></dt>
 <dd><p>Silent Handler.</p>
 <p>Useful as a default:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="n">NullHandler</span><span class="p">()</span>
@@ -231,7 +243,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 and the filter list to empty.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.log.NullHandler.emit">
-<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#NullHandler.emit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.NullHandler.emit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#NullHandler.emit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.NullHandler.emit" title="Link to this definition"></a></dt>
 <dd><p>Do whatever it takes to actually log the specified logging record.</p>
 <p>This version is intended to be implemented by subclasses and so
 raises a NotImplementedError.</p>
@@ -241,7 +253,7 @@ raises a NotImplementedError.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.log.ProgressBar">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">ProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">__</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#ProgressBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.ProgressBar" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">ProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">__</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#ProgressBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.ProgressBar" title="Link to this definition"></a></dt>
 <dd><p>Display a visual progress bar and time estimate.</p>
 <p>The <a class="reference internal" href="#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a> decorates an iterable object, returning an
 iterator which acts exactly like the original iterable, but prints a
@@ -287,7 +299,7 @@ Tweak this and <cite>mininterval</cite> to get very efficient loops.
 If your progress is erratic with both fast and slow iterations
 (network, skipping items, etc) you should set miniters=1.</p></li>
 <li><p><strong>ascii</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – If unspecified or <code class="docutils literal notranslate"><span class="pre">False</span></code>, use unicode (smooth blocks) to fill
-the meter. The fallback is to use ASCII characters ” 123456789#”.</p></li>
+the meter. The fallback is to use ASCII characters “ 123456789#”.</p></li>
 <li><p><strong>disable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to disable the entire progressbar wrapper
 [default: <code class="docutils literal notranslate"><span class="pre">False</span></code>]. If set to None, disable on non-TTY.</p></li>
 <li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – String that will be used to define the unit of each iteration
@@ -311,7 +323,7 @@ percentage, elapsed, elapsed_s, ncols, nrows, desc, unit,
 rate, rate_fmt, rate_noinv, rate_noinv_fmt,
 rate_inv, rate_inv_fmt, postfix, unit_divisor,
 remaining, remaining_s.</p>
-<p>Note that a trailing “: ” is automatically removed after {desc}
+<p>Note that a trailing “: “ is automatically removed after {desc}
 if the latter is empty.</p>
 </p></li>
 <li><p><strong>initial</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – The initial counter value. Useful when restarting a progress bar
@@ -364,14 +376,14 @@ The fallback is 20.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.log.clear_handlers">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">clear_handlers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#clear_handlers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.clear_handlers" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">clear_handlers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#clear_handlers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.clear_handlers" title="Link to this definition"></a></dt>
 <dd><p>clean out handlers in the library top level logger</p>
 <p>(only important for reload/debug cycles…)</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.log.create">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis.log'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.create" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis.log'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.create" title="Link to this definition"></a></dt>
 <dd><p>Create a top level logger.</p>
 <ul class="simple">
 <li><p>The file logger logs everything (including DEBUG).</p></li>
@@ -387,7 +399,7 @@ console.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.log.start_logging">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">start_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis.log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2.7.0-dev0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.start_logging" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">start_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MDAnalysis.log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2.7.0-dev0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.start_logging" title="Link to this definition"></a></dt>
 <dd><p>Start logging of messages to file and console.</p>
 <p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
 logged with the tag <em>MDAnalysis</em>.</p>
@@ -395,7 +407,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.log.stop_logging">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">stop_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#stop_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.stop_logging" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.log.</span></span><span class="sig-name descname"><span class="pre">stop_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#stop_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.log.stop_logging" title="Link to this definition"></a></dt>
 <dd><p>Stop logging to logfile and console.</p>
 </dd></dl>
 

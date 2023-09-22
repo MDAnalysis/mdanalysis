@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -167,7 +179,9 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 
 
-<div class="viewcode-block" id="CRDReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDReader">[docs]</a><span class="k">class</span> <span class="nc">CRDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="CRDReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDReader">[docs]</a>
+<span class="k">class</span> <span class="nc">CRDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;CRD reader that implements the standard and extended CRD coordinate formats</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
@@ -223,7 +237,9 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%d</span><span class="s2"> coordinates in </span><span class="si">%r</span><span class="s2"> but the header claims that there &quot;</span>
                               <span class="s2">&quot;should be </span><span class="si">%d</span><span class="s2"> coordinates.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">natoms</span><span class="p">))</span>
 
-<div class="viewcode-block" id="CRDReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="CRDReader.Writer">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDReader.Writer">[docs]</a>
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a CRDWriter for *filename*.</span>
 
 <span class="sd">        Parameters</span>
@@ -236,10 +252,14 @@
 <span class="sd">        :class:`CRDWriter`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">CRDWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">CRDWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="CRDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDWriter">[docs]</a><span class="k">class</span> <span class="nc">CRDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CRDWriter">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDWriter">[docs]</a>
+<span class="k">class</span> <span class="nc">CRDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;CRD writer that implements the CHARMM CRD coordinate format.</span>
 
 <span class="sd">    It automatically writes the CHARMM EXT extended format if there</span>
@@ -303,7 +323,9 @@
         <span class="c1"># account for explicit crd format, if requested</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extended</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;extended&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CRDWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CRDWriter.write">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/CRD.html#MDAnalysis.coordinates.CRD.CRDWriter.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
 
 <span class="sd">        Parameters</span>
@@ -409,7 +431,9 @@
                 <span class="n">crd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">at_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">serial</span><span class="o">=</span><span class="n">serial</span><span class="p">,</span> <span class="n">totRes</span><span class="o">=</span><span class="n">current_resid</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="n">resname</span><span class="p">,</span>
                     <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">chainID</span><span class="o">=</span><span class="n">chainID</span><span class="p">,</span>
-                    <span class="n">resSeq</span><span class="o">=</span><span class="n">resid</span><span class="p">,</span> <span class="n">tempfactor</span><span class="o">=</span><span class="n">tempfactor</span><span class="p">))</span></div></div>
+                    <span class="n">resSeq</span><span class="o">=</span><span class="n">resid</span><span class="p">,</span> <span class="n">tempfactor</span><span class="o">=</span><span class="n">tempfactor</span><span class="p">))</span></div>
+</div>
+
 </pre></div>
 
            </div>

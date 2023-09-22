@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.11. LAMMPSParser &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -164,14 +176,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.topology.LAMMPSParser"></span><section id="lammpsparser">
-<h1><span class="section-number">5.11. </span>LAMMPSParser<a class="headerlink" href="#lammpsparser" title="Permalink to this heading"></a></h1>
+  <section id="lammpsparser">
+<span id="module-MDAnalysis.topology.LAMMPSParser"></span><h1><span class="section-number">5.11. </span>LAMMPSParser<a class="headerlink" href="#lammpsparser" title="Link to this heading"></a></h1>
 <p>Parses <a class="reference external" href="DATAfileformat::http://lammps.sandia.gov/doc/2001/data_format.html">data</a> or <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">dump</a> files produced by <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">LAMMPSDataConverter</span></code> has now been removed.</p>
 </div>
 <section id="atom-styles">
-<span id="atom-style-kwarg"></span><h2><span class="section-number">5.11.1. </span>Atom styles<a class="headerlink" href="#atom-styles" title="Permalink to this heading"></a></h2>
+<span id="atom-style-kwarg"></span><h2><span class="section-number">5.11.1. </span>Atom styles<a class="headerlink" href="#atom-styles" title="Link to this heading"></a></h2>
 <p>By default parsers and readers for Lammps data files expect either an
 <em>atomic</em> or <em>full</em> <a class="reference external" href="http://lammps.sandia.gov/doc/atom_style.html">atom_style</a>.  This can be customised by passing
 the <cite>atom_style</cite> keyword argument.  This should be a space separated
@@ -192,10 +204,10 @@ and any other specified field will be ignored.</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">5.11.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">5.11.2. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">DATAParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">DATAParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser" title="Link to this definition"></a></dt>
 <dd><p>Parse a LAMMPS DATA file for topology and coordinates.</p>
 <p>Note that LAMMPS DATA files can be used standalone.</p>
 <p>Both topology and coordinate parsing functionality is kept in this
@@ -209,13 +221,13 @@ see <a class="reference internal" href="#atom-style-kwarg"><span class="std std-
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_forces_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_forces_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -238,7 +250,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_forces_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_forces_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -261,7 +273,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_pos_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_pos_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -287,7 +299,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_pos_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_pos_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -313,7 +325,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_time_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_time_from_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -341,7 +353,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_time_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_time_to_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -368,7 +380,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_velocities_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -391,7 +403,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.convert_velocities_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -414,7 +426,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.grab_datafile">
-<span class="sig-name descname"><span class="pre">grab_datafile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.grab_datafile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.grab_datafile" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">grab_datafile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.grab_datafile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.grab_datafile" title="Link to this definition"></a></dt>
 <dd><p>Split a data file into dict of header and sections</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -429,7 +441,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.parse">
-<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.parse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.parse" title="Link to this definition"></a></dt>
 <dd><p>Parses a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DATA file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -440,7 +452,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.read_DATA_timestep">
-<span class="sig-name descname"><span class="pre">read_DATA_timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TS_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TS_kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.read_DATA_timestep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.read_DATA_timestep" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_DATA_timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TS_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TS_kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser.read_DATA_timestep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.read_DATA_timestep" title="Link to this definition"></a></dt>
 <dd><p>Read a DATA file and try and extract x, v, box.</p>
 <ul class="simple">
 <li><p>positions</p></li>
@@ -458,7 +470,7 @@ is avoided.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -467,7 +479,7 @@ is avoided.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.LammpsDumpParser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">LammpsDumpParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LammpsDumpParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">LammpsDumpParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LammpsDumpParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser" title="Link to this definition"></a></dt>
 <dd><p>Parses Lammps ascii dump files in ‘atom’ format.</p>
 <p>Sets all masses to 1.0.</p>
 <div class="versionchanged">

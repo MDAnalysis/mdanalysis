@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -204,7 +216,9 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="TPXUnpacker"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker">[docs]</a><span class="k">class</span> <span class="nc">TPXUnpacker</span><span class="p">(</span><span class="n">xdrlib</span><span class="o">.</span><span class="n">Unpacker</span><span class="p">):</span>
+<div class="viewcode-block" id="TPXUnpacker">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker">[docs]</a>
+<span class="k">class</span> <span class="nc">TPXUnpacker</span><span class="p">(</span><span class="n">xdrlib</span><span class="o">.</span><span class="n">Unpacker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extend the standard XDR unpacker for the specificity of TPX files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -231,21 +245,35 @@
             <span class="k">raise</span> <span class="ne">EOFError</span>
         <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">struct_template</span><span class="p">,</span> <span class="n">content</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="TPXUnpacker.unpack_int64"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_int64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TPXUnpacker.unpack_int64">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack_int64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;&gt;q&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker.unpack_uint64"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uint64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker.unpack_uint64">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack_uint64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;&gt;Q&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker.unpack_ushort"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_ushort">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker.unpack_ushort">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_ushort">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_uint</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker.unpack_uchar"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uchar">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker.unpack_uchar">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uchar">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TPX files prior to gromacs 2020 (tpx version &lt; 119) use unsigned ints</span>
         <span class="c1"># (4 bytes) instead of unsigned chars.</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;&gt;I&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker.do_string"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string">[docs]</a>    <span class="k">def</span> <span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker.do_string">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Emulate gmx_fio_do_string</span>
 
@@ -256,10 +284,14 @@
 <span class="sd">        See &lt;gromacs-2016-src&gt;/src/gromacs/fileio/gmx_system_xdr.c:454</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_string</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_string</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="TPXUnpacker2020"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020">[docs]</a><span class="k">class</span> <span class="nc">TPXUnpacker2020</span><span class="p">(</span><span class="n">TPXUnpacker</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker2020">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020">[docs]</a>
+<span class="k">class</span> <span class="nc">TPXUnpacker2020</span><span class="p">(</span><span class="n">TPXUnpacker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unpacker for TPX files from and later than gromacs 2020.</span>
 
@@ -267,7 +299,9 @@
 <span class="sd">    gromacs 2020, changes le meaning of some types in the file body (the header</span>
 <span class="sd">    keep using the previous implementation of the serializer).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="TPXUnpacker2020.from_unpacker"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TPXUnpacker2020.from_unpacker">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_unpacker</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">unpacker</span><span class="p">):</span>
         <span class="n">new_unpacker</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">unpacker</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">())</span>
         <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
@@ -280,7 +314,10 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized precision&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new_unpacker</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_fstring"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_fstring">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_fstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker2020.unpack_fstring">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_fstring">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack_fstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Size of fstring cannot be negative.&#39;</span><span class="p">)</span>
         <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
@@ -290,56 +327,87 @@
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[</span><span class="n">start_position</span><span class="p">:</span><span class="n">end_position</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">content</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_ushort"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_ushort">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker2020.unpack_ushort">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_ushort">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack_ushort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># The InMemorySerializer implements ushort according to the XDR standard</span>
         <span class="c1"># on the contrary to the IO serializer.</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&gt;H&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker2020.unpack_uchar"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker2020.unpack_uchar">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack_uchar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># The InMemorySerializer implements uchar according to the XDR standard</span>
         <span class="c1"># on the contrary to the IO serializer.</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_value</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&gt;B&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TPXUnpacker2020.do_string"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string">[docs]</a>    <span class="k">def</span> <span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TPXUnpacker2020.do_string">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Emulate gmx_fio_do_string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_uint64</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_fstring</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unpack_fstring</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="ndo_int"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_int">[docs]</a><span class="k">def</span> <span class="nf">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ndo_int">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_int">[docs]</a>
+<span class="k">def</span> <span class="nf">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_real in gromacs&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="ndo_real"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_real">[docs]</a><span class="k">def</span> <span class="nf">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ndo_real">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_real">[docs]</a>
+<span class="k">def</span> <span class="nf">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_real in gromacs&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="do_rvec"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_rvec">[docs]</a><span class="k">def</span> <span class="nf">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_rvec">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_rvec">[docs]</a>
+<span class="k">def</span> <span class="nf">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ndo_rvec"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_rvec">[docs]</a><span class="k">def</span> <span class="nf">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ndo_rvec">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_rvec">[docs]</a>
+<span class="k">def</span> <span class="nf">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_rvec in gromacs&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="ndo_ivec"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_ivec">[docs]</a><span class="k">def</span> <span class="nf">ndo_ivec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ndo_ivec">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_ivec">[docs]</a>
+<span class="k">def</span> <span class="nf">ndo_ivec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_rvec in gromacs&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="fileVersion_err"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.fileVersion_err">[docs]</a><span class="k">def</span> <span class="nf">fileVersion_err</span><span class="p">(</span><span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="fileVersion_err">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.fileVersion_err">[docs]</a>
+<span class="k">def</span> <span class="nf">fileVersion_err</span><span class="p">(</span><span class="n">fver</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">fver</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">setting</span><span class="o">.</span><span class="n">SUPPORTED_VERSIONS</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Your tpx version is </span><span class="si">{</span><span class="n">fver</span><span class="si">}</span><span class="s2">, which this parser does not support, yet &quot;</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="define_unpack_real"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.define_unpack_real">[docs]</a><span class="k">def</span> <span class="nf">define_unpack_real</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="define_unpack_real">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.define_unpack_real">[docs]</a>
+<span class="k">def</span> <span class="nf">define_unpack_real</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Define an unpack_real method of data based on the float precision used&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">prec</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_float</span>
@@ -349,7 +417,10 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported precision: </span><span class="si">{</span><span class="n">prec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="read_tpxheader"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.read_tpxheader">[docs]</a><span class="k">def</span> <span class="nf">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="read_tpxheader">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.read_tpxheader">[docs]</a>
+<span class="k">def</span> <span class="nf">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;this function is now compatible with do_tpxheader in tpxio.cpp</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Last compatibility check with gromacs-2016</span>
@@ -407,7 +478,10 @@
     <span class="k">return</span> <span class="n">th</span></div>
 
 
-<div class="viewcode-block" id="extract_box_info"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.extract_box_info">[docs]</a><span class="k">def</span> <span class="nf">extract_box_info</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="extract_box_info">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.extract_box_info">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_box_info</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="n">box</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>
     <span class="n">box_rel</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>
     <span class="n">box_v</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>
@@ -415,7 +489,10 @@
     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">box_rel</span><span class="p">,</span> <span class="n">box_v</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="do_mtop"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_mtop">[docs]</a><span class="k">def</span> <span class="nf">do_mtop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_mtop">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_mtop">[docs]</a>
+<span class="k">def</span> <span class="nf">do_mtop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="c1"># mtop: the topology of the whole system</span>
     <span class="n">symtab</span> <span class="o">=</span> <span class="n">do_symtab</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">)</span>  <span class="c1"># system_name</span>
@@ -555,13 +632,19 @@
     <span class="k">return</span> <span class="n">top</span></div>
 
 
-<div class="viewcode-block" id="do_symstr"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_symstr">[docs]</a><span class="k">def</span> <span class="nf">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_symstr">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_symstr">[docs]</a>
+<span class="k">def</span> <span class="nf">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">):</span>
     <span class="c1"># do_symstr: get a string based on index from the symtab</span>
     <span class="n">ndx</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">symtab</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="do_symtab"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_symtab">[docs]</a><span class="k">def</span> <span class="nf">do_symtab</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_symtab">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_symtab">[docs]</a>
+<span class="k">def</span> <span class="nf">do_symtab</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">symtab_nr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of symbols</span>
     <span class="n">symtab</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">symtab_nr</span><span class="p">):</span>
@@ -570,7 +653,10 @@
     <span class="k">return</span> <span class="n">symtab</span></div>
 
 
-<div class="viewcode-block" id="do_ffparams"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_ffparams">[docs]</a><span class="k">def</span> <span class="nf">do_ffparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_ffparams">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_ffparams">[docs]</a>
+<span class="k">def</span> <span class="nf">do_ffparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="n">atnr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
     <span class="n">ntypes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
     <span class="n">functype</span> <span class="o">=</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ntypes</span><span class="p">)</span>
@@ -591,14 +677,20 @@
     <span class="k">return</span> <span class="n">params</span></div>
 
 
-<div class="viewcode-block" id="do_harm"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_harm">[docs]</a><span class="k">def</span> <span class="nf">do_harm</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_harm">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_harm">[docs]</a>
+<span class="k">def</span> <span class="nf">do_harm</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># rA</span>
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># krA</span>
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># rB</span>
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># krB</span></div>
 
 
-<div class="viewcode-block" id="do_iparams"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_iparams">[docs]</a><span class="k">def</span> <span class="nf">do_iparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">functypes</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_iparams">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_iparams">[docs]</a>
+<span class="k">def</span> <span class="nf">do_iparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">functypes</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="c1"># Not all elif cases in this function has been used and tested</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">functypes</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span>
@@ -827,7 +919,10 @@
     <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="do_moltype"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_moltype">[docs]</a><span class="k">def</span> <span class="nf">do_moltype</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_moltype">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_moltype">[docs]</a>
+<span class="k">def</span> <span class="nf">do_moltype</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="n">molname</span> <span class="o">=</span> <span class="n">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">)</span>
 
     <span class="c1"># key info: about atoms</span>
@@ -914,7 +1009,10 @@
     <span class="k">return</span> <span class="n">moltype</span></div>
 
 
-<div class="viewcode-block" id="do_atoms"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atoms">[docs]</a><span class="k">def</span> <span class="nf">do_atoms</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_atoms">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atoms">[docs]</a>
+<span class="k">def</span> <span class="nf">do_atoms</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="n">nr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of atoms in a particular molecule</span>
     <span class="n">nres</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of residues in a particular molecule</span>
 
@@ -933,7 +1031,10 @@
     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">Atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nres</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">typeB</span><span class="p">,</span> <span class="n">atomnames</span><span class="p">,</span> <span class="n">resnames</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="do_resinfo"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_resinfo">[docs]</a><span class="k">def</span> <span class="nf">do_resinfo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">,</span> <span class="n">nres</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_resinfo">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_resinfo">[docs]</a>
+<span class="k">def</span> <span class="nf">do_resinfo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">,</span> <span class="n">nres</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">63</span><span class="p">:</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">symtab</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nres</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -945,7 +1046,10 @@
     <span class="k">return</span> <span class="n">resnames</span></div>
 
 
-<div class="viewcode-block" id="do_atom"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atom">[docs]</a><span class="k">def</span> <span class="nf">do_atom</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_atom">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atom">[docs]</a>
+<span class="k">def</span> <span class="nf">do_atom</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># mass</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># charge</span>
     <span class="n">mB</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>
@@ -960,7 +1064,10 @@
     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">mB</span><span class="p">,</span> <span class="n">qB</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="n">typeB</span><span class="p">,</span> <span class="n">ptype</span><span class="p">,</span> <span class="n">resind</span><span class="p">,</span> <span class="n">atomnumber</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="do_ilists"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_ilists">[docs]</a><span class="k">def</span> <span class="nf">do_ilists</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_ilists">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_ilists">[docs]</a>
+<span class="k">def</span> <span class="nf">do_ilists</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="n">nr</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># number of ilist</span>
     <span class="n">iatoms</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># atoms involved in a particular interaction type</span>
     <span class="n">pos</span> <span class="o">=</span> <span class="p">[]</span>
@@ -987,7 +1094,10 @@
     <span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="do_molblock"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_molblock">[docs]</a><span class="k">def</span> <span class="nf">do_molblock</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_molblock">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_molblock">[docs]</a>
+<span class="k">def</span> <span class="nf">do_molblock</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">molb_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
     <span class="n">molb_nmol</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of moles in the molblock</span>
     <span class="n">molb_natoms_mol</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of atoms in a molecule</span>
@@ -1002,19 +1112,26 @@
                         <span class="n">molb_nposres_xA</span><span class="p">,</span> <span class="n">molb_nposres_xB</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="do_block"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_block">[docs]</a><span class="k">def</span> <span class="nf">do_block</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_block">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_block">[docs]</a>
+<span class="k">def</span> <span class="nf">do_block</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">block_nr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># for cgs: charge groups</span>
     <span class="c1"># starting or ending atom indices, based on which cgs are grouped</span>
     <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">block_nr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">do_block</span></div>
 
 
-<div class="viewcode-block" id="do_blocka"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_blocka">[docs]</a><span class="k">def</span> <span class="nf">do_blocka</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="do_blocka">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_blocka">[docs]</a>
+<span class="k">def</span> <span class="nf">do_blocka</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">block_nr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># No. of atoms with excls</span>
     <span class="n">block_nra</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># total times fo appearance of atoms for excls</span>
     <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">block_nr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">block_nra</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">block_nr</span><span class="p">,</span> <span class="n">block_nra</span></div>
+
 </pre></div>
 
            </div>

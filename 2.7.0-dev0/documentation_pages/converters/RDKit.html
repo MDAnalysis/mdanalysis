@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>7.3. RDKit topology parser — MDAnalysis.converters.RDKitParser &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -146,18 +158,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.converters.RDKitParser"></span><section id="rdkit-topology-parser-mdanalysis-converters-rdkitparser">
-<h1><span class="section-number">7.3. </span>RDKit topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.RDKitParser" title="MDAnalysis.converters.RDKitParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><a class="headerlink" href="#rdkit-topology-parser-mdanalysis-converters-rdkitparser" title="Permalink to this heading"></a></h1>
+  <section id="rdkit-topology-parser-mdanalysis-converters-rdkitparser">
+<span id="module-MDAnalysis.converters.RDKitParser"></span><h1><span class="section-number">7.3. </span>RDKit topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.RDKitParser" title="MDAnalysis.converters.RDKitParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><a class="headerlink" href="#rdkit-topology-parser-mdanalysis-converters-rdkitparser" title="Link to this heading"></a></h1>
 <p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2023.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a></p>
 </div>
 <section id="classes">
-<h2><span class="section-number">7.3.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">7.3.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitParser.</span></span><span class="sig-name descname"><span class="pre">RDKitParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitParser.html#RDKitParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitParser.</span></span><span class="sig-name descname"><span class="pre">RDKitParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitParser.html#RDKitParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser" title="Link to this definition"></a></dt>
 <dd><p>For RDKit structures</p>
 <dl class="simple">
 <dt>Creates the following Attributes:</dt><dd><ul class="simple">
@@ -258,13 +270,13 @@ atom.GetProp(‘_TriposAtomName’)</p></td>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_forces_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_forces_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -287,7 +299,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_forces_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_forces_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -310,7 +322,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_pos_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_pos_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -336,7 +348,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_pos_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_pos_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -362,7 +374,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_time_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_time_from_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -390,7 +402,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_time_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_time_to_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -417,7 +429,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_velocities_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -440,7 +452,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.convert_velocities_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -463,7 +475,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.parse">
-<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitParser.html#RDKitParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.parse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitParser.html#RDKitParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.parse" title="Link to this definition"></a></dt>
 <dd><p>Parse RDKit into Topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -474,7 +486,7 @@ is avoided.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -483,8 +495,8 @@ is avoided.</p>
 
 </section>
 </section>
-<span class="target" id="module-MDAnalysis.converters.RDKit"></span><section id="rdkit-molecule-i-o-mdanalysis-converters-rdkit">
-<h1><span class="section-number">7.4. </span>RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit" title="Permalink to this heading"></a></h1>
+<section id="rdkit-molecule-i-o-mdanalysis-converters-rdkit">
+<span id="module-MDAnalysis.converters.RDKit"></span><h1><span class="section-number">7.4. </span>RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit" title="Link to this heading"></a></h1>
 <p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2023.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
 <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitReader" title="MDAnalysis.converters.RDKit.RDKitReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitReader</span></code></a> into an MDAnalysis Universe. Convert it back to a
 <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2023.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="MDAnalysis.converters.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
@@ -514,10 +526,10 @@ Please see <a class="reference external" href="https://github.com/MDAnalysis/mda
 details.</p>
 </div>
 <section id="id1">
-<h2><span class="section-number">7.4.1. </span>Classes<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">7.4.1. </span>Classes<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">RDKitReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">RDKitReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitReader" title="Link to this definition"></a></dt>
 <dd><p>Coordinate reader for RDKit.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
@@ -532,7 +544,7 @@ in the resulting universe.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -541,7 +553,7 @@ in the resulting universe.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitConverter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">RDKitConverter</span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">RDKitConverter</span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="Link to this definition"></a></dt>
 <dd><p>Convert MDAnalysis <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> to RDKit
 <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2023.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
@@ -672,7 +684,7 @@ files while the original name is still available through
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitConverter.convert">
-<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NoImplicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.convert" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NoImplicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.convert" title="Link to this definition"></a></dt>
 <dd><p>Write selection at current trajectory frame to
 <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2023.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
 <dl class="field-list simple">
@@ -695,7 +707,7 @@ See <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_co
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitConverter.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -704,7 +716,7 @@ See <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_co
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit._infer_bo_and_charges">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_infer_bo_and_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_infer_bo_and_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._infer_bo_and_charges" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_infer_bo_and_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_infer_bo_and_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._infer_bo_and_charges" title="Link to this definition"></a></dt>
 <dd><p>Infer bond orders and formal charges from a molecule.</p>
 <p>Since most MD topology files don’t explicitly retain information on bond
 orders or charges, it has to be guessed from the topology. This is done by
@@ -728,7 +740,7 @@ one will be charged. It will also affect more complex conjugated systems.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit._standardize_patterns">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_standardize_patterns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_standardize_patterns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._standardize_patterns" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_standardize_patterns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_standardize_patterns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._standardize_patterns" title="Link to this definition"></a></dt>
 <dd><p>Standardizes functional groups</p>
 <p>Uses <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a> to standardize conjugated systems,
 and SMARTS reactions for other functional groups.
@@ -797,7 +809,7 @@ Finally, the fragments are recombined.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit._rebuild_conjugated_bonds">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_rebuild_conjugated_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_rebuild_conjugated_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_rebuild_conjugated_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_rebuild_conjugated_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="Link to this definition"></a></dt>
 <dd><p>Rebuild conjugated bonds without negatively charged atoms at the
 beginning and end of the conjugated system</p>
 <p>Depending on the order in which atoms are read during the conversion, the

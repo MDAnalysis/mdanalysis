@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -210,7 +222,9 @@
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="RDKitParser"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser">[docs]</a><span class="k">class</span> <span class="nc">RDKitParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitParser">
+<a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser">[docs]</a>
+<span class="k">class</span> <span class="nc">RDKitParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For RDKit structures</span>
 
@@ -298,7 +312,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RDKitParser.parse"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitParser.parse">
+<a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse RDKit into Topology</span>
 
 <span class="sd">        Returns</span>
@@ -490,7 +506,9 @@
                        <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
                        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">top</span></div></div>
+        <span class="k">return</span> <span class="n">top</span></div>
+</div>
+
 </pre></div>
 
            </div>

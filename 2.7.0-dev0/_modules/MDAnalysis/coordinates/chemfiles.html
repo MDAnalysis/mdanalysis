@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -238,7 +250,9 @@
 <span class="n">MAX_CHEMFILES_VERSION</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;0.11&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="check_chemfiles_version"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.check_chemfiles_version">[docs]</a><span class="k">def</span> <span class="nf">check_chemfiles_version</span><span class="p">():</span>
+<div class="viewcode-block" id="check_chemfiles_version">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.check_chemfiles_version">[docs]</a>
+<span class="k">def</span> <span class="nf">check_chemfiles_version</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if an appropriate *chemfiles* is available</span>
 
 <span class="sd">    Returns ``True`` if a usable chemfiles version is available,</span>
@@ -257,7 +271,10 @@
     <span class="k">return</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="n">MIN_CHEMFILES_VERSION</span> <span class="ow">and</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="n">MAX_CHEMFILES_VERSION</span></div>
 
 
-<div class="viewcode-block" id="ChemfilesReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesReader">[docs]</a><span class="k">class</span> <span class="nc">ChemfilesReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChemfilesReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesReader">[docs]</a>
+<span class="k">class</span> <span class="nc">ChemfilesReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader using chemfiles.</span>
 
 <span class="sd">    The file format to used is guessed based on the file extension. If no</span>
@@ -375,7 +392,10 @@
         <span class="k">return</span> <span class="n">ChemfilesWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ChemfilesWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesWriter">[docs]</a><span class="k">class</span> <span class="nc">ChemfilesWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChemfilesWriter">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesWriter">[docs]</a>
+<span class="k">class</span> <span class="nc">ChemfilesWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Coordinate writer using chemfiles.</span>
 
@@ -582,7 +602,10 @@
         <span class="k">return</span> <span class="n">topology</span></div>
 
 
-<div class="viewcode-block" id="ChemfilesPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesPicklable">[docs]</a><span class="k">class</span> <span class="nc">ChemfilesPicklable</span><span class="p">(</span><span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChemfilesPicklable">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesPicklable">[docs]</a>
+<span class="k">class</span> <span class="nc">ChemfilesPicklable</span><span class="p">(</span><span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Chemfiles file object (read-only) that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by</span>
@@ -646,6 +669,7 @@
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

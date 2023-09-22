@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -173,7 +185,9 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_SELECTION_WRITERS</span>
 
 
-<div class="viewcode-block" id="join"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.join">[docs]</a><span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="join">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.join">[docs]</a>
+<span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a list from sequence.</span>
 
 <span class="sd">    *string* is appended to each element but the last.</span>
@@ -183,6 +197,7 @@
     <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">string</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">_Selectionmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
@@ -201,7 +216,9 @@
                 <span class="n">_SELECTION_WRITERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
 
-<div class="viewcode-block" id="SelectionWriterBase"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase">[docs]</a><span class="k">class</span> <span class="nc">SelectionWriterBase</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_Selectionmeta</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionWriterBase">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase">[docs]</a>
+<span class="k">class</span> <span class="nc">SelectionWriterBase</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_Selectionmeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Export a selection in MDAnalysis to a format usable in an external package.</span>
 
 <span class="sd">    The :class:`SelectionWriterBase` writes a selection string to a file</span>
@@ -237,7 +254,9 @@
     <span class="n">commentfmt</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">default_numterms</span> <span class="o">=</span> <span class="mi">8</span>
 
-<div class="viewcode-block" id="SelectionWriterBase.__init__"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">numterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionWriterBase.__init__">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">numterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up for writing to *filename*.</span>
 
 <span class="sd">        Parameters</span>
@@ -274,7 +293,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">write_preamble</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SelectionWriterBase.comment"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.comment">[docs]</a>    <span class="k">def</span> <span class="nf">comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SelectionWriterBase.comment">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.comment">[docs]</a>
+    <span class="k">def</span> <span class="nf">comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string *s* interpolated into the comment format string.</span>
 
 <span class="sd">        If no :attr:`SelectionWriterBase.commentfmt` is defined (None) then the</span>
@@ -287,13 +309,16 @@
             <span class="k">return</span> <span class="s1">&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentfmt</span> <span class="o">%</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span></div>
 
+
     <span class="k">def</span> <span class="nf">write_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a header, depending on the file format.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preamble</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preamble</span><span class="p">))</span>
 
-<div class="viewcode-block" id="SelectionWriterBase.write"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionWriterBase.write">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection to the output file.</span>
 
 <span class="sd">        Parameters</span>
@@ -341,6 +366,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_tail</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># always terminate with newline</span></div>
 
+
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the file</span>
 
@@ -348,7 +374,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SelectionWriterBase._translate"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._translate">[docs]</a>    <span class="k">def</span> <span class="nf">_translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionWriterBase._translate">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._translate">[docs]</a>
+    <span class="k">def</span> <span class="nf">_translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Translate atoms into a list of native selection terms.</span>
 
 <span class="sd">        - build list of ALL selection terms as if this was a single line, e.g.</span>
@@ -362,13 +390,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="SelectionWriterBase._write_head"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_head">[docs]</a>    <span class="k">def</span> <span class="nf">_write_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SelectionWriterBase._write_head">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_head">[docs]</a>
+    <span class="k">def</span> <span class="nf">_write_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initial output to open file object *out*.&quot;&quot;&quot;</span>
         <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
-<div class="viewcode-block" id="SelectionWriterBase._write_tail"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_tail">[docs]</a>    <span class="k">def</span> <span class="nf">_write_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SelectionWriterBase._write_tail">
+<a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_tail">[docs]</a>
+    <span class="k">def</span> <span class="nf">_write_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Last output to open file object *out*.&quot;&quot;&quot;</span>
         <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span></div>
+
 
     <span class="c1"># Context manager support to match Coordinate writers</span>
     <span class="c1"># all file handles use a with block in their write method, so these do nothing special</span>
@@ -377,6 +412,7 @@
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
 </pre></div>
 
            </div>

@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -179,7 +191,9 @@
     <span class="s2">&quot;molb_nposres_xA&quot;</span><span class="p">,</span> <span class="s2">&quot;molb_nposres_xB&quot;</span><span class="p">])</span>
 
 
-<div class="viewcode-block" id="MoleculeKind"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind">[docs]</a><span class="k">class</span> <span class="nc">MoleculeKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="MoleculeKind">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind">[docs]</a>
+<span class="k">class</span> <span class="nc">MoleculeKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atomkinds</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">dihe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">impr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># name of the molecule</span>
@@ -198,41 +212,62 @@
             <span class="sa">f</span><span class="s2">&quot;#residues: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_residues</span><span class="p">()</span><span class="si">:</span><span class="s2">&lt;10d</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="MoleculeKind.number_of_atoms"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MoleculeKind.number_of_atoms">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_atoms">[docs]</a>
+    <span class="k">def</span> <span class="nf">number_of_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomkinds</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MoleculeKind.number_of_residues"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_residues">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MoleculeKind.number_of_residues">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_residues">[docs]</a>
+    <span class="k">def</span> <span class="nf">number_of_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">({</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomkinds</span><span class="p">})</span></div>
+
 
     <span class="c1"># remap_ method returns [tuple(), tuple(), ..] or []</span>
     <span class="c1"># Note: in MDAnalysis, bonds, angles, etc are represented as tuple and not as list</span>
-<div class="viewcode-block" id="MoleculeKind.remap_bonds"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">remap_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
+<div class="viewcode-block" id="MoleculeKind.remap_bonds">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_bonds">[docs]</a>
+    <span class="k">def</span> <span class="nf">remap_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">atom_start_ndx</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span></div>
 
-<div class="viewcode-block" id="MoleculeKind.remap_angles"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_angles">[docs]</a>    <span class="k">def</span> <span class="nf">remap_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MoleculeKind.remap_angles">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_angles">[docs]</a>
+    <span class="k">def</span> <span class="nf">remap_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">atom_start_ndx</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span></div>
 
-<div class="viewcode-block" id="MoleculeKind.remap_dihe"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_dihe">[docs]</a>    <span class="k">def</span> <span class="nf">remap_dihe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MoleculeKind.remap_dihe">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_dihe">[docs]</a>
+    <span class="k">def</span> <span class="nf">remap_dihe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihe</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">atom_start_ndx</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihe</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span></div>
 
-<div class="viewcode-block" id="MoleculeKind.remap_impr"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_impr">[docs]</a>    <span class="k">def</span> <span class="nf">remap_impr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MoleculeKind.remap_impr">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_impr">[docs]</a>
+    <span class="k">def</span> <span class="nf">remap_impr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_start_ndx</span><span class="p">):</span>
         <span class="c1"># improper</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">impr</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">atom_start_ndx</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">impr</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span></div></div>
+            <span class="k">return</span> <span class="p">[]</span></div>
+</div>
 
 
-<div class="viewcode-block" id="AtomKind"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.AtomKind">[docs]</a><span class="k">class</span> <span class="nc">AtomKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AtomKind">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.AtomKind">[docs]</a>
+<span class="k">class</span> <span class="nc">AtomKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">atomic_number</span><span class="p">):</span>
         <span class="c1"># id is only within the scope of a single molecule, not the whole system</span>
@@ -270,18 +305,25 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="InteractionKind"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.InteractionKind">[docs]</a><span class="k">class</span> <span class="nc">InteractionKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="InteractionKind">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.InteractionKind">[docs]</a>
+<span class="k">class</span> <span class="nc">InteractionKind</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">long_name</span><span class="p">,</span> <span class="n">natoms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;natoms: number of atoms involved in this type of interaction&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="n">long_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span> <span class="o">=</span> <span class="n">natoms</span>
 
-<div class="viewcode-block" id="InteractionKind.process"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.InteractionKind.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_ndx</span><span class="p">):</span>
+<div class="viewcode-block" id="InteractionKind.process">
+<a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.InteractionKind.process">[docs]</a>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_ndx</span><span class="p">):</span>
         <span class="c1"># The format for all record is (type, atom1, atom2, ...)</span>
         <span class="c1"># but we are only interested in the atoms.</span>
         <span class="k">for</span> <span class="n">cursor</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_ndx</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="n">atom_ndx</span><span class="p">[</span><span class="n">cursor</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cursor</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span><span class="p">]</span></div></div>
+            <span class="k">yield</span> <span class="n">atom_ndx</span><span class="p">[</span><span class="n">cursor</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cursor</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span><span class="p">]</span></div>
+</div>
+
 </pre></div>
 
            </div>

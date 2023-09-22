@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -168,7 +180,9 @@
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">TriangularMatrix</span><span class="p">,</span> <span class="n">ParallelCalculation</span>
 
 
-<div class="viewcode-block" id="bootstrapped_matrix"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.bootstrapped_matrix">[docs]</a><span class="k">def</span> <span class="nf">bootstrapped_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">):</span>
+<div class="viewcode-block" id="bootstrapped_matrix">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.bootstrapped_matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">bootstrapped_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Bootstrap an input square matrix. The resulting matrix will have the same</span>
 <span class="sd">    shape as the original one, but the order of its elements will be drawn</span>
@@ -207,7 +221,10 @@
     <span class="k">return</span> <span class="n">this_m</span></div>
 
 
-<div class="viewcode-block" id="get_distance_matrix_bootstrap_samples"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples">[docs]</a><span class="k">def</span> <span class="nf">get_distance_matrix_bootstrap_samples</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span>
+
+<div class="viewcode-block" id="get_distance_matrix_bootstrap_samples">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples">[docs]</a>
+<span class="k">def</span> <span class="nf">get_distance_matrix_bootstrap_samples</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span>
                                           <span class="n">ensemble_assignment</span><span class="p">,</span>
                                           <span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                                           <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -249,7 +266,10 @@
     <span class="k">return</span> <span class="n">bootstrap_matrices</span></div>
 
 
-<div class="viewcode-block" id="get_ensemble_bootstrap_samples"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples">[docs]</a><span class="k">def</span> <span class="nf">get_ensemble_bootstrap_samples</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
+
+<div class="viewcode-block" id="get_ensemble_bootstrap_samples">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples">[docs]</a>
+<span class="k">def</span> <span class="nf">get_ensemble_bootstrap_samples</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
                                    <span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a bootstrapped ensemble by resampling with replacement.</span>
@@ -282,6 +302,7 @@
                         <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)[</span><span class="n">indices</span><span class="p">,:,:],</span>
                          <span class="nb">format</span><span class="o">=</span><span class="n">mda</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">ensembles</span></div>
+
 </pre></div>
 
            </div>

@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>10.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -143,13 +155,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.auxiliary.EDR"></span><section id="edr-auxiliary-reader-mdanalysis-auxiliary-edr">
-<h1><span class="section-number">10.5. </span>EDR auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.EDR" title="MDAnalysis.auxiliary.EDR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a><a class="headerlink" href="#edr-auxiliary-reader-mdanalysis-auxiliary-edr" title="Permalink to this heading"></a></h1>
+  <section id="edr-auxiliary-reader-mdanalysis-auxiliary-edr">
+<span id="module-MDAnalysis.auxiliary.EDR"></span><h1><span class="section-number">10.5. </span>EDR auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.EDR" title="MDAnalysis.auxiliary.EDR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a><a class="headerlink" href="#edr-auxiliary-reader-mdanalysis-auxiliary-edr" title="Link to this heading"></a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.4.0.</span></p>
 </div>
 <section id="background">
-<h2><span class="section-number">10.5.1. </span>Background<a class="headerlink" href="#background" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">10.5.1. </span>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://manual.gromacs.org/current/reference-manual/file-formats.html#edr">EDR files</a> are binary files following the <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc1014">XDR</a> protocol. They are written by
 GROMACS during simulations and contain time-series non-trajectory data on the
 system, such as energies, temperature, or pressure.</p>
@@ -191,7 +203,7 @@ EDRReader is created:</p>
 </div>
 </section>
 <section id="standalone-usage-of-the-edrreader">
-<h2><span class="section-number">10.5.2. </span>Standalone Usage of the EDRReader<a class="headerlink" href="#standalone-usage-of-the-edrreader" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">10.5.2. </span>Standalone Usage of the EDRReader<a class="headerlink" href="#standalone-usage-of-the-edrreader" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a> can be used to access the data stored in EDR files on
 its own, without association of data to trajectory frames.
 This is useful, for example, for plotting. The data for a single term, a list
@@ -209,7 +221,7 @@ returned in this dictionary to make plotting easier:</p>
 </div>
 </section>
 <section id="adding-edr-data-to-trajectories">
-<h2><span class="section-number">10.5.3. </span>Adding EDR data to trajectories<a class="headerlink" href="#adding-edr-data-to-trajectories" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">10.5.3. </span>Adding EDR data to trajectories<a class="headerlink" href="#adding-edr-data-to-trajectories" title="Link to this heading"></a></h2>
 <p>Like other AuxReaders, the <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a> can attach its data to a
 trajectory by associating it to the appropriate time steps.
 In general, to add EDR data to a trajectory, one needs to provide two
@@ -280,10 +292,10 @@ data this way, the terms in <a class="reference internal" href="#MDAnalysis.auxi
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">10.5.4. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">10.5.4. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.EDR.</span></span><span class="sig-name descname"><span class="pre">EDRReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.EDR.</span></span><span class="sig-name descname"><span class="pre">EDRReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="Link to this definition"></a></dt>
 <dd><p>Auxiliary reader to read data from an .edr file.</p>
 <p><a class="reference external" href="https://manual.gromacs.org/current/reference-manual/file-formats.html#edr">EDR files</a>
 are created by GROMACS during a simulation. They are binary files which
@@ -305,7 +317,7 @@ will be converted automatically by default.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader._auxdata">
-<span class="sig-name descname"><span class="pre">_auxdata</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader._auxdata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_auxdata</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader._auxdata" title="Link to this definition"></a></dt>
 <dd><p>path at which the auxiliary data file is located</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -316,7 +328,7 @@ will be converted automatically by default.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader.data_dict">
-<span class="sig-name descname"><span class="pre">data_dict</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.data_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">data_dict</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.data_dict" title="Link to this definition"></a></dt>
 <dd><p>dictionary that contains the auxiliary data, mapping the names GROMACS
 gave the entries in the EDR file to a NumPy array containing this data</p>
 <dl class="field-list simple">
@@ -328,7 +340,7 @@ gave the entries in the EDR file to a NumPy array containing this data</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader.unit_dict">
-<span class="sig-name descname"><span class="pre">unit_dict</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.unit_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">unit_dict</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.unit_dict" title="Link to this definition"></a></dt>
 <dd><p>dictionary that contains the units of the auxiliary data, mapping the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code> of the Reader (i.e. the name of the dataset in
 the EDR file) to its unit.</p>
@@ -341,7 +353,7 @@ the EDR file) to its unit.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader._n_steps">
-<span class="sig-name descname"><span class="pre">_n_steps</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader._n_steps" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_n_steps</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader._n_steps" title="Link to this definition"></a></dt>
 <dd><p>Number of steps for which auxdata is available</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -352,7 +364,7 @@ the EDR file) to its unit.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader.terms">
-<span class="sig-name descname"><span class="pre">terms</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.terms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">terms</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.terms" title="Link to this definition"></a></dt>
 <dd><p>Names of the auxiliary data entries available in <cite>data_dict</cite>. These are
 the names GROMACS set in the EDR file.</p>
 <dl class="field-list simple">
@@ -374,7 +386,7 @@ contents is practical. A warning will be issued when memory usage exceeds
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader.get_data">
-<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRReader.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.get_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRReader.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.get_data" title="Link to this definition"></a></dt>
 <dd><p>Returns the auxiliary data contained in the <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a>.
 Returns either all data or data specified as <cite>data_selector</cite> in form
 of a str or a list of any of <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader.terms" title="MDAnalysis.auxiliary.EDR.EDRReader.terms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">EDRReader.terms</span></code></a>. <cite>Time</cite> is
@@ -399,7 +411,7 @@ auxiliary data.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader.read_all_times">
-<span class="sig-name descname"><span class="pre">read_all_times</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRReader.read_all_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.read_all_times" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_all_times</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRReader.read_all_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader.read_all_times" title="Link to this definition"></a></dt>
 <dd><p>Get list of time at each step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -416,7 +428,7 @@ auxiliary data.</p>
 <p>The actual data for each step is stored by instances of EDRStep.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRStep">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.EDR.</span></span><span class="sig-name descname"><span class="pre">EDRStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRStep" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.EDR.</span></span><span class="sig-name descname"><span class="pre">EDRStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRStep" title="Link to this definition"></a></dt>
 <dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code> class for the .edr file format.</p>
 <p>Extends the base AuxStep class to allow selection of time and
 data-of-interest fields (by dictionary key) from the full set of data read

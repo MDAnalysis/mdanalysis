@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -2451,7 +2463,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span>
 
 
-<div class="viewcode-block" id="AtomGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup">[docs]</a><span class="k">class</span> <span class="nc">AtomGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup">[docs]</a>
+<span class="k">class</span> <span class="nc">AtomGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An ordered array of atoms.</span>
 
 <span class="sd">    Can be initiated from an iterable of :class:`Atoms&lt;Atom&gt;`::</span>
@@ -2836,7 +2850,9 @@
         <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
         <span class="k">return</span> <span class="n">group</span>
 
-<div class="viewcode-block" id="AtomGroup.asunique"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.asunique">[docs]</a>    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.asunique">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.asunique">[docs]</a>
+    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`AtomGroup` containing unique</span>
 <span class="sd">        :class:`Atoms&lt;Atom&gt;` only, with optional sorting.</span>
 
@@ -2879,6 +2895,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span>
                               <span class="n">set_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
 
 
     <span class="nd">@property</span>
@@ -2999,7 +3016,9 @@
     <span class="c1"># As with universe.select_atoms, needing to fish out specific kwargs</span>
     <span class="c1"># (namely, &#39;updating&#39;) doesn&#39;t allow a very clean signature.</span>
 
-<div class="viewcode-block" id="AtomGroup.select_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
+<div class="viewcode-block" id="AtomGroup.select_atoms">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms">[docs]</a>
+    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
                      <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                      <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smarts_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Select atoms from within this Group using a selection string.</span>
@@ -3371,7 +3390,10 @@
                           <span class="n">selections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">atomgrp</span></div>
 
-<div class="viewcode-block" id="AtomGroup.split"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AtomGroup.split">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.split">[docs]</a>
+    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split :class:`AtomGroup` into a :class:`list` of</span>
 <span class="sd">        :class:`AtomGroups&lt;AtomGroup&gt;` by `level`.</span>
 
@@ -3405,7 +3427,10 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">levelindices</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span>
                 <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">levelindices</span><span class="p">)]</span></div>
 
-<div class="viewcode-block" id="AtomGroup.guess_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AtomGroup.guess_bonds">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess bonds, angles, and dihedrals between the atoms in this</span>
 <span class="sd">        :class:`AtomGroup` and add them to the underlying</span>
 <span class="sd">        :attr:`~AtomGroup.universe`.</span>
@@ -3469,6 +3494,7 @@
         <span class="n">d</span> <span class="o">=</span> <span class="n">guess_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">)</span>
         <span class="n">diheattr</span> <span class="o">=</span> <span class="n">get_TopAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">Dihedrals</span><span class="p">)</span>
         <span class="n">diheattr</span><span class="o">.</span><span class="n">_add_bonds</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bond</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3580,7 +3606,9 @@
 
     <span class="n">convert_to</span> <span class="o">=</span> <span class="n">Accessor</span><span class="p">(</span><span class="s2">&quot;convert_to&quot;</span><span class="p">,</span> <span class="n">ConverterWrapper</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AtomGroup.write"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="AtomGroup.write">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">filenamefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{trjname}</span><span class="s2">_</span><span class="si">{frame}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write `AtomGroup` to a file.</span>
 
@@ -3717,7 +3745,10 @@
 
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No writer found for format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="AtomGroup.sort"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;ix&#39;</span><span class="p">,</span> <span class="n">keyfunc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AtomGroup.sort">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.sort">[docs]</a>
+    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;ix&#39;</span><span class="p">,</span> <span class="n">keyfunc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a sorted ``AtomGroup`` using a specified attribute as the key.</span>
 
@@ -3792,10 +3823,14 @@
                                  <span class="s2">&quot;&#39;keyfunc&#39;:</span><span class="si">{}</span><span class="s2"> doesn&#39;t return a 1D array.&quot;</span>
                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">keyfunc</span><span class="p">))</span>
             <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">sortkeys</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;stable&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">order</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">order</span><span class="p">]</span></div>
+</div>
 
 
-<div class="viewcode-block" id="ResidueGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">[docs]</a><span class="k">class</span> <span class="nc">ResidueGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ResidueGroup">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">[docs]</a>
+<span class="k">class</span> <span class="nc">ResidueGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;ResidueGroup base class.</span>
 
 <span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
@@ -3952,7 +3987,9 @@
         <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
         <span class="k">return</span> <span class="n">group</span>
 
-<div class="viewcode-block" id="ResidueGroup.asunique"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.asunique">[docs]</a>    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ResidueGroup.asunique">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.asunique">[docs]</a>
+    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`ResidueGroup` containing unique</span>
 <span class="sd">        :class:`Residues&lt;Residue&gt;` only, with optional sorting.</span>
 
@@ -3988,10 +4025,14 @@
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="SegmentGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup">[docs]</a><span class="k">class</span> <span class="nc">SegmentGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SegmentGroup">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup">[docs]</a>
+<span class="k">class</span> <span class="nc">SegmentGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`SegmentGroup` base class.</span>
 
 <span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
@@ -4128,7 +4169,9 @@
         <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
         <span class="k">return</span> <span class="n">group</span>
 
-<div class="viewcode-block" id="SegmentGroup.asunique"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.asunique">[docs]</a>    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SegmentGroup.asunique">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.asunique">[docs]</a>
+    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`SegmentGroup` containing unique</span>
 <span class="sd">        :class:`Segments&lt;Segment&gt;` only, with optional sorting.</span>
 
@@ -4164,7 +4207,9 @@
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
@@ -4280,7 +4325,9 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
+<div class="viewcode-block" id="Atom">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Atom">[docs]</a>
+<span class="k">class</span> <span class="nc">Atom</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`Atom` base class.</span>
 
 <span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
@@ -4412,7 +4459,10 @@
         <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">values</span></div>
 
 
-<div class="viewcode-block" id="Residue"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue">[docs]</a><span class="k">class</span> <span class="nc">Residue</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Residue">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue">[docs]</a>
+<span class="k">class</span> <span class="nc">Residue</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`Residue` base class.</span>
 
 <span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
@@ -4460,7 +4510,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">move_residue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">new</span><span class="o">.</span><span class="n">segindex</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Segment"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Segment">[docs]</a><span class="k">class</span> <span class="nc">Segment</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Segment">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.Segment">[docs]</a>
+<span class="k">class</span> <span class="nc">Segment</span><span class="p">(</span><span class="n">ComponentBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`Segment` base class.</span>
 
 <span class="sd">    This class is used by a :class:`~MDAnalysis.core.universe.Universe` for</span>
@@ -4512,6 +4565,7 @@
         <span class="k">return</span> <span class="n">rg</span></div>
 
 
+
 <span class="c1"># Accessing these attrs doesn&#39;t trigger an update. The class and instance</span>
 <span class="c1"># methods of UpdatingAtomGroup that are used during __init__ must all be</span>
 <span class="c1"># here, otherwise we get __getattribute__ infinite loops.</span>
@@ -4528,7 +4582,9 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="UpdatingAtomGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup">[docs]</a><span class="k">class</span> <span class="nc">UpdatingAtomGroup</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">):</span>
+<div class="viewcode-block" id="UpdatingAtomGroup">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup">[docs]</a>
+<span class="k">class</span> <span class="nc">UpdatingAtomGroup</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;:class:`AtomGroup` subclass that dynamically updates its selected atoms.</span>
 
 <span class="sd">    Accessing any attribute/method of an :class:`UpdatingAtomGroup` instance</span>
@@ -4570,7 +4626,9 @@
             <span class="c1"># by passing an empty selection tuple.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_updated</span><span class="p">()</span>
 
-<div class="viewcode-block" id="UpdatingAtomGroup.update_selection"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup.update_selection">[docs]</a>    <span class="k">def</span> <span class="nf">update_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UpdatingAtomGroup.update_selection">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup.update_selection">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Forces the reevaluation and application of the group&#39;s selection(s).</span>
 
@@ -4589,6 +4647,7 @@
         <span class="c1"># ourselves</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">UpdatingAtomGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_uptodate</span> <span class="o">=</span> <span class="kc">True</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_uptodate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -4721,14 +4780,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="p">[:]</span>
 
-<div class="viewcode-block" id="UpdatingAtomGroup.copy"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UpdatingAtomGroup.copy">
+<a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get another :class:`UpdatingAtomGroup` identical to this one.</span>
 
 
 <span class="sd">        .. versionadded:: 0.19.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">UpdatingAtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selections</span><span class="p">,</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">)</span></div></div>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="c1"># Define relationships between these classes</span>

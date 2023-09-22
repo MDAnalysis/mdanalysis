@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6.10. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -169,18 +181,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.coordinates.INPCRD"></span><section id="inpcrd-structure-files-in-mdanalysis-mdanalysis-coordinates-inpcrd">
-<h1><span class="section-number">6.10. </span>INPCRD structure files in MDAnalysis — <a class="reference internal" href="#module-MDAnalysis.coordinates.INPCRD" title="MDAnalysis.coordinates.INPCRD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a><a class="headerlink" href="#inpcrd-structure-files-in-mdanalysis-mdanalysis-coordinates-inpcrd" title="Permalink to this heading"></a></h1>
+  <section id="inpcrd-structure-files-in-mdanalysis-mdanalysis-coordinates-inpcrd">
+<span id="module-MDAnalysis.coordinates.INPCRD"></span><h1><span class="section-number">6.10. </span>INPCRD structure files in MDAnalysis — <a class="reference internal" href="#module-MDAnalysis.coordinates.INPCRD" title="MDAnalysis.coordinates.INPCRD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a><a class="headerlink" href="#inpcrd-structure-files-in-mdanalysis-mdanalysis-coordinates-inpcrd" title="Link to this heading"></a></h1>
 <p>Read coordinates in <a class="reference external" href="http://ambermd.org/formats.html#restart">Amber</a> coordinate/restart file (suffix “inpcrd”).</p>
 <section id="classes">
-<h2><span class="section-number">6.10.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.10.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.INPCRD.INPReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.INPCRD.</span></span><span class="sig-name descname"><span class="pre">INPReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/INPCRD.html#INPReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.INPCRD.INPReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.INPCRD.</span></span><span class="sig-name descname"><span class="pre">INPReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/INPCRD.html#INPReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.INPCRD.INPReader" title="Link to this definition"></a></dt>
 <dd><p>Reader for Amber restart files.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.INPCRD.INPReader.parse_n_atoms">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/INPCRD.html#INPReader.parse_n_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.INPCRD.INPReader.parse_n_atoms" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/INPCRD.html#INPReader.parse_n_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.INPCRD.INPReader.parse_n_atoms" title="Link to this definition"></a></dt>
 <dd><p>Read the coordinate file and deduce the number of atoms</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -197,7 +209,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.INPCRD.INPReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.INPCRD.INPReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.INPCRD.INPReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>

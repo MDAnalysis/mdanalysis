@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -184,7 +196,9 @@
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="MMTFReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.MMTFReader">[docs]</a><span class="k">class</span> <span class="nc">MMTFReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="MMTFReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.MMTFReader">[docs]</a>
+<span class="k">class</span> <span class="nc">MMTFReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for the Macromolecular Transmission Format format (MMTF_).&quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MMTF&#39;</span>
 
@@ -221,7 +235,10 @@
         <span class="k">return</span> <span class="n">ts</span></div>
 
 
-<div class="viewcode-block" id="fetch_mmtf"><a class="viewcode-back" href="../../../documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.fetch_mmtf">[docs]</a><span class="k">def</span> <span class="nf">fetch_mmtf</span><span class="p">(</span><span class="n">pdb_id</span><span class="p">):</span>
+
+<div class="viewcode-block" id="fetch_mmtf">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.fetch_mmtf">[docs]</a>
+<span class="k">def</span> <span class="nf">fetch_mmtf</span><span class="p">(</span><span class="n">pdb_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Universe from the RCSB Protein Data Bank using mmtf format</span>
 
 <span class="sd">    Parameters</span>
@@ -244,6 +261,7 @@
 <span class="sd">    .. versionadded:: 0.16.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Universe</span><span class="p">(</span><span class="n">mmtf</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">pdb_id</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

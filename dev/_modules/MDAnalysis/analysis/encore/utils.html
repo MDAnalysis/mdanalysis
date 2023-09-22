@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -160,7 +172,9 @@
 <span class="kn">from</span> <span class="nn">...coordinates.memory</span> <span class="kn">import</span> <span class="n">MemoryReader</span>
 
 
-<div class="viewcode-block" id="TriangularMatrix"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix">[docs]</a><span class="k">class</span> <span class="nc">TriangularMatrix</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TriangularMatrix">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix">[docs]</a>
+<span class="k">class</span> <span class="nc">TriangularMatrix</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Triangular matrix class. This class is designed to provide a</span>
 <span class="sd">    memory-efficient representation of a triangular matrix that still behaves</span>
 <span class="sd">    as a square symmetric one. The class wraps a numpy.array object,</span>
@@ -221,7 +235,9 @@
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
 
-<div class="viewcode-block" id="TriangularMatrix.as_array"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.as_array">[docs]</a>    <span class="k">def</span> <span class="nf">as_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TriangularMatrix.as_array">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.as_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return standard numpy array equivalent&quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=unsubscriptable-object</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
@@ -229,7 +245,10 @@
         <span class="n">a</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">a</span></div>
 
-<div class="viewcode-block" id="TriangularMatrix.savez"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.savez">[docs]</a>    <span class="k">def</span> <span class="nf">savez</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TriangularMatrix.savez">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.savez">[docs]</a>
+    <span class="k">def</span> <span class="nf">savez</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save matrix in the npz compressed numpy format. Save metadata and</span>
 <span class="sd">        data as well.</span>
 
@@ -241,7 +260,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TriangularMatrix.loadz"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.loadz">[docs]</a>    <span class="k">def</span> <span class="nf">loadz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TriangularMatrix.loadz">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix.loadz">[docs]</a>
+    <span class="k">def</span> <span class="nf">loadz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load matrix from the npz compressed numpy format.</span>
 
 <span class="sd">        Parameters</span>
@@ -260,6 +282,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">loaded</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="n">loaded</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span></div>
+
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add scalar to matrix elements.</span>
@@ -318,7 +341,10 @@
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_array</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="ParallelCalculation"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation">[docs]</a><span class="k">class</span> <span class="nc">ParallelCalculation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ParallelCalculation">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation">[docs]</a>
+<span class="k">class</span> <span class="nc">ParallelCalculation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generic parallel calculation class. Can use arbitrary functions,</span>
 <span class="sd">    arguments to functions and kwargs to functions.</span>
@@ -384,7 +410,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">nruns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ParallelCalculation.worker"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.worker">[docs]</a>    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<div class="viewcode-block" id="ParallelCalculation.worker">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.worker">[docs]</a>
+    <span class="k">def</span> <span class="nf">worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generic worker. Will run function with the prescribed args and kwargs.</span>
 
@@ -407,7 +435,10 @@
 
             <span class="n">results</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span></div>
 
-<div class="viewcode-block" id="ParallelCalculation.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ParallelCalculation.run">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run parallel calculation.</span>
 
@@ -448,10 +479,14 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="s1">&#39;STOP&#39;</span><span class="p">):</span>
                 <span class="n">results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div></div>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
+</div>
 
 
-<div class="viewcode-block" id="trm_indices"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices">[docs]</a><span class="k">def</span> <span class="nf">trm_indices</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+
+<div class="viewcode-block" id="trm_indices">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices">[docs]</a>
+<span class="k">def</span> <span class="nf">trm_indices</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate (i,j) indeces of a triangular matrix, between elements a and b.</span>
 <span class="sd">    The matrix size is automatically determined from the number of elements.</span>
@@ -481,7 +516,10 @@
         <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="trm_indices_nodiag"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices_nodiag">[docs]</a><span class="k">def</span> <span class="nf">trm_indices_nodiag</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="trm_indices_nodiag">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices_nodiag">[docs]</a>
+<span class="k">def</span> <span class="nf">trm_indices_nodiag</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;generate (i,j) indeces of a triangular matrix of n rows (or columns),</span>
 <span class="sd">    without diagonal (e.g. no elements (0,0),(1,1),...,(n,n))</span>
 
@@ -497,7 +535,10 @@
             <span class="k">yield</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="trm_indices_diag"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices_diag">[docs]</a><span class="k">def</span> <span class="nf">trm_indices_diag</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+
+<div class="viewcode-block" id="trm_indices_diag">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.trm_indices_diag">[docs]</a>
+<span class="k">def</span> <span class="nf">trm_indices_diag</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;generate (i,j) indeces of a triangular matrix of n rows (or columns),</span>
 <span class="sd">    with diagonal</span>
 
@@ -513,7 +554,10 @@
             <span class="k">yield</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="merge_universes"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.merge_universes">[docs]</a><span class="k">def</span> <span class="nf">merge_universes</span><span class="p">(</span><span class="n">universes</span><span class="p">):</span>
+
+<div class="viewcode-block" id="merge_universes">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.merge_universes">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_universes</span><span class="p">(</span><span class="n">universes</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge list of universes into one</span>
 
@@ -535,6 +579,7 @@
         <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">universes</span><span class="p">]),</span>
                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
         <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -564,7 +576,9 @@
     <span class="fm">__iter__</span> <span class="o">=</span> <span class="n">sorted_profiles_iter</span>
 
 
-<div class="viewcode-block" id="X3DNA"><a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA">[docs]</a><span class="k">class</span> <span class="nc">X3DNA</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
+<div class="viewcode-block" id="X3DNA">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA">[docs]</a>
+<span class="k">class</span> <span class="nc">X3DNA</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run X3DNA_ on a single frame or a DCD trajectory.</span>
 
 <span class="sd">    Only a subset of all X3DNA control parameters is supported and can be set</span>
@@ -670,7 +684,9 @@
         <span class="c1"># results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
 
-<div class="viewcode-block" id="X3DNA.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="X3DNA.run">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on the input file.&quot;&quot;&quot;</span>
         <span class="n">inpname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;inpfile&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">outname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;outfile&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span><span class="p">)</span>
@@ -699,7 +715,10 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s2">&quot;X3DNA Failure (</span><span class="si">%d</span><span class="s2">). Check output </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">x3dna</span><span class="o">.</span><span class="n">bit_length</span><span class="p">,</span> <span class="n">outname</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;X3DNA finished: output file </span><span class="si">%(outname)r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="X3DNA.collect"><a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.collect">[docs]</a>    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="X3DNA.collect">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.collect">[docs]</a>
+    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the output from a X3DNA run into numpy recarrays.</span>
 
 <span class="sd">        Can deal with outputs containing multiple frames.</span>
@@ -827,6 +846,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Missing data: Found </span><span class="si">%d</span><span class="s2"> X3DNA profiles from </span><span class="si">%d</span><span class="s2"> frames.&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">),</span> <span class="n">length</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tempfiles</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -837,7 +857,10 @@
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="X3DNAtraj"><a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj">[docs]</a><span class="k">class</span> <span class="nc">X3DNAtraj</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
+
+<div class="viewcode-block" id="X3DNAtraj">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj">[docs]</a>
+<span class="k">class</span> <span class="nc">X3DNAtraj</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze all frames in a trajectory.</span>
 
 <span class="sd">    The :class:`X3DNA` class provides a direct interface to X3DNA. X3DNA itself</span>
@@ -894,7 +917,9 @@
 
         <span class="c1"># processing</span>
 
-<div class="viewcode-block" id="X3DNAtraj.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="X3DNAtraj.run">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on the whole trajectory and collect profiles.</span>
 
 <span class="sd">        Keyword arguments `start`, `stop`, and `step` can be used to only</span>
@@ -933,13 +958,18 @@
             <span class="n">profiles</span><span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span> <span class="o">=</span> <span class="n">x3dna_profiles</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span> <span class="o">=</span> <span class="n">profiles</span></div>
 
-<div class="viewcode-block" id="X3DNAtraj.run_x3dna"><a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run_x3dna">[docs]</a>    <span class="k">def</span> <span class="nf">run_x3dna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="X3DNAtraj.run_x3dna">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run_x3dna">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_x3dna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on a single PDB file `pdbfile`.&quot;&quot;&quot;</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;x3dna_param&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">X3DNA</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">H</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="n">H</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">profiles</span></div></div>
+        <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">profiles</span></div>
+</div>
+
 </pre></div>
 
            </div>

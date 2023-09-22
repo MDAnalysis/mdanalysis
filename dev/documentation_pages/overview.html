@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1. Overview over MDAnalysis &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">1. Overview over MDAnalysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#using-mdanalysis-in-python">1.1. Using MDAnalysis in python</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">1.2. Examples</a><ul>
@@ -138,7 +150,7 @@
            <div itemprop="articleBody">
              
   <section id="overview-over-mdanalysis">
-<span id="overview-label"></span><h1><span class="section-number">1. </span>Overview over MDAnalysis<a class="headerlink" href="#overview-over-mdanalysis" title="Permalink to this heading"></a></h1>
+<span id="overview-label"></span><h1><span class="section-number">1. </span>Overview over MDAnalysis<a class="headerlink" href="#overview-over-mdanalysis" title="Link to this heading"></a></h1>
 <p><strong>MDAnalysis</strong> is a Python package that provides classes to access
 data in molecular dynamics trajectories. It is object oriented so it
 treats atoms, groups of atoms, trajectories, etc as different
@@ -172,7 +184,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated:</p
 </pre></div>
 </div>
 <section id="using-mdanalysis-in-python">
-<h2><span class="section-number">1.1. </span>Using MDAnalysis in python<a class="headerlink" href="#using-mdanalysis-in-python" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">1.1. </span>Using MDAnalysis in python<a class="headerlink" href="#using-mdanalysis-in-python" title="Link to this heading"></a></h2>
 <p>If you’ve installed MDAnalysis in the standard python modules location, load
 from within the interpreter:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
@@ -246,10 +258,10 @@ over time:</p>
 <p>as described in <a class="reference internal" href="selections.html#selection-commands-label"><span class="std std-ref">Selection commands</span></a>.</p>
 </section>
 <section id="examples">
-<h2><span class="section-number">1.2. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">1.2. </span>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
 <p>The easiest way to get started with MDAnalysis is to read this introduction and the chapters on <a class="reference internal" href="topology.html#topology-label"><span class="std std-ref">The topology system</span></a> and <a class="reference internal" href="selections.html#selection-commands-label"><span class="std std-ref">Selection commands</span></a>, then explore the package interactively in <a class="reference external" href="http://ipython.scipy.org/">IPython</a> or another interactive Python interpreter.</p>
 <section id="included-trajectories">
-<h3><span class="section-number">1.2.1. </span>Included trajectories<a class="headerlink" href="#included-trajectories" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">1.2.1. </span>Included trajectories<a class="headerlink" href="#included-trajectories" title="Link to this heading"></a></h3>
 <p>MDAnalysis comes with a number of real trajectories for testing. You
 can also use them to explore the functionality and ensure that
 everything is working properly:</p>
@@ -275,7 +287,7 @@ Open &lt;–&gt; Closed Transitions. <em>J Mol Biol</em> <strong>394</strong>
 </div>
 </section>
 <section id="code-snippets">
-<h3><span class="section-number">1.2.2. </span>Code snippets<a class="headerlink" href="#code-snippets" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">1.2.2. </span>Code snippets<a class="headerlink" href="#code-snippets" title="Link to this heading"></a></h3>
 <p>The source code distribution comes with a directory <a class="reference external" href="https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples/">examples</a> that
 contains a number of code snippets that show how to use certain
 aspects of MDAnalysis.</p>

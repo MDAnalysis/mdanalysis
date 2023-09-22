@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -303,7 +315,9 @@
             <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="n">universe</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Universe"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe">[docs]</a><span class="k">class</span> <span class="nc">Universe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe">[docs]</a>
+<span class="k">class</span> <span class="nc">Universe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The MDAnalysis Universe contains all the information describing the system.</span>
 
 <span class="sd">    The system always requires a *topology file* --- in the simplest case just</span>
@@ -513,13 +527,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span><span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="n">fudge_factor</span><span class="p">,</span>
                                    <span class="n">lower_bound</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Universe.copy"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe.copy">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an independent copy of this Universe&quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
         <span class="n">new</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">new</span></div>
 
-<div class="viewcode-block" id="Universe.empty"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.empty">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Universe.empty">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.empty">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_frames</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
               <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">trajectory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -618,6 +637,7 @@
 
         <span class="k">return</span> <span class="n">u</span></div>
 
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># for Writer.write(universe), see Issue 49</span>
@@ -627,7 +647,9 @@
         <span class="c1"># It is also cleaner than a weakref.</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="Universe.load_new"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.load_new">[docs]</a>    <span class="k">def</span> <span class="nf">load_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="Universe.load_new">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.load_new">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load coordinates from `filename`.</span>
 
@@ -722,7 +744,10 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Universe.transfer_to_memory"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory">[docs]</a>    <span class="k">def</span> <span class="nf">transfer_to_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="Universe.transfer_to_memory">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory">[docs]</a>
+    <span class="k">def</span> <span class="nf">transfer_to_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transfer the trajectory to in memory representation.</span>
 
@@ -789,11 +814,14 @@
                 <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span>
                 <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+
     <span class="c1"># python 2 doesn&#39;t allow an efficient splitting of kwargs in function</span>
     <span class="c1"># argument signatures.</span>
     <span class="c1"># In python3-only we&#39;d be able to explicitly define this function with</span>
     <span class="c1"># something like (sel, *othersels, updating=False, **selgroups)</span>
-<div class="viewcode-block" id="Universe.select_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.select_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe.select_atoms">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.select_atoms">[docs]</a>
+    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Select atoms.</span>
 
 <span class="sd">        See Also</span>
@@ -801,6 +829,7 @@
 <span class="sd">        :meth:`MDAnalysis.core.groups.AtomGroup.select_atoms`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -917,7 +946,9 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span>  <span class="c1"># guarantees that files are closed (?)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="Universe.add_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe.add_TopologyAttr">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new topology attribute to the Universe</span>
 
 <span class="sd">        Adding a TopologyAttribute to the Universe makes it available to</span>
@@ -981,7 +1012,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Universe.del_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.del_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.del_TopologyAttr">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.del_TopologyAttr">[docs]</a>
+    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a topology attribute from the Universe</span>
 
 <span class="sd">        Removing a TopologyAttribute from the Universe makes it unavailable to</span>
@@ -1044,6 +1078,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unprocess_attr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="nf">_process_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Squeeze a topologyattr for its information</span>
 
@@ -1096,7 +1131,9 @@
             <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">transplants</span><span class="p">:</span>
                 <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">],</span> <span class="n">funcname</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Universe.add_Residue"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Residue">[docs]</a>    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe.add_Residue">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Residue">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new Residue to this Universe</span>
 
 <span class="sd">        New Residues will not contain any Atoms, but can be assigned to Atoms</span>
@@ -1149,7 +1186,10 @@
         <span class="c1"># return the new residue</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residx</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Universe.add_Segment"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Segment">[docs]</a>    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.add_Segment">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Segment">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new Segment to this Universe</span>
 
 <span class="sd">        Parameters</span>
@@ -1174,6 +1214,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">SegmentGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
         <span class="c1"># return the new segment</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">segidx</span><span class="p">]</span></div>
+
 
     <span class="k">def</span> <span class="nf">_add_topology_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                            <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1233,7 +1274,9 @@
 
         <span class="n">attr</span><span class="o">.</span><span class="n">_add_bonds</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Universe.add_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe.add_bonds">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_bonds">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Bonds to this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1286,7 +1329,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Universe.add_angles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_angles">[docs]</a>    <span class="k">def</span> <span class="nf">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.add_angles">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_angles">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Angles to this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1307,7 +1353,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Universe.add_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">add_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.add_dihedrals">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_dihedrals">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Dihedrals to this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1329,7 +1378,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Universe.add_impropers"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_impropers">[docs]</a>    <span class="k">def</span> <span class="nf">add_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.add_impropers">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_impropers">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Impropers to this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1350,6 +1402,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_delete_topology_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete TopologyObjects from this Universe</span>
@@ -1383,7 +1436,9 @@
 
         <span class="n">attr</span><span class="o">.</span><span class="n">_delete_bonds</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Universe.delete_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">delete_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe.delete_bonds">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_bonds">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Bonds from this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1426,7 +1481,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Universe.delete_angles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_angles">[docs]</a>    <span class="k">def</span> <span class="nf">delete_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.delete_angles">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_angles">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Angles from this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1442,7 +1500,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Universe.delete_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">delete_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.delete_dihedrals">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_dihedrals">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Dihedrals from this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1458,7 +1519,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Universe.delete_impropers"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_impropers">[docs]</a>    <span class="k">def</span> <span class="nf">delete_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Universe.delete_impropers">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_impropers">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Impropers from this Universe.</span>
 
 <span class="sd">        Parameters</span>
@@ -1473,6 +1537,7 @@
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+
 
     <span class="c1"># TODO: Maybe put this as a Bond attribute transplant</span>
     <span class="c1"># Problems: Can we transplant onto Universe?</span>
@@ -1512,7 +1577,9 @@
 
         <span class="k">return</span> <span class="n">fragdict</span>
 
-<div class="viewcode-block" id="Universe.from_smiles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.from_smiles">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Universe.from_smiles">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.from_smiles">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_smiles</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">addHs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">generate_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                     <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1593,10 +1660,14 @@
                 <span class="s2">&quot;integer instead of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numConfs</span><span class="p">))</span>
             <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMultipleConfs</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">,</span> <span class="o">**</span><span class="n">rdkit_kwargs</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Merge"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Merge">[docs]</a><span class="k">def</span> <span class="nf">Merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Merge">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Merge">[docs]</a>
+<span class="k">def</span> <span class="nf">Merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new new :class:`Universe` from one or more</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.AtomGroup` instances.</span>
 
@@ -1785,6 +1856,7 @@
         <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">u</span></div>
+
 </pre></div>
 
            </div>

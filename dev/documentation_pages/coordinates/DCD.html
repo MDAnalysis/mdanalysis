@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6.3. DCD trajectory I/O — MDAnalysis.coordinates.DCD &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -169,8 +181,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.coordinates.DCD"></span><section id="dcd-trajectory-i-o-mdanalysis-coordinates-dcd">
-<h1><span class="section-number">6.3. </span>DCD trajectory I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a><a class="headerlink" href="#dcd-trajectory-i-o-mdanalysis-coordinates-dcd" title="Permalink to this heading"></a></h1>
+  <section id="dcd-trajectory-i-o-mdanalysis-coordinates-dcd">
+<span id="module-MDAnalysis.coordinates.DCD"></span><h1><span class="section-number">6.3. </span>DCD trajectory I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a><a class="headerlink" href="#dcd-trajectory-i-o-mdanalysis-coordinates-dcd" title="Link to this heading"></a></h1>
 <p>Classes to read and write DCD binary trajectories, the format used by
 CHARMM, NAMD, and also LAMMPS. Trajectories can be read regardless of
 system-endianness as this is auto-detected.</p>
@@ -190,10 +202,10 @@ are correctly interpreted.</p>
 </dl>
 </div>
 <section id="classes">
-<h2><span class="section-number">6.3.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.3.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DCD.</span></span><span class="sig-name descname"><span class="pre">DCDReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DCD.</span></span><span class="sig-name descname"><span class="pre">DCDReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader" title="Link to this definition"></a></dt>
 <dd><p>Reader for the DCD format.</p>
 <p>DCD is used by NAMD, CHARMM and LAMMPS as the default trajectory format.
 The DCD file format is not well defined. In particular, NAMD and CHARMM use
@@ -246,7 +258,7 @@ give wrong unitcell values. For more details see <a class="reference external" h
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.OtherWriter">
-<span class="sig-name descname"><span class="pre">OtherWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.OtherWriter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">OtherWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.OtherWriter" title="Link to this definition"></a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>dt</em> (if
 available). <em>n_atoms</em> is always set from <code class="xref py py-attr docutils literal notranslate"><span class="pre">Reader.n_atoms</span></code>.</p>
@@ -258,13 +270,13 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.Writer">
-<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.Writer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.Writer" title="Link to this definition"></a></dt>
 <dd><p>Return writer for trajectory format</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.add_auxiliary">
-<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.add_auxiliary" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.add_auxiliary" title="Link to this definition"></a></dt>
 <dd><p>Add auxiliary data to be read alongside trajectory.</p>
 <p>Auxiliary data may be any data timeseries from the trajectory
 additional to that read in by the trajectory reader. <em>auxdata</em> can
@@ -323,7 +335,7 @@ the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><s
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.add_transformations">
-<span class="sig-name descname"><span class="pre">add_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">transformations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.add_transformations" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">transformations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.add_transformations" title="Link to this definition"></a></dt>
 <dd><p>Add all transformations to be applied to the trajectory.</p>
 <p>This function take as list of transformations as an argument. These
 transformations are functions that will be called by the Reader and given
@@ -360,13 +372,13 @@ in the order given in the list</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.aux_list">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aux_list</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.aux_list" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aux_list</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.aux_list" title="Link to this definition"></a></dt>
 <dd><p>Lists the names of added auxiliary data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.check_slice_indices">
-<span class="sig-name descname"><span class="pre">check_slice_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.check_slice_indices" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">check_slice_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.check_slice_indices" title="Link to this definition"></a></dt>
 <dd><p>Check frame indices are valid and clip to fit trajectory.</p>
 <p>The usage follows standard Python conventions for <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code> but see
 the warning below.</p>
@@ -416,13 +428,13 @@ creating a <a class="reference external" href="https://docs.python.org/3/library
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.close" title="Link to this definition"></a></dt>
 <dd><p>close reader</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -445,7 +457,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -468,7 +480,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -494,7 +506,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -520,7 +532,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_time_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_time_from_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -548,7 +560,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_time_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_time_to_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -575,7 +587,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -598,7 +610,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -621,7 +633,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.copy" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.copy" title="Link to this definition"></a></dt>
 <dd><p>Return independent copy of this Reader.</p>
 <p>New Reader will have its own file handle and can seek/iterate
 independently of the original.</p>
@@ -637,26 +649,26 @@ with default parameters which may differ from the original class.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.dimensions">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.dimensions" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.dimensions" title="Link to this definition"></a></dt>
 <dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.dt">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.dt" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.dt" title="Link to this definition"></a></dt>
 <dd><p>timestep between frames</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.frame">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.frame" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.frame" title="Link to this definition"></a></dt>
 <dd><p>Frame number of the current time step.</p>
 <p>This is a simple short cut to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.get_aux_attribute">
-<span class="sig-name descname"><span class="pre">get_aux_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.get_aux_attribute" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_aux_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.get_aux_attribute" title="Link to this definition"></a></dt>
 <dd><p>Get the value of <em>attrname</em> from the auxiliary <em>auxname</em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -674,7 +686,7 @@ with default parameters which may differ from the original class.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.get_aux_descriptions">
-<span class="sig-name descname"><span class="pre">get_aux_descriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.get_aux_descriptions" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_aux_descriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.get_aux_descriptions" title="Link to this definition"></a></dt>
 <dd><p>Get descriptions to allow reloading the specified auxiliaries.</p>
 <p>If no auxnames are provided, defaults to the full list of added
 auxiliaries.</p>
@@ -702,7 +714,7 @@ second trajectory:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.iter_as_aux">
-<span class="sig-name descname"><span class="pre">iter_as_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.iter_as_aux" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">iter_as_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.iter_as_aux" title="Link to this definition"></a></dt>
 <dd><p>Iterate through timesteps for which there is at least one assigned
 step from the auxiliary <em>auxname</em> within the cutoff specified in <em>auxname</em>.</p>
 <div class="admonition seealso">
@@ -713,7 +725,7 @@ step from the auxiliary <em>auxname</em> within the cutoff specified in <em>auxn
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.iter_auxiliary">
-<span class="sig-name descname"><span class="pre">iter_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.iter_auxiliary" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">iter_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.iter_auxiliary" title="Link to this definition"></a></dt>
 <dd><p>Iterate through the auxiliary <em>auxname</em> independently of the trajectory.</p>
 <p>Will iterate over the specified steps of the auxiliary (defaults to all
 steps). Allows to access all values in an auxiliary, including those out
@@ -742,19 +754,19 @@ through the trajectory.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.n_frames">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.n_frames" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.n_frames" title="Link to this definition"></a></dt>
 <dd><p>number of frames in trajectory</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.next">
-<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><span class="pre">Timestep</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.next" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><span class="pre">Timestep</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.next" title="Link to this definition"></a></dt>
 <dd><p>Forward one step to next frame.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.next_as_aux">
-<span class="sig-name descname"><span class="pre">next_as_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.next_as_aux" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">next_as_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.next_as_aux" title="Link to this definition"></a></dt>
 <dd><p>Move to the next timestep for which there is at least one step from
 the auxiliary <em>auxname</em> within the cutoff specified in <em>auxname</em>.</p>
 <p>This allows progression through the trajectory without encountering
@@ -774,7 +786,7 @@ steps are more frequent, this will work the same as calling
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.parse_n_atoms">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.parse_n_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.parse_n_atoms" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.parse_n_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.parse_n_atoms" title="Link to this definition"></a></dt>
 <dd><p>Read the coordinate file and deduce the number of atoms</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -791,7 +803,7 @@ steps are more frequent, this will work the same as calling
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.remove_auxiliary">
-<span class="sig-name descname"><span class="pre">remove_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.remove_auxiliary" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.remove_auxiliary" title="Link to this definition"></a></dt>
 <dd><p>Clear data and close the <a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a>
 for the auxiliary <em>auxname</em>.</p>
 <div class="admonition seealso">
@@ -802,7 +814,7 @@ for the auxiliary <em>auxname</em>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.rename_aux">
-<span class="sig-name descname"><span class="pre">rename_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.rename_aux" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rename_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.rename_aux" title="Link to this definition"></a></dt>
 <dd><p>Change the name of the auxiliary <em>auxname</em> to <em>new</em>.</p>
 <p>Provided there is not already an auxiliary named <em>new</em>, the auxiliary
 name will be changed in ts.aux namespace, the trajectory’s
@@ -822,13 +834,13 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.rewind">
-<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><span class="pre">Timestep</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.rewind" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><span class="pre">Timestep</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.rewind" title="Link to this definition"></a></dt>
 <dd><p>Position at beginning of trajectory</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.set_aux_attribute">
-<span class="sig-name descname"><span class="pre">set_aux_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.set_aux_attribute" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_aux_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.set_aux_attribute" title="Link to this definition"></a></dt>
 <dd><p>Set the value of <em>attrname</em> in the auxiliary <em>auxname</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -847,7 +859,7 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.time">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.time" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.time" title="Link to this definition"></a></dt>
 <dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
 <p>This is either read straight from the Timestep, or calculated as
 time = <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code> * <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dt</span></code></p>
@@ -855,7 +867,7 @@ time = <code class="xref py py-attr docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.timeseries">
-<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'afc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.timeseries" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'afc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.timeseries" title="Link to this definition"></a></dt>
 <dd><p>Return a subset of coordinate data for an AtomGroup</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -890,7 +902,7 @@ AtomGroup</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.totaltime">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.totaltime" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.totaltime" title="Link to this definition"></a></dt>
 <dd><p>Total length of the trajectory</p>
 <p>The time is calculated as <code class="docutils literal notranslate"><span class="pre">(n_frames</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">dt</span></code>, i.e., we assume that
 the first frame no time as elapsed. Thus, a trajectory with two frames will
@@ -900,13 +912,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.transformations">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transformations</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.transformations" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transformations</span></span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.transformations" title="Link to this definition"></a></dt>
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -915,7 +927,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DCD.</span></span><span class="sig-name descname"><span class="pre">DCDWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remarks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsavc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">istart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DCD.</span></span><span class="sig-name descname"><span class="pre">DCDWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remarks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsavc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">istart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Link to this definition"></a></dt>
 <dd><p>DCD Writer class</p>
 <p>The writer follows recent NAMD/VMD convention for the unitcell (box lengths
 in Å and angle-cosines, <code class="docutils literal notranslate"><span class="pre">[A,</span> <span class="pre">cos(gamma),</span> <span class="pre">B,</span> <span class="pre">cos(beta),</span> <span class="pre">cos(alpha),</span> <span class="pre">C]</span></code>)
@@ -953,13 +965,13 @@ frame is 0.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.close" title="Link to this definition"></a></dt>
 <dd><p>close trajectory</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">
-<span class="sig-name descname"><span class="pre">convert_dimensions_to_unitcell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_dimensions_to_unitcell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell" title="Link to this definition"></a></dt>
 <dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell.</p>
 <p>The default is to return <code class="docutils literal notranslate"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code>; if this
 is not appropriate then this method has to be overriden.</p>
@@ -967,7 +979,7 @@ is not appropriate then this method has to be overriden.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -990,7 +1002,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1013,7 +1025,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1039,7 +1051,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1065,7 +1077,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_time_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_time_from_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1093,7 +1105,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_time_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_time_to_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1120,7 +1132,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1143,7 +1155,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1166,7 +1178,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.has_valid_coordinates">
-<span class="sig-name descname"><span class="pre">has_valid_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.has_valid_coordinates" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">has_valid_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.has_valid_coordinates" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if all values are within limit values of their formats.</p>
 <p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">min</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="nb">max</span>
@@ -1187,14 +1199,14 @@ is avoided.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write" title="Link to this definition"></a></dt>
 <dd><p>Write current timestep, using the supplied <cite>obj</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

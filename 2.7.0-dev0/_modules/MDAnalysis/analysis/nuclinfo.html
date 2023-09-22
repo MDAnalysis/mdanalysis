@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -227,7 +239,9 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="kn">import</span> <span class="n">mdamath</span>
 
 
-<div class="viewcode-block" id="wc_pair"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.wc_pair">[docs]</a><span class="k">def</span> <span class="nf">wc_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="wc_pair">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.wc_pair">[docs]</a>
+<span class="k">def</span> <span class="nf">wc_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Watson-Crick basepair distance for residue `i` with residue `bp`.</span>
 
 <span class="sd">    The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is</span>
@@ -270,7 +284,10 @@
     <span class="k">return</span> <span class="n">wc</span></div>
 
 
-<div class="viewcode-block" id="minor_pair"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.minor_pair">[docs]</a><span class="k">def</span> <span class="nf">minor_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="minor_pair">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.minor_pair">[docs]</a>
+<span class="k">def</span> <span class="nf">minor_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Minor-Groove basepair distance for residue `i` with residue `bp`.</span>
 
 <span class="sd">    The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen</span>
@@ -312,7 +329,10 @@
     <span class="k">return</span> <span class="n">c2o2</span></div>
 
 
-<div class="viewcode-block" id="major_pair"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.major_pair">[docs]</a><span class="k">def</span> <span class="nf">major_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="major_pair">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.major_pair">[docs]</a>
+<span class="k">def</span> <span class="nf">major_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Major-Groove basepair distance for residue `i` with residue `bp`.</span>
 
 <span class="sd">    The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen</span>
@@ -361,7 +381,10 @@
     <span class="k">return</span> <span class="n">major</span></div>
 
 
-<div class="viewcode-block" id="phase_cp"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.phase_cp">[docs]</a><span class="k">def</span> <span class="nf">phase_cp</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="phase_cp">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.phase_cp">[docs]</a>
+<span class="k">def</span> <span class="nf">phase_cp</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.</span>
 
 <span class="sd">    The angle is computed by the positions of atoms in the ribose ring.</span>
@@ -432,7 +455,10 @@
     <span class="k">return</span> <span class="n">phase_ang</span> <span class="o">%</span> <span class="mi">360</span></div>
 
 
-<div class="viewcode-block" id="phase_as"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.phase_as">[docs]</a><span class="k">def</span> <span class="nf">phase_as</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="phase_as">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.phase_as">[docs]</a>
+<span class="k">def</span> <span class="nf">phase_as</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pseudo-angle describing the phase of the ribose pucker for residue `i` using the AS method</span>
 
 <span class="sd">    The angle is computed by the position vector of atoms in the ribose ring.</span>
@@ -501,7 +527,10 @@
     <span class="k">return</span> <span class="n">phase_ang</span> <span class="o">%</span> <span class="mi">360</span></div>
 
 
-<div class="viewcode-block" id="tors"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors">[docs]</a><span class="k">def</span> <span class="nf">tors</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors">[docs]</a>
+<span class="k">def</span> <span class="nf">tors</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculation of nucleic backbone dihedral angles.</span>
 
 <span class="sd">    The dihedral angles are alpha, beta, gamma, delta, epsilon, zeta, chi.</span>
@@ -580,7 +609,10 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">chi</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="tors_alpha"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_alpha">[docs]</a><span class="k">def</span> <span class="nf">tors_alpha</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors_alpha">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_alpha">[docs]</a>
+<span class="k">def</span> <span class="nf">tors_alpha</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;alpha backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
@@ -610,7 +642,10 @@
     <span class="k">return</span> <span class="n">alpha</span></div>
 
 
-<div class="viewcode-block" id="tors_beta"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_beta">[docs]</a><span class="k">def</span> <span class="nf">tors_beta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors_beta">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_beta">[docs]</a>
+<span class="k">def</span> <span class="nf">tors_beta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;beta  backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
@@ -640,7 +675,10 @@
     <span class="k">return</span> <span class="n">beta</span></div>
 
 
-<div class="viewcode-block" id="tors_gamma"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_gamma">[docs]</a><span class="k">def</span> <span class="nf">tors_gamma</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors_gamma">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_gamma">[docs]</a>
+<span class="k">def</span> <span class="nf">tors_gamma</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Gamma backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
@@ -670,7 +708,10 @@
     <span class="k">return</span> <span class="n">gamma</span></div>
 
 
-<div class="viewcode-block" id="tors_delta"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_delta">[docs]</a><span class="k">def</span> <span class="nf">tors_delta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors_delta">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_delta">[docs]</a>
+<span class="k">def</span> <span class="nf">tors_delta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;delta backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
@@ -700,7 +741,10 @@
     <span class="k">return</span> <span class="n">delta</span></div>
 
 
-<div class="viewcode-block" id="tors_eps"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_eps">[docs]</a><span class="k">def</span> <span class="nf">tors_eps</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors_eps">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_eps">[docs]</a>
+<span class="k">def</span> <span class="nf">tors_eps</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Epsilon backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
@@ -730,7 +774,10 @@
     <span class="k">return</span> <span class="n">epsilon</span></div>
 
 
-<div class="viewcode-block" id="tors_zeta"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_zeta">[docs]</a><span class="k">def</span> <span class="nf">tors_zeta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors_zeta">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_zeta">[docs]</a>
+<span class="k">def</span> <span class="nf">tors_zeta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Zeta backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
@@ -760,7 +807,10 @@
     <span class="k">return</span> <span class="n">zeta</span></div>
 
 
-<div class="viewcode-block" id="tors_chi"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_chi">[docs]</a><span class="k">def</span> <span class="nf">tors_chi</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="tors_chi">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_chi">[docs]</a>
+<span class="k">def</span> <span class="nf">tors_chi</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;chi nucleic acid dihedral</span>
 
 <span class="sd">     The dihedral is computed based on position atoms for resid `i`.</span>
@@ -795,7 +845,10 @@
     <span class="k">return</span> <span class="n">chi</span></div>
 
 
-<div class="viewcode-block" id="hydroxyl"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.hydroxyl">[docs]</a><span class="k">def</span> <span class="nf">hydroxyl</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="hydroxyl">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.hydroxyl">[docs]</a>
+<span class="k">def</span> <span class="nf">hydroxyl</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;2-hydroxyl dihedral. Useful only for RNA calculations.</span>
 
 <span class="sd">     .. Note:: This dihedral calculation will only work if using atom</span>
@@ -834,7 +887,10 @@
     <span class="k">return</span> <span class="n">hydr</span></div>
 
 
-<div class="viewcode-block" id="pseudo_dihe_baseflip"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip">[docs]</a><span class="k">def</span> <span class="nf">pseudo_dihe_baseflip</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">bp1</span><span class="p">,</span> <span class="n">bp2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span>
+
+<div class="viewcode-block" id="pseudo_dihe_baseflip">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip">[docs]</a>
+<span class="k">def</span> <span class="nf">pseudo_dihe_baseflip</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">bp1</span><span class="p">,</span> <span class="n">bp2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span>
                          <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg3</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping</span>
 
@@ -881,6 +937,7 @@
     <span class="n">pseudo</span> <span class="o">=</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">dihedral</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">pseudo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">pseudo</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
     <span class="k">return</span> <span class="n">pseudo</span></div>
+
 </pre></div>
 
            </div>

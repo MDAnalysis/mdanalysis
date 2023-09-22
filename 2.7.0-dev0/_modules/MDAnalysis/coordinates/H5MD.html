@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -360,7 +372,9 @@
     <span class="n">HAS_H5PY</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="H5MDReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader">[docs]</a><span class="k">class</span> <span class="nc">H5MDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="H5MDReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader">[docs]</a>
+<span class="k">class</span> <span class="nc">H5MDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reader for the H5MD format.</span>
 
 <span class="sd">    See `h5md documentation &lt;https://nongnu.org/h5md/h5md.html&gt;`_</span>
@@ -702,7 +716,9 @@
         <span class="c1"># format=&#39;H5MD&#39; is used</span>
         <span class="k">return</span> <span class="n">HAS_H5PY</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
 
-<div class="viewcode-block" id="H5MDReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="H5MDReader.parse_n_atoms">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;particles/trajectory&#39;</span><span class="p">]:</span>
@@ -715,7 +731,10 @@
                               <span class="s2">&quot;&#39;position&#39;, &#39;velocity&#39;, or &#39;force&#39; group. &quot;</span>
                               <span class="s2">&quot;You must include a topology file.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="H5MDReader.open_trajectory"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="H5MDReader.open_trajectory">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.open_trajectory">[docs]</a>
+    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;opens the trajectory file using h5py library&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
@@ -738,6 +757,7 @@
         <span class="c1"># allows for arbitrary name of group1 in &#39;particles&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">][</span>
             <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -863,11 +883,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;read next frame in trajectory&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="H5MDReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="H5MDReader.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="H5MDReader._reopen"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader._reopen">[docs]</a>    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="H5MDReader._reopen">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader._reopen">[docs]</a>
+    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;reopen trajectory</span>
 
 <span class="sd">        Note</span>
@@ -887,7 +912,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="H5MDReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="H5MDReader.Writer">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.Writer">[docs]</a>
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return writer for trajectory format</span>
 
 <span class="sd">        Note</span>
@@ -920,6 +948,7 @@
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">)</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">H5MDWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -960,7 +989,10 @@
         <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="H5MDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDWriter">[docs]</a><span class="k">class</span> <span class="nc">H5MDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="H5MDWriter">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDWriter">[docs]</a>
+<span class="k">class</span> <span class="nc">H5MDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Writer for `H5MD`_ format (version 1.1).</span>
 
 <span class="sd">    H5MD trajectories are automatically recognised by the</span>
@@ -1596,7 +1628,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="H5PYPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5PYPicklable">[docs]</a><span class="k">class</span> <span class="nc">H5PYPicklable</span><span class="p">(</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
+
+<div class="viewcode-block" id="H5PYPicklable">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5PYPicklable">[docs]</a>
+<span class="k">class</span> <span class="nc">H5PYPicklable</span><span class="p">(</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;H5PY file object (read-only) that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by</span>
@@ -1668,6 +1703,7 @@
     <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the h5py getnewargs to skip its error message&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">()</span></div>
+
 </pre></div>
 
            </div>

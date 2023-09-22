@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -194,7 +206,9 @@
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 
-<div class="viewcode-block" id="make_downshift_arrays"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.make_downshift_arrays">[docs]</a><span class="k">def</span> <span class="nf">make_downshift_arrays</span><span class="p">(</span><span class="n">upshift</span><span class="p">,</span> <span class="n">nparents</span><span class="p">):</span>
+<div class="viewcode-block" id="make_downshift_arrays">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.make_downshift_arrays">[docs]</a>
+<span class="k">def</span> <span class="nf">make_downshift_arrays</span><span class="p">(</span><span class="n">upshift</span><span class="p">,</span> <span class="n">nparents</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;From an upwards translation table, create the opposite direction</span>
 
 <span class="sd">    Turns a many to one mapping (eg atoms to residues) to a one to many mapping</span>
@@ -266,7 +280,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">downshift</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TransTable"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable">[docs]</a><span class="k">class</span> <span class="nc">TransTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable">[docs]</a>
+<span class="k">class</span> <span class="nc">TransTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Membership tables with methods to translate indices across levels.</span>
 
 <span class="sd">    There are three levels; Atom, Residue and Segment.  Each Atom **must**</span>
@@ -336,10 +353,13 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;residue_segindex must be len n_residues&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TransTable.copy"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TransTable.copy">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deepcopy of this Transtable&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
                               <span class="n">atom_resindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">RA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -363,7 +383,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TransTable.atoms2residues"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2residues">[docs]</a>    <span class="k">def</span> <span class="nf">atoms2residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
+<div class="viewcode-block" id="TransTable.atoms2residues">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2residues">[docs]</a>
+    <span class="k">def</span> <span class="nf">atoms2residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get residue indices for each atom.</span>
 
 <span class="sd">        Parameters</span>
@@ -379,7 +401,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="TransTable.residues2atoms_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_1d">[docs]</a>    <span class="k">def</span> <span class="nf">residues2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.residues2atoms_1d">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_1d">[docs]</a>
+    <span class="k">def</span> <span class="nf">residues2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given residue indices.</span>
 
 <span class="sd">        Parameters</span>
@@ -400,7 +425,10 @@
             <span class="c1"># don&#39;t accidentally return a view!</span>
             <span class="k">return</span> <span class="n">RA</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TransTable.residues2atoms_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_2d">[docs]</a>    <span class="k">def</span> <span class="nf">residues2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.residues2atoms_2d">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_2d">[docs]</a>
+    <span class="k">def</span> <span class="nf">residues2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices represented by each residue index.</span>
 
 <span class="sd">        Parameters</span>
@@ -422,7 +450,10 @@
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">RA</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>  <span class="c1"># why would this be singular for 2d?</span></div>
 
-<div class="viewcode-block" id="TransTable.residues2segments"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2segments">[docs]</a>    <span class="k">def</span> <span class="nf">residues2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.residues2segments">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2segments">[docs]</a>
+    <span class="k">def</span> <span class="nf">residues2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get segment indices for each residue.</span>
 
 <span class="sd">        Parameters</span>
@@ -438,7 +469,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="TransTable.segments2residues_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_1d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2residues_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.segments2residues_1d">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_1d">[docs]</a>
+    <span class="k">def</span> <span class="nf">segments2residues_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get residue indices collectively represented by given segment indices</span>
 
 <span class="sd">        Parameters</span>
@@ -459,7 +493,10 @@
             <span class="c1"># don&#39;t accidentally return a view!</span>
             <span class="k">return</span> <span class="n">SR</span><span class="p">[</span><span class="n">six</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TransTable.segments2residues_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_2d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2residues_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.segments2residues_2d">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_2d">[docs]</a>
+    <span class="k">def</span> <span class="nf">segments2residues_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get residue indices represented by each segment index.</span>
 
 <span class="sd">        Parameters</span>
@@ -481,8 +518,11 @@
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">SR</span><span class="p">[</span><span class="n">six</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span></div>
 
+
     <span class="c1"># Compound moves, does 2 translations</span>
-<div class="viewcode-block" id="TransTable.atoms2segments"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2segments">[docs]</a>    <span class="k">def</span> <span class="nf">atoms2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
+<div class="viewcode-block" id="TransTable.atoms2segments">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2segments">[docs]</a>
+    <span class="k">def</span> <span class="nf">atoms2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get segment indices for each atom.</span>
 
 <span class="sd">        Parameters</span>
@@ -499,7 +539,10 @@
         <span class="n">rix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms2residues</span><span class="p">(</span><span class="n">aix</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues2segments</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TransTable.segments2atoms_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_1d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.segments2atoms_1d">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_1d">[docs]</a>
+    <span class="k">def</span> <span class="nf">segments2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given segment indices.</span>
 
 <span class="sd">        Parameters</span>
@@ -516,7 +559,10 @@
         <span class="n">rix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments2residues_1d</span><span class="p">(</span><span class="n">six</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues2atoms_1d</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TransTable.segments2atoms_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_2d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.segments2atoms_2d">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_2d">[docs]</a>
+    <span class="k">def</span> <span class="nf">segments2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices represented by each segment index.</span>
 
 <span class="sd">        Parameters</span>
@@ -536,16 +582,23 @@
         <span class="n">rixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments2residues_2d</span><span class="p">(</span><span class="n">six</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">residues2atoms_1d</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span> <span class="k">for</span> <span class="n">rix</span> <span class="ow">in</span> <span class="n">rixs</span><span class="p">]</span></div>
 
+
     <span class="c1"># Move between different groups.</span>
-<div class="viewcode-block" id="TransTable.move_atom"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_atom">[docs]</a>    <span class="k">def</span> <span class="nf">move_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+<div class="viewcode-block" id="TransTable.move_atom">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_atom">[docs]</a>
+    <span class="k">def</span> <span class="nf">move_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Move aix to be in rix&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span> <span class="o">=</span> <span class="n">rix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="TransTable.move_residue"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_residue">[docs]</a>    <span class="k">def</span> <span class="nf">move_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TransTable.move_residue">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_residue">[docs]</a>
+    <span class="k">def</span> <span class="nf">move_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Move rix to be in six&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span> <span class="o">=</span> <span class="n">six</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="kc">None</span></div>
+
 
     <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segidx</span><span class="p">):</span>
         <span class="c1"># segidx - index of parent</span>
@@ -570,7 +623,10 @@
         <span class="k">return</span> <span class="n">attrs</span></div>
 
 
-<div class="viewcode-block" id="Topology"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology">[docs]</a><span class="k">class</span> <span class="nc">Topology</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Topology">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology">[docs]</a>
+<span class="k">class</span> <span class="nc">Topology</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;In-memory, array-based topology database.</span>
 
 <span class="sd">    The topology model of MDanalysis features atoms, which must each be a</span>
@@ -616,7 +672,9 @@
         <span class="k">for</span> <span class="n">topologyattr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Topology.copy"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Topology.copy">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deepcopy of this Topology&quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="c1"># copy the tt</span>
@@ -627,6 +685,7 @@
                 <span class="k">continue</span>
             <span class="n">new</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">new</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -640,7 +699,9 @@
     <span class="k">def</span> <span class="nf">n_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">n_segments</span>
 
-<div class="viewcode-block" id="Topology.add_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
+<div class="viewcode-block" id="Topology.add_TopologyAttr">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_TopologyAttr">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new TopologyAttr to the Topology.</span>
 
 <span class="sd">        Parameters</span>
@@ -652,7 +713,10 @@
         <span class="n">topologyattr</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Topology.del_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.del_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Topology.del_TopologyAttr">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.del_TopologyAttr">[docs]</a>
+    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a TopologyAttr from the Topology.</span>
 
 <span class="sd">        If it is not present, nothing happens.</span>
@@ -666,6 +730,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__delattr__</span><span class="p">(</span><span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">guessed_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -681,7 +746,9 @@
                       <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
                       <span class="k">else</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Topology.add_Residue"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Residue">[docs]</a>    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
+<div class="viewcode-block" id="Topology.add_Residue">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Residue">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -719,7 +786,10 @@
 
         <span class="k">return</span> <span class="n">residx</span></div>
 
-<div class="viewcode-block" id="Topology.add_Segment"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Segment">[docs]</a>    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Topology.add_Segment">
+<a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Segment">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a new Segment to the Topology</span>
 
 <span class="sd">        Parameters</span>
@@ -759,7 +829,9 @@
             <span class="n">newval</span> <span class="o">=</span> <span class="n">new_attrs</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">]</span>
             <span class="n">attr</span><span class="o">.</span><span class="n">_add_new</span><span class="p">(</span><span class="n">newval</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">segidx</span></div></div>
+        <span class="k">return</span> <span class="n">segidx</span></div>
+</div>
+
 
 </pre></div>
 

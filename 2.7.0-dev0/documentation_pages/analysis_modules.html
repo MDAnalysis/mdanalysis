@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4. Analysis modules &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
@@ -202,7 +214,7 @@
            <div itemprop="articleBody">
              
   <section id="analysis-modules">
-<h1><span class="section-number">4. </span>Analysis modules<a class="headerlink" href="#analysis-modules" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">4. </span>Analysis modules<a class="headerlink" href="#analysis-modules" title="Link to this heading"></a></h1>
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code> module contains code to carry out specific
 analysis functionality for MD trajectories.
 It is based on the core functionality (i.e. trajectory
@@ -244,7 +256,7 @@ MDAnalysis with <strong class="program">conda</strong> then a
 by following their installation instructions before you can use the
 corresponding MDAnalysis module.</p>
 <section id="building-blocks-for-analysis">
-<h2><span class="section-number">4.1. </span>Building blocks for Analysis<a class="headerlink" href="#building-blocks-for-analysis" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.1. </span>Building blocks for Analysis<a class="headerlink" href="#building-blocks-for-analysis" title="Link to this heading"></a></h2>
 <p>The building block for the analysis modules is
 <a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a>.
 To build your own analysis class start by reading the documentation.</p>
@@ -255,7 +267,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="distances-and-contacts">
-<h2><span class="section-number">4.2. </span>Distances and contacts<a class="headerlink" href="#distances-and-contacts" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2. </span>Distances and contacts<a class="headerlink" href="#distances-and-contacts" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
@@ -270,7 +282,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="hydrogen-bonding">
-<h2><span class="section-number">4.3. </span>Hydrogen bonding<a class="headerlink" href="#hydrogen-bonding" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.3. </span>Hydrogen bonding<a class="headerlink" href="#hydrogen-bonding" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
@@ -286,7 +298,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="membranes-and-membrane-proteins">
-<h2><span class="section-number">4.4. </span>Membranes and membrane proteins<a class="headerlink" href="#membranes-and-membrane-proteins" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.4. </span>Membranes and membrane proteins<a class="headerlink" href="#membranes-and-membrane-proteins" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/hole2.html">4.4.1. HOLE analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
@@ -295,7 +307,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="nucleic-acids">
-<h2><span class="section-number">4.5. </span>Nucleic acids<a class="headerlink" href="#nucleic-acids" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.5. </span>Nucleic acids<a class="headerlink" href="#nucleic-acids" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/nuclinfo.html">4.5.1. Nucleic acid analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
@@ -304,7 +316,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="polymers">
-<h2><span class="section-number">4.6. </span>Polymers<a class="headerlink" href="#polymers" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.6. </span>Polymers<a class="headerlink" href="#polymers" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/polymer.html">4.6.1. Polymer analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
@@ -312,9 +324,9 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="structure">
-<h2><span class="section-number">4.7. </span>Structure<a class="headerlink" href="#structure" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.7. </span>Structure<a class="headerlink" href="#structure" title="Link to this heading"></a></h2>
 <section id="macromolecules">
-<h3><span class="section-number">4.7.1. </span>Macromolecules<a class="headerlink" href="#macromolecules" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">4.7.1. </span>Macromolecules<a class="headerlink" href="#macromolecules" title="Link to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
@@ -324,7 +336,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="liquids">
-<h3><span class="section-number">4.7.2. </span>Liquids<a class="headerlink" href="#liquids" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">4.7.2. </span>Liquids<a class="headerlink" href="#liquids" title="Link to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/rdf.html">4.7.2.1. Radial Distribution Functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
@@ -334,7 +346,7 @@ To build your own analysis class start by reading the documentation.</p>
 </section>
 </section>
 <section id="volumetric-analysis">
-<h2><span class="section-number">4.8. </span>Volumetric analysis<a class="headerlink" href="#volumetric-analysis" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.8. </span>Volumetric analysis<a class="headerlink" href="#volumetric-analysis" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/density.html">4.8.1. Generating densities from trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
@@ -345,7 +357,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="dimensionality-reduction">
-<h2><span class="section-number">4.9. </span>Dimensionality Reduction<a class="headerlink" href="#dimensionality-reduction" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.9. </span>Dimensionality Reduction<a class="headerlink" href="#dimensionality-reduction" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/diffusionmap.html">4.9.1. Diffusion map — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a></li>
@@ -354,7 +366,7 @@ To build your own analysis class start by reading the documentation.</p>
 </div>
 </section>
 <section id="legacy-analysis-modules">
-<h2><span class="section-number">4.10. </span>Legacy analysis modules<a class="headerlink" href="#legacy-analysis-modules" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.10. </span>Legacy analysis modules<a class="headerlink" href="#legacy-analysis-modules" title="Link to this heading"></a></h2>
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy</span></code> module contains code that for a
 range of reasons is not as well maintained and tested as the other
 analysis modules. <em>Use with care.</em></p>
@@ -365,7 +377,7 @@ analysis modules. <em>Use with care.</em></p>
 </div>
 </section>
 <section id="data">
-<h2><span class="section-number">4.11. </span>Data<a class="headerlink" href="#data" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.11. </span>Data<a class="headerlink" href="#data" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/data.html">4.11.1. Analysis data files</a></li>

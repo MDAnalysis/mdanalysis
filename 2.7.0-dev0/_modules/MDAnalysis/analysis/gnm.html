@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -234,7 +246,9 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="generate_grid"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.generate_grid">[docs]</a><span class="k">def</span> <span class="nf">generate_grid</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_grid">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.generate_grid">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_grid</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple grid search.</span>
 
 <span class="sd">    An alternative to searching the entire list of each atom; divide the</span>
@@ -272,6 +286,7 @@
         <span class="n">z_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">low_z</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span>
         <span class="n">grid</span><span class="p">[</span><span class="n">x_pos</span><span class="p">][</span><span class="n">y_pos</span><span class="p">][</span><span class="n">z_pos</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">grid</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">neighbour_generator</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
@@ -312,7 +327,9 @@
                 <span class="k">yield</span> <span class="n">i_atom</span><span class="p">,</span> <span class="n">j_atom</span>
 
 
-<div class="viewcode-block" id="order_list"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.order_list">[docs]</a><span class="k">def</span> <span class="nf">order_list</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+<div class="viewcode-block" id="order_list">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.order_list">[docs]</a>
+<span class="k">def</span> <span class="nf">order_list</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary showing the order of eigenvalues (which are reported scrambled normally)&quot;&quot;&quot;</span>
     <span class="n">ordered</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
     <span class="n">unordered</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
@@ -323,7 +340,10 @@
     <span class="k">return</span> <span class="n">list_map</span></div>
 
 
-<div class="viewcode-block" id="GNMAnalysis"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis">[docs]</a><span class="k">class</span> <span class="nc">GNMAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GNMAnalysis">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis">[docs]</a>
+<span class="k">class</span> <span class="nc">GNMAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic tool for GNM analysis.</span>
 
 <span class="sd">    Each frame is treated as a novel structure and the GNM</span>
@@ -420,7 +440,9 @@
         <span class="n">outputobject</span><span class="o">.</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
         <span class="n">outputobject</span><span class="o">.</span><span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
-<div class="viewcode-block" id="GNMAnalysis.generate_kirchoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">[docs]</a>    <span class="k">def</span> <span class="nf">generate_kirchoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GNMAnalysis.generate_kirchoff">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_kirchoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the Kirchhoff matrix of contacts.</span>
 
 <span class="sd">        This generates the neighbour matrix by generating a grid of</span>
@@ -454,6 +476,7 @@
 
         <span class="k">return</span> <span class="n">matrix</span></div>
 
+
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_kirchoff</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
@@ -478,7 +501,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvectors</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="closeContactGNMAnalysis"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.closeContactGNMAnalysis">[docs]</a><span class="k">class</span> <span class="nc">closeContactGNMAnalysis</span><span class="p">(</span><span class="n">GNMAnalysis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="closeContactGNMAnalysis">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.closeContactGNMAnalysis">[docs]</a>
+<span class="k">class</span> <span class="nc">closeContactGNMAnalysis</span><span class="p">(</span><span class="n">GNMAnalysis</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;GNMAnalysis only using close contacts.</span>
 
 <span class="sd">    This is a version of the GNM where the Kirchoff matrix is</span>
@@ -548,7 +574,9 @@
                                                       <span class="n">ReportVector</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
 
-<div class="viewcode-block" id="closeContactGNMAnalysis.generate_kirchoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.generate_kirchoff">[docs]</a>    <span class="k">def</span> <span class="nf">generate_kirchoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="closeContactGNMAnalysis.generate_kirchoff">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.generate_kirchoff">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_kirchoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">nresidues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">n_residues</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">positions</span>
         <span class="n">residue_index_map</span> <span class="o">=</span> <span class="p">[</span>
@@ -577,7 +605,9 @@
                 <span class="n">matrix</span><span class="p">[</span><span class="n">iresidue</span><span class="p">][</span><span class="n">iresidue</span><span class="p">]</span> <span class="o">+=</span> <span class="n">contact</span>
                 <span class="n">matrix</span><span class="p">[</span><span class="n">jresidue</span><span class="p">][</span><span class="n">jresidue</span><span class="p">]</span> <span class="o">+=</span> <span class="n">contact</span>
 
-        <span class="k">return</span> <span class="n">matrix</span></div></div>
+        <span class="k">return</span> <span class="n">matrix</span></div>
+</div>
+
 </pre></div>
 
            </div>

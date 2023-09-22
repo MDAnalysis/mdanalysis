@@ -26,11 +26,11 @@
     <script src="../../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../../_static/js/versions.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -179,7 +191,9 @@
                   <span class="s2">&quot;encore.dimensionality_reduction()&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">ImportWarning</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="DimensionalityReductionMethod"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.DimensionalityReductionMethod">[docs]</a><span class="k">class</span> <span class="nc">DimensionalityReductionMethod</span> <span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="DimensionalityReductionMethod">
+<a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.DimensionalityReductionMethod">[docs]</a>
+<span class="k">class</span> <span class="nc">DimensionalityReductionMethod</span> <span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for any Dimensionality Reduction Method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -208,7 +222,10 @@
                                   <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="StochasticProximityEmbeddingNative"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative">[docs]</a><span class="k">class</span> <span class="nc">StochasticProximityEmbeddingNative</span><span class="p">(</span><span class="n">DimensionalityReductionMethod</span><span class="p">):</span>
+
+<div class="viewcode-block" id="StochasticProximityEmbeddingNative">
+<a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative">[docs]</a>
+<span class="k">class</span> <span class="nc">StochasticProximityEmbeddingNative</span><span class="p">(</span><span class="n">DimensionalityReductionMethod</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to the natively implemented Affinity propagation procedure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -279,9 +296,12 @@
 
 
 
+
 <span class="k">if</span> <span class="n">sklearn</span><span class="p">:</span>
 
-<div class="viewcode-block" id="PrincipalComponentAnalysis"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.PrincipalComponentAnalysis">[docs]</a>    <span class="k">class</span> <span class="nc">PrincipalComponentAnalysis</span><span class="p">(</span><span class="n">DimensionalityReductionMethod</span><span class="p">):</span>
+<div class="viewcode-block" id="PrincipalComponentAnalysis">
+<a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.PrincipalComponentAnalysis">[docs]</a>
+    <span class="k">class</span> <span class="nc">PrincipalComponentAnalysis</span><span class="p">(</span><span class="n">DimensionalityReductionMethod</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface to the PCA dimensionality reduction method implemented in</span>
 <span class="sd">        sklearn.</span>
@@ -320,6 +340,7 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">{}</span></div>
+
 </pre></div>
 
            </div>

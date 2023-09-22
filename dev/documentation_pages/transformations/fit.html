@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>8.6.4. Fitting transformations — MDAnalysis.transformations.fit &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -147,13 +159,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.transformations.fit"></span><section id="fitting-transformations-mdanalysis-transformations-fit">
-<h1><span class="section-number">8.6.4. </span>Fitting transformations — <a class="reference internal" href="#module-MDAnalysis.transformations.fit" title="MDAnalysis.transformations.fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a><a class="headerlink" href="#fitting-transformations-mdanalysis-transformations-fit" title="Permalink to this heading"></a></h1>
+  <section id="fitting-transformations-mdanalysis-transformations-fit">
+<span id="module-MDAnalysis.transformations.fit"></span><h1><span class="section-number">8.6.4. </span>Fitting transformations — <a class="reference internal" href="#module-MDAnalysis.transformations.fit" title="MDAnalysis.transformations.fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a><a class="headerlink" href="#fitting-transformations-mdanalysis-transformations-fit" title="Link to this heading"></a></h1>
 <p>Translate and/or rotates the coordinates of a given trajectory to align
 a given AtomGroup to a reference structure.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.transformations.fit.fit_translation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.fit.</span></span><span class="sig-name descname"><span class="pre">fit_translation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_translation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_translation" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.fit.</span></span><span class="sig-name descname"><span class="pre">fit_translation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_translation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_translation" title="Link to this definition"></a></dt>
 <dd><p>Translates a given AtomGroup so that its center of geometry/mass matches
 the respective center of the given reference. A plane can be given by the
 user using the option <cite>plane</cite>, and will result in the removal of
@@ -212,7 +224,7 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.transformations.fit.fit_rot_trans">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.fit.</span></span><span class="sig-name descname"><span class="pre">fit_rot_trans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_rot_trans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_rot_trans" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.fit.</span></span><span class="sig-name descname"><span class="pre">fit_rot_trans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_rot_trans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_rot_trans" title="Link to this definition"></a></dt>
 <dd><p>Perform a spatial superposition by minimizing the RMSD.</p>
 <p>Spatially align the group of atoms <cite>ag</cite> to <cite>reference</cite> by doing a RMSD
 fit.</p>

@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -199,7 +211,9 @@
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">store_init_arguments</span>
 
 
-<div class="viewcode-block" id="DCDReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader">[docs]</a><span class="k">class</span> <span class="nc">DCDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader">[docs]</a>
+<span class="k">class</span> <span class="nc">DCDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for the DCD format.</span>
 
 <span class="sd">    DCD is used by NAMD, CHARMM and LAMMPS as the default trajectory format.</span>
@@ -299,15 +313,21 @@
                       <span class="s2">&quot; to learn if this change in behavior might affect you.&quot;</span><span class="p">,</span>
                        <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DCDReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="DCDReader.parse_n_atoms">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.parse_n_atoms">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">DCDFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;natoms&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
 
-<div class="viewcode-block" id="DCDReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DCDReader.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -340,7 +360,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span>
         <span class="k">return</span> <span class="n">ts</span>
 
-<div class="viewcode-block" id="DCDReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDReader.Writer">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.Writer">[docs]</a>
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return writer for trajectory format&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
@@ -350,6 +372,7 @@
             <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
             <span class="n">convert_units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_frame_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;convert a dcd-frame to a :class:`TimeStep`&quot;&quot;&quot;</span>
@@ -405,7 +428,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;timestep between frames&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
 
-<div class="viewcode-block" id="DCDReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="DCDReader.timeseries">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.timeseries">[docs]</a>
+    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                    <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -457,10 +482,14 @@
 
         <span class="n">frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">readframes</span><span class="p">(</span>
             <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">atom_numbers</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">frames</span><span class="o">.</span><span class="n">xyz</span></div></div>
+        <span class="k">return</span> <span class="n">frames</span><span class="o">.</span><span class="n">xyz</span></div>
+</div>
 
 
-<div class="viewcode-block" id="DCDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter">[docs]</a><span class="k">class</span> <span class="nc">DCDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DCDWriter">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter">[docs]</a>
+<span class="k">class</span> <span class="nc">DCDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;DCD Writer class</span>
 
 <span class="sd">    The writer follows recent NAMD/VMD convention for the unitcell (box lengths</span>
@@ -588,12 +617,16 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xyz</span><span class="o">=</span><span class="n">xyz</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DCDWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDWriter.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDWriter.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;close trajectory&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
+
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
 </pre></div>
 
            </div>

@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.12. Minimal topology parser &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -163,16 +175,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.topology.MinimalParser"></span><section id="minimal-topology-parser">
-<h1><span class="section-number">5.12. </span>Minimal topology parser<a class="headerlink" href="#minimal-topology-parser" title="Permalink to this heading"></a></h1>
+  <section id="minimal-topology-parser">
+<span id="module-MDAnalysis.topology.MinimalParser"></span><h1><span class="section-number">5.12. </span>Minimal topology parser<a class="headerlink" href="#minimal-topology-parser" title="Link to this heading"></a></h1>
 <p>Parses only the number of atoms from a coordinate/trajectory file.
 This minimal topology can be used to access coordinate data without the need
 for a full-fledged topology file.</p>
 <section id="classes">
-<h2><span class="section-number">5.12.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">5.12.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.MinimalParser.</span></span><span class="sig-name descname"><span class="pre">MinimalParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.MinimalParser.</span></span><span class="sig-name descname"><span class="pre">MinimalParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser" title="Link to this definition"></a></dt>
 <dd><p>Produces a minimal topology from only the number of atoms.</p>
 <dl class="simple">
 <dt>This requires that the number of atoms be given in one of two ways:</dt><dd><ul class="simple">
@@ -186,13 +198,13 @@ created and the <cite>parse_n_atoms</cite> method on this Reader will be called,
 <p>This requires that the coordinate format has</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -215,7 +227,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_forces_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -238,7 +250,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -264,7 +276,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_pos_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -290,7 +302,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_from_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -318,7 +330,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_time_to_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -345,7 +357,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -368,7 +380,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.convert_velocities_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -391,13 +403,13 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.parse">
-<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.parse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.parse" title="Link to this definition"></a></dt>
 <dd><p>Return the minimal <em>Topology</em> object</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>

@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.10. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -165,17 +177,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.lib.util"></span><section id="helper-functions-mdanalysis-lib-util">
-<h1><span class="section-number">13.2.10. </span>Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this heading"></a></h1>
+  <section id="helper-functions-mdanalysis-lib-util">
+<span id="module-MDAnalysis.lib.util"></span><h1><span class="section-number">13.2.10. </span>Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Link to this heading"></a></h1>
 <p>Small helper functions that don’t fit anywhere else.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved mathematical functions into lib.mdamath</p>
 </div>
 <section id="files-and-directories">
-<h2><span class="section-number">13.2.10.1. </span>Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.1. </span>Files and directories<a class="headerlink" href="#files-and-directories" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.filename">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.filename" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.filename" title="Link to this definition"></a></dt>
 <dd><p>Return a new name that has suffix attached; replaces other extensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -199,7 +211,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.openany">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">openany</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#openany"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.openany" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">openany</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#openany"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.openany" title="Link to this definition"></a></dt>
 <dd><p>Context manager for <a class="reference internal" href="#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">anyopen()</span></code></a>.</p>
 <p>Open the <cite>datasource</cite> and close it when the context of the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.11)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a>
 statement exits.</p>
@@ -241,7 +253,7 @@ they have a file-like interface.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.anyopen">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">anyopen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#anyopen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.anyopen" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">anyopen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#anyopen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.anyopen" title="Link to this definition"></a></dt>
 <dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
 <p><cite>datasource</cite> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><code class="xref py py-func docutils literal notranslate"><span class="pre">isstream()</span></code></a>). By
 default, a stream is reset to its start if possible (via
@@ -285,7 +297,7 @@ They return a custom picklable file stream in
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.greedy_splitext">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">greedy_splitext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#greedy_splitext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.greedy_splitext" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">greedy_splitext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#greedy_splitext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.greedy_splitext" title="Link to this definition"></a></dt>
 <dd><p>Split extension in path <em>p</em> at the left-most separator.</p>
 <p>Extensions are taken to be separated from the filename with the
 separator <a class="reference external" href="https://docs.python.org/3/library/os.html#os.extsep" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">os.extsep</span></code></a> (as used by <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.splitext" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.splitext()</span></code></a>).</p>
@@ -312,7 +324,7 @@ all extensions.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.which">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">which</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">program</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#which"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.which" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">which</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">program</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#which"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.which" title="Link to this definition"></a></dt>
 <dd><p>Determine full path of executable <cite>program</cite> on <span class="target" id="index-0"></span><a class="reference external" href="https://matplotlib.org/stable/users/installing/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v3.8.0)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 <dl class="field-list simple">
@@ -330,7 +342,7 @@ all extensions.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.realpath">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">realpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#realpath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.realpath" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">realpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#realpath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.realpath" title="Link to this definition"></a></dt>
 <dd><p>Join all args and return the real path, rooted at <code class="docutils literal notranslate"><span class="pre">/</span></code>.</p>
 <p>Expands ‘~’, ‘~user’, and environment variables such as <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">$HOME</span></code>.</p>
 <p>Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if any of the args is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
@@ -338,7 +350,7 @@ all extensions.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.get_ext">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">get_ext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#get_ext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.get_ext" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">get_ext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#get_ext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.get_ext" title="Link to this definition"></a></dt>
 <dd><p>Return the lower-cased extension of <cite>filename</cite> without a leading dot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -356,7 +368,7 @@ all extensions.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.check_compressed_format">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_compressed_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_compressed_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_compressed_format" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_compressed_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_compressed_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_compressed_format" title="Link to this definition"></a></dt>
 <dd><p>Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -384,7 +396,7 @@ all extensions.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.format_from_filename_extension">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">format_from_filename_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#format_from_filename_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.format_from_filename_extension" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">format_from_filename_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#format_from_filename_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.format_from_filename_extension" title="Link to this definition"></a></dt>
 <dd><p>Guess file format from the file extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -404,7 +416,7 @@ all extensions.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.guess_format">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">guess_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#guess_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.guess_format" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">guess_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#guess_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.guess_format" title="Link to this definition"></a></dt>
 <dd><p>Return the format of <cite>filename</cite></p>
 <p>The current heuristic simply looks at the filename extension and can work
 around compressed format extensions.</p>
@@ -430,7 +442,7 @@ at for a hint to the format</p>
 
 </section>
 <section id="streams">
-<h2><span class="section-number">13.2.10.2. </span>Streams<a class="headerlink" href="#streams" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.2. </span>Streams<a class="headerlink" href="#streams" title="Link to this heading"></a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a>). It is also possible to provide more
@@ -469,7 +481,7 @@ and therefore will often not work as an input. But try it…</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">NamedStream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">NamedStream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream" title="Link to this definition"></a></dt>
 <dd><p>Stream that also provides a (fake) name.</p>
 <p>By wrapping a stream <cite>stream</cite> in this class, it can be passed to
 code that uses inspection of the filename to make decisions. For
@@ -544,7 +556,7 @@ the stream</strong></p></li>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.close" title="Link to this definition"></a></dt>
 <dd><p>Reset or close the stream.</p>
 <p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">NamedStream.close_stream</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> (the default)
 then this method will <em>not close the stream</em> and only <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> it.</p>
@@ -559,20 +571,20 @@ always closes the underlying stream.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.closed">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.closed" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.closed" title="Link to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if stream is closed.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.fileno">
-<span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.fileno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.fileno" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.fileno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.fileno" title="Link to this definition"></a></dt>
 <dd><p>Return the underlying file descriptor (an integer) of the stream if it exists.</p>
 <p>An <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> is raised if the IO object does not use a file descriptor.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.flush">
-<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.flush" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.flush" title="Link to this definition"></a></dt>
 <dd><p>Flush the write buffers of the stream if applicable.</p>
 <p>This does nothing for read-only and non-blocking streams. For file
 objects one also needs to call <a class="reference external" href="https://docs.python.org/3/library/os.html#os.fsync" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.fsync()</span></code></a> to write contents to
@@ -581,14 +593,14 @@ disk.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.readable">
-<span class="sig-name descname"><span class="pre">readable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readable" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">readable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readable" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream can be read from.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.readline">
-<span class="sig-name descname"><span class="pre">readline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readline" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">readline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readline" title="Link to this definition"></a></dt>
 <dd><p>Read and return a line from the stream.</p>
 <p>If size is specified, at most size bytes will be read.</p>
 <p>The line terminator is always b’n’ for binary files; for text
@@ -598,13 +610,13 @@ terminator(s) recognized.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.reset" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.reset" title="Link to this definition"></a></dt>
 <dd><p>Move to the beginning of the stream</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.seek">
-<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">whence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seek"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seek" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">whence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seek"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seek" title="Link to this definition"></a></dt>
 <dd><p>Change the stream position to the given byte <cite>offset</cite> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -636,7 +648,7 @@ negative</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.seekable">
-<span class="sig-name descname"><span class="pre">seekable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seekable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seekable" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">seekable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seekable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seekable" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream supports random access.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.tell" title="MDAnalysis.lib.util.NamedStream.tell"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tell()</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.truncate" title="MDAnalysis.lib.util.NamedStream.truncate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">truncate()</span></code></a> will
 raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
@@ -644,13 +656,13 @@ raise <a class="reference external" href="https://docs.python.org/3/library/exce
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.tell">
-<span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.tell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.tell" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.tell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.tell" title="Link to this definition"></a></dt>
 <dd><p>Return the current stream position.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.truncate">
-<span class="sig-name descname"><span class="pre">truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.truncate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.truncate" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.truncate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.truncate" title="Link to this definition"></a></dt>
 <dd><p>Truncate the stream’s size to <cite>size</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -662,7 +674,7 @@ is supplied). The current file position is not changed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.writable">
-<span class="sig-name descname"><span class="pre">writable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.writable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.writable" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">writable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.writable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.writable" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream can be written to.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
@@ -671,7 +683,7 @@ is supplied). The current file position is not changed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.isstream">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">isstream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#isstream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.isstream" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">isstream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#isstream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.isstream" title="Link to this definition"></a></dt>
 <dd><p>Detect if <cite>obj</cite> is a stream.</p>
 <p>We consider anything a stream that has the methods</p>
 <ul class="simple">
@@ -704,17 +716,17 @@ is supplied). The current file position is not changed.</p>
 
 </section>
 <section id="containers-and-lists">
-<h2><span class="section-number">13.2.10.3. </span>Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.3. </span>Containers and lists<a class="headerlink" href="#containers-and-lists" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.iterable">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>obj</cite> can be iterated over and is <em>not</em> a  string
 nor a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.asiterable">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">asiterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#asiterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.asiterable" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">asiterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#asiterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.asiterable" title="Link to this definition"></a></dt>
 <dd><p>Returns <cite>obj</cite> so that it can be iterated over.</p>
 <p>A string is <em>not</em> detected as and iterable and is wrapped into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>
 with a single element.</p>
@@ -726,22 +738,22 @@ with a single element.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.hasmethod">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">hasmethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#hasmethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.hasmethod" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">hasmethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#hasmethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.hasmethod" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if object <em>obj</em> contains the method <em>m</em>.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.Namespace">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">Namespace</span></span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#Namespace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.Namespace" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">Namespace</span></span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#Namespace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.Namespace" title="Link to this definition"></a></dt>
 <dd><p>Class to allow storing attributes in new namespace.</p>
 </dd></dl>
 
 </section>
 <section id="arrays">
-<h2><span class="section-number">13.2.10.4. </span>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.4. </span>Arrays<a class="headerlink" href="#arrays" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.unique_int_1d">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">unique_int_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">unique_int_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Link to this definition"></a></dt>
 <dd><p>Find the unique elements of a 1D array of integers.</p>
 <p>This function is optimal on sorted arrays.</p>
 <dl class="field-list simple">
@@ -762,7 +774,7 @@ with a single element.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.unique_rows">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">unique_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#unique_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.unique_rows" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">unique_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#unique_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.unique_rows" title="Link to this definition"></a></dt>
 <dd><p>Return the unique rows of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -801,7 +813,7 @@ is <code class="docutils literal notranslate"><span class="pre">True</span></cod
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.blocks_of">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">blocks_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#blocks_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.blocks_of" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">blocks_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#blocks_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.blocks_of" title="Link to this definition"></a></dt>
 <dd><p>Extract a view of <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">m)</span></code> blocks along the diagonal of the array <cite>a</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -850,7 +862,7 @@ be zero, resulting in an empty view!</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.group_same_or_consecutive_integers">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">group_same_or_consecutive_integers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#group_same_or_consecutive_integers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.group_same_or_consecutive_integers" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">group_same_or_consecutive_integers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#group_same_or_consecutive_integers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.group_same_or_consecutive_integers" title="Link to this definition"></a></dt>
 <dd><p>Split an array of integers into a list of same or consecutive
 sequences.</p>
 <dl class="field-list simple">
@@ -873,10 +885,10 @@ sequences.</p>
 
 </section>
 <section id="file-parsing">
-<h2><span class="section-number">13.2.10.5. </span>File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.5. </span>File parsing<a class="headerlink" href="#file-parsing" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRANReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">FORTRANReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">FORTRANReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Link to this definition"></a></dt>
 <dd><p>FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</p>
 <p>The contents of lines in a file can be parsed according to FORTRAN format
 edit descriptors (see <a class="reference external" href="http://www.webcitation.org/5xbaWMV2x">Fortran Formats</a> for the syntax).</p>
@@ -900,13 +912,13 @@ Formats</a></p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRANReader.number_of_matches">
-<span class="sig-name descname"><span class="pre">number_of_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.number_of_matches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.number_of_matches" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">number_of_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.number_of_matches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.number_of_matches" title="Link to this definition"></a></dt>
 <dd><p>Return how many format entries could be populated with legal values.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format">
-<span class="sig-name descname"><span class="pre">parse_FORTRAN_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edit_descriptor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.parse_FORTRAN_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_FORTRAN_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edit_descriptor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.parse_FORTRAN_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format" title="Link to this definition"></a></dt>
 <dd><p>Parse the descriptor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -931,7 +943,7 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRANReader.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.read" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.read" title="Link to this definition"></a></dt>
 <dd><p>Parse <cite>line</cite> according to the format string and return list of values.</p>
 <p>Values are converted to Python types according to the format specifier.</p>
 <dl class="field-list simple">
@@ -958,17 +970,17 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRAN_format_regex">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">FORTRAN_format_regex</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'(?P&lt;repeat&gt;\\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\\d+)(\\.(?P&lt;decimals&gt;\\d+))?)?'</span></em><a class="headerlink" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">FORTRAN_format_regex</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'(?P&lt;repeat&gt;\\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\\d+)(\\.(?P&lt;decimals&gt;\\d+))?)?'</span></em><a class="headerlink" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="Link to this definition"></a></dt>
 <dd><p>Regular expresssion (see <a class="reference external" href="https://docs.python.org/3/library/re.html#module-re" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">re</span></code></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
 <code class="docutils literal notranslate"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></code></p>
 </dd></dl>
 
 </section>
 <section id="data-manipulation-and-handling">
-<h2><span class="section-number">13.2.10.6. </span>Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.6. </span>Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.fixedwidth_bins">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">fixedwidth_bins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">fixedwidth_bins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Link to this definition"></a></dt>
 <dd><p>Return bins of width <cite>delta</cite> that cover <cite>xmin</cite>, <cite>xmax</cite> (or a larger range).</p>
 <p>The bin parameters are computed such that the bin size <cite>delta</cite> is
 guaranteed. In order to achieve this, the range <cite>[xmin, xmax]</cite> can be
@@ -1002,7 +1014,7 @@ floats or arrays, depending on the input.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.get_weights">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.get_weights" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">get_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#get_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.get_weights" title="Link to this definition"></a></dt>
 <dd><p>Check that a <cite>weights</cite> argument is compatible with <cite>atoms</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1037,7 +1049,7 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.ltruncate_int">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">ltruncate_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndigits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#ltruncate_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.ltruncate_int" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">ltruncate_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndigits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#ltruncate_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.ltruncate_int" title="Link to this definition"></a></dt>
 <dd><p>Truncate an integer, retaining least significant digits</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1065,7 +1077,7 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.flatten_dict">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">flatten_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#flatten_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.flatten_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">flatten_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#flatten_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.flatten_dict" title="Link to this definition"></a></dt>
 <dd><p>Flatten a nested dict <cite>d</cite> into a shallow dict with tuples as keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1087,10 +1099,10 @@ by user <a class="reference external" href="https://stackoverflow.com/users/1897
 
 </section>
 <section id="strings">
-<h2><span class="section-number">13.2.10.7. </span>Strings<a class="headerlink" href="#strings" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.7. </span>Strings<a class="headerlink" href="#strings" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.convert_aa_code">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">convert_aa_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">convert_aa_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Link to this definition"></a></dt>
 <dd><p>Converts between 3-letter and 1-letter amino acid codes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1114,7 +1126,7 @@ by user <a class="reference external" href="https://stackoverflow.com/users/1897
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.parse_residue">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">parse_residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#parse_residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.parse_residue" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">parse_residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#parse_residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.parse_residue" title="Link to this definition"></a></dt>
 <dd><p>Process residue string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1144,7 +1156,7 @@ aa codes are converted to 3-letter codes</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.conv_float">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">conv_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#conv_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.conv_float" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">conv_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#conv_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.conv_float" title="Link to this definition"></a></dt>
 <dd><p>Convert an object <cite>s</cite> to float if possible.</p>
 <p>Function to be passed into <a class="reference external" href="https://docs.python.org/3/library/functions.html#map" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">map()</span></code></a> or a list comprehension. If
 the argument can be interpreted as a float it is converted,
@@ -1153,10 +1165,10 @@ otherwise the original object is passed back.</p>
 
 </section>
 <section id="class-decorators">
-<h2><span class="section-number">13.2.10.8. </span>Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.8. </span>Class decorators<a class="headerlink" href="#class-decorators" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.cached">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">cached</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">universe_validation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">cached</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">universe_validation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Link to this definition"></a></dt>
 <dd><p>Cache a property within a class.</p>
 <p>Requires the Class to have a cache dict <code class="xref py py-attr docutils literal notranslate"><span class="pre">_cache</span></code> and, with
 <cite>universe_validation</cite>, a <code class="xref py py-attr docutils literal notranslate"><span class="pre">universe</span></code> with a cache dict <code class="xref py py-attr docutils literal notranslate"><span class="pre">_cache</span></code>.</p>
@@ -1195,7 +1207,7 @@ decorator:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.store_init_arguments">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">store_init_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#store_init_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.store_init_arguments" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">store_init_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#store_init_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.store_init_arguments" title="Link to this definition"></a></dt>
 <dd><p>Decorator to store arguments passed to the init method of a class.</p>
 <p>Arguments are stored as a dictionary in <code class="docutils literal notranslate"><span class="pre">cls._kwargs</span></code>.</p>
 <p class="rubric">Notes</p>
@@ -1214,10 +1226,10 @@ stored in the dictionary.</p></li>
 
 </section>
 <section id="function-decorators">
-<h2><span class="section-number">13.2.10.9. </span>Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.9. </span>Function decorators<a class="headerlink" href="#function-decorators" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.static_variables">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">static_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#static_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.static_variables" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">static_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#static_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.static_variables" title="Link to this definition"></a></dt>
 <dd><p>Decorator equipping functions or methods with static variables.</p>
 <p>Static variables are declared and initialized by supplying keyword arguments
 and initial values to the decorator.</p>
@@ -1246,7 +1258,7 @@ by <a class="reference external" href="https://stackoverflow.com/users/15055/cla
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.warn_if_not_unique">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">warn_if_not_unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupmethod</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#warn_if_not_unique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.warn_if_not_unique" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">warn_if_not_unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupmethod</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#warn_if_not_unique"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.warn_if_not_unique" title="Link to this definition"></a></dt>
 <dd><p>Decorator triggering a <a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.DuplicateWarning" title="MDAnalysis.exceptions.DuplicateWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">DuplicateWarning</span></code></a>
 if the underlying group is not unique.</p>
 <p>Assures that during execution of the decorated method only the first of
@@ -1266,7 +1278,7 @@ potentially multiple warnings concerning the uniqueness of groups is shown.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.check_coords">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">coord_names</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_coords" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">coord_names</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_coords" title="Link to this definition"></a></dt>
 <dd><p>Decorator for automated coordinate array checking.</p>
 <p>This decorator is intended for use especially in
 <a class="reference internal" href="distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a>.
@@ -1388,7 +1400,7 @@ allow_atomgroup with default False to retain old behaviour</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.check_atomgroup_not_empty">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_atomgroup_not_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupmethod</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_atomgroup_not_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_atomgroup_not_empty" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_atomgroup_not_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupmethod</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_atomgroup_not_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_atomgroup_not_empty" title="Link to this definition"></a></dt>
 <dd><p>Decorator triggering a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if the underlying group is empty.</p>
 <p>Avoids downstream errors in computing properties of empty atomgroups.</p>
 <dl class="field-list simple">
@@ -1404,10 +1416,10 @@ allow_atomgroup with default False to retain old behaviour</p>
 
 </section>
 <section id="code-management">
-<h2><span class="section-number">13.2.10.10. </span>Code management<a class="headerlink" href="#code-management" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.10. </span>Code management<a class="headerlink" href="#code-management" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.deprecate">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">deprecate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">deprecate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Link to this definition"></a></dt>
 <dd><p>Issues a DeprecationWarning, adds warning to <cite>old_name</cite>’s
 docstring, rebinds <code class="docutils literal notranslate"><span class="pre">old_name.__name__</span></code> and returns the new
 function object.</p>
@@ -1480,7 +1492,7 @@ keyword argument with the decorator.)</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util._Deprecate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">_Deprecate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#_Deprecate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util._Deprecate" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">_Deprecate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#_Deprecate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util._Deprecate" title="Link to this definition"></a></dt>
 <dd><p>Decorator class to deprecate old functions.</p>
 <p>Refer to <cite>deprecate</cite> for details.</p>
 <div class="admonition seealso">
@@ -1494,7 +1506,7 @@ keyword argument with the decorator.)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.dedent_docstring">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">dedent_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#dedent_docstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.dedent_docstring" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">dedent_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#dedent_docstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.dedent_docstring" title="Link to this definition"></a></dt>
 <dd><p>Dedent typical python doc string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1519,10 +1531,10 @@ line</p>
 
 </section>
 <section id="data-format-checks">
-<h2><span class="section-number">13.2.10.11. </span>Data format checks<a class="headerlink" href="#data-format-checks" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.10.11. </span>Data format checks<a class="headerlink" href="#data-format-checks" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.check_box">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_box" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_box" title="Link to this definition"></a></dt>
 <dd><p>Take a box input and deduce what type of system it represents based on
 the shape of the array and whether all angles are 90 degrees.</p>
 <dl class="field-list simple">
@@ -1564,7 +1576,7 @@ matrix as returned by
 
 <p class="rubric">Footnotes</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="namedstreamclose" role="note">
+<aside class="footnote brackets" id="namedstreamclose" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>The reason why <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">NamedStream.close()</span></code></a> does
 not close a stream by default (but just rewinds it to the

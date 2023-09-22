@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>8.6.6. No Jump Trajectory Unwrapping — MDAnalysis.transformations.nojump &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -147,8 +159,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.transformations.nojump"></span><section id="no-jump-trajectory-unwrapping-mdanalysis-transformations-nojump">
-<h1><span class="section-number">8.6.6. </span>No Jump Trajectory Unwrapping — <a class="reference internal" href="#module-MDAnalysis.transformations.nojump" title="MDAnalysis.transformations.nojump"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.nojump</span></code></a><a class="headerlink" href="#no-jump-trajectory-unwrapping-mdanalysis-transformations-nojump" title="Permalink to this heading"></a></h1>
+  <section id="no-jump-trajectory-unwrapping-mdanalysis-transformations-nojump">
+<span id="module-MDAnalysis.transformations.nojump"></span><h1><span class="section-number">8.6.6. </span>No Jump Trajectory Unwrapping — <a class="reference internal" href="#module-MDAnalysis.transformations.nojump" title="MDAnalysis.transformations.nojump"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.nojump</span></code></a><a class="headerlink" href="#no-jump-trajectory-unwrapping-mdanalysis-transformations-nojump" title="Link to this heading"></a></h1>
 <p>Unwraps the trajectory such that atoms never move more than half a periodic box length.
 The consequence of this is that particles will diffuse across periodic boundaries when
 needed. This unwrapping method is suitable as a preprocessing step to calculate
@@ -157,7 +169,7 @@ analysis.
 The algorithm used is based on <a class="footnote-reference brackets" href="#footcite-kulke2022" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.transformations.nojump.NoJump">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.nojump.</span></span><span class="sig-name descname"><span class="pre">NoJump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">check_continuity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/nojump.html#NoJump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.nojump.NoJump" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.nojump.</span></span><span class="sig-name descname"><span class="pre">NoJump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">check_continuity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/nojump.html#NoJump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.nojump.NoJump" title="Link to this definition"></a></dt>
 <dd><p>Returns transformed coordinates for the given timestep so that an atom
 does not move more than half the periodic box size between two timesteps, and will move
 across periodic boundary edges. The algorithm used is based on <a class="footnote-reference brackets" href="#footcite-kulke2022" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>,
@@ -192,7 +204,8 @@ To reverse the process, wrap the coordinates again.</p>
 </dl>
 <p class="rubric">References</p>
 <div class="docutils container" id="id3">
-<aside class="footnote brackets" id="footcite-kulke2022" role="note">
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="footcite-kulke2022" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
 <p>Martin Kulke and Josh V. Vermaas. Reversible unwrapping algorithm for constant-pressure molecular dynamics simulations. <em>Journal of Chemical Theory and Computation</em>, 18(10):6161–6171, 2022. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.2c00327">doi:10.1021/acs.jctc.2c00327</a>.</p>

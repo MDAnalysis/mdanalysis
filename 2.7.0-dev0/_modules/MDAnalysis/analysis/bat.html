@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -376,7 +388,9 @@
     <span class="k">return</span> <span class="n">torsions</span>
 
 
-<div class="viewcode-block" id="BAT"><a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT">[docs]</a><span class="k">class</span> <span class="nc">BAT</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="BAT">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT">[docs]</a>
+<span class="k">class</span> <span class="nc">BAT</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate BAT coordinates for the specified AtomGroup.</span>
 
 <span class="sd">    Bond-Angle-Torsions (BAT) internal coordinates will be computed for</span>
@@ -541,7 +555,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">root_based</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">torsions</span><span class="p">))</span>
 
-<div class="viewcode-block" id="BAT.load"><a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="BAT.load">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.load">[docs]</a>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads the bat trajectory from a file in numpy binary format</span>
 
 <span class="sd">        Parameters</span>
@@ -578,7 +594,10 @@
                 <span class="s1">&#39;inconsistent with current trajectory in starting frame.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="BAT.save"><a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BAT.save">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves the bat trajectory in a file in numpy binary format</span>
 
 <span class="sd">        See Also</span>
@@ -587,7 +606,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BAT.Cartesian"><a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.Cartesian">[docs]</a>    <span class="k">def</span> <span class="nf">Cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bat_frame</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BAT.Cartesian">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.Cartesian">[docs]</a>
+    <span class="k">def</span> <span class="nf">Cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bat_frame</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Conversion of a single frame from BAT to Cartesian coordinates</span>
 
 <span class="sd">        One application of this function is to determine the new</span>
@@ -683,10 +705,12 @@
               <span class="n">r01</span><span class="o">*</span><span class="p">(</span><span class="n">vu</span><span class="o">*</span><span class="n">sn_ang</span><span class="o">*</span><span class="n">cs_tor</span> <span class="o">+</span> <span class="n">vp</span><span class="o">*</span><span class="n">sn_ang</span><span class="o">*</span><span class="n">sn_tor</span> <span class="o">-</span> <span class="n">v21</span><span class="o">*</span><span class="n">cs_ang</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">XYZ</span></div>
 
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The atomgroup for which BAT are computed (read-only property)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span></div>
+
 </pre></div>
 
            </div>

@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -409,7 +421,9 @@
     <span class="k">return</span> <span class="n">recarrays</span>
 
 
-<div class="viewcode-block" id="HoleAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HoleAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis">[docs]</a>
+<span class="k">class</span> <span class="nc">HoleAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run :program:`hole` on a trajectory.</span>
 
@@ -698,7 +712,9 @@
         <span class="n">hole_filenames</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">!    &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_header</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hole_filenames</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HoleAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.run">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform the calculation</span>
@@ -727,6 +743,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="n">random_seed</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">HoleAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span>
                                              <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sphpdbs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -776,7 +793,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">infile_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_header</span> <span class="o">+</span> <span class="n">body</span>
 
-<div class="viewcode-block" id="HoleAnalysis.guess_cpoint"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.guess_cpoint">[docs]</a>    <span class="k">def</span> <span class="nf">guess_cpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis.guess_cpoint">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.guess_cpoint">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_cpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess a point inside the pore.</span>
 
 <span class="sd">        This method simply uses the center of geometry of the selection as a</span>
@@ -788,6 +807,7 @@
 <span class="sd">            center of geometry of selected AtomGroup</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span></div>
+
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run HOLE analysis and collect profiles&quot;&quot;&quot;</span>
@@ -838,7 +858,9 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No profile found in HOLE output. Output level: </span><span class="si">{}</span><span class="s1">&#39;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_level</span><span class="p">))</span>
 
-<div class="viewcode-block" id="HoleAnalysis.create_vmd_surface"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.create_vmd_surface">[docs]</a>    <span class="k">def</span> <span class="nf">create_vmd_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;hole.vmd&#39;</span><span class="p">,</span> <span class="n">dot_density</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.create_vmd_surface">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.create_vmd_surface">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_vmd_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;hole.vmd&#39;</span><span class="p">,</span> <span class="n">dot_density</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
                            <span class="n">no_water_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">one_water_color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
                            <span class="n">double_water_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Process HOLE output to create a smooth pore surface suitable for VMD.</span>
@@ -943,14 +965,20 @@
 
         <span class="k">return</span> <span class="n">filename</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.min_radius"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.min_radius">[docs]</a>    <span class="k">def</span> <span class="nf">min_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HoleAnalysis.min_radius">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.min_radius">[docs]</a>
+    <span class="k">def</span> <span class="nf">min_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum radius over all profiles as a function of q&quot;&quot;&quot;</span>
         <span class="n">profiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;profiles&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">profiles</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No profiles available. Try calling run()&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.delete_temporary_files"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.delete_temporary_files">[docs]</a>    <span class="k">def</span> <span class="nf">delete_temporary_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HoleAnalysis.delete_temporary_files">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.delete_temporary_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_temporary_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete temporary files&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -960,6 +988,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">outfiles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">sphpdbs</span> <span class="o">=</span> <span class="p">[]</span></div>
+
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -1011,7 +1040,9 @@
 
         <span class="k">return</span> <span class="n">frames</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">linestyles</span>
 
-<div class="viewcode-block" id="HoleAnalysis.plot"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.plot">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
              <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">y_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
              <span class="n">label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1079,7 +1110,10 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot3D"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot3D">[docs]</a>    <span class="k">def</span> <span class="nf">plot3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="HoleAnalysis.plot3D">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot3D">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
                <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Frames&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1156,7 +1190,10 @@
 
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.over_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.over_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">over_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HoleAnalysis.over_order_parameters">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.over_order_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">over_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get HOLE profiles sorted over order parameters ``order_parameters``.</span>
 
 <span class="sd">        Parameters</span>
@@ -1211,7 +1248,10 @@
 
         <span class="k">return</span> <span class="n">profiles</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">plot_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
+
+<div class="viewcode-block" id="HoleAnalysis.plot_order_parameters">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot_order_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
                               <span class="n">aggregator</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
                               <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
@@ -1270,7 +1310,10 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.gather"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.gather">[docs]</a>    <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HoleAnalysis.gather">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.gather">[docs]</a>
+    <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gather the fields of each profile recarray together.</span>
 
 <span class="sd">        Parameters</span>
@@ -1306,7 +1349,10 @@
                <span class="s1">&#39;cen_line_D&#39;</span><span class="p">:</span> <span class="n">cen_line_Ds</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">dct</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.bin_radii"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.bin_radii">[docs]</a>    <span class="k">def</span> <span class="nf">bin_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HoleAnalysis.bin_radii">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.bin_radii">[docs]</a>
+    <span class="k">def</span> <span class="nf">bin_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Collects the pore radii into bins by reaction coordinate.</span>
 
 <span class="sd">        Parameters</span>
@@ -1358,7 +1404,10 @@
         <span class="n">binned</span> <span class="o">=</span> <span class="p">[</span><span class="n">radii</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bin_idx</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bin_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span>
         <span class="k">return</span> <span class="n">binned</span><span class="p">,</span> <span class="n">bins</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.histogram_radii"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.histogram_radii">[docs]</a>    <span class="k">def</span> <span class="nf">histogram_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="HoleAnalysis.histogram_radii">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.histogram_radii">[docs]</a>
+    <span class="k">def</span> <span class="nf">histogram_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Histograms the pore radii into bins by reaction coordinate,</span>
 <span class="sd">        aggregate the radii with an `aggregator` function, and returns the</span>
@@ -1394,7 +1443,10 @@
         <span class="n">binned</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_radii</span><span class="p">(</span><span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="nb">range</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">aggregator</span><span class="p">,</span> <span class="n">binned</span><span class="p">))),</span> <span class="n">bins</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot_mean_profile"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot_mean_profile">[docs]</a>    <span class="k">def</span> <span class="nf">plot_mean_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="HoleAnalysis.plot_mean_profile">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot_mean_profile">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_mean_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
                           <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Frame&#39;</span><span class="p">,</span> <span class="n">fill_alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
@@ -1463,7 +1515,10 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot3D_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot3D_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">plot3D_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
+
+<div class="viewcode-block" id="HoleAnalysis.plot3D_order_parameters">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot3D_order_parameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot3D_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
                                 <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
@@ -1543,7 +1598,9 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;HOLE radius $R$ ($\AA$)&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">ax</span></div></div>
+        <span class="k">return</span> <span class="n">ax</span></div>
+</div>
+
 </pre></div>
 
            </div>

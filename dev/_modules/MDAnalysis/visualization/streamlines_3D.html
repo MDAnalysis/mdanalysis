@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -465,7 +477,9 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">start_frame_relevant_particle_coordinate_array_xyz</span><span class="p">,</span> <span class="n">end_frame_relevant_particle_coordinate_array_xyz</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="generate_streamlines_3d"><a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines_3D.html#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d">[docs]</a><span class="k">def</span> <span class="nf">generate_streamlines_3d</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span>
+<div class="viewcode-block" id="generate_streamlines_3d">
+<a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines_3D.html#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_streamlines_3d</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span>
                             <span class="n">end_frame</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">maximum_delta_magnitude</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
                             <span class="n">num_cores</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Produce the x, y and z components of a 3D streamplot data set.</span>
@@ -640,6 +654,7 @@
     <span class="n">dy_array</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">dy_array</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">maximum_delta_magnitude</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">dz_array</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">dz_array</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">maximum_delta_magnitude</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">dx_array</span><span class="p">,</span> <span class="n">dy_array</span><span class="p">,</span> <span class="n">dz_array</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

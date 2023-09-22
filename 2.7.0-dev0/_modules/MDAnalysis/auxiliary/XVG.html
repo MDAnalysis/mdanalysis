@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -202,7 +214,9 @@
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">anyopen</span>
 
 
-<div class="viewcode-block" id="uncomment"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.uncomment">[docs]</a><span class="k">def</span> <span class="nf">uncomment</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+<div class="viewcode-block" id="uncomment">
+<a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.uncomment">[docs]</a>
+<span class="k">def</span> <span class="nf">uncomment</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Remove comments from lines in an .xvg file</span>
 
 <span class="sd">    Parameters</span>
@@ -229,10 +243,13 @@
             <span class="k">yield</span> <span class="n">stripped_line</span><span class="p">[:</span><span class="n">comment_position</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">comment_position</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">stripped_line</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">stripped_line</span></div>
+
         <span class="c1"># if comment_position == 0, then the line is empty</span>
 
 
-<div class="viewcode-block" id="XVGStep"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGStep">[docs]</a><span class="k">class</span> <span class="nc">XVGStep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxStep</span><span class="p">):</span>
+<div class="viewcode-block" id="XVGStep">
+<a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGStep">[docs]</a>
+<span class="k">class</span> <span class="nc">XVGStep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxStep</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; AuxStep class for .xvg file format.</span>
 
 <span class="sd">    Extends the base AuxStep class to allow selection of time and</span>
@@ -284,7 +301,10 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">key</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="XVGReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader">[docs]</a><span class="k">class</span> <span class="nc">XVGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxReader</span><span class="p">):</span>
+
+<div class="viewcode-block" id="XVGReader">
+<a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader">[docs]</a>
+<span class="k">class</span> <span class="nc">XVGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxReader</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Auxiliary reader to read data from an .xvg file.</span>
 
 <span class="sd">    Default reader for .xvg files. All data from the file will be read and</span>
@@ -380,7 +400,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span>
 
-<div class="viewcode-block" id="XVGReader.read_all_times"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader.read_all_times">[docs]</a>    <span class="k">def</span> <span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="XVGReader.read_all_times">
+<a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader.read_all_times">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Get NumPy array of time at each step.</span>
 
 <span class="sd">        Returns</span>
@@ -388,10 +410,14 @@
 <span class="sd">        NumPy array of float</span>
 <span class="sd">            Time at each step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_selector</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_selector</span><span class="p">]</span></div>
+</div>
 
 
-<div class="viewcode-block" id="XVGFileReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGFileReader">[docs]</a><span class="k">class</span> <span class="nc">XVGFileReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxFileReader</span><span class="p">):</span>
+
+<div class="viewcode-block" id="XVGFileReader">
+<a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGFileReader">[docs]</a>
+<span class="k">class</span> <span class="nc">XVGFileReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxFileReader</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Auxiliary reader to read (one step at a time) from an .xvg file.</span>
 
 <span class="sd">    An alternative XVG reader which reads each step from the .xvg file as</span>
@@ -486,7 +512,9 @@
                 <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">return</span> <span class="n">count</span>
 
-<div class="viewcode-block" id="XVGFileReader.read_all_times"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGFileReader.read_all_times">[docs]</a>    <span class="k">def</span> <span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="XVGFileReader.read_all_times">
+<a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGFileReader.read_all_times">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterate through all steps to build times list.</span>
 
 <span class="sd">        Returns</span>
@@ -498,7 +526,9 @@
         <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

@@ -26,11 +26,11 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/js/versions.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -178,7 +190,9 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="write_simplerad2"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.write_simplerad2">[docs]</a><span class="k">def</span> <span class="nf">write_simplerad2</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;simple2.rad&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="write_simplerad2">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.write_simplerad2">[docs]</a>
+<span class="k">def</span> <span class="nf">write_simplerad2</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;simple2.rad&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write the built-in radii in :data:`SIMPLE2_RAD` to `filename`.</span>
 
 <span class="sd">    Does nothing if `filename` already exists.</span>
@@ -201,7 +215,10 @@
     <span class="k">return</span> <span class="n">filename</span></div>
 
 
-<div class="viewcode-block" id="check_and_fix_long_filename"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.check_and_fix_long_filename">[docs]</a><span class="k">def</span> <span class="nf">check_and_fix_long_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">tmpdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span>
+
+<div class="viewcode-block" id="check_and_fix_long_filename">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.check_and_fix_long_filename">[docs]</a>
+<span class="k">def</span> <span class="nf">check_and_fix_long_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">tmpdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span>
                                 <span class="n">max_length</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span>
                                 <span class="n">make_symlink</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a file name suitable for HOLE.</span>
@@ -272,6 +289,7 @@
 
     <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to shorten filename </span><span class="si">{}</span><span class="s1">&#39;</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">set_up_hole_input</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span>
@@ -502,7 +520,9 @@
     <span class="k">return</span> <span class="n">infile_text</span>
 
 
-<div class="viewcode-block" id="run_hole"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.run_hole">[docs]</a><span class="k">def</span> <span class="nf">run_hole</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">infile_text</span><span class="p">,</span> <span class="n">executable</span><span class="p">):</span>
+<div class="viewcode-block" id="run_hole">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.run_hole">[docs]</a>
+<span class="k">def</span> <span class="nf">run_hole</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">infile_text</span><span class="p">,</span> <span class="n">executable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the HOLE program.</span>
 
 <span class="sd">    Parameters</span>
@@ -546,7 +566,10 @@
     <span class="k">return</span> <span class="n">outfile</span></div>
 
 
-<div class="viewcode-block" id="collect_hole"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.collect_hole">[docs]</a><span class="k">def</span> <span class="nf">collect_hole</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;hole.out&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="collect_hole">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.collect_hole">[docs]</a>
+<span class="k">def</span> <span class="nf">collect_hole</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;hole.out&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect data from HOLE output</span>
 
 <span class="sd">    Parameters</span>
@@ -605,7 +628,10 @@
         <span class="k">return</span> <span class="n">recarrays</span></div>
 
 
-<div class="viewcode-block" id="create_vmd_surface"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.create_vmd_surface">[docs]</a><span class="k">def</span> <span class="nf">create_vmd_surface</span><span class="p">(</span><span class="n">sphpdb</span><span class="o">=</span><span class="s1">&#39;hole.sph&#39;</span><span class="p">,</span>
+
+<div class="viewcode-block" id="create_vmd_surface">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.utils.create_vmd_surface">[docs]</a>
+<span class="k">def</span> <span class="nf">create_vmd_surface</span><span class="p">(</span><span class="n">sphpdb</span><span class="o">=</span><span class="s1">&#39;hole.sph&#39;</span><span class="p">,</span>
                        <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">sph_process</span><span class="o">=</span><span class="s1">&#39;sph_process&#39;</span><span class="p">,</span>
                        <span class="n">sos_triangle</span><span class="o">=</span><span class="s1">&#39;sos_triangle&#39;</span><span class="p">,</span>
@@ -686,6 +712,7 @@
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tmp_sos</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">filename</span></div>
+
 </pre></div>
 
            </div>

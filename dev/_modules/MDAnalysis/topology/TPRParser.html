@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -305,7 +317,9 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.TPRparser&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="TPRParser"><a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser">[docs]</a><span class="k">class</span> <span class="nc">TPRParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="TPRParser">
+<a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser">[docs]</a>
+<span class="k">class</span> <span class="nc">TPRParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read topology information from a Gromacs_ `TPR file`_.</span>
 
 <span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
@@ -313,7 +327,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;TPR&#39;</span>
 
-<div class="viewcode-block" id="TPRParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TPRParser.parse">
+<a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</span>
 
 <span class="sd">        Parameters</span>
@@ -382,6 +398,7 @@
         <span class="k">return</span> <span class="n">tpr_top</span></div>
 
 
+
     <span class="k">def</span> <span class="nf">_log_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">th</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gromacs version   : </span><span class="si">{</span><span class="n">th</span><span class="o">.</span><span class="n">ver_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tpx version       : </span><span class="si">{</span><span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -398,6 +415,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tpx bV           : </span><span class="si">{</span><span class="n">th</span><span class="o">.</span><span class="n">bV</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tpx bF           : </span><span class="si">{</span><span class="n">th</span><span class="o">.</span><span class="n">bF</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tpx bBox         : </span><span class="si">{</span><span class="n">th</span><span class="o">.</span><span class="n">bBox</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

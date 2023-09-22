@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>9.2.5. Jmol selections &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -142,8 +154,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.selections.jmol"></span><section id="jmol-selections">
-<h1><span class="section-number">9.2.5. </span>Jmol selections<a class="headerlink" href="#jmol-selections" title="Permalink to this heading"></a></h1>
+  <section id="jmol-selections">
+<span id="module-MDAnalysis.selections.jmol"></span><h1><span class="section-number">9.2.5. </span>Jmol selections<a class="headerlink" href="#jmol-selections" title="Link to this heading"></a></h1>
 <p>Write <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> selection to a <cite>str</cite> file
 that defines a <a class="reference external" href="http://chemapps.stolaf.edu/jmol/docs/#define">Jmol selection</a>. To be used in <a class="reference external" href="http://wiki.jmol.org/index.php/Main_Page">Jmol</a> like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">script</span> <span class="n">macro</span><span class="o">.</span><span class="n">spt</span>
@@ -153,7 +165,7 @@ that defines a <a class="reference external" href="http://chemapps.stolaf.edu/jm
 <p>The selection is named <em>mdanalysis001</em>.TODO</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.selections.jmol.</span></span><span class="sig-name descname"><span class="pre">SelectionWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numterms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preamble</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/jmol.html#SelectionWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.selections.jmol.</span></span><span class="sig-name descname"><span class="pre">SelectionWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numterms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preamble</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/jmol.html#SelectionWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter" title="Link to this definition"></a></dt>
 <dd><p>Set up for writing to <em>filename</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -170,7 +182,7 @@ to 0 or <code class="docutils literal notranslate"><span class="pre">False</span
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.close" title="Link to this definition"></a></dt>
 <dd><p>Close the file</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.16.0.</span></p>
@@ -179,7 +191,7 @@ to 0 or <code class="docutils literal notranslate"><span class="pre">False</span
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.comment">
-<span class="sig-name descname"><span class="pre">comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.comment" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.comment" title="Link to this definition"></a></dt>
 <dd><p>Return string <em>s</em> interpolated into the comment format string.</p>
 <p>If no <code class="xref py py-attr docutils literal notranslate"><span class="pre">SelectionWriterBase.commentfmt</span></code> is defined (None) then the
 empty string is returned because presumably there is no way to enter
@@ -189,36 +201,36 @@ comments into the file.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.commentfmt">
-<span class="sig-name descname"><span class="pre">commentfmt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#'</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.commentfmt" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">commentfmt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#'</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.commentfmt" title="Link to this definition"></a></dt>
 <dd><p>Comment format string; should contain ‘%s’ or <code class="docutils literal notranslate"><span class="pre">None</span></code> for no comments.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.continuation">
-<span class="sig-name descname"><span class="pre">continuation</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.continuation" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">continuation</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.continuation" title="Link to this definition"></a></dt>
 <dd><p>Special character to continue a line across a newline.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.default_numterms">
-<span class="sig-name descname"><span class="pre">default_numterms</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.default_numterms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">default_numterms</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.default_numterms" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.ext">
-<span class="sig-name descname"><span class="pre">ext</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'spt'</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.ext" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ext</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'spt'</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.ext" title="Link to this definition"></a></dt>
 <dd><p>Extension of output files.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.format">
-<span class="sig-name descname"><span class="pre">format</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Jmol',</span> <span class="pre">'spt']</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.format" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">format</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Jmol',</span> <span class="pre">'spt']</span></em><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.format" title="Link to this definition"></a></dt>
 <dd><p>Name of the format.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.write" title="Link to this definition"></a></dt>
 <dd><p>Write selection to the output file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -237,7 +249,7 @@ when appending) [<code class="docutils literal notranslate"><span class="pre">No
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.selections.jmol.SelectionWriter.write_preamble">
-<span class="sig-name descname"><span class="pre">write_preamble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.write_preamble" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_preamble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.selections.jmol.SelectionWriter.write_preamble" title="Link to this definition"></a></dt>
 <dd><p>Write a header, depending on the file format.</p>
 </dd></dl>
 

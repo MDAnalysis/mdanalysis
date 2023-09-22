@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -215,7 +227,9 @@
 <span class="k">del</span> <span class="n">Doi</span>
 
 
-<div class="viewcode-block" id="LeafletFinder"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder">[docs]</a><span class="k">class</span> <span class="nc">LeafletFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="LeafletFinder">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder">[docs]</a>
+<span class="k">class</span> <span class="nc">LeafletFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify atoms in the same leaflet of a lipid bilayer.</span>
 
 <span class="sd">    This class implements the *LeafletFinder* algorithm [Michaud-Agrawal2011]_.</span>
@@ -328,17 +342,25 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return connected components (as sorted numpy arrays), sorted by size.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">component</span><span class="p">))</span> <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">NX</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)]</span>
 
-<div class="viewcode-block" id="LeafletFinder.update"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LeafletFinder.update">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update components, possibly with a different *cutoff*&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">cutoff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_graph</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LeafletFinder.sizes"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.sizes">[docs]</a>    <span class="k">def</span> <span class="nf">sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LeafletFinder.sizes">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.sizes">[docs]</a>
+    <span class="k">def</span> <span class="nf">sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dict of component index with size of component.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(((</span><span class="n">idx</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">component</span><span class="p">))</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="LeafletFinder.groups"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.groups">[docs]</a>    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LeafletFinder.groups">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.groups">[docs]</a>
+    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*.</span>
 
 <span class="sd">        If no argument is supplied, then a list of all leaflet groups is returned.</span>
@@ -353,18 +375,27 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">component_index</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LeafletFinder.group"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.group">[docs]</a>    <span class="k">def</span> <span class="nf">group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LeafletFinder.group">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.group">[docs]</a>
+    <span class="k">def</span> <span class="nf">group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*.&quot;&quot;&quot;</span>
         <span class="c1"># maybe cache this?</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">]]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="LeafletFinder.groups_iter"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter">[docs]</a>    <span class="k">def</span> <span class="nf">groups_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LeafletFinder.groups_iter">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter">[docs]</a>
+    <span class="k">def</span> <span class="nf">groups_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over all leaflet :meth:`groups`&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)):</span>
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">component_index</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LeafletFinder.write_selection"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.write_selection">[docs]</a>    <span class="k">def</span> <span class="nf">write_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LeafletFinder.write_selection">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.write_selection">[docs]</a>
+    <span class="k">def</span> <span class="nf">write_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selections for the leaflets to *filename*.</span>
 
 <span class="sd">        The format is typically determined by the extension of *filename*</span>
@@ -382,13 +413,17 @@
                 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;leaflet_</span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
                 <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;LeafletFinder(</span><span class="si">{0!r}</span><span class="s2">, cutoff=</span><span class="si">{1:.1f}</span><span class="s2"> A) with </span><span class="si">{2:d}</span><span class="s2"> atoms in </span><span class="si">{3:d}</span><span class="s2"> groups&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="optimize_cutoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.optimize_cutoff">[docs]</a><span class="k">def</span> <span class="nf">optimize_cutoff</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">dmin</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+
+<div class="viewcode-block" id="optimize_cutoff">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.optimize_cutoff">[docs]</a>
+<span class="k">def</span> <span class="nf">optimize_cutoff</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">dmin</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                     <span class="n">max_imbalance</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Find cutoff that minimizes number of disconnected groups.</span>
 
@@ -454,6 +489,7 @@
     <span class="k">del</span> <span class="n">_sizes</span>
     <span class="n">results</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;cutoff&quot;</span><span class="p">])</span>  <span class="c1"># sort ascending by N, then cutoff</span>
     <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># (cutoff,N) with N&gt;1 and shortest cutoff</span></div>
+
 </pre></div>
 
            </div>

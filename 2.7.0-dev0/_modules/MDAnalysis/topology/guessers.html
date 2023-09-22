@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -233,7 +245,9 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">tables</span>
 
 
-<div class="viewcode-block" id="guess_masses"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_masses">[docs]</a><span class="k">def</span> <span class="nf">guess_masses</span><span class="p">(</span><span class="n">atom_types</span><span class="p">):</span>
+<div class="viewcode-block" id="guess_masses">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_masses">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_masses</span><span class="p">(</span><span class="n">atom_types</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess the mass of many atoms based upon their type</span>
 
 <span class="sd">    Parameters</span>
@@ -250,7 +264,10 @@
     <span class="k">return</span> <span class="n">masses</span></div>
 
 
-<div class="viewcode-block" id="validate_atom_types"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.validate_atom_types">[docs]</a><span class="k">def</span> <span class="nf">validate_atom_types</span><span class="p">(</span><span class="n">atom_types</span><span class="p">):</span>
+
+<div class="viewcode-block" id="validate_atom_types">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.validate_atom_types">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_atom_types</span><span class="p">(</span><span class="n">atom_types</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Vaildates the atom types based on whether they are available in our tables</span>
 
 <span class="sd">    Parameters</span>
@@ -275,7 +292,10 @@
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Failed to guess the mass for the following atom types: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom_type</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="guess_types"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_types">[docs]</a><span class="k">def</span> <span class="nf">guess_types</span><span class="p">(</span><span class="n">atom_names</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_types">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_types">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_types</span><span class="p">(</span><span class="n">atom_names</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess the atom type of many atoms based on atom name</span>
 
 <span class="sd">    Parameters</span>
@@ -290,7 +310,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">atom_names</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="guess_atom_type"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_type">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_type</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_atom_type">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_type">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_atom_type</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess atom type from the name.</span>
 
 <span class="sd">    At the moment, this function simply returns the element, as</span>
@@ -307,10 +330,13 @@
     <span class="k">return</span> <span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span></div>
 
 
+
 <span class="n">NUMBERS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]&#39;</span><span class="p">)</span> <span class="c1"># match numbers</span>
 <span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[*+-]&#39;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
 
-<div class="viewcode-block" id="guess_atom_element"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_element">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+<div class="viewcode-block" id="guess_atom_element">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_element">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess the element of the atom from the name.</span>
 
 <span class="sd">    Looks in dict to see if element is found, otherwise it uses the first</span>
@@ -359,7 +385,10 @@
         <span class="k">return</span> <span class="n">no_symbols</span></div>
 
 
-<div class="viewcode-block" id="guess_bonds"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_bonds">[docs]</a><span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_bonds">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_bonds">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Guess if bonds exist between two atoms based on their distance.</span>
 
 <span class="sd">    Bond between two atoms is created, if the two atoms are within</span>
@@ -467,7 +496,10 @@
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="guess_angles"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_angles">[docs]</a><span class="k">def</span> <span class="nf">guess_angles</span><span class="p">(</span><span class="n">bonds</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_angles">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_angles">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_angles</span><span class="p">(</span><span class="n">bonds</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a list of Bonds, find all angles that exist between atoms.</span>
 
 <span class="sd">    Works by assuming that if atoms 1 &amp; 2 are bonded, and 2 &amp; 3 are bonded,</span>
@@ -503,7 +535,10 @@
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">angles_found</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="guess_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_dihedrals">[docs]</a><span class="k">def</span> <span class="nf">guess_dihedrals</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_dihedrals">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_dihedrals">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_dihedrals</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a list of Angles, find all dihedrals that exist between atoms.</span>
 
 <span class="sd">    Works by assuming that if (1,2,3) is an angle, and 3 &amp; 4 are bonded,</span>
@@ -536,7 +571,10 @@
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">dihedrals_found</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="guess_improper_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_improper_dihedrals">[docs]</a><span class="k">def</span> <span class="nf">guess_improper_dihedrals</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_improper_dihedrals">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_improper_dihedrals">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_improper_dihedrals</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a list of Angles, find all improper dihedrals that exist between</span>
 <span class="sd">    atoms.</span>
 
@@ -572,7 +610,10 @@
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">dihedrals_found</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_atom_mass"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.get_atom_mass">[docs]</a><span class="k">def</span> <span class="nf">get_atom_mass</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_atom_mass">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.get_atom_mass">[docs]</a>
+<span class="k">def</span> <span class="nf">get_atom_mass</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the atomic mass in u for *element*.</span>
 
 <span class="sd">    Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.</span>
@@ -591,7 +632,10 @@
             <span class="k">return</span> <span class="mf">0.0</span></div>
 
 
-<div class="viewcode-block" id="guess_atom_mass"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_mass">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_mass</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_atom_mass">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_mass">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_atom_mass</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess a mass based on the atom name.</span>
 
 <span class="sd">    :func:`guess_atom_element` is used to determine the kind of atom.</span>
@@ -602,7 +646,10 @@
     <span class="k">return</span> <span class="n">get_atom_mass</span><span class="p">(</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="guess_atom_charge"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_charge">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_charge</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_atom_charge">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_charge">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_atom_charge</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess atom charge from the name.</span>
 
 <span class="sd">    .. Warning:: Not implemented; simply returns 0.</span>
@@ -611,7 +658,10 @@
     <span class="k">return</span> <span class="mf">0.0</span></div>
 
 
-<div class="viewcode-block" id="guess_aromaticities"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_aromaticities">[docs]</a><span class="k">def</span> <span class="nf">guess_aromaticities</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_aromaticities">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_aromaticities">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_aromaticities</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess aromaticity of atoms using RDKit</span>
 
 <span class="sd">    Parameters</span>
@@ -631,7 +681,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()])</span></div>
 
 
-<div class="viewcode-block" id="guess_gasteiger_charges"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_gasteiger_charges">[docs]</a><span class="k">def</span> <span class="nf">guess_gasteiger_charges</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">):</span>
+
+<div class="viewcode-block" id="guess_gasteiger_charges">
+<a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_gasteiger_charges">[docs]</a>
+<span class="k">def</span> <span class="nf">guess_gasteiger_charges</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess Gasteiger partial charges using RDKit</span>
 
 <span class="sd">    Parameters</span>
@@ -653,6 +706,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">)</span>
                      <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()],</span>
                     <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

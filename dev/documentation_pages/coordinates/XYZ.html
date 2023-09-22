@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6.24. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -170,8 +182,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.coordinates.XYZ"></span><section id="xyz-trajectory-reader-mdanalysis-coordinates-xyz">
-<h1><span class="section-number">6.24. </span>XYZ trajectory reader — <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a><a class="headerlink" href="#xyz-trajectory-reader-mdanalysis-coordinates-xyz" title="Permalink to this heading"></a></h1>
+  <section id="xyz-trajectory-reader-mdanalysis-coordinates-xyz">
+<span id="module-MDAnalysis.coordinates.XYZ"></span><h1><span class="section-number">6.24. </span>XYZ trajectory reader — <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a><a class="headerlink" href="#xyz-trajectory-reader-mdanalysis-coordinates-xyz" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="#xyz-format"><span class="std std-ref">XYZ format</span></a> is a loosely defined, simple
 coordinate trajectory format. The implemented format definition was
 taken from the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> and is therefore compatible with VMD.</p>
@@ -195,7 +207,7 @@ it’s assumed to be in ps (default: 1 ps).</p></li>
 <p>There appears to be no rigid format definition so it is likely users
 will need to tweak this class.</p>
 <section id="xyz-file-format">
-<span id="xyz-format"></span><h2><span class="section-number">6.24.1. </span>XYZ File format<a class="headerlink" href="#xyz-file-format" title="Permalink to this heading"></a></h2>
+<span id="xyz-format"></span><h2><span class="section-number">6.24.1. </span>XYZ File format<a class="headerlink" href="#xyz-file-format" title="Link to this heading"></a></h2>
 <p>Definition used by the <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="MDAnalysis.coordinates.XYZ.XYZReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZReader</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> (and
 the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> from whence the definition was taken):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
@@ -218,12 +230,12 @@ at the moment</p></li>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.24.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.24.2. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 </section>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XYZ.</span></span><span class="sig-name descname"><span class="pre">XYZReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XYZ.</span></span><span class="sig-name descname"><span class="pre">XYZReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="Link to this definition"></a></dt>
 <dd><p>Reads from an XYZ file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Data<span class="colon">:</span></dt>
@@ -249,7 +261,7 @@ under <a class="reference internal" href="#xyz-format"><span class="std std-ref"
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZReader.Writer">
-<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.Writer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.Writer" title="Link to this definition"></a></dt>
 <dd><p>Returns a XYZWriter for <em>filename</em> with the same parameters as this
 XYZ.</p>
 <dl class="field-list simple">
@@ -273,19 +285,19 @@ the reader instance is used</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZReader.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.close" title="Link to this definition"></a></dt>
 <dd><p>Close xyz trajectory file if it was open.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZReader.n_atoms">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_atoms</span></span><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.n_atoms" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_atoms</span></span><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.n_atoms" title="Link to this definition"></a></dt>
 <dd><p>number of atoms in a frame</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -294,7 +306,7 @@ the reader instance is used</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XYZ.</span></span><span class="sig-name descname"><span class="pre">XYZWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XYZ.</span></span><span class="sig-name descname"><span class="pre">XYZWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Link to this definition"></a></dt>
 <dd><p>Writes an XYZ file</p>
 <p>The XYZ file format is not formally defined. This writer follows
 the VMD implementation for the molfile <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a>.</p>
@@ -347,20 +359,20 @@ required elements or names.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZWriter.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file and finalize the writing</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZWriter.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XYZ.XYZWriter.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="Link to this definition"></a></dt>
 <dd><p>Write object <cite>obj</cite> at current trajectory frame to file.</p>
 <p>Atom elements (or names) in the output are taken from the <cite>obj</cite> or
 default to the value of the <cite>atoms</cite> keyword supplied to the

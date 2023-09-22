@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -167,7 +179,9 @@
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
 
 
-<div class="viewcode-block" id="TopologyObject"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
+<div class="viewcode-block" id="TopologyObject">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
 <span class="k">class</span> <span class="nc">TopologyObject</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all Topology items.</span>
@@ -282,7 +296,10 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Bond"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond">[docs]</a><span class="k">class</span> <span class="nc">Bond</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Bond">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond">[docs]</a>
+<span class="k">class</span> <span class="nc">Bond</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A bond between two :class:`~MDAnalysis.core.groups.Atom` instances.</span>
 
@@ -304,7 +321,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;bond&#39;</span>
 
-<div class="viewcode-block" id="Bond.partner"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.partner">[docs]</a>    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+<div class="viewcode-block" id="Bond.partner">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.partner">[docs]</a>
+    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Bond.partner(Atom)</span>
 
 <span class="sd">        Returns</span>
@@ -319,7 +338,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Atom&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Bond.length"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Bond.length">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.length">[docs]</a>
+    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of the bond.</span>
 
 <span class="sd">        .. versionchanged:: 0.11.0</span>
@@ -331,10 +353,14 @@
 
         <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
 
+
     <span class="n">value</span> <span class="o">=</span> <span class="n">length</span></div>
 
 
-<div class="viewcode-block" id="Angle"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle">[docs]</a><span class="k">class</span> <span class="nc">Angle</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Angle">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle">[docs]</a>
+<span class="k">class</span> <span class="nc">Angle</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An angle between three :class:`~MDAnalysis.core.groups.Atom` instances.</span>
 <span class="sd">    Atom 2 is the apex of the angle</span>
@@ -346,7 +372,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;angle&#39;</span>
 
-<div class="viewcode-block" id="Angle.angle"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Angle.angle">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle.angle">[docs]</a>
+    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the angle in degrees of this Angle.</span>
 
 <span class="sd">        Angle between atoms 0 and 2 with apex at 1::</span>
@@ -372,10 +400,14 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">calc_angles</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">))</span></div>
 
+
     <span class="n">value</span> <span class="o">=</span> <span class="n">angle</span></div>
 
 
-<div class="viewcode-block" id="Dihedral"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral">[docs]</a><span class="k">class</span> <span class="nc">Dihedral</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Dihedral">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral">[docs]</a>
+<span class="k">class</span> <span class="nc">Dihedral</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Dihedral (dihedral angle) between four</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.Atom` instances.</span>
@@ -394,7 +426,9 @@
     <span class="c1"># http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png</span>
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;dihedral&#39;</span>
 
-<div class="viewcode-block" id="Dihedral.dihedral"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral.dihedral">[docs]</a>    <span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Dihedral.dihedral">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral.dihedral">[docs]</a>
+    <span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the dihedral angle in degrees.</span>
 
 <span class="sd">        Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle</span>
@@ -422,11 +456,15 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">calc_dihedrals</span><span class="p">(</span>
             <span class="n">A</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">))</span></div>
 
+
     <span class="n">value</span> <span class="o">=</span> <span class="n">dihedral</span></div>
 
 
+
 <span class="c1"># subclass Dihedral to inherit dihedral method</span>
-<div class="viewcode-block" id="ImproperDihedral"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.ImproperDihedral">[docs]</a><span class="k">class</span> <span class="nc">ImproperDihedral</span><span class="p">(</span><span class="n">Dihedral</span><span class="p">):</span>
+<div class="viewcode-block" id="ImproperDihedral">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.ImproperDihedral">[docs]</a>
+<span class="k">class</span> <span class="nc">ImproperDihedral</span><span class="p">(</span><span class="n">Dihedral</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Improper Dihedral (improper dihedral angle) between four</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.Atom` instances.</span>
@@ -445,7 +483,9 @@
     <span class="c1"># http://cbio.bmt.tue.nl/pumma/uploads/Theory/improper.png</span>
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;improper&#39;</span>
 
-<div class="viewcode-block" id="ImproperDihedral.improper"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.ImproperDihedral.improper">[docs]</a>    <span class="k">def</span> <span class="nf">improper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ImproperDihedral.improper">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.ImproperDihedral.improper">[docs]</a>
+    <span class="k">def</span> <span class="nf">improper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Improper dihedral angle in degrees.</span>
 
 <span class="sd">        Note</span>
@@ -453,10 +493,14 @@
 <span class="sd">        The numerical precision is typically not better than</span>
 <span class="sd">        4 decimals (and is only tested to 3 decimals).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedral</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedral</span><span class="p">()</span></div>
+</div>
 
 
-<div class="viewcode-block" id="UreyBradley"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley">[docs]</a><span class="k">class</span> <span class="nc">UreyBradley</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="UreyBradley">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley">[docs]</a>
+<span class="k">class</span> <span class="nc">UreyBradley</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A Urey-Bradley angle between two :class:`~MDAnalysis.core.groups.Atom` instances.</span>
 <span class="sd">    Two :class:`UreyBradley` instances can be compared with the ``==`` and</span>
@@ -467,7 +511,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;ureybradley&#39;</span>
 
-<div class="viewcode-block" id="UreyBradley.partner"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.partner">[docs]</a>    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+<div class="viewcode-block" id="UreyBradley.partner">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.partner">[docs]</a>
+    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;UreyBradley.partner(Atom)</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -481,16 +527,23 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Atom&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="UreyBradley.distance"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="UreyBradley.distance">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.distance">[docs]</a>
+    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Distance between the atoms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
 
+
     <span class="n">value</span> <span class="o">=</span> <span class="n">distance</span></div>
 
 
-<div class="viewcode-block" id="CMap"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.CMap">[docs]</a><span class="k">class</span> <span class="nc">CMap</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CMap">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.CMap">[docs]</a>
+<span class="k">class</span> <span class="nc">CMap</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Coupled-torsion correction map term between five </span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.Atom` instances.</span>
@@ -500,7 +553,10 @@
     <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;cmap&#39;</span></div>
 
 
-<div class="viewcode-block" id="TopologyDict"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyDict">[docs]</a><span class="k">class</span> <span class="nc">TopologyDict</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TopologyDict">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyDict">[docs]</a>
+<span class="k">class</span> <span class="nc">TopologyDict</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A customised dictionary designed for sorting the bonds, angles and</span>
 <span class="sd">    dihedrals present in a group of atoms.</span>
@@ -609,9 +665,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of types of bond in the topology dictionary&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-<div class="viewcode-block" id="TopologyDict.keys"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyDict.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyDict.keys">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyDict.keys">[docs]</a>
+    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of the different types of available bonds&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterator over keys in this dictionary&quot;&quot;&quot;</span>
@@ -646,11 +705,14 @@
         <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span> <span class="ow">or</span> <span class="n">other</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span></div>
 
 
+
 <span class="n">_BTYPE_TO_SHAPE</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;ureybradley&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
                    <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="TopologyGroup"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup">[docs]</a><span class="k">class</span> <span class="nc">TopologyGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup">[docs]</a>
+<span class="k">class</span> <span class="nc">TopologyGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A container for a groups of bonds.</span>
 
@@ -762,7 +824,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The Universe that we belong to&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span>
 
-<div class="viewcode-block" id="TopologyGroup.select_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.select_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">select_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.select_bonds">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.select_bonds">[docs]</a>
+    <span class="k">def</span> <span class="nf">select_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves a selection from this topology group based on types.</span>
 
 <span class="sd">        .. seeAlso :meth:`types`</span>
@@ -771,14 +835,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">topDict</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span></div>
 
+
     <span class="n">selectBonds</span> <span class="o">=</span> <span class="n">select_bonds</span>
 
-<div class="viewcode-block" id="TopologyGroup.types"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.types">[docs]</a>    <span class="k">def</span> <span class="nf">types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.types">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.types">[docs]</a>
+    <span class="k">def</span> <span class="nf">types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of the bond types in this TopologyGroup</span>
 
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topDict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
 
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;dict&#39;</span><span class="p">)</span>
@@ -796,7 +864,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">TopologyDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TopologyGroup.atomgroup_intersection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.atomgroup_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">atomgroup_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.atomgroup_intersection">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.atomgroup_intersection">[docs]</a>
+    <span class="k">def</span> <span class="nf">atomgroup_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve all bonds from within this TopologyGroup that are within</span>
 <span class="sd">        the AtomGroup which is passed.</span>
 
@@ -830,6 +900,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;all bond indices</span>
@@ -845,7 +916,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bix</span>
 
-<div class="viewcode-block" id="TopologyGroup.to_indices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.to_indices">[docs]</a>    <span class="k">def</span> <span class="nf">to_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.to_indices">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.to_indices">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a data structure with atom indices describing the bonds.</span>
 
 <span class="sd">        This format should be identical to the original contents of the</span>
@@ -866,6 +939,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span></div>
+
 
     <span class="n">dump_contents</span> <span class="o">=</span> <span class="n">to_indices</span>
 
@@ -1015,7 +1089,9 @@
 
     <span class="c1"># Distance calculation methods below</span>
     <span class="c1"># &quot;Slow&quot; versions exist as a way of testing the Cython implementations</span>
-<div class="viewcode-block" id="TopologyGroup.values"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.values">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.values">[docs]</a>
+    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the size of each object in this Group</span>
 
 <span class="sd">        :Keywords:</span>
@@ -1037,6 +1113,7 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">==</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedrals</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="nf">_calc_connection_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">btypes</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span> <span class="o">==</span> <span class="n">btype</span> <span class="k">for</span> <span class="n">btype</span> <span class="ow">in</span> <span class="n">btypes</span><span class="p">):</span>
             <span class="n">strbtype</span> <span class="o">=</span> <span class="s2">&quot;&#39; or &#39;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">btypes</span><span class="p">)</span>
@@ -1047,7 +1124,9 @@
         <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TopologyGroup.bonds"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.bonds">[docs]</a>    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.bonds">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.bonds">[docs]</a>
+    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the distance between all bonds in this TopologyGroup</span>
 
 <span class="sd">        :Keywords:</span>
@@ -1063,7 +1142,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_connection_values</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">,</span> <span class="s2">&quot;bond&quot;</span><span class="p">,</span>
                                             <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TopologyGroup.angles"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TopologyGroup.angles">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.angles">[docs]</a>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the angle in radians formed between a bond</span>
 <span class="sd">        between atoms 1 and 2 and a bond between atoms 2 &amp; 3</span>
 
@@ -1088,7 +1170,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_connection_values</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">calc_angles</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">,</span>
                                             <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TopologyGroup.dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TopologyGroup.dihedrals">
+<a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.dihedrals">[docs]</a>
+    <span class="k">def</span> <span class="nf">dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the dihedral angle in radians for this topology</span>
 <span class="sd">        group.</span>
 
@@ -1114,7 +1199,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_connection_values</span><span class="p">(</span><span class="n">distances</span><span class="o">.</span><span class="n">calc_dihedrals</span><span class="p">,</span>
                                             <span class="s2">&quot;dihedral&quot;</span><span class="p">,</span> <span class="s2">&quot;improper&quot;</span><span class="p">,</span>
-                                            <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div></div>
+                                            <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

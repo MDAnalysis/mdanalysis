@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -176,7 +188,9 @@
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
 
-<div class="viewcode-block" id="NAMDBINReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader">[docs]</a><span class="k">class</span> <span class="nc">NAMDBINReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="NAMDBINReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader">[docs]</a>
+<span class="k">class</span> <span class="nc">NAMDBINReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for NAMD binary coordinate files.</span>
 <span class="sd">    </span>
 <span class="sd">    </span>
@@ -198,13 +212,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
                 <span class="n">coord_double</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NAMDBINReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="NAMDBINReader.parse_n_atoms">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader.parse_n_atoms">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">namdbin</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">namdbin</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
 
-<div class="viewcode-block" id="NAMDBINReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NAMDBINReader.Writer">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader.Writer">[docs]</a>
+    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a NAMDBINWriter for *filename*.</span>
 
 <span class="sd">        Parameters</span>
@@ -217,10 +236,14 @@
 <span class="sd">        :class:`NAMDBINWriter`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">NAMDBINWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">NAMDBINWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="NAMDBINWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINWriter">[docs]</a><span class="k">class</span> <span class="nc">NAMDBINWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NAMDBINWriter">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINWriter">[docs]</a>
+<span class="k">class</span> <span class="nc">NAMDBINWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Writer for NAMD binary coordinate files.</span>
 <span class="sd">    </span>
 
@@ -276,6 +299,7 @@
             <span class="n">namdbin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">))</span>
             <span class="c1"># Write Coordinate</span>
             <span class="n">namdbin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">d&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coor</span><span class="p">)),</span> <span class="o">*</span><span class="n">coor</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

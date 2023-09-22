@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.20. AMBER PRMTOP topology parser &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -163,8 +175,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.topology.TOPParser"></span><section id="amber-prmtop-topology-parser">
-<h1><span class="section-number">5.20. </span>AMBER PRMTOP topology parser<a class="headerlink" href="#amber-prmtop-topology-parser" title="Permalink to this heading"></a></h1>
+  <section id="amber-prmtop-topology-parser">
+<span id="module-MDAnalysis.topology.TOPParser"></span><h1><span class="section-number">5.20. </span>AMBER PRMTOP topology parser<a class="headerlink" href="#amber-prmtop-topology-parser" title="Link to this heading"></a></h1>
 <p>Reads an AMBER top file to build the system.</p>
 <p>Amber keywords are turned into the following attributes:</p>
 <table class="docutils align-default">
@@ -226,10 +238,10 @@ to invoke the element guessers after parsing the topology file. Please see
 <a class="reference internal" href="guessers.html#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a> for more details.</p>
 </div>
 <section id="classes">
-<h2><span class="section-number">5.20.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">5.20.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.TOPParser.</span></span><span class="sig-name descname"><span class="pre">TOPParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.TOPParser.</span></span><span class="sig-name descname"><span class="pre">TOPParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser" title="Link to this definition"></a></dt>
 <dd><p>Reads topology information from an AMBER top file.</p>
 <p>Reads the following Attributes if in topology:
 - Atomnames
@@ -270,13 +282,13 @@ the element will be assigned an empty record.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -299,7 +311,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -322,7 +334,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -348,7 +360,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -374,7 +386,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_time_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_time_from_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -402,7 +414,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_time_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_time_to_native" title="Link to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -429,7 +441,7 @@ returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_from_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -452,7 +464,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_to_native" title="Link to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -475,7 +487,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse">
-<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse" title="Link to this definition"></a></dt>
 <dd><p>Parse Amber PRMTOP topology file <em>filename</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -486,7 +498,7 @@ is avoided.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_bonded">
-<span class="sig-name descname"><span class="pre">parse_bonded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_bonded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_bonded" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_bonded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_bonded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_bonded" title="Link to this definition"></a></dt>
 <dd><p>Extracts bond information from PARM7 format files</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -508,7 +520,7 @@ zero-indexing, we only divide by 3.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_chainids">
-<span class="sig-name descname"><span class="pre">parse_chainids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_chainids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_chainids" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_chainids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_chainids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_chainids" title="Link to this definition"></a></dt>
 <dd><p>Extracts the chainID of each residue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -529,7 +541,7 @@ the parm7 file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_charges">
-<span class="sig-name descname"><span class="pre">parse_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_charges" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_charges" title="Link to this definition"></a></dt>
 <dd><p>Extracts the partial charges for each atom</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -550,7 +562,7 @@ atom as defined in the parm7 file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_chunks">
-<span class="sig-name descname"><span class="pre">parse_chunks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_chunks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_chunks" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_chunks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunksize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_chunks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_chunks" title="Link to this definition"></a></dt>
 <dd><p>Helper function to parse AMBER PRMTOP bonds/angles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -580,7 +592,7 @@ into chunks of size num_per_record, and only extract the atom ids.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals">
-<span class="sig-name descname"><span class="pre">parse_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dihh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dihh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals" title="Link to this definition"></a></dt>
 <dd><p>Combines hydrogen and non-hydrogen containing AMBER dihedral lists
 and extracts sublists for conventional dihedrals and improper angles</p>
 <dl class="field-list simple">
@@ -616,7 +628,7 @@ part of a multi-term dihedral definition or if it is an improper.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_elements">
-<span class="sig-name descname"><span class="pre">parse_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_elements" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_elements" title="Link to this definition"></a></dt>
 <dd><p>Extracts the atomic numbers of each atom and converts to element type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -647,7 +659,7 @@ will no longer attempt to guess the element by default.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_masses">
-<span class="sig-name descname"><span class="pre">parse_masses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_masses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_masses" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_masses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_masses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_masses" title="Link to this definition"></a></dt>
 <dd><p>Extracts the mass of each atom</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -668,7 +680,7 @@ defined in the parm7 file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_names">
-<span class="sig-name descname"><span class="pre">parse_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_names" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_names" title="Link to this definition"></a></dt>
 <dd><p>Extracts atoms names from parm7 file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -689,7 +701,7 @@ defined in the parm7 file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_residx">
-<span class="sig-name descname"><span class="pre">parse_residx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_residx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_residx" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_residx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_residx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_residx" title="Link to this definition"></a></dt>
 <dd><p>Extracts the residue pointers for each atom</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -709,7 +721,7 @@ defined in the parm7 file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_resnames">
-<span class="sig-name descname"><span class="pre">parse_resnames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_resnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_resnames" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_resnames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_resnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_resnames" title="Link to this definition"></a></dt>
 <dd><p>Extracts the names of each residue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -730,7 +742,7 @@ as defined in the parm7 file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices">
-<span class="sig-name descname"><span class="pre">parse_type_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_type_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_type_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_type_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices" title="Link to this definition"></a></dt>
 <dd><p>Extracts the index of atom types of the each atom involved in Lennard
 Jones (6-12) interactions.</p>
 <dl class="field-list simple">
@@ -752,7 +764,7 @@ index for each atom</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parse_types">
-<span class="sig-name descname"><span class="pre">parse_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_types" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_per_record</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_types" title="Link to this definition"></a></dt>
 <dd><p>Extracts the force field atom types of each atom</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -773,7 +785,7 @@ atom as defined in the parm7 file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper">
-<span class="sig-name descname"><span class="pre">parsesection_mapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parsesection_mapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parsesection_mapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numlines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parsesection_mapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper" title="Link to this definition"></a></dt>
 <dd><p>Parses FORTRAN formatted section, and returns a list of all entries
 in each line</p>
 <dl class="field-list simple">
@@ -794,7 +806,7 @@ in each line</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.skipper">
-<span class="sig-name descname"><span class="pre">skipper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.skipper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.skipper" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">skipper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.skipper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.skipper" title="Link to this definition"></a></dt>
 <dd><p>TOPParser :class: helper function, skips lines of input parm7 file
 until we find the next %FLAG entry and return that</p>
 <dl class="field-list simple">
@@ -809,7 +821,7 @@ until we find the next %FLAG entry and return that</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>

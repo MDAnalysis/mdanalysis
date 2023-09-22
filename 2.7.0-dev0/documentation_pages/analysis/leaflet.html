@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.4.2. Leaflet identification — MDAnalysis.analysis.leaflet &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -152,8 +164,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.leaflet"></span><section id="leaflet-identification-mdanalysis-analysis-leaflet">
-<h1><span class="section-number">4.4.2. </span>Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this heading"></a></h1>
+  <section id="leaflet-identification-mdanalysis-analysis-leaflet">
+<span id="module-MDAnalysis.analysis.leaflet"></span><h1><span class="section-number">4.4.2. </span>Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Link to this heading"></a></h1>
 <p>This module implements the <em>LeafletFinder</em> algorithm, described in
 <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id1"><span>[Michaud-Agrawal2011]</span></a>. It can identify the lipids in a bilayer of
 arbitrary shape and topology, including planar and undulating bilayers
@@ -172,7 +184,7 @@ of distances from the centre of geometry (or possibly simply the
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.</p>
 <section id="algorithm">
-<h2><span class="section-number">4.4.2.1. </span>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.4.2.1. </span>Algorithm<a class="headerlink" href="#algorithm" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>build a graph of all phosphate distances &lt; cutoff</p></li>
 <li><p>identify the largest connected subgraphs</p></li>
@@ -181,10 +193,10 @@ algorithm.</p>
 <p>For further details see <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id2"><span>[Michaud-Agrawal2011]</span></a>.</p>
 </section>
 <section id="classes-and-functions">
-<h2><span class="section-number">4.4.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.4.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.leaflet.</span></span><span class="sig-name descname"><span class="pre">LeafletFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.leaflet.</span></span><span class="sig-name descname"><span class="pre">LeafletFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Link to this definition"></a></dt>
 <dd><p>Identify atoms in the same leaflet of a lipid bilayer.</p>
 <p>This class implements the <em>LeafletFinder</em> algorithm <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id3"><span>[Michaud-Agrawal2011]</span></a>.</p>
 <dl class="field-list simple">
@@ -234,13 +246,13 @@ create a <a class="reference internal" href="../core/universe.html#MDAnalysis.co
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder.group">
-<span class="sig-name descname"><span class="pre">group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="Link to this definition"></a></dt>
 <dd><p>Return a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> for <em>component_index</em>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder.groups">
-<span class="sig-name descname"><span class="pre">groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="Link to this definition"></a></dt>
 <dd><p>Return a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> for <em>component_index</em>.</p>
 <p>If no argument is supplied, then a list of all leaflet groups is returned.</p>
 <div class="admonition seealso">
@@ -251,25 +263,25 @@ create a <a class="reference internal" href="../core/universe.html#MDAnalysis.co
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter">
-<span class="sig-name descname"><span class="pre">groups_iter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">groups_iter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="Link to this definition"></a></dt>
 <dd><p>Iterator over all leaflet <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><code class="xref py py-meth docutils literal notranslate"><span class="pre">groups()</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder.sizes">
-<span class="sig-name descname"><span class="pre">sizes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.sizes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sizes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.sizes" title="Link to this definition"></a></dt>
 <dd><p>Dict of component index with size of component.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.update" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.update" title="Link to this definition"></a></dt>
 <dd><p>Update components, possibly with a different <em>cutoff</em></p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder.write_selection">
-<span class="sig-name descname"><span class="pre">write_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.write_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.write_selection" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.write_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.write_selection" title="Link to this definition"></a></dt>
 <dd><p>Write selections for the leaflets to <em>filename</em>.</p>
 <p>The format is typically determined by the extension of <em>filename</em>
 (e.g. “vmd”, “pml”, or “ndx” for VMD, PyMol, or Gromacs).</p>
@@ -281,7 +293,7 @@ options.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.optimize_cutoff">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.leaflet.</span></span><span class="sig-name descname"><span class="pre">optimize_cutoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_imbalance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#optimize_cutoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.leaflet.</span></span><span class="sig-name descname"><span class="pre">optimize_cutoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_imbalance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#optimize_cutoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="Link to this definition"></a></dt>
 <dd><p>Find cutoff that minimizes number of disconnected groups.</p>
 <p>Applies heuristics to find best groups:</p>
 <ol class="arabic">

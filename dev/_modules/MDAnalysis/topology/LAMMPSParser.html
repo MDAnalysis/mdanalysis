@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -297,7 +309,9 @@
 <span class="p">])</span>
 
 
-<div class="viewcode-block" id="DATAParser"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser">[docs]</a><span class="k">class</span> <span class="nc">DATAParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="DATAParser">
+<a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser">[docs]</a>
+<span class="k">class</span> <span class="nc">DATAParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a LAMMPS DATA file for topology and coordinates.</span>
 
 <span class="sd">    Note that LAMMPS DATA files can be used standalone.</span>
@@ -321,7 +335,9 @@
                 <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">line</span>
 
-<div class="viewcode-block" id="DATAParser.grab_datafile"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.grab_datafile">[docs]</a>    <span class="k">def</span> <span class="nf">grab_datafile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DATAParser.grab_datafile">
+<a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.grab_datafile">[docs]</a>
+    <span class="k">def</span> <span class="nf">grab_datafile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split a data file into dict of header and sections</span>
 
 <span class="sd">        Returns</span>
@@ -346,6 +362,7 @@
                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">starts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])}</span>
 
         <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">sects</span></div>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_interpret_atom_style</span><span class="p">(</span><span class="n">atom_style</span><span class="p">):</span>
@@ -384,7 +401,9 @@
                 
         <span class="k">return</span> <span class="n">style_dict</span>
     
-<div class="viewcode-block" id="DATAParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DATAParser.parse">
+<a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses a LAMMPS_ DATA file.</span>
 
 <span class="sd">        Returns</span>
@@ -434,7 +453,10 @@
 
         <span class="k">return</span> <span class="n">top</span></div>
 
-<div class="viewcode-block" id="DATAParser.read_DATA_timestep"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.read_DATA_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">read_DATA_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">TS_class</span><span class="p">,</span> <span class="n">TS_kwargs</span><span class="p">,</span>
+
+<div class="viewcode-block" id="DATAParser.read_DATA_timestep">
+<a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser.read_DATA_timestep">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_DATA_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">TS_class</span><span class="p">,</span> <span class="n">TS_kwargs</span><span class="p">,</span>
                            <span class="n">atom_style</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a DATA file and try and extract x, v, box.</span>
 
@@ -474,6 +496,7 @@
         <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">unitcell</span>
 
         <span class="k">return</span> <span class="n">ts</span></div>
+
 
     <span class="k">def</span> <span class="nf">_parse_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datalines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Strip coordinate info into np array&quot;&quot;&quot;</span>
@@ -713,7 +736,10 @@
         <span class="k">return</span> <span class="n">unitcell</span></div>
 
 
-<div class="viewcode-block" id="LammpsDumpParser"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser">[docs]</a><span class="k">class</span> <span class="nc">LammpsDumpParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LammpsDumpParser">
+<a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser">[docs]</a>
+<span class="k">class</span> <span class="nc">LammpsDumpParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses Lammps ascii dump files in &#39;atom&#39; format.</span>
 
 <span class="sd">    Sets all masses to 1.0.</span>
@@ -764,6 +790,7 @@
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span></div>
+
 
 
 <span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>

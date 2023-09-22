@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>8. Trajectory transformations (“on-the-fly” transformations) &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
@@ -154,7 +166,7 @@
            <div itemprop="articleBody">
              
   <section id="module-MDAnalysis.transformations">
-<span id="trajectory-transformations-on-the-fly-transformations"></span><span id="transformations"></span><h1><span class="section-number">8. </span>Trajectory transformations (“on-the-fly” transformations)<a class="headerlink" href="#module-MDAnalysis.transformations" title="Permalink to this heading"></a></h1>
+<span id="trajectory-transformations-on-the-fly-transformations"></span><span id="transformations"></span><h1><span class="section-number">8. </span>Trajectory transformations (“on-the-fly” transformations)<a class="headerlink" href="#module-MDAnalysis.transformations" title="Link to this heading"></a></h1>
 <p>In MDAnalysis, a <em>transformation</em> is a function/function-like class
 that modifies the data for the current <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> and returns the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>. For instance, coordinate transformations, such as
@@ -183,7 +195,7 @@ collection of transformations (see <a class="reference internal" href="#transfor
 can be immediately used but one can always write custom
 transformations (see <a class="reference internal" href="#custom-transformations"><span class="std std-ref">Creating transformations</span></a>).</p>
 <section id="workflows">
-<span id="id1"></span><h2><span class="section-number">8.1. </span>Workflows<a class="headerlink" href="#workflows" title="Permalink to this heading"></a></h2>
+<span id="id1"></span><h2><span class="section-number">8.1. </span>Workflows<a class="headerlink" href="#workflows" title="Link to this heading"></a></h2>
 <p>Instead of manually applying transformations, it is much more
 convenient to associate a whole <em>workflow</em> of transformations with a
 trajectory and have the transformations be called automatically.</p>
@@ -213,7 +225,7 @@ creation using the keyword argument <cite>transformations</cite>:</p>
 being added.</p>
 </section>
 <section id="creating-transformations">
-<span id="custom-transformations"></span><h2><span class="section-number">8.2. </span>Creating transformations<a class="headerlink" href="#creating-transformations" title="Permalink to this heading"></a></h2>
+<span id="custom-transformations"></span><h2><span class="section-number">8.2. </span>Creating transformations<a class="headerlink" href="#creating-transformations" title="Link to this heading"></a></h2>
 <p>A simple <em>transformation</em> can also be a function that takes a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> as input, modifies it, and
 returns it. If it takes no other arguments but a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>
@@ -229,7 +241,7 @@ can be defined as the following example:</p>
 <p>If the transformation requires other arguments besides the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>,
 the following two methods can be used to create such transformation:</p>
 <section id="creating-complex-transformation-classes">
-<span id="custom-transformations-class"></span><h3><span class="section-number">8.2.1. </span>Creating complex transformation classes<a class="headerlink" href="#creating-complex-transformation-classes" title="Permalink to this heading"></a></h3>
+<span id="custom-transformations-class"></span><h3><span class="section-number">8.2.1. </span>Creating complex transformation classes<a class="headerlink" href="#creating-complex-transformation-classes" title="Link to this heading"></a></h3>
 <p>It is implemented by inheriting from
 <a class="reference internal" href="transformations/base.html#MDAnalysis.transformations.base.TransformationBase" title="MDAnalysis.transformations.base.TransformationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.base.TransformationBase</span></code></a>,
 which defines <code class="xref py py-func docutils literal notranslate"><span class="pre">__call__()</span></code> for the transformation class
@@ -252,7 +264,7 @@ from release 2.0.0 onwards because it can be reliably serialized.
 See <a class="reference internal" href="transformations/translate.html#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a> for a simple example.</p>
 </section>
 <section id="creating-complex-transformation-closure-functions">
-<span id="custom-transformations-closure"></span><h3><span class="section-number">8.2.2. </span>Creating complex transformation closure functions<a class="headerlink" href="#creating-complex-transformation-closure-functions" title="Permalink to this heading"></a></h3>
+<span id="custom-transformations-closure"></span><h3><span class="section-number">8.2.2. </span>Creating complex transformation closure functions<a class="headerlink" href="#creating-complex-transformation-closure-functions" title="Link to this heading"></a></h3>
 <p>Transformation can also be a wrapped function takes the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> object as argument.
 So in this case, a transformation function (closure) can be roughly defined as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_x_func</span><span class="p">(</span><span class="n">distance</span><span class="p">):</span>
@@ -286,7 +298,7 @@ please refer to MDAnalysis 1.x documentation.</p>
 </section>
 </section>
 <section id="transformations-in-mdanalysis">
-<span id="transformations-module"></span><h2><span class="section-number">8.3. </span>Transformations in MDAnalysis<a class="headerlink" href="#transformations-in-mdanalysis" title="Permalink to this heading"></a></h2>
+<span id="transformations-module"></span><h2><span class="section-number">8.3. </span>Transformations in MDAnalysis<a class="headerlink" href="#transformations-in-mdanalysis" title="Link to this heading"></a></h2>
 <p>The module <a class="reference internal" href="#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a> contains transformations that can
 be immediately used in your own <a class="reference internal" href="#workflows"><span class="std std-ref">workflows</span></a>. In order to use
 any of these transformations, the module must first be imported:</p>
@@ -305,7 +317,7 @@ attribute.</p>
 transformations in <a class="reference internal" href="#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a>.</p>
 </section>
 <section id="how-to-transformations">
-<h2><span class="section-number">8.4. </span>How to transformations<a class="headerlink" href="#how-to-transformations" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">8.4. </span>How to transformations<a class="headerlink" href="#how-to-transformations" title="Link to this heading"></a></h2>
 <p>Translating the coordinates of a single frame (although one would normally add
 the transformation to a <a class="reference internal" href="#workflows"><span class="std std-ref">workflow</span></a>, as shown in the subsequent
 examples):</p>
@@ -328,7 +340,7 @@ examples):</p>
 </div>
 </section>
 <section id="building-blocks-for-transformation-classes">
-<span id="building-block-transformation"></span><h2><span class="section-number">8.5. </span>Building blocks for Transformation Classes<a class="headerlink" href="#building-blocks-for-transformation-classes" title="Permalink to this heading"></a></h2>
+<span id="building-block-transformation"></span><h2><span class="section-number">8.5. </span>Building blocks for Transformation Classes<a class="headerlink" href="#building-blocks-for-transformation-classes" title="Link to this heading"></a></h2>
 <p>Transformations normally ultilize the power of NumPy to get better performance
 on array operations. However, when it comes to parallelism, NumPy will sometimes
 oversubscribe the threads, either by hyper threading (when it uses OpenBlas backend),
@@ -348,7 +360,7 @@ libraries can lead to sub-optimal performance with defaults.</p>
 </div>
 </section>
 <section id="currently-implemented-transformations">
-<span id="implemented-transformations"></span><h2><span class="section-number">8.6. </span>Currently implemented transformations<a class="headerlink" href="#currently-implemented-transformations" title="Permalink to this heading"></a></h2>
+<span id="implemented-transformations"></span><h2><span class="section-number">8.6. </span>Currently implemented transformations<a class="headerlink" href="#currently-implemented-transformations" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="transformations/translate.html">8.6.1. Trajectory translation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>

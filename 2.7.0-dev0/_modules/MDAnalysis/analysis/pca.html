@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -257,7 +269,9 @@
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
 
 
-<div class="viewcode-block" id="PCA"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA">[docs]</a><span class="k">class</span> <span class="nc">PCA</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="PCA">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA">[docs]</a>
+<span class="k">class</span> <span class="nc">PCA</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Principal component analysis on an MD trajectory.</span>
 
 <span class="sd">    After initializing and calling method with a universe or an atom group,</span>
@@ -481,7 +495,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span> <span class="o">=</span> <span class="n">n</span>
 
-<div class="viewcode-block" id="PCA.transform"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="PCA.transform">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.transform">[docs]</a>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the dimensionality reduction on a trajectory</span>
 
@@ -543,7 +559,10 @@
 
         <span class="k">return</span> <span class="n">dot</span></div>
 
-<div class="viewcode-block" id="PCA.project_single_frame"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.project_single_frame">[docs]</a>    <span class="k">def</span> <span class="nf">project_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PCA.project_single_frame">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.project_single_frame">[docs]</a>
+    <span class="k">def</span> <span class="nf">project_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes a function to project structures onto selected PCs</span>
 
 <span class="sd">        Applies Inverse-PCA transform to the PCA atomgroup.</span>
@@ -711,7 +730,10 @@
             <span class="k">return</span> <span class="n">ts</span>
         <span class="k">return</span> <span class="n">wrapped</span></div>
 
-<div class="viewcode-block" id="PCA.rmsip"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.rmsip">[docs]</a>    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+
+<div class="viewcode-block" id="PCA.rmsip">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.rmsip">[docs]</a>
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
@@ -789,7 +811,10 @@
 
         <span class="k">return</span> <span class="n">rmsip</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PCA.cumulative_overlap"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.cumulative_overlap">[docs]</a>    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+
+<div class="viewcode-block" id="PCA.cumulative_overlap">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.cumulative_overlap">[docs]</a>
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
@@ -842,10 +867,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;other must be another PCA class&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="cosine_content"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cosine_content">[docs]</a><span class="k">def</span> <span class="nf">cosine_content</span><span class="p">(</span><span class="n">pca_space</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+
+<div class="viewcode-block" id="cosine_content">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cosine_content">[docs]</a>
+<span class="k">def</span> <span class="nf">cosine_content</span><span class="p">(</span><span class="n">pca_space</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Measure the cosine content of the PCA projection.</span>
 
 <span class="sd">    The cosine content of pca projections can be used as an indicator if a</span>
@@ -880,7 +909,10 @@
             <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simps</span><span class="p">(</span><span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="rmsip"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.rmsip">[docs]</a><span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+
+<div class="viewcode-block" id="rmsip">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.rmsip">[docs]</a>
+<span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
@@ -966,7 +998,10 @@
     <span class="k">return</span> <span class="n">msip</span><span class="o">**</span><span class="mf">0.5</span></div>
 
 
-<div class="viewcode-block" id="cumulative_overlap"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cumulative_overlap">[docs]</a><span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+
+<div class="viewcode-block" id="cumulative_overlap">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cumulative_overlap">[docs]</a>
+<span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
     <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
@@ -1017,6 +1052,7 @@
 
     <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">b_norms</span><span class="o">*</span><span class="n">vec_norm</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">o</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span></div>
+
 </pre></div>
 
            </div>

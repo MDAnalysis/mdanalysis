@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>8.6.1. Trajectory translation — MDAnalysis.transformations.translate &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -147,15 +159,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.transformations.translate"></span><section id="trajectory-translation-mdanalysis-transformations-translate">
-<h1><span class="section-number">8.6.1. </span>Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Permalink to this heading"></a></h1>
+  <section id="trajectory-translation-mdanalysis-transformations-translate">
+<span id="module-MDAnalysis.transformations.translate"></span><h1><span class="section-number">8.6.1. </span>Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Link to this heading"></a></h1>
 <p>Translate the coordinates of a given trajectory by a given vector.
 The vector can either be user defined, using the function <a class="reference internal" href="#MDAnalysis.transformations.translate.translate" title="MDAnalysis.transformations.translate.translate"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate()</span></code></a>
 or defined by centering an AtomGroup in the unit cell using the function
 <a class="reference internal" href="#MDAnalysis.transformations.translate.center_in_box" title="MDAnalysis.transformations.translate.center_in_box"><code class="xref py py-func docutils literal notranslate"><span class="pre">center_in_box()</span></code></a></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.transformations.translate.translate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.translate.</span></span><span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.translate.</span></span><span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Link to this definition"></a></dt>
 <dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
 instance by a given vector.</p>
 <p class="rubric">Example</p>
@@ -193,7 +205,7 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.transformations.translate.center_in_box">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.translate.</span></span><span class="sig-name descname"><span class="pre">center_in_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#center_in_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.center_in_box" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.transformations.translate.</span></span><span class="sig-name descname"><span class="pre">center_in_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'geometry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallelizable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#center_in_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.center_in_box" title="Link to this definition"></a></dt>
 <dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
 instance so that the center of geometry/mass of the given <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.

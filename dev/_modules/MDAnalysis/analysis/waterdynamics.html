@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -500,7 +512,9 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 
 
-<div class="viewcode-block" id="WaterOrientationalRelaxation"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">[docs]</a><span class="k">class</span> <span class="nc">WaterOrientationalRelaxation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="WaterOrientationalRelaxation">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">[docs]</a>
+<span class="k">class</span> <span class="nc">WaterOrientationalRelaxation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Water orientation relaxation analysis</span>
 
 <span class="sd">    Function to evaluate the Water Orientational Relaxation proposed by Yu-ling</span>
@@ -670,12 +684,17 @@
             <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection_str</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">selection</span>
 
-<div class="viewcode-block" id="WaterOrientationalRelaxation.lg2"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="WaterOrientationalRelaxation.lg2">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">lg2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Second Legendre polynomial&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span></div>
 
-<div class="viewcode-block" id="WaterOrientationalRelaxation.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="WaterOrientationalRelaxation.run">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
 
         <span class="c1"># All the selection to an array, this way is faster than selecting</span>
@@ -693,10 +712,14 @@
         <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
             <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="AngularDistribution"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.AngularDistribution">[docs]</a><span class="k">class</span> <span class="nc">AngularDistribution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AngularDistribution">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.AngularDistribution">[docs]</a>
+<span class="k">class</span> <span class="nc">AngularDistribution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Angular distribution function analysis</span>
 
 <span class="sd">    The angular distribution function (AD) is defined as the distribution</span>
@@ -810,7 +833,9 @@
             <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">a</span>
 
-<div class="viewcode-block" id="AngularDistribution.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.AngularDistribution.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="AngularDistribution.run">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.AngularDistribution.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to evaluate the angular distribution of cos(theta)&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -836,6 +861,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listHH</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist2column</span><span class="p">(</span><span class="n">listdip</span><span class="p">))</span></div>
 
+
     <span class="k">def</span> <span class="nf">_selection_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">):</span>
         <span class="n">selection</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -844,7 +870,10 @@
         <span class="k">return</span> <span class="n">selection</span></div>
 
 
-<div class="viewcode-block" id="MeanSquareDisplacement"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement">[docs]</a><span class="k">class</span> <span class="nc">MeanSquareDisplacement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MeanSquareDisplacement">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement">[docs]</a>
+<span class="k">class</span> <span class="nc">MeanSquareDisplacement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean square displacement analysis</span>
 
 <span class="sd">    Function to evaluate the Mean Square Displacement (MSD_). The MSD gives the</span>
@@ -983,7 +1012,9 @@
             <span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection_str</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">selection</span>
 
-<div class="viewcode-block" id="MeanSquareDisplacement.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MeanSquareDisplacement.run">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
 
         <span class="c1"># All the selection to an array, this way is faster than selecting</span>
@@ -1000,10 +1031,14 @@
         <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
             <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMeanOnePoint</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="SurvivalProbability"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability">[docs]</a><span class="k">class</span> <span class="nc">SurvivalProbability</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SurvivalProbability">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability">[docs]</a>
+<span class="k">class</span> <span class="nc">SurvivalProbability</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Survival Probability (SP) gives the probability for a group of particles to remain</span>
 <span class="sd">    in a certain region. The SP is given by:</span>
@@ -1060,7 +1095,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
-<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="SurvivalProbability.run">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes and returns the Survival Probability (SP) timeseries</span>
@@ -1184,7 +1221,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">tau_timeseries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries</span> <span class="o">=</span> <span class="n">sp_timeseries</span>
-        <span class="k">return</span> <span class="bp">self</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
 </pre></div>
 
            </div>

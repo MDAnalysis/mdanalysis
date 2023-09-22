@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -171,8 +183,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.topology.__init__"></span><section id="topology-readers-mdanalysis-topology">
-<h1><span class="section-number">5.1. </span>Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code><a class="headerlink" href="#topology-readers-mdanalysis-topology" title="Permalink to this heading"></a></h1>
+  <section id="topology-readers-mdanalysis-topology">
+<span id="module-MDAnalysis.topology.__init__"></span><h1><span class="section-number">5.1. </span>Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code><a class="headerlink" href="#topology-readers-mdanalysis-topology" title="Link to this heading"></a></h1>
 <p>This submodule contains the topology readers. A topology file supplies the list
 of atoms in the system, their connectivity and possibly additional information
 such as B-factors, partial charges, etc. The details depend on the file format
@@ -187,7 +199,7 @@ the file.  In the event that this happens, a UserWarning will always be issued.<
 <p>The following table lists the currently supported topology formats along with
 the attributes they provide.</p>
 <span id="supported-topology-formats"></span><table class="docutils align-default" id="id19">
-<caption><span class="caption-text">Table of Supported Topology Formats</span><a class="headerlink" href="#id19" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Table of Supported Topology Formats</span><a class="headerlink" href="#id19" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p>extension</p></th>
@@ -424,7 +436,7 @@ atoms and constructs minimal topology data.
 </tbody>
 </table>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="a" role="note">
+<aside class="footnote brackets" id="a" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id4">4</a>,<a role="doc-backlink" href="#id5">5</a>,<a role="doc-backlink" href="#id6">6</a>,<a role="doc-backlink" href="#id7">7</a>,<a role="doc-backlink" href="#id9">8</a>,<a role="doc-backlink" href="#id10">9</a>,<a role="doc-backlink" href="#id11">10</a>,<a role="doc-backlink" href="#id12">11</a>,<a role="doc-backlink" href="#id13">12</a>,<a role="doc-backlink" href="#id14">13</a>,<a role="doc-backlink" href="#id15">14</a>,<a role="doc-backlink" href="#id16">15</a>,<a role="doc-backlink" href="#id17">16</a>,<a role="doc-backlink" href="#id18">17</a>)</span>
 <p>This format can also be used to provide <em>coordinates</em> so that
@@ -434,7 +446,7 @@ a file of this format as the sole argument to
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Universe</span></code></a>: <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span>
 <span class="pre">Universe(filename)</span></code></p>
 </aside>
-<aside class="footnote brackets" id="b" role="note">
+<aside class="footnote brackets" id="b" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">2</a><span class="fn-bracket">]</span></span>
 <p>The Gromacs TPR format contains coordinate information but
 parsing coordinates from a TPR file is currently not implemented
@@ -446,7 +458,7 @@ in <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology
 <p><a class="reference internal" href="../coordinates_modules.html#coordinates"><span class="std std-ref">Coordinates modules</span></a> with the <a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a></p>
 </div>
 <section id="developer-notes">
-<span id="topology-parsers-developer-notes"></span><h2><span class="section-number">5.1.1. </span>Developer Notes<a class="headerlink" href="#developer-notes" title="Permalink to this heading"></a></h2>
+<span id="topology-parsers-developer-notes"></span><h2><span class="section-number">5.1.1. </span>Developer Notes<a class="headerlink" href="#developer-notes" title="Link to this heading"></a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.8.</span></p>
 </div>
@@ -478,7 +490,7 @@ historical reasons and in order to distinguish them from coordinate
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">parse()</span></code> method that
 returns a <a class="reference internal" href="../core/topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topology.Topology</span></code></a> instance.</p>
 <section id="atoms">
-<h3><span class="section-number">5.1.1.1. </span>atoms<a class="headerlink" href="#atoms" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">5.1.1.1. </span>atoms<a class="headerlink" href="#atoms" title="Link to this heading"></a></h3>
 <p>The <strong>atoms</strong> appear to the user as an array of
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> instances. However, under the
 hood this is essentially only an array of atom indices that are used
@@ -492,33 +504,33 @@ data read from the topology file.</p>
 </div>
 </section>
 <section id="bonds">
-<h3><span class="section-number">5.1.1.2. </span>bonds<a class="headerlink" href="#bonds" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">5.1.1.2. </span>bonds<a class="headerlink" href="#bonds" title="Link to this heading"></a></h3>
 <p><strong>Bonds</strong> are represented as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each tuple
 contains two atom numbers, which indicate the atoms between which the
 bond is formed. Only one of the two permutations is stored, typically
 the one with the lower atom number first.</p>
 </section>
 <section id="bondorder">
-<h3><span class="section-number">5.1.1.3. </span>bondorder<a class="headerlink" href="#bondorder" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">5.1.1.3. </span>bondorder<a class="headerlink" href="#bondorder" title="Link to this heading"></a></h3>
 <p>Some <strong>bonds</strong> have additional information called <strong>order</strong>. When available
 this is stored in a dictionary of format {bondtuple:order}.  This extra
 information is then passed to Bond initialisation in u._init_bonds()</p>
 </section>
 <section id="angles">
-<h3><span class="section-number">5.1.1.4. </span>angles<a class="headerlink" href="#angles" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">5.1.1.4. </span>angles<a class="headerlink" href="#angles" title="Link to this heading"></a></h3>
 <p><strong>Angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains three atom numbers.  The second of these numbers
 represents the apex of the angle.</p>
 </section>
 <section id="dihedrals">
-<h3><span class="section-number">5.1.1.5. </span>dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">5.1.1.5. </span>dihedrals<a class="headerlink" href="#dihedrals" title="Link to this heading"></a></h3>
 <p><strong>Proper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains four atom numbers. The angle of the torsion
 is defined by the angle between the planes formed by atoms 1, 2, and 3,
 and 2, 3, and 4.</p>
 </section>
 <section id="impropers">
-<h3><span class="section-number">5.1.1.6. </span>impropers<a class="headerlink" href="#impropers" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">5.1.1.6. </span>impropers<a class="headerlink" href="#impropers" title="Link to this heading"></a></h3>
 <p><strong>Improper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains four atom numbers.  The angle of the improper torsion
 is again defined by the angle between the planes formed by atoms 1, 2, and 3,

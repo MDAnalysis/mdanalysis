@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6.8. GRO file format — MDAnalysis.coordinates.GRO &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -171,12 +183,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.coordinates.GRO"></span><section id="gro-file-format-mdanalysis-coordinates-gro">
-<h1><span class="section-number">6.8. </span>GRO file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a><a class="headerlink" href="#gro-file-format-mdanalysis-coordinates-gro" title="Permalink to this heading"></a></h1>
+  <section id="gro-file-format-mdanalysis-coordinates-gro">
+<span id="module-MDAnalysis.coordinates.GRO"></span><h1><span class="section-number">6.8. </span>GRO file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a><a class="headerlink" href="#gro-file-format-mdanalysis-coordinates-gro" title="Link to this heading"></a></h1>
 <p>Classes to read and write <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://manual.gromacs.org/current/online/gro.html">GRO</a> coordinate files; see the notes on the
 <a class="reference external" href="http://chembytes.wikidot.com/g-grofile">GRO format</a> which includes a conversion routine for the box.</p>
 <section id="writing-gro-files">
-<h2><span class="section-number">6.8.1. </span>Writing GRO files<a class="headerlink" href="#writing-gro-files" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.8.1. </span>Writing GRO files<a class="headerlink" href="#writing-gro-files" title="Link to this heading"></a></h2>
 <p>By default any written GRO files will renumber the atom ids to move sequentially
 from 1.  This can be disabled, and instead the original atom ids kept, by
 using the <cite>reindex=False</cite> keyword argument.  This is useful when writing a
@@ -194,10 +206,10 @@ identities of atoms.</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.8.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.8.2. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.GRO.</span></span><span class="sig-name descname"><span class="pre">GROReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.GRO.</span></span><span class="sig-name descname"><span class="pre">GROReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader" title="Link to this definition"></a></dt>
 <dd><p>Reader for the Gromacs GRO structure format.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -220,7 +232,7 @@ to <code class="docutils literal notranslate"><span class="pre">None</span></cod
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROReader.Writer">
-<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader.Writer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader.Writer" title="Link to this definition"></a></dt>
 <dd><p>Returns a CRDWriter for <em>filename</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -234,7 +246,7 @@ to <code class="docutils literal notranslate"><span class="pre">None</span></cod
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -243,7 +255,7 @@ to <code class="docutils literal notranslate"><span class="pre">None</span></cod
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.GRO.</span></span><span class="sig-name descname"><span class="pre">GROWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.GRO.</span></span><span class="sig-name descname"><span class="pre">GROWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter" title="Link to this definition"></a></dt>
 <dd><p>GRO Writer that conforms to the Trajectory API.</p>
 <dl class="simple">
 <dt>Will attempt to write the following information from the topology:</dt><dd><ul class="simple">
@@ -312,21 +324,21 @@ below.:</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROWriter.fmt">
-<span class="sig-name descname"><span class="pre">fmt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'box_orthorhombic':</span> <span class="pre">'{box[0]:10.5f}</span> <span class="pre">{box[1]:9.5f}</span> <span class="pre">{box[2]:9.5f}\n',</span> <span class="pre">'box_triclinic':</span> <span class="pre">'{box[0]:10.5f}</span> <span class="pre">{box[4]:9.5f}</span> <span class="pre">{box[8]:9.5f}</span> <span class="pre">{box[1]:9.5f}</span> <span class="pre">{box[2]:9.5f}</span> <span class="pre">{box[3]:9.5f}</span> <span class="pre">{box[5]:9.5f}</span> <span class="pre">{box[6]:9.5f}</span> <span class="pre">{box[7]:9.5f}\n',</span> <span class="pre">'n_atoms':</span> <span class="pre">'{0:5d}\n',</span> <span class="pre">'xyz':</span> <span class="pre">'{resid:&gt;5d}{resname:&lt;5.5s}{name:&gt;5.5s}{index:&gt;5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}\n',</span> <span class="pre">'xyz_v':</span> <span class="pre">'{resid:&gt;5d}{resname:&lt;5.5s}{name:&gt;5.5s}{index:&gt;5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.fmt" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fmt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'box_orthorhombic':</span> <span class="pre">'{box[0]:10.5f}</span> <span class="pre">{box[1]:9.5f}</span> <span class="pre">{box[2]:9.5f}\n',</span> <span class="pre">'box_triclinic':</span> <span class="pre">'{box[0]:10.5f}</span> <span class="pre">{box[4]:9.5f}</span> <span class="pre">{box[8]:9.5f}</span> <span class="pre">{box[1]:9.5f}</span> <span class="pre">{box[2]:9.5f}</span> <span class="pre">{box[3]:9.5f}</span> <span class="pre">{box[5]:9.5f}</span> <span class="pre">{box[6]:9.5f}</span> <span class="pre">{box[7]:9.5f}\n',</span> <span class="pre">'n_atoms':</span> <span class="pre">'{0:5d}\n',</span> <span class="pre">'xyz':</span> <span class="pre">'{resid:&gt;5d}{resname:&lt;5.5s}{name:&gt;5.5s}{index:&gt;5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}\n',</span> <span class="pre">'xyz_v':</span> <span class="pre">'{resid:&gt;5d}{resname:&lt;5.5s}{name:&gt;5.5s}{index:&gt;5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.fmt" title="Link to this definition"></a></dt>
 <dd><p>format strings for the GRO file (all include newline); precision
 of 3 decimal places is hard-coded here.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROWriter.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROWriter.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.write" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.write" title="Link to this definition"></a></dt>
 <dd><p>Write selection at current trajectory frame to file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -355,7 +367,7 @@ Use AtomGroup or Universe as an input instead.</p>
 
 </section>
 <section id="developer-notes-growriter-format-strings">
-<h2><span class="section-number">6.8.3. </span>Developer notes: <code class="docutils literal notranslate"><span class="pre">GROWriter</span></code> format strings<a class="headerlink" href="#developer-notes-growriter-format-strings" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.8.3. </span>Developer notes: <code class="docutils literal notranslate"><span class="pre">GROWriter</span></code> format strings<a class="headerlink" href="#developer-notes-growriter-format-strings" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.GRO.GROWriter" title="MDAnalysis.coordinates.GRO.GROWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">GROWriter</span></code></a> class has a <a class="reference internal" href="#MDAnalysis.coordinates.GRO.GROWriter.fmt" title="MDAnalysis.coordinates.GRO.GROWriter.fmt"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GROWriter.fmt</span></code></a> attribute, which is a dictionary of different
 strings for writing lines in <code class="docutils literal notranslate"><span class="pre">.gro</span></code> files.  These are as follows:</p>
 <dl>

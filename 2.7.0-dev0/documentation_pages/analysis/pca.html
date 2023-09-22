@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.9.2. Principal Component Analysis (PCA) — MDAnalysis.analysis.pca &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -152,8 +164,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.pca"></span><section id="principal-component-analysis-pca-mdanalysis-analysis-pca">
-<h1><span class="section-number">4.9.2. </span>Principal Component Analysis (PCA) — <a class="reference internal" href="#module-MDAnalysis.analysis.pca" title="MDAnalysis.analysis.pca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a><a class="headerlink" href="#principal-component-analysis-pca-mdanalysis-analysis-pca" title="Permalink to this heading"></a></h1>
+  <section id="principal-component-analysis-pca-mdanalysis-analysis-pca">
+<span id="module-MDAnalysis.analysis.pca"></span><h1><span class="section-number">4.9.2. </span>Principal Component Analysis (PCA) — <a class="reference internal" href="#module-MDAnalysis.analysis.pca" title="MDAnalysis.analysis.pca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a><a class="headerlink" href="#principal-component-analysis-pca-mdanalysis-analysis-pca" title="Link to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Authors<span class="colon">:</span></dt>
 <dd class="field-odd"><p>John Detlefs</p>
@@ -192,7 +204,7 @@ attempt to retrieve some structure from our high dimensional data.</p>
 <p>For a basic introduction to the module, the <a class="reference internal" href="#pca-tutorial"><span class="std std-ref">PCA Tutorial</span></a> shows how
 to perform Principal Component Analysis.</p>
 <section id="pca-tutorial">
-<span id="id1"></span><h2><span class="section-number">4.9.2.1. </span>PCA Tutorial<a class="headerlink" href="#pca-tutorial" title="Permalink to this heading"></a></h2>
+<span id="id1"></span><h2><span class="section-number">4.9.2.1. </span>PCA Tutorial<a class="headerlink" href="#pca-tutorial" title="Link to this heading"></a></h2>
 <p>The example uses files provided as part of the MDAnalysis test suite
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">PSF</span></code> and
 <code class="xref py py-data docutils literal notranslate"><span class="pre">DCD</span></code>). This tutorial shows how to use the
@@ -227,10 +239,10 @@ i.:</p>
 data are left to the user.</p>
 </section>
 <section id="classes-and-functions">
-<h2><span class="section-number">4.9.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.9.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">PCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">PCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA" title="Link to this definition"></a></dt>
 <dd><p>Principal component analysis on an MD trajectory.</p>
 <p>After initializing and calling method with a universe or an atom group,
 principal components ordering the atom coordinate data by decreasing
@@ -261,7 +273,7 @@ all principal components</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.results.p_components">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">p_components</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.p_components" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">p_components</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.p_components" title="Link to this definition"></a></dt>
 <dd><p>Principal components of the feature space,
 representing the directions of maximum variance in the data.
 The column vector p_components[:, i] is the eigenvector
@@ -278,7 +290,7 @@ corresponding to the variance[i].</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.p_components">
-<span class="sig-name descname"><span class="pre">p_components</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.p_components" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">p_components</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.p_components" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.p_components" title="MDAnalysis.analysis.pca.PCA.results.p_components"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.p_components</span></code></a>.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -293,7 +305,7 @@ corresponding to the variance[i].</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.results.variance">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.variance" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.variance" title="Link to this definition"></a></dt>
 <dd><p>Raw variance explained by each eigenvector of the covariance
 matrix.</p>
 <div class="versionadded">
@@ -308,7 +320,7 @@ matrix.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.variance">
-<span class="sig-name descname"><span class="pre">variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.variance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.variance" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.variance" title="MDAnalysis.analysis.pca.PCA.results.variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.variance</span></code></a>.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -323,7 +335,7 @@ matrix.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.results.cumulated_variance">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">cumulated_variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">cumulated_variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="Link to this definition"></a></dt>
 <dd><p>Percentage of variance explained by the selected components and the sum
 of the components preceding it. If a subset of components is not chosen
 then all components are stored and the cumulated variance will converge
@@ -340,7 +352,7 @@ to 1.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.cumulated_variance">
-<span class="sig-name descname"><span class="pre">cumulated_variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cumulated_variance</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cumulated_variance</span></code></a>.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -377,7 +389,7 @@ are now stored in a <a class="reference internal" href="base.html#MDAnalysis.ana
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.cumulative_overlap">
-<span class="sig-name descname"><span class="pre">cumulative_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.cumulative_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulative_overlap" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cumulative_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.cumulative_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulative_overlap" title="Link to this definition"></a></dt>
 <dd><p>Compute the cumulative overlap of a vector in a subspace.</p>
 <p>This is not symmetric. The cumulative overlap measures the overlap of
 the chosen vector in this instance, in the <code class="docutils literal notranslate"><span class="pre">other</span></code> subspace.</p>
@@ -411,7 +423,7 @@ orthogonal, whereas 1 indicates that they are identical.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.project_single_frame">
-<span class="sig-name descname"><span class="pre">project_single_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.project_single_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.project_single_frame" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">project_single_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.project_single_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.project_single_frame" title="Link to this definition"></a></dt>
 <dd><p>Computes a function to project structures onto selected PCs</p>
 <p>Applies Inverse-PCA transform to the PCA atomgroup.
 Optionally, calculates one displacement vector per residue
@@ -518,7 +530,7 @@ in each residue:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.rmsip">
-<span class="sig-name descname"><span class="pre">rmsip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.rmsip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.rmsip" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rmsip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.rmsip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.rmsip" title="Link to this definition"></a></dt>
 <dd><p>Compute the root mean square inner product between subspaces.</p>
 <p>This is only symmetric if the number of components is the same for
 both instances. The RMSIP effectively measures how
@@ -564,7 +576,7 @@ For example, to compare similarity within the top three principal components:</p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.run" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.run" title="Link to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -598,7 +610,7 @@ allowing to modify description, position etc of tqdm progressbars</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.transform" title="Link to this definition"></a></dt>
 <dd><p>Apply the dimensionality reduction on a trajectory</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -634,7 +646,7 @@ otherwise a <a class="reference external" href="https://docs.python.org/3/librar
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.cosine_content">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">cosine_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pca_space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#cosine_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.cosine_content" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">cosine_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pca_space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#cosine_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.cosine_content" title="Link to this definition"></a></dt>
 <dd><p>Measure the cosine content of the PCA projection.</p>
 <p>The cosine content of pca projections can be used as an indicator if a
 simulation is converged. Values close to 1 are an indicator that the
@@ -658,7 +670,8 @@ If you use this function please cite <a class="footnote-reference brackets" href
 </dl>
 <p class="rubric">References</p>
 <div class="docutils container" id="id6">
-<aside class="footnote brackets" id="footcite-berkhess2002" role="note">
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="footcite-berkhess2002" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">1</a><span class="fn-bracket">]</span></span>
 <p>Berk Hess. Convergence of sampling in protein simulations. <em>Phys. Rev. E</em>, 65:031910, Mar 2002. <a class="reference external" href="https://doi.org/10.1103/PhysRevE.65.031910">doi:10.1103/PhysRevE.65.031910</a>.</p>
 </aside>
@@ -668,7 +681,7 @@ If you use this function please cite <a class="footnote-reference brackets" href
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.rmsip">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">rmsip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#rmsip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.rmsip" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">rmsip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#rmsip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.rmsip" title="Link to this definition"></a></dt>
 <dd><p>Compute the root mean square inner product between subspaces.</p>
 <p>This is only symmetric if the number of components is the same for
 <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code>. The RMSIP effectively measures how
@@ -719,7 +732,7 @@ For example, to compare similarity within the top three principal components:</p
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.cumulative_overlap">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">cumulative_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#cumulative_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.cumulative_overlap" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">cumulative_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#cumulative_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.cumulative_overlap" title="Link to this definition"></a></dt>
 <dd><p>Compute the cumulative overlap of a vector in a subspace.</p>
 <p>This is not symmetric. The cumulative overlap measures the overlap of
 the chosen vector in <code class="docutils literal notranslate"><span class="pre">a</span></code>, in the <code class="docutils literal notranslate"><span class="pre">b</span></code> subspace.</p>

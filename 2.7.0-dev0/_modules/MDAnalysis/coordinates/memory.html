@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -364,7 +376,9 @@
     <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">new</span>
 
 
-<div class="viewcode-block" id="MemoryReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader">[docs]</a><span class="k">class</span> <span class="nc">MemoryReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">):</span>
+<div class="viewcode-block" id="MemoryReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader">[docs]</a>
+<span class="k">class</span> <span class="nc">MemoryReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MemoryReader works with trajectories represented as numpy arrays.</span>
 
@@ -536,7 +550,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MemoryReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="MemoryReader.parse_n_atoms">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.parse_n_atoms">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deduce number of atoms in a given array of coordinates</span>
 
@@ -559,7 +575,10 @@
         <span class="c1"># assume filename is a numpy array</span>
         <span class="k">return</span> <span class="n">filename</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)]</span></div>
 
-<div class="viewcode-block" id="MemoryReader.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MemoryReader.copy">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of this Memory Reader&quot;&quot;&quot;</span>
         <span class="n">vels</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
@@ -587,7 +606,10 @@
 
         <span class="k">return</span> <span class="n">new</span></div>
 
-<div class="viewcode-block" id="MemoryReader.set_array"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.set_array">[docs]</a>    <span class="k">def</span> <span class="nf">set_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate_array</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MemoryReader.set_array">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.set_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate_array</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set underlying array in desired column order.</span>
 
@@ -606,18 +628,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span> <span class="o">=</span> <span class="n">coordinate_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stored_format</span> <span class="o">=</span> <span class="n">order</span></div>
 
-<div class="viewcode-block" id="MemoryReader.get_array"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.get_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MemoryReader.get_array">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.get_array">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return underlying array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span></div>
+
 
     <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset iteration to first frame&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
-<div class="viewcode-block" id="MemoryReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MemoryReader.timeseries">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.timeseries">[docs]</a>
+    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup in desired</span>
 <span class="sd">        column order. If no selection is given, it will return a view of the</span>
 <span class="sd">        underlying array, while a copy is returned otherwise.</span>
@@ -697,6 +725,7 @@
             <span class="c1"># If selection is specified, return a copy</span>
             <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">asel</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">a_index</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;copy next frame into timestep&quot;&quot;&quot;</span>
 
@@ -734,7 +763,9 @@
                     <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
                 <span class="p">))</span>
 
-<div class="viewcode-block" id="MemoryReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
+<div class="viewcode-block" id="MemoryReader.add_transformations">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.add_transformations">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
 
 <span class="sd">        This function take as list of transformations as an argument. These</span>
@@ -771,12 +802,14 @@
             <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="nf">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Applies the transformations to the timestep.&quot;&quot;&quot;</span>
         <span class="c1"># Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`</span>
         <span class="c1"># to avoid applying the same transformations multiple times on each frame</span>
 
         <span class="k">return</span> <span class="n">ts</span></div>
+
 </pre></div>
 
            </div>

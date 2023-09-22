@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6.21. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -169,22 +181,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.coordinates.TRZ"></span><section id="trz-trajectory-i-o-mdanalysis-coordinates-trz">
-<h1><span class="section-number">6.21. </span>TRZ trajectory I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.TRZ" title="MDAnalysis.coordinates.TRZ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a><a class="headerlink" href="#trz-trajectory-i-o-mdanalysis-coordinates-trz" title="Permalink to this heading"></a></h1>
+  <section id="trz-trajectory-i-o-mdanalysis-coordinates-trz">
+<span id="module-MDAnalysis.coordinates.TRZ"></span><h1><span class="section-number">6.21. </span>TRZ trajectory I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.TRZ" title="MDAnalysis.coordinates.TRZ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a><a class="headerlink" href="#trz-trajectory-i-o-mdanalysis-coordinates-trz" title="Link to this heading"></a></h1>
 <p>Classes to read <a class="reference external" href="http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html">IBIsCO</a> / <a class="reference external" href="http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html">YASP</a> TRZ binary trajectories, including
 coordinates, velocities and more (see attributes of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>).</p>
 <p>Data are read and written in binary representation but because this depends on
 the machine hardware architecture, MDAnalysis <em>always</em> reads and writes TRZ
 trajectories in <em>little-endian</em> byte order.</p>
 <section id="classes">
-<h2><span class="section-number">6.21.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.21.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRZ.</span></span><span class="sig-name descname"><span class="pre">TRZReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trzfilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRZ.</span></span><span class="sig-name descname"><span class="pre">TRZReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trzfilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader" title="Link to this definition"></a></dt>
 <dd><p>Reads an IBIsCO or YASP trajectory file</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.ts">
-<span class="sig-name descname"><span class="pre">ts</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.ts" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ts</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.ts" title="Link to this definition"></a></dt>
 <dd><p><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object containing
 coordinates of current frame</p>
 <dl class="field-list simple">
@@ -232,49 +244,49 @@ obtained from the difference between two frames.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.Writer">
-<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.Writer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.Writer" title="Link to this definition"></a></dt>
 <dd><p>A trajectory writer with the same properties as this trajectory.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.close" title="Link to this definition"></a></dt>
 <dd><p>Close trz file if it was open</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.delta">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.delta" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.delta" title="Link to this definition"></a></dt>
 <dd><p>MD integration timestep</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.n_atoms">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_atoms</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.n_atoms" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_atoms</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.n_atoms" title="Link to this definition"></a></dt>
 <dd><p>Number of atoms in a frame</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.n_frames">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.n_frames" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.n_frames" title="Link to this definition"></a></dt>
 <dd><p>Total number of frames in a trajectory</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.open_trajectory">
-<span class="sig-name descname"><span class="pre">open_trajectory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.open_trajectory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.open_trajectory" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">open_trajectory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.open_trajectory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.open_trajectory" title="Link to this definition"></a></dt>
 <dd><p>Open the trajectory file</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.skip_timestep">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">skip_timestep</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.skip_timestep" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">skip_timestep</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.skip_timestep" title="Link to this definition"></a></dt>
 <dd><p>Timesteps between trajectory frames</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -283,7 +295,7 @@ obtained from the difference between two frames.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZWriter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRZ.</span></span><span class="sig-name descname"><span class="pre">TRZWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TRZ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRZ.</span></span><span class="sig-name descname"><span class="pre">TRZWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TRZ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter" title="Link to this definition"></a></dt>
 <dd><p>Writes a TRZ format trajectory.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -303,13 +315,13 @@ shorter, a longer title raises a ValueError exception.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZWriter.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter.close" title="Link to this definition"></a></dt>
 <dd><p>Close if it was open</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRZ.TRZWriter.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>

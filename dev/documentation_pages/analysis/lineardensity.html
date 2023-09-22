@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.8.2. Linear Density — MDAnalysis.analysis.lineardensity &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -150,15 +162,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.lineardensity"></span><section id="linear-density-mdanalysis-analysis-lineardensity">
-<h1><span class="section-number">4.8.2. </span>Linear Density — <a class="reference internal" href="#module-MDAnalysis.analysis.lineardensity" title="MDAnalysis.analysis.lineardensity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a><a class="headerlink" href="#linear-density-mdanalysis-analysis-lineardensity" title="Permalink to this heading"></a></h1>
+  <section id="linear-density-mdanalysis-analysis-lineardensity">
+<span id="module-MDAnalysis.analysis.lineardensity"></span><h1><span class="section-number">4.8.2. </span>Linear Density — <a class="reference internal" href="#module-MDAnalysis.analysis.lineardensity" title="MDAnalysis.analysis.lineardensity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a><a class="headerlink" href="#linear-density-mdanalysis-analysis-lineardensity" title="Link to this heading"></a></h1>
 <p>A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">LinearDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">LinearDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Link to this definition"></a></dt>
 <dd><p>Linear density profile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -176,7 +188,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim" title="Link to this definition"></a></dt>
 <dd><p>index of the [xyz] axes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -187,7 +199,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density" title="Link to this definition"></a></dt>
 <dd><p>mass density in <span class="math notranslate nohighlight">\(g \cdot cm^{-3}\)</span> in [xyz] direction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -198,7 +210,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev" title="Link to this definition"></a></dt>
 <dd><p>standard deviation of the mass density in [xyz] direction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -209,7 +221,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density" title="Link to this definition"></a></dt>
 <dd><p>charge density in <span class="math notranslate nohighlight">\(\mathrm{e} \cdot mol \cdot cm^{-3}\)</span> in
 [xyz] direction</p>
 <dl class="field-list simple">
@@ -221,7 +233,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev" title="Link to this definition"></a></dt>
 <dd><p>standard deviation of the charge density in [xyz] direction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -232,7 +244,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -247,7 +259,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density_stddev</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -262,7 +274,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -277,7 +289,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density_stddev</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -292,7 +304,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">slice_volume</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">slice_volume</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume" title="Link to this definition"></a></dt>
 <dd><p>volume of bin in [xyz] direction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -303,7 +315,7 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">hist_bin_edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">hist_bin_edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges" title="Link to this definition"></a></dt>
 <dd><p>edges of histogram bins for mass/charge densities, useful for, e.g.,
 plotting of histogram data.</p>
 <dl class="field-list simple">
@@ -315,7 +327,7 @@ plotting of histogram data.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.Note">
-<span class="sig-name descname"><span class="pre">Note</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.Note" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Note</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.Note" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>These density units are likely to be changed in the future.</p>
@@ -383,7 +395,7 @@ and <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.Linea
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.Results">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#Results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.Results" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#Results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.Results" title="Link to this definition"></a></dt>
 <dd><p>From version 3.0.0 onwards, some entries in Results will be renamed. See
 the docstring for LinearDensity for details. The Results class is defined
 here to implement deprecation warnings for the user.</p>

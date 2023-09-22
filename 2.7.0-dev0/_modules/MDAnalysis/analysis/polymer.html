@@ -26,11 +26,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -81,7 +81,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul>
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
@@ -174,7 +186,9 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="sort_backbone"><a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.sort_backbone">[docs]</a><span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="sort_backbone">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.sort_backbone">[docs]</a>
+<span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">sort_backbone</span><span class="p">(</span><span class="n">backbone</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rearrange a linear AtomGroup into backbone order</span>
 
@@ -235,7 +249,10 @@
     <span class="k">return</span> <span class="n">sorted_backbone</span></div>
 
 
-<div class="viewcode-block" id="PersistenceLength"><a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength">[docs]</a><span class="k">class</span> <span class="nc">PersistenceLength</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PersistenceLength">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength">[docs]</a>
+<span class="k">class</span> <span class="nc">PersistenceLength</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the persistence length for polymer chains</span>
 
 <span class="sd">    The persistence length is the length at which two points on the polymer</span>
@@ -446,7 +463,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PersistenceLength.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistenceLength.plot">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Visualize the results and fit</span>
 
 <span class="sd">        Parameters</span>
@@ -474,10 +493,14 @@
 
         <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ax</span></div></div>
+        <span class="k">return</span> <span class="n">ax</span></div>
+</div>
 
 
-<div class="viewcode-block" id="fit_exponential_decay"><a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.fit_exponential_decay">[docs]</a><span class="k">def</span> <span class="nf">fit_exponential_decay</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+
+<div class="viewcode-block" id="fit_exponential_decay">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.fit_exponential_decay">[docs]</a>
+<span class="k">def</span> <span class="nf">fit_exponential_decay</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit a function to an exponential decay</span>
 
 <span class="sd">    .. math::  y = \exp\left(- \frac{x}{a}\right)</span>
@@ -503,6 +526,7 @@
     <span class="n">a</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">expfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">a</span></div>
+
 </pre></div>
 
            </div>

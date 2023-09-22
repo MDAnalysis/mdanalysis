@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6.4. DL_Poly format reader MDAnalysis.coordinates.DLPoly &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -84,7 +84,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -166,13 +178,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.coordinates.DLPoly"></span><section id="dl-poly-format-reader-mdanalysis-coordinates-dlpoly">
-<h1><span class="section-number">6.4. </span>DL_Poly format reader <a class="reference internal" href="#module-MDAnalysis.coordinates.DLPoly" title="MDAnalysis.coordinates.DLPoly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a><a class="headerlink" href="#dl-poly-format-reader-mdanalysis-coordinates-dlpoly" title="Permalink to this heading"></a></h1>
+  <section id="dl-poly-format-reader-mdanalysis-coordinates-dlpoly">
+<span id="module-MDAnalysis.coordinates.DLPoly"></span><h1><span class="section-number">6.4. </span>DL_Poly format reader <a class="reference internal" href="#module-MDAnalysis.coordinates.DLPoly" title="MDAnalysis.coordinates.DLPoly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a><a class="headerlink" href="#dl-poly-format-reader-mdanalysis-coordinates-dlpoly" title="Link to this heading"></a></h1>
 <p>Read DL <a class="reference external" href="http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx">Poly</a> format coordinate files</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.ConfigReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DLPoly.</span></span><span class="sig-name descname"><span class="pre">ConfigReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DLPoly.html#ConfigReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.ConfigReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DLPoly.</span></span><span class="sig-name descname"><span class="pre">ConfigReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DLPoly.html#ConfigReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.ConfigReader" title="Link to this definition"></a></dt>
 <dd><p>DLPoly Config file Reader</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.11.0.</span></p>
@@ -183,7 +195,7 @@ layout, instead now using the numpy default of ‘C’.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.ConfigReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.ConfigReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.ConfigReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -192,20 +204,20 @@ layout, instead now using the numpy default of ‘C’.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.HistoryReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DLPoly.</span></span><span class="sig-name descname"><span class="pre">HistoryReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DLPoly.html#HistoryReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DLPoly.</span></span><span class="sig-name descname"><span class="pre">HistoryReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DLPoly.html#HistoryReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader" title="Link to this definition"></a></dt>
 <dd><p>Reads DLPoly format HISTORY files</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.11.0.</span></p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.HistoryReader.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DLPoly.html#HistoryReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DLPoly.html#HistoryReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader.close" title="Link to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.HistoryReader.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader.units" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>

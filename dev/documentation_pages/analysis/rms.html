@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.5. Calculating root mean square quantities — MDAnalysis.analysis.rms &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
@@ -27,11 +27,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=542471e5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -85,7 +85,19 @@
         </div>
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
     
-        <ul class="current">
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
@@ -159,8 +171,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.rms"></span><section id="calculating-root-mean-square-quantities-mdanalysis-analysis-rms">
-<h1><span class="section-number">4.2.5. </span>Calculating root mean square quantities — <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this heading"></a></h1>
+  <section id="calculating-root-mean-square-quantities-mdanalysis-analysis-rms">
+<span id="module-MDAnalysis.analysis.rms"></span><h1><span class="section-number">4.2.5. </span>Calculating root mean square quantities — <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Link to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Oliver Beckstein, David L. Dotson, John Detlefs</p>
@@ -199,9 +211,9 @@ implemented in
 </dl>
 </div>
 <section id="example-applications">
-<h2><span class="section-number">4.2.5.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.5.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Link to this heading"></a></h2>
 <section id="calculating-rmsd-for-multiple-domains">
-<h3><span class="section-number">4.2.5.1.1. </span>Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">4.2.5.1.1. </span>Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Link to this heading"></a></h3>
 <p>In this example we will globally fit a protein to a reference
 structure and investigate the relative movements of domains by
 computing the RMSD of the domains to the reference. The example is a
@@ -248,16 +260,16 @@ using backbone atoms</p></li>
 <figure class="align-default" id="id7">
 <span id="figure-rmsd"></span><a class="reference internal image-reference" href="../../_images/RSMD_plot.png"><img alt="RMSD plot" src="../../_images/RSMD_plot.png" style="width: 240.0px; height: 228.0px;" /></a>
 <figcaption>
-<p><span class="caption-text">RMSD plot for backbone and CORE, LID, NMP domain of the protein.</span><a class="headerlink" href="#id7" title="Permalink to this image"></a></p>
+<p><span class="caption-text">RMSD plot for backbone and CORE, LID, NMP domain of the protein.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 </section>
 <section id="functions">
-<h2><span class="section-number">4.2.5.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.5.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.rmsd">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#rmsd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#rmsd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Link to this definition"></a></dt>
 <dd><p>Returns RMSD between two coordinate sets <cite>a</cite> and <cite>b</cite>.</p>
 <p><cite>a</cite> and <cite>b</cite> are arrays of the coordinates of N atoms of shape
 <span class="math notranslate nohighlight">\(N times 3\)</span> as generated by, e.g.,
@@ -325,10 +337,10 @@ the number of coordinates.</p>
 
 </section>
 <section id="analysis-classes">
-<h2><span class="section-number">4.2.5.3. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.5.3. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">RMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupselections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_groupselections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">RMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupselections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_groupselections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Link to this definition"></a></dt>
 <dd><p>Class to perform RMSD analysis on a trajectory.</p>
 <p>The RMSD will be computed for two groups of atoms and all frames in the
 trajectory belonging to <cite>atomgroup</cite>. The groups of atoms are obtained by
@@ -475,7 +487,7 @@ are <em>not</em> rotationally superimposed any more.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSD.results.rmsd">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="Link to this definition"></a></dt>
 <dd><p>Contains the time series of the RMSD as an N×3 <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 array with content <code class="docutils literal notranslate"><span class="pre">[[frame,</span> <span class="pre">time</span> <span class="pre">(ps),</span> <span class="pre">RMSD</span> <span class="pre">(A)],</span> <span class="pre">[...],</span> <span class="pre">...]</span></code>.</p>
 <div class="versionadded">
@@ -485,7 +497,7 @@ array with content <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSD.rmsd">
-<span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rmsd</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a>
@@ -495,7 +507,7 @@ instead.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSD.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.run" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.run" title="Link to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -531,7 +543,7 @@ allowing to modify description, position etc of tqdm progressbars</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSF">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">RMSF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">RMSF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF" title="Link to this definition"></a></dt>
 <dd><p>Calculate RMSF of given atoms across a trajectory.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -633,7 +645,8 @@ the RMSF:</p>
 </div>
 <p class="rubric">References</p>
 <div class="docutils container" id="id6">
-<aside class="footnote brackets" id="footcite-welford1962" role="note">
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="footcite-welford1962" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">1</a><span class="fn-bracket">]</span></span>
 <p>B. P. Welford. Note on a method for calculating corrected sums of squares and products. <em>Technometrics</em>, 4(3):419–420, 1962. <a class="reference external" href="https://doi.org/10.1080/00401706.1962.10490022">doi:10.1080/00401706.1962.10490022</a>.</p>
 </aside>
@@ -657,7 +670,7 @@ removed. These should instead be passed to <a class="reference internal" href="#
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSF.results.rmsf">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rmsf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="Link to this definition"></a></dt>
 <dd><p>Results are stored in this N-length <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array,
 giving RMSFs for each of the given atoms.</p>
 <div class="versionadded">
@@ -667,7 +680,7 @@ giving RMSFs for each of the given atoms.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSF.rmsf">
-<span class="sig-name descname"><span class="pre">rmsf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rmsf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="Link to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="MDAnalysis.analysis.rms.RMSF.results.rmsf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsf</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="MDAnalysis.analysis.rms.RMSF.results.rmsf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsf</span></code></a>
@@ -677,7 +690,7 @@ instead.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSF.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.run" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.run" title="Link to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
