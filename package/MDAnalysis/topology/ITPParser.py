@@ -45,22 +45,23 @@ in :ref:`keyword arguments <itp-define-kwargs>`.
 Examples
 --------
 
+.. code-block:: python
+
+    import MDAnalysis as mda
+    from MDAnalysis.tests.datafiles import ITP_tip5p
+
+    #  override charge of HW2 atom (defined in file as HW2_CHARGE)
+    u = mda.Universe(ITP_tip5p, HW2_CHARGE=2, infer_system=True)
+
+.. note::
+
+    AMBER also uses topology files with the .top extension. To use ITPParser
+    to read GROMACS top files, pass ``topology_format='ITP'``.
+
     ::
+
         import MDAnalysis as mda
-        from MDAnalysis.tests.datafiles import ITP_tip5p
-
-        #  override charge of HW2 atom (defined in file as HW2_CHARGE)
-        u = mda.Universe(ITP_tip5p, HW2_CHARGE=2, infer_system=True)
-
-    .. note::
-
-        AMBER also uses topology files with the .top extension. To use ITPParser
-        to read GROMACS top files, pass ``topology_format='ITP'``.
-
-        ::
-
-            import MDAnalysis as mda
-            u = mda.Universe('topol.top', topology_format='ITP')
+        u = mda.Universe('topol.top', topology_format='ITP')
 
 
 .. _itp-define-kwargs:
@@ -71,29 +72,29 @@ Preprocessor variables
 ITP files are often defined with lines that depend on 
 whether a keyword flag is given. For example, this modified TIP5P water file:
 
-    .. code-block:: none
+.. code-block:: none
 
-        [ moleculetype ]
-        ; molname       nrexcl
-        SOL             2
+    [ moleculetype ]
+    ; molname       nrexcl
+    SOL             2
 
-        #ifndef HW1_CHARGE
-            #define HW1_CHARGE 0.241
-        #endif
+    #ifndef HW1_CHARGE
+        #define HW1_CHARGE 0.241
+    #endif
 
-        #define HW2_CHARGE 0.241
+    #define HW2_CHARGE 0.241
 
-        [ atoms ]
-        ; id    at type res nr  residu name     at name         cg nr   charge
-        1       opls_118     1       SOL              OW             1       0
-        2       opls_119     1       SOL             HW1             1       HW1_CHARGE
-        3       opls_119     1       SOL             HW2             1       HW2_CHARGE
-        4       opls_120     1       SOL             LP1             1      -0.241
-        5       opls_120     1       SOL             LP2             1      -0.241
-        #ifdef EXTRA_ATOMS  ; added for keyword tests
-        6       opls_120     1       SOL             LP3             1      -0.241
-        7       opls_120     1       SOL             LP4             1       0.241
-        #endif
+    [ atoms ]
+    ; id    at type res nr  residu name     at name         cg nr   charge
+    1       opls_118     1       SOL              OW             1       0
+    2       opls_119     1       SOL             HW1             1       HW1_CHARGE
+    3       opls_119     1       SOL             HW2             1       HW2_CHARGE
+    4       opls_120     1       SOL             LP1             1      -0.241
+    5       opls_120     1       SOL             LP2             1      -0.241
+    #ifdef EXTRA_ATOMS  ; added for keyword tests
+    6       opls_120     1       SOL             LP3             1      -0.241
+    7       opls_120     1       SOL             LP4             1       0.241
+    #endif
 
 
 Define these preprocessor variables by passing keyword arguments. Any arguments that you 

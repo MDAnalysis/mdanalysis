@@ -59,12 +59,12 @@ Options:
 Output
 ------
 
-  - *frame* : frame at which a hydrogen bond was found
-  - *donor id* : atom id of the hydrogen bond donor atom
-  - *hydrogen id* : atom id of the hydrogen bond hydrogen atom
-  - *acceptor id* : atom id of the hydrogen bond acceptor atom
-  - *distance* (Å): length of the hydrogen bond
-  - *angle* (degrees): angle of the hydrogen bond
+- *frame* : frame at which a hydrogen bond was found
+- *donor id* : atom id of the hydrogen bond donor atom
+- *hydrogen id* : atom id of the hydrogen bond hydrogen atom
+- *acceptor id* : atom id of the hydrogen bond acceptor atom
+- *distance* (Å): length of the hydrogen bond
+- *angle* (degrees): angle of the hydrogen bond
 
 Hydrogen bond data are returned in a :class:`numpy.ndarray` on a "one line, one observation" basis
 and can be accessed via :attr:`HydrogenBondAnalysis.results.hbonds`::

@@ -155,7 +155,8 @@ jobs:
       with:
         micromamba: true
         full-deps: true
-        extra-pip-deps: "docutils<0.18 sphinx<7.0 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-pip-deps: "docutils sphinx-sitemap sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-conda-deps: "mdanalysis-sphinx-theme>=1.3.0"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
@@ -192,7 +193,7 @@ jobs:
         # (see https://github.com/travis-ci/travis-ci/issues/4704)
         # commented out as this is not a problem with gh-actions
         # python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
-        cd package/doc/html/html
+        cd package/doc/html/
 
         # move docs into version subfolder
         mkdir ../${VERSION} && mv * ../${VERSION} && mv ../${VERSION} $VERSION
