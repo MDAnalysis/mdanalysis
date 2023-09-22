@@ -36,8 +36,8 @@ a misunderstanding and de-escalate things.
 However, sometimes these informal processes may be inadequate: they fail to
 work, there is urgency or risk to someone, nobody is intervening publicly and
 you don't feel comfortable speaking in public, etc. For these or other reasons,
-structured follow-up may be necessary and here we provide the means for that: we
-welcome reports by filling out [*this form*][conduct-form].
+structured follow-up may be necessary and here we provide the means for that: [we
+welcome reports](#reporting) by filling out [*this form*][conduct-form].
 
 This code applies equally to founders, developers, mentors and new
 community members, in all spaces managed by MDAnalysis. This
@@ -133,7 +133,7 @@ guidelines if you would like to contact a third-party outside of the MDAnalysis
 community.
 
 ### Reporting at MDAnalysis Events and Meetups
-If you are attending an MDAnalysis event or meetup and wish to make a report, you may contact the ombudspersons (who will identify themselves at the event) or other event staff/meetup organizers so that they can take any appropriate immediate response. If you would prefer not to do that, please [submit a report][conduct-form] to MDAnalysis. 
+If you are attending an MDAnalysis event or meetup and wish to [make a report](#reporting), you may contact the ombudspersons (who will identify themselves at the event) or other event staff/meetup organizers so that they can take any appropriate immediate response. If you would prefer not to do that, please [submit a report][conduct-form] to MDAnalysis. 
 
 Ombudspeople and event staff/meetup organizers will be happy to help participants contact venue security or local law enforcement, provide escorts, or otherwise assist those experiencing harassment to feel safe for the duration of the event/meetup.
 
