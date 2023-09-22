@@ -29,6 +29,7 @@ Fixes
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
 
 Enhancements
+  * Adds external sidebar links (Issue #4296)
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
     inputs (PR #4273, part of #3927)
   * Added a warning about charge neutrality to the documentation of
