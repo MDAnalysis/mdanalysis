@@ -37,9 +37,7 @@ However, sometimes these informal processes may be inadequate: they fail to
 work, there is urgency or risk to someone, nobody is intervening publicly and
 you don't feel comfortable speaking in public, etc. For these or other reasons,
 structured follow-up may be necessary and here we provide the means for that: we
-welcome reports by
-emailing [*Conduct-email*][conduct-mail] or
-in anonymous by filling out [*this form*][conduct-form].
+welcome reports by filling out [*this form*][conduct-form].
 
 This code applies equally to founders, developers, mentors and new
 community members, in all spaces managed by MDAnalysis. This
@@ -109,6 +107,12 @@ at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
    and telling someone that you are sorry is act of empathy that doesn’t
    automatically imply an admission of guilt.
 
+## Diversity, Equity, and Inclusion Statement
+
+MDAnalysis strives to ensure a welcoming, inclusive space for all. As a [*NumFOCUS*](https://numfocus.org/) sponsored project, we fully support their [*Diversity & Inclusion in Scientific Computing*](https://numfocus.org/programs/diversity-inclusion) (DISC) mission and abide by their Diversity Statement:
+
+> *"NumFOCUS welcomes and encourages participation in our community by people of all backgrounds and identities. We are committed to promoting and sustaining a culture that values mutual respect, tolerance, and learning, and we work together as a community to help each other live out these values."*
+
 ## Reporting
 
 If someone makes you or any other contributor feel unsafe or unwelcome, please
@@ -172,8 +176,7 @@ materials under open licensing terms for us to easily reuse.
 All content on this page is licensed under a [*Creative Commons
 Attribution*](http://creativecommons.org/licenses/by/3.0/) license. 
 
-[conduct-mail]: mailto:mdnalysis-conduct@googlegroups.com
-[conduct-form]: https://goo.gl/forms/w2IwBKkY3oT0aVEB3
+[conduct-form]: https://forms.gle/r2SMU4XcwM814CpJ9
 
 [NF-conduct]: https://numfocus.org/code-of-conduct
 
