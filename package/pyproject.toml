@@ -91,7 +91,7 @@ analysis = [
 doc = [
     "sphinx",
     "sphinx-sitemap",
-    "mdanalysis-sphinx-theme",
+    "mdanalysis-sphinx-theme>=1.3.0",
     "sphinxcontrib-bibtex",
     "pybtex",
     "pybtex-docutils",

@@ -29,6 +29,7 @@ Fixes
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
 
 Enhancements
+  * Adds external sidebar links (Issue #4296)
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
     inputs (PR #4273, part of #3927)
   * Added a warning about charge neutrality to the documentation of
@@ -53,6 +54,9 @@ Enhancements
     guessing behavior from being broken (pr #3753)
 
 Changes
+  * High memory tests (enabled through the environment variable
+    `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
+    is set to "true") (PR #4295)
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)

@@ -13,7 +13,7 @@ dependencies:
   - h5py>=2.10
   - hypothesis
   - joblib>=0.12
-  - mdanalysis-sphinx-theme >=1.0.1
+  - mdanalysis-sphinx-theme >=1.3.0
   - matplotlib>=3.2.2
   - mmtf-python
   - mock

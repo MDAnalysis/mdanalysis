@@ -185,7 +185,8 @@ Thank you!
 
 .. toctree::
    :maxdepth: 4
-   :numbered:
+   :caption: Documentation
+   :numbered:		
    :hidden:
 
    ./documentation_pages/overview
