@@ -115,16 +115,40 @@ class TestGuessTypes(object):
         assert default_guesser.guess_atom_element('1H') == 'H'
         assert default_guesser.guess_atom_element('2H') == 'H'
 
-    def test_guess_atom_element_from_masses(self, default_guesser):
+    def test_guess_atom_elements_from_masses(self, default_guesser):
         m = [79.904, 40.08000, 1.008, 99, 262]
         elements = np.array(['BR', 'CA', 'H', '', ''], dtype=object)
         assert_equal(elements, default_guesser.guess_types(masses=list(m)))
 
-    def test_guess_universe_atom_element_from_masses(self, default_guesser):
+    def test_guess_universe_atom_elements_from_masses(self, default_guesser):
         masses = np.array([127.6, 98, 10.811], dtype=np.float32)
         top = Topology(3, attrs=[Masses(masses)])
         u = mda.Universe(top, to_guess=['types'])
         assert_equal(u.atoms.types, ['TE', 'TC', 'B'])
+
+    def test_partial_guess_elements_from_masses(self, default_guesser):
+        masses = np.array([79.904, 40.08000, 1.008], dtype=np.float32)
+        elements = np.array(['BR', 'H'], dtype=object)
+        assert_equal(
+            elements,
+            default_guesser.guess_types(
+                masses=masses,
+                partial_guess=[
+                    True,
+                    False,
+                    True]))
+
+    def test_partial_guess_elements(self, default_guesser):
+        names = np.array(['BR123', 'Hk', 'C12'], dtype=object)
+        elements = np.array(['BR', 'C'], dtype=object)
+        assert_equal(
+            elements,
+            default_guesser.guess_types(
+                atoms=names,
+                partial_guess=[
+                    True,
+                    False,
+                    True]))
 
     def test_guess_elements_from_no_data(self):
         top = Topology(5)
