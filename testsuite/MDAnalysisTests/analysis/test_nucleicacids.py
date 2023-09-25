@@ -87,15 +87,21 @@ def test_selection_length_mismatch(u):
         NucPairDist(sel1, sel2)
 
 def test_wc_dist_deprecation_warning(u):
-    strand = u.select_atoms("resid 1-10")
+    strand = u.select_atoms("segid RNAA")
     strand1 = [strand.residues[0], strand.residues[21]]
-    strand2 = [strand.residues[2], strand.residues[22]]
-    with pytest.raises(
-        DeprecationWarning, 
-        match="ResidueGroup should be used instead of giving a Residue list"):
-        
+    strand2 = [strand.residues[1], strand.residues[22]]
+
+    with pytest.deprecated_call():
         WatsonCrickDist(strand1, strand2)
 
+
+def test_wc_dist_strand_verification(u):
+    strand = u.select_atoms("segid RNAA")
+    strand1 = [strand.residues[0], strand[0]]
+    strand2 = [strand.residues[1], strand.residues[22]]
+    
+    with pytest.raises(TypeError, match="contains non-Residue elements"):
+        WatsonCrickDist(strand1, strand2)
 
 
 @pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
