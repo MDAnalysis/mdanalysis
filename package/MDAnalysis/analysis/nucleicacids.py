@@ -258,6 +258,7 @@ class NucPairDist(AnalysisBase):
 
     def _conclude(self) -> None:
         self.results['distances'] = self._res_array
+        self.results['pair_distances'] = self.results['distances']  # TODO: remove in 3.0.0
 
 
 class WatsonCrickDist(NucPairDist):
@@ -303,7 +304,7 @@ class WatsonCrickDist(NucPairDist):
     Attributes
     ----------
     results.pair_distances: numpy.ndarray
-        2D array of Watson-Crick basepair distances. First dimension is
+        2D array of Watson-Crick base pair distances. First dimension is
         simulation time, second dimension contains the pair distances for
         each each entry pair in strand1 and strand2.
 
@@ -312,6 +313,13 @@ class WatsonCrickDist(NucPairDist):
     results.distances: numpy.ndarray
         stored in a 2d numpy array with first index selecting the Residue pair, 
         and the second index selecting the frame number
+    results.pair_distances: numpy.ndarray
+        stored in a 2d numpy array with first index selecting the Residue pair,
+        and the second index selecting the frame number
+
+        .. note::
+            `results.pair_distances` is slated for deprecation in version 3.0.0,
+            use `results.distances` instead.
     times: numpy.ndarray
             Simulation times for analysis.
 
@@ -383,6 +391,7 @@ class WatsonCrickDist(NucPairDist):
         )
 
         super(WatsonCrickDist, self).__init__(strand_atomgroups[0], strand_atomgroups[1], **kwargs)
+
 
 
 class MinorPairDist(NucPairDist):

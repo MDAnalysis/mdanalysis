@@ -46,6 +46,10 @@ Changes
 Deprecations
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
+  * In `WatsonCrickDist` from the nucleicacids module, accepting lists of `Residue`
+    objects was deprecated in favor of using `ResidueGroup`
+  * In `WatsonCrickDist` from the nucleicacids module, `results.pair_distances` was
+    deprecated, and changed to `results.distances`
 
 
 28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
