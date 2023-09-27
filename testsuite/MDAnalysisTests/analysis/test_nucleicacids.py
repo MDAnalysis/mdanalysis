@@ -39,9 +39,13 @@ from MDAnalysis.core.groups import ResidueGroup
 def u():
     return mda.Universe(RNA_PSF, RNA_PDB)
 
+@pytest.fixture(scope="module")
+def strand(unv=u):
+    unv = mda.Universe(RNA_PSF, RNA_PDB)
+    return unv.select_atoms("segid RNAA")
 
-def test_empty_ag_error(u):
-    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+
+def test_empty_ag_error(strand):
     strand1 = ResidueGroup([strand.residues[0]])
     strand2 = ResidueGroup([strand.residues[1]])
 
@@ -49,8 +53,7 @@ def test_empty_ag_error(u):
         NucPairDist.select_strand_atoms(strand1, strand2, 'UNK1', 'O2')
 
 @pytest.fixture(scope='module')
-def wc_rna(u):
-    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+def wc_rna(strand):
     strand1 = ResidueGroup([strand.residues[0], strand.residues[21]])
     strand2 = ResidueGroup([strand.residues[1], strand.residues[22]])
 
@@ -80,14 +83,13 @@ def test_wc_dist_invalid_residue_types(u):
         WatsonCrickDist(strand1, strand2)
 
 
-def test_selection_length_mismatch(u):
-    sel1 = u.select_atoms("resid 1-10")
-    sel2 = u.select_atoms("resid 1-5")
+def test_selection_length_mismatch(strand):
+    sel1 = strand.residues[1:10]
+    sel2 = strand.residues[1:9]
     with pytest.raises(ValueError, match="Selections must be same length"):
         NucPairDist(sel1, sel2)
 
-def test_wc_dist_deprecation_warning(u):
-    strand = u.select_atoms("segid RNAA")
+def test_wc_dist_deprecation_warning(strand):
     strand1 = [strand.residues[0], strand.residues[21]]
     strand2 = [strand.residues[1], strand.residues[22]]
 
@@ -95,8 +97,7 @@ def test_wc_dist_deprecation_warning(u):
         WatsonCrickDist(strand1, strand2)
 
 
-def test_wc_dist_strand_verification(u):
-    strand = u.select_atoms("segid RNAA")
+def test_wc_dist_strand_verification(strand):
     strand1 = [strand.residues[0], strand[0]]
     strand2 = [strand.residues[1], strand.residues[22]]
     
@@ -110,8 +111,7 @@ def test_wc_dis_results_keyerrs(wc_rna, key):
         wc_rna.results[key]
 
 
-def test_minor_dist(u):
-    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+def test_minor_dist(strand):
     strand1 = ResidueGroup([strand.residues[2], strand.residues[19]])
     strand2 = ResidueGroup([strand.residues[16], strand.residues[4]])
 
@@ -122,8 +122,7 @@ def test_minor_dist(u):
     assert MI.results.distances[0, 1] == approx(3.219116, rel=1e-3)
 
 
-def test_major_dist(u):
-    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+def test_major_dist(strand):
     strand1 = ResidueGroup([strand.residues[1], strand.residues[4]])
     strand2 = ResidueGroup([strand.residues[11], strand.residues[8]])
 
