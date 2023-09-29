@@ -14,5 +14,4 @@ def test_file(pdb_filename):
 
     run = DSSP(u).run()
     answ = "".join(run.results.dssp[0])
-
     assert answ == correct_answ

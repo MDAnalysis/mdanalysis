@@ -200,33 +200,40 @@ class DSSP(AnalysisBase):
     --EEEEE-----HHHHHHHHHHHH--EEE-HHHHHHHHHHH--HHHHHHHHHHHH-----HHHHHHHHHHH---HHH---EEEE-----HHHHHHHHHH-----EEEEEE--HHHHHHHH--EE--------EE---E------E------E----HHH-HHHHHHHHHHHHHHHHHHHHHHHHHHHH---EEEEEE----HHHHHHHHHHHH-
     """
 
-    def __init__(self, u: Universe):
+    def __init__(self, u: Universe, guess_hydrogens: bool = True):
         super().__init__(u.trajectory)
 
-        selections = {
-            t: u.select_atoms(f"protein and {t}")
-            for t in (
-                "backbone and name N",
-                "backbone and name CA",
-                "backbone and name C",
-                "name O or name O1",
-                # hydrogens don't work yet -- they give less atoms than there actually are
-                # "name H1 or name H",
-            )
-        }
+        residues_with_H = u.select_atoms("protein and name H").residues
+
+        base_selections = [
+            "name N",
+            "name CA",
+            "name C",
+            "name O O1",  # O1 is for C-terminal residue
+        ]
+
+        if not guess_hydrogens:
+            base_selections.append("name H")
+
+        self._residues_with_H = residues_with_H
+        self._residues = u.select_atoms("protein").residues
+        selections = {t: residues_with_H.atoms.select_atoms(t) for t in base_selections}
         self.selections = selections
-        self.n_protein_atoms = sum(map(lambda s: s.n_atoms, selections.values()))
-        self._trajectory = u.trajectory
 
     def _prepare(self):
-        self.results.dssp = [None for _ in range(self.n_frames)]
+        self.results.dssp_ndarray = [None for _ in range(self.n_frames)]
 
     def _single_frame(self):
-        coords = np.array(
-            [group.positions for group in self.selections.values()]
-        ).swapaxes(0, 1)
+        arr = [group.positions for group in self.selections.values()]
+        coords = np.array(arr).swapaxes(0, 1)
+        print(coords.shape)
         dssp = assign(coords)
-        self.results.dssp[self._frame_index] = dssp
+        self.results.dssp_ndarray[self._frame_index] = dssp
 
     def _conclude(self):
-        self.results.dssp = translate(self.results.dssp)
+        dssp = np.zeros((self.n_frames, len(self._residues), 3), dtype=bool)
+        dssp[:, :, :] = [True, False, False]
+        dssp[:, self._residues_with_H.resindices, :] = self.results.dssp_ndarray
+        self.results.dssp_ndarray = dssp
+        self.results.dssp = translate(dssp)
+        self.results.resids = self._residues.resids
