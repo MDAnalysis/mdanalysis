@@ -50,7 +50,13 @@ class PDBxReader(base.SingleFrameReaderBase):
         ts = self.ts = base.Timestep.from_coordinates(xyz, **self._ts_kwargs)
         ts.frame = 0
 
-        # todo: unit cell
+        box = block.find('_cell.', ['length_a', 'length_b', 'length_c',
+                                    'angle_alpha', 'angle_beta', 'angle_gamma'])
+        if box:
+            unitcell = np.zeros(6, dtype=np.float64)
+            unitcell[:] = box[0]
+
+            ts.dimensions = unitcell
 
         if self.convert_units:
             # in-place !
