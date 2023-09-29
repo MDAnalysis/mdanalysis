@@ -61,13 +61,12 @@ e.g. -CO\ :sub:`2`\ :sup:`-`:···H−O:···H−O:···HN-
 The following keyword arguments are important to control the behaviour of the
 water bridge analysis:
 
- - *water_selection* (``resname SOL``): the selection string for the bridging
-   water
- - *order* the maximum number of water bridging both ends
- - donor-acceptor *distance* (Å): 3.0
- - Angle *cutoff* (degrees): 120.0
- - *forcefield* to switch between default values for different force fields
- - *donors* and *acceptors* atom types (to add additional atom names)
+- *water_selection* (``resname SOL``): the selection string for the bridging water
+- *order* the maximum number of water bridging both ends
+- donor-acceptor *distance* (Å): 3.0
+- Angle *cutoff* (degrees): 120.0
+- *forcefield* to switch between default values for different force fields
+- *donors* and *acceptors* atom types (to add additional atom names)
 
 Theory
 ------
@@ -215,7 +214,7 @@ within a cut-off distance of 1.2 Å.
    HSE         NE2             ND1
    HSP         ND1, NE2
    LYS         NZ
-   MET                         SD          see e.g. :cite:p:`Gregoret1991`
+   MET                         SD          see e.g. :footcite:p:`Gregoret1991`
    SER         OG              OG
    THR         OG1             OG1
    TRP         NE1
@@ -263,11 +262,7 @@ heavy atom names to MDAnalysis.
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Gregoret1991
+.. footbibliography::
 
 
 How to perform ``WaterBridgeAnalysis``
@@ -276,18 +271,16 @@ How to perform ``WaterBridgeAnalysis``
 All water bridges between arginine and aspartic acid can be analysed with ::
 
   import MDAnalysis
-  import MDAnalysis.analysis.hbonds
+  from MDAnalysis.analysis.hydrogenbonds import WaterBridgeAnalysis
 
   u = MDAnalysis.Universe('topology', 'trajectory')
-  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-                                                     'resname ASP')
+  w = WaterBridgeAnalysis(u, 'resname ARG', 'resname ASP')
   w.run()
 
 The maximum number of bridging waters detected can be changed using the order
 keyword. ::
 
-  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-                                                     'resname ASP', order=3)
+  w = WaterBridgeAnalysis(u, 'resname ARG', 'resname ASP', order=3)
 
 Thus, a maximum of three bridging waters will be detected.
 

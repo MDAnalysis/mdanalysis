@@ -72,7 +72,7 @@ Ramachandran analysis
 ~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`~MDAnalysis.analysis.dihedrals.Ramachandran` class allows for the
-quick calculation of classical Ramachandran plots :cite:p:`Ramachandran1963` in
+quick calculation of classical Ramachandran plots :footcite:p:`Ramachandran1963` in
 the backbone :math:`phi` and :math:`psi` angles. Unlike the
 :class:`~MDanalysis.analysis.dihedrals.Dihedral` class which takes a list of
 `atomgroups`, this class only needs a list of residues or atoms from those
@@ -117,7 +117,7 @@ To plot the data yourself, the angles can be accessed using
 Janin analysis
 ~~~~~~~~~~~~~~
 
-Janin plots :cite:p:`Janin1978` for side chain conformations (:math:`\chi_1`
+Janin plots :footcite:p:`Janin1978` for side chain conformations (:math:`\chi_1`
 and :math:`chi_2` angles) can be created with the
 :class:`~MDAnalysis.analysis.dihedrals.Janin` class. It works in the same way,
 only needing a list of residues; see the :ref:`Janin plot figure
@@ -158,12 +158,12 @@ and :meth:`Janin.plot` methods. The Ramachandran reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
 obtained from a large selection of 500 PDB files, and were analyzed using these
-classes :cite:p:`Mull2018`. The allowed and marginally allowed regions of the
+classes :footcite:p:`Mull2018`. The allowed and marginally allowed regions of the
 Ramachandran reference plot have cutoffs set to include 90% and 99% of the data
 points, and the Janin reference plot has cutoffs for 90% and 98% of the data
 points. The list of PDB files used for the reference plots was taken from
-:cite:p:`Lovell2003` and information about general Janin regions was taken from
-:cite:p:`Janin1978`.
+:footcite:p:`Lovell2003` and information about general Janin regions was taken from
+:footcite:p:`Janin1978`.
 
 
 
@@ -236,14 +236,7 @@ Analysis Classes
 References
 ----------
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Ramachandran1963
-    Janin1978
-    Lovell2003
-    Mull2018
+.. footbibliography::
 
 """
 import numpy as np

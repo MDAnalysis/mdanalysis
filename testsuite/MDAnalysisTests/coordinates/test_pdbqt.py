@@ -39,10 +39,16 @@ class TestPDBQT(object):
         return mda.Universe(PDBQT_input)
 
     def test_segid(self, universe):
-        sel = universe.select_atoms('segid A')
+        sel = universe.select_atoms("segid A")
         assert_equal(sel.n_atoms, 909, "failed to select segment A")
-        sel = universe.select_atoms('segid B')
+        sel = universe.select_atoms("segid B")
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
+
+    def test_chainID(self, universe):
+        sel = universe.select_atoms("chainID A")
+        assert_equal(sel.n_atoms, 909, "failed to chainID segment A")
+        sel = universe.select_atoms("chainID B")
+        assert_equal(sel.n_atoms, 896, "failed to chainID segment B")
 
     def test_protein(self, universe):
         sel = universe.select_atoms('protein')

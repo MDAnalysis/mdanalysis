@@ -45,8 +45,10 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 
 See Also
 --------
+
 rdkit: rdkit_ is an open source cheminformatics toolkit with more mol2
        functionality
+
 
 .. _rdkit: http://www.rdkit.org/docs/GettingStartedInPython.html
 

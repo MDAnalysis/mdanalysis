@@ -33,7 +33,7 @@ Calculating path similarity --- :mod:`MDAnalysis.analysis.psa`
 
 The module contains code to calculate the geometric similarity of trajectories
 using path metrics such as the Hausdorff or Fréchet distances
-:cite:p:`Seyler2015`. The path metrics are functions of two paths and return a
+:footcite:p:`Seyler2015`. The path metrics are functions of two paths and return a
 nonnegative number, i.e., a distance. Two paths are identical if their distance
 is zero, and large distances indicate dissimilarity. Each path metric is a
 function of the individual points (e.g., coordinate snapshots) that comprise
@@ -59,15 +59,6 @@ The `PSAnalysisTutorial`_ outlines a typical application of PSA to
 a set of trajectories, including doing proper alignment,
 performing distance comparisons, and generating heat
 map-dendrogram plots from hierarchical clustering.
-
-
-.. Rubric:: References
-
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Seyler2015
 
 .. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial
 
@@ -203,6 +194,10 @@ Classes, methods, and functions
 .. |2D| replace:: :math:`N_p\times 3N`
 .. |Np| replace:: :math:`N_p`
 
+
+.. Rubric:: References
+
+.. footbibliography::
 """
 import pickle
 import os
@@ -420,17 +415,9 @@ def hausdorff(P, Q):
     Notes
     -----
     :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-    implementation of the early break algorithm of :cite:p:`Taha2015`; the
+    implementation of the early break algorithm of :footcite:p:`Taha2015`; the
     latter code is used here to calculate the symmetric Hausdorff
     distance with an RMSD metric
-
-    References
-    ----------
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        Taha2015
 
     """
     N_p, axis_p = get_coord_axes(P)
@@ -494,7 +481,7 @@ def hausdorff_wavg(P, Q):
     Notes
     -----
     The weighted average Hausdorff distance is not a true metric (it does not
-    obey the triangle inequality); see :cite:p:`Seyler2015` for further
+    obey the triangle inequality); see :footcite:p:`Seyler2015` for further
     details.
 
 
@@ -553,7 +540,7 @@ def hausdorff_avg(P, Q):
     Notes
     -----
     The average Hausdorff distance is not a true metric (it does not obey the
-    triangle inequality); see :cite:p:`Seyler2015` for further details.
+    triangle inequality); see :footcite:p:`Seyler2015` for further details.
 
     """
     N, axis = get_coord_axes(P)
@@ -591,7 +578,7 @@ def hausdorff_neighbors(P, Q):
     - Hausdorff neighbors are those points on the two paths that are separated by
       the Hausdorff distance. They are the farthest nearest neighbors and are
       maximally different in the sense of the Hausdorff distance
-      :cite:p:`Seyler2015`.
+      :footcite:p:`Seyler2015`.
     - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
       hausdorff neighbors.
 
@@ -655,23 +642,9 @@ def discrete_frechet(P, Q):
     -----
 
     The discrete Fréchet metric is an approximation to the continuous Fréchet
-    metric :cite:p:`Frechet1906,Alt1995`. The calculation of the continuous
+    metric :footcite:p:`Frechet1906,Alt1995`. The calculation of the continuous
     Fréchet distance is implemented with the dynamic programming algorithm of
-    :cite:p:`EiterMannila1994,EiterMannila1997`.
-
-
-    References
-    ----------
-
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        Frechet1906
-        Alt1995
-        EiterMannila1994
-        EiterMannila1997
-
+    :footcite:p:`EiterMannila1994,EiterMannila1997`.
 
     """
 
