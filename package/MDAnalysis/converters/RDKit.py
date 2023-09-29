@@ -24,7 +24,8 @@
 """RDKit molecule I/O --- :mod:`MDAnalysis.converters.RDKit`
 ================================================================
 
-Read coordinates data from an `RDKit <https://www.rdkit.org/docs/>`__ :class:`rdkit.Chem.rdchem.Mol` with
+Read coordinates data from an `RDKit <https://www.rdkit.org/docs/>`__
+:class:`rdkit.Chem.rdchem.Mol` with
 :class:`RDKitReader` into an MDAnalysis Universe. Convert it back to a
 :class:`rdkit.Chem.rdchem.Mol` with :class:`RDKitConverter`.
 
@@ -104,7 +105,7 @@ try:
         raise ImportError
 
     from .RDKitInferring import (
-        RDBONDORDER, _infer_bo_and_charges, _standardize_patterns)
+        RDBONDORDER, MDAnalysisInferer)
 except ImportError:
     pass
 else:
@@ -119,6 +120,10 @@ else:
         "segindices": "SegmentNumber",
         "tempfactors": "TempFactor",
     }
+    DEFAULT_INFERER = MDAnalysisInferer()
+    # only here for backwards compatibility
+    _infer_bo_and_charges = DEFAULT_INFERER._infer_bo_and_charges
+    _standardize_patterns = DEFAULT_INFERER._standardize_patterns
 
 _deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 
@@ -293,24 +298,28 @@ class RDKitConverter(base.ConverterBase):
     lib = 'RDKIT'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200,
-                force=False):
+    def convert(self, obj, cache=True, NoImplicit=True, max_iter=None,
+                force=False, inferer=DEFAULT_INFERER):
         """Write selection at current trajectory frame to
         :class:`~rdkit.Chem.rdchem.Mol`.
 
         Parameters
         -----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe`
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
             used, the cached molecule and the new one have to be made from the
             same AtomGroup selection and with the same arguments passed
             to the converter
+        inferer : Optional[Callable[[Chem.Mol], Chem.Mol]]
+            A callable to infer bond orders and charges for the RDKit molecule created
+            by the converter. If ``None``, inferring is skipped.
         NoImplicit : bool
-            Prevent adding hydrogens to the molecule
+           Prevent adding hydrogens to the molecule.
         max_iter : int
-            Maximum number of iterations to standardize conjugated systems.
-            See :func:`_rebuild_conjugated_bonds`
+            Deprecated, use `MDAnalysisInferer(max_iter=...)` instead. Maximum number
+            of iterations to standardize conjugated systems.
         force : bool
             Force the conversion when no hydrogens were detected but
             ``NoImplicit=True``. Useful for inorganic molecules mostly.
@@ -330,8 +339,14 @@ class RDKitConverter(base.ConverterBase):
                             "please use a valid AtomGroup or Universe".format(
                                 type(obj))) from None
 
+        if max_iter is not None:
+            warnings.warn(
+                "Using `max_iter` is deprecated, use `MDAnalysisInferer(max_iter=...)` "
+                "instead", DeprecationWarning)
+            if isinstance(inferer, MDAnalysisInferer):
+                inferer = MDAnalysisInferer(max_iter=max_iter)
         # parameters passed to atomgroup_to_mol
-        kwargs = dict(NoImplicit=NoImplicit, max_iter=max_iter, force=force)
+        kwargs = dict(NoImplicit=NoImplicit, force=force, inferer=inferer)
         if cache:
             mol = atomgroup_to_mol(ag, **kwargs)
             mol = copy.deepcopy(mol)
@@ -359,7 +374,7 @@ class RDKitConverter(base.ConverterBase):
 
 
 @lru_cache(maxsize=2)
-def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
+def atomgroup_to_mol(ag, NoImplicit=True, force=False, inferer=DEFAULT_INFERER):
     """Converts an AtomGroup to an RDKit molecule without coordinates.
 
     Parameters
@@ -369,12 +384,12 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
     NoImplicit : bool
         Prevent adding hydrogens to the molecule and allow bond orders and
         formal charges to be guessed from the valence of each atom.
-    max_iter : int
-        Maximum number of iterations to standardize conjugated systems.
-        See :func:`_rebuild_conjugated_bonds`
     force : bool
         Force the conversion when no hydrogens were detected but
         ``NoImplicit=True``. Mostly useful for inorganic molecules.
+    inferer : Optional[Callable[[Chem.Mol], Chem.Mol]]
+        A callable to infer bond orders and charges for the RDKit molecule created
+        by the converter. If ``None``, inferring is skipped.
     """
     try:
         elements = ag.elements
@@ -391,14 +406,13 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
                 "No hydrogen atom found in the topology. "
                 "Forcing to continue the conversion."
             )
-        elif NoImplicit:
+        elif inferer is not None:
             raise AttributeError(
                 "No hydrogen atom could be found in the topology, but the "
                 "converter requires all hydrogens to be explicit. You can use "
-                "the parameter ``NoImplicit=False`` when using the converter "
-                "to allow implicit hydrogens and disable inferring bond "
-                "orders and charges. You can also use ``force=True`` to "
-                "ignore this error.")
+                "the parameter ``inferer=None`` when using the converter "
+                "to disable inferring bond orders and charges. You can also use "
+                "``force=True`` to ignore this error.")
 
     # attributes accepted in PDBResidueInfo object
     pdb_attrs = {}
@@ -460,21 +474,9 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
 
     mol.UpdatePropertyCache(strict=False)
 
-    if NoImplicit:
-        # infer bond orders and formal charges from the connectivity
-        _infer_bo_and_charges(mol)
-        mol = _standardize_patterns(mol, max_iter)
-        # reorder atoms to match MDAnalysis, since the reactions from
-        # _standardize_patterns will mess up the original order
-        order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
-                            for atom in mol.GetAtoms()])
-        mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
-
-    # sanitize if possible
-    err = Chem.SanitizeMol(mol, catchErrors=True)
-    if err:
-        warnings.warn("Could not sanitize molecule: "
-                      f"failed during step {err!r}")
+    if inferer is not None and NoImplicit:
+        # infer bond orders and formal charges
+        mol = inferer(mol)
 
     return mol
 
