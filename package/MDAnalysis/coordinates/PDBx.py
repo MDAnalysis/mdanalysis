@@ -44,6 +44,9 @@ class PDBxReader(base.SingleFrameReaderBase):
 
         xyz = np.zeros((self.natoms, 3), dtype=np.float32)
 
+        for i, (x, y, z) in enumerate(coords):
+            xyz[i, :] = x, y, z
+
         ts = self.ts = base.Timestep.from_coordinates(xyz, **self._ts_kwargs)
         ts.frame = 0
 
