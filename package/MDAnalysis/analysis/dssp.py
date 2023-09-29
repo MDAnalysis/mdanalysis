@@ -226,7 +226,6 @@ class DSSP(AnalysisBase):
     def _single_frame(self):
         arr = [group.positions for group in self.selections.values()]
         coords = np.array(arr).swapaxes(0, 1)
-        print(coords.shape)
         dssp = assign(coords)
         self.results.dssp_ndarray[self._frame_index] = dssp
 
