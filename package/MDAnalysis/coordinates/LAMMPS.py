@@ -477,11 +477,9 @@ class DumpReader(base.ReaderBase):
     length unit (Å), and angles are in degrees.
 
     By using the keyword `additional_columns`, you can specify arbitrary data
-    to be read alongside the coordinates. If specified, the keyword expects a
-    list of the names of the columns that you want to have read. The results
-    of the parsing are saved to the time step :attr:`Timestep.data` dictionary
-    alongside the name of the data column. For instance, if you have time-dependent
-    charges saved in a LAMMPS dump such as
+    to be read. The keyword expects a list of the names of the columns or `True` to read
+    all additional columns. The results are saved to :attr:`Timestep.data`. 
+    For example, if your LAMMPS dump looks like this
 
     .. code-block::
 
@@ -489,16 +487,14 @@ class DumpReader(base.ReaderBase):
         1 2.84 8.17 -25 0.00258855 1.1
         2 7.1 8.17 -25 6.91952e-05 1.2
 
-    Then you may parse the additional columns `q` and `l` via.
+    Then you may parse the additional columns `q` and `l` via:
 
     .. code-block:: python
 
         u = mda.Universe('path_to_data', 'path_to_lammpsdump',
                          additional_columns=['q', 'l'])
 
-    The additional data is then available for each time step via
-    (as the value of the :attr:`Timestep.data` dictionary, sorted by the ids of the
-    atoms).
+    The additional data is then available for each time step via:
 
     .. code-block:: python
 
@@ -587,7 +583,7 @@ class DumpReader(base.ReaderBase):
         self._unwrap = unwrap_images
 
         if (util.iterable(additional_columns)
-                or additional_columns is None 
+                or additional_columns is None
                 or additional_columns is True):
             self._additional_columns = additional_columns
         else:
@@ -745,10 +741,12 @@ class DumpReader(base.ReaderBase):
         # Create the data arrays for additional attributes which will be saved
         # under ts.data
         if self._additional_columns is True:
-            # Parse every column that is not already parsed elsewhere (total \ parsable)
+            # Parse every column that is not already parsed
+            # elsewhere (total \ parsable)
             additional_keys = set(attrs).difference(self._parsable_columns)
         elif self._additional_columns:
-            additional_keys = [key for key in self._additional_columns if key in attrs]
+            additional_keys = \
+                [key for key in self._additional_columns if key in attrs]
         else:
             additional_keys = []
         for key in additional_keys:

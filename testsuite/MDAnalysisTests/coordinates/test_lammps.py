@@ -29,7 +29,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_allclose, assert_allclose)
+from numpy.testing import (assert_equal, assert_allclose)
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.reference import (
@@ -515,15 +515,28 @@ class TestLammpsDumpReader(object):
                            lammps_coordinate_convention="auto")
 
     @pytest.fixture()
-    def u_additional_columns(self):
+    def u_additional_columns_true(self):
         f = LAMMPSDUMP_additional_columns
         top = LAMMPSdata_additional_columns
-        yield (mda.Universe(top, f, format='LAMMPSDUMP',
+        return mda.Universe(top, f, format='LAMMPSDUMP',
                             lammps_coordinate_convention="auto",
-                            additional_columns=['q']),
-               mda.Universe(top, f, format='LAMMPSDUMP',
+                            additional_columns=True)
+
+    @pytest.fixture()
+    def u_additional_columns_single(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
                             lammps_coordinate_convention="auto",
-                            additional_columns=['q', 'l']))
+                            additional_columns=['q'])
+
+    @pytest.fixture()
+    def u_additional_columns_multiple(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns=['q', 'l'])
 
     @pytest.fixture()
     def reference_positions(self):
@@ -606,15 +619,17 @@ class TestLammpsDumpReader(object):
             assert_allclose(atom1.position, atom1_pos-bmin, atol=1e-5)
             assert_allclose(atom13.position, atom13_pos-bmin, atol=1e-5)
 
-    def test_additional_columns(self, u_additional_columns):
-        # this is the universe with just q
-        charges = u_additional_columns[0].trajectory[0].data['q']
-        # this is the universe with both
-        second = u_additional_columns[1].trajectory[0].data['l']
-        assert_almost_equal(charges,
-                            RefLAMMPSDataAdditionalColumns.charges)
-        assert_almost_equal(second,
-                            RefLAMMPSDataAdditionalColumns.additional_data)
+    @pytest.mark.parametrize("system, fields", [
+        ('u_additional_columns_true', ['q', 'l']),
+        ('u_additional_columns_single', ['q']),
+        ('u_additional_columns_multiple', ['q', 'l']),
+    ])
+    def test_additional_columns(self, system, fields, request):
+        u = request.getfixturevalue(system)
+        for field in fields:
+            data = u.trajectory[0].data[field]
+            assert_allclose(data,
+                            getattr(RefLAMMPSDataAdditionalColumns, field))
 
 
 @pytest.mark.parametrize("convention",
