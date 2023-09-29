@@ -36,11 +36,12 @@ from numpy.testing import assert_allclose, assert_equal
 try:
     from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
                                              _add_mda_attr_to_rdkit,
-                                             _atom_sorter,
                                              _infer_bo_and_charges,
-                                             _rebuild_conjugated_bonds,
                                              _set_atom_property,
                                              _standardize_patterns)
+    from MDAnalysis.converters.RDKitInferring import (
+        _atom_sorter, _rebuild_conjugated_bonds)
+
     from rdkit import Chem
     from rdkit.Chem import AllChem
 except ImportError:
