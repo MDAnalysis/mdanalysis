@@ -1056,6 +1056,28 @@ class ProteinSelection(Selection):
         return group[np.isin(nmidx, matches)]
 
 
+class LipidSelection(Selection):
+    token = 'lipid'
+
+    lipid_res = {
+ 	'LPPC', 'DLPC', 'DLPE', 'DLPS', 'DLPA', 'DLPG', 'DMPC', 'DMPE', 'DMPS', 
+	'DMPA', 'DMPG', 'DPPC', 'DPPE', 'DPPS', 'DPPA', 'DPPG', 'DSPC', 'DSPE', 
+	'DSPS', 'DSPA', 'DSPG', 'DOPC', 'DOPE', 'DOPS', 'DOPA', 'DOPG', 'POPC', 
+	'POPE', 'POPS', 'POPA', 'POPG', 'SAPC', 'SDPC', 'SOPC', 'DAPC'
+    }
+
+    def _apply(self, group):
+        resnames = group.universe._topology.resnames
+        nmidx = resnames.nmidx[group.resindices]
+
+        matches = [ix for (nm, ix) in resnames.namedict.items()
+                   if nm in self.lipid_res]
+        mask = np.isin(nmidx, matches)
+
+        return group[mask]
+
+
+
 class NucleicSelection(Selection):
     """All atoms in nucleic acid residues with recognized residue names.
 
