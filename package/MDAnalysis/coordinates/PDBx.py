@@ -22,7 +22,14 @@
 #
 
 """
+PDBx (mmcif) files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDBx`
+=======================================================================
 
+Reads coordinates from a PDBx_ (mmcif) format file.
+
+
+.. _PDBx:
+   https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/beginner’s-guide-to-pdb-structures-and-the-pdbx-mmcif-format
 """
 import gemmi
 import numpy as np
