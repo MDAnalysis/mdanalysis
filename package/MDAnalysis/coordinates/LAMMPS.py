@@ -479,11 +479,11 @@ class DumpReader(base.ReaderBase):
     By using the keyword `additional_columns`, you can specify arbitrary data
     to be read alongside the coordinates. If specified, the keyword expects a
     list of the names of the columns that you want to have read. The results
-    of the parsing are saved to the time step `data` dictionary alongside the
-    name of the data column. For instance, if you have time-dependent charges
-    saved in a LAMMPS dump such as
+    of the parsing are saved to the time step :attr:`Timestep.data` dictionary
+    alongside the name of the data column. For instance, if you have time-dependent
+    charges saved in a LAMMPS dump such as
 
-    .. code-block:: python
+    .. code-block::
 
         ITEM: ATOMS id x y z q l
         1 2.84 8.17 -25 0.00258855 1.1
@@ -497,7 +497,8 @@ class DumpReader(base.ReaderBase):
                          additional_columns=['q', 'l'])
 
     The additional data is then available for each time step via
-    (as the value of the `data` dictionary, sorted by the ids of the atoms).
+    (as the value of the :attr:`Timestep.data` dictionary, sorted by the ids of the
+    atoms).
 
     .. code-block:: python
 
@@ -538,6 +539,9 @@ class DumpReader(base.ReaderBase):
     **kwargs
        Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
+    .. versionchanged:: 2.7.0
+       Reading of arbitrary, additional columns is now supported.
+       (Issue `#3608 <https://github.com/MDAnalysis/mdanalysis/pull/3608>`__)
     .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
        and optionally unwraps trajectories with image flags upon loading.
@@ -559,11 +563,15 @@ class DumpReader(base.ReaderBase):
         "scaled_unwrapped": ["xsu", "ysu", "zsu"]
     }
 
+    _parsable_columns = ["id", "vx", "vy", "vz", "fx", "fy", "fz"]
+    for key in _coordtype_column_names.keys():
+        _parsable_columns += _coordtype_column_names[key]
+
     @store_init_arguments
     def __init__(self, filename,
                  lammps_coordinate_convention="auto",
                  unwrap_images=False,
-                 additional_columns=False, **kwargs):
+                 additional_columns=None, **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
@@ -578,10 +586,15 @@ class DumpReader(base.ReaderBase):
 
         self._unwrap = unwrap_images
 
-        if additional_columns:
+        if (util.iterable(additional_columns)
+                or additional_columns is None 
+                or additional_columns is True):
             self._additional_columns = additional_columns
         else:
-            self._additional_columns = []
+            raise ValueError(f"additional_columns={additional_columns} "
+                             "is not a valid option. Pleae provide an"
+                             "iterable containing the additional"
+                             "coloum headers.")
 
         self._cache = {}
 
@@ -731,19 +744,15 @@ class DumpReader(base.ReaderBase):
 
         # Create the data arrays for additional attributes which will be saved
         # under ts.data
-        additional_keys = []
-        if len(attrs) > 3:
-            for attribute_key in attrs:
-                # Skip the normal columns
-                if (attribute_key == "id" or
-                        attribute_key in
-                        self._coordtype_column_names[
-                            self.lammps_coordinate_convention
-                        ] or attribute_key not in self._additional_columns):
-                    continue
-                # Else this is an additional field
-                ts.data[attribute_key] = np.empty(self.n_atoms)
-                additional_keys.append(attribute_key)
+        if self._additional_columns is True:
+            # Parse every column that is not already parsed elsewhere (total \ parsable)
+            additional_keys = set(attrs).difference(self._parsable_columns)
+        elif self._additional_columns:
+            additional_keys = [key for key in self._additional_columns if key in attrs]
+        else:
+            additional_keys = []
+        for key in additional_keys:
+            ts.data[key] = np.empty(self.n_atoms)
 
         # Parse all the atoms
         for i in range(self.n_atoms):
@@ -766,12 +775,10 @@ class DumpReader(base.ReaderBase):
             if self._has_forces:
                 ts.forces[i] = [fields[dim] for dim in force_cols]
 
-            # Add the capability to also collect other data
-            # Then there is also more than just the positional data
-            if len(additional_keys) != 0:
-                for attribute_key in additional_keys:
-                    ts.data[attribute_key][i] = \
-                            fields[attr_to_col_ix[attribute_key]]
+            # Collect additional cols
+            for attribute_key in additional_keys:
+                ts.data[attribute_key][i] = \
+                    fields[attr_to_col_ix[attribute_key]]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
