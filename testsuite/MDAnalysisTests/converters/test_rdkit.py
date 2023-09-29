@@ -39,8 +39,7 @@ try:
                                              _infer_bo_and_charges,
                                              _set_atom_property,
                                              _standardize_patterns)
-    from MDAnalysis.converters.RDKitInferring import (
-        _atom_sorter, _rebuild_conjugated_bonds)
+    from MDAnalysis.converters.RDKitInferring import MDAnalysisInferer
 
     from rdkit import Chem
     from rdkit.Chem import AllChem
@@ -72,7 +71,7 @@ class MolFactory:
     def smiles_mol():
         mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
         mol = Chem.AddHs(mol)
-        cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
+        AllChem.EmbedMultipleConfs(mol, numConfs=3)
         return mol
 
     @staticmethod
@@ -172,7 +171,7 @@ class TestRDKitConverter(object):
     def test_single_atom_mol(self, smi):
         u = mda.Universe.from_smiles(smi, addHs=False,
                                      generate_coordinates=False)
-        mol = u.atoms.convert_to.rdkit(NoImplicit=False)
+        mol = u.atoms.convert_to.rdkit(inferer=None)
         assert mol.GetNumAtoms() == 1
         assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
 
@@ -195,7 +194,7 @@ class TestRDKitConverter(object):
     def test_monomer_info(self, pdb, sel_str, atom_index):
         sel = pdb.select_atoms(sel_str)
         mda_atom = sel.atoms[atom_index]
-        umol = sel.convert_to.rdkit(NoImplicit=False)
+        umol = sel.convert_to.rdkit(inferer=None)
         atom = umol.GetAtomWithIdx(atom_index)
         mi = atom.GetMonomerInfo()
         assert mda_atom.altLoc == mi.GetAltLoc()
@@ -245,7 +244,7 @@ class TestRDKitConverter(object):
     def test_bonds_outside_sel(self):
         u = mda.Universe(Chem.MolFromSmiles("CC(=O)C"))
         ag = u.select_atoms("index 1")
-        ag.convert_to.rdkit(NoImplicit=False)
+        ag.convert_to.rdkit(inferer=None)
 
     def test_error_no_hydrogen(self, uo2):
         with pytest.raises(AttributeError,
@@ -256,12 +255,12 @@ class TestRDKitConverter(object):
     def test_error_no_hydrogen_implicit(self, uo2):
         with warnings.catch_warnings():
             warnings.simplefilter("error")
-            uo2.atoms.convert_to.rdkit(NoImplicit=False)
+            uo2.atoms.convert_to.rdkit(inferer=None)
 
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
                           match="Forcing to continue the conversion"):
-            uo2.atoms.convert_to.rdkit(NoImplicit=False, force=True)
+            uo2.atoms.convert_to.rdkit(inferer=None, force=True)
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "N",    " N  "),
@@ -302,13 +301,13 @@ class TestRDKitConverter(object):
     ])
     def test_index_property(self, pdb, sel_str):
         ag = pdb.select_atoms(sel_str)
-        mol = ag.convert_to.rdkit(NoImplicit=False)
+        mol = ag.convert_to.rdkit(inferer=None)
         expected = [i for i in range(len(ag))]
         indices = [a.GetIntProp("_MDAnalysis_index") for a in mol.GetAtoms()]
         assert_equal(indices, expected)
 
     def test_assign_coordinates(self, pdb):
-        mol = pdb.atoms.convert_to.rdkit(NoImplicit=False)
+        mol = pdb.atoms.convert_to.rdkit(inferer=None)
         positions = mol.GetConformer().GetPositions()
         assert_allclose(positions, pdb.atoms.positions)
 
@@ -393,11 +392,10 @@ class TestRDKitConverter(object):
         mol.UpdatePropertyCache(strict=False)
         mol = Chem.AddHs(mol)
         u = mda.Universe(mol)
-        with pytest.warns(UserWarning, match="Could not sanitize molecule"):
-            u.atoms.convert_to.rdkit(NoImplicit=False)
-        with warnings.catch_warnings():
-            warnings.filterwarnings("error", "Could not sanitize molecule")
-            u.atoms.convert_to.rdkit()
+        with pytest.warns() as record:
+            u.atoms.convert_to.rdkit(inferer=None)
+        assert "Could not sanitize molecule" not in "\n".join(
+            [str(r.message) for r in record])
 
 
 @requires_rdkit
@@ -656,9 +654,20 @@ class TestRDKitFunctions(object):
     def test_warn_conjugated_max_iter(self):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
         mol = Chem.MolFromSmiles(smi)
+        inferer = MDAnalysisInferer(max_iter=2)
         with pytest.warns(UserWarning,
                           match="reasonable number of iterations"):
-            _rebuild_conjugated_bonds(mol, 2)
+            inferer._rebuild_conjugated_bonds(mol)
+
+    def test_deprecation_warning_max_iter(self):
+        smi = "c1ccccc1"
+        mol = Chem.MolFromSmiles(smi)
+        inferer = MDAnalysisInferer()
+        with pytest.warns(
+            DeprecationWarning,
+            match="Specifying `max_iter` is deprecated and will be removed"
+        ):
+            inferer._standardize_patterns(mol, max_iter=1)
 
     @pytest.mark.parametrize("smi", [
         "[Li+]", "[Na+]", "[K+]", "[Rb+]", "[Ag+]", "[Cs+]",
@@ -718,6 +727,7 @@ class TestRDKitFunctions(object):
         # atom indices:      1 3 5 6
         mol.UpdatePropertyCache()
         sorted_atoms = sorted([atom for atom in mol.GetAtoms()
-                              if atom.GetAtomicNum() > 1], key=_atom_sorter)
+                              if atom.GetAtomicNum() > 1],
+                              key=MDAnalysisInferer._atom_sorter)
         sorted_indices = [atom.GetIdx() for atom in sorted_atoms]
         assert sorted_indices == [6, 5, 1, 3]
