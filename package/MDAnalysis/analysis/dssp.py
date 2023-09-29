@@ -14,12 +14,30 @@ DEFAULT_MARGIN = 1.0
 
 
 def _unfold(a: np.ndarray, window: int, axis: int):
+    """Unfolds an ndarray if it was batched (pydssp legacy)
+
+    Args:
+        a (np.ndarray): input array
+        window (int): window
+        axis (int): axis to unfold across
+
+    Returns:
+        np.ndarray: unfolded array
+    """
     idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
 
 def _check_input(coord):
+    """Check if input coordinates have appropriate shape
+
+    Args:
+        coord (np.ndarray): input coordinates
+
+    Returns:
+        (np.ndarray, tuple): coordinates and appropriate shape
+    """
     org_shape = coord.shape
     assert (len(org_shape) == 3) or (
         len(org_shape) == 4
@@ -29,6 +47,14 @@ def _check_input(coord):
 
 
 def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
+    """Fills in hydrogen atoms positions is they're abscent
+
+    Args:
+        coord (np.ndarray): input coordinates, shape (n_atoms, 4, 3)
+
+    Returns:
+        np.ndarray: coordinates with additional hydrogens, shape (n_atoms, 5, 3)
+    """
     # A little bit lazy (but should be OK) definition of H position here.
     vec_cn = coord[:, 1:, 0] - coord[:, :-1, 2]
     vec_cn = vec_cn / np.linalg.norm(vec_cn, axis=-1, keepdims=True)
@@ -45,6 +71,17 @@ def get_hbond_map(
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
 ) -> np.ndarray:
+    """Returns hydrogen bond map
+
+    Args:
+        coord (np.ndarray): input coordinates in either (n, 4, 3) or (n, 5, 3) shape (without or with hydrogens)
+        cutoff (float, optional): Defaults to DEFAULT_CUTOFF.
+        margin (float, optional): margin. Defaults to DEFAULT_MARGIN.
+        return_e (bool, optional): if to return energy instead of hbond map. Defaults to False.
+
+    Returns:
+        np.ndarray: output hbond map or energy depending on return_e param
+    """
     # check input
     coord, org_shape = _check_input(coord)
     b, l, a, _ = coord.shape
@@ -83,6 +120,14 @@ def get_hbond_map(
 
 
 def assign(coord: np.ndarray) -> np.ndarray:
+    """Assigns secondary structure for a given coordinate array
+
+    Args:
+        coord (np.ndarray): input coordinates in either (n, 4, 3) or (n, 5, 3) shape -- without or with hydrogens
+
+    Returns:
+        np.ndarray: output (n,) array with labels in C3 notation ('-', 'H', 'E')
+    """
     # check input
     coord, org_shape = _check_input(coord)
     # get hydrogen bond map
@@ -139,8 +184,23 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
 
 class DSSP(AnalysisBase):
-    def __init__(self, u: Universe):
+    """Assign secondary structure using DSSP algorithm as implemented by pydssp package (v. 0.9.0)
+    Here:
+     - 'H' represents a 4-helix (alpha-helix)
+     - 'E' represents 'extended strand', participating in beta-ladder
+     - '-' represents unordered part
 
+    Example:
+    >>> from MDAnalysis.analysis.dssp import DSSP
+    >>> from MDAnalysisTests.datafiles import PDB
+    >>> import MDAnalysis as mda
+    >>> u = mda.Universe(PDB)
+    >>> run = DSSP(u).run()
+    >>> print(''.join(run.results.dssp[0]))
+    --EEEEE-----HHHHHHHHHHHH--EEE-HHHHHHHHHHH--HHHHHHHHHHHH-----HHHHHHHHHHH---HHH---EEEE-----HHHHHHHHHH-----EEEEEE--HHHHHHHH--EE--------EE---E------E------E----HHH-HHHHHHHHHHHHHHHHHHHHHHHHHHHH---EEEEEE----HHHHHHHHHHHH-
+    """
+
+    def __init__(self, u: Universe):
         super().__init__(u.trajectory)
 
         selections = {
