@@ -25,7 +25,8 @@
 PDBx (mmcif) files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDBx`
 =======================================================================
 
-Reads coordinates from a PDBx_ (mmcif) format file.
+Reads coordinates from a PDBx_ (mmcif) format file.  Will populate the Universe positions from the
+``_atom_site.Cartn_x`` field in the PDBx file.  Will populate the unitcell dimensions from the ``_cell`` section.
 
 
 .. _PDBx:
