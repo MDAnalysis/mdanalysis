@@ -33,7 +33,7 @@ Classes
 """
 import warnings
 from dataclasses import dataclass
-from typing import ClassVar, Dict, List
+from typing import ClassVar, Dict, List, Any
 
 import numpy as np
 
@@ -527,3 +527,18 @@ class MDAnalysisInferer:
         # reached max_iter
         warnings.warn("The standardization could not be completed within a "
                       "reasonable number of iterations")
+
+
+@dataclass(frozen=True)
+class TemplateInferer:
+    """Infer bond orders and charges by matching the molecule with a template molecule containing bond orders and charges.
+
+    Attributes
+    ----------
+    template : Chem.Mol
+        Molecule containing the bond orders and charges.
+    """
+    template: Any
+
+    def __call__(self, mol):
+        return AllChem.AssignBondOrdersFromTemplate(self.template, mol)
