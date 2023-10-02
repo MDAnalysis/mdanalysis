@@ -22,8 +22,3 @@ def test_file_guess_hydrogens(pdb_filename):
 def test_trajectory_without_guess_hydrogens(pdb_filename):
     u = mda.Universe(pdb_filename)
     DSSP(u, guess_hydrogens=False).run()
-
-    # with_guess_s = "".join(DSSP(u, guess_hydrogens=True).run().results.dssp[0])
-    # without_guess_s = "".join(DSSP(u, guess_hydrogens=False).run().results.dssp[0])
-    # num_different = sum((s1 != s2 for s1, s2 in zip(with_guess_s, without_guess_s)))
-    # assert num_different / len(with_guess_s) <= 0.05

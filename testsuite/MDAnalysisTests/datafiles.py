@@ -241,7 +241,7 @@ __all__ = [
     "PDB_charges",  # PDB file with formal charges
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
-    "DSSP", # DSSP test suite
+    "DSSP",  # DSSP test suite
 ]
 
 from importlib import resources
