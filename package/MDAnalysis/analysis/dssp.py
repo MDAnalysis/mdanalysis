@@ -24,7 +24,8 @@ def _unfold(a: np.ndarray, window: int, axis: int):
     Returns:
         np.ndarray: unfolded array
     """
-    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
+    idx = np.arange(window)[:, None] + \
+        np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
@@ -42,7 +43,8 @@ def _check_input(coord):
     assert (len(org_shape) == 3) or (
         len(org_shape) == 4
     ), "Shape of input tensor should be [batch, L, atom, xyz] or [L, atom, xyz]"
-    coord = repeat(coord, "... -> b ...", b=1) if len(org_shape) == 3 else coord
+    coord = repeat(coord, "... -> b ...",
+                   b=1) if len(org_shape) == 3 else coord
     return coord, org_shape
 
 
@@ -101,7 +103,8 @@ def get_hbond_map(
     d_cn = np.linalg.norm(cmap - nmap, axis=-1)
     # electrostatic interaction energy
     e = np.pad(
-        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F,
+        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 /
+                      d_oh - 1.0 / d_cn) * CONST_F,
         [[0, 0], [1, 0], [0, 1]],
     )
     if return_e:
@@ -115,7 +118,8 @@ def get_hbond_map(
     hbond_map = (np.sin(hbond_map / margin * np.pi / 2) + 1.0) / 2
     hbond_map = hbond_map * repeat(local_mask, "l1 l2 -> b l1 l2", b=b)
     # return h-bond map
-    hbond_map = np.squeeze(hbond_map, axis=0) if len(org_shape) == 3 else hbond_map
+    hbond_map = np.squeeze(hbond_map, axis=0) if len(
+        org_shape) == 3 else hbond_map
     return hbond_map
 
 
@@ -173,7 +177,8 @@ def assign(coord: np.ndarray) -> np.ndarray:
     strand = ladder
     loop = ~helix * ~strand
     onehot = np.stack([loop, helix, strand], axis=-1)
-    onehot = rearrange(onehot, "1 ... -> ...") if len(org_shape) == 3 else onehot
+    onehot = rearrange(
+        onehot, "1 ... -> ...") if len(org_shape) == 3 else onehot
     return onehot
 
 
@@ -215,7 +220,8 @@ class DSSP(AnalysisBase):
         self._guess_hydrogens = guess_hydrogens
 
         # define necessary selections
-        heavyatom_names = ("N", "CA", "C", "O O1")  # O1 is for C-terminal residue
+        # O1 is for C-terminal residue
+        heavyatom_names = ("N", "CA", "C", "O O1")
         self._heavy_atoms: dict[str, "AtomGroup"] = {
             t: u.select_atoms(f"protein and name {t}") for t in heavyatom_names
         }
@@ -228,10 +234,12 @@ class DSSP(AnalysisBase):
         self.results.dssp_ndarray = [None for _ in range(self.n_frames)]
 
     def _single_frame(self):
-        coords = np.array([group.positions for group in self._heavy_atoms.values()])
+        coords = np.array(
+            [group.positions for group in self._heavy_atoms.values()])
 
         if not self._guess_hydrogens:
-            guessed_h_coords = _get_hydrogen_atom_position(coords.swapaxes(0, 1))
+            guessed_h_coords = _get_hydrogen_atom_position(
+                coords.swapaxes(0, 1))
             h_coords = np.array(
                 [
                     group.positions[0] if group else guessed_h_coords[idx]
@@ -248,7 +256,8 @@ class DSSP(AnalysisBase):
     def _conclude(self):
         self.results.dssp = translate(self.results.dssp_ndarray)
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
-        self.results.resids = np.array([at.resid for at in self._heavy_atoms["CA"]])
+        self.results.resids = np.array(
+            [at.resid for at in self._heavy_atoms["CA"]])
 
 
 def report(arr: np.ndarray):
