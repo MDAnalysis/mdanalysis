@@ -53,7 +53,7 @@ def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
         coord (np.ndarray): input coordinates, shape (n_atoms, 4, 3)
 
     Returns:
-        np.ndarray: coordinates with additional hydrogens, shape (n_atoms, 5, 3)
+        np.ndarray: coordinates of additional hydrogens, shape (n_atoms, 3)
     """
     # A little bit lazy (but should be OK) definition of H position here.
     vec_cn = coord[:, 1:, 0] - coord[:, :-1, 2]
@@ -196,43 +196,60 @@ class DSSP(AnalysisBase):
     >>> import MDAnalysis as mda
     >>> u = mda.Universe(PDB)
     >>> run = DSSP(u).run()
-    >>> print(''.join(run.results.dssp[0]))
-    --EEEEE-----HHHHHHHHHHHH--EEE-HHHHHHHHHHH--HHHHHHHHHHHH-----HHHHHHHHHHH---HHH---EEEE-----HHHHHHHHHH-----EEEEEE--HHHHHHHH--EE--------EE---E------E------E----HHH-HHHHHHHHHHHHHHHHHHHHHHHHHHHH---EEEEEE----HHHHHHHHHHHH-
+    >>> print("".join(run.results.dssp[0]))
+    '--EEEEE-----HHHHHHHHHHHH--EEE-HHHHHHHHHHH--HHHHHHHHHHHH-----HHHHHHHHHHH---HHH---EEEE-----HHHHHHHHHH-----EEEEEE--HHHHHHHH--EE--------EE---E------E------E----HHH-HHHHHHHHHHHHHHHHHHHHHHHHHHHH---EEEEEE----HHHHHHHHHHHH-'
+
+    Also, per-frame dssp assignment allows you to build average secondary structure -- `DSSP.results.dssp_ndarray` 
+    holds (n_frames, n_residues, 3) shape ndarray with one-hot encoding of loop, helix and sheet, respectively:
+
+    >>> from MDAnalysis.analysis.dssp import translate
+    >>> u = mda.Universe(...)
+    >>> long_run = DSSP(u).run()
+    >>> mean_secondary_structure = translate(long_run.results.dssp_ndarray.mean(axis=0))
+    >>> ''.join(mean_secondary_structure)
+    ---HHHHHHHH--------------------------HHHHHH-------HHHH---HHHHHHHHHHHHHH------------HHHHH------------------HHHHHHHH---
     """
 
     def __init__(self, u: Universe, guess_hydrogens: bool = True):
         super().__init__(u.trajectory)
+        self._guess_hydrogens = guess_hydrogens
 
-        residues_with_H = u.select_atoms("protein and name H").residues
-
-        base_selections = [
-            "name N",
-            "name CA",
-            "name C",
-            "name O O1",  # O1 is for C-terminal residue
-        ]
-
-        if not guess_hydrogens:
-            base_selections.append("name H")
-
-        self._residues_with_H = residues_with_H
-        self._residues = u.select_atoms("protein").residues
-        selections = {t: residues_with_H.atoms.select_atoms(t) for t in base_selections}
-        self.selections = selections
+        # define necessary selections
+        heavyatom_names = ("N", "CA", "C", "O O1")  # O1 is for C-terminal residue
+        self._heavy_atoms: dict[str, "AtomGroup"] = {
+            t: u.select_atoms(f"protein and name {t}") for t in heavyatom_names
+        }
+        self._hydrogens: list["AtomGroup"] = [
+            res.atoms.select_atoms("name H")
+            for res in u.select_atoms("protein").residues
+        ]  # can't do it the other way because I need missing values to exist so that I could fill them in later
 
     def _prepare(self):
         self.results.dssp_ndarray = [None for _ in range(self.n_frames)]
 
     def _single_frame(self):
-        arr = [group.positions for group in self.selections.values()]
-        coords = np.array(arr).swapaxes(0, 1)
+        coords = np.array([group.positions for group in self._heavy_atoms.values()])
+
+        if not self._guess_hydrogens:
+            guessed_h_coords = _get_hydrogen_atom_position(coords.swapaxes(0, 1))
+            h_coords = np.array(
+                [
+                    group.positions[0] if group else guessed_h_coords[idx]
+                    for idx, group in enumerate(self._hydrogens)
+                ]
+            )
+            h_coords = np.expand_dims(h_coords, axis=0)
+            coords = np.vstack([coords, h_coords])
+
+        coords = coords.swapaxes(0, 1)
         dssp = assign(coords)
         self.results.dssp_ndarray[self._frame_index] = dssp
 
     def _conclude(self):
-        dssp = np.zeros((self.n_frames, len(self._residues), 3), dtype=bool)
-        dssp[:, :, :] = [True, False, False]
-        dssp[:, self._residues_with_H.resindices, :] = self.results.dssp_ndarray
-        self.results.dssp_ndarray = dssp
-        self.results.dssp = translate(dssp)
-        self.results.resids = self._residues.resids
+        self.results.dssp = translate(self.results.dssp_ndarray)
+        self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
+        self.results.resids = np.array([at.resid for at in self._heavy_atoms["CA"]])
+
+
+def report(arr: np.ndarray):
+    print(f"{arr.shape=}")
