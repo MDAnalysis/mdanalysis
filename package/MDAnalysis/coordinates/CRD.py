@@ -128,6 +128,9 @@ class CRDWriter(base.WriterBase):
     .. versionchanged:: 2.2.0
        CRD extended format can now be explicitly requested with the
        `extended` keyword
+    .. versionchanged:: 2.6.0
+       Files are now written in `wt` mode, and keep extensions, allowing
+       for files to be written under compressed formats
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
@@ -165,7 +168,7 @@ class CRDWriter(base.WriterBase):
              .. versionadded:: 2.2.0
         """
 
-        self.filename = util.filename(filename, ext='crd')
+        self.filename = util.filename(filename, ext='crd', keep=True)
         self.crd = None
 
         # account for explicit crd format, if requested
@@ -247,7 +250,7 @@ class CRDWriter(base.WriterBase):
                 "{miss}. These will be written with default values. "
                 "".format(miss=', '.join(missing_topology)))
 
-        with util.openany(self.filename, 'w') as crd:
+        with util.openany(self.filename, 'wt') as crd:
             # Write Title
             crd.write(self.fmt['TITLE'].format(
                 frame=frame, where=u.trajectory.filename))

@@ -79,6 +79,23 @@ equivalent::
 
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
 
+    
+Classes
+-------
+
+.. autoclass:: HELANAL
+
+
+Functions
+---------
+
+.. autofunction:: helix_analysis
+
+.. autofunction:: vector_of_best_fit
+
+.. autofunction:: local_screw_angles
+
+
 """
 
 import warnings

@@ -10,20 +10,127 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting
   * accompany each entry with github issue/PR number (Issue #xyz)
-  * release numbers follow "Semantic Versioning" http://semver.org
+  * release numbers follow "Semantic Versioning" https://semver.org
 
-------------------------------------------------------------------------------
-??/??/?? IAlibay
+
+-------------------------------------------------------------------------------
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
+         richardjgowers, lilyminium
+
+ * 2.7.0
+
+Fixes
+  * Fix `NoJump` unwrapping for jumps on the second frame in a
+    trajectory (PR #4258, Issue #4257)
+  * Deprecated np.float_ and np.NaN aliases have been replaced with
+    their original type value (np.float64 and np.nan) (PR #4272)
+  * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
+    RMSD of None
+  * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
+
+Enhancements
+  * Adds external sidebar links (Issue #4296)
+  * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
+    inputs (PR #4273, part of #3927)
+  * Added a warning about charge neutrality to the documentation of
+    `DielectricConstant` (Issue #4262, PR #4263)
+  * Add support for reading chainID info from prmtop amber topologies (PR #4007)
+  * Add support for reading chainID info from GROMACS TPR topologies 
+    (Issue #3994, PR #4281)  
+  * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
+    PR #4284)
+
+Changes
+  * High memory tests (enabled through the environment variable
+    `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
+    is set to "true") (PR #4295)
+  * The `mda-xdrlib` module is now a core dependency of MDAnalysis
+    replacing the now deprecated `xdrlib` core Python library
+    (PR #4271)
+  * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+
+Deprecations
+  * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
+    use converters.base.ConvertBase instead (Issue #3404)
+
+
+28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+
+ * 2.6.1
+
+Fixes
+  * Fix Atom type guessing error (PR #4168, Issue #4167)
+
+Enhancements
+  * Allow `set_dimensions` transformation to handle NPT trajectories (PR #4258)
+
+Changes
+  * Reverts PR #4108, builds are now again made using the oldest
+    supported NumPy version.
+  * NumPy `in1d` replaced with `isin` in preparation for NumPy
+    `2.0` (PR #4255)
+  * Update documentation for SurvivalProbabilty to be more clear
+    (Issue #4247)
+  * Cython DEF statments have been replaced with compile time integer constants
+    as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
+
+Deprecations
+
+
+08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
+         ztimol, orbeckst
 
  * 2.6.0
 
 Fixes
+  * Fix AtomGroup.center_of_charge(..., unwrap=True) giving
+    inconsistent (but scientifically correct) results on Intel macOS
+    (Issue #4211)
+  * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
+  * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
+    (PR #4163, Issue #4159)
 
 Enhancements
+  * Added a `exclude_same` kwarg to InterRDF (PR #4161)
+  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
+    (Issue #3546)
 
 Changes
+  * Package builds are now made using NumPy 1.25 or higher. This provides
+    backwards runtime compatibility with older NumPy builds within the limit
+    of NEP29 (PR #4108).
+  * Removed `-ffast-math` compiler flag to avoid potentially incorrect
+    floating point results in MDAnalysis *and* other codes when
+    MDAnalysis shared libraries are loaded --- see 
+    https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html
+    (Issues #3821, #4211)
+  * Atom ID representation order updated to match that of associated
+    AtomGroup indices.
+    (PR #4191, Issue #4181)
+  * Package license has been updated to GPLv3+ to better reflect the
+    compatibility of GPLv2+ with Apache and GPLv3 licenced codes (PR #4219).
+  * All new contributions are now made under LGPLv2.1+ (PR #4219).
+  * Support for GSD is now limited to version 3.0.1 and above. Alongside this
+    change, support for schema 1.3 files has been dropped (PR #4153)
+  * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
+  * As per NEP29 the minimum supported version has been raised to 1.22. We
+    have opted to pin to a minimum of 1.22.3 to avoid known issues on some
+    platforms.
+  * GSD is no longer a core dependency of MDAnalysis. It must be installed
+    independently if you wish to read HOOMD trajectory files.
+    (PR #4174, Issue #3819)
 
 Deprecations
+  * Incorrectly spelt Boltzmann unit entry will be removed in version 2.8.0
+    (PR #4230, Issue #4229)
+  * The hole2 module is deprecated in favour of the the MDAKit:
+    https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
+  * MDAnalysis no longer officially supports 32 bit installations (they are
+    no longer tested in our continuous integration pipelines). Note: whilst
+    no code changes have been made to disable 32 bit, although it is known that
+    new versions of most MDAnalysis core dependencies no longer release
+    32 bit compatible versions. (Issue #3858, PR #4176)
 
 
 05/28/23 IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
@@ -35,6 +142,7 @@ Deprecations
  * 2.5.0
 
 Fixes
+  * Fixed using 'rb' mode inside GSDReader to avoid FutureWarning from GSDFile (Issue #4152)
   * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
     (Issue #3657 #4008 PR #3906)
   * Fix the `heavy` distance_type for water bridge analysis where distance

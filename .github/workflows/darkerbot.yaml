@@ -9,7 +9,7 @@ on:
 
 concurrency:
   # Probably overly cautious group naming.
-  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # Commits to develop will cancel each other, but PRs will only cancel
   # commits within the same PR
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
@@ -19,6 +19,7 @@ jobs:
   darker_bot:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
 

@@ -69,10 +69,21 @@ BONDED_TPRS = (
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'elements',
-                      'resids', 'resnames',
-                      'moltypes', 'molnums', 'charges',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        "ids",
+        "names",
+        "elements",
+        "resids",
+        "resnames",
+        "chainIDs",
+        "moltypes",
+        "molnums",
+        "charges",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+    ]
 
     def test_moltypes(self, top):
         moltypes = top.moltypes.values
@@ -82,6 +93,10 @@ class TPRAttrs(ParserBase):
         molnums = top.molnums.values
         assert_equal(molnums, self.ref_molnums)
         assert molnums.dtype == np.intp
+
+    def test_chainIDs(self, top):
+        if hasattr(self, "ref_chainIDs"):
+            assert_equal(self.ref_chainIDs, getattr(top, "chainIDs").name_lookup)
 
 
 class TestTPR(TPRAttrs):
@@ -109,6 +124,7 @@ class TestTPRGromacsVersions(TPRAttrs):
     expected_n_segments = 2
     ref_moltypes = np.array(['Protein_A'] * 129 + ['SOL'] * 101, dtype=object)
     ref_molnums = np.array([0] * 129 + list(range(1, 1 + 101)))
+    ref_chainIDs = ["Protein_A", "SOL"]
 
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
