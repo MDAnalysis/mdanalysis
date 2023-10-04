@@ -183,6 +183,25 @@ def assign(coord: np.ndarray) -> np.ndarray:
 
 
 def translate(onehot: np.ndarray) -> np.ndarray:
+    """Translate a one-hot encoding ndarray into char-based secondary structure assignment.
+    One-hot encoding corresponds to '-', 'H', 'E' (in that order) -- loop, helix and sheet respectively.
+    Input array must have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3), etc.
+
+    Example:
+
+    >>> from MDAnalysis.analysis.dssp import translate
+    >>> import numpy as np
+    >>> # encoding 'HE-'
+    >>> onehot = np.array([[False, True, False], [False, False, True], [True, False, False]]])
+    >>> ''.join(translate(onehot))
+    'HE-'
+
+    Args:
+        onehot (np.ndarray): _description_
+
+    Returns:
+        np.ndarray: _description_
+    """
     C3_ALPHABET = np.array(["-", "H", "E"])
     index = np.argmax(onehot, axis=-1)
     return C3_ALPHABET[index]
