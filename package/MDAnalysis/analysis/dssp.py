@@ -231,7 +231,7 @@ class DSSP(AnalysisBase):
         ]  # can't do it the other way because I need missing values to exist so that I could fill them in later
 
     def _prepare(self):
-        self.results.dssp_ndarray = [None for _ in range(self.n_frames)]
+        self.results.dssp_ndarray = []
 
     def _single_frame(self):
         coords = np.array(
@@ -251,14 +251,10 @@ class DSSP(AnalysisBase):
 
         coords = coords.swapaxes(0, 1)
         dssp = assign(coords)
-        self.results.dssp_ndarray[self._frame_index] = dssp
+        self.results.dssp_ndarray.append(dssp)
 
     def _conclude(self):
-        self.results.dssp = translate(self.results.dssp_ndarray)
+        self.results.dssp = translate(np.array(self.results.dssp_ndarray))
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
         self.results.resids = np.array(
             [at.resid for at in self._heavy_atoms["CA"]])
-
-
-def report(arr: np.ndarray):
-    print(f"{arr.shape=}")
