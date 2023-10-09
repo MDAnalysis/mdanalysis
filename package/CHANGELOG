@@ -50,14 +50,18 @@ Changes
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+  * Results for WatsonCrickDist nucleic acids analysis are now stored in 
+    `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
-  * In `WatsonCrickDist` from the nucleicacids module, accepting lists of `Residue`
-    objects was deprecated in favor of using `ResidueGroup`
-  * In `WatsonCrickDist` from the nucleicacids module, `results.pair_distances` was
-    deprecated, and changed to `results.distances`
+  * In `nucleicacids.WatsonCrickDist`, accepting lists of `Residue` objects was deprecated
+    in favor of using `ResidueGroup`: using `List[Residue]` will be removed in release
+    3.0.0; instead use a `ResidueGroup` (Issue #3720, PR #3735)
+  * In `nucleicacids.WatsonCrickDist` the result `results.pair_distances` was
+    deprecated and will be removed in 3.0.0; use `results.distances` (Issue #3720, 
+    PR #3735)
 
 
 28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
@@ -81,9 +85,6 @@ Changes
     as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
 
 Deprecations
-  * using `List[Residue]` as input for `analysis.nucleicacids.WatsonCrickDist()` is 
-    deprecated and will be removed in release 3.0.0; instead use a `ResidueGroup` 
-    (Issue #3720, PR #3735)
 
 
 08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
