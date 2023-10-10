@@ -113,20 +113,23 @@ class NucPairDist(AnalysisBase):
 
         .. versionadded:: 2.4.0
 
-        .. note::
-            `results.pair_distances` is slated for deprecation in 
-            version 3.0.0, use `results.distances` instead.
+        .. deprecated:: 2.7.0
+            `results.pair_distances` will be removed in 
+            version 3.0.0, use :attr:`results.distances` instead.
 
     results.distances: numpy.ndarray
-        stored in a 2d numpy array with first index selecting the 
-        Residue pair, and the second index selecting the frame number
+        Distances are stored in a 2d numpy array with axis 0 (first index)
+        indexing the trajectory frame and axis 1 (second index) selecting the  
+        Residue pair.
+        
+        .. versionadded:: 2.7.0
+        
     times: numpy.ndarray
         Simulation times for analysis.
 
         
     Raises
     ------
-
     ValueError
         If the selections given are not the same length
     ValueError
@@ -137,8 +140,6 @@ class NucPairDist(AnalysisBase):
         :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
         pairs used in the distance calculations
 
-        
-    *Version Info*
 
     .. versionchanged:: 2.5.0
        The ability to access by passing selection indices to :attr:`results`
@@ -184,9 +185,9 @@ class NucPairDist(AnalysisBase):
         ) -> Tuple[List[mda.AtomGroup], List[mda.AtomGroup]]:
         r"""
         A helper method for nucleic acid pair distance analyses. 
+        
         Used for selecting specific atoms from two strands of nucleic acids.
         
-
         Parameters
         ----------
         strand1: List[Residue]
@@ -286,47 +287,59 @@ class WatsonCrickDist(NucPairDist):
     Watson-Crick base pair distance for selected
     residues over a trajectory.
 
-    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup`
-    objects or two lists of :class:`~MDAnalysis.core.groups.Residue`
-    and calculates the distance between the nitrogen atoms in the
-    Watson-Crick hydrogen bond over the trajectory. Bases are matched
-    either by their index in the two 
-    :class:`~MDAnalysis.core.groups.ResidueGroup` provided as arguments,
-    or based on the indices of the provided lists of
-    :class:`~MDAnalysis.core.groups.Residue` objects depending
-    on which is provided.
-
-    .. note::
-        Support for :class:`~MDAnalysis.core.groups.Residue` is slated for
-        deprecation and will raise a warning when used. It still works but
-        :class:`~MDAnalysis.core.groups.ResidueGroup` is preferred.
+    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects
+    as `strand1` and `strand2` and calculates the distance between 
+    the nitrogen atoms in the Watson-Crick hydrogen bond over the 
+    trajectory. Bases are matched by their index in `strand1` and `strand2`
+    (similar to ``base_pairs = zip(strand1, strand2)``).
+    Therefore, `strand1` and `strand2` must contain the *same number of
+    residues*.
 
     Parameters
     ----------
     strand1: ResidueClass
         First list of bases
+        
+        .. deprecated:: 2.7.0
+           Using a list of :class:`~MDAnalysis.core.groups.Residue` will
+           be removed in 3.0.0. Use a 
+           :class:`~MDAnalysis.core.groups.ResidueGroup`.
+
     strand2: ResidueClass
         Second list of bases
+
+        .. deprecated:: 2.7.0
+           Using a list of :class:`~MDAnalysis.core.groups.Residue` will
+           be removed in 3.0.0. Use a 
+           :class:`~MDAnalysis.core.groups.ResidueGroup`.
+    
     n1_name: str (optional)
-        Name of Nitrogen 1 of nucleic acids, by default assigned to N1
+        Name of Nitrogen 1 of nucleic acids, by default assigned to "N1"
     n3_name: str (optional)
-        Name of Nitrogen 3 of nucleic acids, by default assigned to N3
+        Name of Nitrogen 3 of nucleic acids, by default assigned to "N3"
     g_name: str (optional)
-        Name of Guanine in topology, by default assigned to G
+        Name of Guanine in topology, by default assigned to "G"
     a_name: str (optional)
-        Name of Adenine in topology, by default assigned to A
+        Name of Adenine in topology, by default assigned to "A"
     u_name: str (optional)
-        Name of Uracil in topology, by default assigned to U
+        Name of Uracil in topology, by default assigned to "U"
     t_name: str (optional)
-        Name of Thymine in topology, by default assigned to T
+        Name of Thymine in topology, by default assigned to "T"
     c_name: str (optional)
-        Name of Cytosine in topology, by default assigned to C
-    **kwargs: dict
-        Key word arguments for 
+        Name of Cytosine in topology, by default assigned to "C"
+    **kwargs:
+        Additional keyword arguments for 
         :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
     ----------
+    results.distances: numpy.ndarray
+        Distances are stored in a 2d numpy array with axis 0 (first index)
+        indexing the trajectory frame and axis 1 (second index) selecting the  
+        Residue pair.
+
+        .. versionadded:: 2.7.0
+        
     results.pair_distances: numpy.ndarray
         2D array of pair distances. First dimension is 
         simulation time, second dimension contains the
@@ -335,42 +348,36 @@ class WatsonCrickDist(NucPairDist):
 
         .. versionadded:: 2.4.0
 
-        .. note::
-            `results.pair_distances` is slated for
-            deprecation in version 3.0.0, use `results.distances` instead.
+        .. deprecated:: 2.7.0
+            `results.pair_distances` will be removed in version 3.0.0, 
+            use :attr:`results.distances` instead.
 
-    results.distances: numpy.ndarray
-        stored in a 2d numpy array with first index
-        selecting the Residue pair, and the second index
-        selecting the frame number
     times: numpy.ndarray
         Simulation times for analysis.
 
     Raises
     ------
-    DeprecationWarning
-
-        If a list of :class:`~MDAnalysis.core.groups.Residue` is given for
-        `strand1` of `strand2` instead of a
-        :class:`~MDAnalysis.core.groups.ResidueGroup`
     TypeError
         If the provided list of :class:`~MDAnalysis.core.Residue` contains
         non-Residue elements
+
+        .. deprecated:: 2.7.0
+           Starting with version 3.0.0, this exception will no longer be raised
+           because only :class:`~MDAnalysis.core.groups.ResidueGroup` will be allowed.
+           
     ValueError
-        If the selections given are not the same length
+        If `strand1` and `strand2` are not the same length
     ValueError:
-        An :class:`~MDAnalysis.core.groups.AtomGroup` 
-        in one of the strands not a valid nucleic acid
+        A :class:`~MDAnalysis.core.Residue` in one of the strands is not a
+        valid nucleic acid
     ValueError
         If a given residue pair from the provided strands returns an empty
         :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
         pairs used in the distance calculations
 
-    
-    *Version Info*
 
     .. versionchanged:: 2.5.0
-       Accessing results by passing strand indices to :attr:`results` is
+       Accessing results by passing strand indices to :attr:`results`
        was deprecated and is now removed as of MDAnalysis version 2.5.0.
        Please use :attr:`results.pair_distances` instead.
        The :attr:`results.times` was deprecated and is now removed as of
@@ -382,7 +389,6 @@ class WatsonCrickDist(NucPairDist):
         :class:`~MDAnalysis.core.groups.ResidueGroup` as input.
         The previous input type, ``List[Residue]`` is still supported,
         but it is **deprecated** and will be removed in release 3.0.0.
-
     """
 
     def __init__(self, strand1: ResidueClass, strand2: ResidueClass,
@@ -433,48 +439,49 @@ class MinorPairDist(NucPairDist):
     r"""Minor-Pair basepair distance for selected residues
         over a trajectory.
 
-    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and
-    calculates the Minor-groove hydrogen bond length between the 
-    nitrogen and oxygen atoms over the trajectory. Bases are 
-    matched by their index in the two
-    :class:`~MDAnalysis.core.groups.ResidueGroup` provided as arguments.
+    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects 
+    as `strand1` and `strand2` and calculates the Minor-groove hydrogen
+    bond length between the nitrogen and oxygen atoms over the trajectory.
+    Bases are matched by their index in `strand1` and `strand2` (similar 
+    ``base_pairs = zip(strand1, strand2)``).
 
     Parameters
     ----------
-
     strand1: List[Residue]
         First list of bases
     strand2: List[Residue]
         Second list of bases
     o2_name: str (optional)
-        Name of Oxygen 2 of nucleic acids
-        by default assigned to O2
+        Name of Oxygen 2 of nucleic acids;
+        by default assigned to "O2";
     c2_name: str (optional)
-        Name of Carbon 2 of nucleic acids
-        by default assigned to C2
+        Name of Carbon 2 of nucleic acids;
+        by default assigned to "C2";
     g_name: str (optional)
-        Name of Guanine in topology
-        by default assigned to G
+        Name of Guanine in topology;
+        by default assigned to "G";
     a_name: str (optional)
         Name of Adenine in topology
-        by default assigned to G
+        by default assigned to "A";
     u_name: str (optional)
-        Name of Uracil in topology
-        by default assigned to U
+        Name of Uracil in topology;
+        by default assigned to "U";
     t_name: str (optional)
-        Name of Thymine in topology
-        by default assigned to T
+        Name of Thymine in topology;
+        by default assigned to "T";
     c_name: str (optional)
-        Name of Cytosine in topology
-        by default assigned to C
-    **kwargs: dict
-        arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
+        Name of Cytosine in topology;
+        by default assigned to "C";
+    **kwargs: 
+        keyword arguments for 
+        :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
     ----------
     results.distances: numpy.ndarray
-        stored in a 2d numpy array with first index selecting 
-        the Residue pair, and the second index selecting the frame number
+        Distances are stored in a 2d numpy array with axis 0 (first index)
+        indexing the trajectory frame and axis 1 (second index) selecting the  
+        Residue pair.
     times: numpy.ndarray
         Simulation times for analysis.
 
@@ -483,7 +490,7 @@ class MinorPairDist(NucPairDist):
     ValueError
         If the selections given are not the same length
     ValueError:
-        An :class:`~MDAnalysis.core.groups.AtomGroup` in
+        A :class:`~MDAnalysis.core.Residue` in
         one of the strands not a valid nucleic acid
     ValueError
         If a given residue pair from the provided strands returns an empty
@@ -530,42 +537,42 @@ class MajorPairDist(NucPairDist):
     strand2: List[Residue]
         Second list of bases
     o6_name: str (optional)
-        Name of Oxygen 6 of nucleic acids
-        by default assigned to O6
+        Name of Oxygen 6 of nucleic acids;
+        by default assigned to "O6"
     n4_name: str (optional)
-        Name of Nitrogen 4 of nucleic acids
-        by default assigned to N4
+        Name of Nitrogen 4 of nucleic acids;
+        by default assigned to "N4"
     g_name: str (optional)
-        Name of Guanine in topology
-        by default assigned to G
+        Name of Guanine in topology;
+        by default assigned to "G"
     a_name: str (optional)
-        Name of Adenine in topology
-        by default assigned to G
+        Name of Adenine in topology;
+        by default assigned to "A"
     u_name: str (optional)
-        Name of Uracil in topology
-        by default assigned to U
+        Name of Uracil in topology;
+        by default assigned to "U"
     t_name: str (optional)
-        Name of Thymine in topology
-        by default assigned to T
+        Name of Thymine in topology;
+        by default assigned to "T"
     c_name: str (optional)
-        Name of Cytosine in topology
-        by default assigned to C
-    **kwargs: dict
+        Name of Cytosine in topology;
+        by default assigned to "C"
+    **kwargs:
         arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
     ----------
     results.distances: numpy.ndarray
-        stored in a 2d numpy array with first index selecting
-        the Residue pair, and the second index selecting the
-        frame number
+        Distances are stored in a 2d numpy array with axis 0 (first index)
+        indexing the trajectory frame and axis 1 (second index) selecting the  
+        Residue pair.
     times: numpy.ndarray
         Simulation times for analysis.
 
     Raises
     ------
     ValueError
-        An :class:`~MDAnalysis.core.groups.AtomGroup`
+        A :class:`~MDAnalysis.core.Residue`
         in one of the strands not a valid nucleic acid
     ValueError
         If a given residue pair from the provided strands returns an empty
@@ -573,6 +580,7 @@ class MajorPairDist(NucPairDist):
         pairs used in the distance calculations
     ValueError
         if the selections given are not the same length
+
 
     .. versionadded:: 2.7.0
     """
