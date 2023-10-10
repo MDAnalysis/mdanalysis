@@ -436,8 +436,7 @@ class WatsonCrickDist(NucPairDist):
 
 
 class MinorPairDist(NucPairDist):
-    r"""Minor-Pair basepair distance for selected residues
-        over a trajectory.
+    r"""Minor-Pair basepair distance for selected residues over a trajectory.
 
     Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects 
     as `strand1` and `strand2` and calculates the Minor-groove hydrogen
@@ -521,8 +520,7 @@ class MinorPairDist(NucPairDist):
 
 
 class MajorPairDist(NucPairDist):
-    r"""Minor-Pair base pair distance for 
-    selected residues over a trajectory.
+    r"""Minor-Pair base pair distance for selected residues over a trajectory.
 
     Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and
     calculates the Major-groove hydrogen bond length between the nitrogen
