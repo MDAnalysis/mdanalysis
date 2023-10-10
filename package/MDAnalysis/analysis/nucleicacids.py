@@ -357,7 +357,7 @@ class WatsonCrickDist(NucPairDist):
         Residue pair.
 
         .. versionadded:: 2.7.0
-        
+
     results.pair_distances: numpy.ndarray
         2D array of pair distances. First dimension is
         simulation time, second dimension contains the

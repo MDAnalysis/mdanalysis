@@ -29,7 +29,7 @@ from pytest import approx
 
 from MDAnalysis.analysis.nucleicacids import (NucPairDist, WatsonCrickDist,
                                               MajorPairDist, MinorPairDist)
-                           
+
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 
 from MDAnalysis.core.groups import ResidueGroup
