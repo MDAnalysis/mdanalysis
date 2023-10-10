@@ -249,15 +249,15 @@ histogrammed on a 3D grid with spacing <cite>delta</cite>.</p>
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><em>UpdatingAtomGroup</em></a>) – Group of atoms (such as all the water oxygen atoms) being analyzed.
 This can be an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> for
 selections that change every time step.</p></li>
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Bin size for the density grid in ångström (same in x,y,z).</p></li>
-<li><p><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Increase histogram dimensions by padding (on top of initial box
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Bin size for the density grid in ångström (same in x,y,z).</p></li>
+<li><p><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Increase histogram dimensions by padding (on top of initial box
 size) in ångström. Padding is ignored when setting a user defined
 grid.</p></li>
 <li><p><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em><em> (</em><em>optional</em><em>)</em>) – 3 element numpy array detailing the x, y and z coordinates of the
 center of a user defined grid box in ångström.</p></li>
-<li><p><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in ångström.</p></li>
-<li><p><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in ångström.</p></li>
-<li><p><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in ångström.</p></li>
+<li><p><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in ångström.</p></li>
+<li><p><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in ångström.</p></li>
+<li><p><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in ångström.</p></li>
 </ul>
 </dd>
 </dl>
@@ -295,9 +295,9 @@ now deprecated <code class="xref py py-attr docutils literal notranslate"><span 
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if AtomGroup is empty and no user defined grid is provided, or
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if AtomGroup is empty and no user defined grid is provided, or
     if the user defined grid is not or incorrectly provided</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#UserWarning" title="(in Python v3.11)"><strong>UserWarning</strong></a> – if AtomGroup is empty and a user defined grid is provided</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#UserWarning" title="(in Python v3.12)"><strong>UserWarning</strong></a> – if AtomGroup is empty and a user defined grid is provided</p></li>
 </ul>
 </dd>
 </dl>
@@ -455,9 +455,9 @@ defined grid is assigned).</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em>) – 3 element ndarray containing the x, y and z coordinates of the
 grid box center</p></li>
-<li><p><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Box edge length in the x dimension</p></li>
-<li><p><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Box edge length in the y dimension</p></li>
-<li><p><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Box edge length in the y dimension</p></li>
+<li><p><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Box edge length in the x dimension</p></li>
+<li><p><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Box edge length in the y dimension</p></li>
+<li><p><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Box edge length in the y dimension</p></li>
 <li><p><strong>smin</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em>) – Minimum x,y,z coordinates for the input selection</p></li>
 <li><p><strong>smax</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em>) – Maximum x,y,z coordinates for the input selection</p></li>
 </ul>
@@ -482,19 +482,19 @@ grid box center</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
 <li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <cite>frames</cite> can
 only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>. Setting
 <em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
-non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.2.0.</span></p>
 </div>
 </p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
-<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
+<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
 see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a> for full list.</p></li>
 </ul>
 </dd>
@@ -526,8 +526,8 @@ instance, which is derived from a <a class="reference external" href="https://ww
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p></li>
-<li><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – list of arrays, the lower and upper bin edges along the axes</p></li>
-<li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – <p>dictionary of class parameters; saved with
+<li><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – list of arrays, the lower and upper bin edges along the axes</p></li>
+<li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – <p>dictionary of class parameters; saved with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.save()</span></code></a>. The following keys are meaningful to
 the class. Meaning of the values are listed:</p>
 <blockquote>
@@ -541,7 +541,7 @@ the class. Meaning of the values are listed:</p>
 </div></blockquote>
 </div></blockquote>
 </p></li>
-<li><p><strong>units</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – <p>A dict with the keys</p>
+<li><p><strong>units</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – <p>A dict with the keys</p>
 <ul>
 <li><p><em>length</em>:  physical unit of grid edges (Angstrom or nm) [Angstrom]</p></li>
 <li><p><em>density</em>: unit of the density if <code class="docutils literal notranslate"><span class="pre">isDensity=True</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>
@@ -549,7 +549,7 @@ otherwise; the default is “Angstrom^{-3}” for densities
 (meaning <span class="math notranslate nohighlight">\(\text{Å}^{-3}\)</span>).</p></li>
 </ul>
 </p></li>
-<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – a user defined dictionary of arbitrary values associated with the
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – a user defined dictionary of arbitrary values associated with the
 density; the class does not touch <code class="xref py py-attr docutils literal notranslate"><span class="pre">Density.metadata</span></code> but
 stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.save()</span></code></a></p></li>
 </ul>
@@ -573,7 +573,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 to what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of 1d-arrays</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of 1d-arrays</p>
 </dd>
 </dl>
 </dd></dl>
@@ -608,7 +608,7 @@ to what <a class="reference external" href="https://numpy.org/doc/stable/referen
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_length" title="MDAnalysis.analysis.density.Density.convert_length"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_length()</span></code></a> or <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_density" title="MDAnalysis.analysis.density.Density.convert_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_density()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -711,11 +711,11 @@ that the length- and the density unit correspond to each other.</p>
 grid as this one using <a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resample()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> (<em>Grid</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Another object to be used for standard arithmetic
+<dd class="field-odd"><p><strong>other</strong> (<em>Grid</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Another object to be used for standard arithmetic
 operations with this <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.11)"><strong>TypeError</strong></a> – if not compatible</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – if not compatible</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -730,7 +730,7 @@ operations with this <code class="xref py py-class docutils literal notranslate"
 <dd><p>Convert the density to the physical units given by <cite>unit</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The target unit that the density should be converted to.</p>
+<dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The target unit that the density should be converted to.</p>
 <p><cite>unit</cite> can be one of the following:</p>
 <table class="docutils align-default">
 <thead>
@@ -766,16 +766,16 @@ operations with this <code class="xref py py-class docutils literal notranslate"
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the density does not have a unit associated with it to begin
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the density does not have a unit associated with it to begin
     with (i.e., is not a density) then no conversion can take place.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – for unknown <cite>unit</cite>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – for unknown <cite>unit</cite>.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <ol class="arabic simple">
 <li><p>This method only works if there is already a length unit associated with the
-density; otherwise raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p></li>
+density; otherwise raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p></li>
 <li><p>Conversions always go back to unity so there can be rounding
 and floating point artifacts for multiple conversions.</p></li>
 </ol>
@@ -787,7 +787,7 @@ and floating point artifacts for multiple conversions.</p></li>
 <dd><p>Convert Grid object to the new <cite>unit</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – unit that the grid should be converted to: one of
+<dd class="field-odd"><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – unit that the grid should be converted to: one of
 “Angstrom”, “nm”</p>
 </dd>
 </dl>
@@ -823,9 +823,9 @@ is simpler than <code class="docutils literal notranslate"><span class="pre">exp
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of the output file</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of the output file</p></li>
 <li><p><strong>file_format</strong> (<em>{'dx'</em><em>, </em><em>'pickle'</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – output file format, the default is “dx”</p></li>
-<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>for DX, set the output DX array type, e.g., “double” or “float”.
+<li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>for DX, set the output DX array type, e.g., “double” or “float”.
 By default (<code class="docutils literal notranslate"><span class="pre">None</span></code>), the DX type is determined from the numpy
 dtype of the array of the grid (and this will typically result in
 “double”).</p>
@@ -833,7 +833,7 @@ dtype of the array of the grid (and this will typically result in
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
 </p></li>
-<li><p><strong>typequote</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>For DX, set the character used to quote the type string;
+<li><p><strong>typequote</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>For DX, set the character used to quote the type string;
 by default this is a double-quote character, ‘”’.
 Custom parsers like the one from NAMD-GridForces (backend for MDFF)
 expect no quotes, and typequote=’’ may be used to appease them.</p>
@@ -875,7 +875,7 @@ that the spline will generate values that would not normally
 appear in the data. For example, a density is non-negative but
 a cubic spline interpolation can generate negative values,
 especially at the boundary between 0 and high values.</p>
-<p>Internally, the function uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.map_coordinates.html#scipy.ndimage.map_coordinates" title="(in SciPy v1.11.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.map_coordinates()</span></code></a>
+<p>Internally, the function uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.map_coordinates.html#scipy.ndimage.map_coordinates" title="(in SciPy v1.11.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.map_coordinates()</span></code></a>
 with <code class="docutils literal notranslate"><span class="pre">mode=&quot;constant&quot;</span></code> whereby interpolated values outside
 the interpolated grid are determined by filling all values beyond
 the edge with the same constant value, defined by the
@@ -895,7 +895,7 @@ extruded volumes when interpolating beyond the grid.</p>
 <dd><p>Order of the B-spline interpolation of the data.</p>
 <p>3 = cubic; 4 &amp; 5 are also supported</p>
 <p>Only choose values that are acceptable to
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.spline_filter.html#scipy.ndimage.spline_filter" title="(in SciPy v1.11.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code></a>!</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.spline_filter.html#scipy.ndimage.spline_filter" title="(in SciPy v1.11.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code></a>!</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.density.Density.interpolated" title="MDAnalysis.analysis.density.Density.interpolated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolated</span></code></a></p>
@@ -931,7 +931,7 @@ order of the interpolation is set by
 <em>before</em> calling <a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resample()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em> of </em><em>arrays</em><em> or </em><em>Grid</em>) – edges of the new grid or a <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code> instance that
+<dd class="field-odd"><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a><em> of </em><em>arrays</em><em> or </em><em>Grid</em>) – edges of the new grid or a <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code> instance that
 provides <code class="xref py py-attr docutils literal notranslate"><span class="pre">Grid.edges</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -962,7 +962,7 @@ the argument for this method</p>
 <dd><p>Resample to a new regular grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – The number of grid cells are scaled with <cite>factor</cite> in each
+<dd class="field-odd"><p><strong>factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The number of grid cells are scaled with <cite>factor</cite> in each
 dimension, i.e., <code class="docutils literal notranslate"><span class="pre">factor</span> <span class="pre">*</span> <span class="pre">N_i</span></code> cells along each
 dimension i. Must be positive, and cannot result in fewer
 than 2 cells along a dimension.</p>

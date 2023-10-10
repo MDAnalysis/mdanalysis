@@ -169,10 +169,10 @@
 <dd class="field-odd"><p>Alia Lescoulie</p>
 </dd>
 <dt class="field-even">Year<span class="colon">:</span></dt>
-<dd class="field-even"><p>2022</p>
+<dd class="field-even"><p>2022-2023</p>
 </dd>
 <dt class="field-odd">copyright<span class="colon">:</span></dt>
-<dd class="field-odd"><p>GNU Public Licence v3</p>
+<dd class="field-odd"><p>LGPLv2.1</p>
 </dd>
 </dl>
 <p>The module provides classes for analyzing nucleic acids structures.
@@ -195,8 +195,8 @@ For applications see <a class="footnote-reference brackets" href="#footcite-denn
 <h2><span class="section-number">4.5.2.1. </span>Distances<a class="headerlink" href="#distances" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nucleicacids.</span></span><span class="sig-name descname"><span class="pre">NucPairDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#NucPairDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist" title="Link to this definition"></a></dt>
-<dd><p>Atom Pair distance calculation base class.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nucleicacids.</span></span><span class="sig-name descname"><span class="pre">NucPairDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#NucPairDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist" title="Link to this definition"></a></dt>
+<dd><p>Atom pair distance calculation base class.</p>
 <p>Takes two lists of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> and
 computes the distances between them over a trajectory. Used as a
 superclass for the other nucleic acid distances classes. The distance
@@ -209,10 +209,53 @@ will be measured between atoms sharing an index in the two lists of
 of each nucleic acid being analyzed.</p></li>
 <li><p><strong>selection2</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>]</em>) – List of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> containing an atom
 of each nucleic acid being analyzed.</p></li>
-<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – Arguments for <a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Arguments for <a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">pair_distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="Link to this definition"></a></dt>
+<dd><p>2D array of pair distances. First dimension is simulation time,
+second dimension contains the pair distances for each each entry
+pair in selection1 and selection2.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><cite>results.pair_distances</cite> is slated for deprecation in
+version 3.0.0, use <cite>results.distances</cite> instead.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span><cite>results.pair_distances</cite> will be removed in
+version 3.0.0, use <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.distances</span></code> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.results.distances">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.distances" title="Link to this definition"></a></dt>
+<dd><p>stored in a 2d numpy array with first index selecting the
+Residue pair, and the second index selecting the frame number
+Distances are stored in a 2d numpy array with axis 0 (first index)
+indexing the trajectory frame and axis 1 (second index) selecting the
+Residue pair.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.7.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.times">
 <span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.times" title="Link to this definition"></a></dt>
@@ -224,15 +267,199 @@ of each nucleic acid being analyzed.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the selections given are not the same length</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – An <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> in one of the
+    strands not a valid nucleic acid</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a given residue pair from the provided strands returns an empty
+    <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> when selecting the atom
+    pairs used in the distance calculations</p></li>
+</ul>
+</dd>
+</dl>
+<p><em>Version Info</em></p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>The ability to access by passing selection indices to <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code>
+is now removed as of MDAnalysis version 2.5.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.
+The <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.times</span></code> was deprecated and is now removed as of
+MDAnalysis 2.5.0.
+Please use the class attribute <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.times" title="MDAnalysis.analysis.nucleicacids.NucPairDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Added static method <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.select_strand_atoms" title="MDAnalysis.analysis.nucleicacids.NucPairDist.select_strand_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">select_strand_atoms</span></code></a> as a
+helper for selecting atom pairs for distance analysis.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.run" title="Link to this definition"></a></dt>
+<dd><p>Perform the calculation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <cite>frames</cite> can
+only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>. Setting
+<em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
+non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
+<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
+see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a> for full list.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Added ability to analyze arbitrary frames by passing a list of
+frame indices in the <cite>frames</cite> keyword argument.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Add <cite>progressbar_kwargs</cite> parameter,
+allowing to modify description, position etc of tqdm progressbars</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.select_strand_atoms">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_strand_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strand1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strand2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'G'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'U'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'T'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'C'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#NucPairDist.select_strand_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.select_strand_atoms" title="Link to this definition"></a></dt>
+<dd><p>A helper method for nucleic acid pair distance analyses.
+Used for selecting specific atoms from two strands of nucleic acids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>strand1</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – The first nucleic acid strand</p></li>
+<li><p><strong>strand2</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – The second nucleic acid strand</p></li>
+<li><p><strong>a1_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The selection for the purine base of the strand pair</p></li>
+<li><p><strong>a2_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the selection for the pyrimidine base of the strand pair</p></li>
+<li><p><strong>g_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Guanine in topology, by default assigned to G</p></li>
+<li><p><strong>a_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Adenine in topology, by default assigned to A</p></li>
+<li><p><strong>u_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Uracil in topology, by default assigned to U</p></li>
+<li><p><strong>t_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Thymine in topology, by default assigned to T</p></li>
+<li><p><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Cytosine in topology, by default assigned to C</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>returns a tuple containing two lists of
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>s
+corresponding to the provided selections from each strand.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a>], List[<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a>]]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError:</strong> – An <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
+    in one of the strands not a valid nucleic acid</p></li>
+<li><p><strong>ValueError:</strong> – An <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> returns an empty
+    <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
+    with the provided selection</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.7.0.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nucleicacids.</span></span><span class="sig-name descname"><span class="pre">WatsonCrickDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strand1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><span class="pre">Residue</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strand2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><span class="pre">Residue</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n1_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'N1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n3_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'N3'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'G'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'U'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'T'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#WatsonCrickDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist" title="Link to this definition"></a></dt>
+<dd><p>Watson-Crick base pair distance for selected
+residues over a trajectory.</p>
+<p>Takes two <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>
+objects or two lists of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
+and calculates the distance between the nitrogen atoms in the
+Watson-Crick hydrogen bond over the trajectory. Bases are matched
+either by their index in the two
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> provided as arguments,
+or based on the indices of the provided lists of
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> objects depending
+on which is provided.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Support for <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> is slated for
+deprecation and will raise a warning when used. It still works but
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> is preferred.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>strand1</strong> (<em>ResidueClass</em>) – <p>First list of bases</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span>Using a list of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will
+be removed in 3.0.0. Use a
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>.</p>
+</div>
+</p></li>
+<li><p><strong>strand2</strong> (<em>ResidueClass</em>) – <p>Second list of bases</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span>Using a list of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will
+be removed in 3.0.0. Use a
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>.</p>
+</div>
+</p></li>
+<li><p><strong>n1_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Nitrogen 1 of nucleic acids, by default assigned to “N1”</p></li>
+<li><p><strong>n3_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Nitrogen 3 of nucleic acids, by default assigned to “N3”</p></li>
+<li><p><strong>g_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Guanine in topology, by default assigned to “G”</p></li>
+<li><p><strong>a_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Adenine in topology, by default assigned to “A”</p></li>
+<li><p><strong>u_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Uracil in topology, by default assigned to “U”</p></li>
+<li><p><strong>t_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Thymine in topology, by default assigned to “T”</p></li>
+<li><p><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Cytosine in topology, by default assigned to C</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Key word arguments for
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">pair_distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="Link to this definition"></a></dt>
-<dd><p>2D array of pair distances. First dimension is simulation time, second
-dimension contains the pair distances for each each entry pair in
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.distances">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.distances" title="Link to this definition"></a></dt>
+<dd><p>Distances are stored in a 2d numpy array with axis 0 (first index)
+indexing the trajectory frame and axis 1 (second index) selecting the
+Residue pair.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.7.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">pair_distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances" title="Link to this definition"></a></dt>
+<dd><p>2D array of pair distances. First dimension is
+simulation time, second dimension contains the
+pair distances for each each entry pair in
 selection1 and selection2.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.4.0.</span></p>
 </div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span><cite>results.pair_distances</cite> will be removed in version 3.0.0,
+use <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.distances</span></code> instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times">
+<span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times" title="Link to this definition"></a></dt>
+<dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
@@ -242,36 +469,58 @@ selection1 and selection2.</p>
 
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the selections given are not the same length</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If the provided list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code> contains
+    non-Residue elements
+    
+    .. deprecated:: 2.7.0
+       Starting with version 3.0.0, this exception will no longer
+       be raised because only
+       <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> will be allowed.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If <cite>strand1</cite> and <cite>strand2</cite> are not the same length</p></li>
+<li><p><strong>ValueError:</strong> – An <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
+    in one of the strands not a valid nucleic acid</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a given residue pair from the provided strands returns an empty
+    <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> when selecting the atom
+    pairs used in the distance calculations</p></li>
+</ul>
 </dd>
 </dl>
+<p><em>Version Info</em></p>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.5.0: </span>The ability to access by passing selection indices to <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code> is
-is now removed as of MDAnalysis version 2.5.0. Please use
-<a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Accessing results by passing strand indices to <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code>
+was deprecated and is now removed as of MDAnalysis version 2.5.0.
+Please use <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.
 The <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.times</span></code> was deprecated and is now removed as of
-MDAnalysis 2.5.0. Please use the class attribute <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.times" title="MDAnalysis.analysis.nucleicacids.NucPairDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
+MDAnalysis 2.5.0. Please use the class attribute
+<a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span><cite>strand1</cite> and <cite>strand2</cite> now also accept a
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> as input.
+The previous input type, <code class="docutils literal notranslate"><span class="pre">List[Residue]</span></code> is still supported,
+but it is <strong>deprecated</strong> and will be removed in release 3.0.0.</p>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.run" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.run" title="Link to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
 <li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <cite>frames</cite> can
 only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>. Setting
 <em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
-non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.2.0.</span></p>
 </div>
 </p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
-<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
+<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
 see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a> for full list.</p></li>
 </ul>
 </dd>
@@ -289,32 +538,43 @@ allowing to modify description, position etc of tqdm progressbars</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nucleicacids.</span></span><span class="sig-name descname"><span class="pre">WatsonCrickDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strand1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><span class="pre">Residue</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strand2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><span class="pre">Residue</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n1_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'N1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n3_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'N3'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'G'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'U'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'T'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#WatsonCrickDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist" title="Link to this definition"></a></dt>
-<dd><p>Watson-Crick basepair distance for selected residues over a trajectory.</p>
-<p>Takes two lists of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> objects and calculates
-the Watson-Crick distance between them over the trajectory. Bases are matched by
-their index in the lists given as arguments.</p>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MinorPairDist">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nucleicacids.</span></span><span class="sig-name descname"><span class="pre">MinorPairDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strand1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strand2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">o2_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'O2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'C2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'G'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'U'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'T'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#MinorPairDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MinorPairDist" title="Link to this definition"></a></dt>
+<dd><p>Minor-Pair basepair distance for selected residues over a trajectory.</p>
+<p>Takes two <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> objects and
+calculates the Minor-groove hydrogen bond length between the
+nitrogen and oxygen atoms over the trajectory. Bases are
+matched by their index in the two
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> provided as arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>strand1</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – First list of bases</p></li>
 <li><p><strong>strand2</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – Second list of bases</p></li>
-<li><p><strong>n1_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Nitrogen 1 of nucleic acids, by default assigned to N1</p></li>
-<li><p><strong>n3_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Nitrogen 3 of nucleic acids, by default assigned to N3</p></li>
-<li><p><strong>g_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Guanine in topology, by default assigned to G</p></li>
-<li><p><strong>a_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Adenine in topology, by default assigned to A</p></li>
-<li><p><strong>u_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Uracil in topology, by default assigned to U</p></li>
-<li><p><strong>t_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Thymine in topology, by default assigned to T</p></li>
-<li><p><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Cytosine in topology, by default assigned to C</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – arguments for <a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p></li>
+<li><p><strong>o2_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Oxygen 2 of nucleic acids;
+by default assigned to “O2”;</p></li>
+<li><p><strong>c2_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Carbon 2 of nucleic acids;
+by default assigned to “C2”;</p></li>
+<li><p><strong>g_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Guanine in topology;
+by default assigned to “G”;</p></li>
+<li><p><strong>a_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Adenine in topology
+by default assigned to “A”;</p></li>
+<li><p><strong>u_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Uracil in topology;
+by default assigned to “U”;</p></li>
+<li><p><strong>t_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Thymine in topology;
+by default assigned to “T”;</p></li>
+<li><p><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Cytosine in topology;
+by default assigned to “C”;</p></li>
+<li><p><strong>**kwargs</strong> – keyword arguments for
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times">
-<span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times" title="Link to this definition"></a></dt>
-<dd><p>Simulation times for analysis.</p>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MinorPairDist.results.distances">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MinorPairDist.results.distances" title="Link to this definition"></a></dt>
+<dd><p>stored in a 2d numpy array with first index selecting
+the Residue pair, and the second index selecting the frame number</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
@@ -323,14 +583,9 @@ their index in the lists given as arguments.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">pair_distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances" title="Link to this definition"></a></dt>
-<dd><p>2D array of Watson-Crick basepair distances. First dimension is
-simulation time, second dimension contains the pair distances for
-each each entry pair in strand1 and strand2.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 2.4.0.</span></p>
-</div>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MinorPairDist.times">
+<span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MinorPairDist.times" title="Link to this definition"></a></dt>
+<dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
@@ -341,38 +596,146 @@ each each entry pair in strand1 and strand2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the residues given are not amino acids</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the selections given are not the same length</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the selections given are not the same length
+    A <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code> in
+    one of the strands not a valid nucleic acid</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a given residue pair from the provided strands returns an empty
+    <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> when selecting the atom
+    pairs used in the distance calculations</p></li>
 </ul>
 </dd>
 </dl>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Accessing results by passing strand indices to <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code> is
-was deprecated and is now removed as of MDAnalysis version 2.5.0. Please
-use <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.
-The <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.times</span></code> was deprecated and is now removed as of
-MDAnalysis 2.5.0. Please use the class attribute <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.7.0.</span></p>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.run" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MinorPairDist.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MinorPairDist.run" title="Link to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
 <li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <cite>frames</cite> can
 only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>. Setting
 <em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
-non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.2.0.</span></p>
 </div>
 </p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
-<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
+<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
+see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a> for full list.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Added ability to analyze arbitrary frames by passing a list of
+frame indices in the <cite>frames</cite> keyword argument.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Add <cite>progressbar_kwargs</cite> parameter,
+allowing to modify description, position etc of tqdm progressbars</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MajorPairDist">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nucleicacids.</span></span><span class="sig-name descname"><span class="pre">MajorPairDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strand1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strand2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><span class="pre">ResidueGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n4_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'N4'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">o6_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'O6'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'G'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'U'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'T'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#MajorPairDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MajorPairDist" title="Link to this definition"></a></dt>
+<dd><p>Minor-Pair base pair distance for
+selected residues over a trajectory.</p>
+<p>Takes two <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> objects and
+calculates the Major-groove hydrogen bond length between the nitrogen
+and oxygen atoms over the trajectory. Bases are matched by their index
+in the two <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>
+provided as arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>strand1</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – First list of bases</p></li>
+<li><p><strong>strand2</strong> (<em>List</em><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><em>Residue</em></a><em>]</em>) – Second list of bases</p></li>
+<li><p><strong>o6_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Oxygen 6 of nucleic acids;
+by default assigned to “O6”</p></li>
+<li><p><strong>n4_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Nitrogen 4 of nucleic acids;
+by default assigned to “N4”</p></li>
+<li><p><strong>g_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Guanine in topology;
+by default assigned to “G”</p></li>
+<li><p><strong>a_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Adenine in topology;
+by default assigned to “A”</p></li>
+<li><p><strong>u_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Uracil in topology;
+by default assigned to “U”</p></li>
+<li><p><strong>t_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Thymine in topology;
+by default assigned to “T”</p></li>
+<li><p><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Name of Cytosine in topology;
+by default assigned to “C”</p></li>
+<li><p><strong>**kwargs</strong> – arguments for <a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MajorPairDist.results.distances">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MajorPairDist.results.distances" title="Link to this definition"></a></dt>
+<dd><p>Distances are stored in a 2d numpy array with axis 0 (first index)
+indexing the trajectory frame and axis 1 (second index) selecting the
+Residue pair.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MajorPairDist.times">
+<span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MajorPairDist.times" title="Link to this definition"></a></dt>
+<dd><p>Simulation times for analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>
+    in one of the strands not a valid nucleic acid</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a given residue pair from the provided strands returns an empty
+    <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> when selecting the atom
+    pairs used in the distance calculations</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if the selections given are not the same length</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.7.0.</span></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MajorPairDist.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MajorPairDist.run" title="Link to this definition"></a></dt>
+<dd><p>Perform the calculation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <cite>frames</cite> can
+only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>. Setting
+<em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
+non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
+<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar position, etc;
 see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a> for full list.</p></li>
 </ul>
 </dd>
