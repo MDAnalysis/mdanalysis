@@ -117,18 +117,18 @@ class NucPairDist(AnalysisBase):
             `results.pair_distances` is slated for deprecation in
             version 3.0.0, use `results.distances` instead.
         .. deprecated:: 2.7.0
-            `results.pair_distances` will be removed in 
+            `results.pair_distances` will be removed in
             version 3.0.0, use :attr:`results.distances` instead.
 
     results.distances: numpy.ndarray
         stored in a 2d numpy array with first index selecting the
         Residue pair, and the second index selecting the frame number
         Distances are stored in a 2d numpy array with axis 0 (first index)
-        indexing the trajectory frame and axis 1 (second index) selecting the  
+        indexing the trajectory frame and axis 1 (second index) selecting the
         Residue pair.
-        
+
         .. versionadded:: 2.7.0
-        
+
     times: numpy.ndarray
         Simulation times for analysis.
 
@@ -317,10 +317,10 @@ class WatsonCrickDist(NucPairDist):
     ----------
     strand1: ResidueClass
         First list of bases
-        
+
         .. deprecated:: 2.7.0
            Using a list of :class:`~MDAnalysis.core.groups.Residue` will
-           be removed in 3.0.0. Use a 
+           be removed in 3.0.0. Use a
            :class:`~MDAnalysis.core.groups.ResidueGroup`.
 
     strand2: ResidueClass
@@ -328,9 +328,9 @@ class WatsonCrickDist(NucPairDist):
 
         .. deprecated:: 2.7.0
            Using a list of :class:`~MDAnalysis.core.groups.Residue` will
-           be removed in 3.0.0. Use a 
+           be removed in 3.0.0. Use a
            :class:`~MDAnalysis.core.groups.ResidueGroup`.
-    
+
     n1_name: str (optional)
         Name of Nitrogen 1 of nucleic acids, by default assigned to "N1"
     n3_name: str (optional)
@@ -353,7 +353,7 @@ class WatsonCrickDist(NucPairDist):
     ----------
     results.distances: numpy.ndarray
         Distances are stored in a 2d numpy array with axis 0 (first index)
-        indexing the trajectory frame and axis 1 (second index) selecting the  
+        indexing the trajectory frame and axis 1 (second index) selecting the
         Residue pair.
 
         .. versionadded:: 2.7.0
@@ -367,7 +367,7 @@ class WatsonCrickDist(NucPairDist):
         .. versionadded:: 2.4.0
 
         .. deprecated:: 2.7.0
-            `results.pair_distances` will be removed in version 3.0.0, 
+            `results.pair_distances` will be removed in version 3.0.0,
             use :attr:`results.distances` instead.
 
     times: numpy.ndarray
@@ -380,9 +380,10 @@ class WatsonCrickDist(NucPairDist):
         non-Residue elements
 
         .. deprecated:: 2.7.0
-           Starting with version 3.0.0, this exception will no longer be raised
-           because only :class:`~MDAnalysis.core.groups.ResidueGroup` will be allowed.
-           
+           Starting with version 3.0.0, this exception will no longer
+           be raised because only
+           :class:`~MDAnalysis.core.groups.ResidueGroup` will be allowed.
+
     ValueError
         If `strand1` and `strand2` are not the same length
     ValueError:
@@ -489,14 +490,14 @@ class MinorPairDist(NucPairDist):
     c_name: str (optional)
         Name of Cytosine in topology;
         by default assigned to "C";
-    **kwargs: 
-        keyword arguments for 
+    **kwargs:
+        keyword arguments for
         :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
     ----------
     results.distances: numpy.ndarray
-        stored in a 2d numpy array with first index selecting 
+        stored in a 2d numpy array with first index selecting
         the Residue pair, and the second index selecting the frame number
     times: numpy.ndarray
         Simulation times for analysis.
@@ -578,7 +579,7 @@ class MajorPairDist(NucPairDist):
     ----------
     results.distances: numpy.ndarray
         Distances are stored in a 2d numpy array with axis 0 (first index)
-        indexing the trajectory frame and axis 1 (second index) selecting the  
+        indexing the trajectory frame and axis 1 (second index) selecting the
         Residue pair.
     times: numpy.ndarray
         Simulation times for analysis.
