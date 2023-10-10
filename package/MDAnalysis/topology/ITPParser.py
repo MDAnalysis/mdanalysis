@@ -309,6 +309,11 @@ class Molecule:
             'angles': self.parse_angles,
             'dihedrals': self.parse_dihedrals,
             'constraints': self.parse_constraints,
+            'virtual_sites1' : self.parse_virtual_sites1, #BMHB
+            'virtual_sites2' : self.parse_virtual_sites2, #BMHB
+            'virtual_sites3' : self.parse_virtual_sites3, #BMHB
+            'virtual_sites4' : self.parse_virtual_sites4, #BMHB
+            'virtual_sitesn' : self.parse_virtual_sitesn, #BMHB
             'settles': self.parse_settles
         }
 
@@ -349,6 +354,122 @@ class Molecule:
 
     def parse_constraints(self, line):
         self.add_param(line, self.bonds, n_funct=2, funct_values=(1, 2))
+        
+    def parse_virtual_sites1(self, line): # BMHB
+        # [ virtual_sites[n1234] ] are formats of constructing
+        # a particle geometrically based on the base particles
+        # that define it, with some underlying values to 
+        # specify the distance of the vsite with respect to the
+        # base particles. In GMX there are multiple forms of 
+        # vsites, but we are going to parse them all in a similar
+        # manner. We add a bonds between the vsite and all of its
+        # base particles. Example: vsite3 has first three elements as 
+        # the the base particles the 4th element is the vsite. Thus 
+        # 3 bonds are created 1-4, 2-4, 3-4. This is the same for
+        # all vsites with a different number so vsite2 adds 2 bonds.
+        n_funct = 1
+        elements = line.split()
+        base_indices = elements[:n_funct]
+        vsite_index = elements[n_funct]
+        funct_value = elements[n_funct+1]
+        # Add every element vsite pair as a bond.
+        for base_index in base_indices:
+            temp_line = f'{base_index} {vsite_index} {funct_value} 0.0 0.0'
+            self.add_param(temp_line, self.bonds, n_funct=2, 
+                           funct_values=(1,))
+        
+
+    def parse_virtual_sites2(self, line): # BMHB
+        # [ virtual_sites[n1234] ] are formats of constructing
+        # a particle geometrically based on the base particles
+        # that define it, with some underlying values to 
+        # specify the distance of the vsite with respect to the
+        # base particles. In GMX there are multiple forms of 
+        # vsites, but we are going to parse them all in a similar
+        # manner. We add a bonds between the vsite and all of its
+        # base particles. Example: vsite3 has first three elements as 
+        # the the base particles the 4th element is the vsite. Thus 
+        # 3 bonds are created 1-4, 2-4, 3-4. This is the same for
+        # all vsites with a different number so vsite2 adds 2 bonds.
+        n_funct = 2
+        elements = line.split()
+        base_indices = elements[:n_funct]
+        vsite_index = elements[n_funct]
+        funct_value = elements[n_funct+1]
+        # Add every element vsite pair as a bond.
+        for base_index in base_indices:
+            temp_line = f'{base_index} {vsite_index} {funct_value} 0.0 0.0'
+            self.add_param(temp_line, self.bonds, n_funct=2, 
+                           funct_values=(1, 2,))
+        
+    def parse_virtual_sites3(self, line): # BMHB
+        # [ virtual_sites[n1234] ] are formats of constructing
+        # a particle geometrically based on the base particles
+        # that define it, with some underlying values to 
+        # specify the distance of the vsite with respect to the
+        # base particles. In GMX there are multiple forms of 
+        # vsites, but we are going to parse them all in a similar
+        # manner. We add a bonds between the vsite and all of its
+        # base particles. Example: vsite3 has first three elements as 
+        # the the base particles the 4th element is the vsite. Thus 
+        # 3 bonds are created 1-4, 2-4, 3-4. This is the same for
+        # all vsites with a different number so vsite2 adds 2 bonds.
+        n_funct = 3
+        elements = line.split()
+        base_indices = elements[:n_funct]
+        vsite_index = elements[n_funct]
+        funct_value = elements[n_funct+1]
+        # Add every element vsite pair as a bond.
+        for base_index in base_indices:
+            temp_line = f'{base_index} {vsite_index} {funct_value} 0.0 0.0'
+            self.add_param(temp_line, self.bonds, n_funct=2, 
+                           funct_values=(1, 2, 3, 4,))
+        
+    def parse_virtual_sites4(self, line): # BMHB
+        # [ virtual_sites[n1234] ] are formats of constructing
+        # a particle geometrically based on the base particles
+        # that define it, with some underlying values to 
+        # specify the distance of the vsite with respect to the
+        # base particles. In GMX there are multiple forms of 
+        # vsites, but we are going to parse them all in a similar
+        # manner. We add a bonds between the vsite and all of its
+        # base particles. Example: vsite3 has first three elements as 
+        # the the base particles the 4th element is the vsite. Thus 
+        # 3 bonds are created 1-4, 2-4, 3-4. This is the same for
+        # all vsites with a different number so vsite2 adds 2 bonds.
+        n_funct = 4
+        elements = line.split()
+        base_indices = elements[:n_funct]
+        vsite_index = elements[n_funct]
+        funct_value = elements[n_funct+1]
+        # Add every element vsite pair as a bond.
+        for base_index in base_indices:
+            temp_line = f'{base_index} {vsite_index} {funct_value} 0.0 0.0'
+            self.add_param(temp_line, self.bonds, n_funct=2, 
+                           funct_values=(2,))
+        
+    def parse_virtual_sitesn(self, line): # BMHB
+        # [ virtual_sites[n1234] ] are formats of constructing
+        # a particle geometrically based on the base particles
+        # that define it, with some underlying values to 
+        # specify the distance of the vsite with respect to the
+        # base particles. In GMX there are multiple forms of 
+        # vsites, but we are going to parse them all in a similar
+        # manner. We add a bonds between the vsite and all of its
+        # base particles. Example: vsite3 has first three elements as 
+        # the the base particles the 4th element is the vsite. Thus 
+        # 3 bonds are created 1-4, 2-4, 3-4. This is the same for
+        # all vsites with a different number so vsite2 adds 2 bonds.
+        elements = line.split()
+        n_funct = len(elements)-2 # COG of all particles plus vsite
+        base_indices = elements[:n_funct]
+        vsite_index = elements[n_funct]
+        funct_value = elements[n_funct+1]
+        # Add every element vsite pair as a bond.
+        for base_index in base_indices:
+            temp_line = f'{base_index} {vsite_index} {funct_value} 0.0 0.0'
+            self.add_param(temp_line, self.bonds, n_funct=2, 
+                           funct_values=(2,))
 
     def parse_settles(self, line):
         # [ settles ] is a triangular constraint for 
