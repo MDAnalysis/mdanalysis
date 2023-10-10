@@ -29,7 +29,7 @@ from pytest import approx
 
 from MDAnalysis.analysis.nucleicacids import (NucPairDist, WatsonCrickDist,
                                               MajorPairDist, MinorPairDist)
-                                         
+                                    
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 
 from MDAnalysis.core.groups import ResidueGroup
@@ -38,6 +38,7 @@ from MDAnalysis.core.groups import ResidueGroup
 @pytest.fixture(scope='module')
 def u():
     return mda.Universe(RNA_PSF, RNA_PDB)
+
 
 @pytest.fixture(scope="module")
 def strand(unv=u):
@@ -51,6 +52,7 @@ def test_empty_ag_error(strand):
 
     with pytest.raises(ValueError, match="returns an empty AtomGroup"):
         NucPairDist.select_strand_atoms(strand1, strand2, 'UNK1', 'O2')
+
 
 @pytest.fixture(scope='module')
 def wc_rna(strand):
@@ -89,6 +91,7 @@ def test_selection_length_mismatch(strand):
     with pytest.raises(ValueError, match="Selections must be same length"):
         NucPairDist(sel1, sel2)
 
+
 def test_wc_dist_deprecation_warning(strand):
     strand1 = [strand.residues[0], strand.residues[21]]
     strand2 = [strand.residues[1], strand.residues[22]]
@@ -100,7 +103,7 @@ def test_wc_dist_deprecation_warning(strand):
 def test_wc_dist_strand_verification(strand):
     strand1 = [strand.residues[0], strand[0]]
     strand2 = [strand.residues[1], strand.residues[22]]
-    
+
     with pytest.raises(TypeError, match="contains non-Residue elements"):
         WatsonCrickDist(strand1, strand2)
 

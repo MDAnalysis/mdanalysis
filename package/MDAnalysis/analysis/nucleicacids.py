@@ -107,17 +107,22 @@ class NucPairDist(AnalysisBase):
     Attributes
     ----------
     results.pair_distances: numpy.ndarray
-        2D array of pair distances. First dimension is simulation time, 
+        2D array of pair distances. First dimension is simulation time,
         second dimension contains the pair distances for each each entry
         pair in selection1 and selection2.
 
         .. versionadded:: 2.4.0
 
+        .. note::
+            `results.pair_distances` is slated for deprecation in
+            version 3.0.0, use `results.distances` instead.
         .. deprecated:: 2.7.0
             `results.pair_distances` will be removed in 
             version 3.0.0, use :attr:`results.distances` instead.
 
     results.distances: numpy.ndarray
+        stored in a 2d numpy array with first index selecting the
+        Residue pair, and the second index selecting the frame number
         Distances are stored in a 2d numpy array with axis 0 (first index)
         indexing the trajectory frame and axis 1 (second index) selecting the  
         Residue pair.
@@ -127,13 +132,13 @@ class NucPairDist(AnalysisBase):
     times: numpy.ndarray
         Simulation times for analysis.
 
-        
+
     Raises
     ------
     ValueError
         If the selections given are not the same length
     ValueError
-        An :class:`~MDAnalysis.core.groups.AtomGroup` in one of the 
+        An :class:`~MDAnalysis.core.groups.AtomGroup` in one of the
         strands not a valid nucleic acid
     ValueError
         If a given residue pair from the provided strands returns an empty
@@ -141,16 +146,18 @@ class NucPairDist(AnalysisBase):
         pairs used in the distance calculations
 
 
+    *Version Info*
+
     .. versionchanged:: 2.5.0
        The ability to access by passing selection indices to :attr:`results`
        is now removed as of MDAnalysis version 2.5.0. Please use
        :attr:`results.pair_distances` instead.
        The :attr:`results.times` was deprecated and is now removed as of
-       MDAnalysis 2.5.0. 
+       MDAnalysis 2.5.0.
        Please use the class attribute :attr:`times` instead.
-    
+
     .. versionchanged:: 2.7.0
-        Added static method :attr:`select_strand_atoms` as a 
+        Added static method :attr:`select_strand_atoms` as a
         helper for selecting atom pairs for distance analysis.
     """
 
@@ -162,7 +169,11 @@ class NucPairDist(AnalysisBase):
     def __init__(self, selection1: List[mda.AtomGroup],
                  selection2: List[mda.AtomGroup],
                  **kwargs) -> None:
-        super(NucPairDist, self).__init__(selection1[0].universe.trajectory, **kwargs)
+        super(
+            NucPairDist,
+            self).__init__(
+            selection1[0].universe.trajectory,
+            **kwargs)
 
         if len(selection1) != len(selection2):
             raise ValueError("Selections must be same length")
@@ -178,16 +189,16 @@ class NucPairDist(AnalysisBase):
 
     @staticmethod
     def select_strand_atoms(
-        strand1: ResidueGroup, strand2: ResidueGroup, 
+        strand1: ResidueGroup, strand2: ResidueGroup,
         a1_name: str, a2_name: str, g_name: str = 'G',
         a_name: str = 'A', u_name: str = 'U',
         t_name: str = 'T', c_name: str = 'C'
-        ) -> Tuple[List[mda.AtomGroup], List[mda.AtomGroup]]:
+    ) -> Tuple[List[mda.AtomGroup], List[mda.AtomGroup]]:
         r"""
-        A helper method for nucleic acid pair distance analyses. 
-        
+        A helper method for nucleic acid pair distance analyses.
         Used for selecting specific atoms from two strands of nucleic acids.
-        
+
+
         Parameters
         ----------
         strand1: List[Residue]
@@ -208,18 +219,18 @@ class NucPairDist(AnalysisBase):
             Name of Thymine in topology, by default assigned to T
         c_name: str (optional)
             Name of Cytosine in topology, by default assigned to C
-        
+
         Returns
         -------
         Tuple[List[AtomGroup], List[AtomGroup]]
-            returns a tuple containing two lists of 
+            returns a tuple containing two lists of
             :class:`~MDAnalysis.core.groups.AtomGroup`\s
             corresponding to the provided selections from each strand.
 
         Raises
         ------
         ValueError:
-            An :class:`~MDAnalysis.core.groups.AtomGroup` 
+            An :class:`~MDAnalysis.core.groups.AtomGroup`
             in one of the strands not a valid nucleic acid
         ValueError:
             An :class:`~MDAnalysis.core.groups.Residue` returns an empty
@@ -228,7 +239,7 @@ class NucPairDist(AnalysisBase):
 
 
         .. versionadded:: 2.7.0
-        """ 
+        """
         pyrimidines: List[str] = [c_name, t_name, u_name]
         purines: List[str] = [a_name, g_name]
 
@@ -243,7 +254,7 @@ class NucPairDist(AnalysisBase):
             else:
                 raise ValueError(
                     f"AtomGroup in {pair} is not a valid nucleic acid"
-                    )
+                )
 
             ag1 = pair[0].atoms.select_atoms(f'name {a1}')
             ag2 = pair[1].atoms.select_atoms(f'name {a2}')
@@ -251,7 +262,7 @@ class NucPairDist(AnalysisBase):
             if not all(len(ag) > 0 for ag in [ag1, ag2]):
                 err_info: Tuple[Residue, str] = (pair[0], a1) \
                     if len(ag1) == 0 else (pair[1], a2)
-                
+
                 raise ValueError(
                     (
                         f"{err_info[0]} returns an empty AtomGroup"
@@ -259,7 +270,7 @@ class NucPairDist(AnalysisBase):
                     )
                 )
 
-            sel1.append(ag1) 
+            sel1.append(ag1)
             sel2.append(ag2)
 
         return (sel1, sel2)
@@ -267,18 +278,18 @@ class NucPairDist(AnalysisBase):
     def _prepare(self) -> None:
         self._res_array: np.ndarray = np.zeros(
             [self.n_frames, self._n_sel]
-            )
+        )
 
     def _single_frame(self) -> None:
         dist: np.ndarray = calc_bonds(
             self._s1.positions, self._s2.positions
-            )
-        
+        )
+
         self._res_array[self._frame_index, :] = dist
 
     def _conclude(self) -> None:
         self.results['distances'] = self._res_array
-        self.results['pair_distances'] = self.results['distances']  
+        self.results['pair_distances'] = self.results['distances']
         # TODO: remove pair_distances in 3.0.0
 
 
@@ -287,13 +298,20 @@ class WatsonCrickDist(NucPairDist):
     Watson-Crick base pair distance for selected
     residues over a trajectory.
 
-    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects
-    as `strand1` and `strand2` and calculates the distance between 
-    the nitrogen atoms in the Watson-Crick hydrogen bond over the 
-    trajectory. Bases are matched by their index in `strand1` and `strand2`
-    (similar to ``base_pairs = zip(strand1, strand2)``).
-    Therefore, `strand1` and `strand2` must contain the *same number of
-    residues*.
+    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup`
+    objects or two lists of :class:`~MDAnalysis.core.groups.Residue`
+    and calculates the distance between the nitrogen atoms in the
+    Watson-Crick hydrogen bond over the trajectory. Bases are matched
+    either by their index in the two
+    :class:`~MDAnalysis.core.groups.ResidueGroup` provided as arguments,
+    or based on the indices of the provided lists of
+    :class:`~MDAnalysis.core.groups.Residue` objects depending
+    on which is provided.
+
+    .. note::
+        Support for :class:`~MDAnalysis.core.groups.Residue` is slated for
+        deprecation and will raise a warning when used. It still works but
+        :class:`~MDAnalysis.core.groups.ResidueGroup` is preferred.
 
     Parameters
     ----------
@@ -326,9 +344,9 @@ class WatsonCrickDist(NucPairDist):
     t_name: str (optional)
         Name of Thymine in topology, by default assigned to "T"
     c_name: str (optional)
-        Name of Cytosine in topology, by default assigned to "C"
-    **kwargs:
-        Additional keyword arguments for 
+        Name of Cytosine in topology, by default assigned to C
+    **kwargs: dict
+        Key word arguments for
         :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
@@ -341,7 +359,7 @@ class WatsonCrickDist(NucPairDist):
         .. versionadded:: 2.7.0
         
     results.pair_distances: numpy.ndarray
-        2D array of pair distances. First dimension is 
+        2D array of pair distances. First dimension is
         simulation time, second dimension contains the
         pair distances for each each entry pair in
         selection1 and selection2.
@@ -368,24 +386,26 @@ class WatsonCrickDist(NucPairDist):
     ValueError
         If `strand1` and `strand2` are not the same length
     ValueError:
-        A :class:`~MDAnalysis.core.Residue` in one of the strands is not a
-        valid nucleic acid
+        An :class:`~MDAnalysis.core.groups.AtomGroup`
+        in one of the strands not a valid nucleic acid
     ValueError
         If a given residue pair from the provided strands returns an empty
         :class:`~MDAnalysis.core.groups.AtomGroup` when selecting the atom
         pairs used in the distance calculations
 
 
+    *Version Info*
+
     .. versionchanged:: 2.5.0
        Accessing results by passing strand indices to :attr:`results`
        was deprecated and is now removed as of MDAnalysis version 2.5.0.
        Please use :attr:`results.pair_distances` instead.
        The :attr:`results.times` was deprecated and is now removed as of
-       MDAnalysis 2.5.0. Please use the class attribute 
+       MDAnalysis 2.5.0. Please use the class attribute
        :attr:`times` instead.
 
     .. versionchanged:: 2.7.0
-        `strand1` and `strand2` now also accept a 
+        `strand1` and `strand2` now also accept a
         :class:`~MDAnalysis.core.groups.ResidueGroup` as input.
         The previous input type, ``List[Residue]`` is still supported,
         but it is **deprecated** and will be removed in release 3.0.0.
@@ -399,11 +419,11 @@ class WatsonCrickDist(NucPairDist):
 
         def verify_strand(strand: ResidueClass) -> ResidueGroup:
             # Helper method to verify the strands
-            
+
             if isinstance(strand, list):  # Checking if a list is given
                 # verify list is only Residues
-                if not all(isinstance(resid, Residue) for resid in strand):  
-                    raise TypeError(f"{strand} contains non-Residue elements")  
+                if not all(isinstance(resid, Residue) for resid in strand):
+                    raise TypeError(f"{strand} contains non-Residue elements")
 
                 warnings.warn(
                     DeprecationWarning(
@@ -411,38 +431,36 @@ class WatsonCrickDist(NucPairDist):
                             f"ResidueGroup should be used for {strand} instead"
                             "of giving a Residue list"
                         )
-                        )
                     )
-                
+                )
                 # Convert to a ResidueGroup
-                strand: ResidueGroup = ResidueGroup(strand) 
-            
+                strand: ResidueGroup = ResidueGroup(strand)
+
             return strand
 
-        strand1: ResidueGroup = verify_strand(strand1) 
+        strand1: ResidueGroup = verify_strand(strand1)
         strand2: ResidueGroup = verify_strand(strand2)
-         
+
         strand_atomgroups: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = \
             self.select_strand_atoms(
-                strand1, strand2, n1_name, n3_name, 
+                strand1, strand2, n1_name, n3_name,
                 g_name=g_name, a_name=a_name,
                 t_name=t_name, u_name=u_name, c_name=c_name
-            )
+        )
 
         super(WatsonCrickDist, self).__init__(
             strand_atomgroups[0], strand_atomgroups[1], **kwargs
-            )
-
+        )
 
 
 class MinorPairDist(NucPairDist):
     r"""Minor-Pair basepair distance for selected residues over a trajectory.
 
-    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects 
-    as `strand1` and `strand2` and calculates the Minor-groove hydrogen
-    bond length between the nitrogen and oxygen atoms over the trajectory.
-    Bases are matched by their index in `strand1` and `strand2` (similar 
-    ``base_pairs = zip(strand1, strand2)``).
+    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and
+    calculates the Minor-groove hydrogen bond length between the
+    nitrogen and oxygen atoms over the trajectory. Bases are
+    matched by their index in the two
+    :class:`~MDAnalysis.core.groups.ResidueGroup` provided as arguments.
 
     Parameters
     ----------
@@ -478,9 +496,8 @@ class MinorPairDist(NucPairDist):
     Attributes
     ----------
     results.distances: numpy.ndarray
-        Distances are stored in a 2d numpy array with axis 0 (first index)
-        indexing the trajectory frame and axis 1 (second index) selecting the  
-        Residue pair.
+        stored in a 2d numpy array with first index selecting 
+        the Residue pair, and the second index selecting the frame number
     times: numpy.ndarray
         Simulation times for analysis.
 
@@ -488,7 +505,6 @@ class MinorPairDist(NucPairDist):
     ------
     ValueError
         If the selections given are not the same length
-    ValueError:
         A :class:`~MDAnalysis.core.Residue` in
         one of the strands not a valid nucleic acid
     ValueError
@@ -511,16 +527,16 @@ class MinorPairDist(NucPairDist):
                 strand1, strand2, c2_name, o2_name,
                 g_name=g_name, a_name=a_name,
                 t_name=t_name, u_name=u_name, c_name=c_name
-            )
+        )
 
         super(MinorPairDist, self).__init__(
             selections[0], selections[1], **kwargs
-            )
-
+        )
 
 
 class MajorPairDist(NucPairDist):
-    r"""Minor-Pair base pair distance for selected residues over a trajectory.
+    r"""Minor-Pair base pair distance for
+    selected residues over a trajectory.
 
     Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and
     calculates the Major-groove hydrogen bond length between the nitrogen
@@ -588,14 +604,14 @@ class MajorPairDist(NucPairDist):
                  g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
                  t_name: str = 'T', c_name: str = 'C',
                  **kwargs) -> None:
-        
+
         selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = \
-                self.select_strand_atoms(
-                strand1, strand2, o6_name, n4_name, g_name=g_name, 
+            self.select_strand_atoms(
+                strand1, strand2, o6_name, n4_name, g_name=g_name,
                 a_name=a_name, t_name=t_name, u_name=u_name,
                 c_name=c_name
-            )
+        )
 
         super(MajorPairDist, self).__init__(
-                selections[0], selections[1], **kwargs
-            )
+            selections[0], selections[1], **kwargs
+        )
