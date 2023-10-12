@@ -125,7 +125,7 @@ def check_and_fix_long_filename(filename, tmpdir=os.path.curdir,
     if make_symlink:
         # shorten path by creating a symlink inside a safe temp dir
         _, ext = os.path.splitext(filename)
-        dirname = tempfile.mkdtemp(dir=tmpdir)
+        dirname = os.path.relpath(tempfile.mkdtemp(dir=tmpdir))
         newname = os.path.join(dirname, os.path.basename(filename))
         if len(newname) > max_length:
             fd, newname = tempfile.mkstemp(suffix=ext, dir=dirname)
