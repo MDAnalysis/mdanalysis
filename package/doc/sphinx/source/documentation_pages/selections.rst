@@ -277,6 +277,23 @@ cyzone *externalRadius* *zMax* *zMin* *selection*
        relative to the COG of *selection*, instead of absolute z-values
        in the box.
 
+box *dimension(s)* *d1_Max* *d1_Min* (*d2_Max* *d2_Min*) (*d3_Max* *d3_Min*) *selection*
+    select all atoms around a box centered in the center of geometry (COG)
+    of a given selection, e.g. ``box x 10 -5 protein`` selects the center
+    of geometry of protein, and creates a zone of 15 Angstroms in x axis, 
+    extending from 10 above the COG to 5 below. ``box yz 10 -8 6 -10 protein`` 
+    selects COG of protein, and creates an orthogonal zone extending from 
+    10 above the COG to 8 below in y, and from 6 above the COG to 10 below in z. 
+    ``box xyz 10 -5 6 -8 9 -7 protein`` selects COG of protein, and creates
+    an orthogonal box of extending from 10 above the COG to 5 below in x, 
+    from 6 above the COG to 8 below in y, and from 9 above the COG to 
+    7 below in z. *dimension(s)* can be any or any combination of **x**, 
+    **y**, and **z**, but should not be longer than 3 characters, 
+    e.g. ``x``, ``yz``, ``zx``, ``xyz``. Positive values for *d\*_Min*, 
+    or negative ones for *d\*_Max* are allowed. Number of groups of 
+    *d\*_Max* and *d\*_Min* should be equal to the number of characters in 
+    *dimension(s)*.
+
 point *x* *y* *z*  *distance*
     selects all atoms within a cutoff of a point in space, make sure
     coordinate is separated by spaces, e.g. ``point 5.0 5.0 5.0 3.5``

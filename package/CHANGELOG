@@ -42,6 +42,7 @@ Enhancements
     (Issue #3994, PR #4281)  
   * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
     PR #4284)
+  * Add a new geometric selection: box
 
 Changes
   * Biopython is now an optional dependency (Issue #3820, PR #4332)

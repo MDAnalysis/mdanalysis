@@ -537,6 +537,89 @@ class PointSelection(Selection):
         return group[np.asarray(indices, dtype=np.int64)]
 
 
+class BoxSelection(Selection):
+    token = "box"
+    precedence = 1
+    index_map = {"x": 0, "y": 1, "z": 2}
+
+    def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+        self.periodic = parser.periodic
+        self.direction = tokens.popleft()
+        if len(self.direction) > 3:
+            raise ValueError(
+                "The direction '{}' is not valid. Must be combination of {}"
+                "".format(self.direction, list(self.index_map.keys()))
+            )
+        else:
+            for d in self.direction:
+                if d not in self.index_map:
+                    raise ValueError(
+                        "The direction '{}' is not valid."
+                        "Must be combination "
+                        "of {}".format(self.direction, list(self.index_map.keys()))
+                    )
+                setattr(self, "{}max".format(d), float(tokens.popleft()))
+                setattr(self, "{}min".format(d), float(tokens.popleft()))
+        self.sel = parser.parse_expression(self.precedence)
+
+    @return_empty_on_apply
+    def _apply(self, group):
+        sel = self.sel.apply(group)
+        if len(sel) == 0:
+            return group[[]]
+        # Calculate vectors between point of interest and our group
+        vecs = group.positions - sel.center_of_geometry()
+        range_map = {}
+
+        for d in self.direction:
+            axis_index = self.index_map.get(d)
+            axis_max = self.__getattribute__("{}max".format(d))
+            axis_min = self.__getattribute__("{}min".format(d))
+            range_map[axis_index] = (axis_min, axis_max)
+
+        if self.periodic and group.dimensions is not None:
+            box = group.dimensions[:3]
+
+            for k, v in range_map.items():
+                axis_index = k
+                axis_min, axis_max = v[0], v[1]
+
+                axis_height = axis_max - axis_min
+                if axis_height > box[axis_index]:
+                    raise NotImplementedError(
+                        "The total length of the box selection in {} ({:.3f}) "
+                        "is larger than the unit cell's {} dimension ({:.3f}). Can "
+                        "only do selections where it is smaller or equal."
+                        "".format(
+                            self.direction[axis_index],
+                            axis_height,
+                            self.direction[axis_index],
+                            box[axis_index],
+                        )
+                    )
+
+            if np.all(group.dimensions[3:] == 90.0):
+                # Orthogonal version
+                vecs -= box[:3] * np.rint(vecs / box[:3])
+            else:
+                # Triclinic version
+                tribox = group.universe.trajectory.ts.triclinic_dimensions
+                vecs -= tribox[2] * np.rint(vecs[:, 2] / tribox[2][2])[:, None]
+                vecs -= tribox[1] * np.rint(vecs[:, 1] / tribox[1][1])[:, None]
+                vecs -= tribox[0] * np.rint(vecs[:, 0] / tribox[0][0])[:, None]
+
+        # Deal with each dimension criteria
+        mask = None
+        for k, v in range_map.items():
+            if mask is None:
+                mask = (vecs[:, k] > v[0]) & (vecs[:, k] < v[1])
+            else:
+                mask &= (vecs[:, k] > v[0]) & (vecs[:, k] < v[1])
+
+        return group[mask]
+
+
 class AtomSelection(Selection):
     token = 'atom'
 

@@ -246,6 +246,22 @@ class TestSelectionsCHARMM(object):
 
         assert_equal(set(ag.indices), set(idx))
 
+    @pytest.mark.parametrize(
+        "selstr, expected_value",
+        [
+            ("box x 2.0 -2.0 index 1281", 418),
+            ("box yz 2.0 -2.0 2.0 -2.0 index 1280", 58),
+            ("box xyz 2.0 -2.0 2.0 -2.0 2.0 -2.0 index 1279", 10),
+        ],
+    )
+    def test_box(self, universe, selstr, expected_value):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), expected_value)
+
+    def test_empty_box(self, universe):
+        empty = universe.select_atoms("box y 10 -10 name NOT_A_NAME")
+        assert_equal(len(empty), 0)
+
     def test_prop(self, universe):
         sel = universe.select_atoms('prop y <= 16')
         sel2 = universe.select_atoms('prop abs z < 8')
@@ -1270,16 +1286,39 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
 
     assert len(sel.atoms) == n_atoms
 
-@pytest.mark.parametrize('selection', [
-    'all', 'protein', 'backbone', 'nucleic', 'nucleicbackbone',
-    'name O', 'name N*', 'resname stuff', 'resname ALA', 'type O',
-    'index 0', 'index 1', 'bynum 1-10',
-    'segid SYSTEM', 'resid 163', 'resid 1-10', 'resnum 2',
-    'around 10 resid 1', 'point 0 0 0 10', 'sphzone 10 resid 1',
-    'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
-    'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
-    'byres index 0', 'same resid as index 0',
-])
+
+@pytest.mark.parametrize(
+    "selection",
+    [
+        "all",
+        "protein",
+        "backbone",
+        "nucleic",
+        "nucleicbackbone",
+        "name O",
+        "name N*",
+        "resname stuff",
+        "resname ALA",
+        "type O",
+        "index 0",
+        "index 1",
+        "bynum 1-10",
+        "segid SYSTEM",
+        "resid 163",
+        "resid 1-10",
+        "resnum 2",
+        "around 10 resid 1",
+        "point 0 0 0 10",
+        "sphzone 10 resid 1",
+        "sphlayer 0 10 index 1",
+        "cyzone 15 4 -8 index 0",
+        "cylayer 5 10 10 -8 index 1",
+        "prop abs z <= 100",
+        "byres index 0",
+        "same resid as index 0",
+        "box xz 3 2 4 -5 index 0",
+    ],
+)
 def test_selections_on_empty_group(u_pdb_icodes, selection):
     ag = u_pdb_icodes.atoms[[]].select_atoms(selection)
     assert len(ag) == 0
