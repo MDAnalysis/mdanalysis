@@ -34,11 +34,7 @@ These are usually read by the TopologyParser.
 References
 ----------
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Gray1984
+.. footbibliography::
 
 """
 
@@ -1233,7 +1229,8 @@ class Atomnames(AtomStringAttr):
            faster atom matching with boolean arrays.
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
+        atnames = residue.atoms.names
+        ags = [residue.atoms[np.isin(atnames, n.split())] for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
@@ -1241,7 +1238,7 @@ class Atomnames(AtomStringAttr):
     transplants[Residue].append(('chi1_selection', chi1_selection))
 
     def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
-                        cg_name='CG'):
+                        cg_name='CG CG1 OG OG1 SG'):
         """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
@@ -1266,13 +1263,13 @@ class Atomnames(AtomStringAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(r.atoms.names == n) == 1 for n in names)
-                for r in residues]
+        keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
+                    for n in names) for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
         atnames = residues.atoms.names
-        ags = [residues.atoms[atnames == n] for n in names]
+        ags = [residues.atoms[np.isin(atnames, n.split())] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
@@ -2463,7 +2460,7 @@ class Charges(AtomAttr):
     transplants[GroupBase].append(('quadrupole_tensor', quadrupole_tensor))
 
     def quadrupole_moment(group, **kwargs):
-        r"""Quadrupole moment of the group according to :cite:p:`Gray1984`.
+        r"""Quadrupole moment of the group according to :footcite:p:`Gray1984`.
          
         .. math::
             Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}

@@ -190,7 +190,7 @@ class AndOperation(LogicOperation):
         lsel = self.lsel.apply(group)
 
         # Mask which lsel indices appear in rsel
-        mask = np.in1d(rsel.indices, lsel.indices)
+        mask = np.isin(rsel.indices, lsel.indices)
         # and mask rsel according to that
         return rsel[mask]
 
@@ -267,7 +267,7 @@ class NotSelection(UnarySelection):
 
     def _apply(self, group):
         notsel = self.sel.apply(group)
-        return group[~np.in1d(group.indices, notsel.indices)]
+        return group[~np.isin(group.indices, notsel.indices)]
 
 
 class GlobalSelection(UnarySelection):
@@ -292,7 +292,7 @@ class ByResSelection(UnarySelection):
     def _apply(self, group):
         res = self.sel.apply(group)
         unique_res = unique_int_1d(res.resindices)
-        mask = np.in1d(group.resindices, unique_res)
+        mask = np.isin(group.resindices, unique_res)
 
         return group[mask]
 
@@ -312,7 +312,7 @@ class AroundSelection(Selection):
         indices = []
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
-        sys = group[~np.in1d(group.indices, sel.indices)]
+        sys = group[~np.isin(group.indices, sel.indices)]
 
         if not sys or not sel:
             return sys[[]]
@@ -372,7 +372,7 @@ class IsoLayerSelection(Selection):
         indices = []
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
-        sys = group[~np.in1d(group.indices, sel.indices)]
+        sys = group[~np.isin(group.indices, sel.indices)]
 
         if not sys or not sel:
             return sys[[]]
@@ -389,7 +389,7 @@ class IsoLayerSelection(Selection):
             sys_ind_outer = np.sort(np.unique(pairs_outer[:,1]))
             if pairs_inner.size > 0:
                 sys_ind_inner = np.sort(np.unique(pairs_inner[:,1]))
-                indices = sys_ind_outer[~np.in1d(sys_ind_outer, sys_ind_inner)]
+                indices = sys_ind_outer[~np.isin(sys_ind_outer, sys_ind_inner)]
             else:
                 indices = sys_ind_outer
 
@@ -577,9 +577,9 @@ class BondedSelection(Selection):
 
         idx = []
         # left side
-        idx.append(bix[:, 0][np.in1d(bix[:, 1], grpidx)])
+        idx.append(bix[:, 0][np.isin(bix[:, 1], grpidx)])
         # right side
-        idx.append(bix[:, 1][np.in1d(bix[:, 0], grpidx)])
+        idx.append(bix[:, 1][np.isin(bix[:, 0], grpidx)])
 
         idx = np.union1d(*idx)
 
@@ -603,7 +603,7 @@ class SelgroupSelection(Selection):
             raise ValueError(errmsg) from None
 
     def _apply(self, group):
-        mask = np.in1d(group.indices, self.grp.indices)
+        mask = np.isin(group.indices, self.grp.indices)
         return group[mask]
 
 
@@ -657,7 +657,7 @@ class _ProtoStringSelection(Selection):
         # atomname indices for members of this group
         nmidx = nmattr.nmidx[getattr(group, self.level)]
 
-        return group[np.in1d(nmidx, matches)]
+        return group[np.isin(nmidx, matches)]
 
 
 class AromaticSelection(Selection):
@@ -743,7 +743,7 @@ class SmartsSelection(Selection):
         # flatten all matches and remove duplicated indices
         indices = np.unique([idx for match in matches for idx in match])
         # create boolean mask for atoms based on index
-        mask = np.in1d(range(group.n_atoms), indices)
+        mask = np.isin(range(group.n_atoms), indices)
         return group[mask]
 
 
@@ -1053,7 +1053,7 @@ class ProteinSelection(Selection):
         # index of each atom's resname
         nmidx = resname_attr.nmidx[group.resindices]
         # intersect atom's resname index and matches to prot_res
-        return group[np.in1d(nmidx, matches)]
+        return group[np.isin(nmidx, matches)]
 
 
 class NucleicSelection(Selection):
@@ -1089,7 +1089,7 @@ class NucleicSelection(Selection):
 
         matches = [ix for (nm, ix) in resnames.namedict.items()
                    if nm in self.nucl_res]
-        mask = np.in1d(nmidx, matches)
+        mask = np.isin(nmidx, matches)
 
         return group[mask]
 
@@ -1116,13 +1116,13 @@ class BackboneSelection(ProteinSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.bb_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.prot_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1149,13 +1149,13 @@ class NucleicBackboneSelection(NucleicSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.bb_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.nucl_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1187,13 +1187,13 @@ class BaseSelection(NucleicSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.base_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.nucl_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1217,13 +1217,13 @@ class NucleicSugarSelection(NucleicSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.sug_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.nucl_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1408,7 +1408,7 @@ class SameSelection(Selection):
             # indices are same as fragment(s) indices
             allfrags = functools.reduce(lambda x, y: x + y, res.fragments)
 
-            mask = np.in1d(group.indices, allfrags.indices)
+            mask = np.isin(group.indices, allfrags.indices)
             return group[mask]
         # [xyz] must come before self.prop_trans lookups too!
         try:
@@ -1419,7 +1419,7 @@ class SameSelection(Selection):
             # KeyError at this point is impossible!
             attrname = self.prop_trans[self.prop]
             vals = getattr(res, attrname)
-            mask = np.in1d(getattr(group, attrname), vals)
+            mask = np.isin(getattr(group, attrname), vals)
 
             return group[mask]
         else:

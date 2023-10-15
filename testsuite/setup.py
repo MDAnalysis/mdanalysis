@@ -78,8 +78,8 @@ class MDA_SDist(sdist.sdist):
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 8):
-    print("MDAnalysis requires Python 3.8 or better. "
+if sys.version_info[:2] < (3, 9):
+    print("MDAnalysis requires Python 3.9 or better. "
           "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
@@ -87,7 +87,7 @@ if sys.version_info[:2] < (3, 8):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.5.0-dev0"
+    RELEASE = "2.7.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -95,13 +95,12 @@ if __name__ == '__main__':
         'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
@@ -129,7 +128,7 @@ if __name__ == '__main__':
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL-2.0-or-later',
+          license='GPL-3.0-or-later',
           classifiers=CLASSIFIERS,
           packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
@@ -185,7 +184,7 @@ if __name__ == '__main__':
                          'data/*.txt',
                         ],
           },
-          python_requires='>=3.8',
+          python_requires='>=3.9',
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329

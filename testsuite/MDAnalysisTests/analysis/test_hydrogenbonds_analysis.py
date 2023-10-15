@@ -452,8 +452,10 @@ class TestHydrogenBondAnalysisBetween(object):
             [3, 4, 6],  # protein-water
             [6, 7, 8]   # protein-protein
         ]
+        expected_hbond_distances = [2.5, 3.0, 3.0]
         assert_array_equal(hbonds.results.hbonds[:, 1:4],
                            expected_hbond_indices)
+        assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
     def test_between_PW(self, universe):
         # Find only protein-water hydrogen bonds
@@ -468,8 +470,10 @@ class TestHydrogenBondAnalysisBetween(object):
         expected_hbond_indices = [
             [3, 4, 6]  # protein-water
         ]
+        expected_hbond_distances = [3.0]
         assert_array_equal(hbonds.results.hbonds[:, 1:4],
                            expected_hbond_indices)
+        assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
     def test_between_PW_PP(self, universe):
         # Find protein-water and protein-protein hydrogen bonds (not
@@ -489,8 +493,10 @@ class TestHydrogenBondAnalysisBetween(object):
             [3, 4, 6],  # protein-water
             [6, 7, 8]   # protein-protein
         ]
+        expected_hbond_distances = [3.0, 3.0]
         assert_array_equal(hbonds.results.hbonds[:, 1:4],
                            expected_hbond_indices)
+        assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
 
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):

@@ -6,7 +6,7 @@ on:
 
 concurrency:
   # Probably overly cautious group naming.
-  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # Commits to develop will cancel each other, but PRs will only cancel
   # commits within the same PR
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
@@ -19,6 +19,7 @@ jobs:
   darker_lint:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pull-requests: write
     defaults:
@@ -99,12 +100,13 @@ jobs:
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
 
     - name: install
       run: |
@@ -120,27 +122,30 @@ jobs:
   mypy :
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
 
-      - name: setup_miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: setup_micromamba
+        uses: mamba-org/setup-micromamba@v1
         with:
-          python-version: 3.8
-          auto-update-conda: true
-          channel-priority: flexible
-          channels: conda-forge, bioconda
-          add-pip-as-python-dependency: true
-          use-mamba: true
-          miniforge-variant: Mambaforge
-          architecture: x64
+          environment-name: mda
+          create-args: >-
+            python=3.9
+            pip
+          # using jaime's shim to avoid pulling down the cudatoolkit
+          condarc: |
+            channels:
+              - jaimergp/label/unsupported-cudatoolkit-shim
+              - conda-forge
+              - bioconda
 
       - name: install_deps
         uses: ./.github/actions/setup-deps
         with:
-          mamba: true
+          micromamba: true
           full-deps: true
-          numpy: numpy=1.21.0
+          numpy: numpy=1.22.3
 
       - name: install
         run: |

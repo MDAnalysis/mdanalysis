@@ -51,13 +51,21 @@ class TestConstants(object):
         ('N_Avogadro', 6.02214129e+23),  # mol**-1
         ('elementary_charge', 1.602176565e-19),  # As
         ('calorie', 4.184),  # J
-        ('Boltzman_constant', 8.314462159e-3),  # KJ (mol K)**-1
+        ('Boltzmann_constant', 8.314462159e-3),  # KJ (mol K)**-1
+        ('Boltzman_constant', 8.314462159e-3),  # remove in 2.8.0
         ('electric_constant', 5.526350e-3),  # As (Angstroms Volts)**-1
     )
 
     @pytest.mark.parametrize('name, value', constants_reference)
     def test_constant(self, name, value):
         assert_almost_equal(units.constants[name], value)
+
+    def test_boltzmann_typo_deprecation(self):
+        wmsg = ("Please use 'Boltzmann_constant' henceforth. The key "
+                "'Boltzman_constant' was a typo and will be removed "
+                "in MDAnalysis 2.8.0.")
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            units.constants['Boltzman_constant']
 
 
 class TestConversion(object):

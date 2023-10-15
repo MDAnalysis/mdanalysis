@@ -57,8 +57,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 8):
-    print('MDAnalysis requires Python 3.8 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 9):
+    print('MDAnalysis requires Python 3.9+. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -67,7 +67,7 @@ import configparser
 from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.5.0-dev0"
+RELEASE = "2.7.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -268,7 +268,7 @@ def extensions(config):
     use_openmp = config.get('use_openmp', default=True)
     annotate_cython = config.get('annotate_cython', default=False)
 
-    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
+    extra_compile_args = ['-std=c99', '-O3', '-funroll-loops',
                           '-fsigned-zeros'] # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
@@ -573,13 +573,12 @@ if __name__ == '__main__':
         'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
@@ -593,7 +592,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.21.0',
+          'numpy>=1.22.3',
           'biopython>=1.80',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
@@ -605,7 +604,7 @@ if __name__ == '__main__':
           'threadpoolctl',
           'packaging',
           'fasteners',
-          'gsd>=1.9.3',
+          'mda-xdrlib',
     ]
 
     setup(name='MDAnalysis',
@@ -628,7 +627,7 @@ if __name__ == '__main__':
                         'Twitter': 'https://twitter.com/mdanalysis',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL-2.0-or-later',
+          license='GPL-3.0-or-later',
           classifiers=CLASSIFIERS,
           provides=['MDAnalysis'],
           packages=find_packages(),
@@ -637,7 +636,7 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires='>=3.8',
+          python_requires='>=3.9',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
@@ -655,6 +654,9 @@ if __name__ == '__main__':
                   'pytng>=0.2.3',  # TNG
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
+                  'gsd>3.0.0', # GSD
+                  'rdkit>=2020.03.1', # RDKit converter
+                  'parmed', # ParmEd converter
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor

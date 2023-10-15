@@ -32,7 +32,7 @@ This module implements the calculation of Mean Squared Displacements (MSDs)
 by the Einstein relation. MSDs can be used to characterize the speed at
 which particles move and has its roots in the study of Brownian motion.
 For a full explanation of the theory behind MSDs and the subsequent calculation
-of self-diffusivities the reader is directed to :cite:p:`Maginn2019`.
+of self-diffusivities the reader is directed to :footcite:p:`Maginn2019`.
 MSDs can be computed from the following expression, known as the
 **Einstein formula**:
 
@@ -140,7 +140,7 @@ determine self-diffusivity. This linear segment represents the so called
 excluded along with poorly averaged data at long time-lags. We can select the
 "middle" of the MSD by indexing the MSD and the time-lags. Appropriately
 linear segments of the MSD can be confirmed with a log-log plot as is often
-reccomended :cite:p:`Maginn2019` where the "middle" segment can be identified
+reccomended :footcite:p:`Maginn2019` where the "middle" segment can be identified
 as having a slope of 1.
 
 .. code-block:: python
@@ -213,8 +213,8 @@ These include specific instructions around simulation settings, using
 unwrapped trajectories and maintaining a relatively small elapsed time between
 saved frames. Additionally, corrections for finite size effects are sometimes
 employed along with various means of estimating errors
-:cite:p:`Yeh2004,Bulow2020` The reader is directed to the following review,
-which describes many of the common pitfalls :cite:p:`Maginn2019`. There are
+:footcite:p:`Yeh2004,Bulow2020` The reader is directed to the following review,
+which describes many of the common pitfalls :footcite:p:`Maginn2019`. There are
 other ways to compute self-diffusivity, such as from a Green-Kubo integral. At
 this point in time, these methods are beyond the scope of this module.
 
@@ -226,6 +226,7 @@ to control which frames are incorporated may be required.
 References
 ----------
 
+<<<<<<< HEAD
 .. bibliography::
     :filter: False
     :style: MDA
@@ -234,6 +235,9 @@ References
     Yeh2004
     Bulow2020
     Fuchs1998
+=======
+.. footbibliography::
+>>>>>>> develop
 
 
 Classes

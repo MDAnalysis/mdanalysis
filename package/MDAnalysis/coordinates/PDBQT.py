@@ -195,6 +195,11 @@ class PDBQTWriter(base.WriterBase):
 
     .. _PDB: http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
     .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
+
+
+    .. versionchanged:: 2.6.0
+       Files are now written in `wt` mode, and keep extensions, allowing
+       for files to be written under compressed formats
     """
 
     fmt = {
@@ -213,8 +218,8 @@ class PDBQTWriter(base.WriterBase):
     pdb_coor_limits = {"min": -999.9995, "max": 9999.9995}
 
     def __init__(self, filename, **kwargs):
-        self.filename = util.filename(filename, ext='pdbqt')
-        self.pdb = util.anyopen(self.filename, 'w')
+        self.filename = util.filename(filename, ext='pdbqt', keep=True)
+        self.pdb = util.anyopen(self.filename, 'wt')
 
     def close(self):
         self.pdb.close()
@@ -232,7 +237,7 @@ class PDBQTWriter(base.WriterBase):
 
         Note
         ----
-        The first letter of the
+        The last letter of the
         :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
         chainID.
 

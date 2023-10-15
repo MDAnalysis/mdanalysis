@@ -12,6 +12,9 @@ on:
   release:
     types:
       - published
+  schedule:
+    # 3 am Tuesdays and Fridays
+    - cron: "0 3 * * 2,5"
 
 
 concurrency:
@@ -29,6 +32,7 @@ jobs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: Build wheels
     runs-on: ${{ matrix.buildplat[0] }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -36,7 +40,7 @@ jobs:
           - [ubuntu-20.04, manylinux_x86_64]
           - [macos-11, macosx_*]
           - [windows-2019, win_amd64]
-        python: ["cp38", "cp39", "cp310", "cp311"]
+        python: ["cp39", "cp310", "cp311"]
     defaults:
       run:
         working-directory: ./package
@@ -66,6 +70,7 @@ jobs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: build package source distribution
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: ./package
@@ -90,6 +95,7 @@ jobs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: build test source distribution
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: ./testsuite
@@ -184,30 +190,17 @@ jobs:
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
     name: testpypi check
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     needs: upload_testpypi
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11"]
         type: ["FULL", "MIN"]
         exclude:
-          # Py311 doesn't support all optional deps yet
-          - python-version: "3.11"
-            type: "FULL"
           # Multiple deps don't like windows
           - os: windows-latest
-            python-version: "3.8"
-            type: "FULL"
-          - os: windows-latest
-            python-version: "3.9"
-            type: "FULL"
-          - os: windows-latest
-            python-version: "3.10"
-            type: "FULL"
-          # OpenMM isn't available for this yet
-          - os: macos-latest
-            python-version: "3.10"
             type: "FULL"
     env:
       MPLBACKEND: agg
@@ -215,28 +208,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: setup_miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: setup_micromamba
+        uses: mamba-org/setup-micromamba@v1
         with:
-          python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
-          channel-priority: flexible
-          channels: conda-forge, bioconda
-          add-pip-as-python-dependency: true
-          mamba-version: "*"
-          architecture: x64
+          environment-name: mda
+          create-args: >-
+            python=${{ matrix.python-version }}
+            packaging
+            pip
+          # jaime's shim to avoid pulling down the cudatoolkit
+          # bioconda for clustalw things
+          condarc: |
+            channels:
+              - jaimergp/label/unsupported-cudatoolkit-shim
+              - conda-forge
+              - bioconda
 
       - name: install_full_deps
         uses: ./.github/actions/setup-deps
         if: "matrix.type == 'FULL'"
         with:
-          mamba: true
+          micromamba: true
           full-deps: true
-
-      - name: install_min_deps
-        if: "matrix.type == 'MIN'"
-        run: |
-          pip install pytest pytest-xdist
 
       - name: pip_install_mda
         run: |
@@ -245,6 +238,11 @@ jobs:
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis==$ver
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests==$ver
 
+      - name: install_min_deps
+        if: "matrix.type == 'MIN'"
+        run: |
+          pip install pytest-xdist pytest-timeout
+
       - name: run_tests
         run: |
-          pytest -n2 --pyargs MDAnalysisTests
+          pytest --timeout=200 -n auto --pyargs MDAnalysisTests
