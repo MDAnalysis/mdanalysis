@@ -241,11 +241,16 @@
 <span class="sd">     - charges</span>
 
 <span class="sd">    Guesses the following:</span>
-<span class="sd">     - elements</span>
 <span class="sd">     - masses</span>
 
 <span class="sd">    .. versionchanged:: 0.18.0</span>
 <span class="sd">       Added parsing of Record types</span>
+<span class="sd">    .. versionchanged:: 2.7.0</span>
+<span class="sd">       Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,</span>
+<span class="sd">       are now ignored. See Autodock&#39;s `reference`_.</span>
+
+<span class="sd">       .. _reference: </span>
+<span class="sd">          https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PDBQT&#39;</span>
 
@@ -286,7 +291,7 @@
                 <span class="n">icodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">26</span><span class="p">:</span><span class="mi">27</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="n">occupancies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">]))</span>
                 <span class="n">tempfactors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">66</span><span class="p">]))</span>
-                <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">66</span><span class="p">:</span><span class="mi">76</span><span class="p">]))</span>
+                <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">70</span><span class="p">:</span><span class="mi">76</span><span class="p">]))</span>
                 <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">77</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">serials</span><span class="p">)</span>
