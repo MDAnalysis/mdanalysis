@@ -87,7 +87,8 @@ class PDBQTReader(base.SingleFrameReaderBase):
     47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
     55 - 60        Real(6.2)     occupancy    Occupancy.
     61 - 66        Real(6.2)     tempFactor   Temperature  factor.
-    67 - 76        Real(10.4)    partialChrg  Gasteiger PEOE partial charge *q*.
+    67 - 70        LString(4)    footnote     Usually blank. IGNORED.
+    71 - 76        Real(6.4)     partialChrg  Gasteiger PEOE partial charge *q*.
     79 - 80        LString(2)    atomType     AutoDOCK atom type *t*.
     =============  ============  ===========  =============================================
 
