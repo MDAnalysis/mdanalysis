@@ -124,6 +124,18 @@ jobs:
         fail_ci_if_error: True
         verbose: True
 
+  lint: 
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: pre-commit/action@v3.0.0
+      with:
+        extra_args: --all-files
+
 
   build_docs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
