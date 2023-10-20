@@ -69,4 +69,3 @@ def buffer():
 
 def _assert_in(output, string):
     assert string in output, "Output '{0}' does not match required format '{1}'.".format(output.replace('\r', '\\r'), string.replace('\r', '\\r'))
-

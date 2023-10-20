@@ -84,7 +84,7 @@ def get_auxreader_for(auxdata=None, format=None):
 def auxreader(auxdata, format=None, **kwargs):
     """ Return an auxiliary reader instance for *auxdata*.
 
-    An appropriate reader class is first obtained using 
+    An appropriate reader class is first obtained using
     :func:`get_auxreader_for`, and an auxiliary reader instance for *auxdata*
     then created and returned.
 

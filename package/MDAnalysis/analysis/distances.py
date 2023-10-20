@@ -102,10 +102,10 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     if returntype == "numpy":
         adj = np.full((len(coord), len(coord)), False, dtype=bool)
         pairs = capped_distance(coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
-        
+
         idx, idy = np.transpose(pairs)
         adj[idx, idy]=True
-        
+
         return adj
     elif returntype == "sparse":
         # Initialize square List of Lists matrix of dimensions equal to number
@@ -161,7 +161,7 @@ def dist(A, B, offset=0, box=None):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
     residues_B = np.array(B.resids) + off_B
-    
+
     d = calc_bonds(A.positions, B.positions, box)
     return np.array([residues_A, residues_B, d])
 

@@ -128,12 +128,12 @@ The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
 report, we will take appropriate action.
 
-You may also follow [NumFOCUS’s Code of Conduct violation reporting][NF-conduct] 
-guidelines if you would like to contact a third-party outside of the MDAnalysis 
+You may also follow [NumFOCUS’s Code of Conduct violation reporting][NF-conduct]
+guidelines if you would like to contact a third-party outside of the MDAnalysis
 community.
 
 ### Reporting at MDAnalysis Events and Meetups
-If you are attending an MDAnalysis event or meetup and wish to [make a report](#reporting), you may contact the ombudspersons (who will identify themselves at the event) or other event staff/meetup organizers so that they can take any appropriate immediate response. If you would prefer not to do that, please [submit a report][conduct-form] to MDAnalysis. 
+If you are attending an MDAnalysis event or meetup and wish to [make a report](#reporting), you may contact the ombudspersons (who will identify themselves at the event) or other event staff/meetup organizers so that they can take any appropriate immediate response. If you would prefer not to do that, please [submit a report][conduct-form] to MDAnalysis.
 
 Ombudspeople and event staff/meetup organizers will be happy to help participants contact venue security or local law enforcement, provide escorts, or otherwise assist those experiencing harassment to feel safe for the duration of the event/meetup.
 
@@ -174,9 +174,8 @@ modified by MDAnalysis. We are grateful to those projects for contributing these
 materials under open licensing terms for us to easily reuse.
 
 All content on this page is licensed under a [*Creative Commons
-Attribution*](http://creativecommons.org/licenses/by/3.0/) license. 
+Attribution*](http://creativecommons.org/licenses/by/3.0/) license.
 
 [conduct-form]: https://forms.gle/r2SMU4XcwM814CpJ9
 
 [NF-conduct]: https://numfocus.org/code-of-conduct
-

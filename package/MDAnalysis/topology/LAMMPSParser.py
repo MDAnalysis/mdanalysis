@@ -252,9 +252,9 @@ class DATAParser(TopologyReaderBase):
         if missing_attrs:
             raise ValueError("atom_style string missing required field(s): {}"
                              "".format(', '.join(missing_attrs)))
-                
+
         return style_dict
-    
+
     def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
@@ -300,7 +300,7 @@ class DATAParser(TopologyReaderBase):
                 type, sect = self._parse_bond_section(sects[L], nentries, mapping)
             except KeyError:
                 type, sect = [], []
-            
+
             top.add_TopologyAttr(attr(sect, type))
 
         return top
@@ -323,7 +323,7 @@ class DATAParser(TopologyReaderBase):
             self.style_dict = None
         else:
             self.style_dict = self._interpret_atom_style(atom_style)
-        
+
         header, sects = self.grab_datafile()
 
         unitcell = self._parse_box(header)
@@ -361,7 +361,7 @@ class DATAParser(TopologyReaderBase):
                 style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
         else:
             style_dict = self.style_dict
-    
+
         for i, line in enumerate(datalines):
             line = line.split()
 
@@ -610,7 +610,7 @@ class LammpsDumpParser(TopologyReaderBase):
 
             indices = np.zeros(natoms, dtype=int)
             types = np.zeros(natoms, dtype=object)
-            
+
             atomline = fin.readline()  # ITEM ATOMS
             attrs = atomline.split()[2:]  # attributes on coordinate line
             col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids

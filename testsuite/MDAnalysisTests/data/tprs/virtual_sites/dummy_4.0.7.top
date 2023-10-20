@@ -18,11 +18,11 @@ TEST 	    	1
 [ atoms ]
 ;id 	type 	resnr 	residu 	atom 	cgnr 	charge   mass
 1       TS      1       T       T1      1       0
-2       TA      1       T       T2      1       0 
+2       TA      1       T       T2      1       0
 3       TA      1       T       T3      1       0
-4       TA      1       T       T4      1       0 
-5       TA      1       T       T5      1       0 
-6       TA      1       T       T6      1       0 
+4       TA      1       T       T4      1       0
+5       TA      1       T       T5      1       0
+6       TA      1       T       T6      1       0
 7       TA      1       T       T7      1       0
 8       TA      1       T       T8      1       0         0
 9       TA      1       T       T9      1       0         0
@@ -142,7 +142,7 @@ TEST 	    	1
   3  4  5  6  2     1 1               ; improper dihedrals (2 params)
   4  5  6  7  2     1 1 1 1           ; improper dihedrals (4 params)
 
-[ exclusions ] 
+[ exclusions ]
 ; i others
   1 13  14  15
 

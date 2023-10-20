@@ -40,7 +40,7 @@ class RDKitParserBase(ParserBase):
                       'segids',
                       'bonds',
                      ]
-    
+
     expected_n_atoms = 0
     expected_n_residues = 1
     expected_n_segments = 1
@@ -76,7 +76,7 @@ class TestRDKitParserMOL2(RDKitParserBase):
     def _remove_tripos_charges(self, mol):
         for atom in mol.GetAtoms():
             atom.ClearProp("_TriposPartialCharge")
-    
+
     @pytest.fixture
     def top_gas_tripos(self):
         mol = self._create_mol_gasteiger_charges()
@@ -93,16 +93,16 @@ class TestRDKitParserMOL2(RDKitParserBase):
         mol = self._create_mol_gasteiger_charges()
         self._remove_tripos_charges(mol)
         return self.parser(mol).parse()
-    
+
 
     def test_bond_orders(self, top, filename):
         expected = [bond.GetBondTypeAsDouble() for bond in filename.GetBonds()]
         assert top.bonds.order == expected
-    
-    def test_multiple_charge_priority(self, 
+
+    def test_multiple_charge_priority(self,
         top_gas_tripos, filename_gasteiger):
         expected = np.array([
-            a.GetDoubleProp('_GasteigerCharge') for a in 
+            a.GetDoubleProp('_GasteigerCharge') for a in
             filename_gasteiger.GetAtoms()], dtype=np.float32)
         assert_equal(expected, top_gas_tripos.charges.values)
 
@@ -120,7 +120,7 @@ class TestRDKitParserMOL2(RDKitParserBase):
 
     def test_gasteiger_charges(self, top_gasteiger, filename_gasteiger):
         expected = np.array([
-            a.GetDoubleProp('_GasteigerCharge') for a in 
+            a.GetDoubleProp('_GasteigerCharge') for a in
             filename_gasteiger.GetAtoms()], dtype=np.float32)
         assert_equal(expected, top_gasteiger.charges.values)
 
@@ -143,7 +143,7 @@ class TestRDKitParserPDB(RDKitParserBase):
         'resnames', 'altLocs', 'chainIDs', 'occupancies', 'icodes',
         'tempfactors']
     guessed_attrs = ['types']
-    
+
     expected_n_atoms = 137
     expected_n_residues = 13
     expected_n_segments = 1
@@ -161,7 +161,7 @@ class TestRDKitParserPDB(RDKitParserBase):
             mda.Universe(mh)
         mh = Chem.AddHs(mol, addResidueInfo=True)
         mda.Universe(mh)
-    
+
 
 class TestRDKitParserSMILES(RDKitParserBase):
     ref_filename = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"

@@ -2,7 +2,7 @@ PSF
 
        3 !NTITLE
  REMARKS original generated structure x-plor psf file
- REMARKS topology toppar_water_ions.top 
+ REMARKS topology toppar_water_ions.top
  REMARKS segment WAT { first NONE; last NONE; auto none  }
 
       15 !NATOM
@@ -51,4 +51,3 @@ PSF
 
        1       0 !NGRP
        0       0       0
-

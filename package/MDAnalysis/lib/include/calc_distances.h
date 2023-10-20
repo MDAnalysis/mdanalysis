@@ -247,7 +247,7 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
         int msr = 0;
         float crd[3];
         double lbound, ubound;
-        
+
         crd[0] = coords[i][0];
         crd[1] = coords[i][1];
         crd[2] = coords[i][2];

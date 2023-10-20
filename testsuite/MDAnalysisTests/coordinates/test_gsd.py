@@ -57,7 +57,7 @@ class TestGSDReader:
         GSD_U.trajectory[1]
         assert_almost_equal(GSD_U.atoms.positions[0],
                             [-5.58348083,  -9.98546982, -10.17657185])
-    
+
     def test_gsd_n_frames(self, GSD_U):
         assert len(GSD_U.trajectory) == 2
 

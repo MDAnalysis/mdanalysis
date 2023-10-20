@@ -143,7 +143,7 @@ class TXYZReader(base.ReaderBase):
             # we assume that there is only one header line per frame
             f.readline()
             if self.periodic:
-                ts.dimensions = f.readline().split() 
+                ts.dimensions = f.readline().split()
             # convert all entries at the end once for optimal speed
             tmp_buf = []
             for i in range(self.n_atoms):

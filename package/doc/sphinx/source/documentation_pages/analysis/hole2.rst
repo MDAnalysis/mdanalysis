@@ -22,7 +22,7 @@ Module
 ------
 
 .. automodule:: MDAnalysis.analysis.hole2
-		
+
 
 
 Utility functions and templates

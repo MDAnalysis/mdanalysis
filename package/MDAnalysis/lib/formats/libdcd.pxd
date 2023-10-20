@@ -106,7 +106,7 @@ cdef class DCDFile:
     cdef remarks
     # File mode
     cdef str mode
-    # Number of dimensions in 
+    # Number of dimensions in
     cdef readonly int ndims
     # The number of frames
     cdef readonly int n_frames
@@ -116,7 +116,7 @@ cdef class DCDFile:
     cdef int current_frame
     # size of the first DCD frame
     cdef readonly fio_size_t _firstframesize
-    # Size of a DCD frame 
+    # Size of a DCD frame
     cdef readonly fio_size_t _framesize
     # Size of the DCD header
     cdef readonly fio_size_t _header_size
@@ -132,7 +132,7 @@ cdef class DCDFile:
 
     # buffer for reading coordinates
     cdef np.ndarray _coordinate_buffer
-    # buffer for reading unitcell     
+    # buffer for reading unitcell
     cdef np.ndarray _unitcell_buffer
 
     # fortran contiguious memoryviews of the buffers to pass to the C code

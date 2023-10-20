@@ -54,8 +54,8 @@ packages with the help of :ref:`Selection exporters`.
         True
 
     For further details on ordered selections, see :ref:`ordered-selections-label`.
-    
-    
+
+
 Selection Keywords
 ==================
 
@@ -70,9 +70,9 @@ selection parser. The following applies to all selections:
   grouping.
 * You can use the singular name of any topology attribute as a selection
   keyword. `Defined topology attributes`_ are listed in the User Guide.
-  Alternatively, you can define a 
+  Alternatively, you can define a
   :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` yourself,
-  providing that the attribute ``dtype`` is one of ``int``, ``float``, 
+  providing that the attribute ``dtype`` is one of ``int``, ``float``,
   ``str`` (or ``object``), or ``bool``.
   However, the topology must contain this attribute information for
   the selection to work.
@@ -194,18 +194,18 @@ formalcharge *formal-charge*
 Pattern matching
 ----------------
 
-The pattern matching notation described below is used to specify 
+The pattern matching notation described below is used to specify
 patterns for matching strings (based on :mod:`fnmatch`):
 
-``?`` 
+``?``
     Is a pattern that will match any single character. For example,
     ``resname T?R`` selects residues named "TYR" and "THR".
-``*`` 
+``*``
     Is a pattern that will match multiple characters.  For example,
     ``GL*`` selects all strings that start with "GL" such as "GLU",
     "GLY", "GLX29", "GLN".
 ``[seq]``
-    Would match any character in seq. For example, "resname GL[NY]" 
+    Would match any character in seq. For example, "resname GL[NY]"
     selects all residues named "GLN" or "GLY" but would not select
     "GLU".
 ``[!seq]``
@@ -246,12 +246,12 @@ sphzone *externalRadius* *selection*
     resid 130, resid 80 and creates a sphere of radius 6.0 around the COG.
 
 isolayer *inner radius* *outer radius* *selection*
-    Similar to sphlayer, but will find layer around all referenced atoms. 
+    Similar to sphlayer, but will find layer around all referenced atoms.
     For example, if the atom types for a polymer backbone were chosen, then
-    an isolayer parallel to the backbone will be generated. As another 
-    example, if a set of ions were chosen as a reference to isolate the second 
+    an isolayer parallel to the backbone will be generated. As another
+    example, if a set of ions were chosen as a reference to isolate the second
     hydration layer, then they will all be included in the same group.
-    However, in the instance that a molecule is in the second hydration layer 
+    However, in the instance that a molecule is in the second hydration layer
     of one ion and the first hydration layer of another, those atoms will not
     be included.
 
@@ -328,26 +328,26 @@ bynum *index-range*
     selects atoms 5 through 10 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 1 up to the total number of atoms.
-    
+
 id *index-range*
-    selects all atoms in a range of (1-based) inclusive indices, e.g. ``id 1`` selects 
-    all the atoms with id 1; ``id 5:7`` selects all atoms with ids 5, all atoms with 
+    selects all atoms in a range of (1-based) inclusive indices, e.g. ``id 1`` selects
+    all the atoms with id 1; ``id 5:7`` selects all atoms with ids 5, all atoms with
     ids 6 and all atoms with ids 7.
-     
+
 index *index-range*
     selects all atoms within a range of (0-based) inclusive indices,
     e.g. ``index 0`` selects the first atom in the universe; ``index 5:10``
     selects atoms 6 through 11 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 0 up to the total number of atoms - 1.
-    
-    
+
+
 .. note::
-    Conventionally, ``id`` corresponds to the serial number in the PDB format. In contrast 
-    to ``bynum``, the ``id`` topology attribute is not necessarily continuous, ordered, or 
-    unique, and can be arbitrarily assigned by the user. 
-    
-     
+    Conventionally, ``id`` corresponds to the serial number in the PDB format. In contrast
+    to ``bynum``, the ``id`` topology attribute is not necessarily continuous, ordered, or
+    unique, and can be arbitrarily assigned by the user.
+
+
 .. _pre-selections-label:
 
 Preexisting selections and modifiers

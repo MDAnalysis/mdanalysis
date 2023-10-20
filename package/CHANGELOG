@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
+??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith,
          richardjgowers, lilyminium, ALescoulie
 
  * 2.7.0
@@ -38,8 +38,8 @@ Enhancements
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
-  * Add support for reading chainID info from GROMACS TPR topologies 
-    (Issue #3994, PR #4281)  
+  * Add support for reading chainID info from GROMACS TPR topologies
+    (Issue #3994, PR #4281)
   * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
     PR #4284)
 
@@ -51,7 +51,7 @@ Changes
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
-  * Results for WatsonCrickDist nucleic acids analysis are now stored in 
+  * Results for WatsonCrickDist nucleic acids analysis are now stored in
     `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
@@ -61,7 +61,7 @@ Deprecations
     in favor of using `ResidueGroup`: using `List[Residue]` will be removed in release
     3.0.0; instead use a `ResidueGroup` (Issue #3720, PR #3735)
   * In `nucleicacids.WatsonCrickDist` the result `results.pair_distances` was
-    deprecated and will be removed in 3.0.0; use `results.distances` (Issue #3720, 
+    deprecated and will be removed in 3.0.0; use `results.distances` (Issue #3720,
     PR #3735)
 
 
@@ -113,7 +113,7 @@ Changes
     of NEP29 (PR #4108).
   * Removed `-ffast-math` compiler flag to avoid potentially incorrect
     floating point results in MDAnalysis *and* other codes when
-    MDAnalysis shared libraries are loaded --- see 
+    MDAnalysis shared libraries are loaded --- see
     https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html
     (Issues #3821, #4211)
   * Atom ID representation order updated to match that of associated
@@ -144,7 +144,7 @@ Deprecations
     32 bit compatible versions. (Issue #3858, PR #4176)
 
 
-05/28/23 IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
+05/28/23 IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae,
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
          SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers,
@@ -208,13 +208,13 @@ Enhancements
   * Add distopia distance calculation library bindings as a selectable backend
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
-  * Add pickling support for Atom, Residue, Segment, ResidueGroup 
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup
     and SegmentGroup. (PR #3953)
 
 Changes
   * As per NEP29 the minimum supported Python version has been raised to 3.9
     (PR #4115).
-  * einsum method for Einstein summation convention introduced to increase 
+  * einsum method for Einstein summation convention introduced to increase
     performance (Issue #2063, PR #4089)
   * Add progress bars to track the progress of _conclude() functions
     (_conclude_simple() and _conclude_fft()) in msd.py (Issue #4070, PR #4072)
@@ -274,16 +274,16 @@ Fixes
  * 2.4.0
 
 Fixes
-  * Update hbond analysis doc string to use exclusive bound language 
+  * Update hbond analysis doc string to use exclusive bound language
     (Issue #3847)
   * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
     detected on reading a frame instead of silently continuing
   * Consolidate license files across MDAnalysis library packages (PR #3939)
   * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
     and `in_memory=True`.
-  * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
+  * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries`
     was changed to ValueError (see #3901). A matching ValueError was added to
-    `MemoryReader.timeseries`(PR #3890). 
+    `MemoryReader.timeseries`(PR #3890).
   * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
   * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
@@ -291,7 +291,7 @@ Fixes
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
-  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
+  * fixes guessed_attributes and read_attributes methods of the Topology class, as
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
 
@@ -300,12 +300,12 @@ Enhancements
     (Issue #3841, PR #3842)
   * MDAnalysis now follows PEP621 (PR #3528)
   * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
-    Issue #3237, partially addressing Issue #865) 
-  * Added ability for hbond analysis to use types when resnames are not 
+    Issue #3237, partially addressing Issue #865)
+  * Added ability for hbond analysis to use types when resnames are not
     present (Issue #3847)
   * Added explanatory warnings when hbond analysis doesn't find any hbonds
     (Issue #3847)
-  * Improve C content of libxdr Cython, add `read_direct` methods to read 
+  * Improve C content of libxdr Cython, add `read_direct` methods to read
     coordinates, velocities and forces directly into memoryviews of `Timestep`
     attributes, make `TRR` timestep have positions, velocities and forces on
     `__init__`. (Issue #3891 PR  #3892).
@@ -313,11 +313,11 @@ Enhancements
   * The timeseries method for exporting coordinates from multiple frames to a
     NumPy array was added to ProtoReader (PR #3890)
   * MDAnalysis now officially supports py3.11 (Issue #3878)
-  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon
     loading (Issue #3843)
   * LAMMPSDump Reader now imports velocities and forces (Issue #3843)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
-  * Added decorator to check for an empty atom group, applied in topological 
+  * Added decorator to check for an empty atom group, applied in topological
     attributes(Issue #3837)
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)

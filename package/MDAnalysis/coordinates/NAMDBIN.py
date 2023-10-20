@@ -49,9 +49,9 @@ from ..lib import util
 
 class NAMDBINReader(base.SingleFrameReaderBase):
     """Reader for NAMD binary coordinate files.
-    
-    
-    .. versionadded:: 1.0.0   
+
+
+    .. versionadded:: 1.0.0
     """
 
     format = ['COOR', 'NAMDBIN']
@@ -93,7 +93,7 @@ class NAMDBINReader(base.SingleFrameReaderBase):
 
 class NAMDBINWriter(base.WriterBase):
     """Writer for NAMD binary coordinate files.
-    
+
 
     Note
     ----

@@ -32,6 +32,3 @@ Visualization of Lipid Flow
 
    visualization/streamlines
    visualization/streamlines_3D
-
-
-

@@ -1,5 +1,5 @@
 # Public Cython API for MDAnalysis. Centralises Cython core datastructures in a
-# single place. 
+# single place.
 
 from ..coordinates cimport timestep
 from .formats cimport libmdaxdr

@@ -43,7 +43,7 @@ This should ensure that both versions work and are covered!
 
 .. versionchanged:: 1.0.0
    test_transformations_old_module was removed as core/transformations.py is
-   gone 
+   gone
 """
 
 # tolerance for tests

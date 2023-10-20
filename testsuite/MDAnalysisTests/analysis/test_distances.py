@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import GRO
 
 import MDAnalysis.analysis.distances
 
-from numpy.testing import (assert_equal, assert_array_equal, assert_almost_equal, 
+from numpy.testing import (assert_equal, assert_array_equal, assert_almost_equal,
                            assert_array_almost_equal,assert_allclose)
 import numpy as np
 
@@ -44,17 +44,17 @@ class TestContactMatrix(object):
                       [11, 11, 11],  # neighboring image with pbc
                       [21, 21, 21]],  # non neighboring image with pbc
                      dtype=np.float32)
-    
+
     @staticmethod
     @pytest.fixture()
     def box():
         return np.array([10, 10, 10, 90, 90, 90], dtype=np.float32)
-    
+
     @staticmethod
     @pytest.fixture()
     def shape():
         return 5, 5
-    
+
     @staticmethod
     @pytest.fixture()
     def res_no_pbc():
@@ -63,7 +63,7 @@ class TestContactMatrix(object):
                            [1, 0, 1, 0, 0],
                            [0, 0, 0, 1, 0],
                            [0, 0, 0, 0, 1]], dtype=bool)
-    
+
     @staticmethod
     @pytest.fixture()
     def res_pbc():
@@ -126,11 +126,11 @@ class TestDist(object):
     @pytest.fixture()
     def box():
         return np.array([8, 8, 8, 90, 90, 90], dtype=np.float32)
-    
+
     @staticmethod
     @pytest.fixture()
     def expected(ag, ag2):
-        
+
         return np.diag(scipy.spatial.distance.cdist(
             ag.positions, ag2.positions)
         )
@@ -226,7 +226,7 @@ class TestBetween(object):
 
     @pytest.mark.parametrize('dists', [5.9, 0.0])
     def test_between_return_type(self, dists, group, ag, ag2):
-        '''Test that MDAnalysis.analysis.distances.between() 
+        '''Test that MDAnalysis.analysis.distances.between()
         returns an AtomGroup even when the returned group is empty.'''
         actual = MDAnalysis.analysis.distances.between(
             group,

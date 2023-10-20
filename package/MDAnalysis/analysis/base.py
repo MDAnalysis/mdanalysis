@@ -411,9 +411,9 @@ class AnalysisBase(object):
 
         verbose : bool, optional
             Turn on verbosity
-        
+
         progressbar_kwargs : dict, optional
-            ProgressBar keywords with custom parameters regarding progress bar position, etc; 
+            ProgressBar keywords with custom parameters regarding progress bar position, etc;
             see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
 
 
@@ -422,7 +422,7 @@ class AnalysisBase(object):
             frame indices in the `frames` keyword argument.
 
         .. versionchanged:: 2.5.0
-            Add `progressbar_kwargs` parameter, 
+            Add `progressbar_kwargs` parameter,
             allowing to modify description, position etc of tqdm progressbars
         """
         logger.info("Choosing frames to analyze")

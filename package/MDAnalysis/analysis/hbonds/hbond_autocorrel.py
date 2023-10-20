@@ -65,7 +65,3 @@ HydrogenBondAutoCorrel = deprecate(hbond_autocorrel.HydrogenBondAutoCorrel,
                                    release="2.0.0", remove="3.0.0",
                                    message="The class was moved to "
                                    "MDAnalysis.analysis.hbonds.hbond_autocorrel.")
-
-
-
-

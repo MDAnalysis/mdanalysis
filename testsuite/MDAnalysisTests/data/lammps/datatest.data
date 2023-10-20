@@ -1,28 +1,28 @@
 LAMMPS
 
-18364 atoms 
-18336 bonds 
-29904 angles 
-5712 dihedrals 
-0 impropers 
+18364 atoms
+18336 bonds
+29904 angles
+5712 dihedrals
+0 impropers
 
-10 atom types 
-7 bond types 
-9 angle types 
-5 dihedral types 
+10 atom types
+7 bond types
+9 angle types
+5 dihedral types
 
-0.00 55.4228286743 xlo xhi 
-0.00 55.4228286743 ylo yhi 
-0.00 55.4228286743 zlo zhi 
+0.00 55.4228286743 xlo xhi
+0.00 55.4228286743 ylo yhi
+0.00 55.4228286743 zlo zhi
 
 Masses
 
   1 0.0010078
-  2 0.0010078 
-  3 0.012     
-  4 0.012    
-  5 0.014003 
-  6 0.015995 
+  2 0.0010078
+  3 0.012
+  4 0.012
+  5 0.014003
+  6 0.015995
   7 0.02
   8 0.02
   9 0.02

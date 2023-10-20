@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -95,7 +95,7 @@ class MOL2Parser(TopologyReaderBase):
       2. If no atoms have ``resname`` field, resnames attribute will not be set;
          If some atoms have ``resname`` while some do not,
          :exc:`ValueError` will occur.
-    
+
       3. If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section
          and no atoms have the ``charge`` field, charges attribute will not be set;
          If "NO_CHARGES" shows up while ``charge`` field appears,

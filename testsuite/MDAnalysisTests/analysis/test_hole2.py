@@ -123,7 +123,7 @@ class TestHole(object):
             SPHPDB hole.sph
             SAMPLE 0.200000
             ENDRAD 22.000000
-            IGNORE SOL WAT TIP HOH K   NA  CL 
+            IGNORE SOL WAT TIP HOH K   NA  CL
             SHORTO 0
             RASEED 31415
             """)
@@ -150,7 +150,7 @@ class TestHole(object):
             SPHPDB hole.sph
             SAMPLE 0.200000
             ENDRAD 22.000000
-            IGNORE 
+            IGNORE
             SHORTO 0
             RASEED 31415
             CPOINT -0.0180961507 -0.0122730583 4.1497999943
@@ -422,7 +422,7 @@ class TestHoleAnalysis(BaseTestHole):
         mean = np.array(list(map(np.mean, binned)))
         stds = np.array(list(map(np.std, binned)))
         midpoints = 0.5 * (bins[1:] + bins[:-1])
-        
+
         binwidths = np.diff(bins)
         binwidth = binwidths[0]
         assert_allclose(binwidths, binwidth)  # just making sure that we have equidistant bins

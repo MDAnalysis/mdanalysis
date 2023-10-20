@@ -432,7 +432,7 @@ class Contacts(AnalysisBase):
         self.grA, self.grB = (self._get_atomgroup(u, sel) for sel in select)
 
         self.pbc = pbc
-        
+
         # contacts formed in reference
         self.r0 = []
         self.initial_contacts = []
@@ -475,11 +475,11 @@ class Contacts(AnalysisBase):
 
     def _single_frame(self):
         self.results.timeseries[self._frame_index][0] = self._ts.frame
-        
+
         # compute distance array for a frame
         d = distance_array(self.grA.positions, self.grB.positions,
                             box=self._get_box(self._ts))
-        
+
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
                                                        self.r0), 1):
             # select only the contacts that were formed in the reference state
@@ -524,7 +524,7 @@ def q1q2(u, select='all', radius=4.5):
     contacts : :class:`Contacts`
         Contact Analysis that is set up for a q1-q2 analysis
 
-    
+
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
        Support for setting ``start``, ``stop``, and ``step`` has been removed.

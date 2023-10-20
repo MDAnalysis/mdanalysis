@@ -882,9 +882,9 @@ class SurvivalProbability(object):
     .. math::
         P(\tau) = \langle \frac{ N(t, t + \tau )} { N(t) }\rangle
 
-    where :math:`\tau` is the timestep, :math:`N(t)` the number of particles at time 
-    :math:`t`, and :math:`N(t, t+\tau)` is the number of particles at every frame from 
-    :math:`t` to :math:`t + \tau`. The angular brackets represent an average over all time 
+    where :math:`\tau` is the timestep, :math:`N(t)` the number of particles at time
+    :math:`t`, and :math:`N(t, t+\tau)` is the number of particles at every frame from
+    :math:`t` to :math:`t + \tau`. The angular brackets represent an average over all time
     origins, :math:`t`. See :func:`MDAnalysis.lib.correlations.autocorrelation` for
     technical details.
 
@@ -895,7 +895,7 @@ class SurvivalProbability(object):
       Universe object
     select : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "resname SOL and around 5 
+      define the region/zone where to analyze, e.g.: "resname SOL and around 5
       (resid 10)". See `SP-examples`_.
     verbose : Boolean, optional
       When True, prints progress and comments to the console.

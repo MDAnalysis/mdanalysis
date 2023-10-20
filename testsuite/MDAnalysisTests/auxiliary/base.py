@@ -34,10 +34,10 @@ def test_get_bad_auxreader_format_raises_ValueError():
 
 
 class BaseAuxReference(object):
-    ## assumes the reference auxiliary data has 5 steps, with three values 
+    ## assumes the reference auxiliary data has 5 steps, with three values
     ## for each step: i, 2*i and 2^i, where i is the step number.
-    ## If a particular AuxReader is such that auxiliary data is read in a 
-    ## format other than np.array([i, 2*i, 2**i]), format_data() should be 
+    ## If a particular AuxReader is such that auxiliary data is read in a
+    ## format other than np.array([i, 2*i, 2**i]), format_data() should be
     ## overwritten tp return the appropriate format
 
     def __init__(self):
@@ -49,9 +49,9 @@ class BaseAuxReference(object):
         # reference description of the (basic) auxiliary reader. Will
         # have to add 'format' and 'auxdata' when creating the reference
         # for each particular reader
-        self.description= {'dt':self.dt, 'represent_ts_as':'closest', 
+        self.description= {'dt':self.dt, 'represent_ts_as':'closest',
                            'initial_time':self.initial_time, 'time_selector':None,
-                           'data_selector':None, 'constant_dt':True, 
+                           'data_selector':None, 'constant_dt':True,
                            'cutoff': None, 'auxname': self.name}
 
         def reference_auxstep(i):
@@ -69,12 +69,12 @@ class BaseAuxReference(object):
         self.iter_list = [1, -2]
         self.iter_list_auxsteps = [self.auxsteps[1], self.auxsteps[3]]
         self.iter_slice = slice(None, None, 2) # every second step
-        self.iter_slice_auxsteps = [self.auxsteps[0], self.auxsteps[2], 
+        self.iter_slice_auxsteps = [self.auxsteps[0], self.auxsteps[2],
                                     self.auxsteps[4]]
 
         def reference_timestep(dt=1, offset=0):
-            # return a trajectory timestep with specified dt, offset + move to 
-            # frame 1; for use in auxiliary reading of different timesteps 
+            # return a trajectory timestep with specified dt, offset + move to
+            # frame 1; for use in auxiliary reading of different timesteps
             ts = mda.coordinates.base.Timestep(0, dt=dt,
                                                time_offset=offset)
             ts.frame = 1
@@ -89,7 +89,7 @@ class BaseAuxReference(object):
         # 'average' representative value
         self.lowf_average_rep = self.format_data([1.5, 3, 3])
 
-        ## test reading a timestep with higher frequency. Auxiliart steps with 
+        ## test reading a timestep with higher frequency. Auxiliart steps with
         ## times between [0.25ps, 0.75ps) will be assigned to this timestep, i.e.
         ## no auxiliary steps
         self.higher_freq_ts = reference_timestep(dt=0.5, offset=0)
@@ -109,18 +109,18 @@ class BaseAuxReference(object):
         # for 'closest': use offset timestep; no timestep within 0ps cutoff
         self.offset_cutoff_closest_rep = self.format_data([np.nan, np.nan, np.nan])
 
-        ## testing selection of time/data. Overload for each auxilairy format 
+        ## testing selection of time/data. Overload for each auxilairy format
         ## as appropraite.
-        # default None behavior set here so won't get errors when time/data 
-        # selection not implemented. 
-        self.time_selector = None 
+        # default None behavior set here so won't get errors when time/data
+        # selection not implemented.
+        self.time_selector = None
         self.select_time_ref = np.arange(self.n_steps)
-        self.data_selector = None 
+        self.data_selector = None
         self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
 
 
     def format_data(self, data):
-        ## overload if auxiliary reader will read data with a format different  
+        ## overload if auxiliary reader will read data with a format different
         ## to e.g. np.array([0, 0, 1])
         return np.array(data)
 

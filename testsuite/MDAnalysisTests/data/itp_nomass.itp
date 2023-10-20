@@ -3,13 +3,13 @@
 ;
 ; This file was generated at 16:17 on 2019-08-29 by
 ;
-;                  Automatic Topology Builder  
+;                  Automatic Topology Builder
 ;
 ;                   REVISION 2019-07-22 14:43:57
 ;---------------------------------------------------------------------------------------------------------------------------
 ; Authors     : Martin Stroet, Bertrand Caron, Alpeshkumar K. Malde, Thomas Lee, Alan E. Mark
 ;
-; Institute   : Molecular Dynamics group, 
+; Institute   : Molecular Dynamics group,
 ;               School of Chemistry and Molecular Biosciences (SCMB),
 ;               The University of Queensland, QLD 4072, Australia
 ; URL         : https://atb.uq.edu.au
@@ -20,7 +20,7 @@
 ;                  Automated Topology Builder version 3.0: Prediction of solvation free enthalpies in water and hexane.
 ;                  DOI:10.1021/acs.jctc.8b00768
 ;
-; Disclaimer  : 
+; Disclaimer  :
 ;      While every effort has been made to ensure the accuracy and validity of parameters provided below
 ;      the assignment of parameters is being based on an automated procedure combining data provided by a
 ;      given user as well as calculations performed using third party software. They are provided as a guide.
@@ -29,7 +29,7 @@
 ;      and to perform additional validation tests for their specific application if required. Neither the authors
 ;      of the ATB or The University of Queensland except any responsibly for how the parameters may be used.
 ;
-; Release notes and warnings: 
+; Release notes and warnings:
 ;  (1) The topology is based on a set of atomic coordinates and other data provided by the user after
 ;      after quantum mechanical optimization of the structure using different levels of theory depending on
 ;      the nature of the molecule.
@@ -61,7 +61,7 @@
 N2C7     3
 [ atoms ]
 ;  nr  type  resnr  resid  atom  cgnr  charge    mass
-    1    HC    1    N2C7    H31    1    0.094 
+    1    HC    1    N2C7    H31    1    0.094
     2  CPos    1    N2C7    C18    2   -0.064  12.0110
     3    HC    1    N2C7    H29    3    0.094   1.0080
     4    HC    1    N2C7    H30    4    0.094   1.0080

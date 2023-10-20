@@ -51,7 +51,7 @@ class TestTransTableCopy(object):
         assert new.n_segments == refTT.n_segments
 
     def test_size_independent(self, refTT):
-        # check changing 
+        # check changing
         new = refTT.copy()
         old = refTT.n_atoms
         refTT.n_atoms = -10
@@ -177,7 +177,7 @@ class TestCopyUniverse(object):
 
     def test_positions(self, refUniverse):
         new = refUniverse.copy()
-        
+
         assert_equal(new.atoms.positions, refUniverse.atoms.positions)
 
     def test_change_positions(self, refUniverse):
@@ -189,7 +189,7 @@ class TestCopyUniverse(object):
 
         assert_equal(new.atoms[0].position, previous)
         assert_equal(refUniverse.atoms[0].position, [1, 2, 3])
-        
+
     def test_topology(self, refUniverse):
         new = refUniverse.copy()
 

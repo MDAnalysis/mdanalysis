@@ -178,7 +178,7 @@ def test_RMSDmatrix_simple(atoms_a, atoms_b):
     rotation_ref = np.array([0.9977195, 0.02926979, 0.06082009, -.0310942, 0.9990878, 0.02926979, -0.05990789, -.0310942, 0.9977195])
     assert_array_almost_equal(rotation, rotation_ref, 6)
 
-    
+
 def test_rmsd(atoms_a, atoms_b):
     rotation_m = np.array([[.9977195, .02926979, .06082009], [-.0310942, .9990878, .02926979], [-.05990789, -.0310942, .9977195]])
     atoms_b_aligned = np.dot(atoms_b, rotation_m)

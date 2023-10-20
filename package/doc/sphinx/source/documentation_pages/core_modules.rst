@@ -56,4 +56,3 @@ The selection system is primarily of interest to developers.
    :maxdepth: 1
 
    core/selection
-

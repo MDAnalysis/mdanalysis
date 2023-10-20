@@ -90,7 +90,7 @@ class TestGuessTypes(object):
     def test_guess_atom_element_1H(self):
         assert guessers.guess_atom_element('1H') == 'H'
         assert guessers.guess_atom_element('2H') == 'H'
-    
+
     @pytest.mark.parametrize('name, element', (
         ('AO5*', 'O'),
         ('F-', 'F'),
@@ -100,7 +100,7 @@ class TestGuessTypes(object):
         ('3hg2', 'H'),
         ('OH-', 'O'),
         ('HO', 'H'),
-        ('he', 'H'), 
+        ('he', 'H'),
         ('zn', 'ZN'),
         ('Ca2+', 'CA'),
         ('CA', 'C'),

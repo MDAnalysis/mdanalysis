@@ -361,7 +361,7 @@ class TestContacts(object):
         sel_acidic = "(resname ASP GLU)"
         acidic = u.select_atoms(sel_acidic)
         basic = u.select_atoms(sel_basic)
-        
+
         r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                         refgroup=(acidic, basic), radius=6.0, pbc=pbc)
         r.run()

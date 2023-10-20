@@ -25,7 +25,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 
-mandatory_attrs = ['ids', 'masses', 'types', 
+mandatory_attrs = ['ids', 'masses', 'types',
                    'resids', 'resnums', 'segids']
 
 
@@ -64,7 +64,7 @@ class ParserBase(object):
         # Extra attributes as declared in specific implementations
         for attr in self.expected_attrs+self.guessed_attrs:
             assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
-    
+
     def test_no_unexpected_attributes(self, top):
         attrs = set(self.expected_attrs
                     + self.guessed_attrs

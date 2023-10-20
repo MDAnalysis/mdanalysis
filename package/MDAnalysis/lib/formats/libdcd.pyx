@@ -69,7 +69,7 @@ import numpy as np
 from collections import namedtuple
 import string
 import sys
-import cython 
+import cython
 
 cimport numpy as np
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
@@ -215,7 +215,7 @@ cdef class DCDFile:
             self.seek(current_frame)
         elif current_frame == self.n_frames:
             #  cannot seek to self.n_frames (a.k.a. len(DCDFile));
-            #  instead, we seek to the previous frame and read next. 
+            #  instead, we seek to the previous frame and read next.
             #  which is the state of the file when we need to serialize
             #  at the end of the trajectory.
             self.seek(current_frame - 1)
@@ -342,7 +342,7 @@ cdef class DCDFile:
         self.remarks = py_remarks
 
     cdef void _setup_buffers(self):
-        cdef np.npy_intp[2] dims 
+        cdef np.npy_intp[2] dims
         dims[0] = self.natoms
         dims[1] = self.ndims
         # note use of fortran flag (1)
@@ -633,7 +633,7 @@ cdef class DCDFile:
         # c delcs
         cdef int stop_ = stop
         cdef int start_ = start
-        cdef int step_ = step 
+        cdef int step_ = step
 
         cdef int n
         n = len(range(start, stop, step))
@@ -645,7 +645,7 @@ cdef class DCDFile:
         else:
             natoms = len(indices)
             c_indices = np.asarray(indices, dtype=np.int64)
-        
+
         cdef np.npy_intp[3] dims
         cdef int hash_order = -1
         if order == 'fac':
@@ -698,8 +698,8 @@ cdef class DCDFile:
         cdef float[::1] y = xyz_tmp[:, 1]
         cdef float[::1] z = xyz_tmp[:, 2]
 
-        cdef int ok, i, counter 
-        
+        cdef int ok, i, counter
+
         if (start_ == 0) and (step_ == 1) and (stop_ == self.n_frames):
             for i in range(n):
                 ok = self.c_readframes_helper(x, y, z, box[i], i==0)

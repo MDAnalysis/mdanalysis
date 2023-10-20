@@ -2,9 +2,9 @@ PSF
 
        8 !NTITLE
  REMARKS original generated structure x-plor psf file
- REMARKS topology /Projects/vmd/pub/linux/lib/vmd186a7/plugins/noarch/tcl/solvate1.2/wat.top 
- REMARKS topology top_all27_prot_lipid_pot.inp 
- REMARKS topology /Projects/vmd/pub/linux/lib/vmd186a7/plugins/noarch/tcl/autoionize1.2/ions.top 
+ REMARKS topology /Projects/vmd/pub/linux/lib/vmd186a7/plugins/noarch/tcl/solvate1.2/wat.top
+ REMARKS topology top_all27_prot_lipid_pot.inp
+ REMARKS topology /Projects/vmd/pub/linux/lib/vmd186a7/plugins/noarch/tcl/autoionize1.2/ions.top
  REMARKS segment SIN { first ; last ; auto none  }
  REMARKS segment WT1 { first NONE; last NONE; auto none  }
  REMARKS segment ION { first NONE; last NONE; auto none  }
@@ -10202,4 +10202,3 @@ PSF
 
        1       0 !NGRP
        0       0       0
-

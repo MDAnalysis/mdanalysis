@@ -62,7 +62,7 @@ class TestGroupProperties(object):
             group.dimensions = dimensions.copy()
             assert_array_equal(group.dimensions, dimensions)
             assert_equal(u.dimensions, group.dimensions)
-    
+
     @pytest.mark.parametrize('group', (uni.atoms[:2], uni.residues[:2],
                                        uni.segments[:2]))
     def test_group_isunique(self, group):
@@ -369,7 +369,7 @@ class TestGroupSlicing(object):
 
         assert a.ix == ref
         assert isinstance(a, singular)
- 
+
     def test_none_getitem(self, group):
         with pytest.raises(TypeError):
             group[None]
@@ -1434,7 +1434,7 @@ class TestAttributeSetting(object):
             setattr(comp, attr, 24)
 
 class TestAttributeGetting(object):
-    
+
     @staticmethod
     @pytest.fixture()
     def universe():
@@ -1444,30 +1444,30 @@ class TestAttributeGetting(object):
     def test_get_present_topattr_group(self, universe, attr):
         values = getattr(universe.atoms, attr)
         assert values is not None
-    
+
     @pytest.mark.parametrize('attr', ['mass', 'altLoc'])
     def test_get_present_topattr_component(self, universe, attr):
         value = getattr(universe.atoms[0], attr)
         assert value is not None
 
     @pytest.mark.parametrize('attr,singular', [
-        ('masses', 'mass'), 
+        ('masses', 'mass'),
         ('altLocs', 'altLoc')])
     def test_get_plural_topattr_from_component(self, universe, attr, singular):
         with pytest.raises(AttributeError) as exc:
             getattr(universe.atoms[0], attr)
         assert ('Do you mean ' + singular) in str(exc.value)
-    
+
     @pytest.mark.parametrize('attr,singular', [
-        ('masses', 'mass'), 
+        ('masses', 'mass'),
         ('altLocs', 'altLoc')])
     def test_get_sing_topattr_from_group(self, universe, attr, singular):
         with pytest.raises(AttributeError) as exc:
             getattr(universe.atoms, singular)
         assert ('Do you mean '+attr) in str(exc.value)
-    
+
     @pytest.mark.parametrize('attr,singular', [
-        ('elements', 'element'), 
+        ('elements', 'element'),
         ('tempfactors', 'tempfactor'),
         ('bonds', 'bonds')])
     def test_get_absent_topattr_group(self, universe, attr, singular):
@@ -1512,7 +1512,7 @@ class TestAttributeGetting(object):
             universe.atoms[0].center_of_mass()
         err = ('center_of_mass() is a method of AtomGroup, not Atom')
         assert str(exc.value) == err
-    
+
     @pytest.mark.parametrize('attr', ['altlocs', 'alt_Locs'])
     def test_wrong_name(self, universe, attr):
         with pytest.raises(AttributeError) as exc:

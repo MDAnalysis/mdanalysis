@@ -37,7 +37,7 @@ def translate_universes():
     reference = make_Universe(trajectory=True)
     transformed = make_Universe(['masses'], trajectory=True)
     transformed.trajectory.ts.dimensions = np.array([372., 373., 374., 90, 90, 90])
-    
+
     return reference, transformed
 
 
@@ -64,9 +64,9 @@ def test_translate_vector(translate_universes, vector):
     with pytest.raises(ValueError):
         translate(vector)(ts)
 
-      
+
 def test_translate_transformations_api(translate_universes):
-    # test if the translate transformation works when using the 
+    # test if the translate transformation works when using the
     # on-the-fly transformations API
     ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
@@ -81,7 +81,7 @@ def test_center_in_box_bad_ag(translate_universes):
     ts = translate_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
     bad_ag = 1
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         center_in_box(bad_ag)(ts)
 
 
@@ -97,17 +97,17 @@ def test_center_in_box_bad_point(translate_universes, point):
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # what if the box is in the wrong format?
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         center_in_box(ag, point=point)(ts)
 
-   
-def test_center_in_box_bad_pbc(translate_universes):    
+
+def test_center_in_box_bad_pbc(translate_universes):
     # this universe has a box size zero
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
     # is pbc passed to the center methods?
     # if yes it should raise an exception for boxes that are zero in size
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         center_in_box(ag, wrap=True)(ts)
 
 
@@ -117,11 +117,11 @@ def test_center_in_box_bad_center(translate_universes):
     ag = translate_universes[0].residues[0].atoms
     # what if a wrong center type name is passed?
     bad_center = " "
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         center_in_box(ag, center=bad_center)(ts)
 
 
-def test_center_in_box_no_masses(translate_universes):   
+def test_center_in_box_no_masses(translate_universes):
     # this universe has no masses
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
@@ -158,7 +158,7 @@ def test_center_in_box_coords_with_pbc(translate_universes):
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
-def test_center_in_box_coords_with_mass(translate_universes):   
+def test_center_in_box_coords_with_mass(translate_universes):
     # using masses for calculating the center of the atomgroup
     ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
@@ -170,7 +170,7 @@ def test_center_in_box_coords_with_mass(translate_universes):
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 
-def test_center_in_box_coords_with_box(translate_universes):   
+def test_center_in_box_coords_with_box(translate_universes):
     # using masses for calculating the center of the atomgroup
     ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts
@@ -198,7 +198,7 @@ def test_center_in_box_coords_all_options(translate_universes):
 
 
 def test_center_transformations_api(translate_universes):
-    # test if the translate transformation works when using the 
+    # test if the translate transformation works when using the
     # on-the-fly transformations API
     ref_u, trans_u = translate_universes
     ref = ref_u.trajectory.ts

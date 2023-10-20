@@ -550,7 +550,7 @@ class NCDFReader(base.ReaderBase):
         except KeyError:
             self.has_time = False
             wmsg = ("NCDF trajectory does not contain `time` information;"
-                    " `time` will be set as an increasing index")  
+                    " `time` will be set as an increasing index")
             warnings.warn(wmsg)
             logger.warning(wmsg)
 

@@ -1,30 +1,30 @@
-%VERSION  VERSION_STAMP = V0001.000  DATE = 07/25/06  09:16:39                  
-%FLAG TITLE                                                                     
-%FORMAT(20a4)                                                                   
-NALA                                                                            
-%FLAG POINTERS                                                                  
-%FORMAT(10I8)                                                                   
+%VERSION  VERSION_STAMP = V0001.000  DATE = 07/25/06  09:16:39
+%FLAG TITLE
+%FORMAT(20a4)
+NALA
+%FLAG POINTERS
+%FORMAT(10I8)
      252      14     119     140     267     189     512     415       0       0
     1370      14     140     189     415      39      84      41      26       0
        0       0       0       0       0       0       0       0      24       0
        0
-%FLAG ATOM_NAME                                                                 
-%FORMAT(20a4)                                                                   
-N   H1  H2  H3  CA  HA  CB  HB1 HB2 HB3 C   O   N   H   CA  HA  CB  HB2 HB3 CG  
-HG2 HG3 CD  OE1 OE2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 CE1 HE1 CZ  
-HZ  CE2 HE2 CD2 HD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  ND1 CE1 HE1 NE2 HE2 
-CD2 HD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  HG2 HG3 CD  HD2 HD3 NE  HE  CZ  
-NH1 HH11HH12NH2 HH21HH22C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 NE1 HE1 
-CE2 CZ2 HZ2 CH2 HH2 CZ3 HZ3 CE3 HE3 CD2 C   O   N   H   CA  HA  CB  HB2 HB3 OG  
-HG  C   O   N   H   CA  HA  CB  HB2 HB3 OG  HG  C   O   N   H   CA  HA  CB  HB2 
-HB3 CG  CD1 HD1 CE1 HE1 CZ  OH  HH  CE2 HE2 CD2 HD2 C   O   N   H   CA  HA  CB  
+%FLAG ATOM_NAME
+%FORMAT(20a4)
+N   H1  H2  H3  CA  HA  CB  HB1 HB2 HB3 C   O   N   H   CA  HA  CB  HB2 HB3 CG
+HG2 HG3 CD  OE1 OE2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 CE1 HE1 CZ
+HZ  CE2 HE2 CD2 HD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  ND1 CE1 HE1 NE2 HE2
+CD2 HD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  HG2 HG3 CD  HD2 HD3 NE  HE  CZ
+NH1 HH11HH12NH2 HH21HH22C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 NE1 HE1
+CE2 CZ2 HZ2 CH2 HH2 CZ3 HZ3 CE3 HE3 CD2 C   O   N   H   CA  HA  CB  HB2 HB3 OG
+HG  C   O   N   H   CA  HA  CB  HB2 HB3 OG  HG  C   O   N   H   CA  HA  CB  HB2
+HB3 CG  CD1 HD1 CE1 HE1 CZ  OH  HH  CE2 HE2 CD2 HD2 C   O   N   H   CA  HA  CB
 HB2 HB3 CG  HG2 HG3 SD  CE  HE1 HE2 HE3 C   O   N   H   CA  HA  CB  HB  CG1 HG11
-HG12HG13CG2 HG21HG22HG23C   O   N   H   CA  HA  CB  HB2 HB3 CG  ND1 CE1 HE1 NE2 
-HE2 CD2 HD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 NE1 HE1 CE2 CZ2 HZ2 
-CH2 HH2 CZ3 HZ3 CE3 HE3 CD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  HG2 HG3 CD  
-HD2 HD3 CE  HE2 HE3 NZ  HZ1 HZ2 HZ3 C   O   OXT 
-%FLAG CHARGE                                                                    
-%FORMAT(5E16.8)                                                                 
+HG12HG13CG2 HG21HG22HG23C   O   N   H   CA  HA  CB  HB2 HB3 CG  ND1 CE1 HE1 NE2
+HE2 CD2 HD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 NE1 HE1 CE2 CZ2 HZ2
+CH2 HH2 CZ3 HZ3 CE3 HE3 CD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  HG2 HG3 CD
+HD2 HD3 CE  HE2 HE3 NZ  HZ1 HZ2 HZ3 C   O   OXT
+%FLAG CHARGE
+%FORMAT(5E16.8)
   2.57663322E+00  3.63899331E+00  3.63899331E+00  3.63899331E+00  1.75298526E+00
   1.61996247E+00 -1.08787131E+00  5.46669000E-01  5.46669000E-01  5.46669000E-01
   1.12304035E+01 -1.04268001E+01 -9.40817349E+00  5.35006728E+00  7.23425310E-01
@@ -76,8 +76,8 @@ HD2 HD3 CE  HE2 HE3 NZ  HZ1 HZ2 HZ3 C   O   OXT
   1.11338253E+00  1.11338253E+00 -3.20712480E-01  2.04271983E+00  2.04271983E+00
  -6.81696243E+00  6.14820402E+00  6.14820402E+00  6.14820402E+00  1.54670882E+01
  -1.50370420E+01 -1.50370420E+01
-%FLAG MASS                                                                      
-%FORMAT(5E16.8)                                                                 
+%FLAG MASS
+%FORMAT(5E16.8)
   1.40100000E+01  1.00800000E+00  1.00800000E+00  1.00800000E+00  1.20100000E+01
   1.00800000E+00  1.20100000E+01  1.00800000E+00  1.00800000E+00  1.00800000E+00
   1.20100000E+01  1.60000000E+01  1.40100000E+01  1.00800000E+00  1.20100000E+01
@@ -129,8 +129,8 @@ HD2 HD3 CE  HE2 HE3 NZ  HZ1 HZ2 HZ3 C   O   OXT
   1.00800000E+00  1.00800000E+00  1.20100000E+01  1.00800000E+00  1.00800000E+00
   1.40100000E+01  1.00800000E+00  1.00800000E+00  1.00800000E+00  1.20100000E+01
   1.60000000E+01  1.60000000E+01
-%FLAG ATOM_TYPE_INDEX                                                           
-%FORMAT(10I8)                                                                   
+%FLAG ATOM_TYPE_INDEX
+%FORMAT(10I8)
        1       2       2       2       3       4       3       5       5       5
        6       7       1       2       3       8       3       5       5       3
        5       5       6       7       7       6       7       1       2       3
@@ -157,8 +157,8 @@ HD2 HD3 CE  HE2 HE3 NZ  HZ1 HZ2 HZ3 C   O   OXT
        2       3       8       3       5       5       3       5       5       3
        5       5       3       4       4       1       2       2       2       6
        7       7
-%FLAG NUMBER_EXCLUDED_ATOMS                                                     
-%FORMAT(10I8)                                                                   
+%FLAG NUMBER_EXCLUDED_ATOMS
+%FORMAT(10I8)
       12       6       5       4      10       7       6       3       2       1
        7       3      10       4      13       7      11       6       5       6
        4       3       2       1       1       7       3      10       4      12
@@ -185,8 +185,8 @@ HD2 HD3 CE  HE2 HE3 NZ  HZ1 HZ2 HZ3 C   O   OXT
        4      11       7      12       6       5      10       5       4       9
        5       4       6       5       4       3       2       1       1       2
        1       1
-%FLAG NONBONDED_PARM_INDEX                                                      
-%FORMAT(10I8)                                                                   
+%FLAG NONBONDED_PARM_INDEX
+%FORMAT(10I8)
        1       2       4       7      11      16      22      29      37      46
       56      67      79      92       2       3       5       8      12      17
       23      30      38      47      57      68      80      93       4       5
@@ -207,15 +207,15 @@ HD2 HD3 CE  HE2 HE3 NZ  HZ1 HZ2 HZ3 C   O   OXT
       81      82      83      84      85      86      87      88      89      90
       91     104      92      93      94      95      96      97      98      99
      100     101     102     103     104     105
-%FLAG RESIDUE_LABEL                                                             
-%FORMAT(20a4)                                                                   
-ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS 
-%FLAG RESIDUE_POINTER                                                           
-%FORMAT(10I8)                                                                   
+%FLAG RESIDUE_LABEL
+%FORMAT(20a4)
+ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
+%FLAG RESIDUE_POINTER
+%FORMAT(10I8)
        1      13      28      48      65      89     113     124     135     156
      173     189     206     230
-%FLAG BOND_FORCE_CONSTANT                                                       
-%FORMAT(5E16.8)                                                                 
+%FLAG BOND_FORCE_CONSTANT
+%FORMAT(5E16.8)
   5.70000000E+02  4.90000000E+02  3.40000000E+02  3.40000000E+02  3.10000000E+02
   3.17000000E+02  4.34000000E+02  3.67000000E+02  6.56000000E+02  3.40000000E+02
   4.34000000E+02  3.37000000E+02  3.67000000E+02  4.69000000E+02  3.17000000E+02
@@ -224,8 +224,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   4.81000000E+02  3.37000000E+02  4.69000000E+02  4.69000000E+02  4.47000000E+02
   4.28000000E+02  5.46000000E+02  3.88000000E+02  3.17000000E+02  5.53000000E+02
   3.20000000E+02  4.50000000E+02  4.69000000E+02  2.27000000E+02
-%FLAG BOND_EQUIL_VALUE                                                          
-%FORMAT(5E16.8)                                                                 
+%FLAG BOND_EQUIL_VALUE
+%FORMAT(5E16.8)
   1.22900000E+00  1.33500000E+00  1.09000000E+00  1.09000000E+00  1.52600000E+00
   1.52200000E+00  1.01000000E+00  1.47100000E+00  1.25000000E+00  1.09000000E+00
   1.01000000E+00  1.44900000E+00  1.08000000E+00  1.40000000E+00  1.51000000E+00
@@ -234,8 +234,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   1.34000000E+00  1.46300000E+00  1.40400000E+00  1.40000000E+00  1.41900000E+00
   1.38000000E+00  1.35200000E+00  1.45900000E+00  1.49500000E+00  9.60000000E-01
   1.41000000E+00  1.36400000E+00  1.40900000E+00  1.81000000E+00
-%FLAG ANGLE_FORCE_CONSTANT                                                      
-%FORMAT(5E16.8)                                                                 
+%FLAG ANGLE_FORCE_CONSTANT
+%FORMAT(5E16.8)
   8.00000000E+01  5.00000000E+01  5.00000000E+01  3.50000000E+01  6.30000000E+01
   5.00000000E+01  5.00000000E+01  5.00000000E+01  8.00000000E+01  7.00000000E+01
   5.00000000E+01  3.50000000E+01  5.00000000E+01  8.00000000E+01  8.00000000E+01
@@ -253,8 +253,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   7.00000000E+01  6.30000000E+01  5.00000000E+01  5.50000000E+01  5.00000000E+01
   7.00000000E+01  5.00000000E+01  5.00000000E+01  6.30000000E+01  6.30000000E+01
   5.00000000E+01  6.20000000E+01  5.00000000E+01  3.50000000E+01
-%FLAG ANGLE_EQUIL_VALUE                                                         
-%FORMAT(5E16.8)                                                                 
+%FLAG ANGLE_EQUIL_VALUE
+%FORMAT(5E16.8)
   2.14501057E+00  2.09439600E+00  2.12755727E+00  1.91113635E+00  1.93906163E+00
   1.91113635E+00  1.91113635E+00  1.91113635E+00  2.10137732E+00  2.03505478E+00
   1.91113635E+00  1.91113635E+00  1.91113635E+00  1.94080696E+00  1.94080696E+00
@@ -272,8 +272,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   2.24449438E+00  2.01760148E+00  1.91113635E+00  1.89368305E+00  1.91113635E+00
   2.09439600E+00  1.97222290E+00  2.09439600E+00  2.09439600E+00  2.09439600E+00
   1.91113635E+00  1.72613137E+00  2.00189351E+00  1.91113635E+00
-%FLAG DIHEDRAL_FORCE_CONSTANT                                                   
-%FORMAT(5E16.8)                                                                 
+%FLAG DIHEDRAL_FORCE_CONSTANT
+%FORMAT(5E16.8)
   2.00000000E+00  2.50000000E+00  0.00000000E+00  2.00000000E+00  4.00000000E-01
   0.00000000E+00  0.00000000E+00  2.70000000E-01  4.20000000E-01  1.55555556E-01
   2.00000000E-01  2.00000000E-01  1.50000000E-01  8.00000000E-01  8.00000000E-02
@@ -283,8 +283,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   3.50000000E+00  1.52500000E+00  6.52500000E+00  1.67500000E+00  1.66666667E-01
   2.50000000E-01  2.30000000E+00  3.33333333E-01  1.05000000E+01  1.10000000E+00
   1.00000000E+00
-%FLAG DIHEDRAL_PERIODICITY                                                      
-%FORMAT(5E16.8)                                                                 
+%FLAG DIHEDRAL_PERIODICITY
+%FORMAT(5E16.8)
   1.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00  3.00000000E+00
   4.00000000E+00  1.00000000E+00  2.00000000E+00  3.00000000E+00  3.00000000E+00
   1.00000000E+00  2.00000000E+00  3.00000000E+00  1.00000000E+00  3.00000000E+00
@@ -294,8 +294,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00  3.00000000E+00
   1.00000000E+00  2.00000000E+00  3.00000000E+00  2.00000000E+00  2.00000000E+00
   2.00000000E+00
-%FLAG DIHEDRAL_PHASE                                                            
-%FORMAT(5E16.8)                                                                 
+%FLAG DIHEDRAL_PHASE
+%FORMAT(5E16.8)
   0.00000000E+00  3.14159400E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  3.14159400E+00
@@ -305,16 +305,16 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   3.14159400E+00  3.14159400E+00  3.14159400E+00  3.14159400E+00  0.00000000E+00
   0.00000000E+00  3.14159400E+00  0.00000000E+00  3.14159400E+00  3.14159400E+00
   3.14159400E+00
-%FLAG SOLTY                                                                     
-%FORMAT(5E16.8)                                                                 
+%FLAG SOLTY
+%FORMAT(5E16.8)
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00
-%FLAG LENNARD_JONES_ACOEF                                                       
-%FORMAT(5E16.8)                                                                 
+%FLAG LENNARD_JONES_ACOEF
+%FORMAT(5E16.8)
   9.44293233E+05  2.12601181E+03  1.39982777E-01  9.95480466E+05  2.56678134E+03
   1.04308023E+06  2.01791425E+04  9.14716912E+00  2.27401052E+04  2.01823541E+02
   8.96776989E+04  1.07193646E+02  9.71708117E+04  1.41077189E+03  7.51607703E+03
@@ -336,8 +336,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   0.00000000E+00  2.01562190E+06  5.97860700E+03  2.09861767E+06  4.93469320E+04
   2.02461849E+05  1.86068943E+06  1.32911052E+06  1.42791446E+05  1.79647996E+05
   1.26338489E+05  1.50848032E+05  1.61587928E+06  0.00000000E+00  4.19430400E+06
-%FLAG LENNARD_JONES_BCOEF                                                       
-%FORMAT(5E16.8)                                                                 
+%FLAG LENNARD_JONES_BCOEF
+%FORMAT(5E16.8)
   8.01323529E+02  2.09604198E+01  9.37598976E-02  7.36907417E+02  2.06278363E+01
   6.75612247E+02  6.45756063E+01  7.57919667E-01  6.13981767E+01  3.56012899E+00
   1.36131731E+02  2.59456373E+00  1.26919150E+02  9.41257003E+00  2.17257828E+01
@@ -359,8 +359,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
   0.00000000E+00  1.28923404E+03  3.87070358E+01  1.17824605E+03  1.11203892E+02
   2.25248294E+02  1.04466382E+03  1.10369829E+03  1.89165096E+02  2.09772716E+02
   1.75916126E+02  1.92224012E+02  1.21753341E+03  0.00000000E+00  2.04800000E+03
-%FLAG BONDS_INC_HYDROGEN                                                        
-%FORMAT(10I8)                                                                   
+%FLAG BONDS_INC_HYDROGEN
+%FORMAT(10I8)
       18      21       3      18      24       3      18      27       3      12
       15       4       0       3       7       0       6       7       0       9
        7      57      60       3      57      63       3      48      51       3
@@ -397,8 +397,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
      726     732       4     717     720       3     717     723       3     708
      711       3     708     714       3     699     702       3     699     705
        3     693     696      10     687     690      11
-%FLAG BONDS_WITHOUT_HYDROGEN                                                    
-%FORMAT(10I8)                                                                   
+%FLAG BONDS_WITHOUT_HYDROGEN
+%FORMAT(10I8)
       30      33       1      30      36       2      12      18       5      12
       30       6       0      12       8      75      78       1      75      81
        2      66      69       9      66      72       9      57      66       6
@@ -441,8 +441,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
      615     621      12     747     750       9     747     753       9     726
      735       8     717     726       5     708     717       5     699     708
        5     693     699       5     693     747       6     687     693      12
-%FLAG ANGLES_INC_HYDROGEN                                                       
-%FORMAT(10I8)                                                                   
+%FLAG ANGLES_INC_HYDROGEN
+%FORMAT(10I8)
       30      36      39       2      24      18      27       4      21      18
       24       4      21      18      27       4      15      12      18       6
       15      12      30       7      12      18      21       8      12      18
@@ -550,8 +550,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
      699     708     714       8     696     693     699      19     696     693
      747      20     693     699     702       8     693     699     705       8
      690     687     693      22     687     693     696      23
-%FLAG ANGLES_WITHOUT_HYDROGEN                                                   
-%FORMAT(10I8)                                                                   
+%FLAG ANGLES_WITHOUT_HYDROGEN
+%FORMAT(10I8)
       33      30      36       1      30      36      42       3      18      12
       30       5      12      30      33       9      12      30      36      10
        0      12      18      14       0      12      30      15      78      75
@@ -628,8 +628,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
      747       5     699     708     717      21     693     699     708      21
      693     747     750      18     693     747     753      18     687     693
      699      24     687     693     747      25
-%FLAG DIHEDRALS_INC_HYDROGEN                                                    
-%FORMAT(10I8)                                                                   
+%FLAG DIHEDRALS_INC_HYDROGEN
+%FORMAT(10I8)
       33      30      36      39       1      33      30     -36      39       2
       30      36      42      45       3      27      18      12      30      10
       24      18      12      30      10      21      18      12      30      10
@@ -886,8 +886,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
      654     666    -660    -663      40     651     660    -654    -657      40
      639     651    -645    -648      41     636     645    -639    -642      40
      609     621    -615    -618      40     681     693    -687    -690      40
-%FLAG DIHEDRALS_WITHOUT_HYDROGEN                                                
-%FORMAT(10I8)                                                                   
+%FLAG DIHEDRALS_WITHOUT_HYDROGEN
+%FORMAT(10I8)
       33      30      36      42       2      30      36      42      48       1
       30      36     -42      48       4      30      36     -42      48       5
       30      36     -42      48       6      30      36      42      75       7
@@ -1096,8 +1096,8 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
      570     615    -609    -612      39     576     603    -585    -588      40
      621     687    -681    -684      39     678     627    -636    -639      40
      693     750    -747    -753      39
-%FLAG EXCLUDED_ATOMS_LIST                                                       
-%FORMAT(10I8)                                                                   
+%FLAG EXCLUDED_ATOMS_LIST
+%FORMAT(10I8)
        2       3       4       5       6       7       8       9      10      11
       12      13       3       4       5       6       7      11       4       5
        6       7      11       5       6       7      11       6       7       8
@@ -1235,47 +1235,47 @@ ALA GLU PHE HIE ARG TRP SER SER TYR MET VAL HIE TRP LYS
      243     244     245     246     244     245     246     247     248     249
      245     246     247     248     249     246     247     248     249     247
      248     249     248     249     249       0     251     252     252       0
-%FLAG HBOND_ACOEF                                                               
-%FORMAT(5E16.8)                                                                 
+%FLAG HBOND_ACOEF
+%FORMAT(5E16.8)
 
-%FLAG HBOND_BCOEF                                                               
-%FORMAT(5E16.8)                                                                 
+%FLAG HBOND_BCOEF
+%FORMAT(5E16.8)
 
-%FLAG HBCUT                                                                     
-%FORMAT(5E16.8)                                                                 
+%FLAG HBCUT
+%FORMAT(5E16.8)
 
-%FLAG AMBER_ATOM_TYPE                                                           
-%FORMAT(20a4)                                                                   
-N3  H   H   H   CT  HP  CT  HC  HC  HC  C   O   N   H   CT  H1  CT  HC  HC  CT  
-HC  HC  C   O2  O2  C   O   N   H   CT  H1  CT  HC  HC  CA  CA  HA  CA  HA  CA  
-HA  CA  HA  CA  HA  C   O   N   H   CT  H1  CT  HC  HC  CC  NB  CR  H5  NA  H   
-CW  H4  C   O   N   H   CT  H1  CT  HC  HC  CT  HC  HC  CT  H1  H1  N2  H   CA  
-N2  H   H   N2  H   H   C   O   N   H   CT  H1  CT  HC  HC  C*  CW  H4  NA  H   
-CN  CA  HA  CA  HA  CA  HA  CA  HA  CB  C   O   N   H   CT  H1  CT  H1  H1  OH  
-HO  C   O   N   H   CT  H1  CT  H1  H1  OH  HO  C   O   N   H   CT  H1  CT  HC  
-HC  CA  CA  HA  CA  HA  C   OH  HO  CA  HA  CA  HA  C   O   N   H   CT  H1  CT  
-HC  HC  CT  H1  H1  S   CT  H1  H1  H1  C   O   N   H   CT  H1  CT  HC  CT  HC  
-HC  HC  CT  HC  HC  HC  C   O   N   H   CT  H1  CT  HC  HC  CC  NB  CR  H5  NA  
-H   CW  H4  C   O   N   H   CT  H1  CT  HC  HC  C*  CW  H4  NA  H   CN  CA  HA  
-CA  HA  CA  HA  CA  HA  CB  C   O   N   H   CT  H1  CT  HC  HC  CT  HC  HC  CT  
-HC  HC  CT  HP  HP  N3  H   H   H   C   O2  O2  
-%FLAG TREE_CHAIN_CLASSIFICATION                                                 
-%FORMAT(20a4)                                                                   
-BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA M   E   M   E   3   E   E   3   
-E   E   B   E   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E   B   
-E   S   E   S   E   M   E   M   E   M   E   3   E   E   B   E   S   E   B   E   
-B   E   M   E   M   E   M   E   3   E   E   3   E   E   3   E   E   B   E   B   
-B   E   E   B   E   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E   
-S   B   E   B   E   B   E   S   E   E   M   E   M   E   M   E   3   E   E   S   
-E   M   E   M   E   M   E   3   E   E   S   E   M   E   M   E   M   E   3   E   
-E   B   B   E   B   E   B   S   E   S   E   S   E   M   E   M   E   M   E   3   
-E   E   3   E   E   S   3   E   E   E   M   E   M   E   M   E   3   E   3   E   
-E   E   3   E   E   E   M   E   M   E   M   E   3   E   E   B   E   S   E   B   
-E   B   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E   S   B   E   
-B   E   B   E   S   E   E   M   E   BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA 
-BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA 
-%FLAG JOIN_ARRAY                                                                
-%FORMAT(10I8)                                                                   
+%FLAG AMBER_ATOM_TYPE
+%FORMAT(20a4)
+N3  H   H   H   CT  HP  CT  HC  HC  HC  C   O   N   H   CT  H1  CT  HC  HC  CT
+HC  HC  C   O2  O2  C   O   N   H   CT  H1  CT  HC  HC  CA  CA  HA  CA  HA  CA
+HA  CA  HA  CA  HA  C   O   N   H   CT  H1  CT  HC  HC  CC  NB  CR  H5  NA  H
+CW  H4  C   O   N   H   CT  H1  CT  HC  HC  CT  HC  HC  CT  H1  H1  N2  H   CA
+N2  H   H   N2  H   H   C   O   N   H   CT  H1  CT  HC  HC  C*  CW  H4  NA  H
+CN  CA  HA  CA  HA  CA  HA  CA  HA  CB  C   O   N   H   CT  H1  CT  H1  H1  OH
+HO  C   O   N   H   CT  H1  CT  H1  H1  OH  HO  C   O   N   H   CT  H1  CT  HC
+HC  CA  CA  HA  CA  HA  C   OH  HO  CA  HA  CA  HA  C   O   N   H   CT  H1  CT
+HC  HC  CT  H1  H1  S   CT  H1  H1  H1  C   O   N   H   CT  H1  CT  HC  CT  HC
+HC  HC  CT  HC  HC  HC  C   O   N   H   CT  H1  CT  HC  HC  CC  NB  CR  H5  NA
+H   CW  H4  C   O   N   H   CT  H1  CT  HC  HC  C*  CW  H4  NA  H   CN  CA  HA
+CA  HA  CA  HA  CA  HA  CB  C   O   N   H   CT  H1  CT  HC  HC  CT  HC  HC  CT
+HC  HC  CT  HP  HP  N3  H   H   H   C   O2  O2
+%FLAG TREE_CHAIN_CLASSIFICATION
+%FORMAT(20a4)
+BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA M   E   M   E   3   E   E   3
+E   E   B   E   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E   B
+E   S   E   S   E   M   E   M   E   M   E   3   E   E   B   E   S   E   B   E
+B   E   M   E   M   E   M   E   3   E   E   3   E   E   3   E   E   B   E   B
+B   E   E   B   E   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E
+S   B   E   B   E   B   E   S   E   E   M   E   M   E   M   E   3   E   E   S
+E   M   E   M   E   M   E   3   E   E   S   E   M   E   M   E   M   E   3   E
+E   B   B   E   B   E   B   S   E   S   E   S   E   M   E   M   E   M   E   3
+E   E   3   E   E   S   3   E   E   E   M   E   M   E   M   E   3   E   3   E
+E   E   3   E   E   E   M   E   M   E   M   E   3   E   E   B   E   S   E   B
+E   B   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E   S   B   E
+B   E   B   E   S   E   E   M   E   BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA
+BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA
+%FLAG JOIN_ARRAY
+%FORMAT(10I8)
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
@@ -1302,8 +1302,8 @@ BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0
-%FLAG IROTAT                                                                    
-%FORMAT(10I8)                                                                   
+%FLAG IROTAT
+%FORMAT(10I8)
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
@@ -1330,11 +1330,11 @@ BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0
-%FLAG RADIUS_SET                                                                
-%FORMAT(1a80)                                                                   
-modified Bondi radii (mbondi)                                                   
-%FLAG RADII                                                                     
-%FORMAT(5E16.8)                                                                 
+%FLAG RADIUS_SET
+%FORMAT(1a80)
+modified Bondi radii (mbondi)
+%FLAG RADII
+%FORMAT(5E16.8)
   1.55000000E+00  1.30000000E+00  1.30000000E+00  1.30000000E+00  1.70000000E+00
   1.30000000E+00  1.70000000E+00  1.30000000E+00  1.30000000E+00  1.30000000E+00
   1.70000000E+00  1.50000000E+00  1.55000000E+00  1.30000000E+00  1.70000000E+00
@@ -1386,8 +1386,8 @@ modified Bondi radii (mbondi)
   1.30000000E+00  1.30000000E+00  1.70000000E+00  1.30000000E+00  1.30000000E+00
   1.55000000E+00  1.30000000E+00  1.30000000E+00  1.30000000E+00  1.70000000E+00
   1.50000000E+00  1.50000000E+00
-%FLAG SCREEN                                                                    
-%FORMAT(5E16.8)                                                                 
+%FLAG SCREEN
+%FORMAT(5E16.8)
   7.90000000E-01  8.50000000E-01  8.50000000E-01  8.50000000E-01  7.20000000E-01
   8.50000000E-01  7.20000000E-01  8.50000000E-01  8.50000000E-01  8.50000000E-01
   7.20000000E-01  8.50000000E-01  7.90000000E-01  8.50000000E-01  7.20000000E-01

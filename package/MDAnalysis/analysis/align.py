@@ -89,7 +89,7 @@ This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
 minimized RMSD between the reference and mobile structure.
 
-   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, 
+   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions,
    ...      superposition=True)
    6.809396586471815
 
@@ -138,7 +138,7 @@ To **fit a whole trajectory** to a reference structure with the
    >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
    >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
    >>> alignment.run()
-   <MDAnalysis.analysis.align.AlignTraj object at ...> 
+   <MDAnalysis.analysis.align.AlignTraj object at ...>
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows

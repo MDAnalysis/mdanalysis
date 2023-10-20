@@ -16,7 +16,7 @@
  * DESCRIPTION:
  *   Byte swapping routines used in various plugins
  *   There are two versions of each routine, one that's safe to use in
- *   all cases (but is slow) and one that is only safe to use on memory 
+ *   all cases (but is slow) and one that is only safe to use on memory
  *   addresses that are aligned to the word size that's being byte-swapped
  *   but are much much much faster.  Use the aligned versions of these
  *   routines whenever possible.  The 'ndata' length count parameters and
@@ -48,7 +48,7 @@ static void swap4_unaligned(void *v, long ndata) {
   char *dataptr;
   char tmp;
 
-  dataptr = (char *) v; 
+  dataptr = (char *) v;
   for (i=0; i<ndata; i++) {
     tmp = dataptr[0];
     dataptr[0] = dataptr[3];
@@ -96,11 +96,11 @@ static void swap8_unaligned(void *v, long ndata) {
 static void swap2_aligned(void *v, long ndata) {
   short *data = (short *) v;
   long i;
-  short *N; 
+  short *N;
 
   for (i=0; i<ndata; i++) {
     N = data + i;
-    *N=(((*N>>8)&0xff) | ((*N&0xff)<<8));  
+    *N=(((*N>>8)&0xff) | ((*N&0xff)<<8));
   }
 }
 
@@ -113,7 +113,7 @@ static void swap4_aligned(void *v, long ndata) {
   int *N;
   for (i=0; i<ndata; i++) {
     N = data + i;
-    *N=(((*N>>24)&0xff) | ((*N&0xff)<<24) | 
+    *N=(((*N>>24)&0xff) | ((*N&0xff)<<24) |
         ((*N>>8)&0xff00) | ((*N&0xff00)<<8));
   }
 }
@@ -125,23 +125,23 @@ static void swap8_aligned(void *v, long ndata) {
   /* Use int* internally to prevent bugs caused by some compilers */
   /* and hardware that would potentially load data into an FP reg */
   /* and hose everything, such as the old "jmemcpy()" bug in NAMD */
-  int *data = (int *) v;  
+  int *data = (int *) v;
   long i;
-  int *N; 
+  int *N;
   int t0, t1;
 
   for (i=0; i<ndata; i++) {
     N = data + (i<<1);
     t0 = N[0];
-    t0=(((t0>>24)&0xff) | ((t0&0xff)<<24) | 
+    t0=(((t0>>24)&0xff) | ((t0&0xff)<<24) |
         ((t0>>8)&0xff00) | ((t0&0xff00)<<8));
 
     t1 = N[1];
-    t1=(((t1>>24)&0xff) | ((t1&0xff)<<24) | 
+    t1=(((t1>>24)&0xff) | ((t1&0xff)<<24) |
         ((t1>>8)&0xff00) | ((t1&0xff00)<<8));
 
-    N[0] = t1; 
-    N[1] = t0; 
+    N[0] = t1;
+    N[1] = t0;
   }
 }
 
@@ -170,4 +170,3 @@ void mdio_swap8(double *i) {
 #endif
 
 #endif
-

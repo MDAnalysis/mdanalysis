@@ -16,20 +16,20 @@ TEST 	    	1
 
 [ atoms ]
 ;id 	type 	resnr 	residu 	atom 	cgnr 	charge
-1       TA      1       T       T1      1       0 
-2       TA      1       T       T2      1       0 
-3       TA      1       T       T3      1       0 
-4       TA      1       T       T4      1       0 
-5       TA      1       T       T5      1       0 
-6       TA      1       T       T6      1       0 
-7       TA      1       T       T7      1       0 
-8       TA      1       T       T8      1       0 
-9       TA      1       T       T9      1       0 
-10      TA      1       T       T10     1       0 
-11      TA      1       T       T11     1       0 
-12      TA      1       T       T12     1       0 
-13      TA      1       T       T13     1       0 
-14      TA      1       T       T14     1       0 
+1       TA      1       T       T1      1       0
+2       TA      1       T       T2      1       0
+3       TA      1       T       T3      1       0
+4       TA      1       T       T4      1       0
+5       TA      1       T       T5      1       0
+6       TA      1       T       T6      1       0
+7       TA      1       T       T7      1       0
+8       TA      1       T       T8      1       0
+9       TA      1       T       T9      1       0
+10      TA      1       T       T10     1       0
+11      TA      1       T       T11     1       0
+12      TA      1       T       T12     1       0
+13      TA      1       T       T13     1       0
+14      TA      1       T       T14     1       0
 
 [bonds]
 ; i j 	funct 	length 	force.c.

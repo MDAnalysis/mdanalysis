@@ -136,4 +136,3 @@ proc drawFrame { name element op } {
 
 drawFrame 0 0 0
 """
-

@@ -327,5 +327,3 @@ def test_moved_module_warning():
             "hbonds.hbond_autocorrel will be removed in 3.0.0.")
     with pytest.warns(DeprecationWarning, match=wmsg):
         reload(hbonds.hbond_autocorrel)
-
-

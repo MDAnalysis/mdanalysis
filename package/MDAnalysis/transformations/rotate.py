@@ -86,7 +86,7 @@ class rotateby(TransformationBase):
         rotation angle in degrees
     direction: array-like
         vector that will define the direction of a custom axis of rotation from the
-        provided point. Expected shapes are (3, ) or (1, 3). 
+        provided point. Expected shapes are (3, ) or (1, 3).
     ag: AtomGroup, optional
         use the weighted center of an AtomGroup as the point from where the rotation axis
         will be defined. If no AtomGroup is given, the `point` argument becomes mandatory
@@ -98,12 +98,12 @@ class rotateby(TransformationBase):
         define the weights of the atoms when calculating the center of the AtomGroup.
         With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.
         If a float array of the same length as `ag` is provided, use each element of
-        the `array_like` as a weight for the corresponding atom in `ag`. Default is 
+        the `array_like` as a weight for the corresponding atom in `ag`. Default is
         None.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
-        to the atom coordinates are done before calculating the center of the AtomGroup. 
+        to the atom coordinates are done before calculating the center of the AtomGroup.
 
     Returns
     -------
@@ -111,7 +111,7 @@ class rotateby(TransformationBase):
 
     Warning
     -------
-    Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible 
+    Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible
     after rotating the trajectory.
 
 

@@ -52,18 +52,18 @@ class TestParmEdReaderGRO:
 
     def test_dimensions(self):
         assert_allclose(
-            self.universe.trajectory.ts.dimensions, 
+            self.universe.trajectory.ts.dimensions,
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
             err_msg=("ParmEdReader failed to get unitcell dimensions "
                      "from ParmEd"))
-    
+
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
         assert_allclose(up, rp, rtol=0, atol=1e-3)
-    
+
 
 class BaseTestParmEdReader(_SingleFrameReader):
     def setUp(self):
@@ -72,23 +72,23 @@ class BaseTestParmEdReader(_SingleFrameReader):
 
     def test_dimensions(self):
         assert_allclose(
-            self.universe.trajectory.ts.dimensions, 
+            self.universe.trajectory.ts.dimensions,
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
             err_msg=("ParmEdReader failed to get unitcell dimensions "
                      "from ParmEd"))
-    
+
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
         assert_allclose(up, rp, rtol=0, atol=1e-3)
-    
+
 
 class TestParmEdReaderPDB(BaseTestParmEdReader):
 
     ref_filename = RefAdKSmall.filename
-    
+
     def test_uses_ParmEdReader(self):
         from MDAnalysis.coordinates.ParmEd import ParmEdReader
 
@@ -106,7 +106,7 @@ def _parmed_param_eq(a, b):
                 return False
             a_idx.append(getattr(a, atom).idx)
             b_idx.append(getattr(b, atom).idx)
-    
+
     atoms = a_idx == b_idx or a_idx == b_idx[::-1]
     return atoms and a.type == b.type
 
@@ -122,7 +122,7 @@ class BaseTestParmEdConverter:
     @pytest.fixture(scope='class')
     def ref(self):
         # skip_bonds controls whether to search for bonds if it's not in the file
-        return pmd.load_file(self.ref_filename, skip_bonds=True)  
+        return pmd.load_file(self.ref_filename, skip_bonds=True)
 
     @pytest.fixture(scope='class')
     def universe(self, ref):
@@ -143,7 +143,7 @@ class BaseTestParmEdConverter:
             u = getattr(universe, attr, [])
             o = getattr(output, attr)
             assert len(u) == len(o)
-    
+
     @pytest.mark.parametrize('attr', ('bonds', 'angles', 'dihedrals', 'impropers',
                      'cmaps'))
     def test_equivalent_connectivity_values(self, universe, output, attr):
@@ -183,7 +183,7 @@ class BaseTestParmEdConverter:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
                 assert ra == oa, 'atom {} not equal for atoms {} and {}'.format(attr, r, o)
-            
+
             for attr in self.almost_equal_atom_attrs:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
@@ -289,7 +289,7 @@ class TestParmEdConverterGROSubset(BaseTestParmEdConverterSubset):
 class TestParmEdConverterPDB(BaseTestParmEdConverter):
     ref_filename = PDB_small
 
-    # Neither MDAnalysis nor ParmEd read the mass column 
+    # Neither MDAnalysis nor ParmEd read the mass column
     # of PDBs and are liable to guess wrong
     almost_equal_atom_attrs = ('charge', 'occupancy')
 

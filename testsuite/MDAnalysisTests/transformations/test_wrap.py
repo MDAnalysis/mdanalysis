@@ -39,7 +39,7 @@ def wrap_universes():
     transformed = mda.Universe(fullerene)
     transformed.dimensions = np.asarray([10, 10, 10, 90, 90, 90], np.float32)
     transformed.atoms.wrap()
-    
+
     return reference, transformed
 
 
@@ -52,11 +52,11 @@ def compound_wrap_universes():
     reference = mda.Universe(TPR, GRO)
     # wrap the atoms back into the unit cell
     # in this coordinate file only the protein
-    # is broken across PBC however the system 
+    # is broken across PBC however the system
     # shape is not the same as the unit cell
     make_whole(reference.select_atoms("protein"))
     make_whole(transformed.select_atoms("protein"))
-    
+
     return transformed, reference
 
 
@@ -75,7 +75,7 @@ def test_wrap_bad_ag(wrap_universes, ag):
     ts = wrap_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
     bad_ag = ag
-    with pytest.raises(AttributeError): 
+    with pytest.raises(AttributeError):
         wrap(bad_ag)(ts)
 
 
@@ -123,7 +123,7 @@ def test_unwrap_bad_ag(wrap_universes, ag):
     ts = wrap_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
     bad_ag = ag
-    with pytest.raises(AttributeError): 
+    with pytest.raises(AttributeError):
         unwrap(bad_ag)(ts)
 
 

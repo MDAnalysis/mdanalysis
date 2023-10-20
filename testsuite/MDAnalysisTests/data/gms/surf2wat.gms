@@ -28,7 +28,7 @@
 
  Intel Core2/ Linux  PC GAMESS version running under Linux.
  Running on Intel CPU:  Brand ID  0, Family  6, Model 42, Stepping  7
- CPU Brand String    :  Intel(R) Core(TM) i7-2640M CPU @ 2.80GHz        
+ CPU Brand String    :  Intel(R) Core(TM) i7-2640M CPU @ 2.80GHz
  CPU Features        :  CMOV, MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, HTT, MWAIT, EM64T
  Data cache size     :  L1 32 KB, L2  256 KB, L3  4096 KB
  # of cores/package  :  8
@@ -44,36 +44,36 @@
  EXECUTION OF GAMESS BEGUN  9:54:58 LT  20-MAR-2015
 
             ECHO OF THE FIRST FEW INPUT CARDS -
- INPUT CARD> $CONTRL EXETYP=RUN RUNTYP=SURFACE SCFTYP=RHF COORD=CART UNITS=ANGS $END        
- INPUT CARD> $SURF IVEC1(1)=1,4 IGRP1(1)=4,5,6 ORIG1=0 DISP1=0.1 NDISP1=10 $END             
- INPUT CARD> $BASIS GBASIS=PM3 $END                                                         
- INPUT CARD>                                                                                
- INPUT CARD> $DATA                                                                          
- INPUT CARD>2wat.pdb                                                                        
- INPUT CARD>C1                                                                              
- INPUT CARD>O      8.0     -0.0000000000   -0.0000000000    0.0000000000                    
- INPUT CARD>H      1.0     -0.5390000000   -0.6090000000    0.5110000000                    
- INPUT CARD>H      1.0      0.1250000000    0.8110000000    0.4980000000                    
- INPUT CARD>O      8.0      0.2900000000    2.8640000000    0.1790000000                    
- INPUT CARD>H      1.0     -0.5190000000    2.3480000000    0.1430000000                    
- INPUT CARD>H      1.0      0.5640000000    2.9670000000    1.0930000000                    
- INPUT CARD> $END                                                                           
- INPUT CARD>                                                                                
- INPUT CARD>                                                                                
+ INPUT CARD> $CONTRL EXETYP=RUN RUNTYP=SURFACE SCFTYP=RHF COORD=CART UNITS=ANGS $END
+ INPUT CARD> $SURF IVEC1(1)=1,4 IGRP1(1)=4,5,6 ORIG1=0 DISP1=0.1 NDISP1=10 $END
+ INPUT CARD> $BASIS GBASIS=PM3 $END
+ INPUT CARD>
+ INPUT CARD> $DATA
+ INPUT CARD>2wat.pdb
+ INPUT CARD>C1
+ INPUT CARD>O      8.0     -0.0000000000   -0.0000000000    0.0000000000
+ INPUT CARD>H      1.0     -0.5390000000   -0.6090000000    0.5110000000
+ INPUT CARD>H      1.0      0.1250000000    0.8110000000    0.4980000000
+ INPUT CARD>O      8.0      0.2900000000    2.8640000000    0.1790000000
+ INPUT CARD>H      1.0     -0.5190000000    2.3480000000    0.1430000000
+ INPUT CARD>H      1.0      0.5640000000    2.9670000000    1.0930000000
+ INPUT CARD> $END
+ INPUT CARD>
+ INPUT CARD>
     2000000 WORDS OF MEMORY AVAILABLE
 
      BASIS OPTIONS
      -------------
-     GBASIS=PM3          IGAUSS=       0      POLAR=NONE    
+     GBASIS=PM3          IGAUSS=       0      POLAR=NONE
      NDFUNC=       0     NFFUNC=       0     DIFFSP=       F
      NPFUNC=       0      DIFFS=       F
 
 
      RUN TITLE
      ---------
- 2wat.pdb                                                                        
+ 2wat.pdb
 
- THE POINT GROUP OF THE MOLECULE IS C1      
+ THE POINT GROUP OF THE MOLECULE IS C1
  THE ORDER OF THE PRINCIPAL AXIS IS     0
 
  THE MOMENTS OF INERTIA ARE (AMU-ANGSTROM**2)
@@ -91,23 +91,23 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    O              H              H              O         
+                    O              H              H              O
 
-  1  O               0.0000000      0.9604806 *    0.9598698 *    2.8842047 *  
-  2  H               0.9604806 *    0.0000000      1.5676304 *    3.5859718    
-  3  H               0.9598698 *    1.5676304 *    0.0000000      2.0841773 *  
-  4  O               2.8842047 *    3.5859718      2.0841773 *    0.0000000    
-  5  H               2.4089238 *    2.9798780 *    1.7038574 *    0.9602255 *  
-  6  H               3.2118272      3.7872297      2.2792723 *    0.9597296 *  
+  1  O               0.0000000      0.9604806 *    0.9598698 *    2.8842047 *
+  2  H               0.9604806 *    0.0000000      1.5676304 *    3.5859718
+  3  H               0.9598698 *    1.5676304 *    0.0000000      2.0841773 *
+  4  O               2.8842047 *    3.5859718      2.0841773 *    0.0000000
+  5  H               2.4089238 *    2.9798780 *    1.7038574 *    0.9602255 *
+  6  H               3.2118272      3.7872297      2.2792723 *    0.9597296 *
 
-                    H              H         
+                    H              H
 
-  1  O               2.4089238 *    3.2118272    
-  2  H               2.9798780 *    3.7872297    
-  3  H               1.7038574 *    2.2792723 *  
-  4  O               0.9602255 *    0.9597296 *  
-  5  H               0.0000000      1.5679764 *  
-  6  H               1.5679764 *    0.0000000    
+  1  O               2.4089238 *    3.2118272
+  2  H               2.9798780 *    3.7872297
+  3  H               1.7038574 *    2.2792723 *
+  4  O               0.9602255 *    0.9597296 *
+  5  H               0.0000000      1.5679764 *
+  6  H               1.5679764 *    0.0000000
 
   * ... LESS THAN  3.000
 
@@ -124,30 +124,30 @@
 
  THE PARAMETERS USED IN THIS CALCULATION ARE DESCRIBED IN:
 
-  H: (PM3): J. J. P. STEWART, J. COMP. CHEM.     10, 209 (1989).                
-  O: (PM3): J. J. P. STEWART, J. COMP. CHEM.     10, 209 (1989).                
+  H: (PM3): J. J. P. STEWART, J. COMP. CHEM.     10, 209 (1989).
+  O: (PM3): J. J. P. STEWART, J. COMP. CHEM.     10, 209 (1989).
 
  THERE ARE    2 HEAVY AND    4 LIGHT ATOMS,
  YIELDING A TOTAL OF       186 MOPAC 2E- INTEGRALS.
 
      $CONTRL OPTIONS
      ---------------
-     SCFTYP=RHF          RUNTYP=SURFACE      EXETYP=RUN     
-     MPLEVL=       0     LOCAL =NONE         UNITS =ANGS    
+     SCFTYP=RHF          RUNTYP=SURFACE      EXETYP=RUN
+     MPLEVL=       0     LOCAL =NONE         UNITS =ANGS
      MULT  =       1     ICHARG=       0     MAXIT =      30
-     NPRINT=       7     IREST =       0     COORD =CART    
+     NPRINT=       7     IREST =       0     COORD =CART
      ECP   =NONE         NORMF =       0     NORMP =       0
      ITOL  =      20     ICUT  =       9     NZVAR =       0
-     NOSYM =       0     INTTYP=POPLE        GEOM  =INPUT   
+     NOSYM =       0     INTTYP=POPLE        GEOM  =INPUT
      PLTORB=       F     MOLPLT=       F     RPAC  =       F
-     AIMPAC=       F     FRIEND=             CITYP =NONE    
-     DFTTYP=NONE    
+     AIMPAC=       F     FRIEND=             CITYP =NONE
+     DFTTYP=NONE
 
      $SYSTEM OPTIONS
      ---------------
      KDIAG =       0     MEMORY=  2000000     TIMLIM=    36000.0 SEC.
      COREFL=       F     PTIME =        F     XDR   =       F
-     BALTYP=LOOP    
+     BALTYP=LOOP
 
           ----------------
           PROPERTIES INPUT
@@ -155,8 +155,8 @@
 
      MOMENTS            FIELD           POTENTIAL          DENSITY
  IEMOM =       1   IEFLD =       0   IEPOT =       0   IEDEN =       0
- WHERE =COMASS     WHERE =NUCLEI     WHERE =NUCLEI     WHERE =NUCLEI  
- OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH    
+ WHERE =COMASS     WHERE =NUCLEI     WHERE =NUCLEI     WHERE =NUCLEI
+ OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH
  IEMINT=       0   IEFINT=       0                     IEDINT=       0
                                                        MORB  =       0
 
@@ -221,8 +221,8 @@
 
  SYMMETRIES FOR INITIAL GUESS ORBITALS FOLLOW.   BOTH SET(S).
      8 ORBITALS ARE OCCUPIED (    0 CORE ORBITALS).
-     1=A        2=A        3=A        4=A        5=A        6=A        7=A   
-     8=A        9=A       10=A       11=A       12=A   
+     1=A        2=A        3=A        4=A        5=A        6=A        7=A
+     8=A        9=A       10=A       11=A       12=A
  ...... END OF INITIAL ORBITAL SELECTION ......
 
  CPU        TIME:   STEP =      0.00 ,  TOTAL =        0.2 SECONDS (    0.0 MIN)
@@ -696,16 +696,16 @@
    ICOORD1,     |
     COORD1      |       ENERGY
  ---------------+--------------------
-  1 (   0.00000)|      -23.8764007937  
-  2 (   0.10000)|      -23.8775193054  
-  3 (   0.20000)|      -23.8781634891  
-  4 (   0.30000)|      -23.8784979803  
-  5 (   0.40000)|      -23.8786838155  
-  6 (   0.50000)|      -23.8788208518  
-  7 (   0.60000)|      -23.8789343580  
-  8 (   0.70000)|      -23.8790103613  
-  9 (   0.80000)|      -23.8790363931  
- 10 (   0.90000)|      -23.8790180122  
+  1 (   0.00000)|      -23.8764007937
+  2 (   0.10000)|      -23.8775193054
+  3 (   0.20000)|      -23.8781634891
+  4 (   0.30000)|      -23.8784979803
+  5 (   0.40000)|      -23.8786838155
+  6 (   0.50000)|      -23.8788208518
+  7 (   0.60000)|      -23.8789343580
+  8 (   0.70000)|      -23.8790103613
+  9 (   0.80000)|      -23.8790363931
+ 10 (   0.90000)|      -23.8790180122
 
 
  ENERGY DELTA MAP(S) (W.R. TO THE LOWEST FOUND)
@@ -714,16 +714,16 @@
    ICOORD1,     |         ENERGY
     COORD1      |         DELTA
  ---------------+--------------------
-  1 (   0.00000)|        0.0026355994  
-  2 (   0.10000)|        0.0015170877  
-  3 (   0.20000)|        0.0008729040  
-  4 (   0.30000)|        0.0005384128  
-  5 (   0.40000)|        0.0003525776  
-  6 (   0.50000)|        0.0002155413  
-  7 (   0.60000)|        0.0001020351  
-  8 (   0.70000)|        0.0000260318  
-  9 (   0.80000)|        0.0000000000  
- 10 (   0.90000)|        0.0000183809  
+  1 (   0.00000)|        0.0026355994
+  2 (   0.10000)|        0.0015170877
+  3 (   0.20000)|        0.0008729040
+  4 (   0.30000)|        0.0005384128
+  5 (   0.40000)|        0.0003525776
+  6 (   0.50000)|        0.0002155413
+  7 (   0.60000)|        0.0001020351
+  8 (   0.70000)|        0.0000260318
+  9 (   0.80000)|        0.0000000000
+ 10 (   0.90000)|        0.0000183809
 
  ... DONE WITH POTENTIAL SURFACE SCAN ...
 

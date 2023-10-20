@@ -507,7 +507,7 @@ class MemoryReader(base.ProtoReader):
 
             .. deprecated:: 2.4.0
                Note that `stop` is currently *inclusive* but will be
-               changed in favour of being *exclusive* in version 3.0.  
+               changed in favour of being *exclusive* in version 3.0.
 
         step : int (optional)
             the number of trajectory frames to skip

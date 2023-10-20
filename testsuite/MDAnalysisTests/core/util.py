@@ -606,4 +606,3 @@ class UnWrapUniverse(object):
             center_pos = center_pos[9:]
 
         return center_pos
-

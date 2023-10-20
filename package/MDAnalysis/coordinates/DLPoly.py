@@ -176,7 +176,7 @@ class HistoryReader(base.ReaderBase):
             unitcell[0] = self._file.readline().split()
             unitcell[1] = self._file.readline().split()
             unitcell[2] = self._file.readline().split()
-            ts.dimensions = core.triclinic_box(*unitcell)            
+            ts.dimensions = core.triclinic_box(*unitcell)
 
         # If ids are given, put them in here
         # and later sort by them

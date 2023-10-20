@@ -64,13 +64,13 @@ class BaseITP(ParserBase):
 
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == self.expected_n_bonds
-    
+
     def test_angles_total_counts(self, top):
         assert len(top.angles.values) == self.expected_n_angles
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == self.expected_n_dihedrals
-    
+
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == self.expected_n_impropers
 
@@ -86,7 +86,7 @@ class TestITP(BaseITP):
     expected_n_angles = 91
     expected_n_dihedrals = 30
     expected_n_impropers = 29
-    
+
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 3
         assert len(universe.atoms[[42]].bonds) == 1
@@ -95,7 +95,7 @@ class TestITP(BaseITP):
         vals = top.bonds.values
         for b in ((0, 1), (0, 2), (0, 3), (3, 4)):
             assert b in vals
-        
+
     def test_bonds_type(self, universe):
         assert universe.bonds[0].type == 2
 
@@ -107,7 +107,7 @@ class TestITP(BaseITP):
         vals = top.angles.values
         for b in ((1, 0, 2), (1, 0, 3), (2, 0, 3)):
             assert (b in vals) or (b[::-1] in vals)
-    
+
     def test_angles_type(self, universe):
         assert universe.angles[0].type == 2
 
@@ -123,7 +123,7 @@ class TestITP(BaseITP):
         vals = top.dihedrals.values
         for b in ((1, 0, 3, 5), (0, 3, 5, 7)):
             assert (b in vals) or (b[::-1] in vals)
-    
+
     def test_dihedrals_type(self, universe):
         assert universe.dihedrals[0].type == (1, 1)
 
@@ -134,7 +134,7 @@ class TestITP(BaseITP):
         vals = top.impropers.values
         for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
             assert (b in vals) or (b[::-1] in vals)
-    
+
     def test_impropers_type(self, universe):
         assert universe.impropers[0].type == 2
 
@@ -252,7 +252,7 @@ class TestITPNoKeywords(BaseITP):
         #ifndef HW1_CHARGE
             #define HW1_CHARGE 0.241
         #endif
-        
+
         [ atoms ]
             1       opls_118     1       SOL              OW             1       0
             2       opls_119     1       SOL             HW1             1       HW1_CHARGE
@@ -283,7 +283,7 @@ class TestITPNoKeywords(BaseITP):
         assert_allclose(top.charges.values[1], 0.241)
         assert_allclose(top.charges.values[2], 0.241)
 
-    
+
 class TestITPKeywords(TestITPNoKeywords):
     """
     Test reading ITP files *with* defined keywords.
@@ -295,13 +295,13 @@ class TestITPKeywords(TestITPNoKeywords):
 
     @pytest.fixture
     def universe(self, filename):
-        return mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True, 
+        return mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True,
                             HW1_CHARGE=1, HW2_CHARGE=3)
 
     @pytest.fixture()
     def top(self, filename):
         with self.parser(filename) as p:
-            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True, 
+            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True,
                           HW1_CHARGE=1, HW2_CHARGE=3)
 
     def test_whether_settles_types(self, universe):
@@ -340,7 +340,7 @@ class TestNestedIfs(BaseITP):
     def top(self, filename):
         with self.parser(filename) as p:
             yield p.parse(HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True)
-    
+
     def test_heavy_atom(self, universe):
         assert universe.atoms[5].mass > 40
 

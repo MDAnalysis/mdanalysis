@@ -28,7 +28,7 @@
 
  AMD Opteron/ Win32  PC GAMESS version running under Windows NT
  Running on AMD CPU  :  CPU Generation 15, Family 15, Model  5, Stepping  8
- CPU Brand String    :  AMD Opteron(tm) Processor 144                   
+ CPU Brand String    :  AMD Opteron(tm) Processor 144
  CPU Features        :  CMOV, MMX, SSE, SSE2, AMD64
  Data cache size     :  L1 64 KB, L2 1024 KB, L3     0 KB
  Operating System successfully passed SSE support test.
@@ -37,47 +37,47 @@
  EXECUTION OF GAMESS BEGUN 20:41:24 LT  27-AUG-2007
 
             ECHO OF THE FIRST FEW INPUT CARDS -
- INPUT CARD>! EXAM 12.                                                                      
- INPUT CARD>!   This job illustrates linear bends, for acetylene.                           
- INPUT CARD>!   The optimal RHF/STO-2G geometry is located.                                 
- INPUT CARD>!                                                                               
- INPUT CARD>!   At the input geometry,                                                      
- INPUT CARD>!   the FINAL E= -73.5036974734 after 7 iterations,                             
- INPUT CARD>!   and the RMS gradient is 0.1506891.                                          
- INPUT CARD>!                                                                               
- INPUT CARD>!   At the final geometry, 7 steps later,                                       
- INPUT CARD>!   the FINAL E= -73.6046483165, RMS gradient=0.0000028,                        
- INPUT CARD>!   R(CC)=1.1777007 and R(CH)=1.0749435.                                        
- INPUT CARD>!                                                                               
- INPUT CARD> $CONTRL SCFTYP=RHF RUNTYP=OPTIMIZE NZVAR=5 $END                                
- INPUT CARD> $SYSTEM TIMLIM=6 MEMORY=100000 $END                                            
- INPUT CARD> $BASIS  GBASIS=STO NGAUSS=2 $END                                               
- INPUT CARD> $GUESS  GUESS=HUCKEL $END                                                      
- INPUT CARD> $DATA                                                                          
- INPUT CARD>Acetylene geometry optimization in internal coordinates                         
- INPUT CARD>Dnh      4                                                                      
- INPUT CARD>                                                                                
- INPUT CARD>CARBON      6.0    0.0  0.0  0.70                                               
- INPUT CARD>HYDROGEN    1.0    0.0  0.0  1.78                                               
- INPUT CARD> $END                                                                           
- INPUT CARD> $ZMAT  IZMAT(1)=1,1,2,   1,1,3,   1,2,4,                                       
- INPUT CARD>                 5,1,2,4,    5,2,1,3  $END                                      
- INPUT CARD>------- XZ is 1st plane for both bends -------                                  
- INPUT CARD> $LIBE  APTS(1)=1.0,0.0,0.0,1.0,0.0,0.0 $END                                    
+ INPUT CARD>! EXAM 12.
+ INPUT CARD>!   This job illustrates linear bends, for acetylene.
+ INPUT CARD>!   The optimal RHF/STO-2G geometry is located.
+ INPUT CARD>!
+ INPUT CARD>!   At the input geometry,
+ INPUT CARD>!   the FINAL E= -73.5036974734 after 7 iterations,
+ INPUT CARD>!   and the RMS gradient is 0.1506891.
+ INPUT CARD>!
+ INPUT CARD>!   At the final geometry, 7 steps later,
+ INPUT CARD>!   the FINAL E= -73.6046483165, RMS gradient=0.0000028,
+ INPUT CARD>!   R(CC)=1.1777007 and R(CH)=1.0749435.
+ INPUT CARD>!
+ INPUT CARD> $CONTRL SCFTYP=RHF RUNTYP=OPTIMIZE NZVAR=5 $END
+ INPUT CARD> $SYSTEM TIMLIM=6 MEMORY=100000 $END
+ INPUT CARD> $BASIS  GBASIS=STO NGAUSS=2 $END
+ INPUT CARD> $GUESS  GUESS=HUCKEL $END
+ INPUT CARD> $DATA
+ INPUT CARD>Acetylene geometry optimization in internal coordinates
+ INPUT CARD>Dnh      4
+ INPUT CARD>
+ INPUT CARD>CARBON      6.0    0.0  0.0  0.70
+ INPUT CARD>HYDROGEN    1.0    0.0  0.0  1.78
+ INPUT CARD> $END
+ INPUT CARD> $ZMAT  IZMAT(1)=1,1,2,   1,1,3,   1,2,4,
+ INPUT CARD>                 5,1,2,4,    5,2,1,3  $END
+ INPUT CARD>------- XZ is 1st plane for both bends -------
+ INPUT CARD> $LIBE  APTS(1)=1.0,0.0,0.0,1.0,0.0,0.0 $END
      200000 WORDS OF MEMORY AVAILABLE
 
      BASIS OPTIONS
      -------------
-     GBASIS=STO          IGAUSS=       2      POLAR=NONE    
+     GBASIS=STO          IGAUSS=       2      POLAR=NONE
      NDFUNC=       0     NFFUNC=       0     DIFFSP=       F
      NPFUNC=       0      DIFFS=       F
 
 
      RUN TITLE
      ---------
- Acetylene geometry optimization in internal coordinates                         
+ Acetylene geometry optimization in internal coordinates
 
- THE POINT GROUP OF THE MOLECULE IS DNH     
+ THE POINT GROUP OF THE MOLECULE IS DNH
  THE ORDER OF THE PRINCIPAL AXIS IS     4
 
  ATOM      ATOMIC                      COORDINATES (BOHR)
@@ -90,12 +90,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.4000000 *    1.0800000 *    2.4800000 *  
-  2  CARBON          1.4000000 *    0.0000000      2.4800000 *    1.0800000 *  
-  3  HYDROGEN        1.0800000 *    2.4800000 *    0.0000000      3.5600000    
-  4  HYDROGEN        2.4800000 *    1.0800000 *    3.5600000      0.0000000    
+  1  CARBON          0.0000000      1.4000000 *    1.0800000 *    2.4800000 *
+  2  CARBON          1.4000000 *    0.0000000      2.4800000 *    1.0800000 *
+  3  HYDROGEN        1.0800000 *    2.4800000 *    0.0000000      3.5600000
+  4  HYDROGEN        2.4800000 *    1.0800000 *    3.5600000      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -107,18 +107,18 @@
 
  SHELL TYPE PRIM    EXPONENT          CONTRACTION COEFFICIENTS
 
- CARBON    
+ CARBON
 
-   3   S    1      27.385033    3.669807 (  0.430128) 
-   3   S    2       4.874522    1.587353 (  0.678914) 
+   3   S    1      27.385033    3.669807 (  0.430128)
+   3   S    2       4.874522    1.587353 (  0.678914)
 
-   4   L    3       1.136748    0.038816 (  0.049472)     0.855856 (  0.511541) 
-   4   L    4       0.288309    0.270261 (  0.963782)     0.184542 (  0.612820) 
+   4   L    3       1.136748    0.038816 (  0.049472)     0.855856 (  0.511541)
+   4   L    4       0.288309    0.270261 (  0.963782)     0.184542 (  0.612820)
 
- HYDROGEN  
+ HYDROGEN
 
-   6   S    5       1.309756    0.375320 (  0.430128) 
-   6   S    6       0.233136    0.162342 (  0.678914) 
+   6   S    5       1.309756    0.375320 (  0.430128)
+   6   S    6       0.233136    0.162342 (  0.678914)
 
  TOTAL NUMBER OF SHELLS              =    6
  TOTAL NUMBER OF BASIS FUNCTIONS     =   12
@@ -134,22 +134,22 @@
 
      $CONTRL OPTIONS
      ---------------
-     SCFTYP=RHF          RUNTYP=OPTIMIZE     EXETYP=RUN     
-     MPLEVL=       0     LOCAL =NONE         UNITS =ANGS    
+     SCFTYP=RHF          RUNTYP=OPTIMIZE     EXETYP=RUN
+     MPLEVL=       0     LOCAL =NONE         UNITS =ANGS
      MULT  =       1     ICHARG=       0     MAXIT =      30
-     NPRINT=       7     IREST =       0     COORD =UNIQUE  
+     NPRINT=       7     IREST =       0     COORD =UNIQUE
      ECP   =NONE         NORMF =       0     NORMP =       0
      ITOL  =      20     ICUT  =       9     NZVAR =       5
-     NOSYM =       0     INTTYP=POPLE        GEOM  =INPUT   
+     NOSYM =       0     INTTYP=POPLE        GEOM  =INPUT
      PLTORB=       F     MOLPLT=       F     RPAC  =       F
-     AIMPAC=       F     FRIEND=             CITYP =NONE    
-     DFTTYP=NONE    
+     AIMPAC=       F     FRIEND=             CITYP =NONE
+     DFTTYP=NONE
 
      $SYSTEM OPTIONS
      ---------------
      KDIAG =       0     MEMORY=   200000     TIMLIM=      360.0 SEC.
      COREFL=       F     PTIME =        F     XDR   =       F
-     BALTYP=LOOP    
+     BALTYP=LOOP
 
           ----------------
           PROPERTIES INPUT
@@ -157,8 +157,8 @@
 
      MOMENTS            FIELD           POTENTIAL          DENSITY
  IEMOM =       1   IEFLD =       0   IEPOT =       0   IEDEN =       0
- WHERE =COMASS     WHERE =NUCLEI     WHERE =NUCLEI     WHERE =NUCLEI  
- OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH    
+ WHERE =COMASS     WHERE =NUCLEI     WHERE =NUCLEI     WHERE =NUCLEI
+ OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH       OUTPUT=BOTH
  IEMINT=       0   IEFINT=       0                     IEDINT=       0
                                                        MORB  =       0
 
@@ -225,13 +225,13 @@
           STATIONARY POINT LOCATION RUN
           -----------------------------
 
- OBTAINING INITIAL HESSIAN, HESS=GUESS   
+ OBTAINING INITIAL HESSIAN, HESS=GUESS
  DIAGONAL GUESS HESSIAN IN INTERNAL COORDS IS
      1  0.4727     2  0.3532     3  0.3532     4  0.2500     5  0.2500
      6  0.2500     7  0.2500
 
           PARAMETERS CONTROLLING GEOMETRY SEARCH ARE
-          METHOD =QA                  UPHESS =BFGS    
+          METHOD =QA                  UPHESS =BFGS
           NNEG   =         0          NFRZ   =         0
           NSTEP  =        20          IFOLOW =         1
           HESS   =GUESS               RESTAR =         F
@@ -298,8 +298,8 @@
 
  SYMMETRIES FOR INITIAL GUESS ORBITALS FOLLOW.   BOTH SET(S).
      7 ORBITALS ARE OCCUPIED (    2 CORE ORBITALS).
-     3=A1G      4=A2U      5=A1G      6=EU       7=EU       8=EG       9=EG  
-    10=A2U     11=A1G     12=A2U 
+     3=A1G      4=A2U      5=A1G      6=EU       7=EU       8=EG       9=EG
+    10=A2U     11=A1G     12=A2U
  ...... END OF INITIAL ORBITAL SELECTION ......
 
  CPU        TIME:   STEP =      0.00 ,  TOTAL =        0.0 SECONDS (    0.0 MIN)
@@ -364,7 +364,7 @@
 
                       1          2          3          4          5
                   -10.5911   -10.5897    -0.8499    -0.6785    -0.5528
-                     A2U        A1G        A1G        A2U        A1G 
+                     A2U        A1G        A1G        A2U        A1G
     1  C   1  S   0.694565   0.696395  -0.207795  -0.140682  -0.020381
     2  C   1  S   0.054894   0.035829   0.525338   0.359296   0.038641
     3  C   1  X   0.000000   0.000000   0.000000   0.000000   0.000000
@@ -380,7 +380,7 @@
 
                       6          7          8          9         10
                    -0.2516    -0.2516     0.3618     0.3618     0.4782
-                     EU         EU         EG         EG         A2U 
+                     EU         EU         EG         EG         A2U
     1  C   1  S   0.000000   0.000000   0.000000   0.000000  -0.227829
     2  C   1  S   0.000000   0.000000   0.000000   0.000000   1.062588
     3  C   1  X   0.641670   0.000000   0.797760   0.000000   0.000000
@@ -396,7 +396,7 @@
 
                      11         12
                     0.7498     1.3028
-                     A1G        A2U 
+                     A1G        A2U
     1  C   1  S   0.120331  -0.074450
     2  C   1  S  -0.666863   0.461626
     3  C   1  X   0.000000   0.000000
@@ -642,12 +642,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.2412483 *    1.0795233 *    2.3207716 *  
-  2  CARBON          1.2412483 *    0.0000000      2.3207716 *    1.0795233 *  
-  3  HYDROGEN        1.0795233 *    2.3207716 *    0.0000000      3.4002949    
-  4  HYDROGEN        2.3207716 *    1.0795233 *    3.4002949      0.0000000    
+  1  CARBON          0.0000000      1.2412483 *    1.0795233 *    2.3207716 *
+  2  CARBON          1.2412483 *    0.0000000      2.3207716 *    1.0795233 *
+  3  HYDROGEN        1.0795233 *    2.3207716 *    0.0000000      3.4002949
+  4  HYDROGEN        2.3207716 *    1.0795233 *    3.4002949      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -773,12 +773,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.1262332 *    1.0721991 *    2.1984324 *  
-  2  CARBON          1.1262332 *    0.0000000      2.1984324 *    1.0721991 *  
-  3  HYDROGEN        1.0721991 *    2.1984324 *    0.0000000      3.2706315    
-  4  HYDROGEN        2.1984324 *    1.0721991 *    3.2706315      0.0000000    
+  1  CARBON          0.0000000      1.1262332 *    1.0721991 *    2.1984324 *
+  2  CARBON          1.1262332 *    0.0000000      2.1984324 *    1.0721991 *
+  3  HYDROGEN        1.0721991 *    2.1984324 *    0.0000000      3.2706315
+  4  HYDROGEN        2.1984324 *    1.0721991 *    3.2706315      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -904,12 +904,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.1861064 *    1.0745500 *    2.2606564 *  
-  2  CARBON          1.1861064 *    0.0000000      2.2606564 *    1.0745500 *  
-  3  HYDROGEN        1.0745500 *    2.2606564 *    0.0000000      3.3352064    
-  4  HYDROGEN        2.2606564 *    1.0745500 *    3.3352064      0.0000000    
+  1  CARBON          0.0000000      1.1861064 *    1.0745500 *    2.2606564 *
+  2  CARBON          1.1861064 *    0.0000000      2.2606564 *    1.0745500 *
+  3  HYDROGEN        1.0745500 *    2.2606564 *    0.0000000      3.3352064
+  4  HYDROGEN        2.2606564 *    1.0745500 *    3.3352064      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -1035,12 +1035,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.1787519 *    1.0753082 *    2.2540601 *  
-  2  CARBON          1.1787519 *    0.0000000      2.2540601 *    1.0753082 *  
-  3  HYDROGEN        1.0753082 *    2.2540601 *    0.0000000      3.3293683    
-  4  HYDROGEN        2.2540601 *    1.0753082 *    3.3293683      0.0000000    
+  1  CARBON          0.0000000      1.1787519 *    1.0753082 *    2.2540601 *
+  2  CARBON          1.1787519 *    0.0000000      2.2540601 *    1.0753082 *
+  3  HYDROGEN        1.0753082 *    2.2540601 *    0.0000000      3.3293683
+  4  HYDROGEN        2.2540601 *    1.0753082 *    3.3293683      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -1166,12 +1166,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.1776555 *    1.0747072 *    2.2523627 *  
-  2  CARBON          1.1776555 *    0.0000000      2.2523627 *    1.0747072 *  
-  3  HYDROGEN        1.0747072 *    2.2523627 *    0.0000000      3.3270699    
-  4  HYDROGEN        2.2523627 *    1.0747072 *    3.3270699      0.0000000    
+  1  CARBON          0.0000000      1.1776555 *    1.0747072 *    2.2523627 *
+  2  CARBON          1.1776555 *    0.0000000      2.2523627 *    1.0747072 *
+  3  HYDROGEN        1.0747072 *    2.2523627 *    0.0000000      3.3270699
+  4  HYDROGEN        2.2523627 *    1.0747072 *    3.3270699      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -1297,12 +1297,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.1776745 *    1.0750133 *    2.2526877 *  
-  2  CARBON          1.1776745 *    0.0000000      2.2526877 *    1.0750133 *  
-  3  HYDROGEN        1.0750133 *    2.2526877 *    0.0000000      3.3277010    
-  4  HYDROGEN        2.2526877 *    1.0750133 *    3.3277010      0.0000000    
+  1  CARBON          0.0000000      1.1776745 *    1.0750133 *    2.2526877 *
+  2  CARBON          1.1776745 *    0.0000000      2.2526877 *    1.0750133 *
+  3  HYDROGEN        1.0750133 *    2.2526877 *    0.0000000      3.3277010
+  4  HYDROGEN        2.2526877 *    1.0750133 *    3.3277010      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -1427,12 +1427,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.1777007 *    1.0749435 *    2.2526442 *  
-  2  CARBON          1.1777007 *    0.0000000      2.2526442 *    1.0749435 *  
-  3  HYDROGEN        1.0749435 *    2.2526442 *    0.0000000      3.3275876    
-  4  HYDROGEN        2.2526442 *    1.0749435 *    3.3275876      0.0000000    
+  1  CARBON          0.0000000      1.1777007 *    1.0749435 *    2.2526442 *
+  2  CARBON          1.1777007 *    0.0000000      2.2526442 *    1.0749435 *
+  3  HYDROGEN        1.0749435 *    2.2526442 *    0.0000000      3.3275876
+  4  HYDROGEN        2.2526442 *    1.0749435 *    3.3275876      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -1510,7 +1510,7 @@
           MAXIMUM GRADIENT =  0.0000073    RMS GRADIENT = 0.0000028
 1     ***** EQUILIBRIUM GEOMETRY LOCATED *****
 
- Acetylene geometry optimization in internal coordinates                         
+ Acetylene geometry optimization in internal coordinates
  COORDINATES OF SYMMETRY UNIQUE ATOMS (ANGS)
    ATOM   CHARGE       X              Y              Z
  ------------------------------------------------------------
@@ -1544,12 +1544,12 @@
           INTERNUCLEAR DISTANCES (ANGS.)
           ------------------------------
 
-                    CARBON         CARBON         HYDROGEN       HYDROGEN  
+                    CARBON         CARBON         HYDROGEN       HYDROGEN
 
-  1  CARBON          0.0000000      1.1777007 *    1.0749435 *    2.2526442 *  
-  2  CARBON          1.1777007 *    0.0000000      2.2526442 *    1.0749435 *  
-  3  HYDROGEN        1.0749435 *    2.2526442 *    0.0000000      3.3275876    
-  4  HYDROGEN        2.2526442 *    1.0749435 *    3.3275876      0.0000000    
+  1  CARBON          0.0000000      1.1777007 *    1.0749435 *    2.2526442 *
+  2  CARBON          1.1777007 *    0.0000000      2.2526442 *    1.0749435 *
+  3  HYDROGEN        1.0749435 *    2.2526442 *    0.0000000      3.3275876
+  4  HYDROGEN        2.2526442 *    1.0749435 *    3.3275876      0.0000000
 
   * ... LESS THAN  3.000
 
@@ -1564,7 +1564,7 @@
 
                       1          2          3          4          5
                   -10.6116   -10.6091    -0.9304    -0.6757    -0.5880
-                     A1G        A2U        A1G        A2U        A1G 
+                     A1G        A2U        A1G        A2U        A1G
     1  C   1  S   0.695522   0.694586  -0.220393  -0.134164  -0.000042
     2  C   1  S   0.034586   0.066095   0.483769   0.324041  -0.065440
     3  C   1  X   0.000000   0.000000   0.000000   0.000000   0.000000
@@ -1580,7 +1580,7 @@
 
                       6          7          8          9         10
                    -0.3377    -0.3377     0.4484     0.4484     0.5674
-                     EU         EU         EG         EG         A2U 
+                     EU         EU         EG         EG         A2U
     1  C   1  S   0.000000   0.000000   0.000000   0.000000  -0.220768
     2  C   1  S   0.000000   0.000000   0.000000   0.000000   1.156159
     3  C   1  X   0.616462   0.000000   0.854796   0.000000   0.000000
@@ -1596,7 +1596,7 @@
 
                      11         12
                     0.7503     1.6599
-                     A1G        A2U 
+                     A1G        A2U
     1  C   1  S   0.113967  -0.126627
     2  C   1  S  -0.682166   1.146495
     3  C   1  X   0.000000   0.000000
@@ -1741,7 +1741,7 @@
  CPU        TIME:   STEP =      0.00 ,  TOTAL =        0.2 SECONDS (    0.0 MIN)
  WALL CLOCK TIME:   STEP =      0.00 ,  TOTAL =        0.1 SECONDS (    0.0 MIN)
  CPU UTILIZATION:   STEP =      0.00%,  TOTAL =     105.37%
-  $VIB   
+  $VIB
           IVIB=   0 IATOM=   0 ICOORD=   0 E=      -73.6046483151
  -8.020944297E-50 1.657114120E-49-7.508778270E-06-8.020944297E-50 1.657114120E-49
   7.508778270E-06-1.095505175E-50-3.634960006E-49 1.962522075E-07-1.095505175E-50

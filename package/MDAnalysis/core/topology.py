@@ -631,4 +631,3 @@ class Topology(object):
             attr._add_new(newval)
 
         return segidx
-

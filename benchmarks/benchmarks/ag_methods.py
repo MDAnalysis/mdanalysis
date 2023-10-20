@@ -326,11 +326,11 @@ class AtomGroupAttrsBench(object):
 
 class CompoundSplitting(object):
     """Test how fast can we split compounds into masks and apply them
-    
+
     The benchmark used in Issue #3000. Parameterizes multiple compound number
     and size combinations.
     """
-    
+
     params = [(100, 10000, 1000000),  # n_atoms
               (1, 10, 100),           # n_compounds
               (True, False),          # homogeneous
@@ -345,7 +345,7 @@ class CompoundSplitting(object):
 
         if n_compounds == 1 and not (homogeneous and contiguous):
             raise NotImplementedError
-            
+
         if n_compounds == n_atoms:
             if not (homogeneous and contiguous):
                 raise NotImplementedError
@@ -359,14 +359,14 @@ class CompoundSplitting(object):
         else:
             compound_indices = np.sort(np.floor(rg.random(n_atoms)
                                                 * n_compounds).astype(np.int))
-                
+
         unique_indices = np.unique(compound_indices)
         if len(unique_indices) != n_compounds:
             raise RuntimeError
-        
+
         if not contiguous:
             rg.shuffle(compound_indices)
-        
+
         self.u = MDAnalysis.Universe.empty(n_atoms,
                                            n_residues=n_compounds,
                                            n_segments=1,
@@ -394,11 +394,11 @@ class FragmentFinding(object):
 
     def setup(self, universe_type):
         if universe_type == 'large_fragment_small_solvents':
-            univ = (TPR, XTC) 
+            univ = (TPR, XTC)
         elif universe_type == 'large_fragment':
             univ = (PSF, DCD)
         else:
-            univ = (TRZ_psf, TRZ) 
+            univ = (TRZ_psf, TRZ)
         self.u = MDAnalysis.Universe(*univ)
 
     def time_find_fragments(self, universe_type):

@@ -107,13 +107,13 @@ class TestXVGReader(BaseAuxReaderTest):
             next(reader)
 
     def test_time_selector_out_of_range_raises_ValueError(self, ref, reader):
-        # if time_selector is not a valid index of _data, a ValueError 
+        # if time_selector is not a valid index of _data, a ValueError
         # should be raised
         with pytest.raises(ValueError):
             reader.time_selector = len(reader.auxstep._data)
 
     def test_data_selector_out_of_range_raises_ValueError(self, ref, reader):
-        # if data_selector is not a valid index of _data, a ValueError 
+        # if data_selector is not a valid index of _data, a ValueError
         # should be raised
         with pytest.raises(ValueError):
             reader.data_selector = [len(reader.auxstep._data)]
@@ -155,7 +155,7 @@ class TestXVGFileReader(TestXVGReader):
 
     def test_get_auxreader_for(self, ref, reader):
         # Default reader of .xvg files is intead XVGReader, not XVGFileReader
-        # so test specifying format 
+        # so test specifying format
         reader = mda.auxiliary.core.get_auxreader_for(ref.testdata,
                                                       format=ref.format)
         assert reader == ref.reader

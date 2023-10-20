@@ -187,13 +187,13 @@ class TestTransTable(object):
 class TestLevelMoves(object):
     """Tests for moving atoms/residues between residues/segments
 
-    
+
     Atoms can move between residues by setting .residue with a Residue
     Residues can move between segments by setting .segment with a Segment
 
     Moves are performed by setting either [res/seg]indices or [res/seg]ids
 
-    
+
     """
 
     @pytest.fixture()

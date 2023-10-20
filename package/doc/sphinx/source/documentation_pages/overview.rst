@@ -145,7 +145,7 @@ MDAnalysis comes with a number of real trajectories for testing. You
 can also use them to explore the functionality and ensure that
 everything is working properly::
 
-  import MDAnalysis as mda 
+  import MDAnalysis as mda
   from MDAnalysis.tests.datafiles import PSF,DCD, PDB,XTC
   u_dims_adk = mda.Universe(PSF,DCD)
   u_eq_adk = mda.Universe(PDB, XTC)

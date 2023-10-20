@@ -259,7 +259,7 @@ def test_reader_initial_next(original_and_copy):
 
     original.next()
     copy.next()
-    
+
     assert original.ts.frame == copy.ts.frame
     assert_equal(original.ts.positions, copy.ts.positions)
 

@@ -134,12 +134,12 @@ class TXYZParser(TopologyReaderBase):
                  ]
         if all(n.capitalize() in SYMB2Z for n in names):
             attrs.append(Elements(np.array(names, dtype=object)))
-            
+
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
                           "guessed using MDAnalysis.topology.guessers.")
- 
+
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
 

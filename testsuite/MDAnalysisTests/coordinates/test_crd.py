@@ -95,7 +95,7 @@ class TestCRDWriter(object):
         assert_equal(len(u.atoms.residues),
             len(u2.atoms.residues)), 'Equal number of residues expected in'\
                         'both CRD formats'
-        assert_equal(len(u.atoms.segments), 
+        assert_equal(len(u.atoms.segments),
             len(u2.atoms.segments)), 'Equal number of segments expected in'\
                         'both CRD formats'
         assert_allclose(cog1, cog2, rtol=1e-6, atol=0), 'Same centroid expected for both CRD formats'

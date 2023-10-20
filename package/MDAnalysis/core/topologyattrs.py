@@ -1733,8 +1733,8 @@ class Masses(AtomAttr):
         tensor.
 
         .. math::
-        
-            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} - 
+
+            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} -
                 \mathbf{r}_\mathrm{COM})(\mathbf{r}_\mathrm{i} - \mathbf{r}_\mathrm{COM})
 
         Where :math:`\mathbf{r}_\mathrm{COM}` is the center of mass.
@@ -1783,21 +1783,21 @@ class Masses(AtomAttr):
                  recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
              elif unwrap:
                  recenteredpos = (atomgroup.unwrap(inplace=False,
-                                                   compound=compound, 
-                                                   reference=None, 
+                                                   compound=compound,
+                                                   reference=None,
                                                   ) - com)
              else:
                  recenteredpos = (atomgroup.positions - com)
              eig_vals = _gyration(recenteredpos, masses)
         else:
-             (atom_masks, 
-              compound_masks, 
+             (atom_masks,
+              compound_masks,
               n_compounds) = atomgroup._split_by_compound_indices(compound)
 
              if unwrap:
                  coords = atomgroup.unwrap(
-                     compound=compound, 
-                     reference=None, 
+                     compound=compound,
+                     reference=None,
                      inplace=False
                  )
              else:
@@ -2143,7 +2143,7 @@ class Charges(AtomAttr):
         r"""Dipole vector of the group.
 
         .. math::
-            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
             \mathbf{r}_{COM} )
 
         Computes the dipole vector of :class:`Atoms<Atom>` in the group.
@@ -2156,10 +2156,10 @@ class Charges(AtomAttr):
         a charged group the dipole moment can be later adjusted  with:
 
         .. math::
-            \boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} + 
+            \boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} +
             q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}
 
-        Where :math:`\mathbf{r}_{COM}` is the center of mass and 
+        Where :math:`\mathbf{r}_{COM}` is the center of mass and
         :math:`\mathbf{r}_{COC}` is the center of charge.
 
         Parameters
@@ -2183,7 +2183,7 @@ class Charges(AtomAttr):
             :class:`Atoms<Atom>` *belonging to the group* will be taken into
             account.
         center : {'mass', 'charge'}, optional
-            Choose whether the dipole vector is calculated at the center of 
+            Choose whether the dipole vector is calculated at the center of
             "mass" or the center of "charge", default is "mass".
 
         Returns
@@ -2229,7 +2229,7 @@ class Charges(AtomAttr):
                 ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            dipole_vector = np.einsum('ij,ij->j',recenteredpos, 
+            dipole_vector = np.einsum('ij,ij->j',recenteredpos,
                                        charges[:, np.newaxis])
         else:
             (atom_masks, compound_masks,
@@ -2267,8 +2267,8 @@ class Charges(AtomAttr):
         fragment can be obtained by setting the `compound` parameter
         accordingly.
 
-        Note that when there is a net charge, the magnitude of the dipole 
-        moment is dependent on the `center` chosen. 
+        Note that when there is a net charge, the magnitude of the dipole
+        moment is dependent on the `center` chosen.
         See :meth:`~dipole_vector`.
 
         Parameters
@@ -2292,7 +2292,7 @@ class Charges(AtomAttr):
             :class:`Atoms<Atom>` *belonging to the group* will be taken into
             account.
         center : {'mass', 'charge'}, optional
-            Choose whether the dipole vector is calculated at the center of 
+            Choose whether the dipole vector is calculated at the center of
             "mass" or the center of "charge", default is "mass".
 
         Returns
@@ -2336,14 +2336,14 @@ class Charges(AtomAttr):
         tensor of the group:
 
         .. math::
-            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
             \mathbf{r}_{COM} ) \otimes ( \mathbf{r}_{i} - \mathbf{r}_{COM} )
 
         The traceless quadrupole tensor, :math:`\hat{\mathsf{Q}}`, is then
         taken from:
 
         .. math::
-            \hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2} 
+            \hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2}
             tr(\mathsf{Q})
 
         Computes the quadrupole tensor of :class:`Atoms<Atom>` in the group.
@@ -2351,8 +2351,8 @@ class Charges(AtomAttr):
         fragment can be obtained by setting the `compound` parameter
         accordingly.
 
-        Note that when there is an unsymmetrical plane in the molecule or 
-        group, the magnitude of the quadrupole tensor is dependent on the 
+        Note that when there is an unsymmetrical plane in the molecule or
+        group, the magnitude of the quadrupole tensor is dependent on the
         ``center`` (e.g., :math:`\mathbf{r}_{COM}`) chosen and cannot be translated.
 
         Parameters
@@ -2376,7 +2376,7 @@ class Charges(AtomAttr):
             :class:`Atoms<Atom>` *belonging to the group* will be taken into
             account.
         center : {'mass', 'charge'}, optional
-            Choose whether the dipole vector is calculated at the center of 
+            Choose whether the dipole vector is calculated at the center of
             "mass" or the center of "charge", default is "mass".
 
         Returns
@@ -2384,7 +2384,7 @@ class Charges(AtomAttr):
         numpy.ndarray
             Quadrupole tensor(s) of (compounds of) the group in :math:`eÅ^2`.
             If `compound` was set to ``'group'``, the output will be a single
-            tensor of shape ``(3,3)``. Otherwise, the output will be a 1d array 
+            tensor of shape ``(3,3)``. Otherwise, the output will be a 1d array
             of shape ``(n,3,3)`` where ``n`` is the number of compounds.
 
 
@@ -2461,11 +2461,11 @@ class Charges(AtomAttr):
 
     def quadrupole_moment(group, **kwargs):
         r"""Quadrupole moment of the group according to :footcite:p:`Gray1984`.
-         
+
         .. math::
             Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}
 
-        where the quadrupole moment is calculated from the tensor double 
+        where the quadrupole moment is calculated from the tensor double
         contraction of the traceless quadropole tensor :math:`\hat{\mathsf{Q}}`
 
         Computes the quadrupole moment of :class:`Atoms<Atom>` in the group.
@@ -2473,8 +2473,8 @@ class Charges(AtomAttr):
         fragment can be obtained by setting the `compound` parameter
         accordingly.
 
-        Note that when there is an unsymmetrical plane in the molecule or 
-        group, the magnitude of the quadrupole moment is dependant on the 
+        Note that when there is an unsymmetrical plane in the molecule or
+        group, the magnitude of the quadrupole moment is dependant on the
         ``center`` chosen and cannot be translated.
 
         Parameters
@@ -2498,7 +2498,7 @@ class Charges(AtomAttr):
             :class:`Atoms<Atom>` *belonging to the group* will be taken into
             account.
         center : {'mass', 'charge'}, optional
-            Choose whether the dipole vector is calculated at the center of 
+            Choose whether the dipole vector is calculated at the center of
             "mass" or the center of "charge", default is "mass".
 
         Returns

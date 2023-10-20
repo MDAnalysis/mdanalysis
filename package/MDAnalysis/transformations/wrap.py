@@ -24,7 +24,7 @@
 Wrap/unwrap transformations --- :mod:`MDAnalysis.transformations.wrap`
 ======================================================================
 
-Wrap/unwrap the atoms of a given AtomGroup in the unit cell. :func:`wrap` 
+Wrap/unwrap the atoms of a given AtomGroup in the unit cell. :func:`wrap`
 translates the atoms back in the unit cell. :func:`unwrap` translates the
 atoms of each molecule so that bons don't split over images.
 
@@ -42,7 +42,7 @@ from .base import TransformationBase
 class wrap(TransformationBase):
     """
     Shift the contents of a given AtomGroup back into the unit cell. ::
-    
+
        +-----------+          +-----------+
        |           |          |           |
        |         3 | 6        | 6       3 |
@@ -52,24 +52,24 @@ class wrap(TransformationBase):
        |         4 | 7        | 7       4 |
        |           |          |           |
        +-----------+          +-----------+
-    
+
     Example
     -------
-    
+
     .. code-block:: python
-        
-        ag = u.atoms 
+
+        ag = u.atoms
         transform = mda.transformations.wrap(ag)
         u.trajectory.add_transformations(transform)
-        
+
     Parameters
     ----------
-    
+
     ag: Atomgroup
         Atomgroup to be wrapped in the unit cell
     compound : {'atoms', 'group', 'residues', 'segments', 'fragments'}, optional
         The group which will be kept together through the shifting process.
-    
+
     Notes
     -----
     When specifying a `compound`, the translation is calculated based on
@@ -77,7 +77,7 @@ class wrap(TransformationBase):
     within this compound, meaning it will not be broken by the shift.
     This might however mean that not all atoms from the compound are
     inside the unit cell, but rather the center of the compound is.
-    
+
     Returns
     -------
     MDAnalysis.coordinates.timestep.Timestep
@@ -113,7 +113,7 @@ class unwrap(TransformationBase):
     unit cell, causing breaks mid molecule, with the molecule then appearing
     on either side of the unit cell. This is problematic for operations
     such as calculating the center of mass of the molecule. ::
-    
+
        +-----------+     +-----------+
        |           |     |           |
        | 6       3 |     |         3 | 6
@@ -123,22 +123,22 @@ class unwrap(TransformationBase):
        | 7       4 |     |         4 | 7
        |           |     |           |
        +-----------+     +-----------+
-    
+
     Example
     -------
-    
+
     .. code-block:: python
-        
-        ag = u.atoms 
+
+        ag = u.atoms
         transform = mda.transformations.unwrap(ag)
         u.trajectory.add_transformations(transform)
-    
+
     Parameters
     ----------
     atomgroup : AtomGroup
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.
-    
+
     Returns
     -------
     MDAnalysis.coordinates.timestep.Timestep

@@ -400,7 +400,7 @@ def convert(x, u1, u2):
         errmsg = (f"unit '{u1}' not recognized.\n"
                   f"It must be one of {', '.join(unit_types)}.")
         raise ValueError(errmsg) from None
-                  
+
     try:
         ut2 = unit_types[u2]
     except KeyError:

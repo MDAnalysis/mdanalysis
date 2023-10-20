@@ -455,14 +455,14 @@ class DATAWriter(base.WriterBase):
 
 
 class DumpReader(base.ReaderBase):
-    """Reads the default `LAMMPS dump format 
+    """Reads the default `LAMMPS dump format
     <https://docs.lammps.org/dump.html>`__
 
-    Supports coordinates in various LAMMPS coordinate conventions and both 
-    orthogonal and triclinic simulation box dimensions (for more details see 
-    `documentation <https://docs.lammps.org/Howto_triclinic.html>`__). In 
+    Supports coordinates in various LAMMPS coordinate conventions and both
+    orthogonal and triclinic simulation box dimensions (for more details see
+    `documentation <https://docs.lammps.org/Howto_triclinic.html>`__). In
     either case, MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*,
-    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the 
+    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the
     MDAnalysis length unit (Å), and angles are in degrees.
 
     Parameters
@@ -473,10 +473,10 @@ class DumpReader(base.ReaderBase):
         Convention used in coordinates, can be one of the following according
         to the `LAMMPS documentation <https://docs.lammps.org/dump.html>`__:
 
-         - "auto" - Detect coordinate type from file column header. If auto 
+         - "auto" - Detect coordinate type from file column header. If auto
            detection is used, the guessing checks whether the coordinates
-           fit each convention in the order "unscaled", "scaled", "unwrapped", 
-           "scaled_unwrapped" and whichever set of coordinates is detected 
+           fit each convention in the order "unscaled", "scaled", "unwrapped",
+           "scaled_unwrapped" and whichever set of coordinates is detected
            first will be used.
          - "scaled" - Coordinates wrapped in box and scaled by box length (see
             note below), i.e., xs, ys, zs
@@ -486,13 +486,13 @@ class DumpReader(base.ReaderBase):
          - "unwrapped" - Coordinates unwrapped, i.e., xu, yu, zu
 
         If coordinates are given in the scaled coordinate convention (xs,ys,zs)
-        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will 
+        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will
         automatically be converted from their scaled/fractional representation
         to their real values.
     unwrap_images : bool (optional) default=False
-        If `True` and the dump file contains image flags, the coordinates 
-        will be unwrapped. See `read_data 
-        <https://docs.lammps.org/read_data.html>`__  in the lammps 
+        If `True` and the dump file contains image flags, the coordinates
+        will be unwrapped. See `read_data
+        <https://docs.lammps.org/read_data.html>`__  in the lammps
         documentation for more information.
     **kwargs
        Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
@@ -518,7 +518,7 @@ class DumpReader(base.ReaderBase):
     }
 
     @store_init_arguments
-    def __init__(self, filename, 
+    def __init__(self, filename,
                  lammps_coordinate_convention="auto",
                  unwrap_images=False,
                  **kwargs):
@@ -640,7 +640,7 @@ class DumpReader(base.ReaderBase):
         convention_to_col_ix = {}
         for cv_name, cv_col_names in self._coordtype_column_names.items():
             try:
-                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] 
+                convention_to_col_ix[cv_name] = [attr_to_col_ix[x]
                     for x in cv_col_names]
             except KeyError:
                 pass
@@ -685,7 +685,7 @@ class DumpReader(base.ReaderBase):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
-            coords = np.array([fields[dim] for dim in coord_cols], 
+            coords = np.array([fields[dim] for dim in coord_cols],
                               dtype=np.float32)
 
             if self._unwrap:

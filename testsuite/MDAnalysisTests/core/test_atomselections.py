@@ -180,7 +180,7 @@ class TestSelectionsCHARMM(object):
         assert_equal(len(sel), 2486)
 
     @pytest.mark.parametrize('selstr', [
-        'around 4.0 bynum 1943', 
+        'around 4.0 bynum 1943',
         'around 4.0 index 1942'
     ])
     def test_around(self, universe, selstr):
@@ -471,7 +471,7 @@ class TestSelectionsGRO(object):
         sel = universe.select_atoms(selstr)
         errmsg = ("Found a wrong number of atoms with same "
                   "x as ids 1 or 10")
-        assert_equal(len(sel), 12, errmsg) 
+        assert_equal(len(sel), 12, errmsg)
         target_ids = np.array([0, 8, 9, 224, 643, 3515, 11210, 14121,
                                18430, 25418, 35811, 43618])
         assert_equal(sel.indices, target_ids,
@@ -1258,7 +1258,7 @@ def u_pdb_icodes():
         # See Issues #2308 for a discussion
         ("same resid as", 72),
         # Selection using resindices
-        # For PDBs: 
+        # For PDBs:
         # residues with different insertion codes have different resindices
         ("byres", 11)
     ]

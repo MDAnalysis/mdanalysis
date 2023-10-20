@@ -15,4 +15,3 @@ If your issue isn't a defect with the code and instead you require help using MD
 If you're contributing code, please check out [How to contribute](https://www.mdanalysis.org/UserGuide/contributing.html) in the User Guide and look at the [Style guide](https://github.com/MDAnalysis/mdanalysis/wiki/Style-Guide).
 
 MDAnalysis devs are most easily reached through the [development list](https://groups.google.com/forum/#!forum/mdnalysis-devel).
-

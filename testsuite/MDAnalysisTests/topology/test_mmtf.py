@@ -44,7 +44,7 @@ class TestMMTFSkinny(MMTFBase):
     expected_n_residues = 134
     expected_n_segments = 2
 
-    
+
 class TestMMTFSkinny2(MMTFBase):
     parser = mda.topology.MMTFParser.MMTFParser
     ref_filename = MMTF_skinny2
@@ -138,7 +138,7 @@ class TestMMTFFetch(TestMMTFUniverse):
 
 
 class TestSelectModels(object):
-    # tests for 'model' keyword in select_atoms   
+    # tests for 'model' keyword in select_atoms
     @pytest.fixture()
     def u(self):
         return mda.Universe(MMTF_gz)

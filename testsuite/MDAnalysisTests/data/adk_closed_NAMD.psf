@@ -3,10 +3,10 @@ PSF CMAP
        6 !NTITLE
  REMARKS original generated structure x-plor psf file
  REMARKS 2 patches were applied to the molecule.
- REMARKS topology top_all27_prot_na.inp 
+ REMARKS topology top_all27_prot_na.inp
  REMARKS segment A { first NTER; last CTER; auto angles dihedrals }
- REMARKS defaultpatch NTER A:1  
- REMARKS defaultpatch CTER A:214  
+ REMARKS defaultpatch NTER A:1
+ REMARKS defaultpatch CTER A:214
 
     3341 !NATOM
        1 A    1    MET  N    NH3   -0.300000       14.0070           0
@@ -11617,4 +11617,3 @@ PSF CMAP
     3272    3274    3276    3294    3274    3276    3294    3296
     3294    3296    3298    3313    3296    3298    3313    3315
     3313    3315    3317    3332    3315    3317    3332    3334
-

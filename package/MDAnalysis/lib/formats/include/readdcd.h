@@ -45,31 +45,31 @@
  *               *istart set to starting timestep of dcd file
  *               *nsavc set to timesteps between dcd saves
  *               *delta set to value of trajectory timestep
- *               *nfixed set to number of fixed atoms 
+ *               *nfixed set to number of fixed atoms
  *               *freeind may be set to heap-allocated space
  *               *reverse set to one if reverse-endian, zero if not.
  *               *charmm set to internal code for handling charmm data.
  */
-int read_dcdheader(fio_fd fd, int *natoms, int *nsets, int *istart, int *nsavc, 
-			  double *delta, int *nfixed, int **freeind, 
+int read_dcdheader(fio_fd fd, int *natoms, int *nsets, int *istart, int *nsavc,
+			  double *delta, int *nfixed, int **freeind,
 			  float **fixedcoords, int *reverse, int *charmm,
 			  char **remarks, int *len_remarks);
 
-/* 
+/*
  * Read a dcd timestep from a dcd file
- * Input: fd - a file struct opened for binary reading, from which the 
+ * Input: fd - a file struct opened for binary reading, from which the
  *             header information has already been read.
- *        natoms, nfixed, first, *freeind, reverse, charmm - the corresponding 
+ *        natoms, nfixed, first, *freeind, reverse, charmm - the corresponding
  *             items as set by read_dcdheader
  *        first - true if this is the first frame we are reading.
  *        x, y, z: space for natoms each of floats.
- *        unitcell - space for six floats to hold the unit cell data.  
+ *        unitcell - space for six floats to hold the unit cell data.
  *                   Not set if no unit cell data is present.
  * Output: 0 on success, negative error code on failure.
  * Side effects: x, y, z contain the coordinates for the timestep read.
  *               unitcell holds unit cell data if present.
  */
-int read_dcdstep(fio_fd fd, int natoms, float *x, float *y, float *z, 
+int read_dcdstep(fio_fd fd, int natoms, float *x, float *y, float *z,
                         double *unitcell, int nfixed, int first, int *freeind,
                         float *fixedcoords, int reverse, int charmm);
 
@@ -92,9 +92,9 @@ int read_dcdsubset(fio_fd fd, int natoms, int lowerb, int upperb, float *x, floa
 			  double *unitcell, int nfixed, int first, int *freeind,
 			  float *fixedcoords, int reverse, int charmm);
 
-/* 
+/*
  * Skip past a timestep.  If there are fixed atoms, this cannot be used with
- * the first timestep.  
+ * the first timestep.
  * Input: fd - a file struct from which the header has already been read
  *        natoms - number of atoms per timestep
  *        nfixed - number of fixed atoms
@@ -116,17 +116,17 @@ void close_dcd_read(int *freeind, float *fixedcoords);
 /*
  * Write a header for a new dcd file
  * Input: fd - file struct opened for binary writing
- *        remarks - string to be put in the remarks section of the header.  
+ *        remarks - string to be put in the remarks section of the header.
  *                  The string will be truncated to 70 characters.
  *        natoms, istart, nsavc, delta - see comments in read_dcdheader
  * Output: 0 on success, negative error code on failure.
  * Side effects: Header information is written to the dcd file.
  */
-int write_dcdheader(fio_fd fd, const char *remarks, int natoms, 
-			   int istart, int nsavc, double delta, int with_unitcell, 
+int write_dcdheader(fio_fd fd, const char *remarks, int natoms,
+			   int istart, int nsavc, double delta, int with_unitcell,
 			   int charmm);
 
-/* 
+/*
  * Write a timestep to a dcd file
  * Input: fd - a file struct for which a dcd header has already been written
  *       curframe: Count of frames written to this file, starting with 1.
@@ -136,7 +136,7 @@ int write_dcdheader(fio_fd fd, const char *remarks, int natoms,
  * Output: 0 on success, negative error code on failure.
  * Side effects: coordinates are written to the dcd file.
  */
-int write_dcdstep(fio_fd fd, int curframe, int curstep, 
+int write_dcdstep(fio_fd fd, int curframe, int curstep,
 			 int natoms, const float *x, const float *y, const float *z,
 			 const double *unitcell, int charmm);
 
@@ -166,9 +166,9 @@ int write_dcdstep(fio_fd fd, int curframe, int curstep,
       return(DCD_BADEOF);			\
     }
 
-int read_dcdheader(fio_fd fd, int *N, int *NSET, int *ISTART, 
-			  int *NSAVC, double *DELTA, int *NAMNF, 
-			  int **FREEINDEXES, float **fixedcoords, int *reverseEndian, 
+int read_dcdheader(fio_fd fd, int *N, int *NSET, int *ISTART,
+			  int *NSAVC, double *DELTA, int *NAMNF,
+			  int **FREEINDEXES, float **fixedcoords, int *reverseEndian,
 			  int *charmm, char **remarks, int *len_remarks)
 {
   int input_integer;  /* buffer space */
@@ -194,7 +194,7 @@ int read_dcdheader(fio_fd fd, int *N, int *NSET, int *ISTART,
       return DCD_BADFORMAT;
     }
   } else {
-    *reverseEndian=0;    
+    *reverseEndian=0;
   }
 
   /* Buffer the entire header for random access */
@@ -363,34 +363,34 @@ int read_charmm_extrablock(fio_fd fd, int charmm, int reverseEndian,
   if ((charmm & DCD_IS_CHARMM) && (charmm & DCD_HAS_EXTRA_BLOCK)) {
     /* Leading integer must be 48 */
     if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1)
-      return DCD_BADREAD; 
+      return DCD_BADREAD;
     if (reverseEndian) swap4_aligned(&input_integer, 1);
     if (input_integer == 48) {
       double tmp[6];
       if (fio_fread(tmp, 48, 1, fd) != 1) return DCD_BADREAD;
-      if (reverseEndian) 
+      if (reverseEndian)
         swap8_aligned(tmp, 6);
       for (i=0; i<6; i++) unitcell[i] = tmp[i];
     } else {
       /* unrecognized block, just skip it */
       if (fio_fseek(fd, input_integer, FIO_SEEK_CUR)) return DCD_BADREAD;
     }
-    if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD; 
-  } 
+    if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD;
+  }
 
   return DCD_SUCCESS;
 }
 
 int read_fixed_atoms(fio_fd fd, int N, int num_free, const int *indexes,
-                            int reverseEndian, const float *fixedcoords, 
+                            int reverseEndian, const float *fixedcoords,
                             float *freeatoms, float *pos) {
   int i, input_integer;
-  
+
   /* Read leading integer */
   if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD;
   if (reverseEndian) swap4_aligned(&input_integer, 1);
   if (input_integer != 4*num_free) return DCD_BADFORMAT;
-  
+
   /* Read free atom coordinates */
   if (fio_fread(freeatoms, 4*num_free, 1, fd) != 1) return DCD_BADREAD;
   if (reverseEndian)
@@ -401,7 +401,7 @@ int read_fixed_atoms(fio_fd fd, int N, int num_free, const int *indexes,
   for (i=0; i<num_free; i++)
     pos[indexes[i]-1] = freeatoms[i];
 
-  /* Read trailing integer */ 
+  /* Read trailing integer */
   if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD;
   if (reverseEndian) swap4_aligned(&input_integer, 1);
   if (input_integer != 4*num_free) return DCD_BADFORMAT;
@@ -415,10 +415,10 @@ int read_charmm_4dim(fio_fd fd, int charmm, int reverseEndian) {
   /* If this is a CHARMm file and contains a 4th dimension block, */
   /* we must skip past it to avoid problems                       */
   if ((charmm & DCD_IS_CHARMM) && (charmm & DCD_HAS_4DIMS)) {
-    if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD;  
+    if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD;
     if (reverseEndian) swap4_aligned(&input_integer, 1);
     if (fio_fseek(fd, input_integer, FIO_SEEK_CUR)) return DCD_BADREAD;
-    if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD;  
+    if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1) return DCD_BADREAD;
   }
 
   return DCD_SUCCESS;
@@ -433,11 +433,11 @@ int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, float *Y,
   int input_integer;
 
   if ((num_fixed==0) || first) {
-    int rc, range;		
+    int rc, range;
     range = upperb - lowerb + 1;
-		
+
     /* if there are no fixed atoms or this is the first timestep read */
-    /* then we read all coordinates normally.        		      */		
+    /* then we read all coordinates normally.        		      */
     /* skip the charmm extra block */
     if ((charmm & DCD_IS_CHARMM) && (charmm & DCD_HAS_EXTRA_BLOCK)) {
       if (fio_fread(&input_integer, sizeof(int), 1, fd) != 1)
@@ -447,7 +447,7 @@ int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, float *Y,
     } else {
       seekpos = sizeof(int)+sizeof(float)*lowerb;
     }
-		
+
     //ret_val = read_charmm_extrablock(fd, charmm, reverseEndian, unitcell);
     //if (ret_val) return ret_val;
     /* Now read in the data sections */
@@ -458,15 +458,15 @@ int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, float *Y,
     if (fio_fread(X, sizeof(float)*range, 1, fd) != 1) return DCD_BADREAD; 			 			 /* read X coordinates */
     rc = fio_fseek(fd, sizeof(float)*(N-upperb-1)+sizeof(int)*2+sizeof(float)*lowerb, FIO_SEEK_CUR); /* skip 2 format integers */
     if (rc == -1) return DCD_BADREAD;
-		
+
     if (fio_fread(Y, sizeof(float)*range, 1, fd) != 1) return DCD_BADREAD; 						 /* read Y coordinates */
     rc = fio_fseek(fd, sizeof(float)*(N-upperb-1)+sizeof(int)*2+sizeof(float)*lowerb, FIO_SEEK_CUR); /* skip 2 format integers */
     if (rc == -1) return DCD_BADREAD;
-		
+
     if (fio_fread(Z, sizeof(float)*range, 1, fd) != 1) return DCD_BADREAD; 						 /* read Z coordinates */
     rc = fio_fseek(fd, sizeof(float)*(N-upperb-1)+sizeof(int), FIO_SEEK_CUR);   			 /* skip 1 format integer */
     if (rc == -1) return DCD_BADREAD;
-		
+
     /* convert endianism if necessary */
     if (reverseEndian) {
       swap4_aligned(X, range);
@@ -500,9 +500,9 @@ int read_dcdsubset(fio_fd fd, int N, int lowerb, int upperb, float *X, float *Y,
   return DCD_SUCCESS;
 }
 
-int read_dcdstep(fio_fd fd, int N, float *X, float *Y, float *Z, 
+int read_dcdstep(fio_fd fd, int N, float *X, float *Y, float *Z,
                         double *unitcell, int num_fixed,
-                        int first, int *indexes, float *fixedcoords, 
+                        int first, int *indexes, float *fixedcoords,
                         int reverseEndian, int charmm) {
   int ret_val;   /* Return value from read */
 
@@ -600,7 +600,7 @@ int read_dcdstep(fio_fd fd, int N, float *X, float *Y, float *Z,
 int skip_dcdstep(fio_fd fd, int natoms, int nfixed, int charmm, int numsteps) {
   int seekoffset = 0;
   int rc;
-	
+
   /* Skip charmm extra block */
   if ((charmm & DCD_IS_CHARMM) && (charmm & DCD_HAS_EXTRA_BLOCK)) {
     seekoffset += 4 + 48 + 4;
@@ -619,7 +619,7 @@ int skip_dcdstep(fio_fd fd, int natoms, int nfixed, int charmm, int numsteps) {
   }
 
   rc = fio_fseek(fd, seekoffset, FIO_SEEK_CUR);
-  if (rc == -1) return DCD_BADEOF;	
+  if (rc == -1) return DCD_BADEOF;
 
   return DCD_SUCCESS;
 }
@@ -644,15 +644,15 @@ int jump_to_dcdstep(fio_fd fd, int natoms, int nsets, int nfixed, int charmm, in
     pos = header_size + firstframesize + framesize * (step-1);
   }
   rc = fio_fseek(fd, pos, FIO_SEEK_SET);
-  if (rc == -1) return DCD_BADEOF;	
+  if (rc == -1) return DCD_BADEOF;
   return DCD_SUCCESS;
 }
 
 #define NFILE_POS 8L
 #define NSTEP_POS 20L
 
-int write_dcdstep(fio_fd fd, int curframe, int curstep, int N, 
-			 const float *X, const float *Y, const float *Z, 
+int write_dcdstep(fio_fd fd, int curframe, int curstep, int N,
+			 const float *X, const float *Y, const float *Z,
 			 const double *unitcell, int charmm) {
   int out_integer;
 
@@ -688,7 +688,7 @@ int write_dcdstep(fio_fd fd, int curframe, int curstep, int N,
   return DCD_SUCCESS;
 }
 
-int write_dcdheader(fio_fd fd, const char *remarks, int N, 
+int write_dcdheader(fio_fd fd, const char *remarks, int N,
 			   int ISTART, int NSAVC, double DELTA, int with_unitcell,
 			   int charmm) {
   int out_integer;
@@ -758,4 +758,3 @@ void close_dcd_read(int *indexes, float *fixedcoords) {
 }
 
 #endif
-

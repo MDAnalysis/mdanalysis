@@ -143,11 +143,11 @@ def LAMMPSDATAWriter_molecule_tag(request, tmpdir_factory):
 
 def test_unwrap_vel_force():
 
-    u_wrapped = mda.Universe(LAMMPS_image_vf, [LAMMPSDUMP_image_vf], 
+    u_wrapped = mda.Universe(LAMMPS_image_vf, [LAMMPSDUMP_image_vf],
                              format="LAMMPSDUMP")
     u_wrapped.trajectory[-1]
- 
-    assert_allclose(u_wrapped.atoms.positions[0], 
+
+    assert_allclose(u_wrapped.atoms.positions[0],
                         np.array([2.56616, 6.11565, 7.37956]),
                         atol=1e-5)
     assert hasattr(u_wrapped.atoms, "velocities")
@@ -159,9 +159,9 @@ def test_unwrap_image_wrap():
                                format="LAMMPSDUMP", unwrap_images=True)
     u_unwrapped.trajectory[-1]
 
-    pos = (np.array([2.56616, 6.11565, 7.37956]) + 
+    pos = (np.array([2.56616, 6.11565, 7.37956]) +
         np.array([3, 1, -4])*u_unwrapped.dimensions[:3])
-    assert_allclose(u_unwrapped.atoms.positions[0], 
+    assert_allclose(u_unwrapped.atoms.positions[0],
                         pos,
                         atol=1e-5,
                        )
@@ -169,9 +169,9 @@ def test_unwrap_image_wrap():
 
 def test_unwrap_no_image():
     with pytest.raises(ValueError, match="must have image flag"):
-        u_unwrapped = mda.Universe( 
+        u_unwrapped = mda.Universe(
                                    LAMMPSDUMP_allcoords,
-                                   format="LAMMPSDUMP", 
+                                   format="LAMMPSDUMP",
                                    unwrap_images=True)
 
 
@@ -568,7 +568,7 @@ class TestLammpsDumpReader(object):
 
         assert_allclose(u.dimensions, reference_positions['box'][1],
                             atol=1e-5)
-        pos = (reference_positions['atom1_pos'][1] - 
+        pos = (reference_positions['atom1_pos'][1] -
             reference_positions['mins'][1])
         assert_allclose(u.atoms[0].position, pos,
                             atol=1e-5)

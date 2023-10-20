@@ -3,19 +3,19 @@ PSF CMAP
       15 !NTITLE
  REMARKS original generated structure x-plor psf file
  REMARKS 8 patches were applied to the molecule.
- REMARKS topology top_all27_prot_lipid.rtf 
+ REMARKS topology top_all27_prot_lipid.rtf
  REMARKS segment A { first ACE; last CT2; auto angles dihedrals }
  REMARKS segment B { first ACE; last CT2; auto angles dihedrals }
  REMARKS segment C { first ACE; last CT2; auto angles dihedrals }
  REMARKS segment D { first ACE; last CT2; auto angles dihedrals }
- REMARKS patch ACE A:380  
- REMARKS patch CT2 A:417  
- REMARKS patch ACE B:380  
- REMARKS patch CT2 B:417  
- REMARKS patch ACE C:380  
- REMARKS patch CT2 C:417  
- REMARKS patch ACE D:380  
- REMARKS patch CT2 D:417  
+ REMARKS patch ACE A:380
+ REMARKS patch CT2 A:417
+ REMARKS patch ACE B:380
+ REMARKS patch CT2 B:417
+ REMARKS patch ACE C:380
+ REMARKS patch CT2 C:417
+ REMARKS patch ACE D:380
+ REMARKS patch CT2 D:417
 
     1284 !NATOM
        1 A    380  THR  N    NH1   -0.470000       14.0070           0
@@ -3974,4 +3974,3 @@ PSF CMAP
     1241    1243    1245    1252    1243    1245    1252    1254
     1252    1254    1256    1264    1254    1256    1264    1266
     1264    1266    1268    1274    1266    1268    1274    1279
-

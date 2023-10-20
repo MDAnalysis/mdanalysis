@@ -36,7 +36,7 @@ you typed to install the package, and the full output (typically right from
 that we can better diagnose the problem.
 
 
-Getting the source 
+Getting the source
 ==================
 
 Download a tar ball from https://pypi.org/project/MDAnalysisTests; these
@@ -82,11 +82,9 @@ From sources
 
 From the top directory of the checked out sources:
 
-  pytest --numprocesses 4 --disable-pytest-warnings testsuite/MDAnalysisTests/ 
+  pytest --numprocesses 4 --disable-pytest-warnings testsuite/MDAnalysisTests/
 
 Use ``--numprocesses 4`` if you have 4 cores available to run in
 parallel or adapt to available cores. To run tests in parallel you
 will need to have *pytest-xdist>=1.18.1* installed (``pip install
 pytest-xdist``).
-
-

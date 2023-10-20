@@ -1,8 +1,8 @@
 PSF CMAP CHEQ
 
        2 !NTITLE
-* 1AKE SEQUENCE MAPPED ONTO 4AKE COOR                                           
-*  DATE:     6/ 6/ 8     14:34:19      CREATED BY USER: denniej0                
+* 1AKE SEQUENCE MAPPED ONTO 4AKE COOR
+*  DATE:     6/ 6/ 8     14:34:19      CREATED BY USER: denniej0
 
     3341 !NATOM
        1 4AKE 1    MET  N      56  -0.300000       14.0070           0   0.00000     -0.301140E-02
@@ -3346,4 +3346,3 @@ PSF CMAP CHEQ
     3339 4AKE 214  GLY  C      32   0.340000       12.0110           0   0.00000     -0.301140E-02
     3340 4AKE 214  GLY  OT1    72  -0.670000       15.9990           0   0.00000     -0.301140E-02
     3341 4AKE 214  GLY  OT2    72  -0.670000       15.9990           0   0.00000     -0.301140E-02
-

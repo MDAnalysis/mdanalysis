@@ -6,14 +6,14 @@
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |asv|
 
-MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
+MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists.
 
 It works with a wide range of popular simulation packages including Gromacs, Amber, NAMD, CHARMM, DL_Poly, HooMD, LAMMPS and many others — see the lists of supported `trajectory formats`_ and `topology formats`_.
 MDAnalysis also includes widely used analysis algorithms in the `MDAnalysis.analysis`_ module.
 
 .. _numfocus-fiscal-sponsor-attribution:
 
-The MDAnalysis project uses an `open governance model`_ and is fiscally sponsored by `NumFOCUS`_. Consider making 
+The MDAnalysis project uses an `open governance model`_ and is fiscally sponsored by `NumFOCUS`_. Consider making
 a `tax-deductible donation`_ to help the project pay for developer time, professional services, travel, workshops, and a variety of other needs.
 
 .. image:: https://www.mdanalysis.org/public/images/numfocus-sponsored-small.png
@@ -105,7 +105,7 @@ two papers:
     dynamics simulations. In S. Benthall and S. Rostrup,
     editors, Proceedings of the 15th Python in Science
     Conference, pages 102-109, Austin, TX, 2016. SciPy.
-    doi:`10.25080/Majora-629e541a-00e`_    
+    doi:`10.25080/Majora-629e541a-00e`_
 
 *   N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
     and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
@@ -190,7 +190,7 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |anaconda| image:: https://anaconda.org/conda-forge/mdanalysis/badges/version.svg
    :alt: Anaconda
    :target: https://anaconda.org/conda-forge/mdanalysis
-   
+
 .. |asv| image:: https://img.shields.io/badge/benchmarked%20by-asv-blue.svg
    :alt: ASV Benchmarks
    :target:  https://www.mdanalysis.org/benchmarks/

@@ -185,7 +185,7 @@ also recognized when they are compressed with :program:`gzip` or
    | Gromacs       | tng       |  r    | Variable precision tng trajectory. Coordinates,      |
    |               |           |       | velocities and forces are processed along with any   |
    |               |           |       | `additional tng block data`_ requested for reading.  |
-   |               |           |       | Uses the `PyTNG package`_ for tng file reading.      |  
+   |               |           |       | Uses the `PyTNG package`_ for tng file reading.      |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TNG`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | XYZ [#a]_     |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |

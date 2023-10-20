@@ -42,13 +42,13 @@ class GSDBase(ParserBase):
     expected_n_angles = 0
     expected_n_dihedrals = 0
     expected_n_impropers = 0
-    
+
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
-    
+
     def test_atoms(self, top):
         assert top.n_atoms == self.expected_n_atoms
 
@@ -72,7 +72,7 @@ class GSDBase(ParserBase):
             assert isinstance(top.angles.values[0], tuple)
         else:
             assert top.dihedrals.values == []
-    
+
     def test_impropers(self, top):
         assert len(top.impropers.values) == self.expected_n_impropers
         if self.expected_n_impropers:

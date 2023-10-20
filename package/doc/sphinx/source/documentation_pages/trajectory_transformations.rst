@@ -55,11 +55,11 @@ that will be applied in this order. For example,
 .. code-block:: python
 
     workflow = [transformation_1, transformation_2]
-    
+
 would effectively result in
 
 .. code-block:: python
-		
+
      ts = transformation_2(transformation_1(ts))
 
 for every time step in the trajectory.
@@ -78,7 +78,7 @@ or upon :class:`Universe <MDAnalysis.core.universe.Universe>`
 creation using the keyword argument `transformations`:
 
 .. code-block:: python
-    
+
     u = MDAnalysis.Universe(topology, trajectory, transformations=workflow)
 
 Note that in these two cases, the workflow cannot be changed after having
@@ -111,7 +111,7 @@ the following two methods can be used to create such transformation:
 .. _custom-transformations-class:
 
 Creating complex transformation classes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is implemented by inheriting from
 :class:`MDAnalysis.transformations.base.TransformationBase`,
@@ -143,7 +143,7 @@ See :class:`MDAnalysis.transformations.translate` for a simple example.
 Creating complex transformation closure functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Transformation can also be a wrapped function takes the :class:`Timestep` object as argument. 
+Transformation can also be a wrapped function takes the :class:`Timestep` object as argument.
 So in this case, a transformation function (closure) can be roughly defined as follows:
 
 .. code-block:: python
@@ -194,15 +194,15 @@ any of these transformations, the module must first be imported:
 A workflow can then be added to a trajectory as described above. Notably,
 the parameter `max_threads` can be defined when creating a transformation
 instance to limit the maximum threads.
-(See :class:`MDAnalysis.transformations.base.TransformationBase` for more details) 
+(See :class:`MDAnalysis.transformations.base.TransformationBase` for more details)
 Whether a specific transformation can be used along with parallel analysis
-can be assessed by checking its 
+can be assessed by checking its
 :attr:`~MDAnalysis.transformations.base.TransformationBase.parallelizable`
 attribute.
 
 See :ref:`implemented-transformations` for more on the existing
 transformations in :mod:`MDAnalysis.transformations`.
-    
+
 
 How to transformations
 ----------------------
@@ -215,24 +215,24 @@ examples):
 
     u = MDAnalysis.Universe(topology, trajectory)
     new_ts = MDAnalysis.transformations.translate([1,1,1])(u.trajectory.ts)
-    
+
 Create a workflow and add it to the trajectory:
 
 .. code-block:: python
 
     u = MDAnalysis.Universe(topology, trajectory)
-    workflow = [MDAnalysis.transformations.translate([1,1,1]), 
+    workflow = [MDAnalysis.transformations.translate([1,1,1]),
                 MDAnalysis.transformations.translate([1,2,3])]
     u.trajectory.add_transformations(*workflow)
 
 Giving a workflow as a keyword argument when defining the universe:
 
 .. code-block:: python
-    
-    workflow = [MDAnalysis.transformations.translate([1,1,1]), 
+
+    workflow = [MDAnalysis.transformations.translate([1,1,1]),
                 MDAnalysis.transformations.translate([1,2,3])]
     u = MDAnalysis.Universe(topology, trajectory, transformations=workflow)
-    
+
 
 .. _building-block-transformation:
 
@@ -264,7 +264,7 @@ Currently implemented transformations
 -------------------------------------
 
 .. toctree::
-   
+
    ./transformations/translate
    ./transformations/rotate
    ./transformations/positionaveraging
@@ -272,4 +272,3 @@ Currently implemented transformations
    ./transformations/wrap
    ./transformations/nojump
    ./transformations/boxdimensions
-

@@ -23,7 +23,7 @@ class SimpleRdfBench(object):
                    'natoms']
 
     def setup(self, nbins, range_val, natoms):
-        
+
         self.sel_str = 'name OW'
 
         self.u = MDAnalysis.Universe(TPR, XTC)

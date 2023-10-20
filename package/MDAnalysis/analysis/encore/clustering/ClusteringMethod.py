@@ -85,8 +85,8 @@ class ClusteringMethod (object):
         Raises
         ------
         NotImplementedError
-           Method or behavior needs to be defined by a subclass    
-        
+           Method or behavior needs to be defined by a subclass
+
         """
         raise NotImplementedError("Class {0} doesn't implement __call__()"
                                   .format(self.__class__.__name__))
@@ -145,7 +145,7 @@ class AffinityPropagationNative(ClusteringMethod):
 
         Returns
         -------
-        numpy.array : array, shape(n_elements) 
+        numpy.array : array, shape(n_elements)
             centroid frames of the clusters for all of the elements
 
         .. versionchanged:: 1.0.0
@@ -158,7 +158,7 @@ class AffinityPropagationNative(ClusteringMethod):
             max_iterations = self.max_iter,
             convergence = self.convergence_iter,
             noise=int(self.add_noise))
-        
+
         return clusters
 if sklearn:
 
@@ -218,7 +218,7 @@ if sklearn:
 
             Returns
             -------
-            numpy.array : array, shape(n_elements) 
+            numpy.array : array, shape(n_elements)
                 centroid frames of the clusters for all of the elements
 
             .. versionchanged:: 1.0.0
@@ -232,7 +232,7 @@ if sklearn:
             clusters = self.ap.fit_predict(similarity_matrix)
             clusters = encode_centroid_info(clusters,
                                             self.ap.cluster_centers_indices_)
-            
+
             return clusters
 
 
@@ -297,7 +297,7 @@ if sklearn:
 
             Returns
             -------
-            numpy.array : array, shape(n_elements) 
+            numpy.array : array, shape(n_elements)
                 centroid frames of the clusters for all of the elements
 
             .. versionchanged:: 1.0.0
@@ -313,7 +313,7 @@ if sklearn:
             cluster_representatives = np.unique(clusters, return_index=True)[1]
             clusters = encode_centroid_info(clusters,
                                             cluster_representatives)
-          
+
             return clusters
 
     class KMeans(ClusteringMethod):
@@ -404,7 +404,7 @@ if sklearn:
 
             Returns
             -------
-            numpy.array : array, shape(n_elements) 
+            numpy.array : array, shape(n_elements)
                 centroid frames of the clusters for all of the elements
 
             .. versionchanged:: 1.0.0
@@ -417,5 +417,5 @@ if sklearn:
             cluster_center_indices = np.argmin(distances, axis=0)
             clusters = encode_centroid_info(clusters,
                                              cluster_center_indices)
-            
+
             return clusters

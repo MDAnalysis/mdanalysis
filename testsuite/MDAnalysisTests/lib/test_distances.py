@@ -788,9 +788,9 @@ class TestTriclinicDistances(object):
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
 
-@pytest.mark.parametrize("box", 
+@pytest.mark.parametrize("box",
     [
-        None, 
+        None,
         np.array([10., 15., 20., 90., 90., 90.]), # otrho
         np.array([10., 15., 20., 70.53571, 109.48542, 70.518196]), # TRIC
     ]
@@ -1597,7 +1597,7 @@ class TestEmptyInputCoordinates(object):
             assert_equal(res[1], np.empty((0,), dtype=np.float64))
         else:
             assert_equal(res, np.empty((0, 2), dtype=np.int64))
-    
+
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_empty_input_transform_RtoS(self, empty_coord, box, backend):

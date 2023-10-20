@@ -143,7 +143,7 @@ class XTCReader(XDRBaseReader):
     def _read_next_timestep(self, ts=None):
         """
         copy next frame into timestep
-        
+
         versionadded:: 2.4.0
             XTCReader implements this method so that it can use
             read_direct_x method of XTCFile to read the data directly

@@ -25,7 +25,7 @@ class TestRequires(object):
         @requires('masses', 'charges')
         def mass_multiplier(ag1, ag2, scalar):
             return (ag1.masses + ag2.charges) * scalar
-        
+
 
         u = make_Universe(('masses', 'types'))
         with pytest.raises(NoDataError):

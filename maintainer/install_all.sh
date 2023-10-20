@@ -34,7 +34,7 @@ setup_py () {
 command="install"
 options=""
 while getopts hdu OPT; do
-    case $OPT in 
+    case $OPT in
 	h) echo "$usage"; exit 0;;
 	d) command="develop";;
 	u) options="${options} --user";;
@@ -44,5 +44,3 @@ done
 
 setup_py $command package "${options}"
 setup_py $command testsuite "${options}"
-
-

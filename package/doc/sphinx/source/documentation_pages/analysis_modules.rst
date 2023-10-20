@@ -5,7 +5,7 @@ Analysis modules
 ****************
 
 The :mod:`MDAnalysis.analysis` module contains code to carry out specific
-analysis functionality for MD trajectories. 
+analysis functionality for MD trajectories.
 It is based on the core functionality (i.e. trajectory
 I/O, selections etc). The analysis modules can be used as examples for how to
 use MDAnalysis but also as working code for research projects; typically all
@@ -13,9 +13,9 @@ contributed code has been used by the authors in their own work.
 An analysis using the available modules
 usually follows the same structure
 
-#. Import the desired module, since analysis modules are not imported 
+#. Import the desired module, since analysis modules are not imported
    by default.
-#. Initialize the analysis class instance from the previously imported module.   
+#. Initialize the analysis class instance from the previously imported module.
 #. Run the analysis, optionally for specific trajectory slices.
 #. Access the analysis from the :attr:`results` attribute
 
@@ -28,7 +28,7 @@ usually follows the same structure
    print(analysis_obj.results)
 
 
-Please see the individual module documentation for any specific caveats 
+Please see the individual module documentation for any specific caveats
 and also read and cite the reference papers associated with these algorithms.
 
 .. rubric:: Additional dependencies
@@ -37,8 +37,8 @@ Some of the modules in :mod:`MDAnalysis.analysis` require additional Python
 packages to enable full functionality. For example,
 :mod:`MDAnalysis.analysis.encore` provides more options if `scikit-learn`_ is
 installed. If you installed MDAnalysis with
-:program:`pip` (see :ref:`installation-instructions`) 
-these packages are *not automatically installed*. 
+:program:`pip` (see :ref:`installation-instructions`)
+these packages are *not automatically installed*.
 Although, one can add the ``[analysis]`` tag to the
 :program:`pip` command to force their installation. If you installed
 MDAnalysis with :program:`conda` then a
@@ -95,7 +95,7 @@ Deprecated modules:
 .. toctree::
    :maxdepth: 1
 
-   analysis/hbond_autocorrel_deprecated	      
+   analysis/hbond_autocorrel_deprecated
 
 Membranes and membrane proteins
 ===============================

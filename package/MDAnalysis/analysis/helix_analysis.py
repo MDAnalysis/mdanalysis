@@ -79,7 +79,7 @@ equivalent::
 
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
 
-    
+
 Classes
 -------
 

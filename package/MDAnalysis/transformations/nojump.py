@@ -50,7 +50,7 @@ class NoJump(TransformationBase):
     across periodic boundary edges. The algorithm used is based on :footcite:p:`Kulke2022`,
     equation B6 for non-orthogonal systems, so it is general to most applications where
     molecule trajectories should not "jump" from one side of a periodic box to another.
-    
+
     Note that this transformation depends on a periodic box dimension being set for every
     frame in the trajectory, and that this box dimension can be transformed to an orthonormal
     unit cell. If not, an error is emitted. Since it is typical to transform all frames

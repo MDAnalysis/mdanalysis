@@ -31,5 +31,3 @@ Legacy modules
    :maxdepth: 1
 
    legacy/x3dna
-
-

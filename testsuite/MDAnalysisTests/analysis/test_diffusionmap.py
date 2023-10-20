@@ -83,7 +83,7 @@ def test_distvalues_ag_select(u):
     dist_ag = diffusionmap.DistanceMatrix(ag, select='backbone').run()
     assert_allclose(dist_universe.results.dist_matrix,
                     dist_ag.results.dist_matrix)
-                    
+
 
 def test_different_steps(u):
     dmap = diffusionmap.DiffusionMap(u, select='backbone')

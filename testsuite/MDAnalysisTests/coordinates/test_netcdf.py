@@ -323,7 +323,7 @@ class TestNCDFReader4(object):
 
     def test_warn_user_no_time_information(self, u):
         wmsg = ("NCDF trajectory does not contain `time` information;"
-                " `time` will be set as an increasing index")  
+                " `time` will be set as an increasing index")
         with pytest.warns(UserWarning, match=wmsg):
             u2 = mda.Universe(CPPTRAJ_TRAJ_TOP, CPPTRAJ_TRAJ)
 

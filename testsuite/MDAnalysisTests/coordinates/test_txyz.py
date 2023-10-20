@@ -75,4 +75,3 @@ def test_pbc_boxsize(ARC_PBC_U):
 
     for ref_box, ts in zip(ref_dimensions, ARC_PBC_U.trajectory):
         assert_almost_equal(ref_box, ts.dimensions, decimal=5)
-

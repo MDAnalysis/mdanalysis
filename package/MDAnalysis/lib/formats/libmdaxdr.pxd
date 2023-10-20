@@ -85,7 +85,7 @@ cdef class _XDRFile:
     cdef int reached_eof
     # the XDR file pointer
     cdef XDRFILE *xfp
-    # the name of the xdr file 
+    # the name of the xdr file
     cdef readonly fname
     # the current frame in the file
     cdef int current_frame
@@ -93,7 +93,7 @@ cdef class _XDRFile:
     cdef str mode
     # the simulation box
     cdef np.ndarray box
-    # numpy array of offsets into the fle 
+    # numpy array of offsets into the fle
     cdef np.ndarray _offsets
     # whether we have the offsets
     cdef readonly int _has_offsets

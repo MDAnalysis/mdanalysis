@@ -25,7 +25,7 @@ r"""Analysis data files
 
 :mod:`MDAnalysis.analysis.data` contains data files that are used as part of
 analysis. These can be experimental or theoretical data. Files are stored
-inside the package and made accessible via variables in 
+inside the package and made accessible via variables in
 :mod:`MDAnalysis.analysis.data.filenames`. These variables are documented
 below, including references to the literature and where they are used inside
 :mod:`MDAnalysis.analysis`.
@@ -51,20 +51,20 @@ Data files
       ax.contourf(X, Y, Z, levels=[1, 17, 15000])
 
    The given levels will draw contours that contain 90% and 99% of the data
-   points.The reference data are shown in 
+   points.The reference data are shown in
    :ref:`Ramachandran reference plot figure <figure-rama-ref-plot>`. An example
    of analyzed data together with the reference data are shown in
    :ref:`Ramachandran plot figure <figure-ramachandran>` as an example.
-   
-   
+
+
 .. _figure-rama-ref-plot:
 
 .. figure:: /images/rama_ref_plot.png
    :scale: 80%
    :alt: Ramachandran Ref Plot
-   
-   Reference Ramachandran plot, with contours that contain 90% 
-   ("allowed region") and 99% ("generously allowed region") of the data points 
+
+   Reference Ramachandran plot, with contours that contain 90%
+   ("allowed region") and 99% ("generously allowed region") of the data points
    from the reference data set.
 
 .. data:: Janin_ref
@@ -84,8 +84,8 @@ Data files
       ax.contourf(X, Y, Z, levels=[1, 6, 600])
 
    The given levels will draw contours that contain 90% and 98% of the
-   data. The reference data are shown in 
-   :ref:`Janin reference plot figure <figure-janin-ref-plot>`. An example of 
+   data. The reference data are shown in
+   :ref:`Janin reference plot figure <figure-janin-ref-plot>`. An example of
    analyzed data together with the reference data are shown in
    :ref:`Janin plot figure<figure-janin-ref-plot>` as an example.
 
@@ -95,15 +95,15 @@ Data files
    :scale: 85 %
    :alt: Janin Ref Plot
 
-   Janin reference plot with contours that contain 90% ("allowed region") and 
-   98% ("generously allowed region") of the data points from the reference data 
+   Janin reference plot with contours that contain 90% ("allowed region") and
+   98% ("generously allowed region") of the data points from the reference data
    set.
 
 """
 
 
 __all__ = [
-    "Rama_ref", "Janin_ref", 
+    "Rama_ref", "Janin_ref",
     # reference plots for Ramachandran and Janin classes
 ]
 

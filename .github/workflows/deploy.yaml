@@ -151,7 +151,7 @@ jobs:
           packages_dir: testsuite/dist
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
- 
+
   upload_pypi:
     if: |
       github.repository == 'MDAnalysis/mdanalysis' &&

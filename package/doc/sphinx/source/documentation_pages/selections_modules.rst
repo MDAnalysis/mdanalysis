@@ -73,7 +73,7 @@ Multiple selections
 The :class:`~MDAnalysis.core.groups.AtomGroup.write` method can take
 additional keyword arguments, including ``mode``. The default is
 ``mode="w"``, which will overwrite the provided file. If ``mode="a"``
-then the selection is *appended* to the file. 
+then the selection is *appended* to the file.
 
 Alternatively, one may use the
 :class:`~MDAnalysis.selections.base.SelectionWriter` itself as a

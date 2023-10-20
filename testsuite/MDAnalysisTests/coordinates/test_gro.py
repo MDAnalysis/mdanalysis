@@ -292,7 +292,7 @@ class TestGROReaderNoConversion(BaseReaderTest):
                              dt=ref.aux_highf_dt,
                              initial_time=0, time_selector=None)
         return reader
-    
+
     @staticmethod
     @pytest.fixture(scope='class')
     def transformed(ref):

@@ -52,12 +52,12 @@ class TestChainReader(object):
         return mda.Universe(PSF,
                             [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
                             transformations=[translate([10,10,10])])
-                            
+
     def test_regular_repr(self):
         u = mda.Universe(PSF, [DCD, CRD, DCD])
         assert_equal("<ChainReader containing adk_dims.dcd, adk_open.crd, adk_dims.dcd with 197 frames of 3341 atoms>", u.trajectory.__repr__())
-        
-                                
+
+
     def test_truncated_repr(self, universe):
         assert_equal("<ChainReader containing adk_dims.dcd and 6 more with 298 frames of 3341 atoms>", universe.trajectory.__repr__())
 
@@ -135,8 +135,8 @@ class TestChainReader(object):
                 ts_new._pos,
                 self.prec,
                 err_msg="Coordinates disagree at frame {0:d}".format(
-                    ts_orig.frame))       
-    
+                    ts_orig.frame))
+
     def test_transform_iteration(self, universe, transformed):
         vector = np.float32([10,10,10])
         # # Are the transformations applied and
@@ -151,7 +151,7 @@ class TestChainReader(object):
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
             assert_almost_equal(ts.positions, ref, decimal = 6)
-    
+
     def test_transform_slice(self, universe, transformed):
         vector = np.float32([10,10,10])
         # what happens when we slice the trajectory?
@@ -159,7 +159,7 @@ class TestChainReader(object):
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
             assert_almost_equal(ts.positions, ref, decimal = 6)
-    
+
     def test_transform_switch(self, universe, transformed):
         vector = np.float32([10,10,10])
         # grab a frame:
@@ -170,7 +170,7 @@ class TestChainReader(object):
         assert_almost_equal(transformed.trajectory[10].positions, newref, decimal = 6)
         # what happens when we comeback to the previous frame?
         assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
-    
+
     def test_transfrom_rewind(self, universe, transformed):
         vector = np.float32([10,10,10])
         ref = universe.trajectory[0].positions + vector
@@ -210,7 +210,7 @@ class TestChainReaderFormats(object):
 
     def test_set_all_format_lammps(self):
         universe = mda.Universe(
-            LAMMPS_chain, [LAMMPSDUMP_chain1, LAMMPSDUMP_chain2], 
+            LAMMPS_chain, [LAMMPSDUMP_chain1, LAMMPSDUMP_chain2],
             format="LAMMPSDUMP", continuous=True)
         assert universe.trajectory.n_frames == 11
 
@@ -221,13 +221,13 @@ class TestChainReaderFormats(object):
         assert_equal(time_values, np.arange(11))
 
     def test_set_format_tuples_and_format(self):
-        universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+        universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'),
                                       (TRR, 'trr')], format='gro')
         assert universe.trajectory.n_frames == 23
         assert_equal(universe.trajectory.filenames, [PDB, GRO, GRO, XTC, TRR])
-        
+
         with pytest.raises(TypeError) as errinfo:
-            mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+            mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'),
                                       (TRR, 'trr')], format='pdb')
         assert 'Unable to read' in str(errinfo.value)
 
@@ -388,9 +388,9 @@ class TestChainReaderContinuous(object):
     def test_unsupported_filetypes(self):
         with pytest.raises(NotImplementedError):
             mda.Universe(PSF, [DCD, DCD], continuous=True)
-        # see issue 2353. The PDB reader has multiple format endings. To ensure 
-        # the not implemented error is thrown  we  do a check here. A more  
-        # careful test in the future would be a dummy reader with multiple 
+        # see issue 2353. The PDB reader has multiple format endings. To ensure
+        # the not implemented error is thrown  we  do a check here. A more
+        # careful test in the future would be a dummy reader with multiple
         # formats, just in case PDB will allow continuous reading in the future.
         with pytest.raises(ValueError):
             mda.Universe(PDB, [PDB, XTC], continuous=True)

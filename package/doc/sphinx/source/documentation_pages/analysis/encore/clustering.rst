@@ -19,6 +19,3 @@ The following clustering algorithms are always available:
 
 .. automodule:: MDAnalysis.analysis.encore.clustering.affinityprop
    :members:
-
-
-

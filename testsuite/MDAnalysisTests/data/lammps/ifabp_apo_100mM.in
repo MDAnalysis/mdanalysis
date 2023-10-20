@@ -4,7 +4,7 @@
 #
 # Tested with LAMMPS (11 Nov 2013)
 #
-# Based on psf=../Equilibration/Small/NPT/ifabp_water.psf 
+# Based on psf=../Equilibration/Small/NPT/ifabp_water.psf
 # and      pdb=../Equilibration/Small/NPT/ifabp_water_1.pdb
 
 variable        prefix  index ifabp_apo_100mM
@@ -40,5 +40,3 @@ dump            1 all dcd 250 ${prefix}.dcd
 run_style	verlet
 run             1000  # 2 ps total, 4 frames
 undump          1
-
-

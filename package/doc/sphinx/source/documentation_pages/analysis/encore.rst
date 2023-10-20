@@ -50,7 +50,7 @@ Modules
    ./encore/covariance
    ./encore/bootstrap
    ./encore/utils
-   
+
 
 References
 ----------

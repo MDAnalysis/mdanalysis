@@ -59,7 +59,7 @@ def test_rotation_matrix():
                              [-0.35576719,  0.44574074,  0.82142857]], np.float64)
     matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
     assert_array_almost_equal(matrix, ref_matrix, decimal=6)
-    
+
 @pytest.mark.parametrize('point', (
     np.asarray([0, 0, 0]),
     np.asarray([[0, 0, 0]]))
@@ -111,7 +111,7 @@ def test_rotateby_atomgroup_cog_nopbc(rotate_universes):
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
     selection = trans_u.residues[0].atoms
-    transformed = rotateby(angle, vector, ag=selection, weights=None)(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights=None)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 
@@ -128,10 +128,10 @@ def test_rotateby_atomgroup_com_nopbc(rotate_universes):
     center_pos = selection.center_of_mass()
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(angle, vector, ag=selection, weights='mass')(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights='mass')(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
-    
+
 def test_rotateby_atomgroup_cog_pbc(rotate_universes):
     # what happens when we rotate arround the center of geometry of a residue
     # with pbc?
@@ -145,7 +145,7 @@ def test_rotateby_atomgroup_cog_pbc(rotate_universes):
     center_pos = selection.center_of_geometry(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(angle, vector, ag=selection, weights=None, wrap=True)(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights=None, wrap=True)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 
@@ -162,7 +162,7 @@ def test_rotateby_atomgroup_com_pbc(rotate_universes):
     center_pos = selection.center_of_mass(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(angle, vector, ag=selection, weights='mass', wrap=True)(trans) 
+    transformed = rotateby(angle, vector, ag=selection, weights='mass', wrap=True)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 
@@ -184,7 +184,7 @@ def test_rotateby_bad_ag(rotate_universes, ag):
     angle = 90
     vector = [0, 0, 1]
     bad_ag = 1
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         rotateby(angle, vector, ag = bad_ag)(ts)
 
 
@@ -205,7 +205,7 @@ def test_rotateby_bad_point(rotate_universes, point):
     angle = 90
     vector = [0, 0, 1]
     bad_position = point
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         rotateby(angle, vector, point=bad_position)(ts)
 
 
@@ -225,11 +225,11 @@ def test_rotateby_bad_direction(rotate_universes, direction):
     # what if the box is in the wrong format?
     angle = 90
     point = [0, 0, 0]
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         rotateby(angle, direction, point=point)(ts)
 
 
-def test_rotateby_bad_pbc(rotate_universes):    
+def test_rotateby_bad_pbc(rotate_universes):
     # this universe as a box size zero
     ts = rotate_universes[0].trajectory.ts
     ag = rotate_universes[0].residues[0].atoms
@@ -237,7 +237,7 @@ def test_rotateby_bad_pbc(rotate_universes):
     # if yes it should raise an exception for boxes that are zero in size
     vector = [1, 0, 0]
     angle = 90
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         rotateby(angle, vector, ag = ag, wrap=True)(ts)
 
 
@@ -258,11 +258,11 @@ def test_rotateby_bad_weights(rotate_universes, weights):
     angle = 90
     vector = [0, 0, 1]
     bad_weights = " "
-    with pytest.raises(TypeError): 
+    with pytest.raises(TypeError):
         rotateby(angle, vector, ag = ag, weights=bad_weights)(ts)
 
-    
-def test_rotateby_no_masses(rotate_universes):   
+
+def test_rotateby_no_masses(rotate_universes):
     # this universe as a box size zero
     ts = rotate_universes[0].trajectory.ts
     ag = rotate_universes[0].residues[0].atoms
@@ -270,7 +270,7 @@ def test_rotateby_no_masses(rotate_universes):
     angle = 90
     vector = [0, 0, 1]
     bad_center = "mass"
-    with pytest.raises(TypeError): 
+    with pytest.raises(TypeError):
         rotateby(angle, vector, ag = ag, weights=bad_center)(ts)
 
 
@@ -281,5 +281,5 @@ def test_rotateby_no_args(rotate_universes):
     vector = [0, 0, 1]
     # if no point or AtomGroup are passed to the function
     # it should raise a ValueError
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         rotateby(angle, vector)(ts)

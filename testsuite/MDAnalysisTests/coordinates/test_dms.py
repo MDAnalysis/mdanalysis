@@ -44,7 +44,7 @@ class TestDMSReader(object):
         assert ts.dimensions is None
 
     # cythonised class can no longer raise AttributeError
-    # so changed to test of has_velocities 
+    # so changed to test of has_velocities
     def test_velocities(self, ts):
         assert_equal(ts.has_velocities, False)
 

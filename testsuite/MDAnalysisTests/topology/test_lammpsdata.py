@@ -284,7 +284,7 @@ class TestDumpParser(ParserBase):
         with self.parser(self.ref_filename) as p:
             with pytest.warns(UserWarning, match='Guessed all Masses to 1.0'):
                 p.parse()
-            
+
     def test_id_ordering(self):
         # ids are nonsequential in file, but should get rearranged
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')

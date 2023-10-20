@@ -104,8 +104,8 @@ class TestXYZWriter(BaseWriterTest):
                     w.write(universe)
             self._check_copy(outfile, ref, reader)
 
-    @pytest.mark.parametrize("remarkout, remarkin", 
-        [   
+    @pytest.mark.parametrize("remarkout, remarkin",
+        [
             2 * ["Curstom Remark"],
             2 * [""],
             [None, "frame 0 | Written by MDAnalysis XYZWriter (release {0})".format(__version__)],
@@ -152,7 +152,7 @@ class TestXYZWriterNames(object):
     def test_no_names(self, outfile):
         """Atoms should all be named 'X'"""
         u = make_Universe(trajectory=True)
-        
+
         wmsg = "does not have atom elements or names"
 
         with pytest.warns(UserWarning, match=wmsg):

@@ -212,7 +212,7 @@ jobs:
     - name: run_tests
       run: |
         pytest --timeout=200 -n auto testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
-        
+
   # Issue 4208
   conda-latest-release:
     # A set of runner to check that the latest conda release works as expected
@@ -259,7 +259,7 @@ jobs:
     - name: run_tests
       run: |
           pytest --timeout=200 -n auto --pyargs MDAnalysisTests
-          
+
   pypi-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"

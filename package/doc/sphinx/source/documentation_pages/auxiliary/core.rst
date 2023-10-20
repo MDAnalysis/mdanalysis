@@ -1,2 +1,1 @@
 .. automodule:: MDAnalysis.auxiliary.core
-

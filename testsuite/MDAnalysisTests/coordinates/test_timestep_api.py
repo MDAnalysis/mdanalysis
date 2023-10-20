@@ -119,7 +119,7 @@ class TestTimestep(object):
 
     def test_repr(self, ts):
         assert_equal(type(repr(ts)), str)
-    
+
     def test_repr_with_box(self, ts):
         assert("with unit cell dimensions" in repr(ts))
 

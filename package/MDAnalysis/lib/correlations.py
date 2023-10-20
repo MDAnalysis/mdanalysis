@@ -257,4 +257,3 @@ def correct_intermittency(list_of_sets, intermittency):
 
                 seen_frames_ago[element] = 0
     return list_of_sets
-

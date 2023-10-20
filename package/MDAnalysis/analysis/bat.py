@@ -366,9 +366,9 @@ class BAT(AnalysisBase):
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
-        r01 = np.sqrt(np.einsum('i,i->',v01,v01))  
+        r01 = np.sqrt(np.einsum('i,i->',v01,v01))
         # Distance between first two root atoms
-        r12 = np.sqrt(np.einsum('i,i->',v21,v21))  
+        r12 = np.sqrt(np.einsum('i,i->',v21,v21))
         # Distance between second two root atoms
         # Angle between root atoms
         a012 = np.arccos(max(-1.,min(1.,np.einsum('i,i->',v01,v21)/\

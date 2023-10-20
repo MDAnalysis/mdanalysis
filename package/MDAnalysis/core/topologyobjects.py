@@ -363,7 +363,7 @@ class UreyBradley(TopologyObject):
 
 class CMap(TopologyObject):
     """
-    Coupled-torsion correction map term between five 
+    Coupled-torsion correction map term between five
     :class:`~MDAnalysis.core.groups.Atom` instances.
 
     .. versionadded:: 1.0.0
@@ -517,7 +517,7 @@ class TopologyDict(object):
         return other in self.dict or other[::-1] in self.dict
 
 
-_BTYPE_TO_SHAPE = {'bond': 2, 'ureybradley': 2, 'angle': 3, 
+_BTYPE_TO_SHAPE = {'bond': 2, 'ureybradley': 2, 'angle': 3,
                    'dihedral': 4, 'improper': 4, 'cmap': 5}
 
 

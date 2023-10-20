@@ -53,7 +53,7 @@ List of modules
    ./lib/distances
    ./lib/NeighborSearch
    ./lib/nsgrid
-   ./lib/pkdtree	      
+   ./lib/pkdtree
    ./lib/log
    ./lib/mdamath
    ./lib/transformations
@@ -86,7 +86,7 @@ single place to ``cimport`` MDAnalysis' public Cython headers. This is recommend
 for advanced developers only.
 
 For example, imagine we are writing a Cython extension module in
-:mod:`MDAnalysis.lib` and we would like to make a function that creates a 
+:mod:`MDAnalysis.lib` and we would like to make a function that creates a
 :class:`MDAnalysis.coordinates.timestep.Timestep`
 
 .. code-block:: cython
@@ -94,7 +94,7 @@ For example, imagine we are writing a Cython extension module in
    from MDAnalysis.lib.libmdanalysis cimport timestep
    # or we could use the relative cimport
    # from .libmdanalysis cimport timestep
-   
+
    cdef timestep.Timestep make_timestep(int natoms):
       cdef timestep.Timestep ts = timestep.Timestep(natoms)
       return ts

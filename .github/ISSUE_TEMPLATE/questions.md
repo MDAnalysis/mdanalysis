@@ -4,12 +4,12 @@ about: If you want to ask a question please use the mailing list!
 
 ---
 
-If you have a **QUESTION** such as 
+If you have a **QUESTION** such as
 
 - how to use MDAnalysis in general
 - how to accomplish something specific,
 - what output means
-- ... or similar questions related to *USING* MDAnalysis 
+- ... or similar questions related to *USING* MDAnalysis
 
 then please *ask this question on the user mailing list*
 

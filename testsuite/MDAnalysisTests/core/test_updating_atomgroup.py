@@ -198,7 +198,7 @@ class UAGReader(mda.coordinates.base.ReaderBase):
 
 class TestUAGCallCount(object):
     # make sure updates are only called when required!
-    # 
+    #
     # these tests check that potentially expensive selection operations are only
     # done when necessary
     @pytest.fixture()

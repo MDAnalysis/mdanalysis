@@ -249,7 +249,7 @@ class XYZWriter(base.WriterBase):
         Write coordinate information in *ts* to the trajectory
 
         .. versionchanged:: 1.0.0
-           Print out :code:`remark` if present, otherwise use generic one 
+           Print out :code:`remark` if present, otherwise use generic one
            (Issue #2692).
            Renamed from `write_next_timestep` to `_write_next_frame`.
         """

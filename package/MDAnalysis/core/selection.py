@@ -1620,7 +1620,7 @@ def gen_selection_class(singular, attrname, dtype, per_object):
 
         >>> gen_selection_class("resname", "resnames", object, "residue")
         <class 'MDAnalysis.core.selection._selectors.ResnameSelection'>
-    
+
     Simply generating this selector is sufficient for the keyword to be
     accessible by :meth:`~MDAnalysis.core.universe.Universe.select_atoms`,
     as that is automatically handled by

@@ -14,7 +14,7 @@ class TopologyGuessBench(object):
     """
     params = (10, 100, 1000, 10000)
     param_names = ['num_atoms']
-    
+
     def setup(self, num_atoms):
         self.u = MDAnalysis.Universe(GRO)
         self.ag = self.u.atoms[:num_atoms]

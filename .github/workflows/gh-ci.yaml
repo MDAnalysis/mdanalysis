@@ -124,7 +124,6 @@ jobs:
         fail_ci_if_error: True
         verbose: True
 
-
   build_docs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest

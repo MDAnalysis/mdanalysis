@@ -1,22 +1,22 @@
-%VERSION  VERSION_STAMP = V0001.000  DATE = 03/15/23 21:14:40                  
-%FLAG TITLE                                                                     
-%FORMAT(20a4)                                                                   
-default_name                                                                    
-%FLAG POINTERS                                                                  
-%FORMAT(10I8)                                                                   
+%VERSION  VERSION_STAMP = V0001.000  DATE = 03/15/23 21:14:40
+%FLAG TITLE
+%FORMAT(20a4)
+default_name
+%FLAG POINTERS
+%FORMAT(10I8)
       84      10      37      48      86      65     166     197       0       0
      455       5      48      65     197      33      70      86      37       0
        0       0       0       0       0       0       0       1      24       0
        0
-%FLAG ATOM_NAME                                                                 
-%FORMAT(20a4)                                                                   
-N   H1  H2  H3  CA  HA  CB  HB2 HB3 CG  OD1 OD2 C   O   N   H   CA  HA  CB  HB2 
-HB3 CG  OD1 OD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 NE1 HE1 CE2 CZ2 
-HZ2 CH2 HH2 CZ3 HZ3 CE3 HE3 CD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  HG2 HG3 
+%FLAG ATOM_NAME
+%FORMAT(20a4)
+N   H1  H2  H3  CA  HA  CB  HB2 HB3 CG  OD1 OD2 C   O   N   H   CA  HA  CB  HB2
+HB3 CG  OD1 OD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  CD1 HD1 NE1 HE1 CE2 CZ2
+HZ2 CH2 HH2 CZ3 HZ3 CE3 HE3 CD2 C   O   N   H   CA  HA  CB  HB2 HB3 CG  HG2 HG3
 CD  OE1 OE2 C   O   N   H   CA  HA  CB  HB  CG2 HG21HG22HG23CG1 HG12HG13CD1 HD11
-HD12HD13C   O   
-%FLAG CHARGE                                                                    
-%FORMAT(5E16.8)                                                                 
+HD12HD13C   O
+%FLAG CHARGE
+%FORMAT(5E16.8)
   1.42498386E+00  4.00890600E+00  4.00890600E+00  4.00890600E+00  5.32091160E-01
   2.07916443E+00 -4.28224050E-01 -3.07956870E-01 -3.07956870E-01  1.49313526E+01
  -1.47309073E+01 -1.47309073E+01  1.02427548E+01 -1.07311125E+01 -9.40817349E+00
@@ -34,8 +34,8 @@ HD12HD13C   O
   3.40757010E-01 -5.83842492E+00  1.60720686E+00  1.60720686E+00  1.60720686E+00
  -7.83558900E-01  4.30046280E-01  4.30046280E-01 -1.20267180E+00  3.38934780E-01
   3.38934780E-01  3.38934780E-01  1.08841798E+01 -1.03484442E+01
-%FLAG ATOMIC_NUMBER                                                             
-%FORMAT(10I8)                                                                   
+%FLAG ATOMIC_NUMBER
+%FORMAT(10I8)
        7       1       1       1       6       1       6       1       1       6
        8       8       6       8       7       1       6       1       6       1
        1       6       8       8       6       8       7       1       6       1
@@ -45,8 +45,8 @@ HD12HD13C   O
        6       8       8       6       8       7       1       6       1       6
        1       6       1       1       1       6       1       1       6       1
        1       1       6       8
-%FLAG MASS                                                                      
-%FORMAT(5E16.8)                                                                 
+%FLAG MASS
+%FORMAT(5E16.8)
   1.40100000E+01  1.00800000E+00  1.00800000E+00  1.00800000E+00  1.20100000E+01
   1.00800000E+00  1.20100000E+01  1.00800000E+00  1.00800000E+00  1.20100000E+01
   1.60000000E+01  1.60000000E+01  1.20100000E+01  1.60000000E+01  1.40100000E+01
@@ -64,8 +64,8 @@ HD12HD13C   O
   1.00800000E+00  1.20100000E+01  1.00800000E+00  1.00800000E+00  1.00800000E+00
   1.20100000E+01  1.00800000E+00  1.00800000E+00  1.20100000E+01  1.00800000E+00
   1.00800000E+00  1.00800000E+00  1.20100000E+01  1.60000000E+01
-%FLAG ATOM_TYPE_INDEX                                                           
-%FORMAT(10I8)                                                                   
+%FLAG ATOM_TYPE_INDEX
+%FORMAT(10I8)
        1       2       2       2       3       4       3       5       5       6
        7       7       6       7       1       2       3       8       3       5
        5       6       7       7       6       7       1       2       3       8
@@ -75,8 +75,8 @@ HD12HD13C   O
        6       7       7       6       7       1       2       3       8       3
        5       3       5       5       5       3       5       5       3       5
        5       5       6       7
-%FLAG NUMBER_EXCLUDED_ATOMS                                                     
-%FORMAT(10I8)                                                                   
+%FLAG NUMBER_EXCLUDED_ATOMS
+%FORMAT(10I8)
       12       6       5       4      12       7       8       5       4       3
        1       1       7       3      10       4      12       7       8       5
        4       3       1       1       7       3      10       4      12       7
@@ -86,8 +86,8 @@ HD12HD13C   O
        2       1       1       7       3       9       4      13       6      14
        9       8       3       2       1       7       5       4       3       2
        1       1       1       1
-%FLAG NONBONDED_PARM_INDEX                                                      
-%FORMAT(10I8)                                                                   
+%FLAG NONBONDED_PARM_INDEX
+%FORMAT(10I8)
        1       2       4       7      11      16      22      29      37      46
        2       3       5       8      12      17      23      30      38      47
        4       5       6       9      13      18      24      31      39      48
@@ -98,14 +98,14 @@ HD12HD13C   O
       29      30      31      32      33      34      35      36      44      53
       37      38      39      40      41      42      43      44      45      54
       46      47      48      49      50      51      52      53      54      55
-%FLAG RESIDUE_LABEL                                                             
-%FORMAT(20a4)                                                                   
-ASP ASP TRP GLU ILE 
-%FLAG RESIDUE_POINTER                                                           
-%FORMAT(10I8)                                                                   
+%FLAG RESIDUE_LABEL
+%FORMAT(20a4)
+ASP ASP TRP GLU ILE
+%FLAG RESIDUE_POINTER
+%FORMAT(10I8)
        1      15      27      51      66
-%FLAG BOND_FORCE_CONSTANT                                                       
-%FORMAT(5E16.8)                                                                 
+%FLAG BOND_FORCE_CONSTANT
+%FORMAT(5E16.8)
   5.70000000E+02  4.90000000E+02  6.56000000E+02  3.17000000E+02  3.10000000E+02
   3.17000000E+02  3.67000000E+02  3.37000000E+02  4.69000000E+02  4.69000000E+02
   4.69000000E+02  4.47000000E+02  4.28000000E+02  4.27000000E+02  5.46000000E+02
@@ -113,8 +113,8 @@ ASP ASP TRP GLU ILE
   3.10000000E+02  3.10000000E+02  3.10000000E+02  3.40000000E+02  3.40000000E+02
   4.34000000E+02  3.40000000E+02  4.34000000E+02  3.67000000E+02  4.34000000E+02
   3.67000000E+02  3.40000000E+02  3.40000000E+02
-%FLAG BOND_EQUIL_VALUE                                                          
-%FORMAT(5E16.8)                                                                 
+%FLAG BOND_EQUIL_VALUE
+%FORMAT(5E16.8)
   1.22900000E+00  1.33500000E+00  1.25000000E+00  1.52200000E+00  1.52600000E+00
   1.52200000E+00  1.47100000E+00  1.44900000E+00  1.40400000E+00  1.40000000E+00
   1.40000000E+00  1.41900000E+00  1.38000000E+00  1.38100000E+00  1.35200000E+00
@@ -122,8 +122,8 @@ ASP ASP TRP GLU ILE
   1.52600000E+00  1.52600000E+00  1.52600000E+00  1.09000000E+00  1.09000000E+00
   1.01000000E+00  1.09000000E+00  1.01000000E+00  1.08000000E+00  1.01000000E+00
   1.08000000E+00  1.09000000E+00  1.09000000E+00
-%FLAG ANGLE_FORCE_CONSTANT                                                      
-%FORMAT(5E16.8)                                                                 
+%FLAG ANGLE_FORCE_CONSTANT
+%FORMAT(5E16.8)
   8.00000000E+01  5.00000000E+01  8.00000000E+01  6.30000000E+01  7.00000000E+01
   6.30000000E+01  8.00000000E+01  7.00000000E+01  8.00000000E+01  8.00000000E+01
   8.00000000E+01  6.30000000E+01  6.30000000E+01  6.30000000E+01  6.30000000E+01
@@ -138,8 +138,8 @@ ASP ASP TRP GLU ILE
   5.00000000E+01  5.00000000E+01  5.00000000E+01  3.50000000E+01  5.00000000E+01
   5.00000000E+01  5.00000000E+01  5.00000000E+01  5.00000000E+01  5.00000000E+01
   5.00000000E+01  5.00000000E+01  5.00000000E+01  5.00000000E+01  5.00000000E+01
-%FLAG ANGLE_EQUIL_VALUE                                                         
-%FORMAT(5E16.8)                                                                 
+%FLAG ANGLE_EQUIL_VALUE
+%FORMAT(5E16.8)
   2.14501057E+00  2.12755727E+00  2.19911580E+00  1.93906163E+00  2.04203610E+00
   1.93906163E+00  2.10137732E+00  2.03505478E+00  1.94080696E+00  1.94080696E+00
   1.91462701E+00  1.92160833E+00  2.09439600E+00  2.09439600E+00  2.14151991E+00
@@ -154,8 +154,8 @@ ASP ASP TRP GLU ILE
   2.09439600E+00  2.09439600E+00  1.91113635E+00  1.91113635E+00  1.91113635E+00
   1.91113635E+00  1.91113635E+00  1.91113635E+00  1.91113635E+00  1.91113635E+00
   1.91113635E+00  1.91113635E+00  1.91113635E+00  1.91113635E+00  1.91113635E+00
-%FLAG DIHEDRAL_FORCE_CONSTANT                                                   
-%FORMAT(5E16.8)                                                                 
+%FLAG DIHEDRAL_FORCE_CONSTANT
+%FORMAT(5E16.8)
   2.50000000E+00  2.00000000E+00  1.80000000E+00  8.00000000E-01  0.00000000E+00
   0.00000000E+00  2.70000000E-01  4.20000000E-01  4.24000000E-01  4.59000000E-01
   5.80000000E-02  1.54000000E-01  0.00000000E+00  2.00000000E-01  2.00000000E-01
@@ -174,8 +174,8 @@ ASP ASP TRP GLU ILE
   1.44000000E-01  9.70000000E-02  1.05000000E+01  0.00000000E+00  1.10000000E+00
   1.55555556E-01  8.00000000E-01  8.00000000E-02  1.50000000E-01  1.60000000E-01
   1.00000000E+00
-%FLAG DIHEDRAL_PERIODICITY                                                      
-%FORMAT(5E16.8)                                                                 
+%FLAG DIHEDRAL_PERIODICITY
+%FORMAT(5E16.8)
   2.00000000E+00  1.00000000E+00  2.00000000E+00  3.00000000E+00  4.00000000E+00
   1.00000000E+00  2.00000000E+00  3.00000000E+00  1.00000000E+00  2.00000000E+00
   3.00000000E+00  4.00000000E+00  2.00000000E+00  1.00000000E+00  2.00000000E+00
@@ -194,8 +194,8 @@ ASP ASP TRP GLU ILE
   2.00000000E+00  4.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00
   3.00000000E+00  1.00000000E+00  3.00000000E+00  3.00000000E+00  3.00000000E+00
   2.00000000E+00
-%FLAG DIHEDRAL_PHASE                                                            
-%FORMAT(5E16.8)                                                                 
+%FLAG DIHEDRAL_PHASE
+%FORMAT(5E16.8)
   3.14159400E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  3.14159400E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
@@ -214,8 +214,8 @@ ASP ASP TRP GLU ILE
   3.14159400E+00  3.14159400E+00  3.14159400E+00  3.14159400E+00  3.14159400E+00
   0.00000000E+00  0.00000000E+00  3.14159400E+00  0.00000000E+00  0.00000000E+00
   3.14159400E+00
-%FLAG SCEE_SCALE_FACTOR                                                         
-%FORMAT(5E16.8)                                                                 
+%FLAG SCEE_SCALE_FACTOR
+%FORMAT(5E16.8)
   1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00
   1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00
   1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00
@@ -234,8 +234,8 @@ ASP ASP TRP GLU ILE
   1.20000000E+00  1.20000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00  1.20000000E+00
   0.00000000E+00
-%FLAG SCNB_SCALE_FACTOR                                                         
-%FORMAT(5E16.8)                                                                 
+%FLAG SCNB_SCALE_FACTOR
+%FORMAT(5E16.8)
   2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00
   2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00
   2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00
@@ -254,8 +254,8 @@ ASP ASP TRP GLU ILE
   2.00000000E+00  2.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00  2.00000000E+00
   0.00000000E+00
-%FLAG SOLTY                                                                     
-%FORMAT(5E16.8)                                                                 
+%FLAG SOLTY
+%FORMAT(5E16.8)
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
@@ -264,8 +264,8 @@ ASP ASP TRP GLU ILE
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00
-%FLAG LENNARD_JONES_ACOEF                                                       
-%FORMAT(5E16.8)                                                                 
+%FLAG LENNARD_JONES_ACOEF
+%FORMAT(5E16.8)
   9.44293233E+05  2.12601181E+03  1.39982777E-01  9.95480466E+05  2.56678134E+03
   1.04308023E+06  2.01791425E+04  9.14716912E+00  2.27401052E+04  2.01823541E+02
   8.96776989E+04  1.07193646E+02  9.71708117E+04  1.41077189E+03  7.51607703E+03
@@ -277,8 +277,8 @@ ASP ASP TRP GLU ILE
   5.34045360E+03  6.37148278E+04  3.93690817E+04  3.50301067E+03  3.76169105E+03
   7.91627154E+04  8.90987508E+01  8.59947003E+04  1.21014911E+03  6.55825601E+03
   7.62451550E+04  4.77908183E+04  4.33325458E+03  4.64559155E+03  5.71629601E+03
-%FLAG LENNARD_JONES_BCOEF                                                       
-%FORMAT(5E16.8)                                                                 
+%FLAG LENNARD_JONES_BCOEF
+%FORMAT(5E16.8)
   8.01323529E+02  2.09604198E+01  9.37598976E-02  7.36907417E+02  2.06278363E+01
   6.75612247E+02  6.45756063E+01  7.57919667E-01  6.13981767E+01  3.56012899E+00
   1.36131731E+02  2.59456373E+00  1.26919150E+02  9.41257003E+00  2.17257828E+01
@@ -290,8 +290,8 @@ ASP ASP TRP GLU ILE
   1.81057616E+01  9.56748258E+01  9.40124296E+01  1.46638650E+01  1.50233639E+01
   1.26451907E+02  2.33864085E+00  1.18043746E+02  8.61880722E+00  2.00642027E+01
   1.04660679E+02  1.03580945E+02  1.63092814E+01  1.66953734E+01  1.85196588E+01
-%FLAG BONDS_INC_HYDROGEN                                                        
-%FORMAT(10I8)                                                                   
+%FLAG BONDS_INC_HYDROGEN
+%FORMAT(10I8)
       18      21      24      18      24      24      12      15      25       0
        3      26       0       6      26       0       9      26      54      57
       24      54      60      24      48      51      27      42      45      28
@@ -304,8 +304,8 @@ ASP ASP TRP GLU ILE
      225     231      24     213     216      32     213     219      32     213
      222      32     207     210      33     201     204      27     195     198
       28
-%FLAG BONDS_WITHOUT_HYDROGEN                                                    
-%FORMAT(10I8)                                                                   
+%FLAG BONDS_WITHOUT_HYDROGEN
+%FORMAT(10I8)
       36      39       1      36      42       2      27      30       3      27
       33       3      18      27       4      12      18       5      12      36
        6       0      12       7      72      75       1      72      78       2
@@ -321,8 +321,8 @@ ASP ASP TRP GLU ILE
      150     156       8     246     249       1     225     234      20     207
      213      21     207     225      22     201     207      23     201     246
        6     195     201       8
-%FLAG ANGLES_INC_HYDROGEN                                                       
-%FORMAT(10I8)                                                                   
+%FLAG ANGLES_INC_HYDROGEN
+%FORMAT(10I8)
       36      42      45      38      24      18      27      39      21      18
       24      40      21      18      27      39      15      12      18      41
       15      12      36      42      12      18      21      43      12      18
@@ -358,8 +358,8 @@ ASP ASP TRP GLU ILE
      207     225     231      68     204     201     207      69     204     201
      246      48     201     207     210      70     198     195     201      49
      195     201     204      50
-%FLAG ANGLES_WITHOUT_HYDROGEN                                                   
-%FORMAT(10I8)                                                                   
+%FLAG ANGLES_WITHOUT_HYDROGEN
+%FORMAT(10I8)
       39      36      42       1      36      42      48       2      30      27
       33       3      18      12      36       4      18      27      30       5
       18      27      33       5      12      18      27       6      12      36
@@ -386,8 +386,8 @@ ASP ASP TRP GLU ILE
      225      32     207     201     246      33     207     225     234      34
      201     207     213      35     201     207     225      36     201     246
      249       7     195     201     207      37     195     201     246      12
-%FLAG DIHEDRALS_INC_HYDROGEN                                                    
-%FORMAT(10I8)                                                                   
+%FLAG DIHEDRALS_INC_HYDROGEN
+%FORMAT(10I8)
       39      36      42      45       2      39      36     -42      45       1
       36      42      48      51      13      24      18      12      36      81
       24      18      27      30      13      24      18      27      33      13
@@ -471,8 +471,8 @@ ASP ASP TRP GLU ILE
      114     123    -117    -120      80     102     114    -108    -111      86
       99     108    -102    -105      80      72      84     -78     -81      80
      144     156    -150    -153      80     189     201    -195    -198      80
-%FLAG DIHEDRALS_WITHOUT_HYDROGEN                                                
-%FORMAT(10I8)                                                                   
+%FLAG DIHEDRALS_WITHOUT_HYDROGEN
+%FORMAT(10I8)
       39      36      42      48       1      36      42      48      54       2
       36      42     -48      54       3      36      42     -48      54       4
       36      42     -48      54       5      36      42      48      72       6
@@ -572,8 +572,8 @@ ASP ASP TRP GLU ILE
       99     114    -141    -135      79     108     117    -114    -141      79
      141      90     -99    -102      80     156     195    -189    -192      78
      171     183    -180    -186      78
-%FLAG EXCLUDED_ATOMS_LIST                                                       
-%FORMAT(10I8)                                                                   
+%FLAG EXCLUDED_ATOMS_LIST
+%FORMAT(10I8)
        2       3       4       5       6       7       8       9      10      13
       14      15       3       4       5       6       7      13       4       5
        6       7      13       5       6       7      13       6       7       8
@@ -620,31 +620,31 @@ ASP ASP TRP GLU ILE
       77      78      79      80      81      82      83      78      79      80
       81      82      79      80      81      82      80      81      82      81
       82      82       0      84       0
-%FLAG HBOND_ACOEF                                                               
-%FORMAT(5E16.8)                                                                 
+%FLAG HBOND_ACOEF
+%FORMAT(5E16.8)
 
-%FLAG HBOND_BCOEF                                                               
-%FORMAT(5E16.8)                                                                 
+%FLAG HBOND_BCOEF
+%FORMAT(5E16.8)
 
-%FLAG HBCUT                                                                     
-%FORMAT(5E16.8)                                                                 
+%FLAG HBCUT
+%FORMAT(5E16.8)
 
-%FLAG AMBER_ATOM_TYPE                                                           
-%FORMAT(20a4)                                                                   
-N3  H   H   H   CX  HP  2C  HC  HC  CO  O2  O2  C   O   N   H   CX  H1  2C  HC  
-HC  CO  O2  O2  C   O   N   H   CX  H1  CT  HC  HC  C*  CW  H4  NA  H   CN  CA  
-HA  CA  HA  CA  HA  CA  HA  CB  C   O   N   H   CX  H1  2C  HC  HC  2C  HC  HC  
-CO  O2  O2  C   O   N   H   CX  H1  3C  HC  CT  HC  HC  HC  2C  HC  HC  CT  HC  
-HC  HC  C   O   
-%FLAG TREE_CHAIN_CLASSIFICATION                                                 
-%FORMAT(20a4)                                                                   
-BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA M   E   M   E   3   E   
-E   B   E   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E   S   B   
-E   B   E   B   E   S   E   E   M   E   M   E   M   E   3   E   E   3   E   E   
-B   E   E   M   E   M   E   M   E   3   E   3   E   E   E   3   E   E   3   E   
-E   E   M   E   
-%FLAG JOIN_ARRAY                                                                
-%FORMAT(10I8)                                                                   
+%FLAG AMBER_ATOM_TYPE
+%FORMAT(20a4)
+N3  H   H   H   CX  HP  2C  HC  HC  CO  O2  O2  C   O   N   H   CX  H1  2C  HC
+HC  CO  O2  O2  C   O   N   H   CX  H1  CT  HC  HC  C*  CW  H4  NA  H   CN  CA
+HA  CA  HA  CA  HA  CA  HA  CB  C   O   N   H   CX  H1  2C  HC  HC  2C  HC  HC
+CO  O2  O2  C   O   N   H   CX  H1  3C  HC  CT  HC  HC  HC  2C  HC  HC  CT  HC
+HC  HC  C   O
+%FLAG TREE_CHAIN_CLASSIFICATION
+%FORMAT(20a4)
+BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA BLA M   E   M   E   3   E
+E   B   E   E   M   E   M   E   M   E   3   E   E   B   B   E   B   E   S   B
+E   B   E   B   E   S   E   E   M   E   M   E   M   E   3   E   E   3   E   E
+B   E   E   M   E   M   E   M   E   3   E   3   E   E   E   3   E   E   3   E
+E   E   M   E
+%FLAG JOIN_ARRAY
+%FORMAT(10I8)
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
@@ -654,8 +654,8 @@ E   E   M   E
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0
-%FLAG IROTAT                                                                    
-%FORMAT(10I8)                                                                   
+%FLAG IROTAT
+%FORMAT(10I8)
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
@@ -665,20 +665,20 @@ E   E   M   E
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0       0       0       0       0       0       0
        0       0       0       0
-%FLAG SOLVENT_POINTERS                                                          
-%FORMAT(3I8)                                                                    
+%FLAG SOLVENT_POINTERS
+%FORMAT(3I8)
        5       1       2
-%FLAG ATOMS_PER_MOLECULE                                                        
-%FORMAT(10I8)                                                                   
+%FLAG ATOMS_PER_MOLECULE
+%FORMAT(10I8)
       84
-%FLAG BOX_DIMENSIONS                                                            
-%FORMAT(5E16.8)                                                                 
+%FLAG BOX_DIMENSIONS
+%FORMAT(5E16.8)
   9.00000000E+01  7.26144463E+01  7.71983807E+01  7.99681950E+01
-%FLAG RADIUS_SET                                                                
-%FORMAT(1a80)                                                                   
-modified Bondi radii (mbondi)                                                   
-%FLAG RADII                                                                     
-%FORMAT(5E16.8)                                                                 
+%FLAG RADIUS_SET
+%FORMAT(1a80)
+modified Bondi radii (mbondi)
+%FLAG RADII
+%FORMAT(5E16.8)
   1.55000000E+00  1.30000000E+00  1.30000000E+00  1.30000000E+00  1.70000000E+00
   1.30000000E+00  1.70000000E+00  1.30000000E+00  1.30000000E+00  1.70000000E+00
   1.50000000E+00  1.50000000E+00  1.70000000E+00  1.50000000E+00  1.55000000E+00
@@ -696,8 +696,8 @@ modified Bondi radii (mbondi)
   1.30000000E+00  1.70000000E+00  1.30000000E+00  1.30000000E+00  1.30000000E+00
   1.70000000E+00  1.30000000E+00  1.30000000E+00  1.70000000E+00  1.30000000E+00
   1.30000000E+00  1.30000000E+00  1.70000000E+00  1.50000000E+00
-%FLAG SCREEN                                                                    
-%FORMAT(5E16.8)                                                                 
+%FLAG SCREEN
+%FORMAT(5E16.8)
   7.90000000E-01  8.50000000E-01  8.50000000E-01  8.50000000E-01  7.20000000E-01
   8.50000000E-01  7.20000000E-01  8.50000000E-01  8.50000000E-01  7.20000000E-01
   8.50000000E-01  8.50000000E-01  7.20000000E-01  8.50000000E-01  7.90000000E-01

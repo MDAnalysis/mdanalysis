@@ -239,7 +239,7 @@ class TestUniverseFromSmiles(object):
 
     def test_no_Hs(self):
         smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
-        u = mda.Universe.from_smiles(smi, addHs=False, 
+        u = mda.Universe.from_smiles(smi, addHs=False,
             generate_coordinates=False, format='RDKIT')
         assert u.atoms.n_atoms == 14
         assert len(u.bonds.indices) == 15
@@ -261,7 +261,7 @@ class TestUniverseFromSmiles(object):
     def test_rdkit_kwargs(self):
         # test for bad kwarg:
         # Unfortunately, exceptions from Boost cannot be passed to python,
-        # we cannot `from Boost.Python import ArgumentError` and use it with 
+        # we cannot `from Boost.Python import ArgumentError` and use it with
         # pytest.raises(ArgumentError), so "this is the way"
         try:
             u = mda.Universe.from_smiles("CCO", rdkit_kwargs=dict(abc=42))
@@ -274,13 +274,13 @@ class TestUniverseFromSmiles(object):
         u1 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=42))
         u2 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=51))
         with pytest.raises(AssertionError) as e:
-            assert_equal(u1.trajectory.coordinate_array, 
+            assert_equal(u1.trajectory.coordinate_array,
                          u2.trajectory.coordinate_array)
             assert "Mismatched elements: 15 / 15 (100%)" in str(e.value)
 
 
     def test_coordinates(self):
-        u = mda.Universe.from_smiles("C", numConfs=2, 
+        u = mda.Universe.from_smiles("C", numConfs=2,
                                      rdkit_kwargs=dict(randomSeed=42))
         assert u.trajectory.n_frames == 2
         expected = np.array([
@@ -449,7 +449,7 @@ class TestGuessBonds(object):
         are being passed correctly.
         """
         u = mda.Universe(two_water_gro, guess_bonds=True)
-        
+
         self._check_universe(u)
         assert u.kwargs["guess_bonds"]
         assert u.kwargs["fudge_factor"]
@@ -826,7 +826,7 @@ class TestDelTopologyAttr(object):
                 return "potoooooooo"
 
             transplants["Universe"].append(("potatoes", potatoes))
-        
+
         universe.add_TopologyAttr("tubers")
         assert universe.potatoes() == "potoooooooo"
         universe.del_TopologyAttr("tubers")
