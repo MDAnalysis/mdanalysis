@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie
+         richardjgowers, lilyminium, ALescoulie, jandom
 
  * 2.7.0
 
@@ -52,6 +52,7 @@ Changes
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
   * Results for WatsonCrickDist nucleic acids analysis are now stored in 
     `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
+  * Add pre-commit hooks to check for common formatting problems (PR #4321)
 
 Deprecations
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
