@@ -14,6 +14,8 @@
 import sys
 import os
 import datetime
+sys.path.insert(0, os.path.abspath('../../..'))
+
 import MDAnalysis as mda
 # Custom MDA Formating
 from pybtex.style.formatting.unsrt import Style as UnsrtStyle

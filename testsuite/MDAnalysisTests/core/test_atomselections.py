@@ -814,6 +814,12 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
         assert len(sel) == expected
 
+    @pytest.mark.parametrize("periodic,expected", ([True, 29], [False, 17]))
+    def test_box(self, u, periodic, expected):
+        sel = u.select_atoms("box xyz 5 2 10 -5 6 -2 resid 1", periodic=periodic)
+
+        assert len(sel) == expected
+
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
     @pytest.fixture()

@@ -541,6 +541,7 @@ class BoxSelection(Selection):
     token = "box"
     precedence = 1
     index_map = {"x": 0, "y": 1, "z": 2}
+    axis_map = ["x", "y", "z"]
 
     def __init__(self, parser, tokens):
         super().__init__(parser, tokens)
@@ -556,8 +557,9 @@ class BoxSelection(Selection):
                 if d not in self.index_map:
                     raise ValueError(
                         "The direction '{}' is not valid."
-                        "Must be combination "
-                        "of {}".format(self.direction, list(self.index_map.keys()))
+                        "Must be combination of {}".format(
+                            self.direction, list(self.index_map.keys())
+                        )
                     )
                 setattr(self, "{}max".format(d), float(tokens.popleft()))
                 setattr(self, "{}min".format(d), float(tokens.popleft()))
@@ -589,12 +591,12 @@ class BoxSelection(Selection):
                 if axis_height > box[axis_index]:
                     raise NotImplementedError(
                         "The total length of the box selection in {} ({:.3f}) "
-                        "is larger than the unit cell's {} dimension ({:.3f}). Can "
-                        "only do selections where it is smaller or equal."
+                        "is larger than the unit cell's {} dimension ({:.3f}). "
+                        "Can only do selections where it is smaller or equal."
                         "".format(
-                            self.direction[axis_index],
+                            self.axis_map[axis_index],
                             axis_height,
-                            self.direction[axis_index],
+                            self.axis_map[axis_index],
                             box[axis_index],
                         )
                     )
