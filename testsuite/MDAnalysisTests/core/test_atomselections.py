@@ -820,6 +820,28 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
         assert len(sel) == expected
 
+    @pytest.mark.parametrize(
+        "selection,error,expected",
+        (
+            [
+                "box xyz 10 -5 90 -90 6 -2 resid 1",
+                NotImplementedError,
+                "The total length of the box selection in y",
+            ],
+            [
+                "box yyy 10 -5 7 -7 6 -2 resid 1",
+                SelectionError,
+                "Must be combination of",
+            ],
+            ["box a 10 -5 resid 1", SelectionError, "Must be combination of"],
+        ),
+    )
+    def test_box_error(self, u, selection, error, expected):
+        with pytest.raises(error) as excinfo:
+            u.select_atoms(selection)
+        exec_msg = str(excinfo.value)
+        assert expected in exec_msg
+
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
     @pytest.fixture()
@@ -882,6 +904,14 @@ class TestTriclinicSelections(object):
     def test_empty_sphzone(self, u):
         empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
         assert len(empty) == 0
+
+    def test_box(self, u):
+        ag = u.select_atoms("box z 2.5 -2.5 resid 1")
+        assert len(ag) == 4241
+
+    def test_empty_box(self, u):
+        ag = u.select_atoms("box z 2.5 -2.5 name NOT_A_NAME")
+        assert len(ag) == 0
 
     def test_point_1(self, u):
         # The example selection

@@ -541,26 +541,36 @@ class BoxSelection(Selection):
     token = "box"
     precedence = 1
     index_map = {"x": 0, "y": 1, "z": 2}
+    combination = [
+        "x",
+        "y",
+        "z",
+        "xy",
+        "xz",
+        "yz",
+        "yx",
+        "zx",
+        "zy",
+        "xyz",
+        "xzy",
+        "yxz",
+        "yzx",
+        "zxy",
+        "zyx",
+    ]
     axis_map = ["x", "y", "z"]
 
     def __init__(self, parser, tokens):
         super().__init__(parser, tokens)
         self.periodic = parser.periodic
         self.direction = tokens.popleft()
-        if len(self.direction) > 3:
+        if self.direction not in self.combination:
             raise ValueError(
                 "The direction '{}' is not valid. Must be combination of {}"
                 "".format(self.direction, list(self.index_map.keys()))
             )
         else:
             for d in self.direction:
-                if d not in self.index_map:
-                    raise ValueError(
-                        "The direction '{}' is not valid."
-                        "Must be combination of {}".format(
-                            self.direction, list(self.index_map.keys())
-                        )
-                    )
                 setattr(self, "{}max".format(d), float(tokens.popleft()))
                 setattr(self, "{}min".format(d), float(tokens.popleft()))
         self.sel = parser.parse_expression(self.precedence)
