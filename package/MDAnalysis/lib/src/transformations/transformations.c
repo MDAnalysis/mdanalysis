@@ -786,7 +786,7 @@ PyConverter_AnyDoubleArray(
     PyObject **address)
 {
     PyArrayObject *obj = (PyArrayObject *)object;
-    if (PyArray_Check(object) && obj->descr->type_num == PyArray_DOUBLE) {
+    if (PyArray_Check(object) && obj->descr->type_num == NPY_DOUBLE) {
         *address = object;
         Py_INCREF(object);
         return NPY_SUCCEED;
@@ -965,7 +965,7 @@ PyOutputConverter_AnyDoubleArrayOrNone(
         *address = NULL;
         return NPY_SUCCEED;
     }
-    if (PyArray_Check(object) && (obj->descr->type_num == PyArray_DOUBLE)) {
+    if (PyArray_Check(object) && (obj->descr->type_num == NPY_DOUBLE)) {
         Py_INCREF(object);
         *address = (PyArrayObject *)object;
         return NPY_SUCCEED;

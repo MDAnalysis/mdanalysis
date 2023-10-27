@@ -19,8 +19,8 @@ def main(ctx):
     print(env.get("CIRRUS_PR") != None)
     print(env.get("CIRRUS_BASE_BRANCH") == "develop")
 
-    # If you're targetting develop and it's a PR, run a CI job
-    if ((env.get("CIRRUS_BASE_BRANCH") == "develop") and (env.get("CIRRUS_PR") != None)):
+    # If it's a CRON job named twiceweekly
+    if ((env.get("CIRRUS_CRON") == "twiceweekly") and (env.get("CIRRUS_BRANCH") == "develop")):
         return fs.read("maintainer/ci/cirrus-ci.yml")
 
     # If you've tagged a package or released something, deploy

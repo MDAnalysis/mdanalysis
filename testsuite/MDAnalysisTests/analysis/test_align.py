@@ -45,20 +45,20 @@ from numpy.testing import (
 def does_not_raise():
     yield
 
-class TestRotationMatrix(object):
+
+class TestRotationMatrix:
     a = np.array([[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]])
     b = np.array([[0.1, 0.1, 0.1], [1.1, 1.1, 1.1]])
     w = np.array([1.3, 2.3])
 
-    @pytest.mark.parametrize('a, b, weights', (
-            (a, b, None),
-            (a, b, w),
-            (a.astype(int), b.astype(int), w.astype(np.float32))
+    @pytest.mark.parametrize('a, b, weights, expected', (
+            (a, b, None, 0.15785647734415692),
+            (a, b, w, 0.13424643502242328),
     ))
-    def test_rotation_matrix_input(self, a, b, weights):
+    def test_rotation_matrix_input(self, a, b, weights, expected):
         rot, rmsd = align.rotation_matrix(a, b, weights)
         assert_equal(rot, np.eye(3))
-        assert rmsd is None
+        assert rmsd == pytest.approx(expected)
 
     def test_list_args(self):
         a = [[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]]
@@ -66,7 +66,7 @@ class TestRotationMatrix(object):
         w = [1.3, 2.3]
         rot, rmsd = align.rotation_matrix(a, b, w)
         assert_equal(rot, np.eye(3))
-        assert rmsd is None
+        assert rmsd == pytest.approx(0.13424643502242328)
 
     def test_exception(self):
         a = [[0.1, 0.2, 0.3],

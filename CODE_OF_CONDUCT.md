@@ -157,7 +157,7 @@ the
 [*Django*](https://www.djangoproject.com/conduct),
 [*Contributor Covenant*](http://contributor-covenant.org/),
 and
-[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md) projects,
+[*Jupyter*](https://github.com/jupyter/governance/blob/main/conduct/code_of_conduct.md) projects,
 modified by MDAnalysis. We are grateful to those projects for contributing these
 materials under open licensing terms for us to easily reuse.
 

@@ -31,8 +31,8 @@
 .. versionadded:: 1.0.0
 
 This module contains the tools to interface with HOLE_
-:cite:p:`Smart1993,Smart1996` to analyse an ion channel pore or transporter
-pathway :cite:p:`Stelzl2014`.
+:footcite:p:`Smart1993,Smart1996` to analyse an ion channel pore or transporter
+pathway :footcite:p:`Stelzl2014`.
 
 Using HOLE on a PDB file
 ------------------------
@@ -59,12 +59,12 @@ contain multiple HOLE profiles, indexed by frame.
 
 The HOLE program will create some output files:
 
-    * an output file (default name: hole.out)
-    * an sphpdb file (default name: hole.sph)
-    * a file of van der Waals' radii
-      (if not specified with ``vdwradii_file``. Default name: simple2.rad)
-    * a symlink of your PDB or DCD files (if the original name is too long)
-    * the input text (if you specify ``infile``)
+* an output file (default name: hole.out)
+* an sphpdb file (default name: hole.sph)
+* a file of van der Waals' radii
+    (if not specified with ``vdwradii_file``. Default name: simple2.rad)
+* a symlink of your PDB or DCD files (if the original name is too long)
+* the input text (if you specify ``infile``)
 
 By default (`keep_files=True`), these files are kept. If you would like to
 delete the files after the function is wrong, set `keep_files=False`. Keep in
@@ -260,13 +260,7 @@ Functions and classes
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Smart1993
-    Smart1996
-    Stelzl2014
+.. footbibliography::
 
 .. rubric:: Footnotes
 

@@ -96,7 +96,10 @@ __all__ = [
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five",  # 3 and 5 atoms xyzs for an easy topology
     "TXYZ", "ARC", "ARC_PBC",       # Tinker files
-    "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
+    "PRM",
+    "PRM_chainid_bz2",
+    "TRJ",
+    "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
     "PRM7", "NCDFtruncoct",  # Amber (cpptrj test trajectory, see Issue 488)
@@ -108,7 +111,11 @@ __all__ = [
     "PRMNCRST",  # Amber ncrst with positions/forces/velocities
     "PRM_NCBOX", "TRJ_NCBOX",  # Amber parm7 + nc w/ pos/forces/vels/box
     "PRMNEGATIVE",  # Amber negative ATOMIC_NUMBER (Issue 2306)
-    "PRMErr1", "PRMErr2", "PRMErr3",  # Amber TOP files to check raised errors
+    "PRMErr1",  # Amber TOP files to check raised errors
+    "PRMErr2",
+    "PRMErr3",
+    "PRMErr4",
+    "PRMErr5",
     "PRM_UreyBradley",  # prmtop from ParmEd test files with Urey-Bradley angles
     "PRM7_ala2", "RST7_ala2",  # prmtop and rst files from ParmEd example files
     "PRM19SBOPC",  #  prmtop w/ ff19SB CMAP terms and OPC water (Issue #2449)
@@ -144,6 +151,7 @@ __all__ = [
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
+    "LAMMPSdata_many_bonds",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSdata_triclinic",  # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSdata_PairIJ",  # lammps datafile with a PairIJ Coeffs section
@@ -154,6 +162,9 @@ __all__ = [
     "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSDUMP_image_vf",  # Lammps dump file with image flags, velocities, and forces.
     "LAMMPS_image_vf",  # Lammps data file to go with LAMMPSDUMP_image_vf
+    "LAMMPSDUMP_chain1", # Lammps dump file with chain reader
+    "LAMMPSDUMP_chain2", # Lammps dump file with chain reader
+    "LAMMPS_chain", # Lammps data file with chain reader
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -421,6 +432,7 @@ INPCRD = (_data_ref / 'Amber/test.inpcrd').as_posix()
 TRJ_bz2 = (_data_ref / 'Amber/ache.mdcrd.bz2').as_posix()
 PFncdf_Top = (_data_ref / 'Amber/posfor.top').as_posix()
 PFncdf_Trj = (_data_ref / 'Amber/posfor.ncdf').as_posix()
+PRM_chainid_bz2 = (_data_ref / "Amber/ache_chainid.prmtop.bz2").as_posix()
 
 CPPTRAJ_TRAJ_TOP = (_data_ref / 'Amber/cpptraj_traj.prmtop').as_posix()
 CPPTRAJ_TRAJ = (_data_ref / 'Amber/cpptraj_traj.nc').as_posix()
@@ -447,9 +459,11 @@ TRJ_NCBOX = (_data_ref / 'Amber/ace_tip3p.nc').as_posix()
 
 PRMNEGATIVE = (_data_ref / 'Amber/ace_mbondi3.negative.parm7').as_posix()
 
-PRMErr1 = (_data_ref / 'Amber/ace_mbondi3.error1.parm7').as_posix()
-PRMErr2 = (_data_ref / 'Amber/ace_mbondi3.error2.parm7').as_posix()
-PRMErr3 = (_data_ref / 'Amber/ace_mbondi3.error3.parm7').as_posix()
+PRMErr1 = (_data_ref / "Amber/ace_mbondi3.error1.parm7").as_posix()
+PRMErr2 = (_data_ref / "Amber/ace_mbondi3.error2.parm7").as_posix()
+PRMErr3 = (_data_ref / "Amber/ace_mbondi3.error3.parm7").as_posix()
+PRMErr4 = (_data_ref / "Amber/ace_mbondi3.error4.parm7").as_posix()
+PRMErr5 = (_data_ref / "Amber/ache_chainid.error5.prmtop.bz2").as_posix()
 
 PRM_UreyBradley = (_data_ref / 'Amber/parmed_fad.prmtop').as_posix()
 PRM7_ala2 = (_data_ref / 'Amber/parmed_ala2_solv.parm7').as_posix()
@@ -526,6 +540,10 @@ LAMMPSDUMP_nocoords = (_data_ref / "lammps/spce_no_coords.lammpstrj.bz2").as_pos
 LAMMPSDUMP_triclinic = (_data_ref / "lammps/albite_triclinic.dump").as_posix()
 LAMMPSDUMP_image_vf = (_data_ref / "lammps/image_vf.lammpstrj").as_posix()
 LAMMPS_image_vf = (_data_ref / "lammps/image_vf.data").as_posix()
+LAMMPSDUMP_chain1 = (_data_ref / "lammps/chain_dump_1.lammpstrj").as_posix()
+LAMMPSDUMP_chain2 = (_data_ref / "lammps/chain_dump_2.lammpstrj").as_posix()
+LAMMPS_chain = (_data_ref / "lammps/chain_initial.data").as_posix()
+LAMMPSdata_many_bonds = (_data_ref / "lammps/a_lot_of_bond_types.data").as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
 
@@ -614,7 +632,6 @@ PDBX = (_data_ref / "4x8u.pdbx").as_posix()
 
 SURFACE_PDB = (_data_ref / 'surface.pdb.bz2').as_posix()
 SURFACE_TRR = (_data_ref / 'surface.trr').as_posix()
-
 
 # This should be the last line: clean up namespace
 del resources

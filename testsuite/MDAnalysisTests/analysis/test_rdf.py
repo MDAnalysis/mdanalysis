@@ -32,7 +32,9 @@ from numpy.testing import assert_allclose
 
 @pytest.fixture()
 def u():
-    return mda.Universe(two_water_gro, in_memory=True)
+    u = mda.Universe(two_water_gro, in_memory=True)
+    u.add_TopologyAttr('chainIDs', u.atoms.resids)
+    return u
 
 
 @pytest.fixture()
@@ -94,6 +96,27 @@ def test_exclusion(sels):
     assert rdf.results.count.sum() == 4
 
 
+@pytest.mark.parametrize("attr, count", [
+    ("residue", 8),
+    ("segment", 0),
+    ("chain", 8)])
+def test_ignore_same_residues(sels, attr, count):
+    # should see two distances with 4 counts each
+    s1, s2 = sels
+    rdf = InterRDF(s2, s2, exclude_same=attr).run()
+    assert rdf.rdf[0] == 0
+    assert rdf.results.count.sum() == count
+
+
+def test_ignore_same_residues_fails(sels):
+    s1, s2 = sels
+    with pytest.raises(ValueError, match="The exclude_same argument to InterRDF must be"):
+        InterRDF(s2, s2, exclude_same="unsupported").run()
+
+    with pytest.raises(ValueError, match="The exclude_same argument to InterRDF cannot be used with"):
+        InterRDF(s2, s2, exclude_same="residue", exclusion_block=tuple()).run()
+        
+        
 @pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
 def test_rdf_attr_warning(sels, attr):
     s1, s2 = sels
