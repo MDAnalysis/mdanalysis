@@ -61,6 +61,10 @@ class DistancesBench(object):
         np.random.seed(9008716)
         self.coords_2 = np.random.random_sample((num_atoms,
                                                  3)).astype(np.float32)
+        self.coords_3 = np.random.random_sample((num_atoms,
+                                                 3)).astype(np.float32)
+        self.coords_4 = np.random.random_sample((num_atoms,
+                                                 3)).astype(np.float32)
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
                                            dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
@@ -161,9 +165,33 @@ class DistancesBench(object):
                                  cutoff=15.0,
                                  returntype='sparse',
                                  box=None)
+
+    def time_calc_bonds(self, num_atoms):
+        """Benchmark calculation of bonds between
+        atoms in two atomgroups.
+        """
+        MDAnalysis.lib.distances.calc_bonds(self.coords_1, self.coords_2)
+
+    def time_calc_angles(self, num_atoms):
+        """Benchmark calculation of angles between
+        atoms in three atomgroups.
+        """
+        MDAnalysis.lib.distances.calc_angles(
+            self.coords_1, self.coords_2, self.coords_3
+        )
+
+    def time_calc_dihedrals(self, num_atoms):
+        """Benchmark calculation of dihedrals between
+        atoms in four atomgroups.
+        """
+        MDAnalysis.lib.distances.calc_dihedrals(
+            self.coords_1, self.coords_2, self.coords_3, self.coords_4
+        )
+
+
 class DistancesBenchPBC(object):
     """Benchmarks for MDAnalysis.analysis.distances
-    functions. 
+    functions.
     """
     timeout = 180
     params = ([10, 100, 1000, 10000], ['orthogonal', 'triclinic'])
@@ -172,8 +200,8 @@ class DistancesBenchPBC(object):
     def setup(self, num_atoms, pbc_type):
 
         # This setup function is virtually identical to the one
-        # in the DistancesBench, we just have to do some extra 
-        # work to set up different periodic boundaries.
+        # in the DistancesBench class above, we just have to do some
+        # extra work to set up different periodic boundaries.
 
         # Some functions are performance dependent on a realistic
         # atom density. So we make a new universe with random atom
@@ -230,7 +258,6 @@ class DistancesBenchPBC(object):
             self.box_dims = self.u.dimensions
             # wrapping atoms to reflect new triclinic basis
             self.u.atoms.wrap(inplace=True)
-            
 
         # dealing with missing topology information from empty universe
         # avoids errors
