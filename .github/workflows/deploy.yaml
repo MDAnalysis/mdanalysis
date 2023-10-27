@@ -140,16 +140,12 @@ jobs:
       - name: upload_source_and_wheels
         uses: pypa/gh-action-pypi-publish@v1.8.10
         with:
-          user: __token__
-          password: ${{ secrets.TESTPYPI_API_TOKEN_SRC }}
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
 
       - name: upload_tests
         uses: pypa/gh-action-pypi-publish@v1.8.10
         with:
-          user: __token__
-          password: ${{ secrets.TESTPYPI_API_TOKEN_TEST }}
           packages_dir: testsuite/dist
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
@@ -175,15 +171,10 @@ jobs:
 
       - name: upload_source_and_wheels
         uses: pypa/gh-action-pypi-publish@v1.18.10
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN_SRC }}
 
       - name: upload_tests
         uses: pypa/gh-action-pypi-publish@v1.18.10
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN_TEST }}
           packages_dir: testsuite/dist
 
   check_testpypi:
