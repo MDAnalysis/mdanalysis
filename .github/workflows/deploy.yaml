@@ -37,31 +37,32 @@ jobs:
       fail-fast: false
       matrix:
         buildplat:
-          - [ubuntu-20.04, manylinux_x86_64]
-          - [macos-11, macosx_*]
-          - [windows-2019, win_amd64]
-        python: ["cp39", "cp310", "cp311"]
+          - [ubuntu-22.04, manylinux_x86_64, x86_64]
+          - [macos-11, macosx_*, x86_64]
+          - [windows-2019, win_amd64, AMD64]
+        python: ["cp39", "cp310", "cp311", "cp312"]
     defaults:
       run:
         working-directory: ./package
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.11.2
+        uses: pypa/cibuildwheel@v2.16.2
         with:
           package-dir: package
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_ARCHS: ${{ matrix.buildplat[2] }}
           CIBW_BUILD_VERBOSITY: 1
 
       - name: upload artifacts
         if: |
           (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
           (github.event_name == 'release' && github.event.action == 'published')
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: wheelhouse/*.whl
           retention-days: 7
@@ -75,7 +76,7 @@ jobs:
       run:
         working-directory: ./package
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -86,7 +87,7 @@ jobs:
         if: |
           (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
           (github.event_name == 'release' && github.event.action == 'published')
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: package/dist/*.tar.gz
           retention-days: 7
@@ -100,7 +101,7 @@ jobs:
       run:
         working-directory: ./testsuite
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -111,7 +112,7 @@ jobs:
         if: |
           (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
           (github.event_name == 'release' && github.event.action == 'published')
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: testsuite/dist/*.tar.gz
           retention-days: 7
@@ -125,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_wheels, build_sdist, build_sdist_tests]
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
@@ -136,7 +137,7 @@ jobs:
           mv dist/MDAnalysisTests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.8.10
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_API_TOKEN_SRC }}
@@ -144,7 +145,7 @@ jobs:
           repository_url: https://test.pypi.org/legacy/
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.8.10
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_API_TOKEN_TEST }}
@@ -161,7 +162,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_wheels, build_sdist, build_sdist_tests]
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
@@ -172,13 +173,13 @@ jobs:
           mv dist/MDAnalysisTests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.18.10
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN_SRC }}
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.18.10
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN_TEST }}
@@ -196,7 +197,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         type: ["FULL", "MIN"]
         exclude:
           # Multiple deps don't like windows
@@ -206,7 +207,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: setup_micromamba
         uses: mamba-org/setup-micromamba@v1

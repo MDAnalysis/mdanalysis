@@ -58,7 +58,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -139,7 +139,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v1
@@ -237,7 +237,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: actions/setup-python@v4
       with:
