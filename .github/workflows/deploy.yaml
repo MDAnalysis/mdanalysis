@@ -15,6 +15,9 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
+  pull_request:
+    branches:
+      - develop
 
 
 concurrency:
