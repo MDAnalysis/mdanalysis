@@ -1022,6 +1022,11 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
         Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
         begin, end)`
 
+    Raises
+    ------
+    ImportError
+      If optional dependency Biopython is not available.
+
     Notes
     -----
     If you prefer to work directly with :mod:`Bio.Align` objects then you can
@@ -1061,10 +1066,13 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
        Replace use of deprecated :func:`Bio.pairwise2.align.globalms` with
        :class:`Bio.Align.PairwiseAligner`.
 
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
+
     """
     if not HAS_BIOPYTHON:
         errmsg = ("The `sequence_alignment` method requires an installation "
-                  "biopython. Please install biopython to use this method: "
+                  "of biopython. Please install biopython to use this method: "
                   "https://biopython.org/wiki/Download")
         raise ImportError(errmsg)
 
@@ -1169,6 +1177,12 @@ def fasta2select(fastafilename, is_aligned=False,
     :func:`sequence_alignment`, which does not require external
     programs.
 
+    
+    Raises
+    ------
+    ImportError
+      If optional dependency biopython is not available.
+
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
@@ -1176,10 +1190,12 @@ def fasta2select(fastafilename, is_aligned=False,
     .. versionchanged:: 1.0.0
        Passing `alnfilename` or `treefilename` as `None` will create a file in
        the current working directory.
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
 
     """
     if not HAS_BIOPYTHON:
-        errmsg = ("The `sequence_alignment` method requires an installation "
+        errmsg = ("The `fasta2select` method requires an installation "
                   "of biopython. Please install biopython to use this method: "
                   "https://biopython.org/wiki/Download")
         raise ImportError(errmsg)
