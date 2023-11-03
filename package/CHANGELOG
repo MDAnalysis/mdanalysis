@@ -44,6 +44,7 @@ Enhancements
     PR #4284)
 
 Changes
+  * Networkx is now an optional dependency (Issue #3822).
   * High memory tests (enabled through the environment variable
     `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
     is set to "true") (PR #4295)
