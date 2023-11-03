@@ -196,10 +196,14 @@ import collections
 
 import numpy as np
 
-import Bio.SeqIO
-import Bio.AlignIO
-import Bio.Align
-import Bio.Align.Applications
+try:
+    import Bio.AlignIO
+    import Bio.Align
+    import Bio.Align.Applications
+except ImportError:
+    HAS_BIOPYTHON = False
+else:
+    HAS_BIOPYTHON = True
 
 import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
@@ -1058,6 +1062,12 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
        :class:`Bio.Align.PairwiseAligner`.
 
     """
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `sequence_alignment` method requires an installation "
+                  "biopython. Please install biopython to use this method: "
+                  "https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
     aligner = Bio.Align.PairwiseAligner(
         mode="global",
         match_score=match_score,
@@ -1168,6 +1178,12 @@ def fasta2select(fastafilename, is_aligned=False,
        the current working directory.
 
     """
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `sequence_alignment` method requires an installation "
+                  "of biopython. Please install biopython to use this method: "
+                  "https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
     if is_aligned:
         logger.info("Using provided alignment {}".format(fastafilename))
         with open(fastafilename) as fasta:
