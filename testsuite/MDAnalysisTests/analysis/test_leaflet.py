@@ -45,11 +45,12 @@ def lipid_heads(universe):
 
 @pytest.mark.skipif(HAS_NX, reason='networkx is installed')
 def test_optional_nx():
-    errmsg = "The LeafletFinder class requires an installation networkx"
+    errmsg = "The LeafletFinder class requires an installation of networkx"
     with pytest.raises(ImportError, match=errmsg):
         _ = LeafletFinder(universe, lipid_heads, pbc=True)
 
 
+@pytest.mark.skipif(not HAS_NX, reason='needs networkx')
 class TestLeafletFinder:
     @staticmethod
     def lines2one(lines):
@@ -86,6 +87,8 @@ class TestLeafletFinder:
         assert lfls_pbc_on.graph.size() > lfls_pbc_off.graph.size()
     
     def test_pbc_on_off_difference(self, universe, lipid_heads):
+        import networkx
+
         lfls_pbc_on = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=True)
         lfls_pbc_off = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=False)
         pbc_on_graph = lfls_pbc_on.graph
@@ -169,7 +172,7 @@ class TestLeafletFinder:
     
     """])
     
-            assert lines2one(open('leaflet.vmd').readlines()) == expected_output
+            assert self.lines2one(open('leaflet.vmd').readlines()) == expected_output
     
     def test_component_index_is_not_none(self, universe, lipid_heads):
         lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True)
