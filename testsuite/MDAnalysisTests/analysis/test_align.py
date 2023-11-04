@@ -516,7 +516,7 @@ class TestAlignmentProcessing:
         assert len(sel['mobile']) == 30623, self.error_msg
 
     @pytest.mark.skipif(
-        executable_not_found("clustalw2") and not HAS_BIOPYTHON,
+        executable_not_found("clustalw2") or not HAS_BIOPYTHON,
         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_file(self, tmpdir):
         """test align.fasta2select() on a non-aligned FASTA with default
@@ -528,7 +528,7 @@ class TestAlignmentProcessing:
             assert len(sel['mobile']) == 23090, self.error_msg
 
     @pytest.mark.skipif(
-        executable_not_found("clustalw2") and not HAS_BIOPYTHON,
+        executable_not_found("clustalw2") or not HAS_BIOPYTHON,
         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
         """MDAnalysis.analysis.align: test fasta2select() with ClustalW
