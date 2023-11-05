@@ -229,6 +229,9 @@
 <span class="sd">       obtained from the difference between two frames.</span>
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       _frame attribute moved to `ts.data` dictionary.</span>
+<span class="sd">    .. deprecated:: 2.7.0</span>
+<span class="sd">       The TRZ Reader and Writer are deprecated as of version 2.7.0</span>
+<span class="sd">       and will be removed in version 3.0.0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TRZ&quot;</span>
@@ -254,6 +257,10 @@
 <span class="sd">           If `n_atoms` or the number of atoms in the topology file do not</span>
 <span class="sd">           match the number of atoms in the trajectory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The TRZ reader is deprecated and will be removed in &quot;</span>
+                <span class="s2">&quot;MDAnalysis version 3.0.0&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">TRZReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trzfilename</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -545,6 +552,10 @@
 <span class="sd">    ----</span>
 <span class="sd">    Binary TRZ trajectories are *always* written in *little-endian* byte order.</span>
 
+
+<span class="sd">    .. deprecated:: 2.7.0</span>
+<span class="sd">       The TRZ Reader and Writer are deprecated as of version 2.7.0</span>
+<span class="sd">       and will be removed in version 3.0.0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;TRZ&#39;</span>
@@ -567,6 +578,10 @@
 <span class="sd">        convert_units : bool (optional)</span>
 <span class="sd">            units are converted to the MDAnalysis base format; [``True``]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The TRZ writer is deprecated and will be removed in &quot;</span>
+                <span class="s2">&quot;MDAnalysis version 3.0.0&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;TRZWriter requires the n_atoms keyword&quot;</span><span class="p">)</span>
