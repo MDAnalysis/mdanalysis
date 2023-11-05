@@ -163,7 +163,7 @@ def mean_std_from_x3dnaPickle(profile):
         roll, twist]``.
 
     .. deprecated:: 2.7.0
-        X3DNA will be removed in 3.0.0.
+        X3DNA will be removed in 3.0
     """
     warnings.warn("X3DNA module is deprecated and will be removed in MDAnalysis 3.0, see #3788", category=DeprecationWarning)
     if profile.x3dna_param is False:
@@ -251,7 +251,7 @@ class BaseX3DNA(object):
     for each nucleic acid pair.
 
     .. deprecated:: 2.7.0
-        X3DNA will be removed in 3.0.0.
+        X3DNA will be removed in 3.0
 
     .. _X3DNA: http://x3dna.org
 
@@ -479,7 +479,7 @@ class X3DNA(BaseX3DNA):
     .. versionadded:: 0.8
 
     .. deprecated:: 2.7.0
-        X3DNA will be removed in 3.0.0.
+        X3DNA will be removed in 3.0
 
     .. _`X3DNA docs`: http://forum.x3dna.org/
     """
