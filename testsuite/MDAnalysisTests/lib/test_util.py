@@ -29,6 +29,7 @@ import textwrap
 from unittest.mock import Mock, patch
 import sys
 import copy
+import shutil
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -2222,3 +2223,10 @@ class TestStoreInitArguments:
 
         store2 = store.copy()
         assert store2.__dict__ == store.__dict__
+
+
+def test_which():
+    wmsg = "This method is deprecated"
+
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert util.which('python') == shutil.which('python')

@@ -556,6 +556,11 @@ def which(program):
        absolute path to the executable if it can be found, else ``None``
 
     """
+    # Can't use decorator because it's declared after this method
+    wmsg = ("This method is deprecated as of MDAnalysis version 2.7.0 "
+            "and will be removed in version 3.0.0. Please use shutil.which "
+            "instead.")
+    warnings.warn(wmsg, DeprecationWarning)
 
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
