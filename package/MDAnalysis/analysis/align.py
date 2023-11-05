@@ -1072,8 +1072,8 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
     """
     if not HAS_BIOPYTHON:
         errmsg = ("The `sequence_alignment` method requires an installation "
-                  "of biopython. Please install biopython to use this method: "
-                  "https://biopython.org/wiki/Download")
+                  "of `Biopython`. Please install biopython to use this "
+                  "method: https://biopython.org/wiki/Download")
         raise ImportError(errmsg)
 
     aligner = Bio.Align.PairwiseAligner(
@@ -1181,7 +1181,7 @@ def fasta2select(fastafilename, is_aligned=False,
     Raises
     ------
     ImportError
-      If optional dependency biopython is not available.
+      If optional dependency Biopython is not available.
 
 
     .. _ClustalW: http://www.clustal.org/
@@ -1196,8 +1196,8 @@ def fasta2select(fastafilename, is_aligned=False,
     """
     if not HAS_BIOPYTHON:
         errmsg = ("The `fasta2select` method requires an installation "
-                  "of biopython. Please install biopython to use this method: "
-                  "https://biopython.org/wiki/Download")
+                  "of `Biopython`. Please install `Biopython` to use this "
+                  "method: https://biopython.org/wiki/Download")
         raise ImportError(errmsg)
 
     if is_aligned:
