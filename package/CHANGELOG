@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie
+         richardjgowers, lilyminium, ALescoulie, hmacdope
 
  * 2.7.0
 
@@ -55,6 +55,7 @@ Changes
     `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
+  * X3DNA has been deprecated and will be removed in 3.0.0 (Issue #3788)
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
   * In `nucleicacids.WatsonCrickDist`, accepting lists of `Residue` objects was deprecated
