@@ -1072,7 +1072,7 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
     """
     if not HAS_BIOPYTHON:
         errmsg = ("The `sequence_alignment` method requires an installation "
-                  "of `Biopython`. Please install biopython to use this "
+                  "of `Biopython`. Please install `Biopython` to use this "
                   "method: https://biopython.org/wiki/Download")
         raise ImportError(errmsg)
 
