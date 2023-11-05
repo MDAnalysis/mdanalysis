@@ -34,6 +34,7 @@ from MDAnalysisTests.datafiles import PSF, DCD
 def test_sequence_import_error():
     p = mda.Universe(PSF, DCD).select_atoms('protein')
     errmsg = "The `sequence_alignment` method requires an installation"
+    raise ValueError('test test test')
     with pytest.raises(ImportError, match=errmsg):
         _ = p.residues.sequence(format="string")
 
