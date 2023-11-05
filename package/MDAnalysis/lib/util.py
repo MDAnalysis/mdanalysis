@@ -555,6 +555,10 @@ def which(program):
     path : str or None
        absolute path to the executable if it can be found, else ``None``
 
+
+    .. deprecated:: 2.7.0
+       This method is deprecated and will be removed in version 3.0.0.
+       Please use shutil.which instead.
     """
     # Can't use decorator because it's declared after this method
     wmsg = ("This method is deprecated as of MDAnalysis version 2.7.0 "
