@@ -235,7 +235,7 @@ next example.</p>
 <h2><span class="section-number">4.10.1.1.1.2. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.legacy.x3dna.X3DNA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.legacy.x3dna.</span></span><span class="sig-name descname"><span class="pre">X3DNA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/legacy/x3dna.html#X3DNA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.legacy.x3dna.</span></span><span class="sig-name descname"><span class="pre">X3DNA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/legacy/x3dna.html#X3DNA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA" title="Link to this definition"></a></dt>
 <dd><p>Run <a class="reference external" href="http://x3dna.org/">X3DNA</a> on a single frame or a DCD trajectory.</p>
 <p>Only a subset of all X3DNA control parameters is supported and can be set
 with keyword arguments. For further details on <a class="reference external" href="http://x3dna.org/">X3DNA</a> see the <a class="reference external" href="http://forum.x3dna.org/">X3DNA docs</a>.</p>
@@ -299,6 +299,10 @@ is always</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.8.</span></p>
 </div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span>X3DNA will be removed in 3.0.0.</p>
+</div>
+<p><cite>__init__</cite> is deprecated!</p>
 <p>Set up parameters to run <a class="reference external" href="http://x3dna.org/">X3DNA</a> on PDB <em>filename</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -323,6 +327,10 @@ pair</em> parameters will be analyzed.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj" title="MDAnalysis.analysis.legacy.x3dna.X3DNAtraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">X3DNAtraj</span></code></a></p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span>X3DNA module is deprecated and will be removed inMDAnalysis 3.0.0, see #3788
+<cite>__init__</cite> will be removed in release 3.0.0.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.legacy.x3dna.X3DNA.profiles">
@@ -447,13 +455,17 @@ parameters. The order is <code class="docutils literal notranslate"><span class=
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.legacy.x3dna.X3DNAtraj">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.legacy.x3dna.</span></span><span class="sig-name descname"><span class="pre">X3DNAtraj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/legacy/x3dna.html#X3DNAtraj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.legacy.x3dna.</span></span><span class="sig-name descname"><span class="pre">X3DNAtraj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/legacy/x3dna.html#X3DNAtraj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj" title="Link to this definition"></a></dt>
 <dd><p>Analyze all frames in a trajectory.</p>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA" title="MDAnalysis.analysis.legacy.x3dna.X3DNA"><code class="xref py py-class docutils literal notranslate"><span class="pre">X3DNA</span></code></a> class provides a direct interface to X3DNA. X3DNA itself
 has limited support for analysing trajectories but cannot deal with all the
 trajectory formats understood by MDAnalysis. This class can take any
 universe and feed it to X3DNA. By default it sequentially creates a PDB for
 each frame and runs X3DNA on the frame.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span>X3DNA will be removed in 3.0.0.</p>
+</div>
+<p><cite>__init__</cite> is deprecated!</p>
 <p>Set up the class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -481,6 +493,10 @@ for description).</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA" title="MDAnalysis.analysis.legacy.x3dna.X3DNA"><code class="xref py py-class docutils literal notranslate"><span class="pre">X3DNA</span></code></a></p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.7.0: </span>X3DNA module is deprecated and will be removed inMDAnalysis 3.0.0, see #3788
+<cite>__init__</cite> will be removed in release 3.0.0.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.profiles">

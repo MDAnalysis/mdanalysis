@@ -273,13 +273,16 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">ApplicationError</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">which</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">asiterable</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">which</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">deprecate</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.x3dna&quot;</span><span class="p">)</span>
 
 
+<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.7.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+           <span class="n">message</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X3DNA module is deprecated and will be removed in&quot;</span> 
+                    <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">mean_std_from_x3dnaPickle</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get mean and standard deviation of helicoidal parameters from a saved `profile`.</span>
 
@@ -303,7 +306,10 @@
 <span class="sd">        stretch, stagger, buckle, propeller, opening, shift, slide, rise, tilt,</span>
 <span class="sd">        roll, twist]``.</span>
 
+<span class="sd">    .. deprecated:: 2.7.0</span>
+<span class="sd">        X3DNA will be removed in 3.0.0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;X3DNA module is deprecated and will be removed in MDAnalysis 3.0, see #3788&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">x3dna_param</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="n">bp_shear</span><span class="p">,</span> <span class="n">bp_stretch</span><span class="p">,</span> <span class="n">bp_stagger</span><span class="p">,</span> <span class="n">bp_rise</span><span class="p">,</span> <span class="n">bp_shift</span><span class="p">,</span> <span class="n">bp_slide</span><span class="p">,</span> <span class="n">bp_buckle</span><span class="p">,</span> <span class="n">bp_prop</span><span class="p">,</span> <span class="n">bp_open</span><span class="p">,</span> <span class="n">bp_tilt</span><span class="p">,</span> <span class="n">bp_roll</span><span class="p">,</span>\
             <span class="n">bp_twist</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -387,6 +393,9 @@
 <span class="sd">    ====== ==============</span>
 
 <span class="sd">    for each nucleic acid pair.</span>
+
+<span class="sd">    .. deprecated:: 2.7.0</span>
+<span class="sd">        X3DNA will be removed in 3.0.0.</span>
 
 <span class="sd">    .. _X3DNA: http://x3dna.org</span>
 
@@ -615,9 +624,15 @@
 
 <span class="sd">    .. versionadded:: 0.8</span>
 
+<span class="sd">    .. deprecated:: 2.7.0</span>
+<span class="sd">        X3DNA will be removed in 3.0.0.</span>
+
 <span class="sd">    .. _`X3DNA docs`: http://forum.x3dna.org/</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.7.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+           <span class="n">message</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X3DNA module is deprecated and will be removed in&quot;</span> 
+                    <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span><span class="p">))</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up parameters to run X3DNA_ on PDB *filename*.</span>
 
@@ -869,8 +884,13 @@
 <span class="sd">    universe and feed it to X3DNA. By default it sequentially creates a PDB for</span>
 <span class="sd">    each frame and runs X3DNA on the frame.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    .. deprecated:: 2.7.0</span>
+<span class="sd">        X3DNA will be removed in 3.0.0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.7.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+           <span class="n">message</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X3DNA module is deprecated and will be removed in&quot;</span> 
+                    <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span><span class="p">))</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up the class.</span>
 
