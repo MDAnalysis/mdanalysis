@@ -871,7 +871,7 @@ class HoleAnalysis(AnalysisBase):
             frames = util.asiterable(frames)
 
         if color is None:
-            colormap = plt.cm.get_cmap(cmap)
+            colormap = matplotlib.colormaps.get_cmap(cmap)
             norm = matplotlib.colors.Normalize(vmin=min(frames),
                                                vmax=max(frames))
             colors = colormap(norm(frames))
