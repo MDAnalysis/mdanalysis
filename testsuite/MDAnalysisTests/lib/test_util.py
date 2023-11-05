@@ -2225,6 +2225,8 @@ class TestStoreInitArguments:
         assert store2.__dict__ == store.__dict__
 
 
+@pytest.mark.xfail(os.name == 'nt',
+                   reason="util.which does not get right binary on Windows")
 def test_which():
     wmsg = "This method is deprecated"
 
