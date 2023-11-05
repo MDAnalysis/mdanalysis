@@ -423,7 +423,7 @@ class TRZWriter(base.WriterBase):
         convert_units : bool (optional)
             units are converted to the MDAnalysis base format; [``True``]
         """
-        wmsg = ("The TRZ reader is deprecated and will be removed in "
+        wmsg = ("The TRZ writer is deprecated and will be removed in "
                 "MDAnalysis version 3.0.0")
         warnings.warn(wmsg, DeprecationWarning)
 
