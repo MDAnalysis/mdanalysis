@@ -132,13 +132,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from MDAnalysis import ApplicationError
-from MDAnalysis.lib.util import which, realpath, asiterable
+from MDAnalysis.lib.util import which, realpath, asiterable, deprecate
 
 import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.x3dna")
 
 
+@deprecate(release="2.7.0", remove="3.0.0",
+           message=("X3DNA module is deprecated and will be removed in" 
+                    "MDAnalysis 3.0.0, see #3788"))
 def mean_std_from_x3dnaPickle(profile):
     """Get mean and standard deviation of helicoidal parameters from a saved `profile`.
 
@@ -484,6 +487,9 @@ class X3DNA(BaseX3DNA):
     .. _`X3DNA docs`: http://forum.x3dna.org/
     """
 
+    @deprecate(release="2.7.0", remove="3.0.0",
+           message=("X3DNA module is deprecated and will be removed in" 
+                    "MDAnalysis 3.0.0, see #3788"))
     def __init__(self, filename, **kwargs):
         """Set up parameters to run X3DNA_ on PDB *filename*.
 
@@ -513,7 +519,6 @@ class X3DNA(BaseX3DNA):
         --------
         :class:`X3DNAtraj`
         """
-        warnings.warn("X3DNA module is deprecated and will be removed in MDAnalysis 3.0, see #3788", category=DeprecationWarning)
         # list of temporary files, to be cleaned up on __del__
         self.tempfiles = [
             "auxiliary.par", "bestpairs.pdb", "bp_order.dat", "bp_helical.par", "cf_7methods.par",
@@ -731,7 +736,9 @@ class X3DNAtraj(BaseX3DNA):
     .. deprecated:: 2.7.0
         X3DNA will be removed in 3.0.0.
     """
-
+    @deprecate(release="2.7.0", remove="3.0.0",
+           message=("X3DNA module is deprecated and will be removed in" 
+                    "MDAnalysis 3.0.0, see #3788"))
     def __init__(self, universe, **kwargs):
         """Set up the class.
 
@@ -766,7 +773,6 @@ class X3DNAtraj(BaseX3DNA):
         :class:`X3DNA`
 
         """
-        warnings.warn("X3DNA module is deprecated and will be removed in MDAnalysis 3.0, see #3788")
         self.universe = universe
         self.selection = kwargs.pop("selection", "nucleic")
 
