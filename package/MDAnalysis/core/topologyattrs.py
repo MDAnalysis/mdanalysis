@@ -2825,8 +2825,8 @@ class Resnames(ResidueStringAttr):
         """
         if not HAS_BIOPYTHON:
             errmsg = ("The `sequence_alignment` method requires an "
-                      "installation of biopython. Please install "
-                      "biopython to use this method: "
+                      "installation of `Biopython`. Please install "
+                      "`Biopython` to use this method: "
                       "https://biopython.org/wiki/Download")
             raise ImportError(errmsg)
 
