@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie, hmacdope
+         richardjgowers, lilyminium, ALescoulie, hmacdope, Cloudac7
 
  * 2.7.0
 
@@ -30,6 +30,7 @@ Fixes
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
+  * Add a new geometric selection: box (Issue #4323, PR #4324)
   * Add faster nucleic acid Major and Minor pair distance calculators using
     AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
   * Adds external sidebar links (Issue #4296)
@@ -42,7 +43,6 @@ Enhancements
     (Issue #3994, PR #4281)  
   * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
     PR #4284)
-  * Add a new geometric selection: box (Issue #4323, PR #4324)
 
 Changes
   * Biopython is now an optional dependency (Issue #3820, PR #4332)
