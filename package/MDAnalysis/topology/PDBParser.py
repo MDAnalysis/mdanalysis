@@ -64,7 +64,7 @@ import warnings
 from .guessers import guess_masses, guess_types
 from .tables import SYMB2Z
 from ..lib import util
-from .base import TopologyReaderBase, squash_by_attributes
+from .base import TopologyReaderBase, change_squash, squash_by_attributes
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -200,14 +200,23 @@ class PDBParser(TopologyReaderBase):
     """
     format = ['PDB', 'ENT']
 
-    def parse(self, **kwargs):
+    def parse(self, contiguous_resids: bool = True, **kwargs):
         """Parse atom information from PDB file
+
+        Parameters
+        ----------
+        contiguous_resids : bool
+          Whether members of a residue are assumed to be adjacent atoms.
+          This assumption can be broken when atoms are added at the end
+          of a file, for example when adding hydrogens to the PDB.
+          When False, unique combinations of residue properties such as
+          resid, resname, and segname will be used to identify resudes.
 
         Returns
         -------
         MDAnalysis Topology object
         """
-        top = self._parseatoms()
+        top = self._parseatoms(contiguous_resids)
 
         try:
             bonds = self._parsebonds(top.ids.values)
@@ -224,8 +233,19 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parseatoms(self):
-        """Create the initial Topology object"""
+    def _parseatoms(self, contiguous_resids: bool):
+        """Create the initial Topology object
+
+        Parameters
+        ----------
+        contiguous_resids : bool
+          Whether members of a residue are assumed to be adjacent atoms.
+          This assumption can be broken when atoms are added at the end
+          of a file, for example when adding hydrogens to the PDB.
+          When False, unique combinations of residue properties such as
+          resid, resname, and segname will be used to identify resudes.
+        """
+
         resid_prev = 0  # resid looping hack
 
         record_types = []
@@ -385,9 +405,17 @@ class PDBParser(TopologyReaderBase):
         icodes = np.array(icodes, dtype=object)
         resnums = resids.copy()
         segids = np.array(segids, dtype=object)
-
-        residx, (resids, resnames, icodes, segids), (resnums,) =\
-            squash_by_attributes((resids, resnames, icodes, segids), resnums)
+        if contiguous_resids:
+            residx, (resids, resnames, icodes, resnums, segids) = change_squash(
+                (resids, resnames, icodes, segids),
+                (resids, resnames, icodes, resnums, segids),
+            )
+        else:
+            (
+                residx,
+                (resids, resnames, icodes, segids),
+                (resnums,),
+            ) = squash_by_attributes((resids, resnames, icodes, segids), resnums)
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
@@ -396,7 +424,10 @@ class PDBParser(TopologyReaderBase):
         attrs.append(Resnames(resnames))
 
         if any(segids) and not any(val is None for val in segids):
-            segidx, (segids,), _ = squash_by_attributes((segids,))
+            if contiguous_resids:
+                segidx, (segids,) = change_squash((segids,), (segids,))
+            else:
+                segidx, (segids,), _ = squash_by_attributes((segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
         else:

@@ -382,9 +382,12 @@ ATOM      4  N   LYS A   1      66.135  42.099  -1.007  1.00  0.00           N
 
 
 def test_repeat_resid():
-    u = mda.Universe(StringIO(pdb_repeat_resid), format='PDB')
+    """
+    Test parsing re-used resids with differeent resnames
+    """
+    u = mda.Universe(StringIO(pdb_repeat_resid), format="PDB", contiguous_resids=False)
 
-    expected_resnames = np.array(['LYS', 'SER', 'LEU'], dtype=object)
+    expected_resnames = np.array(["LYS", "SER", "LEU"], dtype=object)
     assert_equal(u.residues.resnames, expected_resnames)
 
     expected_resids = np.array([1, 2, 1])

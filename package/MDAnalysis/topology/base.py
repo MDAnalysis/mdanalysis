@@ -37,6 +37,7 @@ Classes
 
 """
 from functools import reduce
+from typing import List
 
 import itertools
 import numpy as np
@@ -142,27 +143,33 @@ def squash_by(child_parent_ids, *attributes):
     return atom_idx, unique_resids, [attr[sort_mask] for attr in attributes]
 
 
-def squash_by_attributes(squash_attributes, *other_attributes):
+def squash_by_attributes(
+    squash_attributes: List[np.ndarray], *other_attributes: np.ndarray
+):
     """Squash a child-parent relationship using combinations of attributes
     parents will retain their order of appearance
 
-    Arguments
-    ---------
-    squash_attributes - list of attribute arrays (attributes used to
-                        identify the parent)
-    *other_attributes - other arrays that need to follow the sorting of ids
+    Parameters
+    ----------
+    squash_attributes: list of numpy ndarray
+      list of attribute arrays (attributes used to identify the parent)
+      Their unique combinations will set child-parent relationships
+    *other_attributes: numpy ndarrays
+      other arrays that need to follow the sorting of ids
 
     Returns
     -------
-    child_parents_idx - an array of len(child) which points to the index of
-                        parent
-    parent_combos - len(parent) of the unique combinations
-    squashed_attrs - len(parent) of the attributes used for squashing
-    *other_attrs - len(parent) of the other attributes
+    sorted_atom_idx: numpy ndarray
+      an array of len(child) which points to the index of the parent
+    squashed_attrs: list of numpy ndarray
+      List of re-ordered squash_attributes
+    *other_attrs: list of numpy ndarray
+      List of re-ordered other_attributes
     """
     squash_array = np.column_stack(squash_attributes).astype(str)
     unique_combos, sort_mask, atom_idx = np.unique(
-        squash_array, return_index=True, return_inverse=True, axis=0)
+        squash_array, return_index=True, return_inverse=True, axis=0
+    )
 
     appearance_order = np.argsort(sort_mask)
     new_index = np.arange(0, len(appearance_order))

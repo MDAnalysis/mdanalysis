@@ -319,9 +319,12 @@ def test_unformat():
 
 
 def test_repeat_resid():
-    u = mda.Universe(StringIO(mol2_repeat_resid), format='MOL2')
+    """
+    Test parsing re-used resids with different resnames
+    """
+    u = mda.Universe(StringIO(mol2_repeat_resid), format="MOL2", repeated_resids=True)
 
-    expected_resnames = np.array(['LYS', 'SER', 'LEU'], dtype=object)
+    expected_resnames = np.array(["LYS", "SER", "LEU"], dtype=object)
     assert_equal(u.residues.resnames, expected_resnames)
 
     expected_resids = np.array([1, 2, 1])
