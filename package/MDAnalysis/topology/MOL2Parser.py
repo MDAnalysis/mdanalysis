@@ -261,7 +261,10 @@ class MOL2Parser(TopologyReaderBase):
             if repeated_resids:
                 (
                     residx,
-                    (resids, resnames,),
+                    (
+                        resids,
+                        resnames,
+                    ),
                     _,
                 ) = squash_by_attributes((resids, resnames))
             else:

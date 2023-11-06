@@ -385,7 +385,9 @@ def test_repeat_resid():
     """
     Test parsing re-used resids with differeent resnames
     """
-    u = mda.Universe(StringIO(pdb_repeat_resid), format="PDB", contiguous_resids=False)
+    u = mda.Universe(
+        StringIO(pdb_repeat_resid), format="PDB", contiguous_resids=False
+    )
 
     expected_resnames = np.array(["LYS", "SER", "LEU"], dtype=object)
     assert_equal(u.residues.resnames, expected_resnames)

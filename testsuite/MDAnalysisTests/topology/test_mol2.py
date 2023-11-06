@@ -322,7 +322,9 @@ def test_repeat_resid():
     """
     Test parsing re-used resids with different resnames
     """
-    u = mda.Universe(StringIO(mol2_repeat_resid), format="MOL2", repeated_resids=True)
+    u = mda.Universe(
+        StringIO(mol2_repeat_resid), format="MOL2", repeated_resids=True
+    )
 
     expected_resnames = np.array(["LYS", "SER", "LEU"], dtype=object)
     assert_equal(u.residues.resnames, expected_resnames)
