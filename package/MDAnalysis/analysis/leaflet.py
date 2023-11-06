@@ -71,13 +71,21 @@ Classes and Functions
 import warnings
 
 import numpy as np
-import networkx as NX
 
 from .. import core
 from . import distances
 from .. import selections
-
 from ..due import due, Doi
+
+
+# networkx is an optional import
+try:
+    import networkx as NX
+except ImportError:
+    HAS_NX = False
+else:
+    HAS_NX = True
+
 
 due.cite(Doi("10.1002/jcc.21787"),
          description="LeafletFinder algorithm",
@@ -111,6 +119,12 @@ class LeafletFinder(object):
         use fast :func:`~MDAnalysis.lib.distances.distance_array`
         implementation [``None``].
 
+    Raises
+    ------
+    ImportError
+      This class requires the optional package `networkx`. If not found
+      an ImportError is raised.
+
     Example
     -------
     The components of the graph are stored in the list
@@ -141,6 +155,13 @@ class LeafletFinder(object):
     """
 
     def __init__(self, universe, select, cutoff=15.0, pbc=False, sparse=None):
+        # Raise an error if networkx is not installed
+        if not HAS_NX:
+            errmsg = ("The LeafletFinder class requires an installation of "
+                      "networkx. Please install networkx "
+                      "https://networkx.org/documentation/stable/install.html")
+            raise ImportError(errmsg)
+
         self.universe = universe
         self.selectionstring = select
         if isinstance(self.selectionstring, core.groups.AtomGroup):

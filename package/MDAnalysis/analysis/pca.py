@@ -747,8 +747,8 @@ def cosine_content(pca_space, i):
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
-    return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
-            scipy.integrate.simps(pca_space[:, i] ** 2))
+    return ((2.0 / T) * (scipy.integrate.simpson(cos*pca_space[:, i])) ** 2 /
+            scipy.integrate.simpson(pca_space[:, i] ** 2))
 
 
 @due.dcite(
