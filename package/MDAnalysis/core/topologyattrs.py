@@ -2816,12 +2816,12 @@ class Resnames(ResidueStringAttr):
 
         :exc:`TypeError` if an unknown *format* is selected.
 
-        :exc:`ImportError` is the biopython package is not available.
+        :exc:`ImportError` is the Biopython package is not available.
 
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 2.7.0
-          Biopython is now an optional dependency
+           Biopython is now an optional dependency
         """
         if not HAS_BIOPYTHON:
             errmsg = ("The `sequence_alignment` method requires an "
