@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie
+         richardjgowers, lilyminium, ALescoulie, hmacdope
 
  * 2.7.0
 
@@ -45,6 +45,7 @@ Enhancements
 
 Changes
   * Biopython is now an optional dependency (Issue #3820, PR #4332)
+  * Networkx is now an optional dependency (Issue #3822).
   * High memory tests (enabled through the environment variable
     `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
     is set to "true") (PR #4295)
@@ -56,6 +57,11 @@ Changes
     `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
+  * MDAnalysis.lib.util is deprecated and will be removed in version 3.0
+    (Issue #3649)
+  * The TRZ reader & writer are deprecated and will be removed in version 3.0
+    (PR #4335)
+  * X3DNA has been deprecated and will be removed in 3.0.0 (Issue #3788)
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
   * In `nucleicacids.WatsonCrickDist`, accepting lists of `Residue` objects was deprecated

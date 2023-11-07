@@ -35,8 +35,6 @@ inputs:
     default: 'mda-xdrlib'
   mmtf-python:
     default: 'mmtf-python'
-  networkx:
-    default: 'networkx'
   numpy:
     default: 'numpy'
   packaging:
@@ -68,6 +66,8 @@ inputs:
     default: 'joblib>=0.12'
   netcdf4:
     default: 'netcdf4'
+  networkx:
+    default: 'networkx'
   openmm:
     default: 'openmm'
   pytng:
@@ -114,7 +114,6 @@ runs:
           ${{ inputs.matplotlib }}
           ${{ inputs.mda_xdrlib }}
           ${{ inputs.mmtf-python }}
-          ${{ inputs.networkx }}
           ${{ inputs.numpy }}
           ${{ inputs.packaging }}
           ${{ inputs.pip }}
@@ -132,6 +131,7 @@ runs:
           ${{ inputs.hole2 }}
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
+          ${{ inputs.networkx }}
           ${{ inputs.openmm }}
           ${{ inputs.pytng }}
           ${{ inputs.rdkit }}

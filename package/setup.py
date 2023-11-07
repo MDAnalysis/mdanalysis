@@ -594,7 +594,6 @@ if __name__ == '__main__':
 
     install_requires = [
           'numpy>=1.22.3',
-          'networkx>=2.0',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
@@ -665,6 +664,7 @@ if __name__ == '__main__':
                   'scikit-learn',  # For clustering and dimensionality
                                    # reduction functionality in encore
                   'tidynamics>=1.0.0', # For MSD analysis method
+                  'networkx>=2.0',  # For LeafletFinder
               ],
           },
           test_suite="MDAnalysisTests",
