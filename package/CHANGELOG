@@ -28,6 +28,8 @@ Fixes
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
+  * Universe keyword to correctly parse repeated resnames in PDB and MOL2
+    (Issue #3659, PR #3662)
 
 Enhancements
   * Add faster nucleic acid Major and Minor pair distance calculators using
