@@ -337,10 +337,14 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
-<span class="kn">import</span> <span class="nn">Bio.AlignIO</span>
-<span class="kn">import</span> <span class="nn">Bio.Align</span>
-<span class="kn">import</span> <span class="nn">Bio.Align.Applications</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Bio.AlignIO</span>
+    <span class="kn">import</span> <span class="nn">Bio.Align</span>
+    <span class="kn">import</span> <span class="nn">Bio.Align.Applications</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAS_BIOPYTHON</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">HAS_BIOPYTHON</span> <span class="o">=</span> <span class="kc">True</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="k">as</span> <span class="nn">qcp</span>
@@ -1174,6 +1178,11 @@
 <span class="sd">        Tuple of top sequence matching output `(&#39;Sequence A&#39;, &#39;Sequence B&#39;, score,</span>
 <span class="sd">        begin, end)`</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">      If optional dependency Biopython is not available.</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    If you prefer to work directly with :mod:`Bio.Align` objects then you can</span>
@@ -1213,7 +1222,16 @@
 <span class="sd">       Replace use of deprecated :func:`Bio.pairwise2.align.globalms` with</span>
 <span class="sd">       :class:`Bio.Align.PairwiseAligner`.</span>
 
+<span class="sd">    .. versionchanged:: 2.7.0</span>
+<span class="sd">       Biopython is now an optional dependency which this method requires.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_BIOPYTHON</span><span class="p">:</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `sequence_alignment` method requires an installation &quot;</span>
+                  <span class="s2">&quot;of `Biopython`. Please install `Biopython` to use this &quot;</span>
+                  <span class="s2">&quot;method: https://biopython.org/wiki/Download&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+
     <span class="n">aligner</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Align</span><span class="o">.</span><span class="n">PairwiseAligner</span><span class="p">(</span>
         <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="p">,</span>
         <span class="n">match_score</span><span class="o">=</span><span class="n">match_score</span><span class="p">,</span>
@@ -1317,6 +1335,12 @@
 <span class="sd">    :func:`sequence_alignment`, which does not require external</span>
 <span class="sd">    programs.</span>
 
+<span class="sd">    </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">      If optional dependency Biopython is not available.</span>
+
 
 <span class="sd">    .. _ClustalW: http://www.clustal.org/</span>
 <span class="sd">    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
@@ -1324,8 +1348,16 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Passing `alnfilename` or `treefilename` as `None` will create a file in</span>
 <span class="sd">       the current working directory.</span>
+<span class="sd">    .. versionchanged:: 2.7.0</span>
+<span class="sd">       Biopython is now an optional dependency which this method requires.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_BIOPYTHON</span><span class="p">:</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `fasta2select` method requires an installation &quot;</span>
+                  <span class="s2">&quot;of `Biopython`. Please install `Biopython` to use this &quot;</span>
+                  <span class="s2">&quot;method: https://biopython.org/wiki/Download&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">is_aligned</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using provided alignment </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">))</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fasta</span><span class="p">:</span>

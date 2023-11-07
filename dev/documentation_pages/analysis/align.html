@@ -957,9 +957,17 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.align.sequence_alignment" title="MDAnalysis.analysis.align.sequence_alignment"><code class="xref py py-func docutils literal notranslate"><span class="pre">sequence_alignment()</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">which</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">programs.</span></code></p>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.12)"><strong>ImportError</strong></a> – If optional dependency Biopython is not available.</p>
+</dd>
+</dl>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Passing <cite>alnfilename</cite> or <cite>treefilename</cite> as <cite>None</cite> will create a file in
 the current working directory.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Biopython is now an optional dependency which this method requires.</p>
 </div>
 </dd></dl>
 
@@ -995,6 +1003,9 @@ begin, end)</cite></p>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.12)"><strong>ImportError</strong></a> – If optional dependency Biopython is not available.</p>
+</dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>If you prefer to work directly with <code class="xref py py-mod docutils literal notranslate"><span class="pre">Bio.Align</span></code> objects then you can
@@ -1028,6 +1039,9 @@ that can be used in your bioinformatics workflows.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.4.0: </span>Replace use of deprecated <code class="xref py py-func docutils literal notranslate"><span class="pre">Bio.pairwise2.align.globalms()</span></code> with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Align.PairwiseAligner</span></code>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Biopython is now an optional dependency which this method requires.</p>
 </div>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>See the documentation under Notes on how to directly useBio.Align.PairwiseAligner with ResidueGroups.
