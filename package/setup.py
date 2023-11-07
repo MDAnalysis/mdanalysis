@@ -594,7 +594,6 @@ if __name__ == '__main__':
 
     install_requires = [
           'numpy>=1.22.3',
-          'biopython>=1.80',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
@@ -659,6 +658,7 @@ if __name__ == '__main__':
                   'parmed', # ParmEd converter
                   ],
               'analysis': [
+                  'biopython>=1.80',  # sequence generation & alignment
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
                   'scikit-learn',  # For clustering and dimensionality

@@ -44,6 +44,7 @@ Enhancements
     PR #4284)
 
 Changes
+  * Biopython is now an optional dependency (Issue #3820, PR #4332)
   * Networkx is now an optional dependency (Issue #3822).
   * High memory tests (enabled through the environment variable
     `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
