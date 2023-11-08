@@ -249,9 +249,9 @@ class TestSelectionsCHARMM(object):
     @pytest.mark.parametrize(
         "selstr, expected_value",
         [
-            ("box x 2.0 -2.0 index 1281", 418),
-            ("box yz 2.0 -2.0 2.0 -2.0 index 1280", 58),
-            ("box xyz 2.0 -2.0 2.0 -2.0 2.0 -2.0 index 1279", 10),
+            ("box x -2.0 2.0 index 1281", 418),
+            ("box yz -2.0 2.0 -2.0 2.0 index 1280", 58),
+            ("box xyz -2.0 2.0 -2.0 2.0 -2.0 2.0 index 1279", 10),
         ],
     )
     def test_box(self, universe, selstr, expected_value):
@@ -816,7 +816,7 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
     @pytest.mark.parametrize("periodic,expected", ([True, 29], [False, 17]))
     def test_box(self, u, periodic, expected):
-        sel = u.select_atoms("box xyz 5 2 10 -5 6 -2 resid 1", periodic=periodic)
+        sel = u.select_atoms("box xyz 2 5 -5 10 -2 6 resid 1", periodic=periodic)
 
         assert len(sel) == expected
 
@@ -824,12 +824,12 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
         "selection,error,expected",
         (
             [
-                "box xyz 10 -5 90 -90 6 -2 resid 1",
+                "box xyz -5 10 -90 90 -2 6 resid 1",
                 NotImplementedError,
                 "The total length of the box selection in y",
             ],
             [
-                "box yyy 10 -5 7 -7 6 -2 resid 1",
+                "box yyy -5 10 -7 7 -2 6 resid 1",
                 SelectionError,
                 "Must be combination of",
             ],
@@ -906,11 +906,11 @@ class TestTriclinicSelections(object):
         assert len(empty) == 0
 
     def test_box(self, u):
-        ag = u.select_atoms("box z 2.5 -2.5 resid 1")
+        ag = u.select_atoms("box z -2.5 2.5 resid 1")
         assert len(ag) == 4237
 
     def test_empty_box(self, u):
-        ag = u.select_atoms("box z 2.5 -2.5 name NOT_A_NAME")
+        ag = u.select_atoms("box z -2.5 2.5 name NOT_A_NAME")
         assert len(ag) == 0
 
     def test_point_1(self, u):

@@ -540,7 +540,6 @@ class PointSelection(Selection):
 class BoxSelection(Selection):
     token = "box"
     precedence = 1
-    index_map = {"x": 0, "y": 1, "z": 2}
     combination = [
         "x",
         "y",
@@ -564,15 +563,25 @@ class BoxSelection(Selection):
         super().__init__(parser, tokens)
         self.periodic = parser.periodic
         self.direction = tokens.popleft()
+        self.xmin, self.xmax = None, None
+        self.ymin, self.ymax = None, None
+        self.zmin, self.zmax = None, None
         if self.direction not in self.combination:
             raise ValueError(
                 "The direction '{}' is not valid. Must be combination of {}"
-                "".format(self.direction, list(self.index_map.keys()))
+                "".format(self.direction, ["x", "y", "z"])
             )
         else:
             for d in self.direction:
-                setattr(self, "{}max".format(d), float(tokens.popleft()))
-                setattr(self, "{}min".format(d), float(tokens.popleft()))
+                if d == "x":
+                    self.xmin = float(tokens.popleft())
+                    self.xmax = float(tokens.popleft())
+                elif d == "y":
+                    self.ymin = float(tokens.popleft())
+                    self.ymax = float(tokens.popleft())
+                elif d == "z":
+                    self.zmin = float(tokens.popleft())
+                    self.zmax = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
     @return_empty_on_apply
@@ -582,21 +591,20 @@ class BoxSelection(Selection):
             return group[[]]
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
-        range_map = {}
-
-        for d in self.direction:
-            axis_index = self.index_map.get(d)
-            axis_max = self.__getattribute__("{}max".format(d))
-            axis_min = self.__getattribute__("{}min".format(d))
-            range_map[axis_index] = (axis_min, axis_max)
+        range_map = {
+            0: (self.xmin, self.xmax),
+            1: (self.ymin, self.ymax),
+            2: (self.zmin, self.zmax),
+        }
 
         if self.periodic and group.dimensions is not None:
             box = group.dimensions[:3]
 
-            for k, v in range_map.items():
-                axis_index = k
-                axis_min, axis_max = v[0], v[1]
-
+            for idx, limits in range_map.items():
+                axis_index = idx
+                axis_min, axis_max = limits[0], limits[1]
+                if axis_min is None or axis_max is None:
+                    continue
                 axis_height = axis_max - axis_min
                 if axis_height > box[axis_index]:
                     raise NotImplementedError(
@@ -615,11 +623,13 @@ class BoxSelection(Selection):
 
         # Deal with each dimension criteria
         mask = None
-        for k, v in range_map.items():
+        for idx, limits in range_map.items():
+            if limits[0] is None or limits[1] is None:
+                continue
             if mask is None:
-                mask = (vecs[:, k] > v[0]) & (vecs[:, k] < v[1])
+                mask = (vecs[:, idx] > limits[0]) & (vecs[:, idx] < limits[1])
             else:
-                mask &= (vecs[:, k] > v[0]) & (vecs[:, k] < v[1])
+                mask &= (vecs[:, idx] > limits[0]) & (vecs[:, idx] < limits[1])
 
         return group[mask]
 
