@@ -907,7 +907,7 @@ class TestTriclinicSelections(object):
 
     def test_box(self, u):
         ag = u.select_atoms("box z 2.5 -2.5 resid 1")
-        assert len(ag) == 4241
+        assert len(ag) == 4237
 
     def test_empty_box(self, u):
         ag = u.select_atoms("box z 2.5 -2.5 name NOT_A_NAME")

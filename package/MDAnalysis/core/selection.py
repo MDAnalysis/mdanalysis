@@ -611,15 +611,7 @@ class BoxSelection(Selection):
                         )
                     )
 
-            if np.all(group.dimensions[3:] == 90.0):
-                # Orthogonal version
-                vecs -= box[:3] * np.rint(vecs / box[:3])
-            else:
-                # Triclinic version
-                tribox = group.universe.trajectory.ts.triclinic_dimensions
-                vecs -= tribox[2] * np.rint(vecs[:, 2] / tribox[2][2])[:, None]
-                vecs -= tribox[1] * np.rint(vecs[:, 1] / tribox[1][1])[:, None]
-                vecs -= tribox[0] * np.rint(vecs[:, 0] / tribox[0][0])[:, None]
+            vecs = distances.minimize_vectors(vecs, group.dimensions)
 
         # Deal with each dimension criteria
         mask = None
