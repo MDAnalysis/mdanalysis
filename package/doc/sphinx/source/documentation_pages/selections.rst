@@ -280,9 +280,9 @@ cyzone *externalRadius* *zMax* *zMin* *selection*
 box *dimensions* *dN_min* *dN_max* *selection*
     Select all atoms within a box region centered on the center of 
     geometry (COG) of a given selection. *dimensions* Specifies 
-    which dimension(s) to apply the box selection on. Can be ``x``, 
-    ``y``, ``z``, or any combination like ``xy``, ``yz``, ``zx``, ``xyz`` 
-    (up to 3 characters). *dN_min*, *dN_max* are the minimum and maximum 
+    which dimension(s) to apply the box selection on. 
+    Can be ``x``, ``y``, ``z``, ``xy``, ``yz``, ``xz``, or ``xyz`. 
+    *dN_min*, *dN_max* are the minimum and maximum 
     bounds along the first specified dimension. Positive values are 
     above/right/front of the COG, negatives are below/left/behind. 
     Should be specified for each dimension. *selection* specifies the selection 

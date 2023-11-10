@@ -540,24 +540,8 @@ class PointSelection(Selection):
 class BoxSelection(Selection):
     token = "box"
     precedence = 1
-    combination = [
-        "x",
-        "y",
-        "z",
-        "xy",
-        "xz",
-        "yz",
-        "yx",
-        "zx",
-        "zy",
-        "xyz",
-        "xzy",
-        "yxz",
-        "yzx",
-        "zxy",
-        "zyx",
-    ]
     axis_map = ["x", "y", "z"]
+    axis_set = {"x", "y", "z", "xy", "xz", "yz", "xyz"}
 
     def __init__(self, parser, tokens):
         super().__init__(parser, tokens)
@@ -566,22 +550,31 @@ class BoxSelection(Selection):
         self.xmin, self.xmax = None, None
         self.ymin, self.ymax = None, None
         self.zmin, self.zmax = None, None
-        if self.direction not in self.combination:
-            raise ValueError(
-                "The direction '{}' is not valid. Must be combination of {}"
-                "".format(self.direction, ["x", "y", "z"])
-            )
-        else:
+
+        if self.direction in self.axis_set:
             for d in self.direction:
                 if d == "x":
                     self.xmin = float(tokens.popleft())
                     self.xmax = float(tokens.popleft())
+                    if self.xmin > self.xmax:
+                        raise ValueError("xmin must be less than or equal to xmax")
                 elif d == "y":
                     self.ymin = float(tokens.popleft())
                     self.ymax = float(tokens.popleft())
+                    if self.ymin > self.ymax:
+                        raise ValueError("ymin must be less than or equal to ymax")
                 elif d == "z":
                     self.zmin = float(tokens.popleft())
                     self.zmax = float(tokens.popleft())
+                    if self.zmin > self.zmax:
+                        raise ValueError("zmin must be less than or equal to zmax")
+        else:
+            raise ValueError(
+                "The direction '{}' is not valid. "
+                "Must be one of {}"
+                "".format(self.direction, ", ".join(self.axis_set))
+            )
+
         self.sel = parser.parse_expression(self.precedence)
 
     @return_empty_on_apply

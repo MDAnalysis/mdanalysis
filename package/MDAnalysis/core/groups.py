@@ -3111,14 +3111,13 @@ class AtomGroup(GroupBase):
                 radius 5, external radius 10 centered on the COG. In z, the
                 cylinder extends from 10 above the COG to 8 below. Positive
                 values for *zMin*, or negative ones for *zMax*, are allowed.
-            box *dimensions* *dN_min* *dN_max* *selection*
+            box *dimensions* *dN_min* *dN_max* [*dN_min* *dN_max*] [*dN_min* *dN_max*] *selection*
                 Select all atoms within a box region centered
                 on the center of geometry (COG) of a given selection.
                 *dimensions* Specifies which dimension(s) to apply
-                the box selection on. Can be ``x``, ``y``, ``z``,
-                or any combination like ``xy``, ``yz``, ``zx``, ``xyz``
-                (up to 3 characters). *dN_min*, *dN_max* are the minimum and
-                maximum bounds along the first specified dimension.
+                the box selection on. Can be ``x``, ``y``, ``z``, ``xy``, 
+                ``yz``, ``xz``, or ``xyz`. *dN_min*, *dN_max* are the minimum 
+                and maximum bounds along each specified dimension.
                 Positive values are above/right/front of the COG,
                 negatives are below/left/behind, and should be specified
                 for each dimension. *selection* specifies the selection
