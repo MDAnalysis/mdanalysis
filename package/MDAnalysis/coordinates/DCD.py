@@ -314,7 +314,13 @@ class DCDReader(base.ReaderBase):
         .. versionchanged:: 2.4.0
             ValueError now raised instead of NoDataError for empty input
             AtomGroup
+
         """
+        if asel:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
 
         start, stop, step = self.check_slice_indices(start, stop, step)
 

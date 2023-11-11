@@ -1023,6 +1023,12 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         .. versionadded:: 2.4.0
         """
+        if asel:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
 

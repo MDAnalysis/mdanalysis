@@ -525,6 +525,12 @@ class MemoryReader(base.ProtoReader):
             ValueError now raised instead of NoDataError for empty input
             AtomGroup
         """
+        if asel:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+
         if stop != -1:
             warnings.warn("MemoryReader.timeseries inclusive `stop` "
                       "indexing will be removed in 3.0 in favour of exclusive "
