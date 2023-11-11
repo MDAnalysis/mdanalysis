@@ -30,6 +30,8 @@ Fixes
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
+  * Refactor c_distances backend to have a cython .pxd header and expose in
+    libmdanalysis (Issue #4315, PR #4324)
   * Add faster nucleic acid Major and Minor pair distance calculators using
     AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
   * Adds external sidebar links (Issue #4296)

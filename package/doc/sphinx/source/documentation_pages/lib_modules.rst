@@ -103,5 +103,8 @@ For example, imagine we are writing a Cython extension module in
 Currently modules that are exposed as public Cython headers are:
 
 - :mod:`MDAnalysis.coordinates.timestep`
+- :mod:`MDAnalysis.lib.formats.libmdaxdr`
+- :mod:`MDAnalysis.lib.formats.libdcd`
+- :mod:`MDAnalysis.lib.c_distances`
 
 For more details consult the source :mod:`MDAnalysis.lib.libmdanalysis.__init__.pxd`
