@@ -202,6 +202,13 @@ class TestMemoryReader(MultiframeReaderTest):
                           "inclusive"):
             reader.timeseries(start=0, stop=3, step=1)
 
+    def test_timeseries_asel_warns_deprecation(self, ref, reader):
+        # timeseries() is expected to provide a view of the underlying array
+        # also in the special case when asel=universe.atoms.
+        selection = ref.universe.atoms
+        with pytest.warns(DeprecationWarning, match="asel argument to"):
+            reader.timeseries(asel=selection)
+
 
 class TestMemoryReaderVelsForces(object):
     @staticmethod

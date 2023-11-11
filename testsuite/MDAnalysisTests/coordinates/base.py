@@ -501,6 +501,12 @@ class BaseReaderTest(object):
         with pytest.raises(ValueError, match="Timeseries requires at least"):
             reader.timeseries(atoms)
 
+    def test_timeseries_asel_warns_deprecation(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        with pytest.warns(DeprecationWarning, match="asel argument to"):
+            timeseries = reader.timeseries(asel=atoms, order='fac')
+
+
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):
         ts = reader[-1]

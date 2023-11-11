@@ -236,7 +236,12 @@ def test_timeseries_empty_selection(universe_dcd):
         asel = universe_dcd.select_atoms('name FOO')
         universe_dcd.trajectory.timeseries(asel=asel)
 
-
+def test_timeseries_asel_warns_deprecation(universe_dcd):
+    allframes = universe_dcd.trajectory.timeseries(order='afc')
+    asel = universe_dcd.atoms[[1, 2, 3, 4]]
+    with pytest.warns(DeprecationWarning, match="asel argument to"):
+        xyz = universe_dcd.trajectory.timeseries(asel=asel, order='afc')
+        
 def test_reader_set_dt():
     dt = 100
     frame = 3
