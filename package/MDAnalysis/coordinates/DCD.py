@@ -314,7 +314,6 @@ class DCDReader(base.ReaderBase):
         .. versionchanged:: 2.4.0
             ValueError now raised instead of NoDataError for empty input
             AtomGroup
-
         """
         if asel:
             warnings.warn(
