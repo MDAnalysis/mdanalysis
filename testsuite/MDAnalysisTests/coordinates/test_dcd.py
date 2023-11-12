@@ -244,6 +244,15 @@ def test_timeseries_asel_warns_deprecation(universe_dcd):
         xyz = universe_dcd.trajectory.timeseries(asel=asel, order='afc')
 
 
+def test_timeseries_atomgroup(universe_dcd):
+    atomgroup = universe_dcd.select_atoms('name FOO')
+    universe_dcd.trajectory.timeseries(atomgroup=atomgroup)
+
+def test_timeseries_atomgroup_asel_mutex(universe_dcd):
+    atomgroup = universe_dcd.select_atoms('name FOO')
+    with pytest.raises(ValueError, match="Cannot provide both"):
+        universe_dcd.trajectory.timeseries(atomgroup=atomgroup, asel=atomgroup)
+
 def test_reader_set_dt():
     dt = 100
     frame = 3

@@ -506,6 +506,15 @@ class BaseReaderTest(object):
         with pytest.warns(DeprecationWarning, match="asel argument to"):
             timeseries = reader.timeseries(asel=atoms, order='fac')
 
+    def test_timeseries_atomgroup(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        timeseries = reader.timeseries(atomgroup=atoms, order='fac')
+
+    def test_timeseries_atomgroup_asel_mutex(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        with pytest.raises(ValueError, match="Cannot provide both"):
+            timeseries = reader.timeseries(atomgroup=atoms, asel=atoms, order='fac')
+
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):

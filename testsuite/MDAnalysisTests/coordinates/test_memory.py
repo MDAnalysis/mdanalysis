@@ -206,6 +206,15 @@ class TestMemoryReader(MultiframeReaderTest):
         selection = ref.universe.atoms
         with pytest.warns(DeprecationWarning, match="asel argument to"):
             reader.timeseries(asel=selection)
+    
+    def test_timeseries_atomgroup(self, ref, reader):
+        selection = ref.universe.atoms
+        reader.timeseries(atomgroup=selection)
+    
+    def test_timeseries_atomgroup_asel_mutex(self, ref, reader):
+        selection = ref.universe.atoms
+        with pytest.raises(ValueError, match="Cannot provide both"):
+            reader.timeseries(atomgroup=selection, asel=selection)
 
 
 class TestMemoryReaderVelsForces(object):
