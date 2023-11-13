@@ -36,7 +36,7 @@ you need to provide topology information using a pdb::
 
     import MDAnalysis as mda
     u = mda.Universe("topology.pdb", ["md_1.trc.gz","md_2.trc.gz"], 
-    format="TRC", continuous=True)
+    continuous=True)
 
 .. Note::
    The GROMOS trajectory format organizes its data in blocks. A block starts 
@@ -44,7 +44,7 @@ you need to provide topology information using a pdb::
    Only the TITLE-block at the beginning of each file is mandatory, 
    others blocks can be chosen depending on the task. 
 
-   The reader is capable to read the blocks "TIMESTEP", "POSITIONRED" and 
+   This reader is designed to read the blocks "TIMESTEP", "POSITIONRED" and 
    "GENBOX" from the trajectory which covers most standard trajectories.
    
    MDAnalysis requires the blocks of each frame to be in the same order 
@@ -85,11 +85,17 @@ class TRCReader(base.ReaderBase):
     @store_init_arguments
     def __init__(self, filename, **kwargs):
         super(TRCReader, self).__init__(filename, **kwargs)
-
-        # GROMOS11 trajectories can be either *.trc or *.trc.
+        
+        self.SUPPORTED_BLOCKS = ['TITLE', 'TIMESTEP', 'POSITIONRED', 
+        'GENBOX']
+        self.NOT_SUPPORTED_BLOCKNAMES = ['POSITION', 'REFPOSITION', 
+        'VELOCITY', 'VELOCITYRED', 'FREEFORCE', 'FREEFORCERED', 
+        'CONSFORCE', 'CONSFORCERED']
+                
+        # GROMOS11 trajectories can be either *.trc or *.trc.gz.
         root, ext = os.path.splitext(self.filename)
         self.trcfile = util.anyopen(self.filename)
-        self.compression = ext[1:] if ext[1:] != "trj" else None
+        self.compression = ext[1:] if ext[1:] != "trc" else None
 
         # Read and calculate some information about the trajectory
         self.traj_properties = self._read_traj_properties()
@@ -161,19 +167,17 @@ class TRCReader(base.ReaderBase):
         """
         
         traj_properties = {}
-        SUPPORTED_BLOCKS = ['TIMESTEP', 'POSITIONRED', 'GENBOX']
         
         #
         # Check which of the supported blocks comes first win the trajectory
         #
         first_block = None
         with util.anyopen(self.filename) as f:   
-            while (True):      
-                line = f.readline() 
-                if (line == '') or (line == b''): break  # EOF
-                for blockname in SUPPORTED_BLOCKS:
-                    if (blockname in line):
-                        #Save the name of the first block in the trajectory file
+            for line in iter(f.readline,''):
+                for blockname in self.SUPPORTED_BLOCKS:
+                    if (blockname in line) and (blockname != 'TITLE'):
+                        #Save the name of the first non-Title block 
+                        #in the trajectory file
                         first_block = blockname
                         
                 if (first_block is not None): break #First block found
@@ -192,15 +196,13 @@ class TRCReader(base.ReaderBase):
         l_timestep_timevalues = []
         
         with util.anyopen(self.filename) as f:
-            while (True): 
-                line = f.readline() 
-                if (line == '') or (line == b''): break  # EOF
-                
+            for line in iter(f.readline,''):
+
                 #
                 # First block of frame
                 #
                 if (first_block in line):
-                    l_blockstart_offset.append(f.tell())    
+                    l_blockstart_offset.append(f.tell()-len(line))    
                     frame_counter += 1
                 
                 # 
@@ -242,79 +244,78 @@ class TRCReader(base.ReaderBase):
             
         return traj_properties
 
-    def _read_GROMOS11_trajectory(self, _frame):
+    def _read_GROMOS11_trajectory(self):
     
         frameDat = {}
         f = self.trcfile
-        
-        l_blockstart_offset = self.traj_properties["l_blockstart_offset"]
+        if (f.closed):
+            raise Exception("The trajectory has been closed before reading.")
 
-        try:
-            
-            #
-            # Read time
-            #           
-            while (True):
-                line = f.readline()
-                if (line == '') or (line == b''): break  # EOF
-                if (f.tell() in l_blockstart_offset):
-                    tmp_step, tmp_time = f.readline().split()
-                    frameDat["step"] = int(round(float(tmp_step)))
-                    frameDat["time"] = float(tmp_time)
+        # Read trajectory    
+        for line in iter(f.readline,''):
+
+            if ("TIMESTEP" in line): 
+                tmp_step, tmp_time = f.readline().split()
+                frameDat["step"] = int(tmp_step)
+                frameDat["time"] = float(tmp_time)
+                
+            elif ("POSITIONRED" in line): 
+                tmp_buf = []
+                while (True): 
+                    coords_str = f.readline()
+                    if '#' in coords_str:
+                        continue
+                    elif "END" in coords_str:
+                        break
+                    else:
+                        tmp_buf.append(coords_str.split())
                     
-                elif ("POSITIONRED" in line): 
-                    tmp_buf = []
-                    while (True): 
-                        coords_str = f.readline()
-                        if '#' in coords_str:
-                            continue
-                        elif "END" in coords_str:
-                            break
-                        else:
-                            tmp_buf.append(coords_str.split())
-                        
-                    if (np.array(tmp_buf).shape[0] == self.n_atoms):
-                        frameDat["positions"] = np.asarray(tmp_buf, 
-                                                           dtype=np.float64)
-                    else:
-                        raise ValueError("The trajectory contains \
-                                         the wrong number of atoms!")                 
+                if (np.array(tmp_buf).shape[0] == self.n_atoms):
+                    frameDat["positions"] = np.asarray(tmp_buf, 
+                                                       dtype=np.float64)
+                else:
+                    raise ValueError("The trajectory contains \
+                                     the wrong number of atoms!")                 
 
-                elif ("GENBOX" in line): 
-                    ntb_setting = int(f.readline())
-                    if (ntb_setting == 0):
-                        frameDat["dimensions"] = None
-                        self.periodic = False
-                                        
-                    elif (ntb_setting in [-1, 1]):  
-                        tmp_a, tmp_b, tmp_c = f.readline().split()
-                        tmp_alpha, tmp_beta, tmp_gamma = f.readline().split()
-                        frameDat["dimensions"] = [float(tmp_a), 
-                                                  float(tmp_b), 
-                                                  float(tmp_c), 
-                                                  float(tmp_alpha),
-                                                  float(tmp_beta), 
-                                                  float(tmp_gamma)]
-                        self.periodic = True
+            elif ("GENBOX" in line): 
+                ntb_setting = int(f.readline())
+                if (ntb_setting == 0):
+                    frameDat["dimensions"] = None
+                    self.periodic = False
                                     
-                        line3 = f.readline().split()
-                        line4 = f.readline().split()          
-                        for v in (line3 + line4):
-                            if (float(v) != 0.0):
-                                raise NotImplementedError("This reader \
-                                                          supports neither \
-                                                          triclinic and/or \
-                                                          (yawed,pitched, \
-                                                          rolled) boxes!")
-                    else:
-                        raise NotImplementedError("This reader does not \
-                                                  support this box type!")                             
-                    break
-                            
-            return frameDat
-            
-        except (ValueError, IndexError) as err:
-            raise EOFError(err) from None
+                elif (ntb_setting in [-1, 1]):  
+                    tmp_a, tmp_b, tmp_c = f.readline().split()
+                    tmp_alpha, tmp_beta, tmp_gamma = f.readline().split()
+                    frameDat["dimensions"] = [float(tmp_a), 
+                                              float(tmp_b), 
+                                              float(tmp_c), 
+                                              float(tmp_alpha),
+                                              float(tmp_beta), 
+                                              float(tmp_gamma)]
+                    self.periodic = True
+                                
+                    line3 = f.readline().split()
+                    line4 = f.readline().split()          
+                    for v in (line3 + line4):
+                        if (float(v) != 0.0):
+                            raise NotImplementedError("This reader \
+                                                      supports neither \
+                                                      triclinic and/or \
+                                                      (yawed,pitched, \
+                                                      rolled) boxes!")
+                else:
+                    raise NotImplementedError("This reader does only support\
+                                               vacuum and rectangular boxes!")                             
+                break
+                
+            elif any(non_supp_bn in line for non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES):
+                for non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES:
+                    if (non_supp_bn in line):
+                        warnings.warn("Block "+non_supp_bn+" is not supported!", UserWarning)
+
+                        
+        return frameDat
+
     
     def _read_frame(self, i):
         """read frame i"""
@@ -333,7 +334,7 @@ class TRCReader(base.ReaderBase):
         if (self._frame >= self.n_frames):
             raise EOFError('Trying to go over trajectory limit')
 
-        raw_framedata = self._read_GROMOS11_trajectory(self._frame)        
+        raw_framedata = self._read_GROMOS11_trajectory()        
         self._frame_to_ts(raw_framedata, ts)
         self.ts = ts
         
