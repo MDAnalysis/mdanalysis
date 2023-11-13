@@ -604,6 +604,7 @@ TRC_TRAJ1_VAC = (_data_ref / 'gromos11/gromos11_traj_vac_1.trc.gz').as_posix()
 TRC_TRAJ2_VAC = (_data_ref / 'gromos11/gromos11_traj_vac_2.trc.gz').as_posix()
 TRC_PDB_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.pdb.gz').as_posix()
 TRC_TRAJ_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.trc.gz').as_posix()
+TRC_CLUSTER = (_data_ref / 'gromos11/gromos11_cluster_vac.trj.gz').as_posix()
 
 DihedralArray = (_data_ref / 'adk_oplsaa_dihedral.npy').as_posix()
 DihedralsArray = (_data_ref / 'adk_oplsaa_dihedral_list.npy').as_posix()
