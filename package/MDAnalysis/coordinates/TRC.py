@@ -26,6 +26,10 @@
 ====================================================================
 
 Reads coordinates, timesteps and box-sizes from GROMOS11 TRC trajectories.
+The trajectory format is documented in the GROMOS Manual Vol. 4, chapter 2 and 4.
+The manual can be downloaded here: 
+https://gromos.net/gromos11_pdf_manuals/vol4.pdf
+The code has been tested with GROMOS11 version 1.6 (Dec. 2023)
 
 To load the trajectory into :class:`~MDAnalysis.core.universe.Universe`,
 you need to provide topology information using a pdb::
@@ -35,10 +39,17 @@ you need to provide topology information using a pdb::
     format="TRC", continuous=True)
 
 .. Note::
-   -----
-   The reader is capable to read the blocks "TIMESTEP", "POSITIONRED" and 
-   "GENBOX" from the trajectory.
+   The GROMOS trajectory format organizes its data in blocks. A block starts 
+   with a blockname in capital letters and ends with a line containing only ''END''.
+   Only the TITLE-block at the beginning of each file is mandatory, 
+   others blocks can be chosen depending on the task. 
 
+   The reader is capable to read the blocks "TIMESTEP", "POSITIONRED" and 
+   "GENBOX" from the trajectory which covers most standard trajectories.
+   
+   MDAnalysis requires the blocks of each frame to be in the same order 
+   and ignores non-supported blocks.
+   
 Classes
 -------
 
@@ -49,6 +60,7 @@ Classes
 
 import os
 import errno
+import warnings
 import numpy as np
 
 from . import base
@@ -145,71 +157,89 @@ class TRCReader(base.ReaderBase):
         * Reads the number of atoms per frame (n_atoms)
         * Reads the number of frames (n_frames) 
         * Reads the startposition of the timestep block 
-          for each frame (l_timestep_offset) 
+          for each frame (l_blockstart_offset) 
         """
         
         traj_properties = {}
-        
-        in_positionred_block = False
-        in_timestep_block = False
-        lastblock_was_timestep = False
-        
-        atom_counter = 0
-        atom_len = 0
-        frame_counter = 0  
-        frame_len = 0   
- 
-        l_timestep_offset = []
-        l_timestep_timevalues = []
+        SUPPORTED_BLOCKS = ['TIMESTEP', 'POSITIONRED', 'GENBOX']
         
         #
-        # Loop through the file and save positions of datablocks
-        #        
+        # Check which of the supported blocks comes first win the trajectory
+        #
+        first_block = None
+        with util.anyopen(self.filename) as f:   
+            while (True):      
+                line = f.readline() 
+                if (line == '') or (line == b''): break  # EOF
+                for blockname in SUPPORTED_BLOCKS:
+                    if (blockname in line):
+                        #Save the name of the first block in the trajectory file
+                        first_block = blockname
+                        
+                if (first_block is not None): break #First block found
+        
+        #
+        # Calculate meta-data of the trajectory
+        #                               
+        in_positionred_block = False
+        lastline_was_timestep = False
+        
+        atom_counter = 0
+        n_atoms = 0
+        frame_counter = 0  
+ 
+        l_blockstart_offset = []
+        l_timestep_timevalues = []
+        
         with util.anyopen(self.filename) as f:
             while (True): 
                 line = f.readline() 
                 if (line == '') or (line == b''): break  # EOF
-
+                
+                #
+                # First block of frame
+                #
+                if (first_block in line):
+                    l_blockstart_offset.append(f.tell())    
+                    frame_counter += 1
+                
                 # 
                 # Timestep-Block
                 # 
                 if "TIMESTEP" in line:
-                    in_timestep_block = True    
-                    lastblock_was_timestep = True
-                    l_timestep_offset.append(f.tell())     
-                
-                elif (lastblock_was_timestep == True):
+                    lastline_was_timestep = True
+                     
+                elif (lastline_was_timestep == True):
                     l_timestep_timevalues.append(float(line.split()[1]))
-                    lastblock_was_timestep = False       
-                
-                if ("END" in line) and (in_timestep_block == True):                
-                    in_timestep_block = False 
+                    lastline_was_timestep = False       
 
                 #
                 # Coordinates-Block
                 #
                 if "POSITIONRED" in line:
                     in_positionred_block = True
-                    # coordblock_start = abs_line_counter
-                    frame_counter += 1
-                    
-                if (in_positionred_block == True) and (atom_len == 0):
+ 
+                if (in_positionred_block == True) and (n_atoms == 0):
                     if (len(line.split()) == 3):
                         atom_counter += 1  
                 
                 if ("END" in line) and (in_positionred_block == True):
-                    atom_len = atom_counter
+                    n_atoms = atom_counter
                     in_positionred_block = False
-                    
-                frame_len = frame_counter
+                     
 
-        traj_properties["n_atoms"] = atom_len
-        traj_properties["n_frames"] = frame_len
-        traj_properties["l_timestep_offset"] = l_timestep_offset
+        traj_properties["n_atoms"] = n_atoms
+        traj_properties["n_frames"] = frame_counter
+        traj_properties["l_blockstart_offset"] = l_blockstart_offset
         
-        traj_properties["dt"] = (l_timestep_timevalues[1] 
-                                 - l_timestep_timevalues[0])
-
+        if (len(l_timestep_timevalues) >= 2):
+            traj_properties["dt"] = (l_timestep_timevalues[1] 
+                                     - l_timestep_timevalues[0])
+        else:
+            traj_properties["dt"] = 0
+            warnings.warn("The trajectory does not contain TIMESTEP \
+            information!", UserWarning)
+            
         return traj_properties
 
     def _read_GROMOS11_trajectory(self, _frame):
@@ -217,7 +247,7 @@ class TRCReader(base.ReaderBase):
         frameDat = {}
         f = self.trcfile
         
-        l_timestep_offset = self.traj_properties["l_timestep_offset"]
+        l_blockstart_offset = self.traj_properties["l_blockstart_offset"]
 
         try:
             
@@ -227,7 +257,7 @@ class TRCReader(base.ReaderBase):
             while (True):
                 line = f.readline()
                 if (line == '') or (line == b''): break  # EOF
-                if (f.tell() in l_timestep_offset):
+                if (f.tell() in l_blockstart_offset):
                     tmp_step, tmp_time = f.readline().split()
                     frameDat["step"] = int(round(float(tmp_step)))
                     frameDat["time"] = float(tmp_time)
@@ -291,7 +321,7 @@ class TRCReader(base.ReaderBase):
         self._frame = i - 1
 
         # Move position in file just (-2 byte) before the start of the block 
-        self.trcfile.seek(self.traj_properties["l_timestep_offset"][i]-2, 0)
+        self.trcfile.seek(self.traj_properties["l_blockstart_offset"][i]-2, 0)
 
         return self._read_next_timestep()
 
