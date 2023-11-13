@@ -35,7 +35,7 @@ class TestTRCReaderVacuumBox:
     @pytest.fixture(scope='class')
     def TRC_U(self):
         return mda.Universe(TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC], 
-                            format="TRC", continuous=True)
+                            continuous=True)
 
     def test_initial_frame_is_0(self, TRC_U):
         assert_equal(TRC_U.trajectory.ts.frame, 0,
@@ -117,8 +117,7 @@ class TestTRCReaderVacuumBox:
 class TestTRCReaderSolvatedBox:
     @pytest.fixture(scope='class')
     def TRC_U(self):
-        return mda.Universe(TRC_PDB_SOLV, TRC_TRAJ_SOLV,
-                            format="TRC")
+        return mda.Universe(TRC_PDB_SOLV, TRC_TRAJ_SOLV)
 
     def test_trc_n_atoms(self, TRC_U):
         assert (TRC_U.trajectory.n_atoms) == 2797

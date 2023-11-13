@@ -599,10 +599,10 @@ GSD = (_data_ref / 'example.gsd').as_posix()
 GSD_bonds = (_data_ref / 'example_bonds.gsd').as_posix()
 GSD_long = (_data_ref / 'example_longer.gsd').as_posix()
 
-TRC_PDB_VAC = (_data_ref / 'gromos11/gromos11_traj_vac.pdb').as_posix()
+TRC_PDB_VAC = (_data_ref / 'gromos11/gromos11_traj_vac.pdb.gz').as_posix()
 TRC_TRAJ1_VAC = (_data_ref / 'gromos11/gromos11_traj_vac_1.trc.gz').as_posix()
 TRC_TRAJ2_VAC = (_data_ref / 'gromos11/gromos11_traj_vac_2.trc.gz').as_posix()
-TRC_PDB_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.pdb').as_posix()
+TRC_PDB_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.pdb.gz').as_posix()
 TRC_TRAJ_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.trc.gz').as_posix()
 
 DihedralArray = (_data_ref / 'adk_oplsaa_dihedral.npy').as_posix()
