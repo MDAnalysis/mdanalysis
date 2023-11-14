@@ -22,12 +22,14 @@
 #
 import pytest
 import numpy as np
+import warnings
 from numpy.testing import assert_allclose
 from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.TRC import TRCReader
 from MDAnalysisTests.datafiles import TRC_PDB_VAC, TRC_TRAJ1_VAC, TRC_TRAJ2_VAC
+from MDAnalysisTests.datafiles import TRC_CLUSTER_VAC
 from MDAnalysisTests.datafiles import TRC_PDB_SOLV, TRC_TRAJ_SOLV
 
 
@@ -70,6 +72,13 @@ class TestTRCReaderVacuumBox:
         assert TRC_U.trajectory[0].time == 0
         assert TRC_U.trajectory[4].time == 80
 
+    def test_trc_dt(self, TRC_U):
+        time_array = np.array([ts.time for ts in TRC_U.trajectory])
+        assert_equal(time_array, np.arange(6)*20)
+        
+        dt_array = np.diff(time_array)
+        assert_equal(dt_array, np.full(5,20))
+    
     def test_trc_data_step(self, TRC_U):
         assert TRC_U.trajectory[0].data['step'] == 0
         assert TRC_U.trajectory[4].data['step'] == 10000
@@ -136,4 +145,45 @@ class TestTRCReaderSolvatedBox:
         TRC_U.trajectory._reopen()
         with pytest.raises(IOError): 
             TRC_U.trajectory.open_trajectory()
+
+class TestTRCReaderClusterTrajectory:
+    @pytest.fixture(scope='class')
+    def TRC_U(self):
+        with pytest.warns(UserWarning) as record_of_warnings:
+            TRC_U = mda.Universe(TRC_PDB_VAC, TRC_CLUSTER_VAC, format="TRC")
+        
+        warning_strins = ["The trajectory does not contain TIMESTEP blocks!",
+                          "POSITION block is not supported!"]
+                          
+        warning_strins_found = 0
+        for w in record_of_warnings:
+            if (str(w.message) in warning_strins):
+                warning_strins_found += 1
+        
+        assert (warning_strins_found) == 2
+        return TRC_U
+
+    def test_trc_n_atoms(self, TRC_U):
+        assert (TRC_U.trajectory.n_atoms) == 73
+
+    def test_periodic(self, TRC_U):
+        assert_equal(TRC_U.trajectory.periodic, False)
+
+    def test_trc_dimensions(self, TRC_U):
+        ts = TRC_U.trajectory[1]
+        assert_equal(ts.dimensions, None)
+
+    def test_trc_n_frames(self, TRC_U):
+        assert len(TRC_U.trajectory) == 3
+        assert (TRC_U.trajectory.n_frames) == 3
+
+    def test_trc_frame(self, TRC_U):
+        with pytest.warns(UserWarning): #Warning: "POSITION block is not supported!"
+            assert TRC_U.trajectory[0].frame == 0
+            assert TRC_U.trajectory[2].frame == 2
+
+    def test_trc_time(self, TRC_U):
+        with pytest.warns(UserWarning):
+            assert TRC_U.trajectory[0].time == 0
+            assert TRC_U.trajectory[2].time == 0
 
