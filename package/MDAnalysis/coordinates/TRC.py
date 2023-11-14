@@ -36,20 +36,25 @@ you need to provide topology information using a pdb::
 
 .. Note::
    The GROMOS trajectory format organizes its data in blocks. A block starts
-   with a blockname in capital letters and ends with a line containing only
-   ''END''. Only the TITLE-block at the beginning of each file is mandatory,
-   others blocks can be chosen depending on the task.
+   with a blockname in capital letters (example: POSITIONRED) and ends with
+   a line containing only ''END''. Only the TITLE-block at the beginning of
+   each file is mandatory, others blocks can be chosen depending on the task.
 
-   This reader is designed to read the blocks "TIMESTEP", "POSITIONRED" and
-   "GENBOX" from the trajectory which covers most standard trajectories.
+   The trajectory format as well as all permitted blocks and their data are
+   documented in the GROMOS Manual Vol. 4, chapter 2 and 4.
+   The manual can be downloaded here:
+   https://gromos.net/gromos11_pdf_manuals/vol4.pdf
 
+This reader is designed to read the blocks "TIMESTEP", "POSITIONRED" and
+"GENBOX" from the trajectory which covers the standard trajectories of most
+simulations . If a trajectory includes other blocks, a warning is served
+and the blocks are ignored.
+
+.. Note::
    MDAnalysis requires the blocks to be in the same order for each frame
    and ignores non-supported blocks.
 
-The trajectory format is documented in the GROMOS Manual Vol. 4, chapter 2 and 4.
-The manual can be downloaded here:
-https://gromos.net/gromos11_pdf_manuals/vol4.pdf
-The code has been tested with GROMOS11 version 1.6 (Dec. 2023)
+
 
 Classes
 -------
@@ -92,7 +97,23 @@ class TRCReader(base.ReaderBase):
         self.NOT_SUPPORTED_BLOCKNAMES = ['POSITION', 'REFPOSITION',
                                          'VELOCITY', 'VELOCITYRED',
                                          'FREEFORCE', 'FREEFORCERED',
-                                         'CONSFORCE', 'CONSFORCERED']
+                                         'CONSFORCE', 'CONSFORCERED',
+                                         'SHAKEFAILPOSITION',
+                                         'SHAKEFAILPREVPOSITION',
+                                         'LATTICESHIFTS',
+                                         'COSDISPLACEMENTS',
+                                         'STOCHINT', 'NHCVARIABLES',
+                                         'ROTTRANSREFPOS', 'PERTDATA',
+                                         'DISRESEXPAVE',
+                                         'JVALUERESEXPAVE',
+                                         'JVALUERESEPS',
+                                         'JVALUEPERSCALE',
+                                         'ORDERPARAMRESEXPAVE',
+                                         'XRAYRESEXPAVE', 'LEUSBIAS',
+                                         'LEUSBIASBAS', 'ENERGY03',
+                                         'VOLUMEPRESSURE03',
+                                         'FREEENERGYDERIVS03',
+                                         'BFACTOR', 'AEDSS']
 
         # GROMOS11 trajectories can be either *.trc or *.trc.gz.
         root, ext = os.path.splitext(self.filename)
