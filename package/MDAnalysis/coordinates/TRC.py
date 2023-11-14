@@ -26,10 +26,6 @@
 ====================================================================
 
 Reads coordinates, timesteps and box-sizes from GROMOS11 TRC trajectories.
-The trajectory format is documented in the GROMOS Manual Vol. 4, chapter 2 and 4.
-The manual can be downloaded here: 
-https://gromos.net/gromos11_pdf_manuals/vol4.pdf
-The code has been tested with GROMOS11 version 1.6 (Dec. 2023)
 
 To load the trajectory into :class:`~MDAnalysis.core.universe.Universe`,
 you need to provide topology information using a pdb::
@@ -47,8 +43,13 @@ you need to provide topology information using a pdb::
    This reader is designed to read the blocks "TIMESTEP", "POSITIONRED" and 
    "GENBOX" from the trajectory which covers most standard trajectories.
    
-   MDAnalysis requires the blocks of each frame to be in the same order 
+   MDAnalysis requires the blocks to be in the same order for each frame
    and ignores non-supported blocks.
+
+The trajectory format is documented in the GROMOS Manual Vol. 4, chapter 2 and 4.
+The manual can be downloaded here: 
+https://gromos.net/gromos11_pdf_manuals/vol4.pdf
+The code has been tested with GROMOS11 version 1.6 (Dec. 2023)
    
 Classes
 -------
@@ -239,14 +240,20 @@ class TRCReader(base.ReaderBase):
                                      - l_timestep_timevalues[0])
         else:
             traj_properties["dt"] = 0
-            warnings.warn("The trajectory does not contain TIMESTEP \
-            information!", UserWarning)
+            warnings.warn("The trajectory does not contain TIMESTEP blocks!",\
+             UserWarning)
             
         return traj_properties
 
     def _read_GROMOS11_trajectory(self):
     
         frameDat = {}
+        frameDat["step"] = int(self._frame)
+        frameDat["time"] = float(0.0)        
+        frameDat["positions"] = None
+        frameDat["dimensions"] = None
+        self.periodic = False
+                
         f = self.trcfile
         if (f.closed):
             raise Exception("The trajectory has been closed before reading.")
@@ -311,7 +318,8 @@ class TRCReader(base.ReaderBase):
             elif any(non_supp_bn in line for non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES):
                 for non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES:
                     if (non_supp_bn in line):
-                        warnings.warn("Block "+non_supp_bn+" is not supported!", UserWarning)
+                        warnings.warn(non_supp_bn + " block is not supported!", UserWarning)
+                        pass
 
                         
         return frameDat
@@ -334,7 +342,7 @@ class TRCReader(base.ReaderBase):
         if (self._frame >= self.n_frames):
             raise EOFError('Trying to go over trajectory limit')
 
-        raw_framedata = self._read_GROMOS11_trajectory()        
+        raw_framedata = self._read_GROMOS11_trajectory()    
         self._frame_to_ts(raw_framedata, ts)
         self.ts = ts
         
