@@ -2604,10 +2604,10 @@ def optional_import(
 
     if ((not _check_version(min_version, module.__version__)) or
         (not _check_version(module.__version__, max_version))):
-           wmsg = (f"{module_name} version is {module.__version__} "
-                   f"and allowed version ranges are >= {min_version} "
-                   f"<= {max_version}")
-           warnings.warn(wmsg)
-           return None
+        wmsg = (f"{module_name} version is {module.__version__} "
+                f"and allowed version ranges are >= {min_version} "
+                f"<= {max_version}")
+        warnings.warn(wmsg)
+        return None
 
     return module
