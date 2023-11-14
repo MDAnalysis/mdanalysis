@@ -204,7 +204,8 @@ import importlib
 import warnings
 import functools
 from functools import wraps
-from typing import Optional, types
+import types
+from typing import Optional
 import textwrap
 import weakref
 
