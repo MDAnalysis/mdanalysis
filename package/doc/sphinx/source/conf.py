@@ -161,8 +161,15 @@ toc_object_entries = False
 # a list of builtin themes.
 html_theme = 'mdanalysis_sphinx_theme'
 
+extra_nav_links = {}
+extra_nav_links["MDAnalysis"] = "http://mdanalysis.org"
+extra_nav_links["User guide"] = "http://userguide.mdanalysis.org"
+extra_nav_links["MDAKits"] = "https://mdakits.mdanalysis.org/"
+
+
 html_theme_options = {
     "mda_official": True,
+    "extra_nav_links": extra_nav_links,
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme

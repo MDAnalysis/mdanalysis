@@ -25,6 +25,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PDBQT_input,  # pdbqt_inputpdbqt.pdbqt
+    PDBQT_tyrosol,  # tyrosol.pdbqt.bz2
 )
 
 
@@ -32,10 +33,28 @@ class TestPDBQT(ParserBase):
     parser = mda.topology.PDBQTParser.PDBQTParser
     ref_filename = PDBQT_input
     expected_attrs = [
-        'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
-        'segids', 'record_types', 'icodes', 'occupancies', 'tempfactors'
+        "ids",
+        "names",
+        "charges",
+        "types",
+        "altLocs",
+        "resids",
+        "resnames",
+        "segids",
+        "chainIDs",
+        "record_types",
+        "icodes",
+        "occupancies",
+        "tempfactors",
     ]
     guessed_attrs = ['masses']
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99
     expected_n_segments = 2  # res2-102 are A, 2-99 are B
+
+
+def test_footnote():
+    """just test that the Universe is built even in the presence of a
+    footnote before the charges.
+    """
+    mda.Universe(PDBQT_tyrosol)
