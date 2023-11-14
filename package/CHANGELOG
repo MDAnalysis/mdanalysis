@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium
+         richardjgowers, lilyminium, ALescoulie, hmacdope
 
  * 2.7.0
 
@@ -27,26 +27,52 @@ Fixes
   * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
+  * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
-  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
+  * Refactor c_distances backend to have a cython .pxd header and expose in
+    libmdanalysis (Issue #4315, PR #4324)
+  * Add faster nucleic acid Major and Minor pair distance calculators using
+    AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
+  * Adds external sidebar links (Issue #4296)
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
     inputs (PR #4273, part of #3927)
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
+  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
   * Add support for reading chainID info from GROMACS TPR topologies 
-    (Issue #3994, PR #4281)
+    (Issue #3994, PR #4281)  
+  * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
+    PR #4284)
 
 Changes
+  * Biopython is now an optional dependency (Issue #3820, PR #4332)
+  * Networkx is now an optional dependency (Issue #3822).
+  * High memory tests (enabled through the environment variable
+    `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
+    is set to "true") (PR #4295)
   * The `mda-xdrlib` module is now a core dependency of MDAnalysis
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+  * Results for WatsonCrickDist nucleic acids analysis are now stored in 
+    `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
+  * MDAnalysis.lib.util is deprecated and will be removed in version 3.0
+    (Issue #3649)
+  * The TRZ reader & writer are deprecated and will be removed in version 3.0
+    (PR #4335)
+  * X3DNA has been deprecated and will be removed in 3.0.0 (Issue #3788)
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
+  * In `nucleicacids.WatsonCrickDist`, accepting lists of `Residue` objects was deprecated
+    in favor of using `ResidueGroup`: using `List[Residue]` will be removed in release
+    3.0.0; instead use a `ResidueGroup` (Issue #3720, PR #3735)
+  * In `nucleicacids.WatsonCrickDist` the result `results.pair_distances` was
+    deprecated and will be removed in 3.0.0; use `results.distances` (Issue #3720, 
+    PR #3735)
 
 
 28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
