@@ -162,7 +162,7 @@ class TRCReader(base.ReaderBase):
         return n_frames
 
     def _frame_to_ts(self, frameDat, ts):
-        """Convert a frame to a :class: TimeStep"""
+        """Convert a frame to a :class:`TimeStep`"""
         ts.frame = self._frame
         ts.time = frameDat["time"]
 
