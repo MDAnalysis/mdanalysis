@@ -22,7 +22,6 @@
 #
 import pytest
 import numpy as np
-import warnings
 from numpy.testing import assert_allclose
 from numpy.testing import assert_equal
 
