@@ -355,19 +355,16 @@ class TRCReader(base.ReaderBase):
 
         return self._read_next_timestep()
 
-    def _read_next_timestep(self, ts=None):
-        if ts is None:
-            ts = self.ts
+    def _read_next_timestep(self):
 
         self._frame += 1
         if (self._frame >= self.n_frames):
             raise EOFError('Trying to go over trajectory limit')
 
         raw_framedata = self._read_GROMOS11_trajectory()
-        self._frame_to_ts(raw_framedata, ts)
-        self.ts = ts
+        self._frame_to_ts(raw_framedata, self.ts)
 
-        return ts
+        return self.ts
 
     def _reopen(self):
         """Close and reopen the trajectory"""
