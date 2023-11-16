@@ -198,7 +198,7 @@ class TRCReader(base.ReaderBase):
         with util.anyopen(self.filename) as f:
             for line in iter(f.readline, ''):
                 for blockname in self.SUPPORTED_BLOCKS:
-                    if (blockname in line) and (blockname != 'TITLE'):
+                    if (blockname == line.strip()) and (blockname != 'TITLE'):
                         # Save the name of the first non-Title block
                         # in the trajectory file
                         first_block = blockname
@@ -225,14 +225,14 @@ class TRCReader(base.ReaderBase):
                 #
                 # First block of frame
                 #
-                if (first_block in line):
+                if (first_block == line.strip()):
                     l_blockstart_offset.append(f.tell()-len(line))
                     frame_counter += 1
 
                 #
                 # Timestep-Block
                 #
-                if "TIMESTEP" in line:
+                if ("TIMESTEP" == line.strip()):
                     lastline_was_timestep = True
 
                 elif (lastline_was_timestep is True):
@@ -242,14 +242,14 @@ class TRCReader(base.ReaderBase):
                 #
                 # Coordinates-Block
                 #
-                if "POSITIONRED" in line:
+                if ("POSITIONRED" == line.strip()):
                     in_positionred_block = True
 
                 if (in_positionred_block is True) and (n_atoms == 0):
                     if (len(line.split()) == 3):
                         atom_counter += 1
 
-                if ("END" in line) and (in_positionred_block is True):
+                if ("END" == line.strip()) and (in_positionred_block is True):
                     n_atoms = atom_counter
                     in_positionred_block = False
 
@@ -283,12 +283,12 @@ class TRCReader(base.ReaderBase):
         # Read trajectory
         for line in iter(f.readline, ''):
 
-            if ("TIMESTEP" in line):
+            if ("TIMESTEP" == line.strip()):
                 tmp_step, tmp_time = f.readline().split()
                 frameDat["step"] = int(tmp_step)
                 frameDat["time"] = float(tmp_time)
 
-            elif ("POSITIONRED" in line):
+            elif ("POSITIONRED" == line.strip()):
                 tmp_buf = []
                 while (True):
                     coords_str = f.readline()
@@ -306,7 +306,7 @@ class TRCReader(base.ReaderBase):
                     raise ValueError("The trajectory contains \
                                      the wrong number of atoms!")
 
-            elif ("GENBOX" in line):
+            elif ("GENBOX" == line.strip()):
                 ntb_setting = int(f.readline())
                 if (ntb_setting == 0):
                     frameDat["dimensions"] = None
@@ -340,7 +340,7 @@ class TRCReader(base.ReaderBase):
             elif any(non_supp_bn in line for
                      non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES):
                 for non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES:
-                    if (non_supp_bn in line):
+                    if (non_supp_bn == line.strip()):
                         warnings.warn(non_supp_bn + " block is not supported!",
                                       UserWarning)
 
