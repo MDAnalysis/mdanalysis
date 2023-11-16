@@ -115,10 +115,14 @@ class TRCReader(base.ReaderBase):
                                          'FREEENERGYDERIVS03',
                                          'BFACTOR', 'AEDSS']
 
-        # GROMOS11 trajectories can be either *.trc or *.trc.gz.
+        # GROMOS11 trajectories are usually either *.trc or *.trc.gz.
+        # (trj suffix can come up when trajectory obtained from clustering)
         root, ext = os.path.splitext(self.filename)
         self.trcfile = util.anyopen(self.filename)
-        self.compression = ext[1:] if ext[1:] != "trc" else None
+        if (ext[1:] == "trc") or (ext[1:] == "trj"):
+            self.compression = None
+        else:
+            self.compression = ext[1:]
 
         # Read and calculate some information about the trajectory
         self.traj_properties = self._read_traj_properties()
@@ -349,6 +353,7 @@ class TRCReader(base.ReaderBase):
     def _read_frame(self, i):
         """read frame i"""
         self._frame = i - 1
+        print("_read_frame(i)")
 
         # Move position in file just (-2 byte) before the start of the block
         self.trcfile.seek(self.traj_properties["l_blockstart_offset"][i]-2, 0)
