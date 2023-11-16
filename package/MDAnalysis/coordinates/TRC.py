@@ -353,7 +353,6 @@ class TRCReader(base.ReaderBase):
     def _read_frame(self, i):
         """read frame i"""
         self._frame = i - 1
-        print("_read_frame(i)")
 
         # Move position in file just (-2 byte) before the start of the block
         self.trcfile.seek(self.traj_properties["l_blockstart_offset"][i]-2, 0)
