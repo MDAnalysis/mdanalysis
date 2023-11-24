@@ -1,3 +1,83 @@
+"""
+Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.analysis.dssp`
+==========================================================================
+
+:Author: Egor Marin
+:Year: 2023
+:Copyright: GNU Public License v2
+
+.. versionadded:: 2.7.0
+
+The module contains code to build hydrogend bond contact map,
+and use it to assign protein secondary structure (:class:`DSSP`).
+
+This module uses the python version of the original algorithm by Kabsch & Sander (1983),
+re-implemented by @ShintaroMinami. For more details, read [here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp).
+ 
+When using this module in published work please cite [Kabsch1983]_.
+
+
+Example applications
+--------------------
+
+Assigning secondary structure of a PDB file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this example we will simply print a string representing protein's secondary structure.
+
+    from MDAnalysis.tests.datafiles import PDB
+    from MDAnalysis.analysis.dssp import DSSP
+    u = mda.Universe(PDB)
+    s = ''.join(DSSP(u).run().results.dssp)
+    print(s)
+
+
+Calculating average secondary structure of a trajectory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Here we take a trajectory and calculate its average secondary structure,
+i.e. assign a secondary structure label 'X' to a residue if most of the frames
+in the trajectory got assigned 'X' label.
+
+Find parts of the protein that maintain their secondary structure during simulation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this example, we will find residue groups that maintain their secondary structure
+along the simulation, and have some meaningful ('E' or 'H') secondary structure
+during more than set threshold share of frames.
+
+Plot hydrogen bond energy map for a single frame
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In this example, we will extract the coordinates of atoms necessary for the secondary structure
+assignment, and plot their hydrogen map, as implemented in `pydssp`.
+
+
+      
+Functions
+---------
+
+.. autofunction:: get_hbond_map
+.. autofunction:: assign
+.. autofunction:: translate
+
+Analysis classes
+----------------
+
+.. autoclass:: DSSP
+   :members:
+   :inherited-members:
+
+   .. attribute:: results.dssp
+
+       Contains the time series of the DSSP assignment as chars N×m :class:`numpy.ndarray`
+       array with content ``[frame, residue]``, where `structure_type`
+       is one of three characters: ['H', 'E', '-'], representing alpha-helix, sheet and loop, respectively.
+
+   .. attribute:: results.dssp_ndarray
+
+       Contains the one-hot encoding of the time series of the DSSP assignment as chars N×mx3 :class:`numpy.ndarray`
+       array with content ``[frame, residue, encoding]``, where `encoding`
+       is a (3,) shape :class:`numpy.ndarray` of booleans 
+       with axes representing loop '-', helix 'H' and sheet 'E', consequtively.
+"""
+
 from .base import AnalysisBase
 import numpy as np
 from einops import repeat, rearrange
@@ -24,8 +104,7 @@ def _unfold(a: np.ndarray, window: int, axis: int):
     Returns:
         np.ndarray: unfolded array
     """
-    idx = np.arange(window)[:, None] + \
-        np.arange(a.shape[axis] - window + 1)[None, :]
+    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
@@ -43,8 +122,7 @@ def _check_input(coord):
     assert (len(org_shape) == 3) or (
         len(org_shape) == 4
     ), "Shape of input tensor should be [batch, L, atom, xyz] or [L, atom, xyz]"
-    coord = repeat(coord, "... -> b ...",
-                   b=1) if len(org_shape) == 3 else coord
+    coord = repeat(coord, "... -> b ...", b=1) if len(org_shape) == 3 else coord
     return coord, org_shape
 
 
@@ -103,8 +181,7 @@ def get_hbond_map(
     d_cn = np.linalg.norm(cmap - nmap, axis=-1)
     # electrostatic interaction energy
     e = np.pad(
-        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 /
-                      d_oh - 1.0 / d_cn) * CONST_F,
+        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F,
         [[0, 0], [1, 0], [0, 1]],
     )
     if return_e:
@@ -118,8 +195,7 @@ def get_hbond_map(
     hbond_map = (np.sin(hbond_map / margin * np.pi / 2) + 1.0) / 2
     hbond_map = hbond_map * repeat(local_mask, "l1 l2 -> b l1 l2", b=b)
     # return h-bond map
-    hbond_map = np.squeeze(hbond_map, axis=0) if len(
-        org_shape) == 3 else hbond_map
+    hbond_map = np.squeeze(hbond_map, axis=0) if len(org_shape) == 3 else hbond_map
     return hbond_map
 
 
@@ -177,8 +253,7 @@ def assign(coord: np.ndarray) -> np.ndarray:
     strand = ladder
     loop = ~helix * ~strand
     onehot = np.stack([loop, helix, strand], axis=-1)
-    onehot = rearrange(
-        onehot, "1 ... -> ...") if len(org_shape) == 3 else onehot
+    onehot = rearrange(onehot, "1 ... -> ...") if len(org_shape) == 3 else onehot
     return onehot
 
 
@@ -208,10 +283,10 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
 
 class DSSP(AnalysisBase):
-    """Assign secondary structure using DSSP algorithm as implemented by pydssp package (v. 0.9.0)
+    """Assign secondary structure using DSSP algorithm as implemented by pydssp package (v. 0.9.0): https://github.com/ShintaroMinami/PyDSSP
     Here:
-     - 'H' represents a 4-helix (alpha-helix)
-     - 'E' represents 'extended strand', participating in beta-ladder
+     - 'H' represents a generic helix (alpha-helix, pi-helix or 3-10 helix)
+     - 'E' represents 'extended strand', participating in beta-ladder (parallel or antiparallel)
      - '-' represents unordered part
 
     Example:
@@ -223,7 +298,7 @@ class DSSP(AnalysisBase):
     >>> print("".join(run.results.dssp[0]))
     '--EEEEE-----HHHHHHHHHHHH--EEE-HHHHHHHHHHH--HHHHHHHHHHHH-----HHHHHHHHHHH---HHH---EEEE-----HHHHHHHHHH-----EEEEEE--HHHHHHHH--EE--------EE---E------E------E----HHH-HHHHHHHHHHHHHHHHHHHHHHHHHHHH---EEEEEE----HHHHHHHHHHHH-'
 
-    Also, per-frame dssp assignment allows you to build average secondary structure -- `DSSP.results.dssp_ndarray` 
+    Also, per-frame dssp assignment allows you to build average secondary structure -- `DSSP.results.dssp_ndarray`
     holds (n_frames, n_residues, 3) shape ndarray with one-hot encoding of loop, helix and sheet, respectively:
 
     >>> from MDAnalysis.analysis.dssp import translate
@@ -252,13 +327,17 @@ class DSSP(AnalysisBase):
     def _prepare(self):
         self.results.dssp_ndarray = []
 
-    def _single_frame(self):
-        coords = np.array(
-            [group.positions for group in self._heavy_atoms.values()])
+    def _get_coords(self) -> np.ndarray:
+        """Returns coordinates of (N,CA,C,O,H) atoms, as required by :func:`get_hbond_map` and :func:`assign` functions."""
+        positions = [group.positions for group in self._heavy_atoms.values()]
+        if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
+            raise ValueError(
+                "Universe contains not equal number of (N,CA,C,O) atoms. Please select appropriate sub-universe manually."
+            )
+        coords = np.array(positions)
 
         if not self._guess_hydrogens:
-            guessed_h_coords = _get_hydrogen_atom_position(
-                coords.swapaxes(0, 1))
+            guessed_h_coords = _get_hydrogen_atom_position(coords.swapaxes(0, 1))
             h_coords = np.array(
                 [
                     group.positions[0] if group else guessed_h_coords[idx]
@@ -269,11 +348,14 @@ class DSSP(AnalysisBase):
             coords = np.vstack([coords, h_coords])
 
         coords = coords.swapaxes(0, 1)
+        return coords
+
+    def _single_frame(self):
+        coords = self._get_coords()
         dssp = assign(coords)
         self.results.dssp_ndarray.append(dssp)
 
     def _conclude(self):
         self.results.dssp = translate(np.array(self.results.dssp_ndarray))
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
-        self.results.resids = np.array(
-            [at.resid for at in self._heavy_atoms["CA"]])
+        self.results.resids = np.array([at.resid for at in self._heavy_atoms["CA"]])
