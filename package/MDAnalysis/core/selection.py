@@ -537,6 +537,21 @@ class PointSelection(Selection):
         return group[np.asarray(indices, dtype=np.int64)]
 
 
+class ReferancePointSelection(Selection):
+    token = 'refpoint'
+
+    def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+        self.periodic = parser.periodic
+        x = float(tokens.popleft())
+        y = float(tokens.popleft())
+        z = float(tokens.popleft())
+        self.ref = np.array([x, y, z], dtype=np.float32)
+
+    @return_empty_on_apply
+    def _apply(self, group):
+        return group[self.ref]
+
 class AtomSelection(Selection):
     token = 'atom'
 
