@@ -65,7 +65,7 @@ Classes
 
 """
 
-import os
+import pathlib
 import errno
 import warnings
 import numpy as np
@@ -118,12 +118,12 @@ class TRCReader(base.ReaderBase):
 
         # GROMOS11 trajectories are usually either *.trc or *.trc.gz.
         # (trj suffix can come up when trajectory obtained from clustering)
-        root, ext = os.path.splitext(self.filename)
+        ext = pathlib.Path(self.filename).suffix
         if (ext[1:] == "trc") or (ext[1:] == "trj"):
             self.compression = None
         else:
             self.compression = ext[1:]
-
+        print(self.compression)
         self.trcfile = util.anyopen(self.filename)
 
         # Read and calculate some information about the trajectory
@@ -153,7 +153,6 @@ class TRCReader(base.ReaderBase):
         """The number of frames in the trajectory."""
         return self._read_frame_count()
 
-
     def _read_frame_count(self):
         n_frames = self.traj_properties["n_frames"]
         return n_frames
@@ -169,9 +168,7 @@ class TRCReader(base.ReaderBase):
         ts.dimensions = frameDat["dimensions"]
         ts.positions = frameDat["positions"]
 
-        #
         # Convert the units
-        #
         if self.convert_units:
             if ts.has_positions:
                 self.convert_pos_from_native(ts.positions)
@@ -381,7 +378,7 @@ class TRCReader(base.ReaderBase):
         # Reset ts
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
-        # Set frame to -1, so next timestep is zero
+        # Set _frame to -1, so next timestep is zero
         self._frame = -1
 
         return self.trcfile
