@@ -28,7 +28,8 @@
 Reads coordinates, timesteps and box-sizes from GROMOS11 TRC trajectories.
 
 To load the trajectory into :class:`~MDAnalysis.core.universe.Universe`,
-you need to provide topology information using a pdb::
+you need to provide topology information using a topology file such as
+a PDB::
 
     import MDAnalysis as mda
     u = mda.Universe("topology.pdb", ["md_1.trc.gz","md_2.trc.gz"],
@@ -118,11 +119,12 @@ class TRCReader(base.ReaderBase):
         # GROMOS11 trajectories are usually either *.trc or *.trc.gz.
         # (trj suffix can come up when trajectory obtained from clustering)
         root, ext = os.path.splitext(self.filename)
-        self.trcfile = util.anyopen(self.filename)
         if (ext[1:] == "trc") or (ext[1:] == "trj"):
             self.compression = None
         else:
             self.compression = ext[1:]
+
+        self.trcfile = util.anyopen(self.filename)
 
         # Read and calculate some information about the trajectory
         self.traj_properties = self._read_traj_properties()
@@ -139,10 +141,7 @@ class TRCReader(base.ReaderBase):
     @cached('n_atoms')
     def n_atoms(self):
         """The number of atoms in one frame."""
-        try:
-            return self._read_atom_count()
-        except IOError:
-            return 0
+        return self._read_atom_count()
 
     def _read_atom_count(self):
         n_atoms = self.traj_properties["n_atoms"]
@@ -152,10 +151,8 @@ class TRCReader(base.ReaderBase):
     @cached('n_frames')
     def n_frames(self):
         """The number of frames in the trajectory."""
-        try:
-            return self._read_frame_count()
-        except IOError:
-            return 0
+        return self._read_frame_count()
+
 
     def _read_frame_count(self):
         n_frames = self.traj_properties["n_frames"]
@@ -180,8 +177,6 @@ class TRCReader(base.ReaderBase):
                 self.convert_pos_from_native(ts.positions)
             if ts.dimensions is not None:
                 self.convert_pos_from_native(ts.dimensions[:3])
-            if ts.has_velocities:
-                self.convert_velocities_from_native(ts.velocities)
 
         return ts
 
@@ -196,7 +191,7 @@ class TRCReader(base.ReaderBase):
         traj_properties = {}
 
         #
-        # Check which of the supported blocks comes first win the trajectory
+        # Check which of the supported blocks comes first in the trajectory
         #
         first_block = None
         with util.anyopen(self.filename) as f:
@@ -257,6 +252,9 @@ class TRCReader(base.ReaderBase):
                     n_atoms = atom_counter
                     in_positionred_block = False
 
+        if (frame_counter == 0):
+            raise ValueError('No supported blocks were found within the GROMOS trajectory!')
+
         traj_properties["n_atoms"] = n_atoms
         traj_properties["n_frames"] = frame_counter
         traj_properties["l_blockstart_offset"] = l_blockstart_offset
@@ -280,11 +278,8 @@ class TRCReader(base.ReaderBase):
         frameDat["dimensions"] = None
         self.periodic = False
 
+        # Read the trajectory
         f = self.trcfile
-        if (f.closed):
-            raise Exception("The trajectory has been closed before reading.")
-
-        # Read trajectory
         for line in iter(f.readline, ''):
 
             if ("TIMESTEP" == line.strip()):
@@ -363,7 +358,7 @@ class TRCReader(base.ReaderBase):
 
         self._frame += 1
         if (self._frame >= self.n_frames):
-            raise EOFError('Trying to go over trajectory limit')
+            raise IOError('Trying to go over trajectory limit')
 
         raw_framedata = self._read_GROMOS11_trajectory()
         self._frame_to_ts(raw_framedata, self.ts)
@@ -393,7 +388,6 @@ class TRCReader(base.ReaderBase):
 
     def close(self):
         """Close the trc trajectory file if it was open."""
-        if self.trcfile is None:
-            return
-        self.trcfile.close()
-        self.trcfile = None
+        if self.trcfile is not None:
+            self.trcfile.close()
+            self.trcfile = None
