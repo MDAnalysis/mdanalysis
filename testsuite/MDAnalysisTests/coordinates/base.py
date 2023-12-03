@@ -499,7 +499,14 @@ class BaseReaderTest(object):
                           match="Empty string to select atoms, empty group returned."):
             atoms = mda.Universe(reader.filename).select_atoms(None)
         with pytest.raises(ValueError, match="Timeseries requires at least"):
-            reader.timeseries(atoms)
+            reader.timeseries(asel=atoms)
+
+    def test_timeseries_empty_atomgroup(self, reader):
+        with pytest.warns(UserWarning,
+                          match="Empty string to select atoms, empty group returned."):
+            atoms = mda.Universe(reader.filename).select_atoms(None)
+        with pytest.raises(ValueError, match="Timeseries requires at least"):
+            reader.timeseries(atomgroup=atoms)
 
     def test_timeseries_asel_warns_deprecation(self, reader):
         atoms = mda.Universe(reader.filename).select_atoms("index 1")

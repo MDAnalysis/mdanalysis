@@ -1030,7 +1030,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         .. versionadded:: 2.4.0
         """
-        if asel:
+        if asel is not None:
             warnings.warn(
                 "asel argument to timeseries will be renamed to"
                 "'atomgroup' in 3.0, see #3911",
@@ -1038,7 +1038,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             if atomgroup:
                 raise ValueError("Cannot provide both asel and atomgroup kwargs")
             atomgroup = asel
-
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
 

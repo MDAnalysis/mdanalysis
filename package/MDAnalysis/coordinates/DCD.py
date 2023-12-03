@@ -322,7 +322,7 @@ class DCDReader(base.ReaderBase):
             ValueError now raised instead of NoDataError for empty input
             AtomGroup
         """
-        if asel:
+        if asel is not None:
             warnings.warn(
                 "asel argument to timeseries will be renamed to"
                 "'atomgroup' in 3.0, see #3911",

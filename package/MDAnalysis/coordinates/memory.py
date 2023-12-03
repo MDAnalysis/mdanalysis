@@ -531,7 +531,7 @@ class MemoryReader(base.ProtoReader):
             ValueError now raised instead of NoDataError for empty input
             AtomGroup
         """
-        if asel:
+        if asel is not None:
             warnings.warn(
                 "asel argument to timeseries will be renamed to"
                 "'atomgroup' in 3.0, see #3911",
@@ -578,7 +578,7 @@ class MemoryReader(base.ProtoReader):
         if (atomgroup is None or atomgroup is atomgroup.universe.atoms):
             return array
         else:
-            if len(asel) == 0:
+            if len(atomgroup) == 0:
                 raise ValueError("Timeseries requires at least one atom "
                                   "to analyze")
             # If selection is specified, return a copy
