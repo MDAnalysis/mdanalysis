@@ -59,6 +59,8 @@ Changes
     `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
+  * The `asel` argument to timeseries will be renamed to `atomgroup` in 3.0.0.
+    (Issue #3911)
   * MDAnalysis.lib.util is deprecated and will be removed in version 3.0
     (Issue #3649)
   * The TRZ reader & writer are deprecated and will be removed in version 3.0

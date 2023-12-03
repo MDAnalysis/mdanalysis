@@ -278,6 +278,7 @@ class DCDReader(base.ReaderBase):
 
     def timeseries(self,
                    asel=None,
+                   atomgroup=None,
                    start=None,
                    stop=None,
                    step=None,
@@ -290,6 +291,12 @@ class DCDReader(base.ReaderBase):
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to None, in which case the full set of
             coordinate data is returned.
+        
+            .. deprecated:: 2.7.0
+               asel argument will be renamed to atomgroup in 3.0.0
+
+        atomgroup: AtomGroup (optional)
+            Same as `asel`, will replace `asel` in 3.0.0
         start : int (optional)
             Begin reading the trajectory at frame index `start` (where 0 is the
             index of the first frame in the trajectory); the default ``None``
@@ -315,14 +322,22 @@ class DCDReader(base.ReaderBase):
             ValueError now raised instead of NoDataError for empty input
             AtomGroup
         """
+        if asel is not None:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+            if atomgroup:
+                raise ValueError("Cannot provide both asel and atomgroup kwargs")
+            atomgroup = asel
 
         start, stop, step = self.check_slice_indices(start, stop, step)
 
-        if asel is not None:
-            if len(asel) == 0:
+        if atomgroup is not None:
+            if len(atomgroup) == 0:
                 raise ValueError(
                     "Timeseries requires at least one atom to analyze")
-            atom_numbers = list(asel.indices)
+            atom_numbers = list(atomgroup.indices)
         else:
             atom_numbers = list(range(self.n_atoms))
 
