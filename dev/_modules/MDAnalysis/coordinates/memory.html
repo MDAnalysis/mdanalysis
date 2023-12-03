@@ -15,13 +15,15 @@
 </head>
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.coordinates.memory &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/site.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -645,7 +647,7 @@
 
 <div class="viewcode-block" id="MemoryReader.timeseries">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.timeseries">[docs]</a>
-    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup in desired</span>
 <span class="sd">        column order. If no selection is given, it will return a view of the</span>
 <span class="sd">        underlying array, while a copy is returned otherwise.</span>
@@ -657,6 +659,12 @@
 <span class="sd">            coordinate data is returned. Note that in this case, a view</span>
 <span class="sd">            of the underlying numpy array is returned, while a copy of the</span>
 <span class="sd">            data is returned whenever `asel` is different from ``None``.</span>
+
+<span class="sd">            .. deprecated:: 2.7.0</span>
+<span class="sd">               asel argument will be renamed to atomgroup in 3.0.0</span>
+
+<span class="sd">        atomgroup: AtomGroup (optional)</span>
+<span class="sd">            Same as `asel`, will replace `asel` in 3.0.0</span>
 <span class="sd">        start : int (optional)</span>
 <span class="sd">            the start trajectory frame</span>
 <span class="sd">        stop : int (optional)</span>
@@ -682,6 +690,16 @@
 <span class="sd">            ValueError now raised instead of NoDataError for empty input</span>
 <span class="sd">            AtomGroup</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">asel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;asel argument to timeseries will be renamed to&quot;</span>
+                <span class="s2">&quot;&#39;atomgroup&#39; in 3.0, see #3911&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">atomgroup</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot provide both asel and atomgroup kwargs&quot;</span><span class="p">)</span>
+            <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">asel</span>
+
+
         <span class="k">if</span> <span class="n">stop</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;MemoryReader.timeseries inclusive `stop` &quot;</span>
                       <span class="s2">&quot;indexing will be removed in 3.0 in favour of exclusive &quot;</span>
@@ -713,13 +731,13 @@
                        <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="n">f_index</span><span class="p">))</span>
 
         <span class="c1"># Return a view if either:</span>
-        <span class="c1">#   1) asel is None</span>
-        <span class="c1">#   2) asel corresponds to the selection of all atoms.</span>
+        <span class="c1">#   1) atomgroup is None</span>
+        <span class="c1">#   2) atomgroup corresponds to the selection of all atoms.</span>
         <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)]</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">asel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">asel</span> <span class="ow">is</span> <span class="n">asel</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">atomgroup</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">atomgroup</span> <span class="ow">is</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">array</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Timeseries requires at least one atom &quot;</span>
                                   <span class="s2">&quot;to analyze&quot;</span><span class="p">)</span>
             <span class="c1"># If selection is specified, return a copy</span>

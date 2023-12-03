@@ -15,13 +15,15 @@
 </head>
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.coordinates.DCD &mdash; MDAnalysis 2.7.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/site.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -432,6 +434,7 @@
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.timeseries">[docs]</a>
     <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                    <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">atomgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -444,6 +447,12 @@
 <span class="sd">            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the</span>
 <span class="sd">            coordinates from. Defaults to None, in which case the full set of</span>
 <span class="sd">            coordinate data is returned.</span>
+<span class="sd">        </span>
+<span class="sd">            .. deprecated:: 2.7.0</span>
+<span class="sd">               asel argument will be renamed to atomgroup in 3.0.0</span>
+
+<span class="sd">        atomgroup: AtomGroup (optional)</span>
+<span class="sd">            Same as `asel`, will replace `asel` in 3.0.0</span>
 <span class="sd">        start : int (optional)</span>
 <span class="sd">            Begin reading the trajectory at frame index `start` (where 0 is the</span>
 <span class="sd">            index of the first frame in the trajectory); the default ``None``</span>
@@ -469,14 +478,22 @@
 <span class="sd">            ValueError now raised instead of NoDataError for empty input</span>
 <span class="sd">            AtomGroup</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">asel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;asel argument to timeseries will be renamed to&quot;</span>
+                <span class="s2">&quot;&#39;atomgroup&#39; in 3.0, see #3911&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">atomgroup</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot provide both asel and atomgroup kwargs&quot;</span><span class="p">)</span>
+            <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">asel</span>
 
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">asel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">atomgroup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;Timeseries requires at least one atom to analyze&quot;</span><span class="p">)</span>
-            <span class="n">atom_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">asel</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+            <span class="n">atom_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">atom_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
 
