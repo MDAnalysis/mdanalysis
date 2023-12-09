@@ -74,7 +74,6 @@ from . import base
 from .timestep import Timestep
 from ..lib import util
 from ..lib.util import cached, store_init_arguments
-from ..exceptions import NoDataError
 from ..version import __version__
 
 import logging
@@ -123,7 +122,7 @@ class TRCReader(base.ReaderBase):
             self.compression = None
         else:
             self.compression = ext[1:]
-        print(self.compression)
+
         self.trcfile = util.anyopen(self.filename)
 
         # Read and calculate some information about the trajectory
@@ -250,7 +249,8 @@ class TRCReader(base.ReaderBase):
                     in_positionred_block = False
 
         if (frame_counter == 0):
-            raise ValueError('No supported blocks were found within the GROMOS trajectory!')
+            raise ValueError('No supported blocks were found within \
+                             the GROMOS trajectory!')
 
         traj_properties["n_atoms"] = n_atoms
         traj_properties["n_frames"] = frame_counter
@@ -308,7 +308,7 @@ class TRCReader(base.ReaderBase):
                     frameDat["dimensions"] = None
                     self.periodic = False
 
-                elif (ntb_setting in [-1, 1]):
+                elif (ntb_setting in [1, 2]):
                     tmp_a, tmp_b, tmp_c = f.readline().split()
                     tmp_alpha, tmp_beta, tmp_gamma = f.readline().split()
                     frameDat["dimensions"] = [float(tmp_a),
@@ -319,18 +319,23 @@ class TRCReader(base.ReaderBase):
                                               float(tmp_gamma)]
                     self.periodic = True
 
-                    line3 = f.readline().split()
-                    line4 = f.readline().split()
-                    for v in (line3 + line4):
-                        if (float(v) != 0.0):
-                            raise NotImplementedError("This reader \
-                                                      supports neither \
-                                                      triclinic and/or \
-                                                      (yawed,pitched, \
-                                                      rolled) boxes!")
+                    genbox_line3 = f.readline().split()
+                    if np.count_nonzero(np.array(genbox_line3).astype('float')) != 0:
+                        raise NotImplementedError("This reader "
+                                                  "doesnt't support "
+                                                  "a shifted origin!")
+
+                    genbox_line4 = f.readline().split()
+                    if np.count_nonzero(np.array(genbox_line4).astype('float')) != 0:
+                        raise NotImplementedError("This reader "
+                                                  "doesnt't support "
+                                                  "yawed, pitched or "
+                                                  "rolled boxes!")
+
                 else:
-                    raise NotImplementedError("This reader does only support\
-                                               vacuum and rectangular boxes!")
+                    raise NotImplementedError("This reader doesn't support "
+                                              "truncated-octahedral "
+                                              "periodic boundary conditions")
                 break
 
             elif any(non_supp_bn in line for

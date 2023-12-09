@@ -213,6 +213,8 @@ __all__ = [
     "GSD", "GSD_bonds", "GSD_long",
     "TRC_PDB_VAC", "TRC_TRAJ1_VAC", "TRC_TRAJ2_VAC",  # 2x 3 frames of vacuum trajectory from GROMOS11 tutorial
     "TRC_CLUSTER_VAC",  # three frames without TIMESTEP and GENBOX block but with unsupported POSITION block
+    "TRC_TRICLINIC_SOLV", "TRC_TRUNCOCT_VAC", 
+    "TRC_GENBOX_ORIGIN", "TRC_GENBOX_EULER",
     "TRC_PDB_SOLV", "TRC_TRAJ_SOLV",  # 2 frames of solvated trajectory from GROMOS11 tutorial
     "GRO_MEMPROT", "XTC_MEMPROT",  # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray",  # time series of single dihedral
@@ -608,6 +610,10 @@ TRC_TRAJ2_VAC = (_data_ref / 'gromos11/gromos11_traj_vac_2.trc.gz').as_posix()
 TRC_PDB_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.pdb.gz').as_posix()
 TRC_TRAJ_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.trc.gz').as_posix()
 TRC_CLUSTER_VAC = (_data_ref / 'gromos11/gromos11_cluster_vac.trj.gz').as_posix()
+TRC_TRICLINIC_SOLV = (_data_ref / 'gromos11/gromos11_triclinic_solv.trc.gz').as_posix()
+TRC_TRUNCOCT_VAC = (_data_ref / 'gromos11/gromos11_truncOcta_vac.trc.gz').as_posix()
+TRC_GENBOX_ORIGIN = (_data_ref / 'gromos11/gromos11_genbox_origin.trc.gz').as_posix()
+TRC_GENBOX_EULER = (_data_ref / 'gromos11/gromos11_genbox_euler.trc.gz').as_posix()
 
 DihedralArray = (_data_ref / 'adk_oplsaa_dihedral.npy').as_posix()
 DihedralsArray = (_data_ref / 'adk_oplsaa_dihedral_list.npy').as_posix()
