@@ -26,7 +26,7 @@ from numpy.testing import assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import TRC_PDB_VAC, TRC_TRAJ1_VAC, TRC_TRAJ2_VAC
-from MDAnalysisTests.datafiles import TRC_CLUSTER_VAC
+from MDAnalysisTests.datafiles import TRC_CLUSTER_VAC, TRC_EMPTY
 from MDAnalysisTests.datafiles import TRC_GENBOX_ORIGIN, TRC_GENBOX_EULER
 from MDAnalysisTests.datafiles import TRC_PDB_SOLV, TRC_TRAJ_SOLV
 from MDAnalysisTests.datafiles import TRC_TRICLINIC_SOLV, TRC_TRUNCOCT_VAC
@@ -141,6 +141,18 @@ class TestTRCReaderSolvatedBox:
             TRC_U.trajectory.open_trajectory()
 
 
+class TestTRCReaderSolvatedBoxNoConvert:
+    @pytest.fixture(scope="class")
+    def TRC_U(self):
+        return mda.Universe(TRC_PDB_SOLV, TRC_TRAJ_SOLV, convert_units=False)
+
+    def test_trc_dimensions(self, TRC_U):
+        ts = TRC_U.trajectory[1]
+        assert_allclose(
+            ts.dimensions, [3.054416298, 3.054416298, 3.054416298, 90.0, 90.0, 90.0]
+        )
+
+
 class TestTRCReaderTriclinicBox:
     @pytest.fixture(scope="class")
     def TRC_U(self):
@@ -228,6 +240,20 @@ class TestTRCGenboxEuler:
             match=("doesnt't support yawed, pitched or rolled boxes!"),
         ):
             return mda.Universe(TRC_PDB_VAC, TRC_GENBOX_EULER)
+
+    def test_load_trajectory(self, TRC_U):
+        temp_universe = TRC_U
+        del temp_universe
+
+
+class TestTRCEmptyFile:
+    @pytest.fixture(scope="class")
+    def TRC_U(self):
+        with pytest.raises(
+            ValueError,
+            match=("No supported blocks were found within the GROMOS trajectory!"),
+        ):
+            return mda.Universe(TRC_PDB_VAC, TRC_EMPTY)
 
     def test_load_trajectory(self, TRC_U):
         temp_universe = TRC_U

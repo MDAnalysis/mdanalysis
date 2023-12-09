@@ -88,7 +88,7 @@ class TRCReader(base.ReaderBase):
     _Timestep = Timestep
 
     @store_init_arguments
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         super(TRCReader, self).__init__(filename, **kwargs)
 
         self.SUPPORTED_BLOCKS = ["TITLE", "TIMESTEP", "POSITIONRED", "GENBOX"]
@@ -133,6 +133,7 @@ class TRCReader(base.ReaderBase):
             self.compression = ext[1:]
 
         self.trcfile = util.anyopen(self.filename)
+        self.convert_units = convert_units
 
         # Read and calculate some information about the trajectory
         self.traj_properties = self._read_traj_properties()
