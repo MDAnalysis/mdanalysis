@@ -35,6 +35,26 @@ class SelectionError(Exception):
 class NoDataError(ValueError, AttributeError):
     """Raised when empty input is not allowed or required data are missing.
 
+    This exception is used in various scenarios:
+    -   Raised when a Topology Attribute (e.g., bonds, charges) is not
+        present in the data.
+
+    -   Raised when data is missing in an analysis class because the `run()`
+        method has not been called. Examples include polymer analysis, PSA
+        (Potential Surface Analysis), dielectric analysis, and hydrogen bond
+        analysis.
+
+    -   Raised when timestep data is missing, such as positions, velocities,
+        or forces.
+
+    -   Raised in the `nojump` transformation if there is no box information
+        in the universe.
+
+    Additionally, this exception may be raised in cases where:
+
+    -   Arrays have zero width.
+    -   AtomGroups are empty.
+
     .. versionchanged:: 1.0.0
         Now a subclass of AttributeError as well as ValueError
     """
