@@ -25,7 +25,6 @@ import numpy as np
 from numpy.testing import assert_allclose
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.TRC import TRCReader
 from MDAnalysisTests.datafiles import TRC_PDB_VAC, TRC_TRAJ1_VAC, TRC_TRAJ2_VAC
 from MDAnalysisTests.datafiles import TRC_CLUSTER_VAC
 from MDAnalysisTests.datafiles import TRC_GENBOX_ORIGIN, TRC_GENBOX_EULER
@@ -34,10 +33,11 @@ from MDAnalysisTests.datafiles import TRC_TRICLINIC_SOLV, TRC_TRUNCOCT_VAC
 
 
 class TestTRCReaderVacuumBox:
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def TRC_U(self):
-        return mda.Universe(TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC],
-                            continuous=True)
+        return mda.Universe(
+            TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC], continuous=True
+        )
 
     def test_initial_frame_is_0(self, TRC_U):
         assert TRC_U.trajectory.ts.frame == 0
@@ -45,12 +45,12 @@ class TestTRCReaderVacuumBox:
     def test_trc_positions(self, TRC_U):
         # first frame first particle
         TRC_U.trajectory[0]
-        assert_allclose(TRC_U.atoms.positions[0],
-                        [2.19782507, 24.65064345, 29.39783426])
+        assert_allclose(
+            TRC_U.atoms.positions[0], [2.19782507, 24.65064345, 29.39783426]
+        )
         # fith frame first particle
         TRC_U.trajectory[4]
-        assert_allclose(TRC_U.atoms.positions[0],
-                        [0.37026654, 22.78805010, 3.69695262])
+        assert_allclose(TRC_U.atoms.positions[0], [0.37026654, 22.78805010, 3.69695262])
 
     def test_trc_dimensions(self, TRC_U):
         assert TRC_U.trajectory[0].dimensions is None
@@ -72,14 +72,14 @@ class TestTRCReaderVacuumBox:
 
     def test_trc_dt(self, TRC_U):
         time_array = np.array([ts.time for ts in TRC_U.trajectory])
-        assert_allclose(time_array, np.arange(6)*20.0)
+        assert_allclose(time_array, np.arange(6) * 20.0)
 
         dt_array = np.diff(time_array)
         assert_allclose(dt_array, np.full(5, 20.0))
 
     def test_trc_data_step(self, TRC_U):
-        assert TRC_U.trajectory[0].data['step'] == 0
-        assert TRC_U.trajectory[4].data['step'] == 10000
+        assert TRC_U.trajectory[0].data["step"] == 0
+        assert TRC_U.trajectory[4].data["step"] == 10000
 
     def test_periodic(self, TRC_U):
         assert TRC_U.trajectory.periodic is False
@@ -95,8 +95,9 @@ class TestTRCReaderVacuumBox:
         trc.rewind()
         assert trc.ts.frame == 0, "trajectory.rewind() failed to rewind to first frame"
 
-        assert np.any(TRC_U.atoms.positions != 0), "The atom positions " \
-                                                   "are not populated"
+        assert np.any(TRC_U.atoms.positions != 0), (
+            "The atom positions are not populated"
+        )
 
     def test_random_access(self, TRC_U):
         TRC_U.trajectory[0]
@@ -118,7 +119,7 @@ class TestTRCReaderVacuumBox:
 
 
 class TestTRCReaderSolvatedBox:
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def TRC_U(self):
         return mda.Universe(TRC_PDB_SOLV, TRC_TRAJ_SOLV)
 
@@ -131,8 +132,7 @@ class TestTRCReaderSolvatedBox:
     def test_trc_dimensions(self, TRC_U):
         ts = TRC_U.trajectory[1]
         assert_allclose(
-            ts.dimensions,
-            [30.54416298, 30.54416298, 30.54416298, 90., 90., 90.]
+            ts.dimensions, [30.54416298, 30.54416298, 30.54416298, 90.0, 90.0, 90.0]
         )
 
     def test_open_twice(self, TRC_U):
@@ -142,7 +142,7 @@ class TestTRCReaderSolvatedBox:
 
 
 class TestTRCReaderTriclinicBox:
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def TRC_U(self):
         return mda.Universe(TRC_PDB_SOLV, TRC_TRICLINIC_SOLV)
 
@@ -156,24 +156,31 @@ class TestTRCReaderTriclinicBox:
         ts = TRC_U.trajectory[0]
         assert_allclose(
             ts.dimensions,
-            [33.72394463, 38.87568624, 26.74177871, 91.316862341, 93.911031544, 54.514000084]
+            [
+                33.72394463,
+                38.87568624,
+                26.74177871,
+                91.316862341,
+                93.911031544,
+                54.514000084,
+            ],
         )
 
     def test_trc_distances(self, TRC_U):
         import MDAnalysis.analysis.distances as distances
         import MDAnalysis.analysis.atomicdistances as atomicdistances
-        
+
         ts = TRC_U.trajectory[0]
 
-        atom_1a = TRC_U.select_atoms('resname LYSH and name O and resid 4')
-        atom_1b = TRC_U.select_atoms('resname ARG and name H and resid 3')
-        atom_1c = TRC_U.select_atoms('resname SOLV and name OW and resid 718')
-        atom_1d = TRC_U.select_atoms('resname SOLV and name OW and resid 305')
+        atom_1a = TRC_U.select_atoms("resname LYSH and name O and resid 4")
+        atom_1b = TRC_U.select_atoms("resname ARG and name H and resid 3")
+        atom_1c = TRC_U.select_atoms("resname SOLV and name OW and resid 718")
+        atom_1d = TRC_U.select_atoms("resname SOLV and name OW and resid 305")
 
-        atom_2a = TRC_U.select_atoms('resname VAL and name CG1 and resid 1')
-        atom_2b = TRC_U.select_atoms('resname SOLV and name OW and resid 497')
-        atom_2c = TRC_U.select_atoms('resname SOLV and name OW and resid 593')
-        atom_2d = TRC_U.select_atoms('resname SOLV and name OW and resid 497')
+        atom_2a = TRC_U.select_atoms("resname VAL and name CG1 and resid 1")
+        atom_2b = TRC_U.select_atoms("resname SOLV and name OW and resid 497")
+        atom_2c = TRC_U.select_atoms("resname SOLV and name OW and resid 593")
+        atom_2d = TRC_U.select_atoms("resname SOLV and name OW and resid 497")
 
         ag1 = atom_1a + atom_1b + atom_1c + atom_1d
         ag2 = atom_2a + atom_2b + atom_2c + atom_2d
@@ -190,7 +197,7 @@ class TestTRCReaderTriclinicBox:
 
 
 class TestTRCReaderTruncOctBox:
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def TRC_U(self):
         with pytest.raises(NotImplementedError, match="truncated-octahedral"):
             return mda.Universe(TRC_PDB_VAC, TRC_TRUNCOCT_VAC)
@@ -201,9 +208,11 @@ class TestTRCReaderTruncOctBox:
 
 
 class TestTRCGenboxOrigin:
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def TRC_U(self):
-        with pytest.raises(NotImplementedError, match="doesnt't support a shifted origin!"):
+        with pytest.raises(
+            NotImplementedError, match="doesnt't support a shifted origin!"
+        ):
             return mda.Universe(TRC_PDB_VAC, TRC_GENBOX_ORIGIN)
 
     def test_load_trajectory(self, TRC_U):
@@ -212,28 +221,33 @@ class TestTRCGenboxOrigin:
 
 
 class TestTRCGenboxEuler:
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def TRC_U(self):
-        with pytest.raises(NotImplementedError, match=("doesnt't support yawed, "
-                                                       "pitched or rolled boxes!")):
+        with pytest.raises(
+            NotImplementedError,
+            match=("doesnt't support yawed, pitched or rolled boxes!"),
+        ):
             return mda.Universe(TRC_PDB_VAC, TRC_GENBOX_EULER)
 
     def test_load_trajectory(self, TRC_U):
         temp_universe = TRC_U
         del temp_universe
 
+
 class TestTRCReaderClusterTrajectory:
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def TRC_U(self):
         with pytest.warns(UserWarning) as record_of_warnings:
             TRC_U = mda.Universe(TRC_PDB_VAC, TRC_CLUSTER_VAC, format="TRC")
 
-        warning_strings = ["The trajectory does not contain TIMESTEP blocks!",
-                           "POSITION block is not supported!"]
+        warning_strings = [
+            "The trajectory does not contain TIMESTEP blocks!",
+            "POSITION block is not supported!",
+        ]
 
         warning_strings_found = 0
         for w in record_of_warnings:
-            if (str(w.message) in warning_strings):
+            if str(w.message) in warning_strings:
                 warning_strings_found += 1
 
         assert warning_strings_found == 2
