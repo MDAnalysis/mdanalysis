@@ -30,6 +30,7 @@ Fixes
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
+  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
   * Refactor c_distances backend to have a cython .pxd header and expose in
     libmdanalysis (Issue #4315, PR #4324)
   * Add faster nucleic acid Major and Minor pair distance calculators using
@@ -39,7 +40,6 @@ Enhancements
     inputs (PR #4273, part of #3927)
   * Added a warning about charge neutrality to the documentation of
     `DielectricConstant` (Issue #4262, PR #4263)
-  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
   * Add support for reading chainID info from prmtop amber topologies (PR #4007)
   * Add support for reading chainID info from GROMACS TPR topologies 
     (Issue #3994, PR #4281)  
