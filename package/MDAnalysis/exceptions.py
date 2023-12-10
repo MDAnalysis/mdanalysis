@@ -36,19 +36,20 @@ class NoDataError(ValueError, AttributeError):
     """Raised when empty input is not allowed or required data are missing.
 
     This exception is raised in the following scenarios:
+
     * Raised when a :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`
-    (e.g., bonds, charges) is not present in the data.
+      (e.g., bonds, charges) is not present in the data.
 
     * Raised when data is missing in an analysis class because the `run()`
-    method has not been called. Examples include polymer analysis, PSA
-    (Path Similarity Analysis), dielectric analysis, and hydrogen bond
-    analysis.
+      method has not been called. Examples include polymer analysis, PSA
+      (Path Similarity Analysis), dielectric analysis, and hydrogen bond
+      analysis.
 
     * Raised when timestep data is missing, such as positions, velocities,
-    or forces.
+      or forces.
 
     * Raised in the `nojump` transformation if there is no box information
-    in the universe.
+      in the universe.
 
     This exception should not be raised in cases where arrays have zero width,
     or AtomGroups are empty.
