@@ -87,42 +87,42 @@ class TRCReader(base.ReaderBase):
     units = {"time": "ps", "length": "nm"}
     _Timestep = Timestep
 
+    SUPPORTED_BLOCKS = ["TITLE", "TIMESTEP", "POSITIONRED", "GENBOX"]
+    NOT_SUPPORTED_BLOCKS = [
+        "POSITION",
+        "REFPOSITION",
+        "VELOCITY",
+        "VELOCITYRED",
+        "FREEFORCE",
+        "FREEFORCERED",
+        "CONSFORCE",
+        "CONSFORCERED",
+        "SHAKEFAILPOSITION",
+        "SHAKEFAILPREVPOSITION",
+        "LATTICESHIFTS",
+        "COSDISPLACEMENTS",
+        "STOCHINT",
+        "NHCVARIABLES",
+        "ROTTRANSREFPOS",
+        "PERTDATA",
+        "DISRESEXPAVE",
+        "JVALUERESEXPAVE",
+        "JVALUERESEPS",
+        "JVALUEPERSCALE",
+        "ORDERPARAMRESEXPAVE",
+        "XRAYRESEXPAVE",
+        "LEUSBIAS",
+        "LEUSBIASBAS",
+        "ENERGY03",
+        "VOLUMEPRESSURE03",
+        "FREEENERGYDERIVS03",
+        "BFACTOR",
+        "AEDSS",
+    ]
+    
     @store_init_arguments
     def __init__(self, filename, convert_units=True, **kwargs):
         super(TRCReader, self).__init__(filename, **kwargs)
-
-        self.SUPPORTED_BLOCKS = ["TITLE", "TIMESTEP", "POSITIONRED", "GENBOX"]
-        self.NOT_SUPPORTED_BLOCKNAMES = [
-            "POSITION",
-            "REFPOSITION",
-            "VELOCITY",
-            "VELOCITYRED",
-            "FREEFORCE",
-            "FREEFORCERED",
-            "CONSFORCE",
-            "CONSFORCERED",
-            "SHAKEFAILPOSITION",
-            "SHAKEFAILPREVPOSITION",
-            "LATTICESHIFTS",
-            "COSDISPLACEMENTS",
-            "STOCHINT",
-            "NHCVARIABLES",
-            "ROTTRANSREFPOS",
-            "PERTDATA",
-            "DISRESEXPAVE",
-            "JVALUERESEXPAVE",
-            "JVALUERESEPS",
-            "JVALUEPERSCALE",
-            "ORDERPARAMRESEXPAVE",
-            "XRAYRESEXPAVE",
-            "LEUSBIAS",
-            "LEUSBIASBAS",
-            "ENERGY03",
-            "VOLUMEPRESSURE03",
-            "FREEENERGYDERIVS03",
-            "BFACTOR",
-            "AEDSS",
-        ]
 
         # GROMOS11 trajectories are usually either *.trc or *.trc.gz.
         # (trj suffix can come up when trajectory obtained from clustering)
@@ -202,7 +202,7 @@ class TRCReader(base.ReaderBase):
         first_block = None
         with util.anyopen(self.filename) as f:
             for line in iter(f.readline, ""):
-                for blockname in self.SUPPORTED_BLOCKS:
+                for blockname in TRCReader.SUPPORTED_BLOCKS:
                     if (blockname == line.strip()) and (blockname != "TITLE"):
                         # Save the name of the first non-Title block
                         # in the trajectory file
@@ -353,9 +353,9 @@ class TRCReader(base.ReaderBase):
                 break
 
             elif any(
-                non_supp_bn in line for non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES
+                non_supp_bn in line for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS
             ):
-                for non_supp_bn in self.NOT_SUPPORTED_BLOCKNAMES:
+                for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS:
                     if non_supp_bn == line.strip():
                         warnings.warn(
                             non_supp_bn + " block is not supported!", UserWarning
