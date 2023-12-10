@@ -329,14 +329,14 @@ class TRCReader(base.ReaderBase):
                     ]
                     self.periodic = True
 
-                    genbox_line3 = f.readline().split()
-                    if np.count_nonzero(np.array(genbox_line3).astype("float")) != 0:
+                    gb_line3 = f.readline().split()
+                    if np.sum(np.abs(np.array(gb_line3).astype(np.float64))) > 1e-10:
                         raise ValueError(
                             "This reader doesnt't support a shifted origin!"
                         )
 
-                    genbox_line4 = f.readline().split()
-                    if np.count_nonzero(np.array(genbox_line4).astype("float")) != 0:
+                    gb_line4 = f.readline().split()
+                    if np.sum(np.abs(np.array(gb_line4).astype(np.float64))) > 1e-10:
                         raise ValueError(
                             "This reader "
                             "doesnt't support "
