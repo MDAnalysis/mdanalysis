@@ -28,6 +28,7 @@ Fixes
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
+  * Updated cimport for numpy to maintain cimport consistency (Issue #3908).
 
 Enhancements
   * Refactor c_distances backend to have a cython .pxd header and expose in
@@ -305,7 +306,6 @@ Fixes
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
-  * Updated cimport for numpy to maintain cimport consistency (Issue #3908).
 
 Enhancements
   * Added dipole and quadrupole moment topology methods to AtomGroup
