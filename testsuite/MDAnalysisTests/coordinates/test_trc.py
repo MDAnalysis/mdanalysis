@@ -209,55 +209,35 @@ class TestTRCReaderTriclinicBox:
 
 
 class TestTRCReaderTruncOctBox:
-    @pytest.fixture(scope="class")
-    def TRC_U(self):
+    def test_universe(self):
         with pytest.raises(ValueError, match="truncated-octahedral"):
-            return mda.Universe(TRC_PDB_VAC, TRC_TRUNCOCT_VAC)
-
-    def test_load_trajectory(self, TRC_U):
-        temp_universe = TRC_U
-        del temp_universe
+            mda.Universe(TRC_PDB_VAC, TRC_TRUNCOCT_VAC)
 
 
 class TestTRCGenboxOrigin:
-    @pytest.fixture(scope="class")
-    def TRC_U(self):
+    def test_universe(self):
         with pytest.raises(
             ValueError, match="doesnt't support a shifted origin!"
         ):
-            return mda.Universe(TRC_PDB_VAC, TRC_GENBOX_ORIGIN)
-
-    def test_load_trajectory(self, TRC_U):
-        temp_universe = TRC_U
-        del temp_universe
+            mda.Universe(TRC_PDB_VAC, TRC_GENBOX_ORIGIN)
 
 
 class TestTRCGenboxEuler:
-    @pytest.fixture(scope="class")
-    def TRC_U(self):
+    def test_universe(self):
         with pytest.raises(
             ValueError,
             match=("doesnt't support yawed, pitched or rolled boxes!"),
         ):
-            return mda.Universe(TRC_PDB_VAC, TRC_GENBOX_EULER)
-
-    def test_load_trajectory(self, TRC_U):
-        temp_universe = TRC_U
-        del temp_universe
+            mda.Universe(TRC_PDB_VAC, TRC_GENBOX_EULER)
 
 
 class TestTRCEmptyFile:
-    @pytest.fixture(scope="class")
-    def TRC_U(self):
+    def test_universe(self):
         with pytest.raises(
             ValueError,
             match=("No supported blocks were found within the GROMOS trajectory!"),
         ):
-            return mda.Universe(TRC_PDB_VAC, TRC_EMPTY)
-
-    def test_load_trajectory(self, TRC_U):
-        temp_universe = TRC_U
-        del temp_universe
+            mda.Universe(TRC_PDB_VAC, TRC_EMPTY)
 
 
 class TestTRCReaderClusterTrajectory:
