@@ -331,13 +331,13 @@ class TRCReader(base.ReaderBase):
 
                     genbox_line3 = f.readline().split()
                     if np.count_nonzero(np.array(genbox_line3).astype("float")) != 0:
-                        raise NotImplementedError(
+                        raise ValueError(
                             "This reader doesnt't support a shifted origin!"
                         )
 
                     genbox_line4 = f.readline().split()
                     if np.count_nonzero(np.array(genbox_line4).astype("float")) != 0:
-                        raise NotImplementedError(
+                        raise ValueError(
                             "This reader "
                             "doesnt't support "
                             "yawed, pitched or "
@@ -345,7 +345,7 @@ class TRCReader(base.ReaderBase):
                         )
 
                 else:
-                    raise NotImplementedError(
+                    raise ValueError(
                         "This reader doesn't support "
                         "truncated-octahedral "
                         "periodic boundary conditions"
