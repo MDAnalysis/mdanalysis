@@ -41,9 +41,8 @@ class NoDataError(ValueError, AttributeError):
       (e.g., bonds, charges) is not present in the data.
 
     * Raised when data is missing in an analysis class because the `run()`
-      method has not been called. Examples include polymer analysis, PSA
-      (Path Similarity Analysis), dielectric analysis, and hydrogen bond
-      analysis.
+      method has not been called, e.g.
+      :class:`~MDAnalysis.analysis.polymer.PersistenceLength`.
 
     * Raised when timestep data is missing, such as positions, velocities,
       or forces.
