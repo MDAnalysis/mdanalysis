@@ -20,6 +20,7 @@ The rules for this file:
  * 2.7.0
 
 Fixes
+  * Updated cimport for numpy to maintain cimport consistency (Issue #3908)
   * Fix `NoJump` unwrapping for jumps on the second frame in a
     trajectory (PR #4258, Issue #4257)
   * Deprecated np.float_ and np.NaN aliases have been replaced with
@@ -28,7 +29,6 @@ Fixes
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
-  * Updated cimport for numpy to maintain cimport consistency (Issue #3908).
 
 Enhancements
   * Refactor c_distances backend to have a cython .pxd header and expose in
