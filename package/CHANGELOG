@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie, hmacdope
+         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya
 
  * 2.7.0
 
@@ -31,6 +31,7 @@ Fixes
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
+  * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
   * Refactor c_distances backend to have a cython .pxd header and expose in
     libmdanalysis (Issue #4315, PR #4324)
   * Add faster nucleic acid Major and Minor pair distance calculators using
