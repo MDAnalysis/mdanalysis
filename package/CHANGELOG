@@ -31,6 +31,7 @@ Fixes
 
 Enhancements
   * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
+  * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
   * Refactor c_distances backend to have a cython .pxd header and expose in
     libmdanalysis (Issue #4315, PR #4324)
   * Add faster nucleic acid Major and Minor pair distance calculators using
