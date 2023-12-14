@@ -32,17 +32,17 @@ Classes
    :members:
 """
 import warnings
+from contextlib import suppress
 from dataclasses import dataclass
-from typing import ClassVar, Dict, List, Any
+from typing import ClassVar, Dict, List, Optional, Tuple
 
 import numpy as np
 
-try:
+with suppress(ImportError):
     from rdkit import Chem
-    from rdkit.Chem import AllChem
-except ImportError:
-    pass
-else:
+    from rdkit.Chem.AllChem import AssignBondOrdersFromTemplate
+    from rdkit.Chem.rdChemReactions import ChemicalReaction, ReactionFromSmarts
+
     RDBONDORDER = {
         1: Chem.BondType.SINGLE,
         1.5: Chem.BondType.AROMATIC,
@@ -55,7 +55,7 @@ else:
     PERIODIC_TABLE = Chem.GetPeriodicTable()
 
 
-@dataclass(kw_only=True, frozen=True)
+@dataclass(frozen=True)
 class MDAnalysisInferer:
     """Bond order and formal charge inferring as originally implemented for the RDKit
     converter.
@@ -64,20 +64,32 @@ class MDAnalysisInferer:
     ----------
     max_iter : int
         Maximum number of iterations to standardize conjugated systems.
-        See :meth:`_rebuild_conjugated_bonds`
+        See :meth:`~MDAnalysisInferer._rebuild_conjugated_bonds`
     MONATOMIC_CATION_CHARGES : ClassVar[Dict[int, int]]
         Charges that should be assigned to monatomic cations. Maps atomic number to
         their formal charge. Anion charges are directly handled by the code using the
         typical valence of the atom.
     STANDARDIZATION_REACTIONS : ClassVar[List[str]]
-        Reactions uses by :meth:`_standardize_patterns` to fix challenging cases must
-        have single reactant and product, and cannot add any atom
+        Reactions uses by :meth:`~MDAnalysisInferer._standardize_patterns` to fix
+        challenging cases must have single reactant and product, and cannot add any
+        atom.
 
     .. versionadded:: 2.7.0
     """
+
     MONATOMIC_CATION_CHARGES: ClassVar[Dict[int, int]] = {
-        3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
-        12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
+        3: 1,
+        11: 1,
+        19: 1,
+        37: 1,
+        47: 1,
+        55: 1,
+        12: 2,
+        20: 2,
+        29: 2,
+        30: 2,
+        38: 2,
+        56: 2,
         26: 2,  # Fe could also be +3
         13: 3,
     }
@@ -94,7 +106,7 @@ class MDAnalysisInferer:
 
     max_iter: int = 200
 
-    def __call__(self, mol):
+    def __call__(self, mol: "Chem.Mol") -> "Chem.Mol":
         """Infer bond orders and formal charges in the molecule.
 
         Parameters
@@ -113,38 +125,38 @@ class MDAnalysisInferer:
         # sanitize if possible
         err = Chem.SanitizeMol(mol, catchErrors=True)
         if err:
-            warnings.warn("Could not sanitize molecule: "
-                          f"failed during step {err!r}")
+            warnings.warn(f"Could not sanitize molecule: failed during step {err!r}")
         return mol
 
-    def _reorder_atoms(self, mol):
+    def _reorder_atoms(self, mol: "Chem.Mol") -> "Chem.Mol":
         """Reorder atoms to match MDAnalysis, since the reactions from
         :meth:`_standardize_patterns` will mess up the original order.
         """
-        try:
-            order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
-                                for atom in mol.GetAtoms()])
-        except KeyError:
-            # not a molecule converted by MDAnalysis
-            pass
-        else:
-            mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
+        with suppress(KeyError):
+            order = np.argsort(
+                [atom.GetIntProp("_MDAnalysis_index") for atom in mol.GetAtoms()]
+            )
+            return Chem.RenumberAtoms(mol, order.astype(int).tolist())
+        # not a molecule converted by MDAnalysis
         return mol
 
     @classmethod
-    def _atom_sorter(cls, atom):
+    def _atom_sorter(cls, atom: "Chem.Atom") -> Tuple[int, int]:
         """Sorts atoms in the molecule in a way that makes it easy for the bond
         order and charge infering code to get the correct state on the first
         try. Currently sorts by number of unpaired electrons, then by number of
         heavy atom neighbors (i.e. atoms at the edge first)."""
-        num_heavy_neighbors = len([
-            neighbor for neighbor in atom.GetNeighbors()
-            if neighbor.GetAtomicNum() > 1]
+        num_heavy_neighbors = len(
+            [
+                neighbor
+                for neighbor in atom.GetNeighbors()
+                if neighbor.GetAtomicNum() > 1
+            ]
         )
         return (-cls._get_nb_unpaired_electrons(atom)[0], num_heavy_neighbors)
 
     @classmethod
-    def _infer_bo_and_charges(cls, mol):
+    def _infer_bo_and_charges(cls, mol: "Chem.Mol") -> None:
         """Infer bond orders and formal charges from a molecule.
 
         Since most MD topology files don't explicitly retain information on bond
@@ -170,16 +182,19 @@ class MDAnalysisInferer:
         """
         # heavy atoms sorted by number of heavy atom neighbors (lower first) then
         # NUE (higher first)
-        atoms = sorted([atom for atom in mol.GetAtoms()
-                        if atom.GetAtomicNum() > 1],
-                       key=cls._atom_sorter)
+        atoms = sorted(
+            [atom for atom in mol.GetAtoms() if atom.GetAtomicNum() > 1],
+            key=cls._atom_sorter,
+        )
 
         for atom in atoms:
             # monatomic ions
             if atom.GetDegree() == 0:
-                atom.SetFormalCharge(cls.MONATOMIC_CATION_CHARGES.get(
-                    atom.GetAtomicNum(),
-                    -cls._get_nb_unpaired_electrons(atom)[0]))
+                atom.SetFormalCharge(
+                    cls.MONATOMIC_CATION_CHARGES.get(
+                        atom.GetAtomicNum(), -cls._get_nb_unpaired_electrons(atom)[0]
+                    )
+                )
                 mol.UpdatePropertyCache(strict=False)
                 continue
             # get NUE for each possible valence
@@ -194,8 +209,11 @@ class MDAnalysisInferer:
             if (len(nue) == 1) and (nue[0] <= 0):
                 continue
             else:
-                neighbors = sorted(atom.GetNeighbors(), reverse=True,
-                                   key=lambda a: cls._get_nb_unpaired_electrons(a)[0])
+                neighbors = sorted(
+                    atom.GetNeighbors(),
+                    reverse=True,
+                    key=lambda a: cls._get_nb_unpaired_electrons(a)[0],
+                )
                 # check if one of the neighbors has a common NUE
                 for na in neighbors:
                     # get NUE for the neighbor
@@ -203,13 +221,12 @@ class MDAnalysisInferer:
                     # smallest common NUE
                     common_nue = min(
                         min([i for i in nue if i >= 0], default=0),
-                        min([i for i in na_nue if i >= 0], default=0)
+                        min([i for i in na_nue if i >= 0], default=0),
                     )
                     # a common NUE of 0 means we don't need to do anything
                     if common_nue != 0:
                         # increase bond order
-                        bond = mol.GetBondBetweenAtoms(
-                            atom.GetIdx(), na.GetIdx())
+                        bond = mol.GetBondBetweenAtoms(atom.GetIdx(), na.GetIdx())
                         order = common_nue + 1
                         bond.SetBondType(RDBONDORDER[order])
                         mol.UpdatePropertyCache(strict=False)
@@ -227,7 +244,7 @@ class MDAnalysisInferer:
                     mol.UpdatePropertyCache(strict=False)
 
     @staticmethod
-    def _get_nb_unpaired_electrons(atom):
+    def _get_nb_unpaired_electrons(atom: "Chem.Atom") -> List[int]:
         """Calculate the number of unpaired electrons (NUE) of an atom
 
         Parameters
@@ -237,14 +254,16 @@ class MDAnalysisInferer:
 
         Returns
         -------
-        nue : list
+        nue : List[int]
             The NUE for each possible valence of the atom
         """
         expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
         current_v = atom.GetTotalValence() - atom.GetFormalCharge()
         return [v - current_v for v in expected_vs]
 
-    def _standardize_patterns(self, mol, max_iter=None):
+    def _standardize_patterns(
+        self, mol: "Chem.Mol", max_iter: Optional[int] = None
+    ) -> "Chem.Mol":
         """Standardizes functional groups
 
         Uses :func:`_rebuild_conjugated_bonds` to standardize conjugated systems,
@@ -304,16 +323,14 @@ class MDAnalysisInferer:
                 "Specifying `max_iter` is deprecated and will be removed in a future "
                 "update. Directly create an instance of `MDAnalysisInferer` with "
                 "`MDAnalysisInferer(max_iter=...)` instead.",
-                DeprecationWarning)
+                DeprecationWarning,
+            )
 
         # standardize conjugated systems
         self._rebuild_conjugated_bonds(mol, max_iter)
 
         # list of sanitized reactions
-        reactions = []
-        for rxn in self.STANDARDIZATION_REACTIONS:
-            reaction = AllChem.ReactionFromSmarts(rxn)
-            reactions.append(reaction)
+        reactions = [ReactionFromSmarts(rxn) for rxn in self.STANDARDIZATION_REACTIONS]
 
         # fragment mol (reactions must have single reactant and product)
         fragments = list(Chem.GetMolFrags(mol, asMols=True))
@@ -328,7 +345,9 @@ class MDAnalysisInferer:
         return newmol
 
     @staticmethod
-    def _apply_reactions(reactions, reactant):
+    def _apply_reactions(
+        reactions: List["ChemicalReaction"], reactant: "Chem.Mol"
+    ) -> None:
         """Applies a series of unimolecular reactions to a molecule. The reactions
         must not add any atom to the product. The molecule is modified inplace.
 
@@ -349,7 +368,9 @@ class MDAnalysisInferer:
             reactant.UpdatePropertyCache(strict=False)
             Chem.Kekulize(reactant)
 
-    def _rebuild_conjugated_bonds(self, mol, max_iter=None):
+    def _rebuild_conjugated_bonds(
+        self, mol: "Chem.Mol", max_iter: Optional[int] = None
+    ) -> None:
         """Rebuild conjugated bonds without negatively charged atoms at the
         beginning and end of the conjugated system
 
@@ -391,15 +412,13 @@ class MDAnalysisInferer:
         # there's usually an even number of matches for this
         pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
         # pattern used to finish fixing a series of conjugated bonds
-        base_end_pattern = Chem.MolFromSmarts(
-            "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
+        base_end_pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
         # used when there's an odd number of matches for `pattern`
         odd_end_pattern = Chem.MolFromSmarts(
-            "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),"
-            "$([S;D4;v4]-[O-])]")
+            "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),$([S;D4;v4]-[O-])]"
+        )
         # number of unique matches with the pattern
-        n_matches = len(set([match[0]
-                            for match in mol.GetSubstructMatches(pattern)]))
+        n_matches = len(set([match[0] for match in mol.GetSubstructMatches(pattern)]))
         # nothing to standardize
         if n_matches == 0:
             return
@@ -427,29 +446,32 @@ class MDAnalysisInferer:
                 # [*-]-*=*-[C,N+]=O --> *=*-*=[C,N+]-[O-]
                 # transform the =O to -[O-]
                 if (
-                    term_atom.GetAtomicNum() == 6
-                    and term_atom.GetFormalCharge() == 0
+                    term_atom.GetAtomicNum() == 6 and term_atom.GetFormalCharge() == 0
                 ) or (
-                    term_atom.GetAtomicNum() == 7
-                    and term_atom.GetFormalCharge() == 1
+                    term_atom.GetAtomicNum() == 7 and term_atom.GetFormalCharge() == 1
                 ):
                     for neighbor in term_atom.GetNeighbors():
                         bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
-                        if (neighbor.GetAtomicNum() == 8 and
-                                bond.GetBondTypeAsDouble() == 2):
+                        if (
+                            neighbor.GetAtomicNum() == 8
+                            and bond.GetBondTypeAsDouble() == 2
+                        ):
                             bond.SetBondType(Chem.BondType.SINGLE)
                             neighbor.SetFormalCharge(-1)
                             break
                 # edge-case 2: S=O
                 # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
                 # transform -[O-] to =O
-                elif (term_atom.GetAtomicNum() == 16 and
-                      term_atom.GetFormalCharge() == 0):
+                elif (
+                    term_atom.GetAtomicNum() == 16 and term_atom.GetFormalCharge() == 0
+                ):
                     for neighbor in term_atom.GetNeighbors():
                         bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
-                        if (neighbor.GetAtomicNum() == 8 and
-                            neighbor.GetFormalCharge() == -1 and
-                                bond.GetBondTypeAsDouble() == 1):
+                        if (
+                            neighbor.GetAtomicNum() == 8
+                            and neighbor.GetFormalCharge() == -1
+                            and bond.GetBondTypeAsDouble() == 1
+                        ):
                             bond.SetBondType(Chem.BondType.DOUBLE)
                             neighbor.SetFormalCharge(0)
                             break
@@ -525,20 +547,24 @@ class MDAnalysisInferer:
             return
 
         # reached max_iter
-        warnings.warn("The standardization could not be completed within a "
-                      "reasonable number of iterations")
+        warnings.warn(
+            "The standardization could not be completed within a "
+            "reasonable number of iterations"
+        )
 
 
 @dataclass(frozen=True)
 class TemplateInferer:
-    """Infer bond orders and charges by matching the molecule with a template molecule containing bond orders and charges.
+    """Infer bond orders and charges by matching the molecule with a template molecule
+    containing bond orders and charges.
 
     Attributes
     ----------
-    template : Chem.Mol
+    template : rdkit.Chem.rdchem.Mol
         Molecule containing the bond orders and charges.
     """
-    template: Any
 
-    def __call__(self, mol):
-        return AllChem.AssignBondOrdersFromTemplate(self.template, mol)
+    template: "Chem.Mol"
+
+    def __call__(self, mol: "Chem.Mol") -> "Chem.Mol":
+        return AssignBondOrdersFromTemplate(self.template, mol)

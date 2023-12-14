@@ -97,6 +97,7 @@ from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 from . import base
 
+DEFAULT_INFERER = None
 # TODO: remove this guard when RDKit has a release
 # that supports NumPy 2
 if NumpyVersion(np.__version__) < "2.0.0":
@@ -131,10 +132,11 @@ class RDKitReader(memory.MemoryReader):
 
     .. versionadded:: 2.0.0
     """
-    format = 'RDKIT'
+
+    format = "RDKIT"
 
     # Structure.coordinates always in Angstrom
-    units = {'time': None, 'length': 'Angstrom'}
+    units = {"time": None, "length": "Angstrom"}
 
     @staticmethod
     def _format_hint(thing):
@@ -158,14 +160,14 @@ class RDKitReader(memory.MemoryReader):
             RDKit molecule
         """
         n_atoms = filename.GetNumAtoms()
-        coordinates = np.array([
-            conf.GetPositions() for conf in filename.GetConformers()],
-            dtype=np.float32)
+        coordinates = np.array(
+            [conf.GetPositions() for conf in filename.GetConformers()], dtype=np.float32
+        )
         if coordinates.size == 0:
             warnings.warn("No coordinates found in the RDKit molecule")
             coordinates = np.empty((1, n_atoms, 3), dtype=np.float32)
             coordinates[:] = np.nan
-        super(RDKitReader, self).__init__(coordinates, order='fac', **kwargs)
+        super(RDKitReader, self).__init__(coordinates, order="fac", **kwargs)
 
 
 class RDKitConverter(base.ConverterBase):
@@ -294,11 +296,18 @@ class RDKitConverter(base.ConverterBase):
 
     """
 
-    lib = 'RDKIT'
-    units = {'time': None, 'length': 'Angstrom'}
+    lib = "RDKIT"
+    units = {"time": None, "length": "Angstrom"}
 
-    def convert(self, obj, cache=True, implicit_hydrogens=False,
-                force=False, inferer=DEFAULT_INFERER, **kwargs):
+    def convert(
+        self,
+        obj,
+        cache=True,
+        implicit_hydrogens=False,
+        force=False,
+        inferer=DEFAULT_INFERER,
+        **kwargs,
+    ):
         """Write selection at current trajectory frame to
         :class:`~rdkit.Chem.rdchem.Mol`.
 
@@ -331,21 +340,26 @@ class RDKitConverter(base.ConverterBase):
         try:
             from rdkit import Chem
         except ImportError:
-            raise ImportError("RDKit is required for the RDKitConverter but "
-                              "it's not installed. Try installing it with \n"
-                              "conda install -c conda-forge rdkit")
+            raise ImportError(
+                "RDKit is required for the RDKitConverter but "
+                "it's not installed. Try installing it with \n"
+                "conda install -c conda-forge rdkit"
+            )
         try:
             # make sure to use atoms (Issue 46)
             ag = obj.atoms
         except AttributeError:
-            raise TypeError("No `atoms` attribute in object of type {}, "
-                            "please use a valid AtomGroup or Universe".format(
-                                type(obj))) from None
+            raise TypeError(
+                "No `atoms` attribute in object of type {}, "
+                "please use a valid AtomGroup or Universe".format(type(obj))
+            ) from None
 
         if (max_iter := kwargs.get("max_iter")) is not None:
             warnings.warn(
                 "Using `max_iter` is deprecated, use `MDAnalysisInferer(max_iter=...)` "
-                "instead", DeprecationWarning)
+                "instead",
+                DeprecationWarning,
+            )
             if isinstance(inferer, MDAnalysisInferer):
                 inferer = MDAnalysisInferer(max_iter=max_iter)
 
@@ -353,7 +367,9 @@ class RDKitConverter(base.ConverterBase):
             warnings.warn(
                 "Using `NoImplicit` is deprecated, use `implicit_hydrogens` instead. "
                 "To disable bond order and formal charge inferring, use "
-                "`inferer=None`", DeprecationWarning)
+                "`inferer=None`",
+                DeprecationWarning,
+            )
             implicit_hydrogens = not NoImplicit
             # backwards compatibility
             if implicit_hydrogens:
@@ -372,8 +388,10 @@ class RDKitConverter(base.ConverterBase):
         # add a conformer for the current Timestep
         if hasattr(ag, "positions"):
             if np.isnan(ag.positions).any():
-                warnings.warn("NaN detected in coordinates, the output "
-                              "molecule will not have 3D coordinates assigned")
+                warnings.warn(
+                    "NaN detected in coordinates, the output "
+                    "molecule will not have 3D coordinates assigned"
+                )
             else:
                 # assign coordinates
                 conf = Chem.Conformer(mol.GetNumAtoms())
@@ -415,7 +433,8 @@ def atomgroup_to_mol(
             "The `elements` attribute is required for the RDKitConverter "
             "but is not present in this AtomGroup. Please refer to the "
             "documentation to guess elements from other attributes or "
-            "type `help(MDAnalysis.topology.guessers)`") from None
+            "type `help(MDAnalysis.topology.guessers)`"
+        ) from None
 
     if "H" not in ag.elements:
         if force:
@@ -429,13 +448,16 @@ def atomgroup_to_mol(
                 "converter requires all hydrogens to be explicit. You can use "
                 "the parameter ``inferer=None`` when using the converter "
                 "to disable inferring bond orders and charges. You can also use "
-                "``force=True`` to ignore this error.")
+                "``force=True`` to ignore this error."
+            )
 
     if (NoImplicit := kwargs.pop("NoImplicit", None)) is not None:
         warnings.warn(
-                "Using `NoImplicit` is deprecated, use `implicit_hydrogens` instead. "
-                "To disable bond order and formal charge inferring, use "
-                "`inferer=None`", DeprecationWarning)
+            "Using `NoImplicit` is deprecated, use `implicit_hydrogens` instead. "
+            "To disable bond order and formal charge inferring, use "
+            "`inferer=None`",
+            DeprecationWarning,
+        )
         implicit_hydrogens = not NoImplicit
         # backwards compatibility
         if implicit_hydrogens:
@@ -450,9 +472,12 @@ def atomgroup_to_mol(
             pdb_attrs[attr] = getattr(ag, attr)
     resnames = pdb_attrs.get("resnames", None)
     if resnames is None:
+
         def get_resname(idx):
             return ""
+
     else:
+
         def get_resname(idx):
             return resnames[idx]
 
@@ -491,7 +516,8 @@ def atomgroup_to_mol(
     except NoDataError:
         warnings.warn(
             "No `bonds` attribute in this AtomGroup. Guessing bonds based "
-            "on atoms coordinates")
+            "on atoms coordinates"
+        )
         ag.guess_bonds()
 
     for bond in ag.bonds:
@@ -521,7 +547,7 @@ def set_converter_cache_size(maxsize):
         conversions in memory. Using ``maxsize=None`` will remove all limits
         to the cache size, i.e. everything is cached.
     """
-    global atomgroup_to_mol   # pylint: disable=global-statement
+    global atomgroup_to_mol  # pylint: disable=global-statement
     atomgroup_to_mol = lru_cache(maxsize=maxsize)(atomgroup_to_mol.__wrapped__)
 
 
