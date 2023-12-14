@@ -23,6 +23,7 @@
 
 import copy
 import warnings
+from contextlib import suppress
 from io import StringIO
 
 import MDAnalysis as mda
@@ -33,18 +34,15 @@ from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
 from MDAnalysisTests.util import import_not_available
 from numpy.testing import assert_allclose, assert_equal
 
-try:
+with suppress(ImportError):
     from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
+                                             atomgroup_to_mol,
                                              _add_mda_attr_to_rdkit,
-                                             _infer_bo_and_charges,
-                                             _set_atom_property,
-                                             _standardize_patterns)
-    from MDAnalysis.converters.RDKitInferring import MDAnalysisInferer
+                                             _set_atom_property)
+    from MDAnalysis.converters.RDKitInferring import MDAnalysisInferer, TemplateInferer
 
     from rdkit import Chem
     from rdkit.Chem import AllChem
-except ImportError:
-    pass
 
 
 requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
@@ -252,7 +250,7 @@ class TestRDKitConverter(object):
                                  "explicit"):
             uo2.atoms.convert_to("RDKIT")
 
-    def test_error_no_hydrogen_implicit(self, uo2):
+    def test_error_no_hydrogen_skip_inferring(self, uo2):
         with warnings.catch_warnings():
             warnings.simplefilter("error")
             uo2.atoms.convert_to.rdkit(inferer=None)
@@ -260,7 +258,7 @@ class TestRDKitConverter(object):
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
                           match="Forcing to continue the conversion"):
-            uo2.atoms.convert_to.rdkit(inferer=None, force=True)
+            uo2.atoms.convert_to.rdkit(force=True)
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "N",    " N  "),
@@ -379,7 +377,7 @@ class TestRDKitConverter(object):
         assert cached_func.cache_info().maxsize == 3
         # test (4): caching is sensitive to converter arguments
         previous_cache = cached_func.cache_info()
-        uc.atoms.convert_to.rdkit(NoImplicit=False)
+        uc.atoms.convert_to.rdkit(implicit_hydrogens=True)
         cache = cached_func.cache_info()
         assert cache.misses == previous_cache.misses + 1
         # test (5): skip cache
@@ -388,18 +386,46 @@ class TestRDKitConverter(object):
         assert cache == new_cache
 
     def test_sanitize_fail_warning(self):
-        mol = Chem.MolFromSmiles("[H]-N(-[H])(-[H])-[H]", sanitize=False)
-        mol.UpdatePropertyCache(strict=False)
-        mol = Chem.AddHs(mol)
+        params = Chem.SmilesParserParams()
+        params.removeHs = False
+        params.sanitize = False
+        mol = Chem.MolFromSmiles("[H]-N(-[H])(-[H])-[H]", params)
         u = mda.Universe(mol)
         with pytest.warns() as record:
             u.atoms.convert_to.rdkit(inferer=None)
         assert "Could not sanitize molecule" not in "\n".join(
             [str(r.message) for r in record])
 
+    def test_deprecation_maw_iter(self, mol2):
+        with pytest.warns(DeprecationWarning, match="Using `max_iter` is deprecated"):
+            mol2.atoms.convert_to.rdkit(max_iter=2)
+
+    def test_deprecation_NoImplicit(self, mol2):
+        with pytest.warns(DeprecationWarning, match="Using `NoImplicit` is deprecated"):
+            mol2.atoms.convert_to.rdkit(NoImplicit=True)
+
+    def test_deprecation_atomgroup_to_mol_NoImplicit(self, mol2):
+        with pytest.warns(DeprecationWarning, match="Using `NoImplicit` is deprecated"):
+            atomgroup_to_mol(mol2.atoms, NoImplicit=False)
+
+    def test_atomgroup_to_mol_unexpected_kwargs(self, mol2):
+        with pytest.raises(
+            ValueError, match="Found unexpected arguments: {'foo': 'bar'}"
+        ):
+            atomgroup_to_mol(mol2.atoms, foo="bar")
+
+    def test_custom_callable_inferer(self, mol2):
+        def potatoe(mol):
+            new = Chem.Mol(mol)
+            new.SetProp("_Name", "🥔")
+            return new
+
+        mol = mol2.atoms.convert_to.rdkit(inferer=potatoe)
+        assert mol.GetProp("_Name") == "🥔"
+
 
 @requires_rdkit
-class TestRDKitFunctions(object):
+class TestRDKitMDAnalysisInferer(object):
 
     def add_Hs_remove_bo_and_charges(self, mol):
         """Add hydrogens and remove bond orders and charges from a molecule"""
@@ -427,8 +453,9 @@ class TestRDKitFunctions(object):
 
     def assign_bond_orders_and_charges(self, mol):
         """Returns a sanitized molecule with infered bond orders and charges"""
-        _infer_bo_and_charges(mol)
-        mol = _standardize_patterns(mol)
+        inferer = MDAnalysisInferer()
+        inferer._infer_bo_and_charges(mol)
+        mol = inferer._standardize_patterns(mol)
         Chem.SanitizeMol(mol)
         return mol
 
@@ -461,7 +488,8 @@ class TestRDKitFunctions(object):
     def test_infer_bond_orders(self, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
-        _infer_bo_and_charges(mol)
+        inferer = MDAnalysisInferer()
+        inferer._infer_bo_and_charges(mol)
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
@@ -476,7 +504,8 @@ class TestRDKitFunctions(object):
     def test_infer_charges(self, smi, atom_idx, charge):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
-        _infer_bo_and_charges(mol)
+        inferer = MDAnalysisInferer()
+        inferer._infer_bo_and_charges(mol)
         Chem.SanitizeMol(mol)
         assert mol.GetAtomWithIdx(atom_idx).GetFormalCharge() == charge
 
@@ -731,3 +760,27 @@ class TestRDKitFunctions(object):
                               key=MDAnalysisInferer._atom_sorter)
         sorted_indices = [atom.GetIdx() for atom in sorted_atoms]
         assert sorted_indices == [6, 5, 1, 3]
+
+
+class TestRDKitTemplateInferer:
+    @pytest.fixture(scope="function")
+    def template(self):
+        params = Chem.SmilesParserParams()
+        params.removeHs = False
+        return Chem.MolFromSmiles("[H]-[N+](-[H])(-[H])-[H]", params)
+
+    def test_template_inferring(self, template):
+        params = Chem.SmilesParserParams()
+        params.removeHs = False
+        params.sanitize = False
+        mol = Chem.MolFromSmiles("[H]-N(-[H])(-[H])-[H]", params)
+        assert mol.GetAtomWithIdx(1).GetFormalCharge() == 0
+
+        inferer = TemplateInferer(template=template)
+        mol = inferer(mol)
+        assert mol.GetAtomWithIdx(1).GetFormalCharge() == 1
+
+    def test_from_convert_to_method(self, template):
+        u = mda.Universe(template)
+        mol = u.atoms.convert_to.rdkit(inferer=TemplateInferer(template=template))
+        assert mol.GetAtomWithIdx(1).GetFormalCharge() == 1
