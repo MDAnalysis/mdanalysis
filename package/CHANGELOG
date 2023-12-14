@@ -20,6 +20,7 @@ The rules for this file:
  * 2.7.0
 
 Fixes
+  * Fix `make html` command errors (Issue #4362, PR #4365)
   * Updated cimport for numpy to maintain cimport consistency (Issue #3908)
   * Fix `NoJump` unwrapping for jumps on the second frame in a
     trajectory (PR #4258, Issue #4257)
