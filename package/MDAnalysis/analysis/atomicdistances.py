@@ -112,8 +112,6 @@ import numpy as np
 
 from MDAnalysis.lib.distances import calc_bonds
 
-
-import warnings
 import logging
 from .base import AnalysisBase
 
