@@ -868,22 +868,60 @@ class TestRDKitMDAnalysisInferer(object):
 class TestRDKitTemplateInferer:
     @pytest.fixture(scope="function")
     def template(self):
+        return Chem.MolFromSmiles("[NH3+]-C=O")
+
+    @pytest.fixture(scope="function")
+    def template_with_hydrogens(self):
         params = Chem.SmilesParserParams()
         params.removeHs = False
-        return Chem.MolFromSmiles("[H]-[N+](-[H])(-[H])-[H]", params)
+        return Chem.MolFromSmiles("[N+](-[H])(-[H])(-[H])-C(-[H])=O", params)
 
-    def test_template_inferring(self, template):
-        params = Chem.SmilesParserParams()
-        params.removeHs = False
-        params.sanitize = False
-        mol = Chem.MolFromSmiles("[H]-N(-[H])(-[H])-[H]", params)
-        assert mol.GetAtomWithIdx(1).GetFormalCharge() == 0
+    @pytest.fixture(scope="function")
+    def mol(self, template):
+        mol = Chem.AddHs(template)
+        AllChem.EmbedMolecule(mol, randomSeed=0xAC1D1C)
+        mol.GetAtomWithIdx(0).SetFormalCharge(0)
+        mol.UpdatePropertyCache(strict=False)
+        for atom in mol.GetAtoms():
+            atom.SetIntProp("_MDAnalysis_index", atom.GetIdx())
+        return mol
 
-        inferer = TemplateInferer(template=template)
-        mol = inferer(mol)
-        assert mol.GetAtomWithIdx(1).GetFormalCharge() == 1
+    def test_template_inferring(self, mol, template_with_hydrogens):
+        inferer = TemplateInferer(
+            template=template_with_hydrogens, adjust_hydrogens=False
+        )
+        new = inferer(mol)
+        assert new.GetAtomWithIdx(0).GetFormalCharge() == 1
 
-    def test_from_convert_to_method(self, template):
-        u = mda.Universe(template)
-        mol = u.atoms.convert_to.rdkit(inferer=TemplateInferer(template=template))
-        assert mol.GetAtomWithIdx(1).GetFormalCharge() == 1
+    def test_template_inferring_adjust_hydrogens(self, mol, template):
+        inferer = TemplateInferer(template=template, adjust_hydrogens=True)
+        new = inferer(mol)
+        assert new.GetAtomWithIdx(0).GetFormalCharge() == 1
+
+    def test_from_convert_to_method(self, template_with_hydrogens):
+        mol = Chem.Mol(template_with_hydrogens)
+        AllChem.EmbedMolecule(mol, randomSeed=0xAC1D1C)
+        u = mda.Universe(mol)
+        mol = u.atoms.convert_to.rdkit(
+            inferer=TemplateInferer(
+                template=template_with_hydrogens, adjust_hydrogens=False
+            )
+        )
+        assert mol.GetAtomWithIdx(0).GetFormalCharge() == 1
+        xyz = mol.GetConformer().GetPositions()
+        assert_array_equal(xyz, u.atoms.positions)
+
+    def test_adjust_hydrogens_bigger_mol(self):
+        u = mda.Universe(GRO, TRR)
+        elements = mda.topology.guessers.guess_types(u.atoms.names)
+        u.add_TopologyAttr("elements", elements)
+        ag = u.select_atoms("resid 1-3")
+        inferer = TemplateInferer(
+            template=Chem.MolFromSmiles(
+                "CCC(C)C(C=O)NC(=O)C(CCCNC(N)=[NH2+])NC(=O)C([NH3+])CCSC"
+            ),
+            adjust_hydrogens=True,
+        )
+        mol = ag.convert_to.rdkit(inferer=inferer)
+        xyz = mol.GetConformer().GetPositions()
+        assert_array_equal(xyz, ag.positions)

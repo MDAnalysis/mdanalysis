@@ -36,6 +36,7 @@ Classes
    :members:
 """
 import warnings
+from collections import defaultdict
 from contextlib import suppress
 from dataclasses import dataclass
 from typing import ClassVar, Dict, List, Optional, Tuple
@@ -57,6 +58,32 @@ with suppress(ImportError):
     # add string version of the key for each bond
     RDBONDORDER.update({str(key): value for key, value in RDBONDORDER.items()})
     PERIODIC_TABLE = Chem.GetPeriodicTable()
+
+
+def reorder_atoms(
+    mol: "Chem.Mol", field: str = "_MDAnalysis_index"
+) -> "Chem.Mol":
+    """Reorder atoms to match with the original MDAnalysis AtomGroup."""
+    with suppress(KeyError):
+        order = np.argsort([atom.GetIntProp(field) for atom in mol.GetAtoms()])
+        return Chem.RenumberAtoms(mol, order.astype(int).tolist())
+    # not a molecule converted by MDAnalysis
+    warnings.warn(
+        f"{field} not available on the input mol atoms, skipping reordering "
+        "of atoms."
+    )
+    return mol
+
+
+def sanitize_mol(mol: "Chem.Mol") -> None:
+    """Tries to sanitize the molecule, and if an error is raised, logs it as a
+    warning.
+    """
+    err = Chem.SanitizeMol(mol, catchErrors=True)
+    if err:
+        warnings.warn(
+            f"Could not sanitize molecule: failed during step {err!r}"
+        )
 
 
 @dataclass(frozen=True)
@@ -124,28 +151,8 @@ class MDAnalysisInferer:
         """
         self._infer_bo_and_charges(mol)
         mol = self._standardize_patterns(mol)
-        mol = self._reorder_atoms(mol)
-        # sanitize if possible
-        err = Chem.SanitizeMol(mol, catchErrors=True)
-        if err:
-            warnings.warn(
-                f"Could not sanitize molecule: failed during step {err!r}"
-            )
-        return mol
-
-    def _reorder_atoms(self, mol: "Chem.Mol") -> "Chem.Mol":
-        """Reorder atoms to match MDAnalysis, since the reactions from
-        :meth:`_standardize_patterns` will mess up the original order.
-        """
-        with suppress(KeyError):
-            order = np.argsort(
-                [
-                    atom.GetIntProp("_MDAnalysis_index")
-                    for atom in mol.GetAtoms()
-                ]
-            )
-            return Chem.RenumberAtoms(mol, order.astype(int).tolist())
-        # not a molecule converted by MDAnalysis
+        mol = reorder_atoms(mol)
+        sanitize_mol(mol)
         return mol
 
     @classmethod
@@ -592,9 +599,66 @@ class TemplateInferer:
     ----------
     template : rdkit.Chem.rdchem.Mol
         Molecule containing the bond orders and charges.
+    adjust_hydrogens: bool, default = True
+        If ``True``, temporarily removes hydrogens from the molecule to
+        assign bond orders and charges from the template, then adds them
+        back. Useful to avoid adding explicit hydrogens on the template which
+        can prevent RDKit from finding a match between the template and the
+        molecule.
     """
 
     template: "Chem.Mol"
+    adjust_hydrogens: bool = True
 
     def __call__(self, mol: "Chem.Mol") -> "Chem.Mol":
+        if self.adjust_hydrogens:
+            return self.assign_from_template_with_adjusted_hydrogens(mol)
         return AssignBondOrdersFromTemplate(self.template, mol)
+
+    def assign_from_template_with_adjusted_hydrogens(
+        self, mol: "Chem.Mol", index_field: str = "_MDAnalysis_index"
+    ) -> "Chem.Mol":
+        """Temporarily removes hydrogens from the molecule before assigning
+        bond orders and charges from the template, then adds them back.
+
+        Parameters
+        ----------
+        mol : rdkit.Chem.rdchem.Mol
+            Molecule to assign bond orders and charges to.
+        index_field : str, default = "_MDAnalysis_index"
+            Atom property corresponding to a unique integer that can used to
+            put back the hydrogen atoms that were removed before matching,
+            and sort them back to the original order. Must be accessible
+            through ``atom.GetIntProp``.
+        """
+        # remove explicit hydrogens and assign BO from template
+        mol_no_h = Chem.RemoveAllHs(mol, sanitize=False)
+        new = AssignBondOrdersFromTemplate(self.template, mol_no_h)
+        # mapping between AtomGroup index of atom bearing H --> H atom(s)
+        atoms_with_hydrogens = defaultdict(list)
+        for atom in mol.GetAtoms():
+            if atom.GetAtomicNum() == 1:
+                atoms_with_hydrogens[
+                    atom.GetNeighbors()[0].GetIntProp(index_field)
+                ].append(atom)
+        # mapping between atom that should be bearing a H in RWMol and
+        # corresponding H(s)
+        reverse_mapping = {}
+        for atom in new.GetAtoms():
+            if (idx := atom.GetIntProp(index_field)) in atoms_with_hydrogens:
+                reverse_mapping[atom.GetIdx()] = atoms_with_hydrogens[idx]
+                # let UpdatePropertyCache take care of recalculating the
+                # number of explicit hydrogens to prevent sanitization errors
+                atom.SetNumExplicitHs(0)
+        # add missing Hs
+        rwmol = Chem.RWMol(new)
+        for atom_idx, hydrogens in reverse_mapping.items():
+            for hydrogen in hydrogens:
+                h_idx = rwmol.AddAtom(hydrogen)
+                rwmol.AddBond(atom_idx, h_idx, Chem.BondType.SINGLE)
+        new = rwmol.GetMol()
+        # sanitize
+        new.UpdatePropertyCache()
+        sanitize_mol(new)
+        # reorder atoms as input atomgroup (through _MDAnalysis_index)
+        return reorder_atoms(new, field=index_field)
