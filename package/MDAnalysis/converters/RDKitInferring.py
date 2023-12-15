@@ -69,7 +69,7 @@ def reorder_atoms(
         return Chem.RenumberAtoms(mol, order.astype(int).tolist())
     # not a molecule converted by MDAnalysis
     warnings.warn(
-        f"{field} not available on the input mol atoms, skipping reordering "
+        f"{field!r} not available on the input mol atoms, skipping reordering "
         "of atoms."
     )
     return mol

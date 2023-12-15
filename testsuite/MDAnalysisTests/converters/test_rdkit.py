@@ -25,6 +25,7 @@ import copy
 import warnings
 from contextlib import suppress
 from io import StringIO
+from unittest.mock import Mock
 
 import MDAnalysis as mda
 import numpy as np
@@ -50,6 +51,8 @@ with suppress(ImportError):
     from MDAnalysis.converters.RDKitInferring import (
         MDAnalysisInferer,
         TemplateInferer,
+        reorder_atoms,
+        sanitize_mol,
     )
     from rdkit import Chem
     from rdkit.Chem import AllChem
@@ -434,11 +437,16 @@ class TestRDKitConverter(object):
             [str(r.message) for r in record]
         )
 
-    def test_deprecation_maw_iter(self, mol2):
+    def test_deprecation_max_iter(self, mol2, monkeypatch):
+        mock = Mock(wraps=atomgroup_to_mol)
+        monkeypatch.setattr(
+            "MDAnalysis.converters.RDKit.atomgroup_to_mol", mock
+        )
         with pytest.warns(
             DeprecationWarning, match="Using `max_iter` is deprecated"
         ):
             mol2.atoms.convert_to.rdkit(max_iter=2)
+        assert mock.call_args.kwargs["inferer"].max_iter == 2
 
     def test_deprecation_NoImplicit(self, mol2):
         with pytest.warns(
@@ -469,7 +477,30 @@ class TestRDKitConverter(object):
 
 
 @requires_rdkit
-class TestRDKitMDAnalysisInferer(object):
+class TestRDKitInferringFunctions:
+    def test_sanitize_mol_warning(self):
+        mol = Chem.MolFromSmiles("[NH4]", sanitize=False)
+        with pytest.warns(
+            match=(
+                "Could not sanitize molecule: failed during step "
+                "rdkit.Chem.rdmolops.SanitizeFlags.SANITIZE_PROPERTIES"
+            )
+        ):
+            sanitize_mol(mol)
+
+    def test_reorder_atoms_key_error(self):
+        mol = Chem.MolFromSmiles("CCO")
+        with pytest.warns(
+            match=(
+                "'_MDAnalysis_index' not available on the input mol atoms, "
+                "skipping reordering of atoms"
+            )
+        ):
+            reorder_atoms(mol)
+
+
+@requires_rdkit
+class TestRDKitMDAnalysisInferer:
     def add_Hs_remove_bo_and_charges(self, mol):
         """Add hydrogens and remove bond orders and charges from a molecule"""
         mH = Chem.AddHs(mol)
