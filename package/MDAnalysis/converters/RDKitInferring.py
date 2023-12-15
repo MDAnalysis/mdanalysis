@@ -34,6 +34,11 @@ Classes
 
 .. autoclass:: TemplateInferer
    :members:
+
+.. autofunction:: sanitize_mol
+
+.. autofunction:: reorder_atoms
+
 """
 import warnings
 from collections import defaultdict
@@ -63,7 +68,13 @@ with suppress(ImportError):
 def reorder_atoms(
     mol: "Chem.Mol", field: str = "_MDAnalysis_index"
 ) -> "Chem.Mol":
-    """Reorder atoms to match with the original MDAnalysis AtomGroup."""
+    """Reorder atoms based on the given field. Defaults to sorting in the same
+    order as the input AtomGroup.
+
+    Notes
+    -----
+    If the field is not found on the molecule, skips reordering.
+    """
     with suppress(KeyError):
         order = np.argsort([atom.GetIntProp(field) for atom in mol.GetAtoms()])
         return Chem.RenumberAtoms(mol, order.astype(int).tolist())
@@ -647,9 +658,10 @@ class TemplateInferer:
         for atom in new.GetAtoms():
             if (idx := atom.GetIntProp(index_field)) in atoms_with_hydrogens:
                 reverse_mapping[atom.GetIdx()] = atoms_with_hydrogens[idx]
-                # let UpdatePropertyCache take care of recalculating the
-                # number of explicit hydrogens to prevent sanitization errors
+                # Set ExplicitH to 0 to avoid valence errors when adding Hs
                 atom.SetNumExplicitHs(0)
+            # let UpdatePropertyCache recalculate the number of radicals later
+            atom.SetNumRadicalElectrons(0)
         # add missing Hs
         rwmol = Chem.RWMol(new)
         for atom_idx, hydrogens in reverse_mapping.items():
