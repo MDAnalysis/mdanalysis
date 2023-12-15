@@ -68,12 +68,6 @@ Classes
 .. autoclass:: RDKitConverter
    :members:
 
-.. autofunction:: _infer_bo_and_charges
-
-.. autofunction:: _standardize_patterns
-
-.. autofunction:: _rebuild_conjugated_bonds
-
 
 .. Links
 
