@@ -233,7 +233,7 @@ def test_frame_bool_fail():
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory)
     frames = [True, True, False]
-    msg = 'boolean index did not match indexed array along dimension 0'
+    msg = 'boolean index did not match indexed array along (axis|dimension) 0'
     with pytest.raises(IndexError, match=msg):
         an.run(frames=frames)
 
