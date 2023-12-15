@@ -161,7 +161,8 @@ class RDKitReader(memory.MemoryReader):
         """
         n_atoms = filename.GetNumAtoms()
         coordinates = np.array(
-            [conf.GetPositions() for conf in filename.GetConformers()], dtype=np.float32
+            [conf.GetPositions() for conf in filename.GetConformers()],
+            dtype=np.float32,
         )
         if coordinates.size == 0:
             warnings.warn("No coordinates found in the RDKit molecule")
@@ -255,9 +256,18 @@ class RDKitConverter(base.ConverterBase):
     guessed if not present.
 
     Hydrogens should be explicit in the topology file. If this is not the case,
-    use the parameter ``implicit_hydrogens=True`` when using the converter to allow
-    implicit hydrogens, and ``inferer=None`` to disable inferring bond orders and
-    charges.
+    use the parameter ``implicit_hydrogens=True`` when using the converter to
+    allow implicit hydrogens, and ``inferer=None`` to disable inferring bond
+    orders and charges. You can also pass your own callable function to
+    ``inferer`` to assign bond orders and charges as you see fit::
+
+        >>> from rdkit import Chem
+        >>> from rdkit.Chem.AllChem import AssignBondOrdersFromTemplate
+        >>> template = Chem.MolFromSmiles("NC(Cc1ccccc1)C(=O)O")
+        >>> def infer_from_template(mol: Chem.Mol) -> Chem.Mol:
+        ...     return AssignBondOrdersFromTemplate(template, mol)
+        >>> mol = u.atoms.convert_to.rdkit(inferer=infer_from_template)
+
 
     Since one of the main use case of the converter is converting trajectories
     and not just a topology, creating a new molecule from scratch for every
@@ -266,8 +276,8 @@ class RDKitConverter(base.ConverterBase):
     sensitive to the arguments that were passed to the converter. The number of
     objects cached can be changed with the function
     :func:`set_converter_cache_size`. However, ``ag.convert_to("RDKIT")``
-    followed by ``ag.convert_to("RDKIT", implicit_hydrogens=False)`` will not use the
-    cache since the arguments given are different. You can pass a
+    followed by ``ag.convert_to("RDKIT", implicit_hydrogens=False)`` will not
+    use the cache since the arguments given are different. You can pass a
     ``cache=False`` argument to the converter to bypass the caching system.
 
     The ``_MDAnalysis_index`` property of the resulting molecule corresponds
@@ -293,6 +303,13 @@ class RDKitConverter(base.ConverterBase):
         ``atom.GetMonomerInfo().GetName()`` now follows the guidelines for PDB
         files while the original name is still available through
         ``atom.GetProp("_MDAnalysis_name")``
+
+    .. versionchanged:: 2.7.0
+        Deprecated ``max_iter`` (moved to the inferer class
+        :class:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer`) and
+        deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``. Added
+        ``inferer`` to specify a callable that can transform the molecule (this
+        operation is cached).
 
     """
 
@@ -321,20 +338,13 @@ class RDKitConverter(base.ConverterBase):
             same AtomGroup selection and with the same arguments passed
             to the converter
         inferer : Optional[Callable[[Chem.Mol], Chem.Mol]]
-            A callable to infer bond orders and charges for the RDKit molecule created
-            by the converter. If ``None``, inferring is skipped.
+            A callable to infer bond orders and charges for the RDKit molecule
+            created by the converter. If ``None``, inferring is skipped.
         implicit_hydrogens : bool
            Whether to allow implicit hydrogens on the molecule or not.
         force : bool
             Force the conversion when no hydrogens were detected but
             ``inferer`` is not ``None``. Useful for inorganic molecules mostly.
-
-        .. versionchanged:: 2.7.0
-            Deprecated ``max_iter`` (moved to the inferer class
-            :class:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer`) and
-            deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``. Added
-            ``inferer`` to specify a callable that can transform the molecule (this
-            operation is cached).
         """
 
         try:
@@ -356,8 +366,8 @@ class RDKitConverter(base.ConverterBase):
 
         if (max_iter := kwargs.get("max_iter")) is not None:
             warnings.warn(
-                "Using `max_iter` is deprecated, use `MDAnalysisInferer(max_iter=...)` "
-                "instead",
+                "Using `max_iter` is deprecated, use `MDAnalysisInferer "
+                "(max_iter=...)` instead",
                 DeprecationWarning,
             )
             if isinstance(inferer, MDAnalysisInferer):
@@ -365,9 +375,9 @@ class RDKitConverter(base.ConverterBase):
 
         if (NoImplicit := kwargs.get("NoImplicit")) is not None:
             warnings.warn(
-                "Using `NoImplicit` is deprecated, use `implicit_hydrogens` instead. "
-                "To disable bond order and formal charge inferring, use "
-                "`inferer=None`",
+                "Using `NoImplicit` is deprecated, use `implicit_hydrogens` "
+                " instead. To disable bond order and formal charge inferring, "
+                "use `inferer=None`",
                 DeprecationWarning,
             )
             implicit_hydrogens = not NoImplicit
@@ -409,7 +419,11 @@ class RDKitConverter(base.ConverterBase):
 
 @lru_cache(maxsize=2)
 def atomgroup_to_mol(
-    ag, implicit_hydrogens=False, force=False, inferer=DEFAULT_INFERER, **kwargs
+    ag,
+    implicit_hydrogens=False,
+    force=False,
+    inferer=DEFAULT_INFERER,
+    **kwargs,
 ):
     """Converts an AtomGroup to an RDKit molecule without coordinates.
 
@@ -420,11 +434,11 @@ def atomgroup_to_mol(
     implicit_hydrogens : bool
         Whether to allow implicit hydrogens on the molecule or not.
     force : bool
-        Force the conversion when no hydrogens were detected but ``inferer`` is not
-        ``None``. Useful for inorganic molecules mostly.
+        Force the conversion when no hydrogens were detected but ``inferer``
+        is not ``None``. Useful for inorganic molecules mostly.
     inferer : Optional[Callable[[rdkit.Chem.rdchem.Mol], rdkit.Chem.rdchem.Mol]]
-        A callable to infer bond orders and charges for the RDKit molecule created
-        by the converter. If ``None``, inferring is skipped.
+        A callable to infer bond orders and charges for the RDKit molecule
+        created by the converter. If ``None``, inferring is skipped.
     """
     try:
         elements = ag.elements
@@ -447,14 +461,14 @@ def atomgroup_to_mol(
                 "No hydrogen atom could be found in the topology, but the "
                 "converter requires all hydrogens to be explicit. You can use "
                 "the parameter ``inferer=None`` when using the converter "
-                "to disable inferring bond orders and charges. You can also use "
-                "``force=True`` to ignore this error."
+                "to disable inferring bond orders and charges. You can also "
+                "use ``force=True`` to ignore this error."
             )
 
     if (NoImplicit := kwargs.pop("NoImplicit", None)) is not None:
         warnings.warn(
-            "Using `NoImplicit` is deprecated, use `implicit_hydrogens` instead. "
-            "To disable bond order and formal charge inferring, use "
+            "Using `NoImplicit` is deprecated, use `implicit_hydrogens` "
+            "instead. To disable bond order and formal charge inferring, use "
             "`inferer=None`",
             DeprecationWarning,
         )

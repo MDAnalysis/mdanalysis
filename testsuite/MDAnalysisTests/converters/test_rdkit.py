@@ -30,9 +30,15 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysis.topology.guessers import guess_atom_element
-from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
+from MDAnalysisTests.datafiles import (
+    GRO,
+    TRR,
+    PDB_full,
+    PDB_helix,
+    mol2_molecule,
+)
 from MDAnalysisTests.util import import_not_available
-from numpy.testing import assert_allclose, assert_equal
+from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
 with suppress(ImportError):
     from MDAnalysis.converters.RDKit import (
@@ -41,7 +47,10 @@ with suppress(ImportError):
         _set_atom_property,
         atomgroup_to_mol,
     )
-    from MDAnalysis.converters.RDKitInferring import MDAnalysisInferer, TemplateInferer
+    from MDAnalysis.converters.RDKitInferring import (
+        MDAnalysisInferer,
+        TemplateInferer,
+    )
     from rdkit import Chem
     from rdkit.Chem import AllChem
 
@@ -124,7 +133,8 @@ class TestRDKitReader(object):
         universe = mda.Universe(rdmol)
         assert universe.trajectory.n_frames == n_frames
         expected = np.array(
-            [conf.GetPositions() for conf in rdmol.GetConformers()], dtype=np.float32
+            [conf.GetPositions() for conf in rdmol.GetConformers()],
+            dtype=np.float32,
         )
         assert_equal(expected, universe.trajectory.coordinate_array)
 
@@ -139,7 +149,9 @@ class TestRDKitReader(object):
         universe = mda.Universe(MolFactory.mol2_mol())
         mol2 = mda.Universe(mol2_molecule)
         assert universe.trajectory.n_frames == mol2.trajectory.n_frames
-        assert_equal(universe.trajectory.ts.positions, mol2.trajectory.ts.positions)
+        assert_equal(
+            universe.trajectory.ts.positions, mol2.trajectory.ts.positions
+        )
 
 
 @requires_rdkit
@@ -176,7 +188,9 @@ class TestRDKitConverter(object):
 
     @pytest.mark.parametrize("smi", ["[H]", "C", "O", "[He]"])
     def test_single_atom_mol(self, smi):
-        u = mda.Universe.from_smiles(smi, addHs=False, generate_coordinates=False)
+        u = mda.Universe.from_smiles(
+            smi, addHs=False, generate_coordinates=False
+        )
         mol = u.atoms.convert_to.rdkit(inferer=None)
         assert mol.GetNumAtoms() == 1
         assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
@@ -219,7 +233,9 @@ class TestRDKitConverter(object):
         assert mda_atom.segindex == mi.GetSegmentNumber()
         assert mda_atom.tempfactor == mi.GetTempFactor()
 
-    @pytest.mark.parametrize("rdmol", ["mol2_mol", "smiles_mol"], indirect=True)
+    @pytest.mark.parametrize(
+        "rdmol", ["mol2_mol", "smiles_mol"], indirect=True
+    )
     def test_identical_topology(self, rdmol):
         u = mda.Universe(rdmol)
         umol = u.atoms.convert_to("RDKIT")
@@ -228,7 +244,9 @@ class TestRDKitConverter(object):
         assert_equal(u.atoms.bonds, u2.atoms.bonds)
         assert_equal(u.atoms.elements, u2.atoms.elements)
         assert_equal(u.atoms.names, u2.atoms.names)
-        assert_allclose(u.atoms.positions, u2.atoms.positions, rtol=0, atol=1e-7)
+        assert_allclose(
+            u.atoms.positions, u2.atoms.positions, rtol=0, atol=1e-7
+        )
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
@@ -244,7 +262,9 @@ class TestRDKitConverter(object):
 
     def test_warn_guess_bonds(self):
         u = mda.Universe(PDB_helix)
-        with pytest.warns(UserWarning, match="No `bonds` attribute in this AtomGroup"):
+        with pytest.warns(
+            UserWarning, match="No `bonds` attribute in this AtomGroup"
+        ):
             u.atoms.convert_to("RDKIT")
 
     def test_bonds_outside_sel(self):
@@ -265,7 +285,9 @@ class TestRDKitConverter(object):
             uo2.atoms.convert_to.rdkit(inferer=None)
 
     def test_warning_no_hydrogen_force(self, uo2):
-        with pytest.warns(UserWarning, match="Forcing to continue the conversion"):
+        with pytest.warns(
+            UserWarning, match="Forcing to continue the conversion"
+        ):
             uo2.atoms.convert_to.rdkit(force=True)
 
     @pytest.mark.parametrize(
@@ -413,15 +435,21 @@ class TestRDKitConverter(object):
         )
 
     def test_deprecation_maw_iter(self, mol2):
-        with pytest.warns(DeprecationWarning, match="Using `max_iter` is deprecated"):
+        with pytest.warns(
+            DeprecationWarning, match="Using `max_iter` is deprecated"
+        ):
             mol2.atoms.convert_to.rdkit(max_iter=2)
 
     def test_deprecation_NoImplicit(self, mol2):
-        with pytest.warns(DeprecationWarning, match="Using `NoImplicit` is deprecated"):
+        with pytest.warns(
+            DeprecationWarning, match="Using `NoImplicit` is deprecated"
+        ):
             mol2.atoms.convert_to.rdkit(NoImplicit=True)
 
     def test_deprecation_atomgroup_to_mol_NoImplicit(self, mol2):
-        with pytest.warns(DeprecationWarning, match="Using `NoImplicit` is deprecated"):
+        with pytest.warns(
+            DeprecationWarning, match="Using `NoImplicit` is deprecated"
+        ):
             atomgroup_to_mol(mol2.atoms, NoImplicit=False)
 
     def test_atomgroup_to_mol_unexpected_kwargs(self, mol2):
@@ -480,8 +508,12 @@ class TestRDKitMDAnalysisInferer(object):
         """
         isomorphic = mol.HasSubstructMatch(ref)
         if not isomorphic:
-            isomorphic = bool(Chem.ResonanceMolSupplier(mol).GetSubstructMatch(ref))
-        assert isomorphic, f"{Chem.MolToSmiles(ref)} != {Chem.MolToSmiles(mol)}"
+            isomorphic = bool(
+                Chem.ResonanceMolSupplier(mol).GetSubstructMatch(ref)
+            )
+        assert (
+            isomorphic
+        ), f"{Chem.MolToSmiles(ref)} != {Chem.MolToSmiles(mol)}"
 
     @pytest.mark.parametrize(
         "smi, out",
@@ -512,7 +544,9 @@ class TestRDKitMDAnalysisInferer(object):
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
-        assert is_isomorphic(mol, molref), "{} != {}".format(Chem.MolToSmiles(mol), out)
+        assert is_isomorphic(mol, molref), "{} != {}".format(
+            Chem.MolToSmiles(mol), out
+        )
 
     @pytest.mark.parametrize(
         "smi, atom_idx, charge",
@@ -537,7 +571,10 @@ class TestRDKitMDAnalysisInferer(object):
             ("[S](-[O]-[H])(-[O]-[H])(-[O])-[O]", "S(=O)(=O)(O)O"),
             ("[S](-[O]-[H])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])O"),
             ("[S](-[O])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])[O-]"),
-            ("C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]", "CNC(N)=[N+](-[H])-[H]"),
+            (
+                "C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]",
+                "CNC(N)=[N+](-[H])-[H]",
+            ),
             ("[O]-[C](-[H])-[C](-[H])-[H]", "C([O-])=C"),
             ("C-[N](-[O])-[O]", "C[N+](=O)[O-]"),
             ("C(-[N](-[O])-[O])-[N](-[O])-[O]", "C([N+](=O)[O-])[N+](=O)[O-]"),
@@ -548,7 +585,10 @@ class TestRDKitMDAnalysisInferer(object):
                 "[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1",
                 "[O-]c1ccccc1",
             ),
-            ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]", "[O-]C1=CC=CC1=O"),
+            (
+                "[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]",
+                "[O-]C1=CC=CC1=O",
+            ),
             ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
             ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
         ],
@@ -559,7 +599,9 @@ class TestRDKitMDAnalysisInferer(object):
         mol = self.assign_bond_orders_and_charges(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
-        assert is_isomorphic(mol, molref), "{} != {}".format(Chem.MolToSmiles(mol), out)
+        assert is_isomorphic(mol, molref), "{} != {}".format(
+            Chem.MolToSmiles(mol), out
+        )
 
     @pytest.mark.parametrize(
         "attr, value, getter",
@@ -720,7 +762,9 @@ class TestRDKitMDAnalysisInferer(object):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
         mol = Chem.MolFromSmiles(smi)
         inferer = MDAnalysisInferer(max_iter=2)
-        with pytest.warns(UserWarning, match="reasonable number of iterations"):
+        with pytest.warns(
+            UserWarning, match="reasonable number of iterations"
+        ):
             inferer._rebuild_conjugated_bonds(mol)
 
     def test_deprecation_warning_max_iter(self):
@@ -785,7 +829,9 @@ class TestRDKitMDAnalysisInferer(object):
         u = mda.Universe(PDB_helix)
         mol = u.atoms.convert_to.rdkit()
         names = u.atoms.names
-        rd_names = np.array([a.GetProp("_MDAnalysis_name") for a in mol.GetAtoms()])
+        rd_names = np.array(
+            [a.GetProp("_MDAnalysis_name") for a in mol.GetAtoms()]
+        )
         assert (names == rd_names).all()
 
     @pytest.mark.parametrize(
@@ -804,7 +850,9 @@ class TestRDKitMDAnalysisInferer(object):
                 assert bond.GetStereo() != Chem.BondStereo.STEREOANY
 
     def test_atom_sorter(self):
-        mol = Chem.MolFromSmiles("[H]-[C](-[H])-[C](-[H])-[C]-[C]-[H]", sanitize=False)
+        mol = Chem.MolFromSmiles(
+            "[H]-[C](-[H])-[C](-[H])-[C]-[C]-[H]", sanitize=False
+        )
         # corresponding mol: C=C-C#C
         # atom indices:      1 3 5 6
         mol.UpdatePropertyCache()
