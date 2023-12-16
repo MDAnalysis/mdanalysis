@@ -15,7 +15,8 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya
+         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya,
+         yuxuanzhuang
 
  * 2.7.0
 
@@ -49,6 +50,8 @@ Enhancements
     (Issue #3994, PR #4281)  
   * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
     PR #4284)
+  * Improve performance in Universe serialization by no explicit redirection to
+    the timestep. (Issue #3721, PR #3722)
 
 Changes
   * Biopython is now an optional dependency (Issue #3820, PR #4332)
@@ -199,6 +202,10 @@ Fixes
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
     (Issue #3336)
+  * Fix failure in double-serialization of TextIOPicklable file reader.
+    (Issue #3723, PR #3722)
+  * Fix failure to preserve modification of coordinates after serialization.
+    (Issue #3723, PR #3722)
 
 Enhancements
   * ARM64 (osx and linux) wheels now uploaded on release (Issue #4054)
@@ -365,6 +372,8 @@ Changes
     use `pip install ./package[extra_formats]` instead (PR #3810)
   * `Universe.empty` emmits less warnings (PR #3814)
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
+  * TextIOPicklable serializes the raw class instance instead of class name.
+    (PR #3722)
 
 Deprecations
   * Direct indexing of results in analysis.nucleicacids' NucPairDist
