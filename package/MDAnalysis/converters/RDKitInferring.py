@@ -35,6 +35,9 @@ Classes
 .. autoclass:: TemplateInferer
    :members:
 
+.. autoclass:: RDKitInferer
+   :members:
+
 .. autofunction:: sanitize_mol
 
 .. autofunction:: reorder_atoms
@@ -63,6 +66,11 @@ with suppress(ImportError):
     # add string version of the key for each bond
     RDBONDORDER.update({str(key): value for key, value in RDBONDORDER.items()})
     PERIODIC_TABLE = Chem.GetPeriodicTable()
+
+with suppress(ImportError):
+    from rdkit.Chem.rdDetermineBonds import (
+        DetermineBondOrders,  # available since 2022.09.1
+    )
 
 
 def reorder_atoms(
@@ -674,3 +682,18 @@ class TemplateInferer:
         sanitize_mol(new)
         # reorder atoms as input atomgroup (through _MDAnalysis_index)
         return reorder_atoms(new, field=index_field)
+
+
+@dataclass(frozen=True)
+class RDKitInferer:
+    """Uses RDKit's :func:`~rdkit.Chem.rdDetermineBonds.DetermineBondOrders`
+    to infer bond orders and formal charges. This is the same algorithm used
+    by the :ref:`xyz2mol <https://github.com/jensengroup/xyz2mol>` package.
+    """
+
+    charge: int = 0
+
+    def __call__(self, mol: "Chem.Mol") -> "Chem.Mol":
+        new = Chem.Mol(mol)
+        DetermineBondOrders(new, charge=self.charge)
+        return new
