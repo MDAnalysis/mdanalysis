@@ -20,6 +20,10 @@ The rules for this file:
  * 2.7.0
 
 Fixes
+  * Fix doctest errors of lib/transformations.py (Issue #3925, PR #4370)
+  * Fix documentation building errors due to `html_static_path` and unindented
+    block of code (Issue #4362, PR #4365)
+  * Updated cimport for numpy to maintain cimport consistency (Issue #3908)
   * Fix `NoJump` unwrapping for jumps on the second frame in a
     trajectory (PR #4258, Issue #4257)
   * Deprecated np.float_ and np.NaN aliases have been replaced with
@@ -30,7 +34,6 @@ Fixes
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
-  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
   * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
   * Refactor c_distances backend to have a cython .pxd header and expose in
     libmdanalysis (Issue #4315, PR #4324)
@@ -61,6 +64,8 @@ Changes
     `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
+  * The `asel` argument to timeseries will be renamed to `atomgroup` in 3.0.0.
+    (Issue #3911)
   * MDAnalysis.lib.util is deprecated and will be removed in version 3.0
     (Issue #3649)
   * The TRZ reader & writer are deprecated and will be removed in version 3.0
@@ -76,7 +81,7 @@ Deprecations
     PR #3735)
 
 
-28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+08/28/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
 
  * 2.6.1
 
