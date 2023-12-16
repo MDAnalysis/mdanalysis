@@ -1454,7 +1454,7 @@ def quaternion_slerp(quat0, quat1, fraction, spin=0, shortestpath=True):
     >>> q = quaternion_slerp(q0, q1, 0.5)
     >>> angle = math.acos(np.dot(q0, q))
     >>> np.allclose(2.0, math.acos(np.dot(q0, q1)) / angle) or \
-        np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle)
+    ... np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle)
     True
 
     """
