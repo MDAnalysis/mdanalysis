@@ -27,9 +27,9 @@ from libc.stdint cimport uintptr_t
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 import cython
 
-cimport numpy as np
+cimport numpy as cnp
 
-np.import_array()
+cnp.import_array()
 
 
 # Tell cython about the off_t type. It doesn't need to match exactly what is
@@ -115,11 +115,11 @@ cdef class DCDFile:
     # The current DCD frame
     cdef int current_frame
     # size of the first DCD frame
-    cdef readonly int _firstframesize
+    cdef readonly fio_size_t _firstframesize
     # Size of a DCD frame 
-    cdef readonly int _framesize
+    cdef readonly fio_size_t _framesize
     # Size of the DCD header
-    cdef readonly int _header_size
+    cdef readonly fio_size_t _header_size
     # Is the file open?
     cdef int is_open
     # Have we reached the end of the file
@@ -131,9 +131,9 @@ cdef class DCDFile:
 
 
     # buffer for reading coordinates
-    cdef np.ndarray _coordinate_buffer
+    cdef cnp.ndarray _coordinate_buffer
     # buffer for reading unitcell     
-    cdef np.ndarray _unitcell_buffer
+    cdef cnp.ndarray _unitcell_buffer
 
     # fortran contiguious memoryviews of the buffers to pass to the C code
     cdef float[::1] xview

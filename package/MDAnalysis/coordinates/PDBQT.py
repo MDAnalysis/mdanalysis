@@ -87,7 +87,8 @@ class PDBQTReader(base.SingleFrameReaderBase):
     47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
     55 - 60        Real(6.2)     occupancy    Occupancy.
     61 - 66        Real(6.2)     tempFactor   Temperature  factor.
-    67 - 76        Real(10.4)    partialChrg  Gasteiger PEOE partial charge *q*.
+    67 - 70        LString(4)    footnote     Usually blank. IGNORED.
+    71 - 76        Real(6.4)     partialChrg  Gasteiger PEOE partial charge *q*.
     79 - 80        LString(2)    atomType     AutoDOCK atom type *t*.
     =============  ============  ===========  =============================================
 
@@ -195,6 +196,11 @@ class PDBQTWriter(base.WriterBase):
 
     .. _PDB: http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
     .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
+
+
+    .. versionchanged:: 2.6.0
+       Files are now written in `wt` mode, and keep extensions, allowing
+       for files to be written under compressed formats
     """
 
     fmt = {
@@ -213,8 +219,8 @@ class PDBQTWriter(base.WriterBase):
     pdb_coor_limits = {"min": -999.9995, "max": 9999.9995}
 
     def __init__(self, filename, **kwargs):
-        self.filename = util.filename(filename, ext='pdbqt')
-        self.pdb = util.anyopen(self.filename, 'w')
+        self.filename = util.filename(filename, ext='pdbqt', keep=True)
+        self.pdb = util.anyopen(self.filename, 'wt')
 
     def close(self):
         self.pdb.close()
@@ -232,7 +238,7 @@ class PDBQTWriter(base.WriterBase):
 
         Note
         ----
-        The first letter of the
+        The last letter of the
         :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
         chainID.
 

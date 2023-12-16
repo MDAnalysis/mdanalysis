@@ -1,6 +1,6 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-#
+
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
@@ -101,16 +101,17 @@ file.
    :members:
    :inherited-members:
 
-
 Converters
 ----------
-
 Converters output information to other libraries.
+
+.. deprecated:: 2.7.0
+    All converter code has been moved to :mod:`MDAnalysis.converters` and will
+    be removed from the :mod:`MDAnalysis.coordinates.base` module in 3.0.0.
 
 .. autoclass:: ConverterBase
    :members:
    :inherited-members:
-
 
 Helper classes
 --------------
@@ -122,12 +123,11 @@ writers share.
    :members:
 
 """
+import abc
 import numpy as np
 import numbers
-import copy
 import warnings
-import weakref
-from typing import Union, Optional, List, Dict
+from typing import Any, Union, Optional, List, Dict
 
 from .timestep import Timestep
 from . import core
@@ -135,7 +135,7 @@ from .. import (
     _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
-    _CONVERTERS
+    _CONVERTERS,  # remove in 3.0.0 (Issue #3404)
 )
 from .. import units
 from ..auxiliary.base import AuxReader
@@ -614,7 +614,7 @@ class IOBase(object):
         return False  # do not suppress exceptions
 
 
-class _Readermeta(type):
+class _Readermeta(abc.ABCMeta):
     """Automatic Reader registration metaclass
 
     .. versionchanged:: 1.0.0
@@ -622,7 +622,7 @@ class _Readermeta(type):
     """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
+        type.__init__(type, name, bases, classdict)  # pylint: disable=non-parent-init-called
         try:
             fmt = asiterable(classdict['format'])
         except KeyError:
@@ -659,7 +659,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
     .. versionchanged:: 2.0.0
        Now supports (un)pickle. Upon unpickling,
        the current timestep is retained by reconstrunction.
-    .. versionchanged:: 2.4.0
+    .. versionchanged:: 2.7.0
        the modification of coordinates was preserved
        after serialization.
     """
@@ -667,6 +667,10 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
+    _transformations: list
+    _auxs: dict
+    _filename: Any
+    n_frames: int
 
     def __init__(self):
         # initialise list to store added auxiliary readers in
@@ -674,7 +678,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         self._auxs = {}
         self._transformations=[]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.n_frames
 
     @classmethod
@@ -694,7 +698,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         raise NotImplementedError("{} cannot deduce the number of atoms"
                                   "".format(cls.__name__))
 
-    def next(self):
+    def next(self) -> Timestep:
         """Forward one step to next frame."""
         try:
             ts = self._read_next_timestep()
@@ -709,22 +713,22 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         return ts
 
-    def __next__(self):
+    def __next__(self) -> Timestep:
         """Forward one step to next frame when using the `next` builtin."""
         return self.next()
 
-    def rewind(self):
+    def rewind(self) -> Timestep:
         """Position at beginning of trajectory"""
         self._reopen()
         self.next()
 
     @property
-    def dt(self):
+    def dt(self) -> float:
         """Time between two trajectory frames in picoseconds."""
         return self.ts.dt
 
     @property
-    def totaltime(self):
+    def totaltime(self) -> float:
         """Total length of the trajectory
 
         The time is calculated as ``(n_frames - 1) * dt``, i.e., we assume that
@@ -736,7 +740,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return (self.n_frames - 1) * self.dt
 
     @property
-    def frame(self):
+    def frame(self) -> int:
         """Frame number of the current time step.
 
         This is a simple short cut to :attr:`Timestep.frame`.
@@ -784,20 +788,21 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             pass
         return core.writer(filename, **kwargs)
 
-    def _read_next_timestep(self, ts=None):  # pragma: no cover
+    @abc.abstractmethod
+    def _read_next_timestep(self, ts=None):
         # Example from DCDReader:
         #     if ts is None:
         #         ts = self.ts
         #     ts.frame = self._read_next_frame(etc)
         #     return ts
-        raise NotImplementedError(
-            "BUG: Override _read_next_timestep() in the trajectory reader!")
+        ...
 
     def __iter__(self):
         """ Iterate over trajectory frames. """
         self._reopen()
         return self
 
+    @abc.abstractmethod
     def _reopen(self):
         """Should position Reader to just before first frame
 
@@ -983,8 +988,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             nframes=self.n_frames,
             natoms=self.n_atoms
         ))
-    
+
     def timeseries(self, asel: Optional['AtomGroup']=None,
+                   atomgroup: Optional['Atomgroup']=None,
                    start: Optional[int]=None, stop: Optional[int]=None,
                    step: Optional[int]=None,
                    order: Optional[str]='fac') -> np.ndarray:
@@ -996,6 +1002,12 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to ``None``, in which case the full set
             of coordinate data is returned.
+
+            .. deprecated:: 2.7.0
+                asel argument will be renamed to atomgroup in 3.0.0
+
+        atomgroup: AtomGroup (optional)
+            Same as `asel`, will replace `asel` in 3.0.0
         start :  int (optional)
             Begin reading the trajectory at frame index `start` (where 0 is the
             index of the first frame in the trajectory); the default
@@ -1021,14 +1033,22 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         .. versionadded:: 2.4.0
         """
+        if asel is not None:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+            if atomgroup:
+                raise ValueError("Cannot provide both asel and atomgroup kwargs")
+            atomgroup = asel
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
 
-        if asel is not None:
-            if len(asel) == 0:
+        if atomgroup is not None:
+            if len(atomgroup) == 0:
                 raise ValueError(
                     "Timeseries requires at least one atom to analyze")
-            atom_numbers = asel.indices
+            atom_numbers = atomgroup.indices
             natoms = len(atom_numbers)
         else:
             natoms = self.n_atoms
@@ -1601,9 +1621,9 @@ class WriterBase(IOBase, metaclass=_Writermeta):
     def has_valid_coordinates(self, criteria, x):
         """Returns ``True`` if all values are within limit values of their formats.
 
-        Due to rounding, the test is asymmetric (and *min* is supposed to be negative):
+        Due to rounding, the test is asymmetric (and *min* is supposed to be negative)::
 
-           min < x <= max
+            min < x <= max
 
         Parameters
         ----------
@@ -1703,6 +1723,9 @@ class SingleFrameReaderBase(ProtoReader):
     def next(self):
         raise StopIteration(self._err.format(self.__class__.__name__))
 
+    def _read_next_timestep(self, ts=None):
+        raise NotImplementedError(self._err.format(self.__class__.__name__))
+
     def __iter__(self):
         self.rewind()
         yield self.ts
@@ -1775,7 +1798,10 @@ def range_length(start, stop, step):
         # The range is empty.
         return 0
 
-
+# Verbatim copy of code from converters/base.py
+# Needed to avoid circular imports before removal in
+# MDAnalysis 3.0.0
+# Remove in 3.0.0
 class _Convertermeta(type):
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
@@ -1789,13 +1815,26 @@ class _Convertermeta(type):
                 f = f.upper()
                 _CONVERTERS[f] = cls
 
+
+# Verbatim copy of code from converters/base.py
+# Needed to avoid circular imports before removal in
+# MDAnalysis 3.0.0
+# Remove in 3.0.0
 class ConverterBase(IOBase, metaclass=_Convertermeta):
     """Base class for converting to other libraries.
 
-    See Also
-    --------
-    :mod:`MDAnalysis.converters`
+    .. deprecated:: 2.7.0
+        This class has been moved to
+        :class:`MDAnalysis.converters.base.ConverterBase` and will be removed
+        from :mod:`MDAnalysis.coordinates.base` in 3.0.0.
     """
+
+    def __init_subclass__(cls):
+        wmsg = ("ConverterBase moved from coordinates.base."
+                "ConverterBase to converters.base.ConverterBase "
+                "and will be removed from coordinates.base "
+                "in MDAnalysis release 3.0.0")
+        warnings.warn(wmsg, DeprecationWarning, stacklevel=2)
 
     def __repr__(self):
         return "<{cls}>".format(cls=self.__class__.__name__)

@@ -22,6 +22,7 @@
 #
 import os
 import errno
+import shutil
 import tempfile
 import textwrap
 import logging
@@ -33,6 +34,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 
+from MDAnalysis.lib.util import deprecate
 from ...exceptions import ApplicationError
 from ..base import AnalysisBase
 from ...lib import util
@@ -46,6 +48,9 @@ from .templates import (hole_input, hole_lines, vmd_script_array,
 logger = logging.getLogger(__name__)
 
 
+@deprecate(release="2.6.0", remove="3.0.0",
+           message=("This method has been moved to the MDAKit hole2-mdakit: "
+                    "https://github.com/MDAnalysis/hole2-mdakit"))
 def hole(pdbfile,
          infile_text=None,
          infile=None,
@@ -224,7 +229,7 @@ def hole(pdbfile,
         warnings.warn(msg.format(output_level))
 
     # get executable
-    exe = util.which(executable)
+    exe = shutil.which(executable)
     if exe is None:
         raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                    kw='executable'))
@@ -429,6 +434,11 @@ class HoleAnalysis(AnalysisBase):
         are now stored in a :class:`MDAnalysis.analysis.base.Results`
         instance.
 
+    .. deprecated:: 2.6.0
+       This class has been moved to the MDAKit
+       `hole2-mdakit <https://github.com/MDAnalysis/hole2-mdakit>`_ and will
+       be removed for the core MDAnalysis library in version 3.0
+
     """
 
     input_file = '{prefix}hole{i:03d}.inp'
@@ -478,6 +488,12 @@ class HoleAnalysis(AnalysisBase):
                  write_input_files=False):
         super(HoleAnalysis, self).__init__(universe.universe.trajectory,
                                            verbose=verbose)
+
+        wmsg = ("This class has been moved to the MDAKit `hole2-mdakit` "
+                "(https://github.com/MDAnalysis/hole2-mdakit) and will be "
+                "removed in version 3.0.")
+        warnings.warn(wmsg, DeprecationWarning)
+
         if output_level > 3:
             msg = 'output_level ({}) needs to be < 3 in order to extract a HOLE profile!'
             warnings.warn(msg.format(output_level))
@@ -506,23 +522,23 @@ class HoleAnalysis(AnalysisBase):
         self.ignore_residues = ignore_residues
 
         # --- finding executables ----
-        hole = util.which(executable)
+        hole = shutil.which(executable)
         if hole is None:
             raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                        kw='executable'))
         self.base_path = os.path.dirname(hole)
 
-        sos_triangle_path = util.which(sos_triangle)
+        sos_triangle_path = shutil.which(sos_triangle)
         if sos_triangle_path is None:
             path = os.path.join(self.base_path, sos_triangle)
-            sos_triangle_path = util.which(path)
+            sos_triangle_path = shutil.which(path)
         if sos_triangle_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sos_triangle,
                                                        kw='sos_triangle'))
-        sph_process_path = util.which(sph_process)
+        sph_process_path = shutil.which(sph_process)
         if sph_process_path is None:
             path = os.path.join(self.base_path, sph_process)
-            sph_process_path = util.which(path)
+            sph_process_path = shutil.which(path)
         if sph_process_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
                                                        kw='sph_process'))
@@ -856,7 +872,7 @@ class HoleAnalysis(AnalysisBase):
             frames = util.asiterable(frames)
 
         if color is None:
-            colormap = plt.cm.get_cmap(cmap)
+            colormap = matplotlib.colormaps.get_cmap(cmap)
             norm = matplotlib.colors.Normalize(vmin=min(frames),
                                                vmax=max(frames))
             colors = colormap(norm(frames))

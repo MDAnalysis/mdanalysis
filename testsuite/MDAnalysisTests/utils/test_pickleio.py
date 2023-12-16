@@ -38,7 +38,8 @@ from MDAnalysis.lib.picklable_file_io import (
 )
 from MDAnalysis.coordinates.GSD import (
     GSDPicklable,
-    gsd_pickle_open
+    gsd_pickle_open,
+    HAS_GSD
 )
 from MDAnalysis.coordinates.TRJ import (
     NCDFPicklable,
@@ -161,13 +162,15 @@ def test_pickle_with_write_mode(unpicklable_f, tmpdir):
         f_pickled = pickle.loads(pickle.dumps(f_open_by_class))
 
 
+@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
 def test_GSD_pickle():
-    gsd_io = gsd_pickle_open(GSD, mode='rb')
+    gsd_io = gsd_pickle_open(GSD, mode='r')
     gsd_io_pickled = pickle.loads(pickle.dumps(gsd_io))
     assert_equal(gsd_io[0].particles.position,
                  gsd_io_pickled[0].particles.position)
 
 
+@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
 def test_GSD_with_write_mode(tmpdir):
     with pytest.raises(ValueError, match=r"Only read mode"):
         gsd_io = gsd_pickle_open(tmpdir.mkdir("gsd").join('t.gsd'),

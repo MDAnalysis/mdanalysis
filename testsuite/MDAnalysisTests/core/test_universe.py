@@ -57,6 +57,7 @@ from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.core.topologyattrs import AtomStringAttr
+from MDAnalysisTests.util import get_userid
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -153,6 +154,8 @@ class TestUniverseCreation(object):
             else:
                 raise AssertionError
 
+    @pytest.mark.skipif(get_userid() == 0,
+                        reason="cannot permisssionerror as root")
     def test_Universe_invalidpermissionfile_IE_msg(self, tmpdir):
         # check for file with invalid permissions (eg. no read access)
         with tmpdir.as_cwd():
@@ -398,7 +401,7 @@ class TestGuessBonds(object):
      - fail properly if not
      - work again if vdwradii are passed.
     """
-    @pytest.fixture()
+    @pytest.fixture(scope='module')
     def vdw(self):
         return {'A': 1.4, 'B': 0.5}
 
@@ -424,7 +427,7 @@ class TestGuessBonds(object):
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
         with pytest.raises(ValueError):
-            mda.Universe(two_water_gro_nonames, guess_bonds = True)
+            mda.Universe(two_water_gro_nonames, guess_bonds=True)
 
     def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
@@ -440,6 +443,17 @@ class TestGuessBonds(object):
         for attr in ('bonds', 'angles', 'dihedrals'):
             assert not hasattr(u, attr)
         assert not u.kwargs['guess_bonds']
+
+    def test_universe_guess_bonds_arguments(self):
+        """Test if 'fudge_factor', and 'lower_bound' parameters
+        are being passed correctly.
+        """
+        u = mda.Universe(two_water_gro, guess_bonds=True)
+        
+        self._check_universe(u)
+        assert u.kwargs["guess_bonds"]
+        assert u.kwargs["fudge_factor"]
+        assert u.kwargs["lower_bound"]
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
@@ -458,13 +472,25 @@ class TestGuessBonds(object):
         assert_equal(len(u.atoms[4].bonds), 0)
         assert_equal(len(u.atoms[5].bonds), 0)
 
-    def test_atomgroup_guess_bonds(self):
+    @pytest.mark.parametrize(
+        'ff, lb, nbonds',
+        [
+            (0.55, 0.1, 2), (0.9, 1.6, 1),
+            (0.5, 0.2, 2), (0.1, 0.1, 0)
+        ]
+    )
+    def test_atomgroup_guess_bonds(self, ff, lb, nbonds):
         """Test an atomgroup doing guess bonds"""
         u = mda.Universe(two_water_gro)
 
         ag = u.atoms[:3]
-        ag.guess_bonds()
-        self._check_atomgroup(ag, u)
+        ag.guess_bonds(fudge_factor=ff, lower_bound=lb)
+        # Apply '_check_atomgroup()' only in case of default values for
+        # 'fudge_factor', and 'lower_bound' arguments to avoid unnecessary
+        # errors.
+        if ff == 0.55 and lb == 0.1:
+            self._check_atomgroup(ag, u)
+        assert len(ag.bonds) == nbonds
 
     def test_atomgroup_guess_bonds_no_vdwradii(self):
         u = mda.Universe(two_water_gro_nonames)
@@ -1278,6 +1304,11 @@ class TestEmpty(object):
 
         assert len(u.atoms) == 10
         assert u.atoms.positions.shape == (10, 3)
+
+    def test_trajectory_multiple_frames(self):
+        u = mda.Universe.empty(10, n_frames=5)
+
+        assert_equal(u.trajectory.n_frames, 5)
 
     def test_trajectory_iteration(self):
         u = mda.Universe.empty(10, trajectory=True)

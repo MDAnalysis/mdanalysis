@@ -1,0 +1,31 @@
+linux_aarch64_task:
+  arm_container:
+    image: python:latest
+    cpu: 8
+    memory: 8G
+
+  ci_script: |
+    python3 --version
+    python3 -m venv mda-dev
+    source mda-dev/bin/activate
+    python3 -m pip install ./package
+    python3 -m pip install ./testsuite
+    python3 -m pip install pytest-xdist pytest-timeout
+    python3 -m pytest --timeout=200 -n 8 ./testsuite/MDAnalysisTests
+
+
+macos_arm64_task:
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-ventura-base:latest
+
+  ci_script: |
+    brew update
+    brew install python@3.12
+    /opt/homebrew/bin/python3 -m venv ~/py_312
+    source ~/py_312/bin/activate
+    cd package
+    python -m pip install .
+    cd ../testsuite
+    python -m pip install .
+    python -m pip install pytest pytest-xdist pytest-timeout
+    python -m pytest --timeout=200 -n auto MDAnalysisTests

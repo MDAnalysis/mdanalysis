@@ -422,7 +422,7 @@ class _MutableBase(object):
             indices = self.atoms.ix_array
         except AttributeError:  # if self is an Atom
             indices = self.ix_array
-        seen = [np.in1d(col, indices) for col in ugroup._bix.T]
+        seen = [np.isin(col, indices) for col in ugroup._bix.T]
         mask = func(seen, axis=0)
         return ugroup[mask]
 
@@ -1071,7 +1071,7 @@ class GroupBase(_MutableBase):
                 return coords.mean(axis=0)
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
-            return (coords * weights[:, None]).sum(axis=0) / weights.sum()
+            return np.einsum('ij,ij->j',coords,weights[:, None]) / weights.sum()
 
         # When compound split caching gets implemented it will be clever to
         # preempt at this point whether or not stable sorting will be needed
@@ -1100,7 +1100,7 @@ class GroupBase(_MutableBase):
                 _centers = _coords.mean(axis=1)
             else:
                 _weights = weights[atom_mask]
-                _centers = (_coords * _weights[:, :, None]).sum(axis=1)
+                _centers = np.einsum('ijk,ijk->ik',_coords,_weights[:, :, None])
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
         if wrap:
@@ -1864,7 +1864,7 @@ class GroupBase(_MutableBase):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = np.sum(positions * masses[:, None], axis=0)
+                    refpos = np.einsum('ij,ij->j',positions,masses[:, None])
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
@@ -1893,8 +1893,8 @@ class GroupBase(_MutableBase):
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "the {} is zero.".format(comp))
-                        refpos = np.sum(positions[atom_mask]
-                                        * masses[:, :, None], axis=1)
+                        refpos = np.einsum('ijk,ijk->ik',positions[atom_mask],
+                                           masses[:, :, None])
                         refpos /= total_mass[:, None]
                     else:  # reference == 'cog'
                         refpos = positions[atom_mask].mean(axis=1)
@@ -2154,7 +2154,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
-        in_other = np.in1d(self.ix, o_ix)  # mask of in self.ix AND other
+        in_other = np.isin(self.ix, o_ix)  # mask of in self.ix AND other
         return self[~in_other]  # ie inverse of previous mask
 
     @_only_same_level
@@ -3276,24 +3276,38 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None):
-        """Guess bonds that exist within this :class:`AtomGroup` and add them to
-        the underlying :attr:`~AtomGroup.universe`.
+    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1):
+        """Guess bonds, angles, and dihedrals between the atoms in this
+        :class:`AtomGroup` and add them to the underlying
+        :attr:`~AtomGroup.universe`.
 
         Parameters
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
 
+        fudge_factor : float, optional
+            The factor by which atoms must overlap each other to be considered
+            a bond.  Larger values will increase the number of bonds found. [0.55]
+        lower_bound : float, optional
+            The minimum bond length. All bonds found shorter than this length
+            will be ignored. This is useful for parsing PDB with altloc records
+            where atoms with altloc A and B may be very close together and
+            there should be no chemical bond between them. [0.1]
 
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`
+        :func:`MDAnalysis.topology.guessers.guess_angles`
+        :func:`MDAnalysis.topology.guessers.guess_dihedrals`
 
 
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
+        .. versionchanged:: 2.5.0
+           Corrected misleading docs, and now allows passing of `fudge_factor`
+           and `lower_bound` arguments.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -3308,9 +3322,15 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions)
-        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
+        b = guess_bonds(
+            self.atoms,
+            self.atoms.positions,
+            vdwradii=vdwradii,
+            box=self.dimensions,
+            fudge_factor=fudge_factor,
+            lower_bound=lower_bound,
+        )
+        bondattr = get_TopAttr(self.universe, "bonds", Bonds)
         bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)

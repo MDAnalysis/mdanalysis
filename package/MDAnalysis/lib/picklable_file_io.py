@@ -109,16 +109,24 @@ class FileIOPicklable(io.FileIO):
         self._mode = mode
         super().__init__(name, mode)
 
-    def __getstate__(self):
+
+    def __setstate__(self, state):
+        name = state["name_val"]
+        self.__init__(name, mode='r')
+        try:
+            self.seek(state["tell_val"])
+        except KeyError:
+            pass
+
+
+    def __reduce_ex__(self, prot):
         if self._mode != 'r':
             raise RuntimeError("Can only pickle files that were opened "
                                "in read mode, not {}".format(self._mode))
-        return self.name, self.tell()
-
-    def __setstate__(self, args):
-        name = args[0]
-        self.__init__(name, mode='r')
-        self.seek(args[1])
+        return (self.__class__,
+                (self.name, self._mode),
+                {"name_val": self.name,
+                 "tell_val": self.tell()})
 
 
 class BufferIOPicklable(io.BufferedReader):
@@ -152,18 +160,22 @@ class BufferIOPicklable(io.BufferedReader):
         self.raw_class = raw.__class__
 
 
-    def __getstate__(self):
-        return self.raw_class, self.name, self.tell()
-
-
-    def __setstate__(self, args):
-        # raw in BufferIOPicklable is immutable.
-        # need to reconstruct from class
-        raw_class = args[0]
-        name = args[1]
+    def __setstate__(self, state):
+        raw_class = state["raw_class"]
+        name = state["name_val"]
         raw = raw_class(name)
         self.__init__(raw)
-        self.seek(args[2])
+        self.seek(state["tell_val"])
+
+    def __reduce_ex__(self, prot):
+        # don't ask, for Python 3.12+ see:
+        # https://github.com/python/cpython/pull/104370
+        return (self.raw_class,
+                (self.name,),
+                {"raw_class": self.raw_class,
+                 "name_val": self.name,
+                 "tell_val": self.tell()})
+
 
 class TextIOPicklable(io.TextIOWrapper):
     """Character and line based picklable file-like object.
@@ -189,7 +201,7 @@ class TextIOPicklable(io.TextIOWrapper):
 
 
     .. versionadded:: 2.0.0
-    .. versionchanged:: 2.4.0
+    .. versionchanged:: 2.7.0
        The raw class instance instead of the class name
        that is wrapped inside will be serialized.
        After deserialization, the current position is no longer reset
@@ -198,21 +210,35 @@ class TextIOPicklable(io.TextIOWrapper):
     """
     def __init__(self, raw):
         super().__init__(raw)
-        self.raw = raw
+        self.raw_class = raw.__class__
 
-    def __getstate__(self):
+    def __setstate__(self, args):
+        raw_class = args["raw_class"]
+        name = args["name_val"]
+        tell = args["tell_val"]
+        # raw_class is used for further expansion this functionality to
+        # Gzip files, which also requires a text wrapper.
+        raw = raw_class(name)
+        self.__init__(raw)
+        if tell is not None:
+            self.seek(tell)
+
+    def __reduce_ex__(self, prot):
         try:
             curr_loc = self.tell()
         # some readers (e.g. GMS) disable tell() due to using next()
         except OSError:
             curr_loc = None
-        return self.raw, curr_loc
-
-    def __setstate__(self, args):
-        raw = args[0]
-        self.__init__(raw)
-        if args[1] is not None:
-            self.seek(args[1])
+        try:
+            name = self.name
+        except AttributeError:
+            # This is kind of ugly--BZ2File does not save its name.
+            name = self.buffer._fp.name
+        return (self.__class__.__new__,
+                (self.__class__,),
+                {"raw_class": self.raw_class,
+                 "name_val": name,
+                 "tell_val": curr_loc})
 
 
 class BZ2Picklable(bz2.BZ2File):
@@ -270,11 +296,16 @@ class BZ2Picklable(bz2.BZ2File):
         if not self._bz_mode.startswith('r'):
             raise RuntimeError("Can only pickle files that were opened "
                                "in read mode, not {}".format(self._bz_mode))
-        return self._fp.name, self.tell()
+        return {"name_val": self._fp.name, "tell_val": self.tell()}
 
     def __setstate__(self, args):
-        self.__init__(args[0])
-        self.seek(args[1])
+        name = args["name_val"]
+        tell = args["tell_val"]
+        self.__init__(name)
+        try:
+            self.seek(tell)
+        except KeyError:
+            pass
 
 
 class GzipPicklable(gzip.GzipFile):
@@ -332,11 +363,17 @@ class GzipPicklable(gzip.GzipFile):
         if not self._gz_mode.startswith('r'):
             raise RuntimeError("Can only pickle files that were opened "
                                "in read mode, not {}".format(self._gz_mode))
-        return self.name, self.tell()
+        return {"name_val": self.name,
+                "tell_val": self.tell()}
 
     def __setstate__(self, args):
-        self.__init__(args[0])
-        self.seek(args[1])
+        name = args["name_val"]
+        tell = args["tell_val"]
+        self.__init__(name)
+        try:
+            self.seek(tell)
+        except KeyError:
+            pass
 
 
 def pickle_open(name, mode='rt'):

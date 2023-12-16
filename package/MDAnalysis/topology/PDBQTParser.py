@@ -40,7 +40,7 @@ deduced. Masses are guessed and set to 0 if unknown.
 
 See Also
 --------
-`MDAnalysis.coordinates.PDBQT`
+:class:`MDAnalysis.coordinates.PDBQT`
 
 
 Classes
@@ -75,6 +75,7 @@ from ..core.topologyattrs import (
     Resnums,
     Resnames,
     Segids,
+    ChainIDs,
     Tempfactors,
 )
 
@@ -88,7 +89,7 @@ class PDBQTParser(TopologyReaderBase):
      - atom names
      - altLocs
      - resnames
-     - chainIDs (becomes segid)
+     - chainIDs (assigned to segid as well)
      - resids
      - record_types (ATOM/HETATM)
      - icodes
@@ -97,11 +98,16 @@ class PDBQTParser(TopologyReaderBase):
      - charges
 
     Guesses the following:
-     - elements
      - masses
 
     .. versionchanged:: 0.18.0
        Added parsing of Record types
+    .. versionchanged:: 2.7.0
+       Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,
+       are now ignored. See Autodock's `reference`_.
+
+       .. _reference: 
+          https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
     """
     format = 'PDBQT'
 
@@ -140,7 +146,7 @@ class PDBQTParser(TopologyReaderBase):
                 icodes.append(line[26:27].strip())
                 occupancies.append(float(line[54:60]))
                 tempfactors.append(float(line[60:66]))
-                charges.append(float(line[66:76]))
+                charges.append(float(line[70:76]))
                 atomtypes.append(line[77:80].strip())
 
         n_atoms = len(serials)
@@ -165,6 +171,8 @@ class PDBQTParser(TopologyReaderBase):
         icodes = np.array(icodes, dtype=object)
         resnames = np.array(resnames, dtype=object)
         chainids = np.array(chainids, dtype=object)
+
+        attrs.append(ChainIDs(chainids))
 
         residx, (resids, icodes, resnames, chainids) = change_squash(
             (resids, icodes), (resids, icodes, resnames, chainids))

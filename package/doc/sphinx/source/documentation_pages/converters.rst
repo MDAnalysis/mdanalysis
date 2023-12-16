@@ -52,3 +52,11 @@ Another syntax is also available for tab-completion support::
 
     core/accessors
 
+
+Developers may find the :mod:`MDAnaylsis.converters.base` module helpful for
+creating new converter classes.
+
+.. toctree::
+   :maxdepth: 1
+
+   converters/base
