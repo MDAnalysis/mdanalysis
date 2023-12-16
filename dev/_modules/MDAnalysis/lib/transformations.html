@@ -786,7 +786,7 @@
 <span class="sd">    &gt;&gt;&gt; np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0])</span>
 <span class="sd">    array([-1., -1., -1.,  1.])</span>
 <span class="sd">    &gt;&gt;&gt; np.dot(M, [frustrum[1], frustrum[3], frustrum[5], 1.0])</span>
-<span class="sd">    array([ 1.,  1.,  1.,  1.])</span>
+<span class="sd">    array([1., 1., 1., 1.])</span>
 <span class="sd">    &gt;&gt;&gt; M = clip_matrix(perspective=True, *frustrum)</span>
 <span class="sd">    &gt;&gt;&gt; v = np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0])</span>
 <span class="sd">    &gt;&gt;&gt; v / v[3]</span>
@@ -1198,7 +1198,7 @@
 <span class="sd">    ai, aj, ak : Euler&#39;s roll, pitch and yaw angles</span>
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
 
-<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (euler_matrix</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (euler_matrix,</span>
 <span class="sd">    ... _AXES2TUPLE, _TUPLE2AXES)</span>
 <span class="sd">    &gt;&gt;&gt; import math</span>
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
@@ -1630,7 +1630,7 @@
 <span class="sd">    &gt;&gt;&gt; q = quaternion_slerp(q0, q1, 0.5)</span>
 <span class="sd">    &gt;&gt;&gt; angle = math.acos(np.dot(q0, q))</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(2.0, math.acos(np.dot(q0, q1)) / angle) or \</span>
-<span class="sd">        np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle)</span>
+<span class="sd">    ... np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle)</span>
 <span class="sd">    True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
