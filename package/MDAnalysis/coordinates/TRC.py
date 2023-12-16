@@ -119,7 +119,7 @@ class TRCReader(base.ReaderBase):
         "BFACTOR",
         "AEDSS",
     ]
-    
+
     @store_init_arguments
     def __init__(self, filename, convert_units=True, **kwargs):
         super(TRCReader, self).__init__(filename, **kwargs)
@@ -150,21 +150,13 @@ class TRCReader(base.ReaderBase):
     @cached("n_atoms")
     def n_atoms(self):
         """The number of atoms in one frame."""
-        return self._read_atom_count()
-
-    def _read_atom_count(self):
-        n_atoms = self.traj_properties["n_atoms"]
-        return n_atoms
+        return self.traj_properties["n_atoms"]
 
     @property
     @cached("n_frames")
     def n_frames(self):
         """The number of frames in the trajectory."""
-        return self._read_frame_count()
-
-    def _read_frame_count(self):
-        n_frames = self.traj_properties["n_frames"]
-        return n_frames
+        return self.traj_properties["n_frames"]
 
     def _frame_to_ts(self, frameDat, ts):
         """Convert a frame to a :class:`TimeStep`"""
@@ -204,7 +196,7 @@ class TRCReader(base.ReaderBase):
             for line in iter(f.readline, ""):
                 for blockname in TRCReader.SUPPORTED_BLOCKS:
                     if (blockname == line.strip()) and (blockname != "TITLE"):
-                        # Save the name of the first non-Title block
+                        # Save the name of the first non-title block
                         # in the trajectory file
                         first_block = blockname
 
@@ -234,7 +226,7 @@ class TRCReader(base.ReaderBase):
                     frame_counter += 1
 
                 #
-                # Timestep-Block
+                # Timestep-block
                 #
                 if "TIMESTEP" == line.strip():
                     lastline_was_timestep = True
@@ -244,12 +236,12 @@ class TRCReader(base.ReaderBase):
                     lastline_was_timestep = False
 
                 #
-                # Coordinates-Block
+                # Coordinates-block
                 #
                 if "POSITIONRED" == line.strip():
                     in_positionred_block = True
 
-                if (in_positionred_block is True) and (n_atoms == 0):
+                elif (in_positionred_block is True) and (n_atoms == 0):
                     if len(line.split()) == 3:
                         atom_counter += 1
 
