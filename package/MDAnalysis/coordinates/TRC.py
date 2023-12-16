@@ -128,9 +128,9 @@ class TRCReader(base.ReaderBase):
         # (trj suffix can come up when trajectory obtained from clustering)
         ext = pathlib.Path(self.filename).suffix
         if (ext[1:] == "trc") or (ext[1:] == "trj"):
-            self.compression = None
+            self.compressed = None
         else:
-            self.compression = ext[1:]
+            self.compressed = ext[1:]
 
         self.trcfile = util.anyopen(self.filename)
         self.convert_units = convert_units
