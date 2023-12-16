@@ -20,6 +20,7 @@ The rules for this file:
  * 2.7.0
 
 Fixes
+  * Fix doctest errors of lib/transformations.py (Issue #3925, PR #4370)
   * Fix documentation building errors due to `html_static_path` and unindented
     block of code (Issue #4362, PR #4365)
   * Updated cimport for numpy to maintain cimport consistency (Issue #3908)
