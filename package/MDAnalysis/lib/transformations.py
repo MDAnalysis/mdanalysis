@@ -1031,7 +1031,7 @@ def euler_matrix(ai, aj, ak, axes='sxyz'):
     ai, aj, ak : Euler's roll, pitch and yaw angles
     axes : One of 24 axis sequences as string or encoded tuple
 
-    >>> from MDAnalysis.lib.transformations import (euler_matrix
+    >>> from MDAnalysis.lib.transformations import (euler_matrix,
     ... _AXES2TUPLE, _TUPLE2AXES)
     >>> import math
     >>> import numpy as np
