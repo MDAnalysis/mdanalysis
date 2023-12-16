@@ -628,7 +628,7 @@ def clip_matrix(left, right, bottom, top, near, far, perspective=False):
     >>> np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0])
     array([-1., -1., -1.,  1.])
     >>> np.dot(M, [frustrum[1], frustrum[3], frustrum[5], 1.0])
-    array([ 1.,  1.,  1.,  1.])
+    array([1., 1., 1., 1.])
     >>> M = clip_matrix(perspective=True, *frustrum)
     >>> v = np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0])
     >>> v / v[3]
