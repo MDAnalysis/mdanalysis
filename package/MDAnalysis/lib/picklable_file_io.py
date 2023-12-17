@@ -91,11 +91,13 @@ class FileIOPicklable(io.FileIO):
     -------
     ::
 
+        >>> import pickle
+        >>> from MDAnalysis.tests.datafiles import PDB
         >>> file = FileIOPicklable(PDB)
-        >>> file.readline()
+        >>> _ = file.readline()
         >>> file_pickled = pickle.loads(pickle.dumps(file))
         >>> print(file.tell(), file_pickled.tell())
-            55 55
+        55 55
 
     See Also
     ---------
