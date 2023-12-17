@@ -29,6 +29,8 @@ Fixes
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
+  * Fix doctests failing from separated blocks of imports and 
+    execution and incorrectly formatted test output (Issue #3925, PR #4366)
 
 Enhancements
   * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
