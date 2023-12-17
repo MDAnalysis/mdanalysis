@@ -15,7 +15,8 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya
+         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya,
+         JoStoe
 
  * 2.7.0
 
@@ -34,6 +35,7 @@ Fixes
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
+  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
   * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
   * Refactor c_distances backend to have a cython .pxd header and expose in
     libmdanalysis (Issue #4315, PR #4324)
