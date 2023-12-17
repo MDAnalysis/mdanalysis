@@ -1717,7 +1717,7 @@ Changes
     they are part of the Universe topology (Issue #1092 PR #1186)
 
 
-06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal, bsipocz
 
   * 0.16.2
 
@@ -1792,7 +1792,7 @@ Changes
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
-         xiki-tempula, kash1102, Akshay0724
+         xiki-tempula, kash1102, Akshay0724, bsipocz
 
   * 0.16.0
 
