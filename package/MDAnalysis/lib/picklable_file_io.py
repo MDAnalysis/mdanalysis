@@ -331,11 +331,13 @@ class GzipPicklable(gzip.GzipFile):
     -------
     ::
 
+        >>> import pickle
+        >>> from MDAnalysis.tests.datafiles import MMTF_gz
         >>> file = GzipPicklable(MMTF_gz)
-        >>> file.readline()
+        >>> _ = file.readline()
         >>> file_pickled = pickle.loads(pickle.dumps(file))
         >>> print(file.tell(), file_pickled.tell())
-            1218 1218
+        1218 1218
 
     See Also
     ---------
