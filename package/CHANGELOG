@@ -3097,7 +3097,7 @@ Testsuite
     removal in 0.8
   * uses cython instead of pyrex
 
-11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
+11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose, dspoel
   * major release 0.7.0
     (includes changes that can BREAK BACKWARDS COMPATIBILITY)
   * Removed ALL DEPRECATED code:
