@@ -138,7 +138,7 @@ To **fit a whole trajectory** to a reference structure with the
    >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
    >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
    >>> alignment.run()
-   <MDAnalysis.analysis.align.AlignTraj object at ...> 
+   <MDAnalysis.analysis.align.AlignTraj object at ...
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows
