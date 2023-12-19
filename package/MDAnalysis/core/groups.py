@@ -99,8 +99,7 @@ import os
 import contextlib
 import warnings
 
-from .. import (_CONVERTERS,
-                _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
+from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique,
                         unique_int_1d, unique_int_1d_unsorted,
@@ -1099,7 +1098,7 @@ class GroupBase(_MutableBase):
                 return coords.mean(axis=0)
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
-            return np.einsum('ij,ij->j',coords,weights[:, None]) / weights.sum()
+            return np.einsum("ij,ij->j", coords, weights[:, None]) / weights.sum()
 
         # When compound split caching gets implemented it will be clever to
         # preempt at this point whether or not stable sorting will be needed
@@ -1911,10 +1910,12 @@ class GroupBase(_MutableBase):
                     masses = unique_atoms.masses
                     total_mass = masses.sum()
                     if np.isclose(total_mass, 0.0):
-                        raise ValueError("Cannot perform unwrap with "
-                                         "reference='com' because the total "
-                                         "mass of the group is zero.")
-                    refpos = np.einsum('ij,ij->j', positions, masses[:, None])
+                        raise ValueError(
+                            "Cannot perform unwrap with "
+                            "reference='com' because the total "
+                            "mass of the group is zero."
+                        )
+                    refpos = np.einsum("ij,ij->j", positions, masses[:, None])
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
@@ -2028,7 +2029,7 @@ class GroupBase(_MutableBase):
 
         .. doctest:: GroupBase.groupby
            :options: +NORMALIZE_WHITESPACE
-     
+
            >>> group_dict = ag.groupby(['resnames', 'masses'])
            >>> dict(sorted(group_dict.items()))
            {('ALA', 1.008): <AtomGroup with 95 atoms>,
@@ -3103,7 +3104,7 @@ class AtomGroup(GroupBase):
            ...       updating=True)
            <AtomGroup with 454 atoms, with selection
            'resname SOL and around 2.0 protein' on the entire Universe.>
-        
+
         Notes
         -----
 
@@ -3201,10 +3202,11 @@ class AtomGroup(GroupBase):
                     universe = mda.Universe(PSF, DCD)
                     guessed_elements = guess_types(universe.atoms.names)
                     universe.add_TopologyAttr('elements', guessed_elements)
-                    
+
                 .. doctest:: AtomGroup.select_atoms.smarts
 
-                    >>> universe.select_atoms("smarts C", smarts_kwargs={"maxMatches": 100})
+                    >>> universe.select_atoms("smarts C", smarts_kwargs=
+                    ...                                   {"maxMatches": 100})
                     <AtomGroup with 100 atoms>
 
             chiral *R | S*
