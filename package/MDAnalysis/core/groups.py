@@ -114,7 +114,7 @@ from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
 from . import topologyobjects
-from ._get_readers import get_writer_for
+from ._get_readers import get_writer_for, get_converter_for
 
 
 def _unpickle(u, ix):
@@ -367,6 +367,7 @@ class _MutableBase(object):
 
             # property of wrong group/component
             if not isinstance(self, clstype):
+                mname = 'property' if isinstance(meth, property) else 'method'
                 err = '{attr} is a {method} of {clstype}, not {selfcls}'
                 clsname = clstype.__name__
                 if clsname == 'GroupBase':
@@ -618,9 +619,9 @@ class GroupBase(_MutableBase):
 
     def __repr__(self):
         name = self.level.name
-        return ("<{}Group with {} {}{}>""".format(
-            name.capitalize(), len(self),
-            name, "s"[len(self) == 1:]))  # Shorthand for a conditional plural 's'.
+        return ("<{}Group with {} {}{}>"
+                "".format(name.capitalize(), len(self), name,
+                          "s"[len(self) == 1:]))  # Shorthand for a conditional plural 's'.
 
     def __str__(self):
         name = self.level.name
@@ -968,10 +969,10 @@ class GroupBase(_MutableBase):
             compound_masks.append(compound_sizes == compound_size)
             if needs_sorting:
                 atom_masks.append(sort_indices[size_per_atom == compound_size]
-                                  .reshape(-1, compound_size))
+                                   .reshape(-1, compound_size))
             else:
                 atom_masks.append(np.where(size_per_atom == compound_size)[0]
-                                  .reshape(-1, compound_size))
+                                   .reshape(-1, compound_size))
 
         return atom_masks, compound_masks, len(compound_sizes)
 
@@ -1127,7 +1128,7 @@ class GroupBase(_MutableBase):
                 _centers = _coords.mean(axis=1)
             else:
                 _weights = weights[atom_mask]
-                _centers = np.einsum('ijk,ijk->ik', _coords, _weights[:, :, None])
+                _centers = np.einsum('ijk,ijk->ik',_coords,_weights[:, :, None])
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
         if wrap:
@@ -1913,7 +1914,7 @@ class GroupBase(_MutableBase):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = np.einsum('ij,ij->j', positions, masses[:, None])
+                    refpos = np.einsum('ij,ij->j',positions,masses[:, None])
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
@@ -1925,8 +1926,8 @@ class GroupBase(_MutableBase):
             # When unwrapping and not shifting with a cog/com reference we
             # need to make sure that the first atom of each compound is stable
             # regarding sorting.
-            atom_masks = unique_atoms._split_by_compound_indices(
-                comp, stable_sort=reference is None)[0]
+            atom_masks = unique_atoms._split_by_compound_indices(comp,
+                                              stable_sort=reference is None)[0]
             positions = unique_atoms.positions
             for atom_mask in atom_masks:
                 for mask in atom_mask:
@@ -1942,7 +1943,7 @@ class GroupBase(_MutableBase):
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "the {} is zero.".format(comp))
-                        refpos = np.einsum('ijk,ijk->ik', positions[atom_mask],
+                        refpos = np.einsum('ijk,ijk->ik',positions[atom_mask],
                                            masses[:, :, None])
                         refpos /= total_mass[:, None]
                     else:  # reference == 'cog'
@@ -2701,8 +2702,8 @@ class AtomGroup(GroupBase):
             except AttributeError:
                 errmsg = ("Can only set AtomGroup residues to Residue "
                           "or ResidueGroup not {}".format(
-                              ', '.join(type(r) for r in new
-                                        if not isinstance(r, Residue))))
+                          ', '.join(type(r) for r in new
+                                    if not isinstance(r, Residue))))
                 raise TypeError(errmsg) from None
         if not isinstance(r_ix, itertools.cycle) and len(r_ix) != len(self):
             raise ValueError("Incorrect size: {} for AtomGroup of size: {}"
@@ -3701,7 +3702,7 @@ class AtomGroup(GroupBase):
         # provided explicitly. If not, then we need to figure out if we write
         # multiple frames or not.
         multiframe = kwargs.pop('multiframe', None)
-        if len(trj_frames) > 1 and multiframe is False:
+        if len(trj_frames) > 1 and multiframe == False:
             raise ValueError(
                 'Cannot explicitely set "multiframe" to False and request '
                 'more than 1 frame with the "frames" keyword argument.'
@@ -3739,8 +3740,7 @@ class AtomGroup(GroupBase):
             # here `file_format` is only used as default,
             # anything pulled off `filename` will be used preferentially
             writer = get_selection_writer_for(filename,
-                                              file_format if file_format is not None
-                                              else 'PDB')
+                                              file_format if file_format is not None else 'PDB')
         except (TypeError, NotImplementedError):
             pass
         else:
