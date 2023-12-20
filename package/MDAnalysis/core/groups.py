@@ -79,15 +79,15 @@ that two objects are of the same level, or to access a particular class
 
 .. code-block:: python
 
-   u = mda.Universe()
+    u = mda.Universe()
 
-   ag = u.atoms[:10]
-   at = u.atoms[11]
+    ag = u.atoms[:10]
+    at = u.atoms[11]
 
-   ag.level == at.level  # Returns True
+    ag.level == at.level  # Returns True
 
-   ag.level.singular  # Returns Atom class
-   at.level.plural  # Returns AtomGroup class
+    ag.level.singular  # Returns Atom class
+    at.level.plural  # Returns AtomGroup class
 
 """
 from collections import namedtuple
@@ -113,7 +113,7 @@ from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
 from . import topologyobjects
-from ._get_readers import get_writer_for, get_converter_for
+from ._get_readers import get_writer_for
 
 
 def _unpickle(u, ix):
@@ -366,7 +366,6 @@ class _MutableBase(object):
 
             # property of wrong group/component
             if not isinstance(self, clstype):
-                mname = 'property' if isinstance(meth, property) else 'method'
                 err = '{attr} is a {method} of {clstype}, not {selfcls}'
                 clsname = clstype.__name__
                 if clsname == 'GroupBase':
@@ -618,9 +617,9 @@ class GroupBase(_MutableBase):
 
     def __repr__(self):
         name = self.level.name
-        return ("<{}Group with {} {}{}>"
-                "".format(name.capitalize(), len(self), name,
-                          "s"[len(self) == 1:]))  # Shorthand for a conditional plural 's'.
+        return ("<{}Group with {} {}{}>""".format(
+            name.capitalize(), len(self),
+            name, "s"[len(self) == 1:]))  # Shorthand for a conditional plural 's'.
 
     def __str__(self):
         name = self.level.name
@@ -774,22 +773,22 @@ class GroupBase(_MutableBase):
 
         .. testsetup:: GroupBase.isunique
 
-           from MDAnalysis.tests.datafiles import PDB, XTC
-           import MDAnalysis as mda
-           u = mda.Universe(PDB, XTC)
+            from MDAnalysis.tests.datafiles import PDB, XTC
+            import MDAnalysis as mda
+            u = mda.Universe(PDB, XTC)
 
         .. doctest:: GroupBase.isunique
 
-           >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
-           >>> ag
-           <AtomGroup with 6 atoms>
-           >>> ag.isunique
-           False
-           >>> ag2 = ag.unique
-           >>> ag2
-           <AtomGroup with 3 atoms>
-           >>> ag2.isunique
-           True
+            >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
+            >>> ag
+            <AtomGroup with 6 atoms>
+            >>> ag.isunique
+            False
+            >>> ag2 = ag.unique
+            >>> ag2
+            <AtomGroup with 3 atoms>
+            >>> ag2.isunique
+            True
 
         See Also
         --------
@@ -968,10 +967,10 @@ class GroupBase(_MutableBase):
             compound_masks.append(compound_sizes == compound_size)
             if needs_sorting:
                 atom_masks.append(sort_indices[size_per_atom == compound_size]
-                                   .reshape(-1, compound_size))
+                                  .reshape(-1, compound_size))
             else:
                 atom_masks.append(np.where(size_per_atom == compound_size)[0]
-                                   .reshape(-1, compound_size))
+                                  .reshape(-1, compound_size))
 
         return atom_masks, compound_masks, len(compound_sizes)
 
@@ -1127,7 +1126,7 @@ class GroupBase(_MutableBase):
                 _centers = _coords.mean(axis=1)
             else:
                 _weights = weights[atom_mask]
-                _centers = np.einsum('ijk,ijk->ik',_coords,_weights[:, :, None])
+                _centers = np.einsum('ijk,ijk->ik', _coords, _weights[:, :, None])
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
         if wrap:
@@ -1927,8 +1926,8 @@ class GroupBase(_MutableBase):
             # When unwrapping and not shifting with a cog/com reference we
             # need to make sure that the first atom of each compound is stable
             # regarding sorting.
-            atom_masks = unique_atoms._split_by_compound_indices(comp,
-                                              stable_sort=reference is None)[0]
+            atom_masks = unique_atoms._split_by_compound_indices(
+                comp, stable_sort=reference is None)[0]
             positions = unique_atoms.positions
             for atom_mask in atom_masks:
                 for mask in atom_mask:
@@ -1944,7 +1943,7 @@ class GroupBase(_MutableBase):
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "the {} is zero.".format(comp))
-                        refpos = np.einsum('ijk,ijk->ik',positions[atom_mask],
+                        refpos = np.einsum('ijk,ijk->ik', positions[atom_mask],
                                            masses[:, :, None])
                         refpos /= total_mass[:, None]
                     else:  # reference == 'cog'
@@ -2010,39 +2009,39 @@ class GroupBase(_MutableBase):
 
         .. testsetup:: GroupBase.groupby
 
-           from MDAnalysis.tests.datafiles import PSF, DCD
-           import MDAnalysis as mda
-           u = mda.Universe(PSF, DCD)
-           ag = u.atoms
+            from MDAnalysis.tests.datafiles import PSF, DCD
+            import MDAnalysis as mda
+            u = mda.Universe(PSF, DCD)
+            ag = u.atoms
 
         .. doctest:: GroupBase.groupby
            :options: +NORMALIZE_WHITESPACE
 
-           >>> ag.groupby('masses')
-           {32.06: <AtomGroup with 7 atoms>,
-            1.008: <AtomGroup with 1685 atoms>,
-            12.011: <AtomGroup with 1040 atoms>,
-            14.007: <AtomGroup with 289 atoms>,
-            15.999: <AtomGroup with 320 atoms>}
+            >>> ag.groupby('masses')
+            {32.06: <AtomGroup with 7 atoms>,
+             1.008: <AtomGroup with 1685 atoms>,
+             12.011: <AtomGroup with 1040 atoms>,
+             14.007: <AtomGroup with 289 atoms>,
+             15.999: <AtomGroup with 320 atoms>}
 
         To group atoms with the same residue name and mass together:
 
         .. doctest:: GroupBase.groupby
            :options: +NORMALIZE_WHITESPACE
 
-           >>> group_dict = ag.groupby(['resnames', 'masses'])
-           >>> dict(sorted(group_dict.items()))
-           {('ALA', 1.008): <AtomGroup with 95 atoms>,
-            ('ALA', 12.011): <AtomGroup with 57 atoms>,
-            ('ALA', 14.007): <AtomGroup with 19 atoms>,
-            ('ALA', 15.999): <AtomGroup with 19 atoms>,
-            ('ARG', 1.008): <AtomGroup with 169 atoms>,
-            ...
+            >>> group_dict = ag.groupby(['resnames', 'masses'])
+            >>> dict(sorted(group_dict.items()))
+            {('ALA', 1.008): <AtomGroup with 95 atoms>,
+             ('ALA', 12.011): <AtomGroup with 57 atoms>,
+             ('ALA', 14.007): <AtomGroup with 19 atoms>,
+             ('ALA', 15.999): <AtomGroup with 19 atoms>,
+             ('ARG', 1.008): <AtomGroup with 169 atoms>,
+             ...
 
         .. doctest:: GroupBase.groupby
 
-           >>> ag.groupby(['resnames', 'masses'])['ALA', 15.999]
-           <AtomGroup with 19 atoms>
+            >>> ag.groupby(['resnames', 'masses'])['ALA', 15.999]
+            <AtomGroup with 19 atoms>
 
 
         .. versionadded:: 0.16.0
@@ -2094,19 +2093,19 @@ class GroupBase(_MutableBase):
 
         .. testsetup:: GroupBase.concatenate
 
-           from MDAnalysis.tests.datafiles import PDB, XTC
-           import MDAnalysis as mda
-           u = mda.Universe(PDB, XTC)
+            from MDAnalysis.tests.datafiles import PDB, XTC
+            import MDAnalysis as mda
+            u = mda.Universe(PDB, XTC)
 
         .. doctest:: GroupBase.concatenate
 
-           >>> ag1 = u.select_atoms('name O')
-           >>> ag2 = u.select_atoms('name N')
-           >>> ag3 = ag1 + ag2  # or ag1.concatenate(ag2)
-           >>> ag3[:3].names
-           array(['O', 'O', 'O'], dtype=object)
-           >>> ag3[-3:].names
-           array(['N', 'N', 'N'], dtype=object)
+            >>> ag1 = u.select_atoms('name O')
+            >>> ag2 = u.select_atoms('name N')
+            >>> ag3 = ag1 + ag2  # or ag1.concatenate(ag2)
+            >>> ag3[:3].names
+            array(['O', 'O', 'O'], dtype=object)
+            >>> ag3[-3:].names
+            array(['N', 'N', 'N'], dtype=object)
 
 
         .. versionadded:: 0.16.0
@@ -2140,17 +2139,17 @@ class GroupBase(_MutableBase):
 
         .. testsetup:: GroupBase.union
 
-           from MDAnalysis.tests.datafiles import PDB, XTC
-           import MDAnalysis as mda
-           u = mda.Universe(PDB, XTC)
+            from MDAnalysis.tests.datafiles import PDB, XTC
+            import MDAnalysis as mda
+            u = mda.Universe(PDB, XTC)
 
         .. doctest:: GroupBase.union
 
-           >>> ag1 = u.select_atoms('name O')
-           >>> ag2 = u.select_atoms('name N')
-           >>> ag3 = ag1 | ag2  # or ag1.union(ag2)
-           >>> ag3[:3].names
-           array(['N', 'O', 'N'], dtype=object)
+            >>> ag1 = u.select_atoms('name O')
+            >>> ag2 = u.select_atoms('name N')
+            >>> ag3 = ag1 | ag2  # or ag1.union(ag2)
+            >>> ag3[:3].names
+            array(['N', 'O', 'N'], dtype=object)
 
         See Also
         --------
@@ -2703,8 +2702,8 @@ class AtomGroup(GroupBase):
             except AttributeError:
                 errmsg = ("Can only set AtomGroup residues to Residue "
                           "or ResidueGroup not {}".format(
-                          ', '.join(type(r) for r in new
-                                    if not isinstance(r, Residue))))
+                              ', '.join(type(r) for r in new
+                                        if not isinstance(r, Residue))))
                 raise TypeError(errmsg) from None
         if not isinstance(r_ix, itertools.cycle) and len(r_ix) != len(self):
             raise ValueError("Incorrect size: {} for AtomGroup of size: {}"
@@ -2786,21 +2785,21 @@ class AtomGroup(GroupBase):
 
         .. doctest:: AtomGroup.unique
 
-           >>> import MDAnalysis as mda
-           >>> from MDAnalysis.tests.datafiles import PSF, DCD
-           >>> u = mda.Universe(PSF, DCD)
-           >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
-           >>> ag
-           <AtomGroup with 6 atoms>
-           >>> ag.ix
-           array([2, 1, 2, 2, 1, 0])
-           >>> ag2 = ag.unique
-           >>> ag2
-           <AtomGroup with 3 atoms>
-           >>> ag2.ix
-           array([0, 1, 2])
-           >>> ag2.unique is ag2
-           False
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysis.tests.datafiles import PSF, DCD
+            >>> u = mda.Universe(PSF, DCD)
+            >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
+            >>> ag
+            <AtomGroup with 6 atoms>
+            >>> ag.ix
+            array([2, 1, 2, 2, 1, 0])
+            >>> ag2 = ag.unique
+            >>> ag2
+            <AtomGroup with 3 atoms>
+            >>> ag2.ix
+            array([0, 1, 2])
+            >>> ag2.unique is ag2
+            False
 
         See Also
         --------
@@ -2844,29 +2843,28 @@ class AtomGroup(GroupBase):
 
         .. doctest:: AtomGroup.asunique
 
-           >>> import MDAnalysis as mda
-           >>> from MDAnalysis.tests.datafiles import PSF, DCD
-           >>> u = mda.Universe(PSF, DCD)
-           >>> ag = u.atoms[[2, 1, 0]]
-           >>> ag2 = ag.asunique(sorted=False)
-           >>> ag2 is ag
-           True
-           >>> ag2.ix
-           array([2, 1, 0])
-           >>> ag3 = ag.asunique(sorted=True)
-           >>> ag3 is ag
-           False
-           >>> ag3.ix
-           array([0, 1, 2])
-           >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
-           array([2, 1, 0])
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysis.tests.datafiles import PSF, DCD
+            >>> u = mda.Universe(PSF, DCD)
+            >>> ag = u.atoms[[2, 1, 0]]
+            >>> ag2 = ag.asunique(sorted=False)
+            >>> ag2 is ag
+            True
+            >>> ag2.ix
+            array([2, 1, 0])
+            >>> ag3 = ag.asunique(sorted=True)
+            >>> ag3 is ag
+            False
+            >>> ag3.ix
+            array([0, 1, 2])
+            >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
+            array([2, 1, 0])
 
 
         .. versionadded:: 2.0.0
         """
         return self._asunique(sorted=sorted, group=self.universe.atoms,
                               set_mask=True)
-
 
     @property
     def positions(self):
@@ -3043,23 +3041,23 @@ class AtomGroup(GroupBase):
 
         .. testsetup:: AtomGroup.select_atoms
 
-           from MDAnalysis.tests.datafiles import PSF, DCD
-           import MDAnalysis as mda
-           universe = mda.Universe(PSF, DCD)
+            from MDAnalysis.tests.datafiles import PSF, DCD
+            import MDAnalysis as mda
+            universe = mda.Universe(PSF, DCD)
 
         .. doctest:: AtomGroup.select_atoms
 
-           >>> sel = universe.select_atoms('resname MET GLY')
-           >>> sel
-           <AtomGroup with 245 atoms>
+            >>> sel = universe.select_atoms('resname MET GLY')
+            >>> sel
+            <AtomGroup with 245 atoms>
 
         is equivalent to
 
         .. doctest:: AtomGroup.select_atoms
 
-           >>> sel = universe.select_atoms('resname MET or resname GLY')
-           >>> sel
-           <AtomGroup with 245 atoms>
+            >>> sel = universe.select_atoms('resname MET or resname GLY')
+            >>> sel
+            <AtomGroup with 245 atoms>
 
         Will select all atoms with a residue name of either MET or GLY.
 
@@ -3067,24 +3065,24 @@ class AtomGroup(GroupBase):
 
         .. doctest:: AtomGroup.select_atoms
 
-           >>> sel = universe.select_atoms("segid 4AKE and not ( name H* O* )")
-           >>> sel
-           <AtomGroup with 1336 atoms>
+            >>> sel = universe.select_atoms("segid 4AKE and not ( name H* O* )")
+            >>> sel
+            <AtomGroup with 1336 atoms>
 
         Existing :class:`AtomGroup` objects can be passed as named arguments,
         which will then be available to the selection parser.
 
         .. testsetup:: AtomGroup.select_atoms.namedarguments
 
-           from MDAnalysis.tests.datafiles import PSF, DCD
-           import MDAnalysis as mda
-           universe = mda.Universe(PSF, DCD)
-           sel = universe.select_atoms("segid 4AKE and not ( name H* O* )")
+            from MDAnalysis.tests.datafiles import PSF, DCD
+            import MDAnalysis as mda
+            universe = mda.Universe(PSF, DCD)
+            sel = universe.select_atoms("segid 4AKE and not ( name H* O* )")
 
         .. doctest:: AtomGroup.select_atoms, AtomGroup.select_atoms.namedarguments
 
-           >>> universe.select_atoms("around 10 group notHO", notHO=sel)
-           <AtomGroup with 2005 atoms>
+            >>> universe.select_atoms("around 10 group notHO", notHO=sel)
+            <AtomGroup with 2005 atoms>
 
         Selections can be set to update automatically on frame change, by
         setting the `updating` keyword argument to `True`.  This will return
@@ -3093,17 +3091,17 @@ class AtomGroup(GroupBase):
 
         .. testsetup:: AtomGroup.select_atoms.updating
 
-           from MDAnalysis.tests.datafiles import PDB, XTC
-           import MDAnalysis as mda
-           universe = mda.Universe(PDB, XTC)
+            from MDAnalysis.tests.datafiles import PDB, XTC
+            import MDAnalysis as mda
+            universe = mda.Universe(PDB, XTC)
 
         .. doctest:: AtomGroup.select_atoms.updating
            :options: +NORMALIZE_WHITESPACE
 
-           >>> universe.select_atoms("resname SOL and around 2.0 protein",
-           ...       updating=True)
-           <AtomGroup with 454 atoms, with selection
-           'resname SOL and around 2.0 protein' on the entire Universe.>
+            >>> universe.select_atoms("resname SOL and around 2.0 protein",
+            ...       updating=True)
+            <AtomGroup with 454 atoms, with selection
+            'resname SOL and around 2.0 protein' on the entire Universe.>
 
         Notes
         -----
@@ -3705,7 +3703,7 @@ class AtomGroup(GroupBase):
         # provided explicitly. If not, then we need to figure out if we write
         # multiple frames or not.
         multiframe = kwargs.pop('multiframe', None)
-        if len(trj_frames) > 1 and multiframe == False:
+        if len(trj_frames) > 1 and multiframe is False:
             raise ValueError(
                 'Cannot explicitely set "multiframe" to False and request '
                 'more than 1 frame with the "frames" keyword argument.'
@@ -3743,7 +3741,8 @@ class AtomGroup(GroupBase):
             # here `file_format` is only used as default,
             # anything pulled off `filename` will be used preferentially
             writer = get_selection_writer_for(filename,
-                                              file_format if file_format is not None else 'PDB')
+                                              file_format if file_format is not None
+                                              else 'PDB')
         except (TypeError, NotImplementedError):
             pass
         else:
@@ -3962,24 +3961,24 @@ class ResidueGroup(GroupBase):
 
         .. testsetup:: ResidueGroup.unique
 
-           import MDAnalysis as mda
-           from MDAnalysis.tests.datafiles import PSF, DCD
-           u = mda.Universe(PSF, DCD)
+            import MDAnalysis as mda
+            from MDAnalysis.tests.datafiles import PSF, DCD
+            u = mda.Universe(PSF, DCD)
 
         .. doctest:: ResidueGroup.unique
 
-           >>> rg = u.residues[[2, 1, 2, 2, 1, 0]]
-           >>> rg
-           <ResidueGroup with 6 residues>
-           >>> rg.ix
-           array([2, 1, 2, 2, 1, 0])
-           >>> rg2 = rg.unique
-           >>> rg2
-           <ResidueGroup with 3 residues>
-           >>> rg2.ix
-           array([0, 1, 2])
-           >>> rg2.unique is rg2
-           False
+            >>> rg = u.residues[[2, 1, 2, 2, 1, 0]]
+            >>> rg
+            <ResidueGroup with 6 residues>
+            >>> rg.ix
+            array([2, 1, 2, 2, 1, 0])
+            >>> rg2 = rg.unique
+            >>> rg2
+            <ResidueGroup with 3 residues>
+            >>> rg2.ix
+            array([0, 1, 2])
+            >>> rg2.unique is rg2
+            False
 
 
         .. versionadded:: 0.16.0
@@ -4018,24 +4017,24 @@ class ResidueGroup(GroupBase):
 
         .. testsetup:: ResidueGroup.asunique
 
-           import MDAnalysis as mda
-           from MDAnalysis.tests.datafiles import PSF, DCD
-           u = mda.Universe(PSF, DCD)
+            import MDAnalysis as mda
+            from MDAnalysis.tests.datafiles import PSF, DCD
+            u = mda.Universe(PSF, DCD)
 
         .. doctest:: ResidueGroup.asunique
 
-           >>> rg = u.residues[[2, 1, 2, 2, 1, 0]]
-           >>> rg
-           <ResidueGroup with 6 residues>
-           >>> rg.ix
-           array([2, 1, 2, 2, 1, 0])
-           >>> rg2 = rg.asunique(sorted=True)
-           >>> rg2
-           <ResidueGroup with 3 residues>
-           >>> rg2.ix
-           array([0, 1, 2])
-           >>> rg2.asunique() is rg2
-           True
+            >>> rg = u.residues[[2, 1, 2, 2, 1, 0]]
+            >>> rg
+            <ResidueGroup with 6 residues>
+            >>> rg.ix
+            array([2, 1, 2, 2, 1, 0])
+            >>> rg2 = rg.asunique(sorted=True)
+            >>> rg2
+            <ResidueGroup with 3 residues>
+            >>> rg2.ix
+            array([0, 1, 2])
+            >>> rg2.asunique() is rg2
+            True
 
 
         .. versionadded:: 2.0.0
@@ -4154,24 +4153,24 @@ class SegmentGroup(GroupBase):
 
         .. testsetup:: SegmentGroup.unique
 
-           from MDAnalysis.tests.datafiles import CONECT
-           import MDAnalysis as mda
-           u = mda.Universe(CONECT)
+            from MDAnalysis.tests.datafiles import CONECT
+            import MDAnalysis as mda
+            u = mda.Universe(CONECT)
 
         .. doctest:: SegmentGroup.unique
 
-           >>> sg = u.segments[[2, 1, 2, 2, 1, 0]]
-           >>> sg
-           <SegmentGroup with 6 segments>
-           >>> sg.ix
-           array([2, 1, 2, 2, 1, 0])
-           >>> sg2 = sg.unique
-           >>> sg2
-           <SegmentGroup with 3 segments>
-           >>> sg2.ix
-           array([0, 1, 2])
-           >>> sg2.unique is sg2
-           False
+            >>> sg = u.segments[[2, 1, 2, 2, 1, 0]]
+            >>> sg
+            <SegmentGroup with 6 segments>
+            >>> sg.ix
+            array([2, 1, 2, 2, 1, 0])
+            >>> sg2 = sg.unique
+            >>> sg2
+            <SegmentGroup with 3 segments>
+            >>> sg2.ix
+            array([0, 1, 2])
+            >>> sg2.unique is sg2
+            False
 
 
         .. versionadded:: 0.16.0
@@ -4210,24 +4209,24 @@ class SegmentGroup(GroupBase):
 
         .. testsetup:: SegmentGroup.asunique
 
-           from MDAnalysis.tests.datafiles import CONECT
-           import MDAnalysis as mda
-           u = mda.Universe(CONECT)
+            from MDAnalysis.tests.datafiles import CONECT
+            import MDAnalysis as mda
+            u = mda.Universe(CONECT)
 
         .. doctest:: SegmentGroup.asunique
 
-           >>> sg = u.segments[[2, 1, 2, 2, 1, 0]]
-           >>> sg
-           <SegmentGroup with 6 segments>
-           >>> sg.ix
-           array([2, 1, 2, 2, 1, 0])
-           >>> sg2 = sg.asunique(sorted=True)
-           >>> sg2
-           <SegmentGroup with 3 segments>
-           >>> sg2.ix
-           array([0, 1, 2])
-           >>> sg2.asunique() is sg2
-           True
+            >>> sg = u.segments[[2, 1, 2, 2, 1, 0]]
+            >>> sg
+            <SegmentGroup with 6 segments>
+            >>> sg.ix
+            array([2, 1, 2, 2, 1, 0])
+            >>> sg2 = sg.asunique(sorted=True)
+            >>> sg2
+            <SegmentGroup with 3 segments>
+            >>> sg2.ix
+            array([0, 1, 2])
+            >>> sg2.asunique() is sg2
+            True
 
 
         .. versionadded:: 2.0.0
@@ -4733,8 +4732,8 @@ class UpdatingAtomGroup(AtomGroup):
         else:
             basegrp = "another AtomGroup."
         # With a shorthand to conditionally append the 's' in 'selections'.
-        return "{}, with selection{} {} on {}>".format(basestr[:-1],
-                                                       "s"[len(self._selection_strings) == 1:], sels, basegrp)
+        return "{}, with selection{} {} on {}>".format(
+            basestr[:-1], "s"[len(self._selection_strings) == 1:], sels, basegrp)
 
     @property
     def atoms(self):
@@ -4760,21 +4759,24 @@ class UpdatingAtomGroup(AtomGroup):
         -------
         The static :attr:`atoms` allows comparison of groups of atoms between
         frames. For example, track water molecules that move in and out of a
-        solvation shell of a protein::
+        solvation shell of a protein
 
-          u = mda.Universe(TPR, XTC)
-          water_shell = u.select_atoms("name OW and around 3.5 protein", updating=True)
-          water_shell_prev = water_shell.atoms
+        .. code-block:: python
 
-          for ts in u.trajectory:
-              exchanged = water_shell - water_shell_prev
+            u = mda.Universe(TPR, XTC)
+            water_shell = u.select_atoms("name OW and around 3.5 protein",
+                                         updating=True)
+            water_shell_prev = water_shell.atoms
 
-              print(ts.time, "waters in shell =", water_shell.n_residues)
-              print(ts.time, "waters that exchanged = ", exchanged.n_residues)
-              print(ts.time, "waters that remained bound = ",
-                    water_shell.n_residues - exchanged.n_residues)
+            for ts in u.trajectory:
+                exchanged = water_shell - water_shell_prev
 
-              water_shell_prev = water_shell.atoms
+            print(ts.time, "waters in shell =", water_shell.n_residues)
+            print(ts.time, "waters that exchanged = ", exchanged.n_residues)
+            print(ts.time, "waters that remained bound = ",
+                  water_shell.n_residues - exchanged.n_residues)
+
+            water_shell_prev = water_shell.atoms
 
         By remembering the atoms of the current time step in
         `water_shell_prev`, it becomes possible to use the :meth:`subtraction
