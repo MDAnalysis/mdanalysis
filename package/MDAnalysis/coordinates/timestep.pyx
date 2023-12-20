@@ -729,7 +729,7 @@ cdef class Timestep:
         """
         if isinstance(atoms, numbers.Integral):
             return self._pos[atoms]
-        elif isinstance(atoms, (slice, np.ndarray)):
+        elif isinstance(atoms, (slice, cnp.ndarray)):
             return self._pos[atoms]
         else:
             raise TypeError

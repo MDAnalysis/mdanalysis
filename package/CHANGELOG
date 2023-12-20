@@ -15,11 +15,16 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium
+         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya,
+         JoStoe
 
  * 2.7.0
 
 Fixes
+  * Fix doctest errors of lib/transformations.py (Issue #3925, PR #4370)
+  * Fix documentation building errors due to `html_static_path` and unindented
+    block of code (Issue #4362, PR #4365)
+  * Updated cimport for numpy to maintain cimport consistency (Issue #3908)
   * Fix `NoJump` unwrapping for jumps on the second frame in a
     trajectory (PR #4258, Issue #4257)
   * Deprecated np.float_ and np.NaN aliases have been replaced with
@@ -27,8 +32,15 @@ Fixes
   * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
+  * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
 
 Enhancements
+  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
+  * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
+  * Refactor c_distances backend to have a cython .pxd header and expose in
+    libmdanalysis (Issue #4315, PR #4324)
+  * Add faster nucleic acid Major and Minor pair distance calculators using
+    AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
   * Adds external sidebar links (Issue #4296)
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
     inputs (PR #4273, part of #3927)
@@ -41,6 +53,8 @@ Enhancements
     PR #4284)
 
 Changes
+  * Biopython is now an optional dependency (Issue #3820, PR #4332)
+  * Networkx is now an optional dependency (Issue #3822).
   * High memory tests (enabled through the environment variable
     `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
     is set to "true") (PR #4295)
@@ -48,13 +62,28 @@ Changes
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+  * Results for WatsonCrickDist nucleic acids analysis are now stored in 
+    `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
+  * The `asel` argument to timeseries will be renamed to `atomgroup` in 3.0.0.
+    (Issue #3911)
+  * MDAnalysis.lib.util is deprecated and will be removed in version 3.0
+    (Issue #3649)
+  * The TRZ reader & writer are deprecated and will be removed in version 3.0
+    (PR #4335)
+  * X3DNA has been deprecated and will be removed in 3.0.0 (Issue #3788)
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
+  * In `nucleicacids.WatsonCrickDist`, accepting lists of `Residue` objects was deprecated
+    in favor of using `ResidueGroup`: using `List[Residue]` will be removed in release
+    3.0.0; instead use a `ResidueGroup` (Issue #3720, PR #3735)
+  * In `nucleicacids.WatsonCrickDist` the result `results.pair_distances` was
+    deprecated and will be removed in 3.0.0; use `results.distances` (Issue #3720, 
+    PR #3735)
 
 
-28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+08/28/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
 
  * 2.6.1
 
@@ -1763,7 +1792,7 @@ Changes
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
-         xiki-tempula, kash1102, vedantrathore
+         xiki-tempula, kash1102
 
   * 0.16.0
 

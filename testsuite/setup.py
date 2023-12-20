@@ -149,6 +149,7 @@ if __name__ == '__main__':
                          'data/Amber/*.trj', 'data/Amber/*.mdcrd',
                          'data/Amber/*.ncdf', 'data/Amber/*.nc',
                          'data/Amber/*.inpcrd',
+                         'data/gromos11/*.gz', 'data/gromos11/*.trc',
                          'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2', 'data/*.gz',
                          'data/*.ent',
                          'data/*.fasta',

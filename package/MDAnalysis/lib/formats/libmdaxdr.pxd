@@ -22,9 +22,9 @@
 #
 
 import numpy as np
-cimport numpy as np
+cimport numpy as cnp
 
-np.import_array()
+cnp.import_array()
 from libc.stdint cimport int64_t
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
@@ -92,9 +92,9 @@ cdef class _XDRFile:
     # the file mode
     cdef str mode
     # the simulation box
-    cdef np.ndarray box
+    cdef cnp.ndarray box
     # numpy array of offsets into the fle 
-    cdef np.ndarray _offsets
+    cdef cnp.ndarray _offsets
     # whether we have the offsets
     cdef readonly int _has_offsets
 
