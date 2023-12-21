@@ -15,8 +15,8 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya,
-         JoStoe, jennaswa
+         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 
+         JoStoe, jennaswa, ljwoods2
 
  * 2.7.0
 
@@ -33,6 +33,8 @@ Fixes
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
+  * Fix doctests failing from separated blocks of imports and 
+    execution and incorrectly formatted test output (Issue #3925, PR #4366)
 
 Enhancements
   * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
