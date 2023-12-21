@@ -16,7 +16,7 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
          richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, ljwoods2,
-         JoStoe
+         JoStoe, jennaswa
 
  * 2.7.0
 
@@ -110,7 +110,7 @@ Deprecations
 
 
 08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
-         ztimol, orbeckst
+         ztimol, orbeckst, Shubx10
 
  * 2.6.0
 
@@ -169,7 +169,7 @@ Deprecations
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
          SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers,
-         cbouy
+         cbouy, DanielJamesEvans, jvermaas, egormarin
 
  * 2.5.0
 
@@ -426,7 +426,7 @@ Deprecations
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
          mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst, yuxuanzhuang,
-         rsexton2, rafaelpap, richardjgowers, orioncohen
+         rsexton2, rafaelpap, richardjgowers, orioncohen, mdpoleto
 
  * 2.2.0
 
@@ -1051,7 +1051,7 @@ Deprecations
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
          wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150,
-         tylerjereddy, Marcello-Sega
+         tylerjereddy, Marcello-Sega, mimischi, mquevill, siddharthjain1611
 
   * 1.0.0
 
@@ -1264,9 +1264,10 @@ Fixes
 
 
 08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
+         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium, fenilsuchak,
+         Yibo-Zhang
 
   * 0.20.0
 
@@ -1720,7 +1721,7 @@ Changes
     they are part of the Universe topology (Issue #1092 PR #1186)
 
 
-06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal, bsipocz
 
   * 0.16.2
 
@@ -1795,7 +1796,7 @@ Changes
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
-         xiki-tempula, kash1102
+         xiki-tempula, kash1102, Akshay0724, bsipocz, jeiros, tbengtsen
 
   * 0.16.0
 
@@ -1965,7 +1966,7 @@ Testsuite
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle, pedrishi,
-         fiona-naughton, jdetle
+         fiona-naughton, jdetle, Endle
 
   * 0.15.0
 
@@ -3100,7 +3101,7 @@ Testsuite
     removal in 0.8
   * uses cython instead of pyrex
 
-11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
+11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose, dspoel
   * major release 0.7.0
     (includes changes that can BREAK BACKWARDS COMPATIBILITY)
   * Removed ALL DEPRECATED code:
