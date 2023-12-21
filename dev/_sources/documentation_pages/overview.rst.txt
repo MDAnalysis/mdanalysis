@@ -120,7 +120,7 @@ over time::
   < DCDReader '/..../MDAnalysis/tests/data/adk_dims.dcd' with 98 frames of 3341 atoms (0 fixed) >
 
 Finally, the :meth:`MDAnalysis.Universe.select_atoms` method generates a new
-:class:`~MDAnalysis.core.groups.AtomGroup` according to a selection criterion
+:class:`~MDAnalysis.core.groups.AtomGroup` according to a selection criterion::
 
   >>> calphas = u.select_atoms("name CA")
   >>> print(calphas)
