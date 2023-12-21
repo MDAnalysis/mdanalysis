@@ -37,6 +37,7 @@ Classes
 
 """
 from functools import reduce
+from typing import List
 
 import itertools
 import numpy as np
@@ -140,6 +141,48 @@ def squash_by(child_parent_ids, *attributes):
         child_parent_ids, return_index=True, return_inverse=True)
 
     return atom_idx, unique_resids, [attr[sort_mask] for attr in attributes]
+
+
+def squash_by_attributes(
+    squash_attributes: List[np.ndarray], *other_attributes: np.ndarray
+):
+    """Squash a child-parent relationship using combinations of attributes
+    parents will retain their order of appearance
+
+    Parameters
+    ----------
+    squash_attributes: list of numpy ndarray
+      list of attribute arrays (attributes used to identify the parent)
+      Their unique combinations will set child-parent relationships
+    *other_attributes: numpy ndarrays
+      other arrays that need to follow the sorting of ids
+
+    Returns
+    -------
+    sorted_atom_idx: numpy ndarray
+      an array of len(child) which points to the index of the parent
+    squashed_attrs: list of numpy ndarray
+      List of re-ordered squash_attributes
+    *other_attrs: list of numpy ndarray
+      List of re-ordered other_attributes
+    """
+    squash_array = np.column_stack(squash_attributes).astype(str)
+    unique_combos, sort_mask, atom_idx = np.unique(
+        squash_array, return_index=True, return_inverse=True, axis=0
+    )
+
+    appearance_order = np.argsort(sort_mask)
+    new_index = np.arange(0, len(appearance_order))
+    resort_pairs = np.column_stack((appearance_order, new_index))
+    atom_idx_mapping = dict(resort_pairs)
+
+    sorted_atom_idx = np.vectorize(atom_idx_mapping.get)(atom_idx).astype(int)
+    sorted_mask = np.sort(sort_mask)
+
+    squashed_attrs = [attr[sorted_mask] for attr in squash_attributes]
+    other_attrs = [attr[sorted_mask] for attr in other_attributes]
+
+    return sorted_atom_idx, squashed_attrs, other_attrs
 
 
 def change_squash(criteria, to_squash):

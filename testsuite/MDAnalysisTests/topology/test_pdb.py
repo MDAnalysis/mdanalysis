@@ -371,3 +371,26 @@ def test_PDB_bad_charges(infile, entry):
     with pytest.warns(UserWarning, match=wmsg):
         u = mda.Universe(StringIO(infile), format='PDB')
         assert not hasattr(u, 'formalcharges')
+
+
+pdb_repeat_resid = """\
+ATOM      1  CA  LYS A   1      65.978  40.866  -0.183  1.00  0.00           C
+ATOM      2  CA  SER A   2      64.324  40.006   3.164  1.00  0.00           C
+ATOM      3  CA  LEU A   1      64.000  39.236   8.648  1.00  0.00           C
+ATOM      4  N   LYS A   1      66.135  42.099  -1.007  1.00  0.00           N
+"""
+
+
+def test_repeat_resid():
+    """
+    Test parsing re-used resids with differeent resnames
+    """
+    u = mda.Universe(
+        StringIO(pdb_repeat_resid), format="PDB", contiguous_resids=False
+    )
+
+    expected_resnames = np.array(["LYS", "SER", "LEU"], dtype=object)
+    assert_equal(u.residues.resnames, expected_resnames)
+
+    expected_resids = np.array([1, 2, 1])
+    assert_equal(u.residues.resids, expected_resids)

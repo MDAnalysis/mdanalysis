@@ -46,7 +46,7 @@ import numpy as np
 
 from . import guessers
 from ..lib.util import openany
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, squash_by, squash_by_attributes
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -132,8 +132,14 @@ class MOL2Parser(TopologyReaderBase):
     """
     format = 'MOL2'
 
-    def parse(self, **kwargs):
+    def parse(self, repeated_resids: bool = False, **kwargs):
         """Parse MOL2 file *filename* and return the dict `structure`.
+
+        Parameters
+        ----------
+        repeated_resids: bool
+          Whether the same resid is used for multiple residues.
+          This option will perceive residues using the resid/resname pair.
 
         Returns
         -------
@@ -252,8 +258,17 @@ class MOL2Parser(TopologyReaderBase):
         resnames = np.array(resnames, dtype=object)
 
         if np.all(resnames):
-            residx, resids, (resnames,) = squash_by(
-                resids, resnames)
+            if repeated_resids:
+                (
+                    residx,
+                    (
+                        resids,
+                        resnames,
+                    ),
+                    _,
+                ) = squash_by_attributes((resids, resnames))
+            else:
+                residx, resids, (resnames,) = squash_by(resids, resnames)
             n_residues = len(resids)
             attrs.append(Resids(resids))
             attrs.append(Resnums(resids.copy()))
