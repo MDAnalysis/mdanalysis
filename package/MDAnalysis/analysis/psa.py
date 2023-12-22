@@ -460,6 +460,7 @@ def hausdorff_wavg(P, Q):
     Example
     -------
 
+     >>> import numpy
      >>> import MDAnalysis as mda
      >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
