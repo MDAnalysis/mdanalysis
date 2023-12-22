@@ -36,8 +36,8 @@ CHARMM-style atom selection commands are implemented. Trajectories can
 also be manipulated (for instance, fit to a reference structure) and
 written out. Time-critical code is written in C for speed.
 
-Help is also available through the mailinglist at
-http://groups.google.com/group/mdnalysis-discussion
+Help is also available through GitHub Discussions at
+https://github.com/MDAnalysis/mdanalysis/discussions
 
 Please report bugs and feature requests through the issue tracker at
 https://github.com/MDAnalysis/mdanalysis/issues
