@@ -110,6 +110,7 @@ def reduce_dimensionality(ensembles,
     Here, we reduce two ensembles to two dimensions, and plot the result using
     matplotlib: ::
 
+        >>> import matplotlib.pyplot as plt
         >>> from MDAnalysis import Universe
         >>> import MDAnalysis.analysis.encore as encore
         >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
@@ -117,8 +118,8 @@ def reduce_dimensionality(ensembles,
         >>> ens2 = Universe(PSF, DCD2)
         >>> coordinates, details = encore.reduce_dimensionality([ens1,ens2])
         >>> plt.scatter(coordinates[0], coordinates[1],
-                        color=[["red", "blue"][m-1] for m
-                        in details["ensemble_membership"]])
+        ...             color=[["red", "blue"][m-1] for m
+        ...             in details["ensemble_membership"]]) # doctest: +SKIP
 
     Note how we extracted information about which conformation belonged to
     which ensemble from the details variable.
@@ -126,25 +127,24 @@ def reduce_dimensionality(ensembles,
     You can change the parameters of the dimensionality reduction method
     by explicitly specifying the method ::
 
-        >>> coordinates, details =
-                encore.reduce_dimensionality([ens1,ens2],
-                     method=encore.StochasticProximityEmbeddingNative(dimension=3))
+        >>> coordinates, details = encore.reduce_dimensionality([ens1,ens2],
+        ...          method=encore.StochasticProximityEmbeddingNative
+        ...          (dimension=3))
 
     Here is an illustration using Principal Component Analysis, instead
     of the default dimensionality reduction method ::
 
-        >>> coordinates, details =
-                encore.reduce_dimensionality(
-                     [ens1,ens2],
-                     method=encore.PrincipalComponentAnalysis(dimension=2))
+        >>> coordinates, details = encore.reduce_dimensionality(
+        ...          [ens1,ens2],
+        ...          method=encore.PrincipalComponentAnalysis(dimension=2))
 
     You can also combine multiple methods in one call ::
 
-        >>> coordinates, details =
-                encore.reduce_dimensionality(
-                     [ens1,ens2],
-                     method=[encore.PrincipalComponentAnalysis(dimension=2),
-                             encore.StochasticProximityEmbeddingNative(dimension=2)])
+        >>> coordinates, details = encore.reduce_dimensionality(
+        ...          [ens1,ens2],
+        ...          method=[encore.PrincipalComponentAnalysis(dimension=2),
+        ...                  encore.StochasticProximityEmbeddingNative
+        ...                  (dimension=2)])
 
     """
 
