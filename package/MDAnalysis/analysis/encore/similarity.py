@@ -76,8 +76,8 @@ two ensemble objects are first created and then used for calculation:
     >>> ens2 = Universe(PSF, DCD2)
     >>> HES, details = encore.hes([ens1, ens2])
     >>> print(HES)
-    [[       0.         38279540.04524205]
-     [38279540.04524205        0.        ]]
+    [[       0.         38279540.04524206]
+     [38279540.04524206        0.        ]]
 
 HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.
@@ -801,8 +801,8 @@ def hes(ensembles,
         >>> ens2 = Universe(PSF, DCD2)
         >>> HES, details = encore.hes([ens1, ens2])
         >>> print(HES)
-        [[       0.         38279540.04524205]
-         [38279540.04524205        0.        ]]
+        [[       0.         38279540.04524206]
+         [38279540.04524206        0.        ]]
         >>> print(encore.hes([ens1, ens2], align=True)[0])
         [[   0.         6889.89729056]
          [6889.89729056    0.        ]]
