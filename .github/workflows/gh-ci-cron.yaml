@@ -3,6 +3,9 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
+  pull_request:
+    branches:
+      - develop
 
 concurrency:
   # Probably overly cautious group naming.
@@ -47,16 +50,20 @@ jobs:
             - conda-forge
             - bioconda
 
+    # Try to pick up nightly wheels first
+    - name: nightly_wheels
+      run: |
+        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib pandas
+
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
         micromamba: true
         full-deps: true
-
-      # overwrite installs by picking up nightly wheels
-    - name: nightly_wheels
-      run: |
-        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib pandas
+        numpy: ""
+        scipy: ""
+        networkx: ""
+        matplotlib: ""
 
     - name: list_deps
       run: |
