@@ -54,7 +54,7 @@ jobs:
     # Note: need to install contourpy first before matplotlib
     - name: nightly_wheels
       run: |
-        pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib pandas
+        pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy "numpy==2.0.0-dev0" networkx matplotlib pandas
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
