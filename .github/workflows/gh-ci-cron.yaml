@@ -51,7 +51,7 @@ jobs:
             - bioconda
 
     # Try to pick up nightly wheels first
-    # Note: need to install contourpy first before matplotlib
+    # Note: enforce >=2.0.0-dev0 for numpy to make sure we pick up the latest version
     - name: nightly_wheels
       run: |
         pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy "numpy>=2.0.0-dev0" networkx matplotlib pandas
