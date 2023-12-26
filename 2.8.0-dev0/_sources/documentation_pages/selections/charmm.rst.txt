@@ -1,0 +1,2 @@
+.. automodule:: MDAnalysis.selections.charmm
+
