@@ -1,0 +1,725 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.analysis.helix_analysis &mdash; MDAnalysis 2.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=dfec817d"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/js/versions.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.7.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.analysis.helix_analysis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.analysis.helix_analysis</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2020 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">HELANAL --- analysis of protein helices</span>
+<span class="sd">=======================================</span>
+
+<span class="sd">:Author: Lily Wang</span>
+<span class="sd">:Year: 2020</span>
+<span class="sd">:Copyright: GNU Public License v3</span>
+
+<span class="sd">.. versionadded:: 2.0.0</span>
+
+<span class="sd">This module contains code to analyse protein helices using the</span>
+<span class="sd">HELANAL_ algorithm</span>
+<span class="sd">([Bansal2000]_ , [Sugeta1967]_ ).</span>
+
+<span class="sd">HELANAL_ quantifies the geometry of helices in proteins on the basis of their</span>
+<span class="sd">Cα atoms. It can determine local structural features such as the local</span>
+<span class="sd">helical twist and rise, virtual torsion angle, local helix origins and</span>
+<span class="sd">bending angles between successive local helix axes.</span>
+
+<span class="sd">.. _HELANAL: https://pubmed.ncbi.nlm.nih.gov/10798526/</span>
+
+<span class="sd">.. [Sugeta1967] Sugeta, H. and Miyazawa, T. 1967. General method for</span>
+<span class="sd">   calculating helical parameters of polymer chains from bond lengths, bond</span>
+<span class="sd">   angles and internal rotation angles. *Biopolymers* 5 673 - 679</span>
+
+<span class="sd">.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000.</span>
+<span class="sd">   HELANAL - A program to characterise helix geometry in proteins.</span>
+<span class="sd">   *J Biomol Struct Dyn.*  17(5):811-819.</span>
+
+
+<span class="sd">Example use</span>
+<span class="sd">-----------</span>
+
+<span class="sd">You can pass in a single selection::</span>
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">    from MDAnalysis.analysis import helix_analysis as hel</span>
+<span class="sd">    u = mda.Universe(PSF, DCD)</span>
+<span class="sd">    helanal = hel.HELANAL(u, select=&#39;name CA and resnum 161-187&#39;)</span>
+<span class="sd">    helanal.run()</span>
+
+<span class="sd">All computed properties are available in ``.results``::</span>
+
+<span class="sd">    print(helanal.results.summary)</span>
+
+<span class="sd">Alternatively, you can analyse several helices at once by passing</span>
+<span class="sd">in multiple selection strings::</span>
+
+<span class="sd">    helanal2 = hel.HELANAL(u, select=(&#39;name CA and resnum 100-160&#39;,</span>
+<span class="sd">                                      &#39;name CA and resnum 200-230&#39;))</span>
+
+<span class="sd">The :func:`helix_analysis` function will carry out helix analysis on</span>
+<span class="sd">atom positions, treating each row of coordinates as an alpha-carbon</span>
+<span class="sd">equivalent::</span>
+
+<span class="sd">    hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])</span>
+
+<span class="sd">    </span>
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: HELANAL</span>
+
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+
+<span class="sd">.. autofunction:: helix_analysis</span>
+
+<span class="sd">.. autofunction:: vector_of_best_fit</span>
+
+<span class="sd">.. autofunction:: local_screw_angles</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">mdamath</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+
+
+<div class="viewcode-block" id="vector_of_best_fit">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.vector_of_best_fit">[docs]</a>
+<span class="k">def</span> <span class="nf">vector_of_best_fit</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit vector through the centered coordinates,</span>
+<span class="sd">    pointing to the first coordinate (i.e. upside-down).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates : :class:`numpy.ndarray` of shape (N, 3)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`numpy.ndarray` of shape (3,)</span>
+<span class="sd">        Vector of best fit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">centered</span> <span class="o">=</span> <span class="n">coordinates</span> <span class="o">-</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">Mt_M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">centered</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">centered</span><span class="p">)</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">vh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">Mt_M</span><span class="p">)</span>
+    <span class="n">vector</span> <span class="o">=</span> <span class="n">vh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># does vector face first local helix origin?</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">centered</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vector</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">vector</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">vector</span></div>
+
+
+
+<div class="viewcode-block" id="local_screw_angles">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.local_screw_angles">[docs]</a>
+<span class="k">def</span> <span class="nf">local_screw_angles</span><span class="p">(</span><span class="n">global_axis</span><span class="p">,</span> <span class="n">ref_axis</span><span class="p">,</span> <span class="n">helix_directions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cylindrical azimuth angles between the local direction vectors,</span>
+<span class="sd">    as projected onto the cross-section of the helix, from (-pi, pi].</span>
+<span class="sd">    The origin (angle=0) is set to the plane of global_axis and ref_axis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    global_axis : :class:`numpy.ndarray` of shape (3,)</span>
+<span class="sd">        Vector of best fit. Screw angles are calculated perpendicular to</span>
+<span class="sd">        this axis.</span>
+<span class="sd">    ref_axis : :class:`numpy.ndarray` of shape (3,)</span>
+<span class="sd">        Reference length-wise axis. One of the reference vectors is</span>
+<span class="sd">        orthogonal to this axis.</span>
+<span class="sd">    helix_directions : :class:`numpy.ndarray` of shape (N, 3)</span>
+<span class="sd">        array of vectors representing the local direction of each</span>
+<span class="sd">        helix window.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`numpy.ndarray` of shape (N,)</span>
+<span class="sd">        Array of screw angles.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">global_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">global_axis</span><span class="p">)</span>
+    <span class="c1"># normal to the plane of `ref_axis` &amp; `global_axis`</span>
+    <span class="n">perp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">ref_axis</span><span class="p">,</span> <span class="n">global_axis</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">perp</span><span class="p">):</span>  <span class="c1"># zero when ref_axis, global_axis parallel</span>
+        <span class="c1"># use random orthogonal vector</span>
+        <span class="n">new_ref</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">perp</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new_ref</span><span class="p">:</span>
+            <span class="n">perp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">new_ref</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span> <span class="n">global_axis</span><span class="p">)</span>
+
+    <span class="c1"># normal for angle to plane of perp and global_axis</span>
+    <span class="n">ortho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="o">-</span><span class="n">perp</span><span class="p">,</span> <span class="n">global_axis</span><span class="p">)</span>
+
+    <span class="c1"># project helix_directions onto global to remove contribution</span>
+    <span class="n">norm_global_sq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">global_axis</span><span class="p">,</span> <span class="n">global_axis</span><span class="p">)</span>
+    <span class="n">mag_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">global_axis</span><span class="p">,</span> <span class="n">helix_directions</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="n">norm_global_sq</span>
+    <span class="c1"># projection onto global_axis</span>
+    <span class="n">proj_g</span> <span class="o">=</span> <span class="n">mag_g</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">@</span> <span class="n">global_axis</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># projection onto plane w/o global_axis contribution</span>
+    <span class="n">proj_plane</span> <span class="o">=</span> <span class="n">helix_directions</span> <span class="o">-</span> <span class="n">proj_g</span>
+
+    <span class="c1"># angles from projection to perp</span>
+    <span class="n">refs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">perp</span><span class="p">,</span> <span class="n">ortho</span><span class="p">])</span>  <span class="c1"># (2, 3)</span>
+    <span class="n">norms</span> <span class="o">=</span> <span class="n">_</span><span class="p">,</span> <span class="n">ortho_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">pnorm</span><span class="p">(</span><span class="n">refs</span><span class="p">),</span>
+                                     <span class="n">mdamath</span><span class="o">.</span><span class="n">pnorm</span><span class="p">(</span><span class="n">proj_plane</span><span class="p">))</span>
+    <span class="n">cos</span> <span class="o">=</span> <span class="n">cos_perp</span><span class="p">,</span> <span class="n">cos_ortho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">refs</span><span class="p">,</span> <span class="n">proj_plane</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="n">norms</span>
+    <span class="n">to_perp</span><span class="p">,</span> <span class="n">to_ortho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">cos</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># (2, n_vec)</span>
+    <span class="n">to_ortho</span><span class="p">[</span><span class="n">ortho_norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># ?</span>
+    <span class="n">to_ortho</span><span class="p">[</span><span class="n">cos_perp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">to_ortho</span><span class="p">[</span><span class="n">to_ortho</span> <span class="o">==</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>  <span class="c1"># leave 180 alone</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">to_ortho</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="helix_analysis">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.helix_analysis">[docs]</a>
+<span class="k">def</span> <span class="nf">helix_analysis</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate helix properties from atomic coordinates.</span>
+
+<span class="sd">    Each property is calculated from a sliding window of 4 atoms,</span>
+<span class="sd">    from i to i+3. Any property whose name begins with &#39;local&#39; is a</span>
+<span class="sd">    property of a sliding window.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    positions : :class:`numpy.ndarray` of shape (N, 3)</span>
+<span class="sd">        Atomic coordinates.</span>
+<span class="sd">    ref_axis : array-like of length 3, optional</span>
+<span class="sd">        The reference axis used to calculate the tilt of the vector</span>
+<span class="sd">        of best fit, and the local screw angles.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict with the following keys:</span>
+<span class="sd">        local_twists : array, shape (N-3,)</span>
+<span class="sd">            local twist angle from atom i+1 to i+2</span>
+<span class="sd">        local_nres_per_turn : array, shape (N-3,)</span>
+<span class="sd">            number of residues per turn, based on local_twist</span>
+<span class="sd">        local_axes :  array, shape (N-3, 3)</span>
+<span class="sd">            the length-wise helix axis of the local window</span>
+<span class="sd">        local_bends : array, shape (N-6,)</span>
+<span class="sd">            the angles between local helix angles, 3 windows apart</span>
+<span class="sd">        local_heights : array, shape (N-3,)</span>
+<span class="sd">            the rise of each local helix</span>
+<span class="sd">        local_helix_directions : array, shape (N-2, 3)</span>
+<span class="sd">            the unit vector from each local origin to atom i+1</span>
+<span class="sd">        local_origins : array, shape (N-2, 3)</span>
+<span class="sd">            the projected origin for each helix</span>
+<span class="sd">        all_bends : array, shape (N-3, N-3)</span>
+<span class="sd">            angles between each local axis</span>
+<span class="sd">        global_axis : array, shape (3,)</span>
+<span class="sd">            vector of best fit through origins, pointing at the first origin.</span>
+<span class="sd">        local_screw_angles : array, shape (N-2,)</span>
+<span class="sd">            cylindrical azimuth angle to plane of global_axis and ref_axis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#          ^               ^</span>
+    <span class="c1">#           \             / bi</span>
+    <span class="c1">#            \           /</span>
+    <span class="c1">#         CA_i+2 &lt;----- CA_i+1</span>
+    <span class="c1">#         /    \       /   ^</span>
+    <span class="c1">#        /    r \     /     \</span>
+    <span class="c1">#     V /        \ θ /       \</span>
+    <span class="c1">#      /          \ /       CA_i</span>
+    <span class="c1">#     v           origin</span>
+    <span class="c1">#   CA_i+3</span>
+    <span class="c1">#</span>
+    <span class="c1"># V: vectors</span>
+    <span class="c1"># bi: approximate &quot;bisectors&quot; in plane of screen</span>
+    <span class="c1">#     Note: not real bisectors, as the vectors aren&#39;t normalised</span>
+    <span class="c1"># θ: local_twists</span>
+    <span class="c1"># origin: origins</span>
+    <span class="c1"># local_axes: perpendicular to plane of screen. Orthogonal to &quot;bisectors&quot;</span>
+
+    <span class="n">vectors</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">positions</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># (n_res-1, 3)</span>
+    <span class="n">bisectors</span> <span class="o">=</span> <span class="n">vectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># (n_res-2, 3)</span>
+    <span class="n">bimags</span> <span class="o">=</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">pnorm</span><span class="p">(</span><span class="n">bisectors</span><span class="p">)</span>  <span class="c1"># (n_res-2,)</span>
+    <span class="n">adjacent_mag</span> <span class="o">=</span> <span class="n">bimags</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">bimags</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># (n_res-3,)</span>
+
+    <span class="c1"># find angle between bisectors for twist and n_residue/turn</span>
+    <span class="n">cos_theta</span> <span class="o">=</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">pdot</span><span class="p">(</span><span class="n">bisectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bisectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="n">adjacent_mag</span>
+    <span class="n">cos_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">cos_theta</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">twists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cos_theta</span><span class="p">)</span>  <span class="c1"># (n_res-3,)</span>
+    <span class="n">local_twists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">twists</span><span class="p">)</span>
+    <span class="n">local_nres_per_turn</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">twists</span>
+
+    <span class="c1"># find normal to bisectors for local axes</span>
+    <span class="n">cross_bi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">bisectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bisectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>  <span class="c1"># (n_res-3, 3)</span>
+    <span class="n">local_axes</span> <span class="o">=</span> <span class="p">(</span><span class="n">cross_bi</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">mdamath</span><span class="o">.</span><span class="n">pnorm</span><span class="p">(</span><span class="n">cross_bi</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># (n_res-3, 3)</span>
+    <span class="n">local_axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">local_axes</span><span class="p">)</span>
+
+    <span class="n">zero_vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">local_axes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">local_axes</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># find angles between axes for bends</span>
+    <span class="n">bend_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">local_axes</span><span class="p">,</span> <span class="n">local_axes</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>  <span class="c1"># (n_res-3, n_res-3)</span>
+    <span class="c1"># set angles to 0 between zero-vectors</span>
+    <span class="n">bend_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">zero_vectors</span><span class="o">+</span><span class="n">zero_vectors</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>  <span class="c1"># (n_res-3, n_res-3)</span>
+                          <span class="n">bend_theta</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">bend_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">bend_theta</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="c1"># local bends are between axes 3 windows apart</span>
+    <span class="n">local_bends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">bend_matrix</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># (n_res-6,)</span>
+
+    <span class="c1"># radius of local cylinder</span>
+    <span class="n">radii</span> <span class="o">=</span> <span class="p">(</span><span class="n">adjacent_mag</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">cos_theta</span><span class="p">))</span>  <span class="c1"># (n_res-3,)</span>
+    <span class="c1"># special case: angle b/w bisectors is 0 (should virtually never happen)</span>
+    <span class="c1"># guesstimate radius = half bisector magnitude</span>
+    <span class="n">radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cos_theta</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">radii</span><span class="p">,</span> <span class="p">(</span><span class="n">adjacent_mag</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># height of local cylinder</span>
+    <span class="n">heights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">pdot</span><span class="p">(</span><span class="n">vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">local_axes</span><span class="p">))</span>  <span class="c1"># (n_res-3,)</span>
+
+    <span class="n">local_helix_directions</span> <span class="o">=</span> <span class="p">(</span><span class="n">bisectors</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="n">bimags</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># (n_res-2, 3)</span>
+
+    <span class="c1"># get origins by subtracting radius from atom i+1</span>
+    <span class="n">origins</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># (n_res-2, 3)</span>
+    <span class="n">origins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">radii</span><span class="o">*</span><span class="n">local_helix_directions</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># subtract radius from atom i+2 in last one</span>
+    <span class="n">origins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">radii</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">local_helix_directions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">helix_axes</span> <span class="o">=</span> <span class="n">vector_of_best_fit</span><span class="p">(</span><span class="n">origins</span><span class="p">)</span>
+    <span class="n">screw</span> <span class="o">=</span> <span class="n">local_screw_angles</span><span class="p">(</span><span class="n">helix_axes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ref_axis</span><span class="p">),</span>
+                               <span class="n">local_helix_directions</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;local_twists&#39;</span><span class="p">:</span> <span class="n">local_twists</span><span class="p">,</span>
+               <span class="s1">&#39;local_nres_per_turn&#39;</span><span class="p">:</span> <span class="n">local_nres_per_turn</span><span class="p">,</span>
+               <span class="s1">&#39;local_axes&#39;</span><span class="p">:</span> <span class="n">local_axes</span><span class="p">,</span>
+               <span class="s1">&#39;local_bends&#39;</span><span class="p">:</span> <span class="n">local_bends</span><span class="p">,</span>
+               <span class="s1">&#39;local_heights&#39;</span><span class="p">:</span> <span class="n">heights</span><span class="p">,</span>
+               <span class="s1">&#39;local_helix_directions&#39;</span><span class="p">:</span> <span class="n">local_helix_directions</span><span class="p">,</span>
+               <span class="s1">&#39;local_origins&#39;</span><span class="p">:</span> <span class="n">origins</span><span class="p">,</span>
+               <span class="s1">&#39;all_bends&#39;</span><span class="p">:</span> <span class="n">bend_matrix</span><span class="p">,</span>
+               <span class="s1">&#39;global_axis&#39;</span><span class="p">:</span> <span class="n">helix_axes</span><span class="p">,</span>
+               <span class="s1">&#39;local_screw_angles&#39;</span><span class="p">:</span> <span class="n">screw</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<div class="viewcode-block" id="HELANAL">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.HELANAL">[docs]</a>
+<span class="k">class</span> <span class="nc">HELANAL</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform HELANAL helix analysis on your trajectory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe or AtomGroup</span>
+<span class="sd">        The Universe or AtomGroup to apply the analysis to.</span>
+<span class="sd">    select : str or iterable of str, optional</span>
+<span class="sd">        The selection string to create an atom selection that the HELANAL</span>
+<span class="sd">        analysis is applied to. Note that HELANAL is designed to work on the</span>
+<span class="sd">        alpha-carbon atoms of protein residues. If you pass in multiple</span>
+<span class="sd">        selections, the selections will be analysed separately.</span>
+<span class="sd">    ref_axis : array-like of length 3, optional</span>
+<span class="sd">        The reference axis used to calculate the tilt of the vector</span>
+<span class="sd">        of best fit, and the local screw angles.</span>
+<span class="sd">    flatten_single_helix : bool, optional</span>
+<span class="sd">        Whether to flatten results if only one selection is passed.</span>
+<span class="sd">    split_residue_sequences : bool, optional</span>
+<span class="sd">        Whether to split the residue sequence into individual helices.</span>
+<span class="sd">        This keyword only applies if a residue gap is present in the</span>
+<span class="sd">        AtomGroup generated by a ``select`` string.</span>
+<span class="sd">        If ``False``, the residues will be analysed as a single helix.</span>
+<span class="sd">        If ``True``, each group of consecutive residues will be treated</span>
+<span class="sd">        as a separate helix.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Turn on more logging and debugging.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results.local_twists : array or list of arrays</span>
+<span class="sd">        The local twist angle from atom i+1 to i+2.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-3)</span>
+<span class="sd">    results.local_nres_per_turn : array or list of arrays</span>
+<span class="sd">        Number of residues per turn, based on local_twist.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-3)</span>
+<span class="sd">    results.local_axes : array or list of arrays</span>
+<span class="sd">        The length-wise helix axis of the local window.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-3, 3)</span>
+<span class="sd">    results.local_heights : array or list of arrays</span>
+<span class="sd">        The rise of each local helix.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-3)</span>
+<span class="sd">    results.local_helix_directions : array or list of arrays</span>
+<span class="sd">        The unit vector from each local origin to atom i+1.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-2, 3)</span>
+<span class="sd">    results.local_origins :array or list of arrays</span>
+<span class="sd">        The projected origin for each helix.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-2, 3)</span>
+<span class="sd">    results.local_screw_angles : array or list of arrays</span>
+<span class="sd">        The local screw angle for each helix.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-2)</span>
+<span class="sd">    results.local_bends : array or list of arrays</span>
+<span class="sd">        The angles between local helix axes, 3 windows apart.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-6)</span>
+<span class="sd">    results.all_bends : array or list of arrays</span>
+<span class="sd">        The angles between local helix axes.</span>
+<span class="sd">        Each array has shape (n_frames, n_residues-3, n_residues-3)</span>
+<span class="sd">    results.global_axis : array or list of arrays</span>
+<span class="sd">        The length-wise axis for the overall helix. This points at</span>
+<span class="sd">        the first helix window in the helix, so it runs opposite to</span>
+<span class="sd">        the direction of the residue numbers.</span>
+<span class="sd">        Each array has shape (n_frames, 3)</span>
+<span class="sd">    results.global_tilts : array or list of arrays</span>
+<span class="sd">        The angle between the global axis and the reference axis.</span>
+<span class="sd">        Each array has shape (n_frames,)</span>
+<span class="sd">    results.summary : dict or list of dicts</span>
+<span class="sd">        Summary of stats for each property: the mean, the sample</span>
+<span class="sd">        standard deviation, and the mean absolute deviation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># shapes of properties from each frame, relative to n_residues</span>
+    <span class="n">attr_shapes</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;local_twists&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,),</span>
+        <span class="s1">&#39;local_bends&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,),</span>
+        <span class="s1">&#39;local_heights&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,),</span>
+        <span class="s1">&#39;local_nres_per_turn&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,),</span>
+        <span class="s1">&#39;local_origins&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="s1">&#39;local_axes&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="s1">&#39;local_helix_directions&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="s1">&#39;local_screw_angles&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,),</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name CA&#39;</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flatten_single_helix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">split_residue_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HELANAL</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
+                                      <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">selections</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="n">atomgroups</span> <span class="o">=</span> <span class="p">[</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selections</span><span class="p">]</span>
+        <span class="n">consecutive</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># check that residues are consecutive and long enough sequence</span>
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">ag</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">selections</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">):</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">group_same_or_consecutive_integers</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">resindices</span><span class="p">)</span>
+            <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Your selection </span><span class="si">{}</span><span class="s1"> has gaps in the residues.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">split_residue_sequences</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39; Splitting into </span><span class="si">{}</span><span class="s1"> helices.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+                <span class="n">ng</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="n">ng</span>
+                <span class="k">if</span> <span class="n">ng</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Fewer than 9 atoms found for helix in &#39;</span>
+                                  <span class="s1">&#39;selection </span><span class="si">{}</span><span class="s1"> with these resindices: </span><span class="si">{}</span><span class="s1">. &#39;</span>
+                                  <span class="s1">&#39;This sequence will be skipped. HELANAL &#39;</span>
+                                  <span class="s1">&#39;is designed to work on at sequences of &#39;</span>
+                                  <span class="s1">&#39;≥9 residues.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">g</span><span class="p">))</span>
+                    <span class="k">continue</span>
+
+                <span class="n">ids</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">counts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">dup</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">ids</span><span class="p">[</span><span class="n">counts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]))</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Your selection </span><span class="si">{}</span><span class="s1"> includes multiple atoms &#39;</span>
+                                  <span class="s1">&#39;for residues with these resindices: </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                                  <span class="s1">&#39;HELANAL is designed to work on one alpha-&#39;</span>
+                                  <span class="s1">&#39;carbon per residue.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">dup</span><span class="p">))</span>
+
+                <span class="n">consecutive</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ag</span><span class="p">[</span><span class="n">counter</span><span class="o">-</span><span class="n">ng</span><span class="p">:</span><span class="n">counter</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span> <span class="o">=</span> <span class="n">consecutive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ref_axis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span> <span class="o">=</span> <span class="n">flatten_single_helix</span>
+
+    <span class="k">def</span> <span class="nf">_zeros_per_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">n_positions</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create zero arrays where first 2 dims are n_frames, n_values&quot;&quot;&quot;</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_positions</span>
+        <span class="n">npdims</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">first</span><span class="p">,)</span> <span class="o">+</span> <span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># py27 workaround</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n_res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dims</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr_shapes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">empty</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_zeros_per_frame</span><span class="p">(</span>
+                <span class="n">dims</span><span class="p">,</span> <span class="n">n_positions</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_res</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">empty</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">global_axis</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_zeros_per_frame</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_res</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">all_bends</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_zeros_per_frame</span><span class="p">((</span><span class="n">n</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">3</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_res</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span><span class="p">):</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">helix_analysis</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_axis</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">_f</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># compute tilt of global axes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">global_tilts</span> <span class="o">=</span> <span class="n">tilts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">norm_ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_axis</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="k">for</span> <span class="n">axes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">global_axis</span><span class="p">:</span>
+            <span class="n">cos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_axis</span><span class="p">,</span> <span class="n">axes</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> \
+                <span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">pnorm</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span><span class="o">*</span><span class="n">norm_ref</span><span class="p">)</span>
+            <span class="n">cos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">cos</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">tilts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cos</span><span class="p">)))</span>
+
+        <span class="n">global_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;global_axis&#39;</span><span class="p">,</span> <span class="s1">&#39;global_tilts&#39;</span><span class="p">,</span> <span class="s1">&#39;all_bends&#39;</span><span class="p">]</span>
+        <span class="n">attrnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attr_shapes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="n">global_attrs</span>
+        <span class="c1"># summarise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span><span class="p">)):</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">attrnames</span><span class="p">:</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">mean</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">dev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">mean</span><span class="p">)</span>
+                <span class="n">stats</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">mean</span><span class="p">,</span>
+                               <span class="s1">&#39;sample_sd&#39;</span><span class="p">:</span> <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                               <span class="s1">&#39;abs_dev&#39;</span><span class="p">:</span> <span class="n">dev</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+
+        <span class="c1"># flatten?</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">attrnames</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]:</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">universe_from_origins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create MDAnalysis Universe from the local origins.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Universe or list of Universes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">origins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">local_origins</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Call run() before universe_from_origins&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">origins</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">origins</span> <span class="o">=</span> <span class="p">[</span><span class="n">origins</span><span class="p">]</span>
+
+        <span class="n">universe</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">xyz</span> <span class="ow">in</span> <span class="n">origins</span><span class="p">:</span>
+            <span class="n">n_res</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_res</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="n">n_res</span><span class="p">,</span>
+                                   <span class="n">atom_resindex</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">),</span>
+                                   <span class="n">trajectory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+            <span class="n">universe</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">local_origins</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">universe</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.7.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

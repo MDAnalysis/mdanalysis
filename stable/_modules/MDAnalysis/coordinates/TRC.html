@@ -1,0 +1,604 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.coordinates.TRC &mdash; MDAnalysis 2.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=dfec817d"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/js/versions.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.7.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.7.0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.coordinates.TRC</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.coordinates.TRC</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;GROMOS11 trajectory reader --- :mod:`MDAnalysis.coordinates.TRC`</span>
+<span class="sd">====================================================================</span>
+
+<span class="sd">Reads coordinates, timesteps and box-sizes from GROMOS11 TRC trajectories.</span>
+
+<span class="sd">To load the trajectory into :class:`~MDAnalysis.core.universe.Universe`,</span>
+<span class="sd">you need to provide topology information using a topology file such as</span>
+<span class="sd">a PDB::</span>
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    u = mda.Universe(&quot;topology.pdb&quot;, [&quot;md_1.trc.gz&quot;,&quot;md_2.trc.gz&quot;],</span>
+<span class="sd">    continuous=True)</span>
+
+<span class="sd">.. Note::</span>
+<span class="sd">   The GROMOS trajectory format organizes its data in blocks. A block starts</span>
+<span class="sd">   with a blockname in capital letters (example: POSITIONRED) and ends with</span>
+<span class="sd">   a line containing only &#39;&#39;END&#39;&#39;. Only the TITLE-block at the beginning of</span>
+<span class="sd">   each file is mandatory, others blocks can be chosen depending on the task.</span>
+
+<span class="sd">   The trajectory format as well as all permitted blocks and their data are</span>
+<span class="sd">   documented in the GROMOS Manual Vol. 4, chapter 2 and 4.</span>
+<span class="sd">   The manual can be downloaded here:</span>
+<span class="sd">   https://gromos.net/gromos11_pdf_manuals/vol4.pdf</span>
+
+<span class="sd">This reader is designed to read the blocks &quot;TIMESTEP&quot;, &quot;POSITIONRED&quot; and</span>
+<span class="sd">&quot;GENBOX&quot; from the trajectory which covers the standard trajectories of most</span>
+<span class="sd">simulations . If a trajectory includes other blocks, a warning is served</span>
+<span class="sd">and the blocks are ignored.</span>
+
+<span class="sd">.. Note::</span>
+<span class="sd">   MDAnalysis requires the blocks to be in the same order for each frame</span>
+<span class="sd">   and ignores non-supported blocks.</span>
+
+
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: TRCReader</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">.timestep</span> <span class="kn">import</span> <span class="n">Timestep</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">store_init_arguments</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.GROMOS11&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TRCReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRC.html#MDAnalysis.coordinates.TRC.TRCReader">[docs]</a>
+<span class="k">class</span> <span class="nc">TRCReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for the GROMOS11 format&quot;&quot;&quot;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TRC&quot;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">}</span>
+    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
+
+    <span class="n">SUPPORTED_BLOCKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TITLE&quot;</span><span class="p">,</span> <span class="s2">&quot;TIMESTEP&quot;</span><span class="p">,</span> <span class="s2">&quot;POSITIONRED&quot;</span><span class="p">,</span> <span class="s2">&quot;GENBOX&quot;</span><span class="p">]</span>
+    <span class="n">NOT_SUPPORTED_BLOCKS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;POSITION&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;REFPOSITION&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;VELOCITY&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;VELOCITYRED&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;FREEFORCE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;FREEFORCERED&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CONSFORCE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CONSFORCERED&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SHAKEFAILPOSITION&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SHAKEFAILPREVPOSITION&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LATTICESHIFTS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;COSDISPLACEMENTS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STOCHINT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;NHCVARIABLES&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ROTTRANSREFPOS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PERTDATA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DISRESEXPAVE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;JVALUERESEXPAVE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;JVALUERESEPS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;JVALUEPERSCALE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ORDERPARAMRESEXPAVE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;XRAYRESEXPAVE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LEUSBIAS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;LEUSBIASBAS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ENERGY03&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;VOLUMEPRESSURE03&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;FREEENERGYDERIVS03&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BFACTOR&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AEDSS&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="nd">@store_init_arguments</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TRCReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># GROMOS11 trajectories are usually either *.trc or *.trc.gz.</span>
+        <span class="c1"># (trj suffix can come up when trajectory obtained from clustering)</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;trc&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;trj&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compressed</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compressed</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
+
+        <span class="c1"># Read and calculate some information about the trajectory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_traj_properties</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of atoms in one frame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of frames in the trajectory.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_frames&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_frame_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frameDat</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a frame to a :class:`TimeStep`&quot;&quot;&quot;</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span>
+
+        <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Convert the units</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_positions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">ts</span>
+
+    <span class="k">def</span> <span class="nf">_read_traj_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        * Reads the number of atoms per frame (n_atoms)</span>
+<span class="sd">        * Reads the number of frames (n_frames)</span>
+<span class="sd">        * Reads the startposition of the timestep block</span>
+<span class="sd">          for each frame (l_blockstart_offset)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">traj_properties</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Check which of the supported blocks comes first in the trajectory</span>
+        <span class="c1">#</span>
+        <span class="n">first_block</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">blockname</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">SUPPORTED_BLOCKS</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">blockname</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="ow">and</span> <span class="p">(</span><span class="n">blockname</span> <span class="o">!=</span> <span class="s2">&quot;TITLE&quot;</span><span class="p">):</span>
+                        <span class="c1"># Save the name of the first non-title block</span>
+                        <span class="c1"># in the trajectory file</span>
+                        <span class="n">first_block</span> <span class="o">=</span> <span class="n">blockname</span>
+
+                <span class="k">if</span> <span class="n">first_block</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>  <span class="c1"># First block found</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Calculate meta-data of the trajectory</span>
+        <span class="c1">#</span>
+        <span class="n">in_positionred_block</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">lastline_was_timestep</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">atom_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">frame_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">l_blockstart_offset</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">l_timestep_timevalues</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                <span class="c1">#</span>
+                <span class="c1"># First block of frame</span>
+                <span class="c1">#</span>
+                <span class="k">if</span> <span class="n">first_block</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="n">l_blockstart_offset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+                    <span class="n">frame_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="c1">#</span>
+                <span class="c1"># Timestep-block</span>
+                <span class="c1">#</span>
+                <span class="k">if</span> <span class="s2">&quot;TIMESTEP&quot;</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="n">lastline_was_timestep</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">elif</span> <span class="n">lastline_was_timestep</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">l_timestep_timevalues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="n">lastline_was_timestep</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="c1">#</span>
+                <span class="c1"># Coordinates-block</span>
+                <span class="c1">#</span>
+                <span class="k">if</span> <span class="s2">&quot;POSITIONRED&quot;</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="n">in_positionred_block</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">elif</span> <span class="p">(</span><span class="n">in_positionred_block</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">atom_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;END&quot;</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="ow">and</span> <span class="p">(</span><span class="n">in_positionred_block</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>
+                    <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">atom_counter</span>
+                    <span class="n">in_positionred_block</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">frame_counter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No supported blocks were found within the GROMOS trajectory!&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;n_frames&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_counter</span>
+        <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;l_blockstart_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l_blockstart_offset</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_timestep_timevalues</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The trajectory does not contain TIMESTEP blocks!&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">traj_properties</span>
+
+    <span class="k">def</span> <span class="nf">_read_GROMOS11_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">frameDat</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Read the trajectory</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">&quot;TIMESTEP&quot;</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">tmp_step</span><span class="p">,</span> <span class="n">tmp_time</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp_step</span><span class="p">)</span>
+                <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tmp_time</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s2">&quot;POSITIONRED&quot;</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">tmp_buf</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">coords_str</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">coords_str</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">elif</span> <span class="s2">&quot;END&quot;</span> <span class="ow">in</span> <span class="n">coords_str</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">tmp_buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coords_str</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tmp_buf</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tmp_buf</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;The trajectory contains the wrong number of atoms!&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s2">&quot;GENBOX&quot;</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">ntb_setting</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">ntb_setting</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">elif</span> <span class="n">ntb_setting</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+                    <span class="n">tmp_a</span><span class="p">,</span> <span class="n">tmp_b</span><span class="p">,</span> <span class="n">tmp_c</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">tmp_alpha</span><span class="p">,</span> <span class="n">tmp_beta</span><span class="p">,</span> <span class="n">tmp_gamma</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">tmp_a</span><span class="p">),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">tmp_b</span><span class="p">),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">tmp_c</span><span class="p">),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">tmp_alpha</span><span class="p">),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">tmp_beta</span><span class="p">),</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="n">tmp_gamma</span><span class="p">),</span>
+                    <span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="n">gb_line3</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gb_line3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mf">1e-10</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;This reader doesnt&#39;t support a shifted origin!&quot;</span>
+                        <span class="p">)</span>
+
+                    <span class="n">gb_line4</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gb_line4</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mf">1e-10</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;This reader &quot;</span>
+                            <span class="s2">&quot;doesnt&#39;t support &quot;</span>
+                            <span class="s2">&quot;yawed, pitched or &quot;</span>
+                            <span class="s2">&quot;rolled boxes!&quot;</span>
+                        <span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;This reader doesn&#39;t support &quot;</span>
+                        <span class="s2">&quot;truncated-octahedral &quot;</span>
+                        <span class="s2">&quot;periodic boundary conditions&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">NOT_SUPPORTED_BLOCKS</span>
+            <span class="p">):</span>
+                <span class="k">for</span> <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">NOT_SUPPORTED_BLOCKS</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">non_supp_bn</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                            <span class="n">non_supp_bn</span> <span class="o">+</span> <span class="s2">&quot; block is not supported!&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span>
+                        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">frameDat</span>
+
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;read frame i&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1"># Move position in file just (-2 byte) before the start of the block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;l_blockstart_offset&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Trying to go over trajectory limit&quot;</span><span class="p">)</span>
+
+        <span class="n">raw_framedata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_GROMOS11_trajectory</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_ts</span><span class="p">(</span><span class="n">raw_framedata</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+
+    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close and reopen the trajectory&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">&quot;TRC file already opened&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># Reload trajectory file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># Reset ts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Set _frame to -1, so next timestep is zero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span>
+
+<div class="viewcode-block" id="TRCReader.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/TRC.html#MDAnalysis.coordinates.TRC.TRCReader.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the trc trajectory file if it was open.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="o">=</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.7.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
