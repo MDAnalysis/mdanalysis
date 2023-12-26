@@ -34,9 +34,9 @@ MDAnalysis Wiki:
 
   https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
 
-Also free to ask on the MDAnalysis mailing list for help:
+Also free to ask on GitHub Discussions for help:
 
-  http://groups.google.com/group/mdnalysis-discussion
+  https://github.com/MDAnalysis/mdanalysis/discussions
 
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
@@ -149,6 +149,7 @@ if __name__ == '__main__':
                          'data/Amber/*.trj', 'data/Amber/*.mdcrd',
                          'data/Amber/*.ncdf', 'data/Amber/*.nc',
                          'data/Amber/*.inpcrd',
+                         'data/gromos11/*.gz', 'data/gromos11/*.trc',
                          'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2', 'data/*.gz',
                          'data/*.ent',
                          'data/*.fasta',

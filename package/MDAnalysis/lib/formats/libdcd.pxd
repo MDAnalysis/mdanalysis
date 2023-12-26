@@ -27,9 +27,9 @@ from libc.stdint cimport uintptr_t
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 import cython
 
-cimport numpy as np
+cimport numpy as cnp
 
-np.import_array()
+cnp.import_array()
 
 
 # Tell cython about the off_t type. It doesn't need to match exactly what is
@@ -131,9 +131,9 @@ cdef class DCDFile:
 
 
     # buffer for reading coordinates
-    cdef np.ndarray _coordinate_buffer
+    cdef cnp.ndarray _coordinate_buffer
     # buffer for reading unitcell     
-    cdef np.ndarray _unitcell_buffer
+    cdef cnp.ndarray _unitcell_buffer
 
     # fortran contiguious memoryviews of the buffers to pass to the C code
     cdef float[::1] xview

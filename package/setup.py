@@ -35,12 +35,10 @@ MDAnalysis Wiki:
 
   https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
 
-Also free to ask on the MDAnalysis mailing list for help:
+Also free to ask on GitHub Discussions for help:
 
-  http://groups.google.com/group/mdnalysis-discussion
+  https://github.com/MDAnalysis/mdanalysis/discussions/categories/installation
 
-(Note that the group really is called `mdnalysis-discussion' because
-Google groups forbids any name that contains the string `anal'.)
 """
 
 from setuptools import setup, Extension, find_packages
