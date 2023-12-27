@@ -191,15 +191,7 @@ def _sort_atoms_by_mass(atoms, reverse=False):
     ag_n : list of Atoms
         Sorted list
     """
-    s = sorted(atoms, key=lambda a: (a.mass, a.index))
-
-    # reverse in a seperate step cause the reverse parameter
-    # of the sorted method doesn't work as expected with nan
-    # values of masses, which causes errors in sorting
-    if reverse:
-        s.reverse()
-
-    return s
+    return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
 
 
 def _find_torsions(root, atoms):

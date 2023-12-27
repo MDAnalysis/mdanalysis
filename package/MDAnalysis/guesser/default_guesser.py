@@ -109,7 +109,7 @@ class DefaultGuesser(GuesserBase):
         atoms
           Atom types/elements to guess masses from
         partial_guess (optional)
-          Index of certain atoms to guess masses for
+          Mask array for partially guess masses for certain atoms
 
         Returns
         -------
@@ -137,7 +137,7 @@ class DefaultGuesser(GuesserBase):
                             "there is no reference attributes in this universe"
                             "to guess mass from")
 
-        if partial_guess:
+        if partial_guess is not None:
             atoms = atoms[partial_guess] 
 
         self.validate_atom_types(atoms)
@@ -207,7 +207,7 @@ class DefaultGuesser(GuesserBase):
         masses (optional)
            atoms masses if types guessing is desired to be from masses
         partial_guess (optional)
-          Index of certain atoms to guess masses for
+          Mask array for partially guess types for certain atoms
 
         Returns
         -------
@@ -233,14 +233,14 @@ class DefaultGuesser(GuesserBase):
                         "to guess types from")
 
         if masses is not None:
-            if partial_guess:
+            if partial_guess is not None:
                 masses = masses[partial_guess] 
 
             return np.array([self.guess_element_from_mass(mass)
                              for mass in masses], dtype=object)
 
         else:
-            if partial_guess:
+            if partial_guess is not None:
                 atoms = atoms[partial_guess] 
 
             return np.array([self.guess_atom_element(atom)

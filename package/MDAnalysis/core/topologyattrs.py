@@ -519,14 +519,14 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         raise NotImplementedError
 
     @classmethod
-    def is_value_missing(self, value):
+    def are_values_missing(self, values):
         """check if an attribute has a missing value
         .. versionadded:: 2.7.0
         """
         if hasattr(self, 'missing_value_label'):
-            return value == self.missing_value_label
+            return (np.array(values) == self.missing_value_label)
         else:
-            return False
+            return np.zeros_like(values, dtype=bool)
 
 # core attributes
 
@@ -2002,12 +2002,12 @@ class Masses(AtomAttr):
         ('align_principal_axis', align_principal_axis))
 
     @classmethod
-    def is_value_missing(self, value):
+    def are_values_missing(self, values):
         """Check if an attribute has a missing value
         
         .. versionadded:: 2.7.0
         """
-        return np.isnan(value)
+        return np.isnan(values)
 
 
 # TODO: update docs to property doc

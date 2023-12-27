@@ -216,6 +216,10 @@ class AggregationMixin(TestAtomAttr):
 class TestMasses(AggregationMixin):
     attrclass = tpattrs.Masses
 
+    def test_missing_masses(self):
+        values = [1., 2., np.nan, 3.]
+        assert_equal(self.attrclass.are_values_missing(values),
+                            np.array([False, False, True, False]))
 
 class TestCharges(AggregationMixin):
     values = np.array([+2, -1, 0, -1, +1, +2, 0, 0, 0, -1])

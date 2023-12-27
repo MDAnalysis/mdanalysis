@@ -76,7 +76,7 @@ class GuesserBase(metaclass=_GuesserMeta):
         Supply a Universe to the Guesser. This then become the source of atom
         attributes to be used in guessing processes. (this is relevant to how
         the universe's guess_topologyAttributes API works.
-        See :ref:`guess_TopologyAttributes <guess_TopologyAttributes>`).
+        See :meth:`guess_TopologyAttributes <guess_TopologyAttributes>`).
     **kwargs: to pass additional data to the guesser that can be used with
               different methos.
 
@@ -98,31 +98,30 @@ class GuesserBase(metaclass=_GuesserMeta):
         kwargs = copy.deepcopy(self._kwargs)
         new = self.__class__(universe=None, **kwargs)
         return new
-    
-    def are_guessable(self, attrs_to_guess):
-        """check if the passed atrributes can be guessed by the guesser class
+
+    def is_guessable(self, attr_to_guess):
+        """check if the passed atrribute can be guessed by the guesser class
 
         Parameters
         ----------
-        guess: list
-            Atrributes to be guessed then added to the universe
+        guess: string
+            Atrribute to be guessed then added to the universe
 
         Returns
         -------
         Boolean value
         """
-        if attrs_to_guess:
-            for a in attrs_to_guess:
-                if a.lower() not in self._guesser_methods:
-                    return False
+        if attr_to_guess.lower() in self._guesser_methods:
             return True
+
+        return False
 
     def guess_attr(self, attr_to_guess, force_guess=False):
         """map the attribute to be guessed with the apporpiate guessing method
 
         Parameters
         ----------
-        attr_to_guess: list
+        attr_to_guess: string
             an atrribute to be guessed then to be added to the universe
         force_guess: boolean
             To indicate wether to only partialy guess the empty values of the
@@ -132,23 +131,15 @@ class GuesserBase(metaclass=_GuesserMeta):
         -------
         list of guessed values
 
-        Raises
-        ------
-        ValueError
-            Failed to find or guess parent attribute
-
         """
 
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
             attr_values = np.array(getattr(self._universe.atoms, attr_to_guess, None))
 
-            empty_values = []
             top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
 
-            for a in attr_values:
-                value_missing = top_attr.is_value_missing(a)
-                empty_values.append(value_missing)
+            empty_values = top_attr.are_values_missing(attr_values)
 
             if True in empty_values:
                 # pass to the guesser_method indecies of attributes that have
