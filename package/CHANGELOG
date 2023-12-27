@@ -45,7 +45,7 @@ Enhancements
   * Removed type and mass guessing processes from all parsers (PR #3753)
   * Added guess_topologyAttributes() API to the universe to hande 
     attribute guessing (pr #3753)
-  * Added the DefaultGuesser, which is a general-purpose gusser with the same 
+  * Added the DefaultGuesser, which is a general-purpose guesser with the same 
     functionalities as the existing guesser.py methods (pr #3753)
   * Removed type guessing from RDKitParser and assigned type attribute
     to be equal to the element attribute, if type is not provided (pr #3753)
