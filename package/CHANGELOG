@@ -42,7 +42,7 @@ Enhancements
     (Issue #3994, PR #4281)  
   * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
     PR #4284)
-  * Removed type and mass guessing processes from all parsers (pr #3753)
+  * Removed type and mass guessing processes from all parsers (PR #3753)
   * Added guess_topologyAttributes() API to the universe to hande 
     attribute guessing (pr #3753)
   * Added the DefaultGuesser, which is a general-purpose gusser with the same 
