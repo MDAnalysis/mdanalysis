@@ -156,7 +156,7 @@ class RDKitParser(TopologyReaderBase):
     .. versionchanged:: 2.7.0
        Removed type guessing (attributes guessing takes place now
        through universe.guess_TopologyAttributes() API). If atoms types is not
-       provided, type attributed get the same values as the element attribute.
+       provided, the type attribute get the same values as the element attribute.
 
     """
     format = 'RDKIT'

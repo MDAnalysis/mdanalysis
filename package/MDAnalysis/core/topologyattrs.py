@@ -2003,7 +2003,8 @@ class Masses(AtomAttr):
 
     @classmethod
     def is_value_missing(self, value):
-        """check if an attribute has a missing value
+        """Check if an attribute has a missing value
+        
         .. versionadded:: 2.7.0
         """
         return np.isnan(value)

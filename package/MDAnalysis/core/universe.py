@@ -335,7 +335,7 @@ class Universe(object):
         *guess_bonds*.
 
     .. versionchanged:: 2.7.0
-        Added :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API
+        Added :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` API
         guessing masses and atom types after topology
         is read from a registered parser.
 
@@ -1540,8 +1540,8 @@ class Universe(object):
 
         objects = ['bonds', 'angles', 'dihedrals', 'impropers']
 
-        if(total_guess):
-            if (self._topology.n_atoms > 0):
+        if total_guess:
+            if self._topology.n_atoms > 0:
 
                 if guesser.are_guessable(total_guess):
 
