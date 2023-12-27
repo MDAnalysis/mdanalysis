@@ -17,8 +17,6 @@ inputs:
     description: 'use micromamba instead of conda'
     default: false
   # conda-installed min dependencies
-  biopython:
-    default: 'biopython>=1.80'
   codecov:
     default: 'codecov'
   cython:
@@ -52,6 +50,8 @@ inputs:
   tqdm:
     default: 'tqdm>=4.43.0'
   # conda-installed optional dependencies
+  biopython:
+    default: 'biopython>=1.80'
   chemfiles-python:
     default: 'chemfiles-python>=0.9'
   clustalw:
@@ -106,7 +106,6 @@ runs:
       shell: bash -l {0}
       env:
         CONDA_MIN_DEPS: |
-          ${{ inputs.biopython }}
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
           ${{ inputs.fasteners }}
@@ -123,6 +122,7 @@ runs:
           ${{ inputs.threadpoolctl }}
           ${{ inputs.tqdm }}
         CONDA_OPT_DEPS: |
+          ${{ inputs.biopython }}
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
           ${{ inputs.distopia }}

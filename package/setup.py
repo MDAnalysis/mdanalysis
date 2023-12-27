@@ -35,12 +35,10 @@ MDAnalysis Wiki:
 
   https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
 
-Also free to ask on the MDAnalysis mailing list for help:
+Also free to ask on GitHub Discussions for help:
 
-  http://groups.google.com/group/mdnalysis-discussion
+  https://github.com/MDAnalysis/mdanalysis/discussions/categories/installation
 
-(Note that the group really is called `mdnalysis-discussion' because
-Google groups forbids any name that contains the string `anal'.)
 """
 
 from setuptools import setup, Extension, find_packages
@@ -67,7 +65,7 @@ import configparser
 from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.7.0-dev0"
+RELEASE = "2.8.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -594,7 +592,6 @@ if __name__ == '__main__':
 
     install_requires = [
           'numpy>=1.22.3',
-          'biopython>=1.80',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
@@ -659,6 +656,7 @@ if __name__ == '__main__':
                   'parmed', # ParmEd converter
                   ],
               'analysis': [
+                  'biopython>=1.80',  # sequence generation & alignment
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
                   'scikit-learn',  # For clustering and dimensionality
