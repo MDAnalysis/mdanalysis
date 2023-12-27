@@ -19,6 +19,7 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
 
