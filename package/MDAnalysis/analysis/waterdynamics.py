@@ -47,3 +47,10 @@ from waterdynamics.waterdynamics import (
     MeanSquareDisplacement,
     SurvivalProbability,
 )
+
+
+wmsg = ("Deprecation in version 2.8.0\n"
+        "MDAnalysis.analysis.waterdynamics is deprecated in favour of the "
+        "MDAKit waterdynamics (https://www.mdanalysis.org/waterdynamics/) "
+        "and will be removed in MDAnalysis version 3.0.0")
+warnings.warn(wmsg, category=DeprecationWarning)
