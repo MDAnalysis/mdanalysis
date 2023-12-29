@@ -26,6 +26,9 @@ Enhancements
 Changes
 
 Deprecations
+ * The MDAnalysis.analysis.psa module has been deprecated in favour of
+   the PathSimAnalysis MDAKit and will be removed in version 3.0.0
+   (PR #4403)
 
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
