@@ -46,6 +46,7 @@ dependencies = [
     'packaging',
     'fasteners',
     'mda-xdrlib',
+    'waterdynamics',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",

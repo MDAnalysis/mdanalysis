@@ -348,4 +348,5 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
     'parmed': ('https://parmed.github.io/ParmEd/html/', None),
     'rdkit': ('https://rdkit.org/docs/', None),
+    'waterdynamics': ('https://www.mdanalysis.org/waterdynamics/', None),
 }
