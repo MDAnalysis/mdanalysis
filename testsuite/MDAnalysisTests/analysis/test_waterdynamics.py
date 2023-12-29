@@ -20,6 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from importlib import reload
+
 import MDAnalysis
 from MDAnalysis.analysis import waterdynamics
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
@@ -273,3 +275,9 @@ def test_SurvivalProbability_stepEqualDtMax(universe):
         sp.run(tau_max=4, step=5, stop=10, verbose=True)
         # all frames from 0, with 9 inclusive
         assert_equal(select_atoms_mock.call_count, 10)
+
+
+def test_moved_to_mdakit_warning():
+    wmsg = "MDAnalysis.analysis.waterdynamics is deprecated"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(waterdynamics)
