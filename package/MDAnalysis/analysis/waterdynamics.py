@@ -41,4 +41,9 @@ See Also
 """
 import warnings
 
-
+from waterdynamics import (
+    WaterOrientationalRelaxation,
+    AngularDistribution,
+    MeanSquareDisplacement,
+    SurvivalProbability,
+)
