@@ -41,7 +41,7 @@ See Also
 """
 import warnings
 
-from waterdynamics import (
+from waterdynamics.waterdynamics import (
     WaterOrientationalRelaxation,
     AngularDistribution,
     MeanSquareDisplacement,
