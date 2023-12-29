@@ -26,6 +26,8 @@ Enhancements
 Changes
 
 Deprecations
+ * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
+   of the waterdynamics MDAKit (PR #4404)
 
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
