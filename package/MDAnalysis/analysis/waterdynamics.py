@@ -30,6 +30,15 @@
 
 .. versionadded:: 0.11.0
 
+.. deprecated:: 2.8.0
+  This module is deprecated in favour of the mdakit
+  `waterdynamics <https://www.mdanalysis.org/waterdynamics/>`_ and
+  will be removed in MDAnalysis 3.0.0.
+
+See Also
+--------
+:mod:`waterdynamics.waterdynamics`
+
 This module provides functions to analyze water dynamics trajectories and water
 interactions with other molecules.  The functions in this module are: water
 orientational relaxation (WOR) :footcite:p:`Yeh1999`, hydrogen bond lifetimes (HBL)
