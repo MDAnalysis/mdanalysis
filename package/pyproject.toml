@@ -11,8 +11,8 @@ requires = [
     # Scipy: On windows avoid 1.21.6, 1.22.0, and 1.22.1 because they were built on vc142
     # Let's set everything to this version to make things clean, also avoids other issues
     # on other archs
-    "numpy==1.22.3; python_version=='3.9' and platform_python_implementation != 'PyPy'",
-    "numpy==1.22.3; python_version=='3.10' and platform_python_implementation != 'PyPy'",
+    "numpy==1.23.2; python_version=='3.9' and platform_python_implementation != 'PyPy'",
+    "numpy==1.23.2; python_version=='3.10' and platform_python_implementation != 'PyPy'",
     "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
     "numpy==1.26.0; python_version=='3.12' and platform_python_implementation != 'PyPy'",
     # For unreleased versions of Python there is currently no known supported
@@ -35,7 +35,7 @@ maintainers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    'numpy>=1.22.3',
+    'numpy>=1.23.2',
     'GridDataFormats>=0.4.0',
     'mmtf-python>=1.0.0',
     'joblib>=0.12',
