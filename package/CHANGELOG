@@ -14,12 +14,13 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, ljwoods2
 
  * 2.8.0
 
 Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
+ * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
 
@@ -49,7 +50,6 @@ Fixes
   * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
   * Fix doctests failing from separated blocks of imports and 
     execution and incorrectly formatted test output (Issue #3925, PR #4366)
-  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
   * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
