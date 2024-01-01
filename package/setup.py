@@ -591,7 +591,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.22.3',
+          'numpy>=1.23.2',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
@@ -637,7 +637,7 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.21.0',
+              'numpy>=1.23.2',
               'packaging',
           ],
           install_requires=install_requires,
