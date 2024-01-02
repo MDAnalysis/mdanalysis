@@ -3,6 +3,9 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
+  pull_request:
+    branches:
+      - develop
 
 concurrency:
   # Probably overly cautious group naming.
@@ -52,11 +55,16 @@ jobs:
       with:
         micromamba: true
         full-deps: true
+        numpy: ""
+        scipy: ""
+        networkx: ""
+        matplotlib: ""
 
-      # overwrite installs by picking up nightly wheels
+    # Try to pick up the nightly wheels
+    # Note: enforce >=2.0.0-dev0 for numpy to make sure we pick up the latest version
     - name: nightly_wheels
       run: |
-        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib pandas
+        pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy "numpy>=2.0.0-dev0" networkx matplotlib pandas
 
     - name: list_deps
       run: |
