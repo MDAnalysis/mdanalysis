@@ -25,6 +25,9 @@ Fixes
 Enhancements
 
 Changes
+ * As per NEP29, the minimum version of numpy has been raised to 1.23.
+   We have opted to pin to 1.23.2 to ensure the same minimum numpy version
+   is used from python 3.9 to 3.11 (Issue #4401, PR #4402)
 
 Deprecations
 
