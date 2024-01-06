@@ -67,8 +67,8 @@ class BaseITP(ParserBase):
         for a in masses:
             empty.append(np.isnan(a))
 
-        masses[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(names[empty]))
+        guessed_types = DefaultGuesser(None).guess_types(atom_types=names[empty])
+        masses[empty] = DefaultGuesser(None).guess_masses(atom_types=guessed_types)
         return masses
 
     expected_n_atoms = 63
@@ -192,8 +192,8 @@ class TestITPNoMass(ParserBase):
         for a in masses:
             empty.append(np.isnan(a))
 
-        masses[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(names[empty]))
+        guessed_types = DefaultGuesser(None).guess_types(atom_types=names[empty])
+        masses[empty] = DefaultGuesser(None).guess_masses(atom_types=guessed_types)
         return masses
 
     def test_mass_guess(self, universe):
@@ -232,7 +232,7 @@ class TestITPAtomtypes(ParserBase):
             empty.append(np.isnan(a))
 
         masses[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(names[empty]))
+            atom_types=DefaultGuesser(None).guess_types(atom_types=names[empty]))
         return masses
 
     def test_charge_parse(self, universe):
@@ -276,7 +276,7 @@ class TestITPAtomtypes(ParserBase):
             empty.append(np.isnan(a))
 
         masses[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(names[empty]))
+            atom_types=DefaultGuesser(None).guess_types(atom_types=names[empty]))
         return masses
 
     def test_charge_parse(self, universe):
@@ -370,12 +370,6 @@ class TestITPKeywords(TestITPNoKeywords):
     """
     Test reading ITP files *with* defined keywords.
     """
-    expected_attrs = ['ids', 'names', 'types',
-                      'charges', 'chargegroups',
-                      'resids', 'resnames',
-                      'segids', 'moltypes', 'molnums',
-                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses', ]
-    guessed_attrs = ['elements', ]
 
     expected_n_atoms = 7
     # FLEXIBLE is set -> no SETTLE constraint -> water should have angle

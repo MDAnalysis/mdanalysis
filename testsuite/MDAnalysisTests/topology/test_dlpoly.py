@@ -62,8 +62,8 @@ class DLPUniverse(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(
-            atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
+        guessed_types = DefaultGuesser(None).guess_types(atom_types=top.names.values)
+        return DefaultGuesser(None).guess_masses(atom_types=guessed_types)
 
 
 class DLPBase2(DLPUniverse):

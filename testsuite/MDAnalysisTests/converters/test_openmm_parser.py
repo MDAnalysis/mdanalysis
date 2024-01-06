@@ -70,9 +70,8 @@ class OpenMMTopologyBase(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(
-            atoms=DefaultGuesser(None).guess_types(
-                atoms=top.names.values))
+        guessed_types = DefaultGuesser(None).guess_types(atom_types=top.names.values)
+        return DefaultGuesser(None).guess_masses(atom_types=guessed_types)
 
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
@@ -150,8 +149,10 @@ class OpenMMTopologyBase(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
+        universe_guessed_attrs = [a.attrname for a in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
+            assert attr in universe_guessed_attrs
 
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
@@ -184,7 +185,7 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skipif(not hasattr(top, 'elements'),
+    @pytest.mark.skipif(hasattr(top, 'elements'),
                         reason="OPENMMParser doesn't guess atom "
                         "types when element attribute is read")
     def test_guessed_types(self, filename, guessed_types):

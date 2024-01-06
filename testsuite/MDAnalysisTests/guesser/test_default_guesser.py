@@ -53,30 +53,26 @@ class TestGuessMasses(object):
     def test_guess_masses_from_universe(self):
         topology = Topology(3, attrs=[Atomtypes(['C', 'C', 'H'])])
         u = mda.Universe(topology)
-        u.guess_TopologyAttributes(to_guess=['masses'])
 
         assert isinstance(u.atoms.masses, np.ndarray)
         assert_allclose(u.atoms.masses, np.array(
-            [12.011, 12.011, 1.008]), rtol=1e-3, atol=0)
+            [12.011, 12.011, 1.008]), atol=0)
 
     def test_guess_masses_from_guesser_object(self, default_guesser):
         elements = ['H', 'Ca', 'Am']
         values = np.array([1.008, 40.08000, 243.0])
         assert_allclose(default_guesser.guess_masses(
-            elements), values, rtol=1e-3, atol=0)
+            elements), values, atol=0)
 
     def test_guess_masses_warn(self):
-        topology = Topology(1, attrs=[Atomtypes(['X'])])
-        with pytest.warns(UserWarning,
-                          match="Failed to guess the mass for "
-                                "the following atom type"):
-            mda.Universe(topology, to_guess=['masses'])
-
-    def test_guess_masses_miss(self):
         topology = Topology(2, attrs=[Atomtypes(['X', 'Z'])])
-        u = mda.Universe(topology)
-        assert_allclose(u.atoms.masses, np.array(
-            [0.0, 0.0]), rtol=1e-3, atol=0)
+
+        with pytest.warns(PendingDeprecationWarning,
+                          match="Unknown masses are set to 0.0 "
+                                "for current version, this will be depracated "):
+            u = mda.Universe(topology, to_guess=['masses'])
+            assert_allclose(u.atoms.masses, np.array([0.0, 0.0]), atol=0)
+
 
     @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
     def test_get_atom_mass(self, element, value, default_guesser):
@@ -97,10 +93,8 @@ class TestGuessTypes(object):
     def test_guess_types(self, default_guesser):
         topology = Topology(2, attrs=[Atomnames(['MG2+', 'C12'])])
         u = mda.Universe(topology, to_guess=['types'])
-        values = default_guesser.guess_types(atoms=u.atoms.names)
         assert isinstance(u.atoms.types, np.ndarray)
         assert_equal(u.atoms.types, np.array(['MG', 'C'], dtype=object))
-        assert_equal(values, np.array(['MG', 'C'], dtype=object))
 
     def test_guess_atom_element(self, default_guesser):
         assert default_guesser.guess_atom_element('MG2+') == 'MG'
@@ -129,26 +123,16 @@ class TestGuessTypes(object):
     def test_partial_guess_elements_from_masses(self, default_guesser):
         masses = np.array([79.904, 40.08000, 1.008], dtype=np.float32)
         elements = np.array(['BR', 'H'], dtype=object)
-        assert_equal(
-            elements,
-            default_guesser.guess_types(
-                masses=masses,
-                partial_guess=[
-                    True,
-                    False,
-                    True]))
+        guessed_elements = default_guesser.guess_types(
+            masses=masses, indices_to_guess=[True, False, True])
+        assert_equal(elements, guessed_elements)
 
     def test_partial_guess_elements(self, default_guesser):
         names = np.array(['BR123', 'Hk', 'C12'], dtype=object)
         elements = np.array(['BR', 'C'], dtype=object)
-        assert_equal(
-            elements,
-            default_guesser.guess_types(
-                atoms=names,
-                partial_guess=[
-                    True,
-                    False,
-                    True]))
+        guessed_elements = default_guesser.guess_types(
+            atom_types=names, indices_to_guess=[True, False, True])
+        assert_equal(elements, guessed_elements)
 
     def test_guess_elements_from_no_data(self):
         top = Topology(5)
@@ -186,30 +170,38 @@ def test_guess_bonds_Error():
         u.guess_TopologyAttributes(to_guess=['bonds'])
 
 
-def test_guess_bond_coord_error():
+def test_guess_bond_vdw_error():
     u = mda.Universe(datafiles.PDB)
-    with pytest.raises(ValueError):
-        DefaultGuesser(u).guess_bonds(u.atoms, [[1, 2, 2]])
+    with pytest.raises(ValueError, match="vdw radii for types: DUMMY"):
+        DefaultGuesser(u).guess_bonds(u.atoms)
 
 
 def test_guess_impropers(default_guesser):
     u = make_starshape()
 
     ag = u.atoms[:5]
-    default_guesser.guess_angles(ag.bonds)
-    u.add_TopologyAttr(Angles(default_guesser.guess_angles(ag.bonds)))
+    guessed_angles = default_guesser.guess_angles(ag.bonds)
+    u.add_TopologyAttr(Angles(guessed_angles))
 
     vals = default_guesser.guess_improper_dihedrals(ag.angles)
     assert_equal(len(vals), 12)
 
+def test_guess_angles_with_no_bonds():
+    "Test guessing bonds and angles first before guessing "
+    "dihedral for a univers with no bonds and angles "
+    u = mda.Universe(datafiles.two_water_gro)
+    u.guess_TopologyAttributes(to_guess=['angles'])
+    assert hasattr(u, 'angles')
+    assert not hasattr(u, 'bonds')
 
 def test_guess_dihedrals_with_no_bonds():
     "Test guessing bonds and angles first before guessing "
     "dihedral for a univers with no bonds and angles "
     u = mda.Universe(datafiles.two_water_gro)
     u.guess_TopologyAttributes(to_guess=['dihedrals'])
-    assert hasattr(u, 'bonds')
-    assert hasattr(u, 'angles')
+    assert hasattr(u, 'dihedrals')
+    assert not hasattr(u, 'angles')
+    assert not hasattr(u, 'bonds')
 
 
 def bond_sort(arr):
@@ -223,13 +215,10 @@ def bond_sort(arr):
     return sorted(out)
 
 
-def test_guess_bonds_water(default_guesser):
+def test_guess_bonds_water():
     u = mda.Universe(datafiles.two_water_gro)
     bonds = bond_sort(
-        default_guesser.guess_bonds(
-            u.atoms,
-            u.atoms.positions,
-            u.dimensions))
+        DefaultGuesser(None, box=u.dimensions).guess_bonds(u.atoms))
     assert_equal(bonds, ((0, 1),
                          (0, 2),
                          (3, 4),
@@ -240,7 +229,7 @@ def test_guess_bonds_adk():
     u = mda.Universe(datafiles.PSF, datafiles.DCD)
     u.guess_TopologyAttributes(force_guess=['types'])
     guesser = DefaultGuesser(None)
-    bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
+    bonds = bond_sort(guesser.guess_bonds(u.atoms))
     assert_equal(np.sort(u.bonds.indices, axis=0),
                  np.sort(bonds, axis=0))
 
@@ -249,7 +238,7 @@ def test_guess_bonds_peptide():
     u = mda.Universe(datafiles.PSF_NAMD, datafiles.PDB_NAMD)
     u.guess_TopologyAttributes(force_guess=['types'])
     guesser = DefaultGuesser(None)
-    bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
+    bonds = bond_sort(guesser.guess_bonds(u.atoms))
     assert_equal(np.sort(u.bonds.indices, axis=0),
                  np.sort(bonds, axis=0))
 

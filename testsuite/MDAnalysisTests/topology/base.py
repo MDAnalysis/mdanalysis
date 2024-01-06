@@ -50,11 +50,11 @@ class ParserBase(object):
 
     @pytest.fixture
     def guessed_types(self, top):
-        return DefaultGuesser(None).guess_types(atoms=top.names.values)
+        return DefaultGuesser(None).guess_types(atom_types=top.names.values)
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=top.types.values)
+        return DefaultGuesser(None).guess_masses(atom_types=top.types.values)
 
     def test_output(self, filename):
         """Testing the call signature"""
@@ -120,4 +120,4 @@ class ParserBase(object):
         """check that mass values from universe creation have the same expected
         values after removing mass and type guessing from parsers"""
         u = mda.Universe(filename)
-        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
+        assert_allclose(u.atoms.masses, guessed_masses, atol=0)

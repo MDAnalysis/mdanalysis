@@ -54,21 +54,21 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     """
-    this guesser hold generic methods (not directed to specific context) for
+    This guesser holds generic methods (not directed to specific contexts) for
     guessing different topology attribute. It has the same methods that was
     originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
-    masses
-    types
-    elements
-    angles
-    dihedrals
-    bonds
-    improper dihedrals
-    aromaticities
+     *masses
+    * types
+    * elements
+    * angles
+    * dihedrals
+    * bonds
+    * improper dihedrals
+    * aromaticities
 
-    you can use this guesser either directly by initiating an
-    object of it or through universe.guess_TopologyAttributes API.
+    You can use this guesser either directly through an instance, or through the 
+    :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` method.
 
     Examples
     --------
@@ -90,14 +90,14 @@ class DefaultGuesser(GuesserBase):
             'masses': self.guess_masses,
             'types': self.guess_types,
             'elements': self.guess_types,
-            'angles': self.add_guessed_angles,
-            'dihedrals': self.add_guessed_dihedrals,
-            'bonds': self.add_guessed_bonds,
+            'bonds': self.guess_bonds,
+            'angles': self.guess_angles,
+            'dihedrals': self.guess_dihedrals,
             'improper dihedrals': self.guess_improper_dihedrals,
             'aromaticities': self.guess_aromaticities,
         }
 
-    def guess_masses(self, atoms=None, partial_guess=None):
+    def guess_masses(self, atom_types=None, indices_to_guess=None):
         """Guess the mass of many atoms based upon their type.
         For guessing masses through Univese.guess_topologyAttribute():
         First it try to guess masses from atom elements, if not available,
@@ -106,9 +106,9 @@ class DefaultGuesser(GuesserBase):
 
         Parameters
         ----------
-        atoms
+        atom_types
           Atom types/elements to guess masses from
-        partial_guess (optional)
+        indices_to_guess (optional)
           Mask array for partially guess masses for certain atoms
 
         Returns
@@ -121,28 +121,25 @@ class DefaultGuesser(GuesserBase):
          or elements to guess mass from.
 
         """
-        if atoms is None:
+        if atom_types is None:
             try:
-                atoms = self._universe.atoms.elements
+                atom_types = self._universe.atoms.elements
             except AttributeError:
                 try:
-                    atoms = self._universe.atoms.types
+                    atom_types = self._universe.atoms.types
                 except AttributeError:
                     try:
-                        self._universe.guess_TopologyAttributes(
-                            self.context, ['types'])
-                        atoms = self._universe.atoms.types
+                        atom_types = self.guess_types(atom_types=self._universe.atoms.names)
                     except ValueError:
                         raise ValueError(
-                            "there is no reference attributes in this universe"
-                            "to guess mass from")
+                            "there is no reference attributes (elemnts, types, or names)"
+                            " in this universe to guess mass from")
 
-        if partial_guess is not None:
-            atoms = atoms[partial_guess] 
+        if indices_to_guess is not None:
+            atom_types = atom_types[indices_to_guess] 
 
-        self.validate_atom_types(atoms)
         masses = np.array([self.get_atom_mass(atom)
-                           for atom in atoms], dtype=np.float64)
+                           for atom in atom_types], dtype=np.float64)
         return masses
 
     def validate_atom_types(self, atom_types):
@@ -198,15 +195,15 @@ class DefaultGuesser(GuesserBase):
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
-    def guess_types(self, atoms=None, masses=None, partial_guess=None):
+    def guess_types(self, atom_types=None, masses=None, indices_to_guess=None):
         """Guess the atom type of many atoms based on atom name
         Parameters
         ----------
-        atoms (optional)
+        atom_types (optional)
           atoms names if types guessing is desired to be from names
         masses (optional)
            atoms masses if types guessing is desired to be from masses
-        partial_guess (optional)
+        indices_to_guess (optional)
           Mask array for partially guess types for certain atoms
 
         Returns
@@ -220,9 +217,9 @@ class DefaultGuesser(GuesserBase):
 
         """
 
-        if atoms is None and masses is None:
+        if atom_types is None and masses is None:
             try:
-                atoms = self._universe.atoms.names
+                atom_types = self._universe.atoms.names
             except AttributeError:
                 try:
                     # if names is not available we can guess types from masses
@@ -233,21 +230,18 @@ class DefaultGuesser(GuesserBase):
                         "to guess types from")
 
         if masses is not None:
-            if partial_guess is not None:
-                masses = masses[partial_guess] 
+            if indices_to_guess is not None:
+                masses = masses[indices_to_guess] 
 
             return np.array([self.guess_element_from_mass(mass)
                              for mass in masses], dtype=object)
 
         else:
-            if partial_guess is not None:
-                atoms = atoms[partial_guess] 
+            if indices_to_guess is not None:
+                atom_types = atom_types[indices_to_guess] 
 
             return np.array([self.guess_atom_element(atom)
-                            for atom in atoms], dtype=object)
-
-    NUMBERS = re.compile(r'[0-9]')  # match numbers
-    SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
+                            for atom in atom_types], dtype=object)
 
     def guess_atom_element(self, atomname):
         """Guess the element of the atom from the name.
@@ -266,14 +260,16 @@ class DefaultGuesser(GuesserBase):
         :func:`guess_atom_type`
         :mod:`MDAnalysis.guesser.tables`
         """
+        NUMBERS = re.compile(r'[0-9]')  # match numbers
+        SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
         if atomname == '':
             return ''
         try:
             return tables.atomelements[atomname.upper()]
         except KeyError:
             # strip symbols and numbers
-            no_symbols = re.sub(self.SYMBOLS, '', atomname)
-            name = re.sub(self.NUMBERS, '', no_symbols).upper()
+            no_symbols = re.sub(SYMBOLS, '', atomname)
+            name = re.sub(NUMBERS, '', no_symbols).upper()
 
             # just in case
             if name in tables.atomelements:
@@ -318,7 +314,7 @@ class DefaultGuesser(GuesserBase):
                     return e.upper()
         return ''
 
-    def guess_bonds(self, atoms, coords, box=None, **kwargs):
+    def guess_bonds(self, atoms=None):
         r"""Guess if bonds exist between two atoms based on their distance.
 
         Bond between two atoms is created, if the two atoms are within
@@ -335,8 +331,6 @@ class DefaultGuesser(GuesserBase):
         ----------
         atoms : AtomGroup
              atoms for which bonds should be guessed
-        coords : array
-             coordinates of the atoms (i.e., `AtomGroup.positions)`)
         fudge_factor : float, optional
             The factor by which atoms must overlap eachother to be considered a
             bond. Larger values will increase the number of bonds found. [0.55]
@@ -376,21 +370,23 @@ class DefaultGuesser(GuesserBase):
            http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
 
         """
-        # why not just use atom.positions?
-        if len(atoms) != len(coords):
-            raise ValueError("'atoms' and 'coord' must be the same length")
+        if not atoms:
+            atoms = self._universe.atoms
 
-        fudge_factor = kwargs.get('fudge_factor', 0.55)
+        fudge_factor = self._kwargs.get('fudge_factor', 0.55)
 
         # so I don't permanently change it
         vdwradii = tables.vdwradii.copy()
-        user_vdwradii = kwargs.get('vdwradii', None)
+        user_vdwradii = self._kwargs.get('vdwradii', None)
         # this should make algo use their values over defaults
         if user_vdwradii:
             vdwradii.update(user_vdwradii)
 
         # Try using types, then elements
-        atomtypes = atoms.types
+        if hasattr(atoms, 'types'):
+            atomtypes = atoms.types
+        else:
+            atomtypes = self.guess_types(atom_types=atoms.names)
 
         # check that all types have a defined vdw
         if not all(val in vdwradii for val in set(atomtypes)):
@@ -398,9 +394,11 @@ class DefaultGuesser(GuesserBase):
                               ", ".join([t for t in set(atomtypes) if
                                          t not in vdwradii]) +
                               ". These can be defined manually using the" +
-                              " keyword 'vdwradii'"))
+                              f" keyword 'vdwradii'"))
 
-        lower_bound = kwargs.get('lower_bound', 0.1)
+        lower_bound = self._kwargs.get('lower_bound', 0.1)
+
+        box = self._kwargs.get('box', None)
 
         if box is not None:
             box = np.asarray(box)
@@ -412,7 +410,7 @@ class DefaultGuesser(GuesserBase):
 
         bonds = []
 
-        pairs, dist = distances.self_capped_distance(coords,
+        pairs, dist = distances.self_capped_distance(atoms.positions,
                                                      max_cutoff=2.0 * max_vdw,
                                                      min_cutoff=lower_bound,
                                                      box=box)
@@ -423,23 +421,16 @@ class DefaultGuesser(GuesserBase):
                 bonds.append((atoms[i].index, atoms[j].index))
         return tuple(bonds)
 
-    def add_guessed_bonds(self):
-        vdwradii = self._kwargs.get('vdwradii', None)
-        if not hasattr(self._universe.atoms, 'types'):
-            self._universe.guess_TopologyAttributes(
-                context=self.context, to_guess=['types'])
-
-        return self.guess_bonds(
-            self._universe.atoms,
-            self._universe.atoms.positions,
-            box=self._universe.atoms.dimensions,
-            vdwradii=vdwradii)
-
     def guess_angles(self, bonds=None):
         """Given a list of Bonds, find all angles that exist between atoms.
 
         Works by assuming that if atoms 1 & 2 are bonded, and 2 & 3 are bonded,
         then (1,2,3) must be an angle.
+
+        Parameters
+        ----------
+        bonds : Bonds
+             from which angles should be guessed
 
         Returns
         -------
@@ -453,7 +444,18 @@ class DefaultGuesser(GuesserBase):
         :meth:`guess_bonds`
 
       """
+        from ..core.topologyattrs import Bonds
+        from ..core.groups import AtomGroup
+
         angles_found = set()
+        
+        if bonds is None:
+            if hasattr(self._universe.atoms, 'bonds'):
+                bonds = self._universe.atoms.bonds
+            else:
+                u_copy = self._universe.copy()
+                u_copy.add_bonds(self.guess_bonds(u_copy.atoms))
+                bonds = u_copy.atoms.bonds
 
         for b in bonds:
             for atom in b:
@@ -470,19 +472,16 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(angles_found)
 
-    def add_guessed_angles(self):
-
-        if not hasattr(self._universe.atoms, 'bonds'):
-            self._universe.guess_TopologyAttributes(
-                context=self.context, to_guess=['bonds'])
-
-        return self.guess_angles(self._universe.atoms.bonds)
-
-    def guess_dihedrals(self, angles):
+    def guess_dihedrals(self, angles=None):
         """Given a list of Angles, find all dihedrals that exist between atoms.
 
         Works by assuming that if (1,2,3) is an angle, and 3 & 4 are bonded,
         then (1,2,3,4) must be a dihedral.
+
+        Parameters
+        ----------
+        angles : Angles
+             from which dihedrals should be guessed
 
         Returns
         -------
@@ -493,6 +492,20 @@ class DefaultGuesser(GuesserBase):
         """
 
         dihedrals_found = set()
+
+        if angles is None:
+            if hasattr(self._universe.atoms, 'angles'):
+                angles = self._universe.atoms.angles
+
+            elif hasattr(self._universe.atoms, 'bonds'):
+                u_copy = self._universe.copy()
+                u_copy.add_angles(self.guess_angles(u_copy.bonds))
+                angles = u_copy.atoms.angles
+            else:
+                u_copy = self._universe.copy()
+                u_copy.add_bonds(self.guess_bonds(u_copy.atoms))
+                u_copy.add_angles(self.guess_angles(u_copy.bonds))
+                angles = u_copy.atoms.angles
 
         for b in angles:
             a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
@@ -510,13 +523,6 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(dihedrals_found)
 
-    def add_guessed_dihedrals(self):
-
-        if not hasattr(self._universe.atoms, 'angles'):
-            self._universe.guess_TopologyAttributes(
-                context=self.context, to_guess=['angles'])
-
-        return self.guess_dihedrals(self._universe.atoms.angles)
 
     def guess_improper_dihedrals(self, angles):
         """Given a list of Angles, find all improper dihedrals

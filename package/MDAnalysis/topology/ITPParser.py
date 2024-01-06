@@ -27,7 +27,7 @@ ITP topology parser
 
 Reads a GROMACS ITP_ or TOP_ file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
-charges, chargegroups, moltypes, and molnums.
+charges, chargegroups, masses (if found) moltypes, and molnums.
 Bonds, angles, dihedrals and impropers are also read from the file.
 
 If an ITP file is passed without a ``[ molecules ]`` directive, passing 

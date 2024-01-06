@@ -3,18 +3,18 @@
 **************************
 guesser modules
 **************************
-This module contains the context-aware guessers, which are used by the :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API. Context-aware guessers' main purpose
+This module contains the context-aware guessers, which are used by the :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` API. Context-aware guessers' main purpose
 is to be tailored guesser classes that target specific file format or force field (eg. PDB file format, or Martini forcefield).
 Having such guessers makes attribute guessing more accurate and reliable than having generic guessing methods that doesn't  fit all topologies.
 
 Example uses of guessers
 ------------------------
 
-Guessing using :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API
+Guessing using :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Guessing can be done through the universe's :func:`guess_TopologyAttributes` as following::
+Guessing can be done through the universe's :func:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` as following::
 
   import MDAnalysis as mda
   from MDAnalysisTests.datafiles import PDB
@@ -25,7 +25,7 @@ Guessing can be done through the universe's :func:`guess_TopologyAttributes` as 
   print(u.atoms.elements) # print ['N' 'H' 'H' ... 'NA' 'NA' 'NA']
 
 In the above example, we passed ``elements`` as the attribute we want to guess, and
-:func:`guess_TopologyAttributes` guess then add it as a topology
+:func:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` guess then add it as a topology
 attribute to the ``AtomGroup`` of the universe.
 
 If the attribute already exist in the universe, passing the attribute of interest to the ``to_guess`` parameter will only fill the empty values of the attribute if any exists.
@@ -38,7 +38,7 @@ To override all the attribute values, you can pass the attribute to the ``force_
 
    u.guess_TopologyAttributes(force_guess=['types']) # types ['H', 'O', ..]
 
-N.B.: If you didn't pass any ``context`` to the API, it will use the :ref:`DefaultGuesser <DefaultGuesser>`
+N.B.: If you didn't pass any ``context`` to the API, it will use the :class:`~MDAnalysis.guesser.default_guesser.DefaultGuesser`
 
 .. rubric:: available guessers
 .. toctree::

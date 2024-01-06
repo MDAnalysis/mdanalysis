@@ -524,7 +524,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         .. versionadded:: 2.7.0
         """
         if hasattr(self, 'missing_value_label'):
-            return (np.array(values) == self.missing_value_label)
+            return values == self.missing_value_label
         else:
             return np.zeros_like(values, dtype=bool)
 

@@ -44,7 +44,7 @@ class TestTXYZParser(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=top.names.values)
+        return DefaultGuesser(None).guess_masses(atom_types=top.names.values)
 
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 8

@@ -391,6 +391,11 @@ class TestGuessTopologyAttr(object):
         assert_equal(len(u.atoms.masses), 3341)
         assert_equal(len(u.atoms.types), 3341)
 
+    def test_no_type_and_mass_guessing(self):
+        u = mda.Universe(PDB_small, to_guess=())
+        assert not hasattr(u.atoms, 'masses')
+        assert not hasattr(u.atoms, 'types')
+
     def test_invalid_context(self):
         u = mda.Universe(PDB_small)
         with pytest.raises(KeyError):
@@ -545,7 +550,10 @@ class TestGuessBonds(object):
         self._check_atomgroup(ag, u)
 
     def guess_bonds_with_to_guess(self):
-        u = mda.Universe(two_water_gro, to_guess=['bonds'])
+        u = mda.Universe(two_water_gro)
+        has_bonds = hasattr(u.atoms, 'bonds')
+        u.guess_TopologyAttributes(to_guess=['bonds'])
+        assert not has_bonds
         assert u.atoms.bonds
 
     def test_guess_read_bonds(self):

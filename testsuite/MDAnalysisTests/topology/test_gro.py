@@ -51,7 +51,7 @@ class TestGROParser(ParserBase):
     @pytest.fixture
     def guessed_masses(self, top):
         return DefaultGuesser(None).guess_masses(
-            atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
+            atom_types=DefaultGuesser(None).guess_types(atom_types=top.names.values))
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms

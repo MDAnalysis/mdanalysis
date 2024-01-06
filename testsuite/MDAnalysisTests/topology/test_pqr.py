@@ -46,8 +46,8 @@ class TestPQRParser(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).
-                                                 guess_types(atoms=top.names.values))
+        guessed_types = DefaultGuesser(None).guess_types(atom_types=top.names.values)
+        return DefaultGuesser(None).guess_masses(atom_types=guessed_types)
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms

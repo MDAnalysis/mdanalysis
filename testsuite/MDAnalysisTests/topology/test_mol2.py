@@ -187,7 +187,7 @@ class TestMOL2Base(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=top.elements.values)
+        return DefaultGuesser(None).guess_masses(atom_types=top.elements.values)
 
     guessed_attrs = ['masses']
     expected_n_atoms = 49
@@ -246,9 +246,8 @@ def test_wrong_elements_warnings():
     with pytest.warns(UserWarning, match='Unknown elements found') as record:
         u = mda.Universe(StringIO(mol2_wrong_element), format='MOL2')
 
-    # One warning from invalid elements, one from invalid masses
-    # plus masses PendingDeprecationWarning
-    assert len(record) == 4
+    # One warning from invalid elements, one from masses PendingDeprecationWarning
+    assert len(record) == 3
 
     expected = np.array(['N', '', ''], dtype=object)
     assert_equal(u.atoms.elements, expected)

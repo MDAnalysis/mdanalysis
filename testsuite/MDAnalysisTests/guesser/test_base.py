@@ -40,7 +40,18 @@ class TesttBaseGuesser():
             context = 'test2'
 
         assert get_guesser(TestGuesser1()).context == 'test1'
+        assert get_guesser('test1').context == 'test1'
         assert get_guesser(TestGuesser2()).context == 'test2'
+    
+    def test_get_guesser_with_universe(self):
+        class TestGuesser1(GuesserBase):
+            context = 'test1'
+
+        u = mda.Universe.empty(n_atoms = 5)
+        guesser = get_guesser(TestGuesser1(), u, foo=1)
+
+        assert len(guesser._universe.atoms) == 5
+        assert 'foo' in guesser._kwargs
 
     def test_guess_invalid_attribute(self):
         with pytest.raises(ValueError,
@@ -54,9 +65,8 @@ class TesttBaseGuesser():
             np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64))
         top = Topology(4, 1, 1, attrs=[names, masses, ])
         u = mda.Universe(top, to_guess=['masses'])
-        assert hasattr(u.atoms, 'types')
         assert_allclose(u.atoms.masses, np.array(
-            [12.01100, 1.00800, 1.00800, 15.99900]), rtol=1e-3, atol=0)
+            [12.01100, 1.00800, 1.00800, 15.99900]), atol=0)
 
     def test_force_guessing(self):
         names = Atomnames(np.array(['C', 'H', 'H', 'O'], dtype=object))
@@ -71,7 +81,7 @@ class TesttBaseGuesser():
         top = Topology(4, 1, 1, attrs=[types, masses, ])
         u = mda.Universe(top, to_guess=['masses'])
         assert_allclose(u.atoms.masses, np.array(
-            [0, 1.00800, 1.00800, 0]), rtol=1e-3, atol=0)
+            [0, 1.00800, 1.00800, 0]), atol=0)
 
     def test_force_guess_priority(self):
         "check that passing the attribute to force_guess have higher power"
@@ -80,7 +90,7 @@ class TesttBaseGuesser():
         top = Topology(4, 1, 1, attrs=[types, masses, ])
         u = mda.Universe(top, to_guess=['masses'], force_guess=['masses'])
         assert_allclose(u.atoms.masses, np.array(
-            [12.01100, 1.00800, 1.00800, 15.99900]), rtol=1e-3, atol=0)
+            [12.01100, 1.00800, 1.00800, 15.99900]), atol=0)
 
     def test_partial_guess_attr_with_unknown_no_value_label(self):
         "trying to partially guess attribute tha doesn't have declared"

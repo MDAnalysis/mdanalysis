@@ -43,7 +43,7 @@ class XYZBase(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=top.names.values)
+        return DefaultGuesser(None).guess_masses(atom_types=top.names.values)
 
 class TestXYZMini(XYZBase):
     ref_filename = XYZ_mini

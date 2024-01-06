@@ -76,7 +76,7 @@ class GuesserBase(metaclass=_GuesserMeta):
         Supply a Universe to the Guesser. This then become the source of atom
         attributes to be used in guessing processes. (this is relevant to how
         the universe's guess_topologyAttributes API works.
-        See :meth:`guess_TopologyAttributes <guess_TopologyAttributes>`).
+        See :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes`).
     **kwargs: to pass additional data to the guesser that can be used with
               different methos.
 
@@ -142,16 +142,16 @@ class GuesserBase(metaclass=_GuesserMeta):
             empty_values = top_attr.are_values_missing(attr_values)
 
             if True in empty_values:
-                # pass to the guesser_method indecies of attributes that have
-                # empty values to be guessed
+                # pass to the guesser_method boolean mask to only guess the
+                # empty values 
                 attr_values[empty_values] = self._guesser_methods[attr_to_guess](
-                    partial_guess=empty_values)
+                    indices_to_guess=empty_values)
                 return attr_values
 
             else:
                 logger.info(
                     f'There is no empty {attr_to_guess} values. Guesser did '
-                    'not guess any new values for {attr_to_guess} attribute')
+                    f'not guess any new values for {attr_to_guess} attribute')
                 return None
         else:
             return np.array(self._guesser_methods[attr_to_guess]())
@@ -165,7 +165,7 @@ def get_guesser(context, u=None, **kwargs):
     ----------
     u: Universe
         to be passed to the guesser
-    context: string or Guesser class
+    context: string or Guesser
     **kwargs: extra arguments are passed to the guesser.
 
     Returns
@@ -183,6 +183,12 @@ def get_guesser(context, u=None, **kwargs):
         context._universe = u
         context.update_kwargs(**kwargs)
         return context
+    try:
+        if issubclass(context, GuesserBase):
+            return context(u, **kwargs)
+    except TypeError:
+        pass
+
     try:
         guesser = _GUESSERS[context.upper()](u, **kwargs)
     except KeyError:

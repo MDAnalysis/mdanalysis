@@ -41,8 +41,6 @@ numbers up to 99,999.
 
    The parser processes atoms and their names.
    Partial charges are not set. Elements are parsed if they are
-
-
    valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
@@ -336,8 +334,8 @@ class PDBParser(TopologyReaderBase):
                     wmsg = (f"Unknown element {elem} found for some atoms. "
                             f"These have been given an empty element record. "
                             f"If needed they can be guessed using "
-                            f"universe.guess_TopologyAttributes(context='PDB',"
-                            " to_guess['elements']).")
+                            f"universe.guess_TopologyAttributes(context='default',"
+                            " to_guess=['elements']).")
                     warnings.warn(wmsg)
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
@@ -345,7 +343,7 @@ class PDBParser(TopologyReaderBase):
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be"
                           " guessed using universe.guess_TopologyAttributes("
-                          "context='PDB', to_guess['elements']).")
+                          "context='default', to_guess=['elements']).")
 
         if any(formalcharges):
             try:
