@@ -88,14 +88,6 @@ class TPRAttrs(ParserBase):
         "impropers",
     ]
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
     def test_moltypes(self, top):
         moltypes = top.moltypes.values
         assert_equal(moltypes, self.ref_moltypes)

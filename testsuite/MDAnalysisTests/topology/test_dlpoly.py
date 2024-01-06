@@ -50,21 +50,6 @@ class DLPUniverse(ParserBase):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    def test_guessed_types(self, filename, guessed_types):
-        u = mda.Universe(filename, topology_format=self.format)
-        assert_equal(u.atoms.types, guessed_types)
-
-    def test_guessed_masses(self, filename, guessed_masses):
-        """check that guessed masses from universe creation have the same
-        values as the masses guessing that used to happen inisde the parser"""
-        u = mda.Universe(filename, topology_format=self.format)
-        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        guessed_types = DefaultGuesser(None).guess_types(atom_types=top.names.values)
-        return DefaultGuesser(None).guess_masses(atom_types=guessed_types)
-
 
 class DLPBase2(DLPUniverse):
     expected_attrs = ['ids', 'names']

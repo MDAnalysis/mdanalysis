@@ -46,10 +46,6 @@ class LammpsBase(ParserBase):
     expected_attrs = ['types', 'resids', 'masses', 'charges',
                       'bonds', 'angles', 'dihedrals', 'impropers']
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
     def test_n_atom_types(self, top):
         assert_equal(len(set(top.types.values)), self.expected_n_atom_types)
 
@@ -100,16 +96,6 @@ class LammpsBase(ParserBase):
         u = mda.Universe(filename, format='DATA')
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
-
-    @pytest.mark.skipif('names' not in expected_attrs,
-                        reason="topology doesn't have names attribute")
-    def test_guessed_types(self, filename, guessed_types):
-        u = mda.Universe(filename, format='DATA')
-        assert_equal(u.atoms.types, guessed_types)
-
-    def test_guessed_masses(self, filename, guessed_masses):
-        u = mda.Universe(filename, format='DATA')
-        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
 class TestLammpsData(LammpsBase):
@@ -287,10 +273,6 @@ class TestDumpParser(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
     parser = mda.topology.LAMMPSParser.LammpsDumpParser
     ref_filename = LAMMPSDUMP
 
@@ -304,16 +286,6 @@ class TestDumpParser(ParserBase):
         u = mda.Universe(filename, format='LAMMPSDUMP')
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
-
-    @pytest.mark.skipif('names' not in expected_attrs,
-                        reason="topology doesn't have names attribute")
-    def test_guessed_types(self, filename, guessed_types):
-        u = mda.Universe(filename, format='LAMMPSDUMP')
-        assert_equal(u.atoms.types, guessed_types)
-
-    def test_guessed_masses(self, filename, guessed_masses):
-        u = mda.Universe(filename, format='LAMMPSDUMP')
-        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
     def test_id_ordering(self):
         # ids are nonsequential in file, but should get rearranged

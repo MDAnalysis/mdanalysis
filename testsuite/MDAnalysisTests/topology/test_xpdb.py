@@ -40,13 +40,3 @@ class TestXPDBParser(ParserBase):
     expected_n_atoms = 5
     expected_n_residues = 5
     expected_n_segments = 1
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        guesser = DefaultGuesser(None)
-        if hasattr(top, 'elements'):
-            atomtypes = top.elements.values
-            return guesser.guess_masses(atom_types=atomtypes)
-        else:
-            guessed_types = guesser.guess_types(atom_types=top.names.values)
-            return guesser.guess_masses(atom_types=guessed_types)

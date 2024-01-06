@@ -50,10 +50,6 @@ class TestPDBQT(ParserBase):
         "tempfactors",
     ]
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
     guessed_attrs = ['masses']
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99

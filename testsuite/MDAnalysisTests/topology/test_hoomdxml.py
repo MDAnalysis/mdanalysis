@@ -35,10 +35,6 @@ class TestHoomdXMLParser(ParserBase):
         'types', 'masses', 'charges', 'radii', 'bonds', 'angles', 'dihedrals', 'impropers'
     ]
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
     expected_n_atoms = 769
     expected_n_residues = 1
     expected_n_segments = 1

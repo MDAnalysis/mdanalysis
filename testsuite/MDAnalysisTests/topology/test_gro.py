@@ -48,11 +48,6 @@ class TestGROParser(ParserBase):
     expected_n_residues = 11302
     expected_n_segments = 1
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(
-            atom_types=DefaultGuesser(None).guess_types(atom_types=top.names.values))
-
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
         assert len(top.names) == top.n_atoms

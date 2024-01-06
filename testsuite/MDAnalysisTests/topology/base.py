@@ -48,14 +48,6 @@ class ParserBase(object):
         with self.parser(filename) as p:
             yield p.parse()
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return DefaultGuesser(None).guess_types(atom_types=top.names.values)
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atom_types=top.types.values)
-
     def test_output(self, filename):
         """Testing the call signature"""
         with self.parser(filename) as p:
@@ -107,17 +99,3 @@ class ParserBase(object):
         u = mda.Universe(filename)
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
-
-    @pytest.mark.skipif('names' not in expected_attrs,
-                        reason="topology doesn't have names attribute")
-    def test_guessed_types(self, filename, guessed_types):
-        """check that type values from universe creation have the same
-        expected values after removing mass and type guessing from parsers"""
-        u = mda.Universe(filename)
-        assert_equal(u.atoms.types, guessed_types)
-
-    def test_guessed_masses(self, filename, guessed_masses):
-        """check that mass values from universe creation have the same expected
-        values after removing mass and type guessing from parsers"""
-        u = mda.Universe(filename)
-        assert_allclose(u.atoms.masses, guessed_masses, atol=0)

@@ -181,14 +181,6 @@ class TestMOL2Base(ParserBase):
         'elements',
     ]
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atom_types=top.elements.values)
-
     guessed_attrs = ['masses']
     expected_n_atoms = 49
     expected_n_residues = 1

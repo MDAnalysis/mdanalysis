@@ -43,14 +43,6 @@ class GSDBase(ParserBase):
     expected_n_dihedrals = 0
     expected_n_impropers = 0
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
         assert len(top.names) == top.n_atoms

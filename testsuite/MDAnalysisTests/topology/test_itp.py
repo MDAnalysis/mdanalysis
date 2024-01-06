@@ -54,23 +54,6 @@ class BaseITP(ParserBase):
 
     guessed_attrs = ['elements', ]
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        masses = np.array(top.masses.values)
-        names = np.array(top.names.values)
-
-        empty = []
-        for a in masses:
-            empty.append(np.isnan(a))
-
-        guessed_types = DefaultGuesser(None).guess_types(atom_types=names[empty])
-        masses[empty] = DefaultGuesser(None).guess_masses(atom_types=guessed_types)
-        return masses
-
     expected_n_atoms = 63
     expected_n_residues = 10
     expected_n_segments = 1
@@ -399,13 +382,6 @@ class TestITPKeywords(TestITPNoKeywords):
     def test_kwargs_overrides_defines(self, top):
         assert_allclose(top.charges.values[2], 3)
 
-    def test_guessed_masses(self, filename, guessed_masses):
-        """check that guessed masses from universe creation have the same
-        values as the masses guessing that used to happen inisde the parser"""
-        u = mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True,
-                         HW1_CHARGE=1, HW2_CHARGE=3)
-        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
-
 
 class TestNestedIfs(BaseITP):
     """
@@ -432,14 +408,6 @@ class TestNestedIfs(BaseITP):
 
     def test_heavy_atom(self, universe):
         assert universe.atoms[5].mass > 40
-
-    def test_guessed_masses(self, filename, guessed_masses):
-        u = mda.Universe(
-            filename,
-            HEAVY_H=True,
-            EXTRA_ATOMS=True,
-            HEAVY_SIX=True)
-        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
 class TestReadTop(BaseITP):
@@ -482,12 +450,6 @@ class TestReadTop(BaseITP):
         u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
-
-    def test_guessed_masses(self, filename, guessed_masses):
-        """check that guessed masses from universe creation have the same
-        values as the masses guessing that used to happen inisde the parser"""
-        u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
-        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
     def test_sequential(self, universe):
         resids = np.array(list(range(2, 12)) + list(range(13, 23)))

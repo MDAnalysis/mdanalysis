@@ -53,14 +53,6 @@ class TOPBase(ParserBase):
         "bonds", "angles", "dihedrals", "impropers", "elements"
     ]
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
     expected_n_segments = 1
 
     def test_attr_size(self, top):

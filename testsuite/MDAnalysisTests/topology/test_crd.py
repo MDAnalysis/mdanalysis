@@ -41,8 +41,3 @@ class TestCRDParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        guessed_types = DefaultGuesser(None).guess_types(atom_types=top.names.values)
-        return DefaultGuesser(None).guess_masses(atom_types=guessed_types)

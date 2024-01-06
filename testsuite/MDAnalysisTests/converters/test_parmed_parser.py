@@ -45,14 +45,6 @@ class BaseTestParmedParser(ParserBase):
                       'bonds', 'ureybradleys', 'angles',
                       'dihedrals', 'impropers', 'cmaps']
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
     expected_n_atoms = 0
     expected_n_residues = 1
     expected_n_segments = 1

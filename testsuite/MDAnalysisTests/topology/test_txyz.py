@@ -38,14 +38,6 @@ class TestTXYZParser(ParserBase):
     expected_n_atoms = 9
     expected_n_segments = 1
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atom_types=top.names.values)
-
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 8
 

@@ -40,10 +40,6 @@ class TestFHIAIMS(ParserBase):
     expected_n_atoms = 6
     ref_filename = FHIAIMS
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atom_types=top.names.values)
-
     def test_names(self, top):
         assert_equal(top.names.values,
                      ['O', 'H', 'H', 'O', 'H', 'H'])

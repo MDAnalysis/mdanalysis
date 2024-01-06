@@ -41,11 +41,6 @@ class GMSBase(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        guessed_types = DefaultGuesser(None).guess_types(atom_types=top.names.values)
-        return DefaultGuesser(None).guess_masses(atom_types=guessed_types)
-
 
 class TestGMSASYMOPT(GMSBase):
     expected_n_atoms = 6

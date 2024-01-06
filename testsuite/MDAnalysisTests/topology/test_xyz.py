@@ -41,9 +41,6 @@ class XYZBase(ParserBase):
     expected_attrs = ['names', 'elements']
     guessed_attrs = ['masses', 'types']
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atom_types=top.names.values)
 
 class TestXYZMini(XYZBase):
     ref_filename = XYZ_mini

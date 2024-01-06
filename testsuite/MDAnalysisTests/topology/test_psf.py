@@ -44,14 +44,6 @@ class PSFBase(ParserBase):
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        return top.masses.values
-
 
 class TestPSFParser(PSFBase):
     """

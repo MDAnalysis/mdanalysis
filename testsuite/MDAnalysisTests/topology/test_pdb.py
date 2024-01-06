@@ -79,16 +79,6 @@ class PDBBase(ParserBase):
                       'tempfactors', 'chainIDs']
     guessed_attrs = ['types', 'masses']
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        guesser = DefaultGuesser(None)
-        if hasattr(top, 'elements'):
-            atomtypes = top.elements.values
-            return guesser.guess_masses(atom_types=atomtypes)
-        else:
-            guessed_types = guesser.guess_types(atom_types=top.names.values)
-            return guesser.guess_masses(atom_types=guessed_types)
-
 
 class TestPDBParser(PDBBase):
     """This one has neither chainids or segids"""
