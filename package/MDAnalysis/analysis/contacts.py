@@ -405,6 +405,13 @@ class Contacts(AnalysisBase):
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
 
+        Attributes
+        ----------
+        n_initial_contacts : int
+             Total number of initial contacts.
+        r0 : list
+             List of distance arrays between reference groups.
+        
         Notes
         -----
 
