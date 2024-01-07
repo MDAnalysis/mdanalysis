@@ -411,7 +411,7 @@ class Contacts(AnalysisBase):
              Total number of initial contacts.
         r0 : list
              List of distance arrays between reference groups.
-        
+
         Notes
         -----
 
