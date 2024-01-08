@@ -1001,7 +1001,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             of coordinate data is returned.
 
             .. deprecated:: 2.7.0
-            asel argument will be renamed to atomgroup in 3.0.0
+                asel argument will be renamed to atomgroup in 3.0.0
 
         atomgroup: AtomGroup (optional)
             Same as `asel`, will replace `asel` in 3.0.0

@@ -31,7 +31,7 @@ Note
 ----
 Support for AMBER is still somewhat *experimental* and feedback and
 contributions are highly appreciated. Use the `Issue Tracker`_ or get in touch
-on the `MDAnalysis mailinglist`_.
+on the `GitHub Discussions`_.
 
 
 .. rubric:: Units
@@ -126,7 +126,7 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 .. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.xhtml
 .. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
-.. _MDAnalysis mailinglist: https://groups.google.com/group/mdnalysis-discussion
+.. _GitHub Discussions: https://github.com/MDAnalysis/mdanalysis/discussions
 
 """
 import scipy.io.netcdf
