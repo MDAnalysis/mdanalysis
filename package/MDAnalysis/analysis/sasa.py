@@ -136,23 +136,24 @@ major changes in structure use the `start`, `stop`,  and `step` keywords to
 control which frames are used for calculations. Note that computation of SASA
 can be intensive for large systems or long trajectories.
 
-Classes
--------
-
-.. autoclass:: SASA
-.. autoclass:: RSASA
-
 References
 ----------
 
 .. footbibliography::
 
 
+Classes
+-------
+
+.. autoclass:: SASA
+.. autoclass:: RSASA
+
+
 .. _`Solvent-Accessible Surface Area`:
    https://en.wikipedia.org/wiki/Accessible_surface_area
 .. _`Accessible Surface Area`:
    https://en.wikipedia.org/wiki/Accessible_surface_area
-.. _`Relative Solvent-Accessible Surface Area`:
+.. _`Relative Solvent-Exposed Surface Area`:
    https://en.wikipedia.org/wiki/Relative_accessible_surface_area
 .. _`Relative Solvent Accessibility`:
    https://en.wikipedia.org/wiki/Relative_accessible_surface_area
