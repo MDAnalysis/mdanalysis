@@ -117,7 +117,8 @@ class TestSASA_r(object):
 
     def test_rsasa_analytical(self, protein, co, analytical_co, radii_dict):
         # HACK: Initiate class but call private method on CO data instead
-        RS = RSASA(protein, n_dots=1_024, probe_radius=0, radii_dict=radii_dict)
+        RS = RSASA(protein, n_dots=1_024,
+                   probe_radius=0, radii_dict=radii_dict)
         area = RS._get_sasa(co)
         assert_almost_equal(area, analytical_co, decimal=1)
 
