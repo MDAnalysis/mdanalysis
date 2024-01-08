@@ -300,10 +300,10 @@ class SASA(AnalysisBase):
                 "Element could not be assigned a radius: Using default radius")
 
         # Pre-compute Fibonacci sphere
-        self._sphere = self._compute_sphere(self.n_dots)
+        self._sphere = self._fib_sphere(self.n_dots)
 
     @staticmethod
-    def _compute_sphere(n_dots):
+    def _fib_sphere(n_dots):
         """Generate sphere with equidistant points (Fibonacci sphere)"""
         dl = np.pi * (3 - np.sqrt(5))
         dz = 2.0 / n_dots
@@ -471,10 +471,10 @@ class RSASA(AnalysisBase):
                 f"Element could not be assigned a radius: Using default radius")
 
         # Pre-compute Fibonacci sphere
-        self._sphere = self._compute_sphere(self.n_dots)
+        self._sphere = self._fib_sphere(self.n_dots)
 
     @staticmethod
-    def _compute_sphere(n_dots):
+    def _fib_sphere(n_dots):
         """Generate sphere with equidistant points (Fibonacci sphere)"""
         dl = np.pi * (3 - np.sqrt(5))
         dz = 2.0 / n_dots
