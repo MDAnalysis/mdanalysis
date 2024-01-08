@@ -85,7 +85,7 @@ Examples
 --------
 
 For example, we can find how the average area of adenylate kinase (AdK). The
-trajectory is included within the test data files:
+structure is included within the test data files:
 
 .. code-block:: python
 
@@ -199,7 +199,7 @@ class SASA(AnalysisBase):
 
     Parameters
     ----------
-    atomgroup : :class:`AtomGroup`
+    ag : :class:`AtomGroup`
         An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
         not accepted.
     n_dots : int
@@ -216,7 +216,7 @@ class SASA(AnalysisBase):
     Attributes
     ----------
     results.area : :class:`numpy.ndarray`
-        Atom-wise Solvent Exposed Surface Area in :math:`Angstrom^2`.
+        Atom-wise Solvent-Accessible Surface Area in :math:`Angstrom^2`.
     radii : :class:`numpy.ndarray`
         Atomic radii (with probe) used in calculation.
     radii_dict : :class:`collections.defaultdict`
@@ -247,7 +247,7 @@ class SASA(AnalysisBase):
         """
         Parameters
         ----------
-        atomgroup : :class:`AtomGroup`
+        ag : :class:`AtomGroup`
             An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
             not accepted.
         n_dots : int
@@ -300,10 +300,10 @@ class SASA(AnalysisBase):
                 "Element could not be assigned a radius: Using default radius")
 
         # Pre-compute Fibonacci sphere
-        self._sphere = self._fib_sphere(self.n_dots)
+        self._sphere = self._get_sphere(self.n_dots)
 
     @staticmethod
-    def _fib_sphere(n_dots):
+    def _get_sphere(n_dots):
         """Generate sphere with equidistant points (Fibonacci sphere)"""
         dl = np.pi * (3 - np.sqrt(5))
         dz = 2.0 / n_dots
@@ -325,14 +325,14 @@ class SASA(AnalysisBase):
     def _single_frame(self):
         # Find atom's neighbors using KDTree
         kdt = scipy.spatial.KDTree(self.ag.positions, 10)
-        pt_available = set(range(self.n_dots))
+        dots_available = set(range(self.n_dots))
 
-        result = np.zeros(self.ag.n_atoms)
+        dots = np.zeros(self.ag.n_atoms)
         for i in range(self.ag.n_atoms):
             # Scale sphere and move it to the i-th atom position
             sphere = self._sphere.copy() * self.radii[i]
             sphere += self.ag.positions[i]
-            available = pt_available.copy()
+            available = dots_available.copy()
             kdt_sphere = scipy.spatial.KDTree(sphere, 10)
 
             # Iterate over neighbors of atom i
@@ -346,10 +346,10 @@ class SASA(AnalysisBase):
                             self.radii[j]
                         )
                     }
-            result[i] = len(available)
+            dots[i] = len(available)
 
-        # Convert accessible point count to surface area in A^2
-        self.results.area += 4 * np.pi * self.radii ** 2 * result / self.n_dots
+        # Convert accessible points to surface area in A^2
+        self.results.area += 4 * np.pi * self.radii ** 2 * dots / self.n_dots
 
     def _conclude(self):
         # Average for number of trajectory frames
@@ -364,7 +364,7 @@ class RSASA(AnalysisBase):
 
     Parameters
     ----------
-    atomgroup : :class:`AtomGroup`
+    ag : :class:`AtomGroup`
         An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
         not accepted.
     subsele : str
@@ -384,7 +384,7 @@ class RSASA(AnalysisBase):
     Attributes
     ----------
     results.relative_area : :class:`numpy.ndarray`
-        Residue-wise Relative Solvent Exposed Surface Area. Ranges from 0 to 1.
+        Residue-wise Relative Solvent-Accessible Surface Area. Ranges from 0 to 1.
     radii : :class:`numpy.ndarray`
         Atomic radii (with probe) used in calculation.
     radii_dict : :class:`collections.defaultdict`
@@ -414,7 +414,7 @@ class RSASA(AnalysisBase):
         """
         Parameters
         ----------
-        atomgroup : :class:`AtomGroup`
+        ag : :class:`AtomGroup`
             An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
             not accepted.
         subsele : str
@@ -471,10 +471,10 @@ class RSASA(AnalysisBase):
                 f"Element could not be assigned a radius: Using default radius")
 
         # Pre-compute Fibonacci sphere
-        self._sphere = self._fib_sphere(self.n_dots)
+        self._sphere = self._get_sphere(self.n_dots)
 
     @staticmethod
-    def _fib_sphere(n_dots):
+    def _get_sphere(n_dots):
         """Generate sphere with equidistant points (Fibonacci sphere)"""
         dl = np.pi * (3 - np.sqrt(5))
         dz = 2.0 / n_dots
@@ -492,21 +492,21 @@ class RSASA(AnalysisBase):
 
     def _get_sasa(self, ag):
         """Calculate SASA for given AtomGroup"""
-        # Get radii for AtomGroup
+        # Get radii for current AtomGroup
         radii = np.vectorize(self.radii_dict.get)(ag.elements)
         radii += self.probe_radius
         max_radii = 2 * np.max(radii)
 
         # Find atom's neighbors using KDTree
         kdt = scipy.spatial.KDTree(ag.positions, 10)
-        pt_available = set(range(self.n_dots))
+        dots_available = set(range(self.n_dots))
 
-        result = np.zeros(ag.n_atoms)
+        dots = np.zeros(ag.n_atoms)
         for i in range(ag.n_atoms):
             # Scale sphere and move it to the i-th atom position
             sphere = self._sphere.copy() * radii[i]
             sphere += ag.positions[i]
-            available = pt_available.copy()
+            available = dots_available.copy()
             kdt_sphere = scipy.spatial.KDTree(sphere, 10)
 
             # Iterate over neighbors of atom i
@@ -520,34 +520,33 @@ class RSASA(AnalysisBase):
                             radii[j]
                         )
                     }
-            result[i] = len(available)
+            dots[i] = len(available)
 
-        # Convert accessible point count to surface area in A^2
-        return 4 * np.pi * radii ** 2 * result / self.n_dots
+        # Convert accessible points to surface area in A^2
+        return 4 * np.pi * radii ** 2 * dots / self.n_dots
 
     def _prepare(self):
         self.results.relative_area = np.zeros(self.ag.n_residues)
 
     def _single_frame(self):
-        # Calculate SASA for (sub)selection and accumulate by residues
+        # Calculate surface of (sub)selection and accumulate by residues
         sub = self.ag.select_atoms(self._subsele)
         area = self._get_sasa(sub)
         result = collections.defaultdict(float)
         for i, atom in enumerate(sub.atoms):
             result[atom.resid] += area[i]
 
-        # Calculate SASA for each isolated tripeptide
+        # Calculate surface of each isolated "tripeptide"
         for resid in self.ag.residues.resids:
             tripep = self.ag.select_atoms(
                 f"(byres (bonded resid {resid})) and ({self._subsele})")
-            area = self._get_sasa(tripep)
+            tripep_area = self._get_sasa(tripep)
             exposed_area = sum(
-                [a for a, id in zip(area, tripep.resids) if id == resid])
-            if exposed_area == 0.0:
-                continue
-            result[resid] /= exposed_area
+                [a for a, id in zip(tripep_area, tripep.resids) if id == resid])
+            if exposed_area != 0.0:
+                result[resid] /= exposed_area
 
-        # Update the result and account for residues that have empty selections
+        # Update the result and account for residues that might have empty selection
         self.results.relative_area += np.array(
             [result[id] for id in self.ag.residues.resids])
 
