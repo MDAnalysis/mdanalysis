@@ -222,7 +222,7 @@ class SASA(AnalysisBase):
         Atom-wise Solvent-Accessible Surface Area in :math:`Angstrom^2`.
     radii : :class:`numpy.ndarray`
         Atomic radii (with probe) used in calculation.
-    radii_dict : :class:`collections.defaultdict`
+    radii_dict : dict
         Dictionary of atomic radii used for assignment.
     probe_radius : float
         Radius of the solvent probe used in calculation.
@@ -291,13 +291,14 @@ class SASA(AnalysisBase):
         self.n_dots = int(n_dots)
 
         # Import internal VDW radii table and update with user values
-        self.radii_dict = collections.defaultdict(lambda: 2.0)
+        self.radii_dict = dict()
         self.radii_dict.update(vdwradii)
         if radii_dict is not None:
             self.radii_dict.update(radii_dict)
 
         # Assign atoms radii based on elements property
-        self.radii = np.vectorize(self.radii_dict.get)(self.ag.elements)
+        self.radii = np.array(
+            [self.radii_dict.get(e, 2.0) for e in self.ag.elements])
         self.radii += self.probe_radius
         self._max_radii = 2 * np.max(self.radii)
 
@@ -398,7 +399,7 @@ class RSASA(AnalysisBase):
         Ranges from 0 to 1.
     radii : :class:`numpy.ndarray`
         Atomic radii (with probe) used in calculation.
-    radii_dict : :class:`collections.defaultdict`
+    radii_dict : dict
         Dictionary of atomic radii used for assignment.
     probe_radius : float
         Radius of the solvent probe used in calculation.
@@ -473,14 +474,15 @@ class RSASA(AnalysisBase):
         self.n_dots = int(n_dots)
 
         # Import MDAnalysis VDW radii table and update with user values
-        self.radii_dict = collections.defaultdict(lambda: 2.0)
+        self.radii_dict = dict()
         self.radii_dict.update(vdwradii)
         if radii_dict is not None:
             self.radii_dict.update(radii_dict)
 
         # Assign atoms radii (for user to see) and issue a warning
         # if any element is not in radii table
-        self.radii = np.vectorize(self.radii_dict.get)(self.ag.elements)
+        self.radii = np.array(
+            [self.radii_dict.get(e, 2.0) for e in self.ag.elements])
         self.radii += self.probe_radius
         if not set(self.ag.elements).issubset(self.radii_dict.keys()):
             logger.warning(
