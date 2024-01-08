@@ -17,11 +17,12 @@ The rules for this file:
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
          richardjgowers, lilyminium, ALescoulie, hmacdope
 
+
  * 2.8.0
 
 Enhancements
   * Add calculation for the accessible surface area, and relative accessible
-    surface area using Shrake-Rupley algorithm (PR #4025)
+    surface area using Shrake-Rupley algorithm (PR #2439)
 
  * 2.7.0
 
