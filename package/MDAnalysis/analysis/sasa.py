@@ -179,7 +179,7 @@ due.cite(
 )
 due.cite(
     Doi("10.1371/journal.pone.0080635"),
-    description="Maximum Allowed Solvent Accessibilites of Residues in Proteins",
+    description="Max Allowed Solvent Accessibility of Residues in Proteins",
     path="MDAnalysis.analysis.sasa",
     cite_module=True,
 )
@@ -200,18 +200,20 @@ class SASA(AnalysisBase):
     Parameters
     ----------
     ag : :class:`AtomGroup`
-        An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
-        not accepted.
+        An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances
+        are not accepted.
     n_dots : int
-        Resolution of the surface of each atom. A higher number of points results
-        in more precise measurements, but slows down the calculation. Defaults to 256.
+        Resolution of the surface of each atom. A higher number of points
+        results in more precise measurements, but slows down the calculation.
+        Defaults to 256.
     probe_radius : float
-        Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40, roughly
-        the radius of a water molecule.
+        Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40,
+        roughly the radius of a water molecule.
     radii_dict : dict
-        User-provided dictionary of atomic radii to use in the calculation. Values
-        will replace or complement those in :data:`MDAnalysis.topology.tables.vdwradii`.
-        For unknown particles radii defaults to 2.0 :math:`Angstroms`.
+        User-provided dictionary of atomic radii to use in the calculation.
+        Values will replace or complement those in
+        :data:`MDAnalysis.topology.tables.vdwradii`.For unknown particles radii
+        defaults to 2.0 :math:`Angstroms`.
 
     Attributes
     ----------
@@ -239,27 +241,30 @@ class SASA(AnalysisBase):
     >>> R.results.area.sum()
     12146.27
 
-    
+
     .. versionadded:: 2.8.0
     """
 
-    def __init__(self, ag, probe_radius=1.40, n_dots=256, radii_dict=None, **kwargs):
+    def __init__(self, ag, probe_radius=1.40, n_dots=256,
+                 radii_dict=None, **kwargs):
         """
         Parameters
         ----------
         ag : :class:`AtomGroup`
-            An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
-            not accepted.
+            An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup`
+            instances are not accepted.
         n_dots : int
-            Resolution of the surface of each atom. A higher number of points results
-            in more precise measurements, but slows down the calculation. Defaults to 256.
+            Resolution of the surface of each atom. A higher number of points
+            results in more precise measurements, but slows down the
+            calculation. Defaults to 256.
         probe_radius : float
-            Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40, roughly
-            the radius of a water molecule.
+            Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40,
+            roughly the radius of a water molecule.
         radii_dict : dict
-            User-provided dictionary of atomic radii to use in the calculation. Values
-            will replace or complement those in :data:`MDAnalysis.topology.tables.vdwradii`.
-            For unknown particles radii defaults to 2.0 :math:`Angstroms`.
+            User-provided dictionary of atomic radii to use in the calculation.
+            Values will replace or complement those in
+            :data:`MDAnalysis.topology.tables.vdwradii`. For unknown particles
+            radii defaults to 2.0 :math:`Angstroms`.
         """
         if isinstance(ag, groups.UpdatingAtomGroup):
             raise TypeError(
@@ -276,7 +281,8 @@ class SASA(AnalysisBase):
                 f"Number of sphere dots must be larger than 1: {n_dots}")
         if not hasattr(ag, "elements"):
             raise ValueError(
-                "Cannot assign atomic radii: Universe has no 'elements' property")
+                "Cannot assign atomic radii:"
+                "Universe has no 'elements' property")
 
         # Locals
         self.ag = ag
@@ -336,7 +342,8 @@ class SASA(AnalysisBase):
             kdt_sphere = scipy.spatial.KDTree(sphere, 10)
 
             # Iterate over neighbors of atom i
-            for j in kdt.query_ball_point(self.ag.positions[i], self._max_radii, workers=-1):
+            for j in kdt.query_ball_point(self.ag.positions[i],
+                                          self._max_radii, workers=-1):
                 if j == i:
                     continue
                 if self.radii[j] < (self.radii[i] + self.radii[j]):
@@ -359,32 +366,35 @@ class SASA(AnalysisBase):
 
 class RSASA(AnalysisBase):
     """
-    Calculate Relative Solvent-Accessible Surface Area for residues in selection
-    using the Shrake-Rupley algorithm.
+    Calculate Relative Solvent-Accessible Surface Area for residues in
+    selection using the Shrake-Rupley algorithm.
 
     Parameters
     ----------
     ag : :class:`AtomGroup`
-        An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
-        not accepted.
+        An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances
+        are not accepted.
     subsele : str
         Calculate surface only for sub-selection within the atomgroup e.g.
         side-chain atoms. Defaults to `None`.
     n_dots : int
-        Resolution of the surface of each atom. A higher number of points results
-        in more precise measurements, but slows down the calculation. Defaults to 256.
+        Resolution of the surface of each atom. A higher number of points
+        results in more precise measurements, but slows down the calculation.
+        Defaults to 256.
     probe_radius : float
-        Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40, roughly
-        the radius of a water molecule.
+        Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40,
+        roughly the radius of a water molecule.
     radii_dict : dict
-        User-provided dictionary of atomic radii to use in the calculation. Values
-        will replace or complement those in :data:`MDAnalysis.topology.tables.vdwradii`.
-        For unknown particles radii defaults to 2.0 :math:`Angstroms`.
+        User-provided dictionary of atomic radii to use in the calculation.
+        Values will replace or complement those in
+        :data:`MDAnalysis.topology.tables.vdwradii`. For unknown particles
+        radii defaults to 2.0 :math:`Angstroms`.
 
     Attributes
     ----------
     results.relative_area : :class:`numpy.ndarray`
-        Residue-wise Relative Solvent-Accessible Surface Area. Ranges from 0 to 1.
+        Residue-wise Relative Solvent-Accessible Surface Area.
+        Ranges from 0 to 1.
     radii : :class:`numpy.ndarray`
         Atomic radii (with probe) used in calculation.
     radii_dict : :class:`collections.defaultdict`
@@ -406,30 +416,33 @@ class RSASA(AnalysisBase):
     >>> R.results.relative_area
     [ 0.215 0.232 0.002 0.000 ... 0.321 0.044 0.605 ]
 
-    
+
     .. versionadded:: 2.8.0
     """
 
-    def __init__(self, ag, subsele=None, probe_radius=1.40, n_dots=256, radii_dict=None, **kwargs):
+    def __init__(self, ag, subsele=None, probe_radius=1.40,
+                 n_dots=256, radii_dict=None, **kwargs):
         """
         Parameters
         ----------
         ag : :class:`AtomGroup`
-            An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup` instances are
-            not accepted.
+            An MDAnalysis :class:`AtomGroup`. :class:`UpdatingAtomGroup`
+            instances are not accepted.
         subsele : str
             Calculate surface only for sub-selection within the atomgroup e.g.
             side-chain atoms. Defaults to `None`.
         n_dots : int
-            Resolution of the surface of each atom. A higher number of points results
-            in more precise measurements, but slows down the calculation. Defaults to 256.
+            Resolution of the surface of each atom. A higher number of points
+            results in more precise measurements, but slows down the
+            calculation. Defaults to 256.
         probe_radius : float
-            Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40, roughly
-            the radius of a water molecule.
+            Radius of the solvent probe in :math:`Angstroms`. Defaults to 1.40,
+            roughly the radius of a water molecule.
         radii_dict : dict
-            User-provided dictionary of atomic radii to use in the calculation. Values
-            will replace or complement those in :data:`MDAnalysis.topology.tables.vdwradii`.
-            For unknown particles radii defaults to 2.0 :math:`Angstroms`.
+            User-provided dictionary of atomic radii to use in the calculation.
+            Values will replace or complement those in
+            :data:`MDAnalysis.topology.tables.vdwradii`. For unknown particles
+            radii defaults to 2.0 :math:`Angstroms`.
         """
         if isinstance(ag, groups.UpdatingAtomGroup):
             raise TypeError(
@@ -437,7 +450,8 @@ class RSASA(AnalysisBase):
 
         super(RSASA, self).__init__(ag.universe.trajectory, **kwargs)
 
-        # Check input parameters and if AtomGroup has 'elements' and 'bonds' property
+        # Check input parameters and if AtomGroup has
+        # 'elements' and 'bonds' property
         if probe_radius < 0.0:
             raise ValueError(
                 f"Probe radius must be a positive number: {probe_radius} <= 0")
@@ -445,8 +459,8 @@ class RSASA(AnalysisBase):
             raise ValueError(
                 f"Number of sphere dots must be larger than 1: {n_dots}")
         if not hasattr(ag, "elements"):
-            raise ValueError(
-                "Cannot assign atomic radii: Universe has no 'elements' property")
+            raise ValueError("Cannot assign atomic radii:"
+                             "Universe has no 'elements' property")
         if not hasattr(ag, "bonds"):
             raise ValueError(
                 "Universe has no 'bonds' property")
@@ -463,12 +477,13 @@ class RSASA(AnalysisBase):
         if radii_dict is not None:
             self.radii_dict.update(radii_dict)
 
-        # Assign atoms radii (for user to see) and issue a warning if any element is not in radii table
+        # Assign atoms radii (for user to see) and issue a warning
+        # if any element is not in radii table
         self.radii = np.vectorize(self.radii_dict.get)(self.ag.elements)
         self.radii += self.probe_radius
         if not set(self.ag.elements).issubset(self.radii_dict.keys()):
             logger.warning(
-                f"Element could not be assigned a radius: Using default radius")
+                "Element could not be assigned a radius: Using default radius")
 
         # Pre-compute Fibonacci sphere
         self._sphere = self._get_sphere(self.n_dots)
@@ -510,7 +525,8 @@ class RSASA(AnalysisBase):
             kdt_sphere = scipy.spatial.KDTree(sphere, 10)
 
             # Iterate over neighbors of atom i
-            for j in kdt.query_ball_point(ag.positions[i], max_radii, workers=-1):
+            for j in kdt.query_ball_point(ag.positions[i],
+                                          max_radii, workers=-1):
                 if j == i:
                     continue
                 if radii[j] < (radii[i] + radii[j]):
@@ -542,11 +558,12 @@ class RSASA(AnalysisBase):
                 f"(byres (bonded resid {resid})) and ({self._subsele})")
             tripep_area = self._get_sasa(tripep)
             exposed_area = sum(
-                [a for a, id in zip(tripep_area, tripep.resids) if id == resid])
+                [a for a, id in zip(tripep_area, tripep.resids)if id == resid])
             if exposed_area != 0.0:
                 result[resid] /= exposed_area
 
-        # Update the result and account for residues that might have empty selection
+        # Update the result and account for residues that
+        # might have empty selection
         self.results.relative_area += np.array(
             [result[id] for id in self.ag.residues.resids])
 
