@@ -39,6 +39,8 @@ inputs:
     default: 'numpy'
   packaging:
     default: 'packaging'
+  pathsimanalysis:
+    default: 'pathsimanalysis'
   pip:
     default: 'pip'
   pytest:
@@ -116,6 +118,7 @@ runs:
           ${{ inputs.mmtf-python }}
           ${{ inputs.numpy }}
           ${{ inputs.packaging }}
+          ${{ inputs.pathsimanalysis }}
           ${{ inputs.pip }}
           ${{ inputs.pytest }}
           ${{ inputs.scipy }}
