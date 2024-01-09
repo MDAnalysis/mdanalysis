@@ -2,9 +2,13 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |cron| |cirruscron| |linters| |cov|
+|numfocus| 
 
-|docs| |devdocs| |usergroup| |developergroup| |anaconda| |asv|
+|build| |cron| |cirruscron| |linters| |cov|
+
+|docs| |devdocs| |discussions|
+
+|anaconda| |asv|
 
 MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
@@ -84,10 +88,10 @@ Contributing
 ============
 
 Please report **bugs** or **enhancement requests** through the `Issue
-Tracker`_. Questions can also be asked on the `user mailing list`_.
+Tracker`_. Questions can also be asked on `GitHub Discussions`_.
 
 If you are a **new developer** who would like to start contributing to
-MDAnalysis get in touch on the `developer mailing list`_. To set up a
+MDAnalysis get in touch on `GitHub Discussions`_. To set up a
 development environment and run the test suite read the `developer
 guide`_.
 
@@ -135,25 +139,14 @@ For citations of included algorithms and sub-modules please see the references_.
 .. _`MDAnalysis API docs`:
    https://docs.mdanalysis.org
 .. _`Issue Tracker`: https://github.com/mdanalysis/mdanalysis/issues
-.. _`user mailing list`:
-   https://groups.google.com/group/mdnalysis-discussion
+.. _`GitHub Discussions`:
+   https://github.com/MDAnalysis/mdanalysis/discussions
 .. _`developer guide`:
    https://userguide.mdanalysis.org/contributing.html
-.. _`developer mailing list`:
-   https://groups.google.com/group/mdnalysis-devel
 .. _`10.1002/jcc.21787`: https://dx.doi.org/10.1002/jcc.21787
 .. _`10.25080/Majora-629e541a-00e`: https://doi.org/10.25080/Majora-629e541a-00e
 .. _references: https://docs.mdanalysis.org/documentation_pages/references.html
 .. _Embedding code: https://www.mdanalysis.org/pages/citations/#powered-by-mdanalysis
-
-
-.. |usergroup| image:: https://img.shields.io/badge/Google%20Group-Users-lightgrey.svg
-   :alt: User Google Group
-   :target: https://groups.google.com/group/mdnalysis-discussion
-
-.. |developergroup| image:: https://img.shields.io/badge/Google%20Group-Developers-lightgrey.svg
-   :alt: Developer Google Group
-   :target: https://groups.google.com/group/mdnalysis-devel
 
 .. |docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
    :alt: Documentation (latest release)
@@ -198,3 +191,7 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |powered_by_MDA| image:: https://img.shields.io/badge/Powered%20by-MDAnalysis-orange.svg?logoWidth=15&logo=data:image/x-icon;base64,AAABAAEAEBAAAAEAIAAoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJD+XwCY/fEAkf3uAJf97wGT/a+HfHaoiIWE7n9/f+6Hh4fvgICAjwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACT/yYAlP//AJ///wCg//8JjvOchXly1oaGhv+Ghob/j4+P/39/f3IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJH8aQCY/8wAkv2kfY+elJ6al/yVlZX7iIiI8H9/f7h/f38UAAAAAAAAAAAAAAAAAAAAAAAAAAB/f38egYF/noqAebF8gYaagnx3oFpUUtZpaWr/WFhY8zo6OmT///8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgICAn46Ojv+Hh4b/jouJ/4iGhfcAAADnAAAA/wAAAP8AAADIAAAAAwCj/zIAnf2VAJD/PAAAAAAAAAAAAAAAAICAgNGHh4f/gICA/4SEhP+Xl5f/AwMD/wAAAP8AAAD/AAAA/wAAAB8Aov9/ALr//wCS/Z0AAAAAAAAAAAAAAACBgYGOjo6O/4mJif+Pj4//iYmJ/wAAAOAAAAD+AAAA/wAAAP8AAABhAP7+FgCi/38Axf4fAAAAAAAAAAAAAAAAiIiID4GBgYKCgoKogoB+fYSEgZhgYGDZXl5e/m9vb/9ISEjpEBAQxw8AAFQAAAAAAAAANQAAADcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjo6Mb5iYmP+cnJz/jY2N95CQkO4pKSn/AAAA7gAAAP0AAAD7AAAAhgAAAAEAAAAAAAAAAACL/gsAkv2uAJX/QQAAAAB9fX3egoKC/4CAgP+NjY3/c3Nz+wAAAP8AAAD/AAAA/wAAAPUAAAAcAAAAAAAAAAAAnP4NAJL9rgCR/0YAAAAAfX19w4ODg/98fHz/i4uL/4qKivwAAAD/AAAA/wAAAP8AAAD1AAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALGxsVyqqqr/mpqa/6mpqf9KSUn/AAAA5QAAAPkAAAD5AAAAhQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkUFBSuZ2dn/3V1df8uLi7bAAAATgBGfyQAAAA2AAAAMwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB0AAADoAAAA/wAAAP8AAAD/AAAAWgC3/2AAnv3eAJ/+dgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9AAAA/wAAAP8AAAD/AAAA/wAKDzEAnP3WAKn//wCS/OgAf/8MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIQAAANwAAADtAAAA7QAAAMAAABUMAJn9gwCe/e0Aj/2LAP//AQAAAAAAAAAA
    :alt: Powered by MDAnalysis
    :target: https://www.mdanalysis.org
+
+.. |discussions| image:: https://img.shields.io/github/discussions/MDAnalysis/MDAnalysis
+   :alt: GitHub Discussions
+   :target: https://github.com/MDAnalysis/mdanalysis/discussions
