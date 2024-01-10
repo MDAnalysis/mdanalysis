@@ -984,22 +984,14 @@ long PySequence_GetInteger(PyObject *obj, Py_ssize_t i)
     long value;
     PyObject *item = PySequence_GetItem(obj, i);
     if (item == NULL ||
-#if PY_MAJOR_VERSION < 3
-        !PyInt_Check(item)
-#else
         !PyLong_Check(item)
-#endif
         ) {
         PyErr_Format(PyExc_ValueError, "expected integer number");
         Py_XDECREF(item);
         return -1;
     }
 
-#if PY_MAJOR_VERSION < 3
-    value = PyInt_AsLong(item);
-#else
     value = PyLong_AsLong(item);
-#endif
     Py_XDECREF(item);
     return value;
 }
@@ -2115,13 +2107,8 @@ static int axis2tuple(
         return 0;
 
     /* axes strings */
-#if PY_MAJOR_VERSION < 3
-    if (PyString_Check(axes) && (PyString_Size(axes) == 4)) {
-        char *s = PyString_AS_STRING(axes);
-#else
-    if (PyUnicode_Check(axes) && (PyUnicode_GetSize(axes) == 4)) {
+    if (PyUnicode_Check(axes) && (PyUnicode_GET_LENGTH(axes) == 4)) {
         char *s = PyBytes_AsString(PyUnicode_AsASCIIString(axes));
-#endif
         int hash = *((int *)s);
         switch (hash)
         {
@@ -4045,8 +4032,6 @@ static PyMethodDef module_methods[] = {
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 
-#if PY_MAJOR_VERSION >= 3
-
 struct module_state {
     PyObject *error;
 };
@@ -4079,26 +4064,14 @@ static struct PyModuleDef moduledef = {
 
 PyMODINIT_FUNC
 PyInit__transformations(void)
-
-#else
-
-#define INITERROR return
-
-PyMODINIT_FUNC
-init_transformations(void)
-#endif
 {
     PyObject *module;
 
     char *doc = (char *)PyMem_Malloc(sizeof(module_doc) + sizeof(_VERSION_));
     sprintf(doc, module_doc, _VERSION_);
 
-#if PY_MAJOR_VERSION >= 3
     moduledef.m_doc = doc;
     module = PyModule_Create(&moduledef);
-#else
-    module = Py_InitModule3("_transformations", module_methods, doc);
-#endif
 
     PyMem_Free(doc);
 
@@ -4111,18 +4084,12 @@ init_transformations(void)
     }
 
     {
-#if PY_MAJOR_VERSION < 3
-    PyObject *s = PyString_FromString(_VERSION_);
-#else
     PyObject *s = PyUnicode_FromString(_VERSION_);
-#endif
     PyObject *dict = PyModule_GetDict(module);
     PyDict_SetItemString(dict, "__version__", s);
     Py_DECREF(s);
     }
 
-#if PY_MAJOR_VERSION >= 3
     return module;
-#endif
 }
 

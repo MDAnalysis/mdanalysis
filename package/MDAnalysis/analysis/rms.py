@@ -787,7 +787,7 @@ class RMSF(AnalysisBase):
         No mass weighting is performed.
 
         This method implements an algorithm for computing sums of squares while
-        avoiding overflows and underflows :cite:p:`Welford1962`.
+        avoiding overflows and underflows :footcite:p:`Welford1962`.
 
 
         Examples
@@ -864,11 +864,7 @@ class RMSF(AnalysisBase):
 
         References
         ----------
-        .. bibliography::
-            :filter: False
-            :style: MDA
-
-            Welford1962
+        .. footbibliography::
 
 
         .. versionadded:: 0.11.0

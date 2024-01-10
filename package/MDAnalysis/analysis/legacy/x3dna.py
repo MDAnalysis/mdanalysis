@@ -38,18 +38,13 @@ Generation and Analysis of X3DNA helicoidal parameter profiles --- :mod:`MDAnaly
 .. _`issue 906`: https://github.com/MDAnalysis/mdanalysis/issues/906
 
 With the help of this module, X3DNA_ can be run on frames in a trajectory. Data
-can be combined and analyzed. X3DNA_ :cite:p:`Lu2003,Lu2008` must be installed
+can be combined and analyzed. X3DNA_ :footcite:p:`Lu2003,Lu2008` must be installed
 separately.
 
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Lu2003
-    Lu2008
+.. footbibliography::
 
 .. _X3DNA: http://x3dna.org/
 
@@ -137,13 +132,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from MDAnalysis import ApplicationError
-from MDAnalysis.lib.util import which, realpath, asiterable
+from MDAnalysis.lib.util import which, realpath, asiterable, deprecate
 
 import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.x3dna")
 
 
+@deprecate(release="2.7.0", remove="3.0.0",
+           message=("X3DNA module is deprecated and will be removed in" 
+                    "MDAnalysis 3.0.0, see #3788"))
 def mean_std_from_x3dnaPickle(profile):
     """Get mean and standard deviation of helicoidal parameters from a saved `profile`.
 
@@ -167,7 +165,10 @@ def mean_std_from_x3dnaPickle(profile):
         stretch, stagger, buckle, propeller, opening, shift, slide, rise, tilt,
         roll, twist]``.
 
+    .. deprecated:: 2.7.0
+        X3DNA will be removed in 3.0.0.
     """
+    warnings.warn("X3DNA module is deprecated and will be removed in MDAnalysis 3.0, see #3788", category=DeprecationWarning)
     if profile.x3dna_param is False:
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
             bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
@@ -251,6 +252,9 @@ class BaseX3DNA(object):
     ====== ==============
 
     for each nucleic acid pair.
+
+    .. deprecated:: 2.7.0
+        X3DNA will be removed in 3.0.0.
 
     .. _X3DNA: http://x3dna.org
 
@@ -477,9 +481,15 @@ class X3DNA(BaseX3DNA):
 
     .. versionadded:: 0.8
 
+    .. deprecated:: 2.7.0
+        X3DNA will be removed in 3.0.0.
+
     .. _`X3DNA docs`: http://forum.x3dna.org/
     """
 
+    @deprecate(release="2.7.0", remove="3.0.0",
+           message=("X3DNA module is deprecated and will be removed in" 
+                    "MDAnalysis 3.0.0, see #3788"))
     def __init__(self, filename, **kwargs):
         """Set up parameters to run X3DNA_ on PDB *filename*.
 
@@ -722,8 +732,13 @@ class X3DNAtraj(BaseX3DNA):
     universe and feed it to X3DNA. By default it sequentially creates a PDB for
     each frame and runs X3DNA on the frame.
 
-    """
 
+    .. deprecated:: 2.7.0
+        X3DNA will be removed in 3.0.0.
+    """
+    @deprecate(release="2.7.0", remove="3.0.0",
+           message=("X3DNA module is deprecated and will be removed in" 
+                    "MDAnalysis 3.0.0, see #3788"))
     def __init__(self, universe, **kwargs):
         """Set up the class.
 

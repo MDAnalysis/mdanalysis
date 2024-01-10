@@ -422,7 +422,7 @@ class _MutableBase(object):
             indices = self.atoms.ix_array
         except AttributeError:  # if self is an Atom
             indices = self.ix_array
-        seen = [np.in1d(col, indices) for col in ugroup._bix.T]
+        seen = [np.isin(col, indices) for col in ugroup._bix.T]
         mask = func(seen, axis=0)
         return ugroup[mask]
 
@@ -2154,7 +2154,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.16
         """
         o_ix = other.ix_array
-        in_other = np.in1d(self.ix, o_ix)  # mask of in self.ix AND other
+        in_other = np.isin(self.ix, o_ix)  # mask of in self.ix AND other
         return self[~in_other]  # ie inverse of previous mask
 
     @_only_same_level

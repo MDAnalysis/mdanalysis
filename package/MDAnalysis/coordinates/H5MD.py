@@ -990,7 +990,7 @@ class H5MDWriter(base.WriterBase):
     isn't explicity defined by the user, H5PY automatically selects a chunk
     shape via an algorithm that attempts to make mostly square chunks between
     1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
-    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)``so
+    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)`` so
     as to mimic the typical access pattern of a trajectory by MDAnalysis. In
     our tests ([Jakupovic2021]_), this chunk shape led to a speedup on the
     order of 10x versus H5PY's auto-chunked shape. Users can set a custom

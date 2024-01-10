@@ -1,3 +1,4 @@
+# cython: language_level=3
 # -----------------------------------------------------------------------------
 #    Author(s) of Original Implementation:
 #                  Douglas L. Theobald
@@ -137,8 +138,9 @@ Users will typically use the :func:`CalcRMSDRotationalMatrix` function.
 """
 
 import numpy as np
-cimport numpy as np
-np.import_array()
+cimport numpy as cnp
+cnp.import_array()
+cimport cython
 
 from ..due import due, BibTeX, Doi
 
@@ -174,27 +176,25 @@ cdef extern from "math.h":
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def InnerProduct(np.ndarray[np.float64_t, ndim=1] A,
-                 np.ndarray[np.float64_t, ndim=2] coords1,
-                 np.ndarray[np.float64_t, ndim=2] coords2,
-                 int N,
-                 np.ndarray[np.float64_t, ndim=1] weight):
+cpdef cython.floating InnerProduct(cython.floating[:] A,
+                                   cython.floating[:, :] coords1,
+                                   cython.floating[:, :] coords2,
+                                   int N,
+                                   cython.floating[:] weight):
     """Calculate the inner product of two structures.
 
     Parameters
     ----------
-    A : ndarray np.float64_t
+    A : ndarray
         result inner product array, modified in place
-    coords1 : ndarray np.float64_t
+    coords1 : ndarray
         reference structure
-    coord2 : ndarray np.float64_t
+    coords2 : ndarray
         candidate structure
     N : int
         size of system
-    weights : ndarray np.float64_t (optional)
-        use to calculate weighted inner product
-
-
+    weight : ndarray or None
+        used to calculate weighted inner product
 
     Returns
     -------
@@ -210,11 +210,13 @@ def InnerProduct(np.ndarray[np.float64_t, ndim=1] A,
 
     .. versionchanged:: 0.16.0
        Array size changed from 3xN to Nx3.
+    .. versionchanged:: 2.7.0
+       Updating to allow either float32 or float64 inputs
     """
 
-    cdef double          x1, x2, y1, y2, z1, z2
-    cdef unsigned int    i
-    cdef double          G1, G2
+    cdef cython.floating x1, x2, y1, y2, z1, z2
+    cdef unsigned int i
+    cdef cython.floating G1, G2
 
     G1 = 0.0
     G2 = 0.0
@@ -246,7 +248,6 @@ def InnerProduct(np.ndarray[np.float64_t, ndim=1] A,
             A[6] += (z1 * x2)
             A[7] += (z1 * y2)
             A[8] += (z1 * z2)
-
     else:
         for i in range(N):
             x1 = coords1[i, 0]
@@ -278,25 +279,25 @@ def InnerProduct(np.ndarray[np.float64_t, ndim=1] A,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t, ndim=2] ref,
-                             np.ndarray[np.float64_t, ndim=2] conf,
+def CalcRMSDRotationalMatrix(cython.floating[:, :] ref not None,
+                             cython.floating[:, :] conf not None,
                              int N,
-                             np.ndarray[np.float64_t, ndim=1] rot,
-                             np.ndarray[np.float64_t, ndim=1] weights):
+                             cython.floating[:] rot,
+                             cython.floating[:] weights) -> float:
     """
     Calculate the RMSD & rotational matrix.
 
     Parameters
     ----------
-    ref : ndarray, np.float64_t
-        reference structure coordinates
-    conf : ndarray, np.float64_t
-        condidate structure coordinates
+    ref : ndarray
+        reference structure coordinates, shape (N, 3)
+    conf : ndarray
+        condidate structure coordinates, shape (N, 3)
     N : int
         size of the system
-    rot : ndarray, np.float64_t
-        array to store rotation matrix. Must be flat
-    weights : ndarray, npfloat64_t (optional)
+    rot : ndarray or None
+        array to store rotation matrix. If given must be flat and shape (9,)
+    weights : ndarray or None
         weights for each component
 
     Returns
@@ -306,39 +307,51 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t, ndim=2] ref,
 
     .. versionchanged:: 0.16.0
        Array size changed from 3xN to Nx3.
+    .. versionchanged:: 2.7.0
+       Changed arguments to floating type, can accept either float32 or float64 inputs
     """
-    cdef double E0
-    cdef np.ndarray[np.float64_t, ndim=1] A = np.zeros(9, dtype=np.float64)
+    cdef cython.floating E0
+    cdef cython.floating A[9]
+    cdef cython.floating[:] A_view
 
-    E0 = InnerProduct(A, conf, ref, N, weights)
-    return FastCalcRMSDAndRotation(rot, A, E0, N)
+    A_view = A
+
+    E0 = InnerProduct(A_view, conf, ref, N, weights)
+    return FastCalcRMSDAndRotation(rot, A_view, E0, N)
 
 
-def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
-                            np.ndarray[np.float64_t, ndim=1] A,
-                            double E0, int N):
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+cpdef double FastCalcRMSDAndRotation(cython.floating[:] rot,
+                                     cython.floating[:] A,
+                                     cython.floating E0,
+                                     int N):
     """
     Calculate the RMSD, and/or the optimal rotation matrix.
 
     Parameters
     ----------
-    rot : ndarray np.float64_t
+    rot : ndarray or None
         result rotation matrix, modified inplace
-    A : ndarray np.float64_t
+    A : ndarray
         the inner product of two structures
-    E0 : float64
+    E0 : floating
         0.5 * (G1 + G2)
     N : int
         size of the system
 
     Returns
     -------
-    rmsd : float
+    rmsd : double
         RMSD value for two structures
 
 
     .. versionchanged:: 0.16.0
        Array sized changed from 3xN to Nx3.
+    .. versionchanged:: 2.7.0
+       Changed arguments to floating type, can accept either float32 or float64 inputs.  Internally still uses
+       double precision for QCP algorithm
     """
     cdef double Sxx, Sxy, Sxz, Syx, Syy, Syz, Szx, Szy, Szz
     cdef double Szz2, Syy2, Sxx2, Sxy2, Syz2, Sxz2, Syx2, Szy2, Szx2,
@@ -346,7 +359,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
     cdef double SxzpSzx, SyzpSzy, SxypSyx, SyzmSzy,
     cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
 
-    cdef np.ndarray[np.float64_t, ndim=1] C = np.zeros(4,)
+    cdef double[4] C
     cdef unsigned int i
     cdef double mxEigenV
     cdef double oldg = 0.0
@@ -361,6 +374,9 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
     cdef double evalprec = 1e-14
 
     cdef double a1324_1423, a1224_1422, a1223_1322, a1124_1421, a1123_1321, a1122_1221
+
+    C[0] = C[1] = C[2] = C[3] = 0.0
+
     Sxx = A[0]
     Sxy = A[1]
     Sxz = A[2]
@@ -424,7 +440,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
     # but *negative* numbers due to floating point error
     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
 
-    if (rot is None):
+    if rot is None:
         return rms  # Don't bother with rotation.
 
     a11 = SxxpSyy + Szz-mxEigenV
@@ -494,7 +510,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
                     rot[0] = rot[4] = rot[8] = 1.0
                     rot[1] = rot[2] = rot[3] = rot[5] = rot[6] = rot[7] = 0.0
 
-                    return
+                    return rms
 
     normq = sqrt(qsqr)
     q1 /= normq
