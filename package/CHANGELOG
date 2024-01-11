@@ -24,10 +24,16 @@ Fixes
 Enhancements
 
 Changes
+ * As per NEP29, the minimum version of numpy has been raised to 1.23.
+   We have opted to pin to 1.23.2 to ensure the same minimum numpy version
+   is used from python 3.9 to 3.11 (Issue #4401, PR #4402)
 
 Deprecations
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
    of the waterdynamics MDAKit and will be removed in version 3.0.0 (PR #4404)
+ * The MDAnalysis.analysis.psa module has been deprecated in favour of
+   the PathSimAnalysis MDAKit and will be removed in version 3.0.0
+   (PR #4403)
 
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 

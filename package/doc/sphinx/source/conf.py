@@ -349,4 +349,5 @@ intersphinx_mapping = {
     'parmed': ('https://parmed.github.io/ParmEd/html/', None),
     'rdkit': ('https://rdkit.org/docs/', None),
     'waterdynamics': ('https://www.mdanalysis.org/waterdynamics/', None),
+    'pathsimanalysis': ('https://www.mdanalysis.org/PathSimAnalysis/', None),
 }
