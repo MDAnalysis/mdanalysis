@@ -362,6 +362,10 @@ class HydrogenBondAnalysis(AnalysisBase):
             if isinstance(between[0], str):
                 between = [between]
 
+            temp_between = np.unique(between)
+            self.donors_sel = " or ".join(temp_between)
+            self.acceptors_sel = " or ".join(temp_between)
+
             between_ags = []
             for group1, group2 in between:
                 between_ags.append(
