@@ -16,7 +16,7 @@ from MDAnalysis.lib.util import is_installed
 
 
 def generate_client_fixture(cls):
-    possible_backends = cls.available_backends
+    possible_backends = cls.supported_backends
     installed_backends = [b for b in possible_backends if is_installed(b)]
 
     params = [
@@ -24,7 +24,7 @@ def generate_client_fixture(cls):
             {"backend": backend, "n_workers": nproc},
         )
         for backend in installed_backends
-        for nproc in (1, 2)
+        for nproc in (2,)
         if backend != "serial"
     ]
     params.extend([{"backend": "serial"}])
