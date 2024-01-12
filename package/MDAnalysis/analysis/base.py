@@ -325,7 +325,7 @@ class AnalysisBase(object):
         self.n_frames = len(self._sliced_trajectory)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
-
+    
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
 
@@ -376,8 +376,7 @@ class AnalysisBase(object):
         if len(frames) == 0:  # if `frames` were empty in `run` or `stop=0`
             return self
 
-        trajectory = self._sliced_trajectory
-        for idx, ts in enumerate(ProgressBar(trajectory, verbose=verbose, **progressbar_kwargs)):
+        for idx, ts in enumerate(ProgressBar(self._sliced_trajectory, verbose=verbose, **progressbar_kwargs)):
             self._frame_index = idx  # accessed later by subclasses
             self._ts = ts
             self.frames[idx] = ts.frame
@@ -587,7 +586,6 @@ class AnalysisBase(object):
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
 
-        import os
         # gather all remote objects
         remote_objects: list["AnalysisBase"] = executor.apply(worker_func, computation_groups)
         self.frames = np.hstack([obj.frames for obj in remote_objects])

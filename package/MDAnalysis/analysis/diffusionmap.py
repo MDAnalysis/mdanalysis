@@ -254,18 +254,19 @@ class DistanceMatrix(AnalysisBase):
         self.results.dist_matrix = np.zeros((self.n_frames, self.n_frames))
 
     def _single_frame(self):
-        iframe = self._ts.frame
+        iframe = self._frame_index
         i_ref = self.atoms.positions
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._trajectory[iframe:self.stop:self.step]):
+        for j, ts in enumerate(self._sliced_trajectory[iframe:self.stop:self.step]):
             self._ts = ts
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
             self.results.dist_matrix[self._frame_index,
                                      j+self._frame_index] = (
                                             dist if dist > self._cutoff else 0)
+            # TODO: move this calculation to _conclude
             self.results.dist_matrix[j+self._frame_index,
                                      self._frame_index] = (
                                 self.results.dist_matrix[self._frame_index,
