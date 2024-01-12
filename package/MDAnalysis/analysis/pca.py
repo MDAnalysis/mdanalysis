@@ -276,7 +276,7 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+            for ts in ProgressBar(self._sliced_trajectory,
                                   verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
