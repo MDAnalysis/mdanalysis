@@ -1,3 +1,6 @@
+"""Analysis backends --- :mod:`MDAnalysis.analysis.parallel`
+==============================================================
+"""
 from collections import UserDict
 import numpy as np
 from importlib import import_module
