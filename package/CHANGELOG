@@ -19,6 +19,7 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix bug in PCA -- wasn't possible to use `frames=...` syntax before.
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
