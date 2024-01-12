@@ -247,7 +247,8 @@ class PCA(AnalysisBase):
 
     def _prepare(self):
         # access start index
-        self._u.trajectory[self.start]
+        # self._u.trajectory[self.start]
+        self._sliced_trajectory[0]
         # reference will be start index
         self._reference = self._u.select_atoms(self._select)
         self._atoms = self._u.select_atoms(self._select)
