@@ -131,7 +131,6 @@ runs:
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
           ${{ inputs.dask }}
-          ${{ inputs.dask-distributed }}
           ${{ inputs.distopia }}
           ${{ inputs.gsd }}
           ${{ inputs.h5py }}
