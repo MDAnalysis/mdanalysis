@@ -363,7 +363,7 @@ class RMSD(AnalysisBase):
 
     @classmethod
     @property
-    def available_backends(cls):
+    def supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask',)
 
     @classmethod
@@ -756,7 +756,7 @@ class RMSF(AnalysisBase):
 
     @classmethod
     @property
-    def available_backends(cls):
+    def supported_backends(cls):
         return ('serial',)
 
     def __init__(self, atomgroup, **kwargs):

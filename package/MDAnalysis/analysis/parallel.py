@@ -3,9 +3,8 @@
 """
 from collections import UserDict
 import numpy as np
-from importlib import import_module
 import warnings
-from typing import Callable, Iterable, Sequence, Union
+from typing import Callable, Sequence
 
 from MDAnalysis.lib.util import is_installed
 
@@ -22,6 +21,7 @@ class Results(UserDict):
     class in `scikit-learn`_.
 
     .. _`scikit-learn`: https://scikit-learn.org/
+    .. _`sklearn.utils.Bunch`: https://scikit-learn.org/stable/modules/generated/sklearn.utils.Bunch.html
 
     Raises
     ------
@@ -49,6 +49,9 @@ class Results(UserDict):
 
 
     .. versionadded:: 2.0.0
+
+    .. versionchanged:: 2.8.0
+        Moved :class:`Results` to `MDAnalysis.analysis.parallel`
     """
 
     def _validate_key(self, key):
@@ -119,7 +122,7 @@ class BackendBase:
         backend = ThreadsBackend(n_workers=n_workers)
         R.run(backend=backend)
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
     """
 
     def __init__(self, n_workers: int):
@@ -134,7 +137,7 @@ class BackendBase:
         dict
             dictionary with `condition: error_message` pairs that will get checked during _validate() run
 
-        .. versionadded:: 2.7.0
+        .. versionadded:: 2.8.0
         """
         return {
             isinstance(self.n_workers, int)
@@ -149,7 +152,7 @@ class BackendBase:
         dict
             dictionary with `condition: warning_message` pairs that will get checked during _validate() run
 
-        .. versionadded:: 2.7.0
+        .. versionadded:: 2.8.0
         """
         return dict()
 
@@ -162,7 +165,7 @@ class BackendBase:
         ValueError
             if one of the conditions in :meth:`self._get_checks()` is True
 
-        .. versionadded:: 2.7.0
+        .. versionadded:: 2.8.0
         """
         for check, msg in self._get_checks().items():
             if not check:
@@ -189,15 +192,15 @@ class BackendBase:
         list
             list of results of the function
 
-        .. versionadded:: 2.7.0
+        .. versionadded:: 2.8.0
         """
-        raise NotImplementedError("Should be re-implemented in subclasses")
+        raise NotImplementedError
 
 
 class BackendSerial(BackendBase):
     """A built-in backend that does serial execution of the function, without any parallelization
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
     """
 
     def _get_warnigns(self):
@@ -210,7 +213,7 @@ class BackendSerial(BackendBase):
 class BackendMultiprocessing(BackendBase):
     """A built-in backend that executes a given function using multiprocessing.Pool.map method
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
     """
 
     def apply(self, func: Callable, computations: list) -> list:
@@ -222,10 +225,11 @@ class BackendMultiprocessing(BackendBase):
 
 
 class BackendDask(BackendBase):
-    """A built-in backend that executes a given function using dask.delayed.compute method with `scheduler='processes'`
-    and `chunksize=1`. Requires `dask` module to be installed.
+    """A built-in backend that executes a given function using dask.delayed.compute method 
+    with `scheduler='processes'` and `chunksize=1` (this ensures uniform distribution of tasks among processes).
+    Requires `dask` module to be installed; see [documentation](https://docs.dask.org/en/stable/install.html)
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
     """
 
     def apply(self, func: Callable, computations: list) -> list:
@@ -238,7 +242,7 @@ class BackendDask(BackendBase):
 
     def _get_checks(self):
         base_checks = super()._get_checks()
-        checks = {is_installed("dask"): "module 'dask' should be installed: run 'python3 -m pip install dask'"}
+        checks = {is_installed("dask"): "module 'dask' should be installed: https://docs.dask.org/en/stable/install.html"}
         return base_checks | checks
 
 
@@ -274,7 +278,7 @@ class ResultsGroup:
     >>> group.merge(objects, require_all_aggregators=False)
     {'mass': 2.0}
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
     """
 
     def __init__(self, lookup: dict[str, Callable] = None):
@@ -286,8 +290,8 @@ class ResultsGroup:
         Parameters
         ----------
         require_all_aggregators : bool, optional
-            if True, raise an exception when no aggregation function for a particular argument is found
-            Allows to skip aggregation for the parameters that aren't needed in the final object:
+            if True, raise an exception when no aggregation function for a particular argument is found.
+            Allows to skip aggregation for the parameters that aren't needed in the final object -- see :class:`ResultsGroup`.
 
         Returns
         -------
@@ -299,21 +303,21 @@ class ResultsGroup:
         ValueError
             if no aggregation function for a key is found and `require_all_aggregators=True`
 
-        .. versionadded:: 2.7.0
+        .. versionadded:: 2.8.0
         """
         if len(objects) == 1:
-            rv = objects[0]
+            merged_results = objects[0]
         else:
-            rv = Results()
+            merged_results = Results()
             for key in objects[0].keys():
                 agg_function = self._lookup.get(key, None)
                 if agg_function is not None:
                     results_of_t = [obj[key] for obj in objects]
-                    rv[key] = agg_function(results_of_t)
+                    merged_results[key] = agg_function(results_of_t)
                 else:
                     if require_all_aggregators:
                         raise ValueError(f"No aggregation function for {key=}")
-        return rv
+        return merged_results
 
     @staticmethod
     def flatten_sequence(arrs: list[list]):
