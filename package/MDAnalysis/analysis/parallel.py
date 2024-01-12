@@ -53,7 +53,7 @@ class Results(UserDict):
 
     def _validate_key(self, key):
         if key in dir(self):
-            raise AttributeError(f"'{key}' is a protected dictionary " "attribute")
+            raise AttributeError(f"'{key}' is a protected dictionary attribute")
         elif isinstance(key, str) and not key.isidentifier():
             raise ValueError(f"'{key}' is not a valid attribute")
 
@@ -78,13 +78,13 @@ class Results(UserDict):
         try:
             return self[attr]
         except KeyError as err:
-            raise AttributeError("'Results' object has no " f"attribute '{attr}'") from err
+            raise AttributeError(f"'Results' object has no attribute '{attr}'") from err
 
     def __delattr__(self, attr):
         try:
             del self[attr]
         except KeyError as err:
-            raise AttributeError("'Results' object has no " f"attribute '{attr}'") from err
+            raise AttributeError(f"'Results' object has no attribute '{attr}'") from err
 
     def __getstate__(self):
         return self.data
@@ -99,24 +99,25 @@ class BackendBase:
     Parameters
     ----------
     n_workers : int
-        positive integer with number of workers (usually, processes) to split the work between
+        number of workers (usually, processes) over which the work is split
 
     Examples
     --------
-    >>> # implement a thread-based backend
-    >>> from MDAnalysis.analysis.parallel import BackendBase
-    >>> class ThreadsBackend(BackendBase):
+    .. code-block:: python
+        # implement a thread-based backend
+        from MDAnalysis.analysis.parallel import BackendBase
+        class ThreadsBackend(BackendBase):
             def apply(self, func, computations):
                 from multiprocessing.dummy import Pool
 
                 with Pool(processes=self.n_workers) as pool:
                     results = pool.map(func, computations)
                 return results
-    >>> from MDAnalysis.analysis.rms import RMSD
-    >>> R = RMSD(...) # setup the run
-    >>> n_workers = 2
-    >>> backend = ThreadsBackend(n_workers=n_workers)
-    >>> R.run(backend=backend)
+        from MDAnalysis.analysis.rms import RMSD
+        R = RMSD(...) # setup the run
+        n_workers = 2
+        backend = ThreadsBackend(n_workers=n_workers)
+        R.run(backend=backend)
 
     .. versionadded:: 2.7.0
     """
@@ -133,7 +134,7 @@ class BackendBase:
         dict
             dictionary with `condition: error_message` pairs that will get checked during _validate() run
 
-        .. versionadded: 2.7.0
+        .. versionadded:: 2.7.0
         """
         return {
             isinstance(self.n_workers, int)
@@ -148,7 +149,7 @@ class BackendBase:
         dict
             dictionary with `condition: warning_message` pairs that will get checked during _validate() run
 
-        .. versionadded: 2.7.0
+        .. versionadded:: 2.7.0
         """
         return dict()
 
@@ -161,7 +162,7 @@ class BackendBase:
         ValueError
             if one of the conditions in :meth:`self._get_checks()` is True
 
-        .. versionadded: 2.7.0
+        .. versionadded:: 2.7.0
         """
         for check, msg in self._get_checks().items():
             if not check:
@@ -172,7 +173,8 @@ class BackendBase:
 
     def apply(self, func: Callable, computations: list) -> list:
         """Main function that will get called when using an instance of an object, mapping function to all tasks
-        in the `computations` list. Should effectively be equivalent to running [func(item) for item in computations]
+        in the `computations` list. Should effectively be equivalent to running
+        `[func(item) for item in computations]`
         while using the parallel backend capabilities.
 
         Parameters
@@ -187,7 +189,7 @@ class BackendBase:
         list
             list of results of the function
 
-        .. versionadded: 2.7.0
+        .. versionadded:: 2.7.0
         """
         raise NotImplementedError("Should be re-implemented in subclasses")
 
@@ -195,11 +197,11 @@ class BackendBase:
 class BackendSerial(BackendBase):
     """A built-in backend that does serial execution of the function, without any parallelization
 
-    .. versionadded: 2.7.0
+    .. versionadded:: 2.7.0
     """
 
     def _get_warnigns(self):
-        return {self.n_workers > 1, "n_workers > 1 will be ignored while executing with backend='serial'"}
+        return {self.n_workers > 1, "n_workers is ignored when executing with backend='serial'"}
 
     def apply(self, func: Callable, computations: list) -> list:
         return [func(task) for task in computations]
@@ -208,7 +210,7 @@ class BackendSerial(BackendBase):
 class BackendMultiprocessing(BackendBase):
     """A built-in backend that executes a given function using multiprocessing.Pool.map method
 
-    .. versionadded: 2.7.0
+    .. versionadded:: 2.7.0
     """
 
     def apply(self, func: Callable, computations: list) -> list:
@@ -223,7 +225,7 @@ class BackendDask(BackendBase):
     """A built-in backend that executes a given function using dask.delayed.compute method with `scheduler='processes'`
     and `chunksize=1`. Requires `dask` module to be installed.
 
-    .. versionadded: 2.7.0
+    .. versionadded:: 2.7.0
     """
 
     def apply(self, func: Callable, computations: list) -> list:
@@ -242,7 +244,7 @@ class BackendDask(BackendBase):
 
 class ResultsGroup:
     """
-    Management and aggregation of results stored in :class:`Result` instances.
+    Management and aggregation of results stored in :class:`Results` instances.
 
     A :class:`ResultsGroup` is an optional description for :class:`Result` "dictionaries"
     that are used in analysis classes based on :class:`AnalysisBase`. For each *key* in a
@@ -265,14 +267,14 @@ class ResultsGroup:
     >>> group.merge([obj1, obj2])
     {'mass': 2.0}
 
-    >>> # you can also set `lookup[attribute]=None` to those attributes that you want to skip
+    >>> # you can also set `None` for those attributes that you want to skip
     >>> lookup = {'mass': ResultsGroup.float_mean, 'trajectory': None}
     >>> group = ResultsGroup(lookup)
     >>> objects = [Results(mass=1, skip=None), Results(mass=3, skip=object)]
     >>> group.merge(objects, require_all_aggregators=False)
     {'mass': 2.0}
 
-    .. versionadded: 2.7.0
+    .. versionadded:: 2.7.0
     """
 
     def __init__(self, lookup: dict[str, Callable] = None):
@@ -284,20 +286,20 @@ class ResultsGroup:
         Parameters
         ----------
         require_all_aggregators : bool, optional
-            if you want to raise an exception when no aggregation function for a particular argument is found, by default True.
+            if True, raise an exception when no aggregation function for a particular argument is found
             Allows to skip aggregation for the parameters that aren't needed in the final object:
 
         Returns
         -------
         Results
-            merged Results object
+            merged :class:`Results`
 
         Raises
         ------
         ValueError
             if no aggregation function for a key is found and `require_all_aggregators=True`
 
-        .. versionadded: 2.7.0
+        .. versionadded:: 2.7.0
         """
         if len(objects) == 1:
             rv = objects[0]

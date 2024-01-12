@@ -2552,12 +2552,5 @@ def is_installed(modulename: str):
     ----------
     modulename : str
         name of the module to be tested
-    ignore_names : Iterable[str]
-        list of module names to ignore when checking -- will return True
-        if modulename is in ignore_names
     """
-    try:
-        importlib.import_module(modulename)
-    except ImportError:
-        return False
-    return True
+    return importlib.util.find_spec(modulename) is not None
