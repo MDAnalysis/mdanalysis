@@ -319,9 +319,13 @@ class AnalysisBase(object):
             start, stop, step = trajectory.check_slice_indices(start, stop, step)
             slicer = slice(start, stop, step)
         self._sliced_trajectory = trajectory[slicer]
-        self.start = start
-        self.stop = stop
-        self.step = step
+
+        # start, stop, step are global iteration parameters that are not used in workers
+        # this makes sure they're not get set to 'None' during `self._compute`
+        for name, value in zip(('start', 'stop', 'step'), (start, stop, step)):
+            if not hasattr(self, name) or getattr(self, name) is None:
+                setattr(self, name, value)
+
         self.n_frames = len(self._sliced_trajectory)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
