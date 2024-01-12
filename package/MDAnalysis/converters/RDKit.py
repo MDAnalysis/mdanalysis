@@ -88,7 +88,8 @@ from io import StringIO
 
 import numpy as np
 
-from ..coordinates import base, memory
+from . import base
+from ..coordinates import memory
 from ..coordinates.PDB import PDBWriter
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError

@@ -6,18 +6,19 @@ dependencies:
   - chemfiles>=0.10
   - codecov
   - cython
-  - docutils <0.18
+  - docutils
   - fasteners
   - griddataformats
   - gsd
   - h5py>=2.10
   - hypothesis
   - joblib>=0.12
+  - mdanalysis-sphinx-theme >=1.3.0
   - matplotlib>=3.2.2
   - mmtf-python
   - mock
   - networkx
-  - numpy>=1.22.3
+  - numpy>=1.23.2
   - pytest
   - python==3.9
   - pytng>=0.2.3
@@ -28,11 +29,9 @@ dependencies:
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
-  - sphinx_rtd_theme
   - pip:
       - duecredit
       - parmed
-      - msmb_theme==1.2.0
-      - sphinx-sitemap==1.0.2
+      - sphinx-sitemap
       - packaging
       - pyedr>=0.7.0

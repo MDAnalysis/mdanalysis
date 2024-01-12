@@ -247,7 +247,8 @@ class PCA(AnalysisBase):
 
     def _prepare(self):
         # access start index
-        self._u.trajectory[self.start]
+        # self._u.trajectory[self.start]
+        self._sliced_trajectory[0]
         # reference will be start index
         self._reference = self._u.select_atoms(self._select)
         self._atoms = self._u.select_atoms(self._select)
@@ -275,7 +276,7 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+            for ts in ProgressBar(self._sliced_trajectory,
                                   verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
@@ -450,8 +451,8 @@ class PCA(AnalysisBase):
             and returns ts with the projected structure
 
             .. warning::
-               The transformation function takes a :class:``Timestep`` as input
-               because this is required for :ref:``transformations``.
+               The transformation function takes a :class:`Timestep` as input
+               because this is required for :ref:`transformations`.
                However, the inverse-PCA transformation is applied on the atoms
                of the Universe that was used for the PCA. It is *expected*
                that the `ts` is from the same Universe but this is
@@ -722,7 +723,7 @@ def cosine_content(pca_space, i):
     The cosine content of pca projections can be used as an indicator if a
     simulation is converged. Values close to 1 are an indicator that the
     simulation isn't converged. For values below 0.7 no statement can be made.
-    If you use this function please cite :cite:p:`BerkHess2002`.
+    If you use this function please cite :footcite:p:`BerkHess2002`.
 
 
     Parameters
@@ -740,19 +741,15 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        BerkHess2002
+    .. footbibliography::
 
     """
 
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
-    return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
-            scipy.integrate.simps(pca_space[:, i] ** 2))
+    return ((2.0 / T) * (scipy.integrate.simpson(cos*pca_space[:, i])) ** 2 /
+            scipy.integrate.simpson(pca_space[:, i] ** 2))
 
 
 @due.dcite(

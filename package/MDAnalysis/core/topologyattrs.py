@@ -34,11 +34,7 @@ These are usually read by the TopologyParser.
 References
 ----------
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Gray1984
+.. footbibliography::
 
 """
 
@@ -52,8 +48,14 @@ import warnings
 import textwrap
 from types import MethodType
 
-import Bio.Seq
-import Bio.SeqRecord
+try:
+    import Bio.Seq
+    import Bio.SeqRecord
+except ImportError:
+    HAS_BIOPYTHON = False
+else:
+    HAS_BIOPYTHON = True
+
 import numpy as np
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
@@ -1234,7 +1236,7 @@ class Atomnames(AtomStringAttr):
         """
         names = [n_name, ca_name, cb_name, cg_name]
         atnames = residue.atoms.names
-        ags = [residue.atoms[np.in1d(atnames, n.split())] for n in names]
+        ags = [residue.atoms[np.isin(atnames, n.split())] for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
@@ -1267,13 +1269,13 @@ class Atomnames(AtomStringAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(np.in1d(r.atoms.names, n.split())) == 1
+        keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
                     for n in names) for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
         atnames = residues.atoms.names
-        ags = [residues.atoms[np.in1d(atnames, n.split())] for n in names]
+        ags = [residues.atoms[np.isin(atnames, n.split())] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
@@ -2464,7 +2466,7 @@ class Charges(AtomAttr):
     transplants[GroupBase].append(('quadrupole_tensor', quadrupole_tensor))
 
     def quadrupole_moment(group, **kwargs):
-        r"""Quadrupole moment of the group according to :cite:p:`Gray1984`.
+        r"""Quadrupole moment of the group according to :footcite:p:`Gray1984`.
          
         .. math::
             Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}
@@ -2814,9 +2816,20 @@ class Resnames(ResidueStringAttr):
 
         :exc:`TypeError` if an unknown *format* is selected.
 
+        :exc:`ImportError` is the Biopython package is not available.
+
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 2.7.0
+           Biopython is now an optional dependency
         """
+        if not HAS_BIOPYTHON:
+            errmsg = ("The `sequence_alignment` method requires an "
+                      "installation of `Biopython`. Please install "
+                      "`Biopython` to use this method: "
+                      "https://biopython.org/wiki/Download")
+            raise ImportError(errmsg)
+
         formats = ('string', 'Seq', 'SeqRecord')
 
         format = kwargs.pop("format", "SeqRecord")

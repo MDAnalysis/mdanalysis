@@ -16,7 +16,7 @@ pr:
 
 jobs:
 - job: Azure_Tests
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/develop'))  # skip for PR merges
   variables:
     MPLBACKEND: agg
   strategy:
@@ -26,34 +26,34 @@ jobs:
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python311-64bit-full:
-          PYTHON_VERSION: '3.11'
+        Win-Python312-64bit-full:
+          PYTHON_VERSION: '3.12'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python311-64bit-full-wheel:
-          PYTHON_VERSION: '3.11'
+        Win-Python312-64bit-full-wheel:
+          PYTHON_VERSION: '3.12'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.23.2'
+          NUMPY_MIN: '1.26.0'
           imageName: 'windows-2019'
         Win-Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.22.3'
+          NUMPY_MIN: '1.23.2'
           imageName: 'windows-2019'
-        Linux-Python311-64bit-full-wheel:
-          PYTHON_VERSION: '3.11'
+        Linux-Python312-64bit-full-wheel:
+          PYTHON_VERSION: '3.12'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.23.2'
+          NUMPY_MIN: '1.26.0'
           imageName: 'ubuntu-latest'
         Linux-Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.22.3'
+          NUMPY_MIN: '1.23.2'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)
@@ -120,14 +120,12 @@ jobs:
       pip list
     displayName: 'List of installed dependencies'
   - powershell: |
-      cd package
-      python setup.py install
-      cd ..
-      cd testsuite
-      python setup.py install
-      cd ..
+      python -m pip install ./package
+      python -m pip install ./testsuite
     displayName: 'Build MDAnalysis'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
+  - powershell: pip list
+    displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
       pytest MDAnalysisTests --disable-pytest-warnings -n auto --timeout=200 -rsx --cov=MDAnalysis

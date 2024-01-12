@@ -31,7 +31,7 @@ Amber keywords are turned into the following attributes:
 
 +----------------------------+----------------------+
 | AMBER flag                 | MDAnalysis attribute |
-+----------------------------+----------------------+
++============================+======================+
 | ATOM_NAME                  | names                |
 +----------------------------+----------------------+
 | CHARGE                     | charges              |
@@ -78,7 +78,7 @@ TODO:
    :mod:`MDAnalysis.topology.guessers` for more details.
 
 .. _`PARM parameter/topology file specification`:
-   http://ambermd.org/formats.html#topology
+   https://ambermd.org/FileFormats.php#topo.cntrl
 
 Classes
 -------
@@ -93,7 +93,7 @@ import itertools
 
 from .tables import Z2SYMB
 from ..lib.util import openany, FORTRANReader
-from .base import TopologyReaderBase
+from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -106,6 +106,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
+    ChainIDs,
     AtomAttr,
     Bonds,
     Angles,
@@ -140,13 +141,20 @@ class TOPParser(TopologyReaderBase):
     - Bonds
     - Angles
     - Dihedrals (inc. impropers)
+    - ChainIDs (from %RESIDUE_CHAINID)
+    - Segids (from %RESIDUE_CHAINID)
 
     The format is defined in `PARM parameter/topology file
     specification`_.  The reader tries to detect if it is a newer
     (AMBER 12?) file format by looking for the flag "ATOMIC_NUMBER".
 
     .. _`PARM parameter/topology file specification`:
-       http://ambermd.org/formats.html#topology
+       https://ambermd.org/FileFormats.php#topo.cntrl
+
+    Additionally, the RESIDUE_CHAINID non-standard flag is supported. This
+    can be added with the `addPDB`_ command from parmed:
+
+    .. _`addPDB`: https://parmed.github.io/ParmEd/html/parmed.html#addpdb
 
     Notes
     -----
@@ -162,6 +170,8 @@ class TOPParser(TopologyReaderBase):
       warns users that chamber-style topologies are not currently supported
     .. versionchanged:: 2.0.0
       no longer guesses elements if missing
+    .. versionchanged:: 2.7.0
+      gets Segments and chainIDs from flag RESIDUE_CHAINID, when present
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
@@ -188,7 +198,8 @@ class TOPParser(TopologyReaderBase):
             "ANGLES_INC_HYDROGEN": (4, 10, self.parse_bonded, "angh", 4),
             "ANGLES_WITHOUT_HYDROGEN": (4, 10, self.parse_bonded, "anga", 5),
             "DIHEDRALS_INC_HYDROGEN": (5, 10, self.parse_bonded, "dihh", 6),
-            "DIHEDRALS_WITHOUT_HYDROGEN": (5, 10, self.parse_bonded, "diha", 7)
+            "DIHEDRALS_WITHOUT_HYDROGEN": (5, 10, self.parse_bonded, "diha", 7),
+            "RESIDUE_CHAINID": (1, 20, self.parse_chainids, "segids", 11),
         }
 
         attrs = {}  # empty dict for attrs that we'll fill
@@ -298,12 +309,36 @@ class TOPParser(TopologyReaderBase):
         attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)
         attrs['resids'] = Resids(np.arange(n_res) + 1)
         attrs['resnums'] = Resnums(np.arange(n_res) + 1)
-        attrs['segids'] = Segids(np.array(['SYSTEM'], dtype=object))
 
-        top = Topology(n_atoms, n_res, 1,
-                       attrs=list(attrs.values()),
-                       atom_resindex=residx,
-                       residue_segindex=None)
+        # Amber's 'RESIDUE_CHAINID' is a by-residue attribute, turn it into
+        # a by-atom attribute when present. See PR #4007.
+        if "segids" in attrs and len(attrs["segids"]) == n_res:
+            segidx, (segids,) = change_squash((attrs["segids"],), (attrs["segids"],))
+            chainids = [attrs["segids"][r] for r in residx]
+
+            attrs["segids"] = Segids(segids)
+            attrs["ChainIDs"] = ChainIDs(chainids)
+            n_segs = len(segids)
+        else:
+            if "segids" in attrs:
+                msg = (
+                    f"Number of residues ({n_res}) does not match number of "
+                    f"%RESIDUE_CHAINID ({len(attrs['segids'])}). Skipping section."
+                )
+                logger.warning(msg)
+                warnings.warn(msg)
+            attrs["segids"] = Segids(np.array(["SYSTEM"], dtype=object))
+            segidx = None
+            n_segs = 1
+
+        top = Topology(
+            n_atoms,
+            n_res,
+            n_segs,
+            attrs=list(attrs.values()),
+            atom_resindex=residx,
+            residue_segindex=segidx,
+        )
 
         return top
 
@@ -537,10 +572,12 @@ class TOPParser(TopologyReaderBase):
         Note
         ----
         For the bond/angle sections of parm7 files, the atom numbers are set to
-        coordinate array index values. As detailed in
-        http://ambermd.org/formats.html to recover the actual atom number, one
+        coordinate array index values. As detailed in `the specification`_,
+        to recover the actual atom number, one
         should divide the values by 3 and add 1. Here, since we want to satisfy
         zero-indexing, we only divide by 3.
+
+        .. _`the specification`: https://ambermd.org/FileFormats.php#topo.cntrl
         """
         fields = self.parsesection_mapper(numlines, lambda x: int(x) // 3)
         section = self.parse_chunks(fields, num_per_record)
@@ -563,9 +600,24 @@ class TOPParser(TopologyReaderBase):
             A list of all entries in a given parm7 section
         """
         section = []
-        y = next(self.topfile).strip("%FORMAT(")
-        y.strip(")")
-        x = FORTRANReader(y)
+
+        def get_fmt(file):
+            """ Skips '%COMMENT' lines until it gets the FORMAT specification
+            for the section."""
+            line = next(file)
+            if line[:7] == "%FORMAT":
+                return line[8:].split(")")[0]
+            elif line[:8] == "%COMMENT":
+                return get_fmt(file)
+            else:
+                raise ValueError(
+                    "Invalid header line. Does not begin with either %FLAG, %FORMAT "
+                    f"nor %COMMENT:\n{line}"
+                )
+
+        # There may be %COMMENT lines between %FLAG and %FORMAT statements. Skip them.
+        fmt = get_fmt(self.topfile)
+        x = FORTRANReader(fmt)
         for i in range(numlines):
             l = next(self.topfile)
             for j in range(len(x.entries)):
@@ -596,7 +648,7 @@ class TOPParser(TopologyReaderBase):
 
         Note
         ----
-        As detailed in http://ambermd.org/formats.html, the dihedral sections
+        As detailed in `the specification`_, the dihedral sections
         of parm7 files contain information about both conventional dihedrals
         and impropers. The following must be accounted for:
         1) If the fourth atom in a dihedral entry is given a negative value,
@@ -605,6 +657,8 @@ class TOPParser(TopologyReaderBase):
         this indicates that it 1-4 NB interactions are ignored for this
         dihedrals. This could be due to the dihedral within a ring, or if it is
         part of a multi-term dihedral definition or if it is an improper.
+
+        .. _`the specification`: https://ambermd.org/FileFormats.php#topo.cntrl
         """
         improp = []
         dihed = []
@@ -620,3 +674,23 @@ class TOPParser(TopologyReaderBase):
         dihedrals = Dihedrals(dihed)
         impropers = Impropers(improp)
         return dihedrals, impropers
+
+    def parse_chainids(self, num_per_record: int, numlines: int):
+        """Extracts the chainID of each residue
+
+        Parameters
+        ----------
+        num_per_record : int
+            The number of entries for each record in section (unused input)
+        numlines : int
+            The number of lines to be parsed in current section
+
+        Returns
+        -------
+        attr : numpy array
+            A numpy array containing the chainID of each residue as defined in
+            the parm7 file
+        """
+        vals = self.parsesection_mapper(numlines, lambda x: x)
+        attr = np.array(vals)
+        return attr

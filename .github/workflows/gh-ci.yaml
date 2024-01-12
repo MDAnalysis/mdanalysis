@@ -6,10 +6,11 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 concurrency:
   # Probably overly cautious group naming.
-  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # Commits to develop will cancel each other, but PRs will only cancel
   # commits within the same PR
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
@@ -27,7 +28,7 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: ["3.9", "3.10", "3.11"]
+          python-version: ["3.9", "3.10", "3.11", "3.12"]
           full-deps: [true, ]
           codecov: [true, ]
           include:
@@ -41,7 +42,7 @@ jobs:
               python-version: 3.9
               full-deps: false
               codecov: true
-              numpy: numpy=1.22.3
+              numpy: numpy=1.23.2
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.9
@@ -53,7 +54,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -88,6 +89,16 @@ jobs:
       with:
         build-tests: true
         build-docs: false
+        # The standard mdanalysis deployment is to build with the
+        # oldest supported numpy version and then use whatever new
+        # numpy version we want at runtime. To do this we ensure
+        # that we use build isolation
+        isolation: true
+
+    - name: check_deps
+      run: |
+        micromamba list
+        pip list
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
@@ -124,7 +135,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v1
@@ -145,13 +156,15 @@ jobs:
       with:
         micromamba: true
         full-deps: true
-        extra-pip-deps: "docutils<0.18 sphinx<7.0 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-pip-deps: "docutils sphinx-sitemap sphinxcontrib-bibtex pybtex pybtex-docutils"
+        extra-conda-deps: "mdanalysis-sphinx-theme>=1.3.0"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
         build-tests: true
         build-docs: true
+        isolation: true
 
     - name: doctests
       if: github.event_name == 'pull_request'
@@ -181,7 +194,7 @@ jobs:
         # (see https://github.com/travis-ci/travis-ci/issues/4704)
         # commented out as this is not a problem with gh-actions
         # python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
-        cd package/doc/html/html
+        cd package/doc/html/
 
         # move docs into version subfolder
         mkdir ../${VERSION} && mv * ../${VERSION} && mv ../${VERSION} $VERSION
@@ -220,7 +233,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: actions/setup-python@v4
       with:

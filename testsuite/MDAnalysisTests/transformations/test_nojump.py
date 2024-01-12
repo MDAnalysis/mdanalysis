@@ -48,6 +48,90 @@ def nojump_constantvel_universe():
     return reference
 
 
+@pytest.fixture
+def nojump_universe_npt_2nd_frame():
+    """
+    Create a Universe in which a single atom jumps across the periodic boundary in the
+    x-dimensions at the second frame.
+
+    Unwrapped coordinates should all be 97.5.
+    """
+    n_atoms = 1
+    n_frames = 4
+    u = mda.Universe.empty(n_atoms, trajectory=True)
+    coordinates = np.empty((n_frames, u.atoms.n_atoms, 3))
+    coordinates[0] = [97.5, 50.0, 50.0]
+    coordinates[1] = [2.5, 50.0, 50.0]
+    coordinates[2] = [2.5, 50.0, 50.0]
+    coordinates[3] = [2.5, 50.0, 50.0]
+    u.load_new(coordinates, order="fac")
+    return u
+
+
+@pytest.fixture
+def nojump_universe_npt_3rd_frame():
+    """
+    Create a Universe in which a single atom jumps across the periodic boundary in the
+    x-dimensions at the third frame.
+
+    Unwrapped coordinates should all be 97.5.
+    """
+    n_atoms = 1
+    n_frames = 4
+    u = mda.Universe.empty(n_atoms, trajectory=True)
+    coordinates = np.empty((n_frames, u.atoms.n_atoms, 3))
+    coordinates[0] = [97.5, 50.0, 50.0]
+    coordinates[1] = [97.5, 50.0, 50.0]
+    coordinates[2] = [2.5, 50.0, 50.0]
+    coordinates[3] = [2.5, 50.0, 50.0]
+    u.load_new(coordinates, order="fac")
+    return u
+
+
+@pytest.fixture(scope="module")
+def nojump_universe_npt_2nd_frame_from_file(tmp_path_factory):
+    """
+    Write the `nojump_universe_npt_2nd_frame` fixture to file, read it in and
+    return the Universe.
+
+    Used for testing that coordinates can be unwrapped correctly when iterating
+    over the trajectory multiple times.
+
+    We can't use an in-memory trajectory to test this because the
+    transformation would only be applied once.
+
+    Note, we use `tmp_path_factory` because this fixture requies `module` scope
+    so we can read the file after the fixture has been created, and
+    `tmp_path` has function-level scope.
+    """
+    n_atoms = 1
+    n_frames = 4
+    u = mda.Universe.empty(n_atoms, trajectory=True)
+    coordinates = np.empty((n_frames, u.atoms.n_atoms, 3))
+    coordinates[0] = [97.5, 50.0, 50.0]
+    coordinates[1] = [2.5, 50.0, 50.0]
+    coordinates[2] = [2.5, 50.0, 50.0]
+    coordinates[3] = [2.5, 50.0, 50.0]
+    u.load_new(coordinates, order="fac")
+    dim = np.asarray([
+        [100, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],  # Box shrinks by 5 in the x-dimension
+        [95, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+    ])
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+    ]
+    u.trajectory.add_transformations(*workflow)
+    tmp_pdb = (tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.pdb").as_posix()
+    tmp_xtc = (tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.xtc").as_posix()
+    u.atoms.write(tmp_pdb)
+    with mda.Writer(tmp_xtc) as f:
+        for ts in u.trajectory:
+            f.write(u.atoms)
+    return mda.Universe(tmp_pdb, tmp_xtc)
+
+
 def test_nojump_orthogonal_fwd(nojump_universe):
     """
     Test if the nojump transform is returning the correct
@@ -122,6 +206,86 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     )
 
 
+def test_nojump_2nd_frame(nojump_universe_npt_2nd_frame):
+    """
+    Test if the nojump transform returns the correct values
+    at all frames when iterating over an npt trajectory
+    and an atom crosses the x-boundary at the second frame
+
+    Wrapped coordinates are:
+    coordinates = [
+        [97.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+    ]
+    where each row is a different timestep.
+
+    Unwrapped coordinates are the same at each frame:
+    unwrapped = [97.5, 50.0, 50.0]
+    """
+    u = nojump_universe_npt_2nd_frame
+    dim = np.asarray([
+        [100, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],  # Box shrinks by 5 in the x-dimension
+        [95, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],
+    ])
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+        NoJump(),
+    ]
+    u.trajectory.add_transformations(*workflow)
+    x_position = 97.5
+    np.testing.assert_allclose(u.trajectory.timeseries()[:, 0, 0], x_position)
+
+
+def test_nojump_3rd_frame(nojump_universe_npt_3rd_frame):
+    """
+    Test if the nojump transform returns the correct values
+    at all frames when iterating over an npt trajectory
+    and an atom crosses the x-boundary at the third frame.
+
+    Wrapped coordinates are:
+    coordinates = [
+        [97.5, 50.0, 50.0],
+        [97.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+        [2.5, 50.0, 50.0],
+    ]
+    where each row is a different timestep.
+
+    Unwarpped coordinates are the same at each frame:
+    unwrapped = [97.5, 50.0, 50.0]
+    """
+    u = nojump_universe_npt_3rd_frame
+    dim = np.asarray([
+        [100, 100, 100, 90, 90, 90],
+        [100, 100, 100, 90, 90, 90],
+        [95, 100, 100, 90, 90, 90],  # Box shrinks by 5 in the x-dimension
+        [95, 100, 100, 90, 90, 90],
+    ])
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+        NoJump(),
+    ]
+    u.trajectory.add_transformations(*workflow)
+    x_position = 97.5
+    np.testing.assert_allclose(u.trajectory.timeseries()[:, 0, 0], x_position)
+
+
+def test_nojump_iterate_twice(nojump_universe_npt_2nd_frame_from_file):
+    """
+    Test if the nojump transform always returns the correct values
+    at all frames when iterating over multiple times.
+    """
+    u = nojump_universe_npt_2nd_frame_from_file
+    u.trajectory.add_transformations(NoJump())
+    timeseries_first_iteration = u.trajectory.timeseries()
+    timeseries_second_iteration = u.trajectory.timeseries()
+    np.testing.assert_allclose(timeseries_first_iteration, timeseries_second_iteration)
+
+
 def test_nojump_constantvel_skip(nojump_universes_fromfile):
     """
     Test if the nojump transform warning is emitted.
@@ -130,6 +294,17 @@ def test_nojump_constantvel_skip(nojump_universes_fromfile):
         u = nojump_universes_fromfile
         u.trajectory[0]
         u.trajectory[9] #Exercises the warning.
+
+
+def test_nojump_constantvel_stride_2(nojump_universes_fromfile):
+    """
+    Test if the nojump transform warning is emitted.
+    """
+    match = "Currently jumping between frames with a step of more than 1."
+    with pytest.warns(UserWarning, match=match):
+        u = nojump_universes_fromfile
+        for ts in u.trajectory[::2]:  # Exercises the warning.
+            pass
 
 
 def test_nojump_constantvel_jumparound(nojump_universes_fromfile):

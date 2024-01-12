@@ -319,13 +319,17 @@ class AnalysisBase(object):
             start, stop, step = trajectory.check_slice_indices(start, stop, step)
             slicer = slice(start, stop, step)
         self._sliced_trajectory = trajectory[slicer]
-        self.start = start
-        self.stop = stop
-        self.step = step
+
+        # start, stop, step are global iteration parameters that are not used in workers
+        # this makes sure they're not get set to 'None' during `self._compute`
+        for name, value in zip(('start', 'stop', 'step'), (start, stop, step)):
+            if not hasattr(self, name) or getattr(self, name) is None:
+                setattr(self, name, value)
+
         self.n_frames = len(self._sliced_trajectory)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
-
+    
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
 
@@ -368,23 +372,19 @@ class AnalysisBase(object):
         # if verbose unchanged, use class default
         verbose = getattr(self, "_verbose", False) if verbose is None else verbose
 
-        logger.info("Starting preparation")
-        logger.info("Starting analysis loop over %d trajectory frames", self.n_frames)
+        frames = indexed_frames[:, 1]
 
-        if len(indexed_frames) == 0:  # if `frames` were empty in `run` or `stop=0`
+        logger.info("Starting preparation")
+        self._setup_frames(trajectory=self._trajectory, frames=frames)
+        self._prepare()
+        if len(frames) == 0:  # if `frames` were empty in `run` or `stop=0`
             return self
 
-        frame_indices, frames = (
-            indexed_frames[:, 0],
-            indexed_frames[:, 1],
-        )
-        trajectory = self._trajectory[frames]
-        for idx, ts in enumerate(ProgressBar(trajectory, verbose=verbose, **progressbar_kwargs)):
-            i = frame_indices[idx]
-            self._frame_index = i
+        for idx, ts in enumerate(ProgressBar(self._sliced_trajectory, verbose=verbose, **progressbar_kwargs)):
+            self._frame_index = idx  # accessed later by subclasses
             self._ts = ts
-            self.frames[i] = ts.frame
-            self.times[i] = ts.time
+            self.frames[idx] = ts.frame
+            self.times[idx] = ts.time
             self._single_frame()
         logger.info("Finishing up")
         return self
@@ -586,15 +586,14 @@ class AnalysisBase(object):
         # start preparing the run
         worker_func = partial(self._compute, progressbar_kwargs=progressbar_kwargs, verbose=verbose)
         self._setup_frames(trajectory=self._trajectory, start=start, stop=stop, step=step, frames=frames)
-        self._prepare()
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
 
         # gather all remote objects
         remote_objects: list["AnalysisBase"] = executor.apply(worker_func, computation_groups)
-        self.frames = np.array([obj.frames for obj in remote_objects]).sum(axis=0)
-        self.times = np.array([obj.times for obj in remote_objects]).sum(axis=0)
+        self.frames = np.hstack([obj.frames for obj in remote_objects])
+        self.times = np.hstack([obj.times for obj in remote_objects])
 
         # aggregate results
         remote_results = [obj.results for obj in remote_objects]

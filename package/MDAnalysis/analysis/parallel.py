@@ -378,3 +378,35 @@ class ResultsGroup:
             mean value
         """
         return np.array(floats).mean()
+
+    @staticmethod
+    def ndarray_hstack(arrs: list[np.ndarray]):
+        """Performs horizontal stack of input arrays
+
+        Parameters
+        ----------
+        arrs : list[np.ndarray]
+            input numpy arrays
+
+        Returns
+        -------
+        np.ndarray
+            result of stacking
+        """
+        return np.hstack(arrs)
+
+    @staticmethod
+    def ndarray_vstack(arrs: list[np.ndarray]):
+        """Performs vertical stack of input arrays
+
+        Parameters
+        ----------
+        arrs : list[np.ndarray]
+            input numpy arrays
+
+        Returns
+        -------
+        np.ndarray
+            result of stacking
+        """
+        return np.vstack(arrs)
