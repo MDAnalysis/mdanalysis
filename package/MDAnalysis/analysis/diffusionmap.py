@@ -259,7 +259,7 @@ class DistanceMatrix(AnalysisBase):
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._sliced_trajectory[iframe:self.stop:self.step]):
+        for j, ts in enumerate(self._sliced_trajectory[iframe:]):
             self._ts = ts
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
