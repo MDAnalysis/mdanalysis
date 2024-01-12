@@ -275,6 +275,23 @@ class AnalysisBase(object):
         self._verbose = verbose
         self.results = Results()
 
+    def _define_run_frames(self, trajectory, start=None, stop=None, step=None, frames=None) -> Union[slice, np.ndarray]:
+        self._trajectory = trajectory
+        if frames is not None:
+            if not all(opt is None for opt in [start, stop, step]):
+                raise ValueError("start/stop/step cannot be combined with frames")
+            slicer = frames
+        else:
+            start, stop, step = trajectory.check_slice_indices(start, stop, step)
+            slicer = slice(start, stop, step)
+        return slicer
+
+    def _prepare_sliced_trajectory(self, slicer: Union[slice, np.ndarray]):
+        self._sliced_trajectory = self._trajectory[slicer]
+        self.n_frames = len(self._sliced_trajectory)
+        self.frames = np.zeros(self.n_frames, dtype=int)
+        self.times = np.zeros(self.n_frames)
+
     def _setup_frames(self, trajectory, start=None, stop=None, step=None, frames=None):
         """Pass a Reader object and define the desired iteration pattern
         through the trajectory
@@ -310,21 +327,8 @@ class AnalysisBase(object):
             Added ability to iterate through trajectory by passing a list of
             frame indices in the `frames` keyword argument
         """
-        self._trajectory = trajectory
-        if frames is not None:
-            if not all(opt is None for opt in [start, stop, step]):
-                raise ValueError("start/stop/step cannot be combined with frames")
-            slicer = frames
-        else:
-            start, stop, step = trajectory.check_slice_indices(start, stop, step)
-            slicer = slice(start, stop, step)
-        self._sliced_trajectory = trajectory[slicer]
-        self.start = start
-        self.stop = stop
-        self.step = step
-        self.n_frames = len(self._sliced_trajectory)
-        self.frames = np.zeros(self.n_frames, dtype=int)
-        self.times = np.zeros(self.n_frames)
+        slicer = self._define_run_frames(trajectory, start, stop, step, frames)
+        self._prepare_sliced_trajectory(slicer)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
