@@ -650,6 +650,7 @@ class HydrogenBondAnalysis(AnalysisBase):
                 donors.positions,
                 hydrogens.positions,
                 max_cutoff=self.d_h_cutoff,
+                min_cutoff=0.1,
                 box=self.u.dimensions,
                 return_distances=False
             ).T
