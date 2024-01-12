@@ -36,7 +36,7 @@ from numpy.testing import assert_almost_equal, assert_equal
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
 
-    available_backends = ['serial', 'dask', 'multiprocessing']
+    supported_backends = ['serial', 'dask', 'multiprocessing']
     _is_parallelizable = True
 
     def __init__(self, reader, **kwargs):
@@ -89,7 +89,7 @@ class SerialOnly(FrameAnalysis):
 
 class ParallelizableWithDaskOnly(FrameAnalysis):
     _is_parallelizable = True
-    available_backends = ('dask',)
+    supported_backends = ('dask',)
 
 class CustomSerialBackend(parallel.BackendBase):
     def apply(self, func, computations):
@@ -114,10 +114,10 @@ def test_backend_configuration_fails(u, run_class, backend, n_workers):
     (Parallelizable, CustomSerialBackend, 2),
     (ParallelizableWithDaskOnly, CustomSerialBackend, 2),
 ])
-def test_backend_configuration_works_when_unsafe(u, run_class, backend, n_workers):
+def test_backend_configuration_works_when_unsupported_backend(u, run_class, backend, n_workers):
     u = mda.Universe(TPR, XTC)  # dt = 100
     backend_instance = backend(n_workers=n_workers)
-    _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, stop=0, unsafe=True)
+    _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, stop=0, unsupported_backend=True)
 
 @pytest.mark.parametrize('run_class,backend,n_workers', [
     (Parallelizable, CustomSerialBackend, 1),
@@ -126,7 +126,7 @@ def test_backend_configuration_works_when_unsafe(u, run_class, backend, n_worker
 def test_custom_backend_works(u, run_class, backend, n_workers):
     backend_instance = backend(n_workers=n_workers)
     u = mda.Universe(TPR, XTC)  # dt = 100
-    _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsafe=True)
+    _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsupported_backend=True)
 
 @pytest.mark.parametrize('run_class,backend_instance,n_workers', [
     (Parallelizable, map, 1),
@@ -136,7 +136,7 @@ def test_custom_backend_works(u, run_class, backend, n_workers):
 def test_fails_incorrect_custom_backend(u, run_class, backend_instance, n_workers):
     u = mda.Universe(TPR, XTC)  # dt = 100
     with pytest.raises(ValueError):
-        _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsafe=True)
+        _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsupported_backend=True)
 
     with pytest.raises(ValueError):
         _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers)
@@ -151,9 +151,9 @@ def test_fails_for_unparallelizable(u, run_class, backend, n_workers):
     with pytest.raises(ValueError):
         if not isinstance(backend, str):
             backend_instance = backend(n_workers=n_workers)
-            _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsafe=True)
+            _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers, unsupported_backend=True)
         else:
-            _ = run_class(u.trajectory).run(backend=backend, n_workers=n_workers, unsafe=True)
+            _ = run_class(u.trajectory).run(backend=backend, n_workers=n_workers, unsupported_backend=True)
 
 @pytest.mark.parametrize('run_kwargs,frames', [
     ({}, np.arange(98)),
