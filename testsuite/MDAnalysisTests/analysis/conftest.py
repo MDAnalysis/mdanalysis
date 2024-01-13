@@ -15,9 +15,30 @@ from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysis.lib.util import is_installed
 
 
-def generate_client_fixture(cls):
+def params_for_cls(cls, exclude: list[str] = None):
+    """
+    This part contains fixtures for simultaneous testing 
+    of all available (=installed & supported) backends
+    for analysis subclasses.
+
+    If for some reason you want to limit backends,
+    simply pass "exclude: list[str]" to the function
+    that parametrizes fixture.
+
+    Parameters
+    ----------
+    exclude : list[str], optional
+        list of backends to exclude from parametrization, by default None
+
+    Returns
+    -------
+    dict
+        dictionary with all tested keyword combinations for the run
+    """
+    exclude = [] if exclude is None else exclude
     possible_backends = cls.supported_backends
-    installed_backends = [b for b in possible_backends if is_installed(b)]
+    installed_backends = [
+        b for b in possible_backends if is_installed(b) and b not in exclude]
 
     params = [
         pytest.param(
@@ -28,24 +49,46 @@ def generate_client_fixture(cls):
         if backend != "serial"
     ]
     params.extend([{"backend": "serial"}])
+    return params
 
-    @pytest.fixture(scope="module", params=params)
-    def generated_fixture(request):
-        return request.param
-
-    return generated_fixture
+# -----------------
 
 
-def inject_testing_fixture(fixture_name: str, class_name: type):
-    """Dynamically inject a fixture at runtime"""
-    # we need the caller's global scope for this hack to work hence the use of the inspect module
-    caller_globals = inspect.stack()[1][0].f_globals
-    # for an explanation of this trick and why it works go here: https://github.com/pytest-dev/pytest/issues/2424
-    caller_globals[fixture_name] = generate_client_fixture(class_name)
+@pytest.fixture(scope='module', params=params_for_cls(FrameAnalysis))
+def client_FrameAnalysis(request):
+    return request.param
 
 
-classes = [AnalysisBase, AnalysisFromFunction, FrameAnalysis, IncompleteAnalysis, OldAPIAnalysis, RMSD, RMSF]
-for cls in classes:
-    name = cls.__name__
-    fixture_name = f"client_{name}"
-    inject_testing_fixture(fixture_name=fixture_name, class_name=cls)
+@pytest.fixture(scope='module', params=params_for_cls(AnalysisBase))
+def client_AnalysisBase(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(AnalysisFromFunction))
+def client_AnalysisFromFunction(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(AnalysisFromFunction, exclude=['multiprocessing']))
+def client_AnalysisFromFunctionAnalysisClass(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(IncompleteAnalysis))
+def client_IncompleteAnalysis(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(OldAPIAnalysis))
+def client_OldAPIAnalysis(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(RMSD))
+def client_RMSD(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(RMSF))
+def client_RMSF(request):
+    return request.param

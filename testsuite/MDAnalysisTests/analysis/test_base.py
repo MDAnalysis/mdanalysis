@@ -360,14 +360,14 @@ def test_AnalysisFromFunction_args_content(u, client_AnalysisFromFunction):
     assert ans._trajectory is protein.universe.trajectory
 
 
-def test_analysis_class(client_AnalysisFromFunction):
+def test_analysis_class(client_AnalysisFromFunctionAnalysisClass):
     ana_class = base.analysis_class(simple_function)
     assert issubclass(ana_class, base.AnalysisBase)
     assert issubclass(ana_class, base.AnalysisFromFunction)
 
     u = mda.Universe(PSF, DCD)
     step = 2
-    ana = ana_class(u.atoms).run(step=step, **client_AnalysisFromFunction)
+    ana = ana_class(u.atoms).run(step=step, **client_AnalysisFromFunctionAnalysisClass)
 
     results = []
     for ts in u.trajectory[::step]:
