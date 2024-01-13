@@ -812,6 +812,12 @@ def analysis_class(function):
     class WrapperClass(AnalysisFromFunction):
         def __init__(self, trajectory=None, *args, **kwargs):
             super(WrapperClass, self).__init__(function, trajectory, *args, **kwargs)
+        
+        @classmethod
+        @property
+        def supported_backends(cls):
+            return ("serial", "dask")
+
 
     return WrapperClass
 
