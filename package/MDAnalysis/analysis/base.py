@@ -126,14 +126,15 @@ import itertools
 import logging
 import warnings
 from functools import partial
-from typing import Callable, Iterable, Sequence, Union
+from typing import Iterable, Union
 
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 
-from .parallel import Results, ResultsGroup, BackendDask, BackendMultiprocessing, BackendSerial, BackendBase
+from .parallel import BackendDask, BackendMultiprocessing, BackendSerial, BackendBase
+from .results import Results, ResultsGroup
 
 logger = logging.getLogger(__name__)
 

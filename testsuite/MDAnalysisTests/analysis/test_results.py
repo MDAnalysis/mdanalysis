@@ -3,14 +3,14 @@ from collections import UserDict
 
 import numpy as np
 import pytest
-from MDAnalysis.analysis import  results
+from MDAnalysis.analysis import results as results_module
 from numpy.testing import assert_equal
 
 
 class Test_Results:
     @pytest.fixture
     def results(self):
-        return results.Results(a=1, b=2)
+        return results_module.Results(a=1, b=2)
 
     def test_get(self, results):
         assert results.a == results["a"] == 1
@@ -40,7 +40,7 @@ class Test_Results:
     def test_wrong_init_type(self, key):
         msg = f"'{key}' is a protected dictionary attribute"
         with pytest.raises(AttributeError, match=msg):
-            results.Results(**{key: None})
+            results_module.Results(**{key: None})
 
     @pytest.mark.parametrize("key", ("0123", "0j", "1.1", "{}", "a b"))
     def test_weird_key(self, results, key):
@@ -110,20 +110,20 @@ class Test_Results:
         ],
     )
     def test_initialize_arguments(self, args, kwargs, length):
-        results = results.Results(*args, **kwargs)
+        results = results_module.Results(*args, **kwargs)
         ref = dict(*args, **kwargs)
         assert ref == results
         assert len(results) == length
 
     def test_different_instances(self, results):
-        new_results = results.Results(darth="tater")
+        new_results = results_module.Results(darth="tater")
         assert new_results.data is not results.data
 
 
 class Test_ResultsGroup:
     @pytest.fixture
     def results_0(self):
-        return results.Results(
+        return results_module.Results(
             sequence=[0],
             ndarray_mean=np.array([0, 0, 0]),
             ndarray_sum=np.array([0, 0, 0, 0]),
@@ -133,7 +133,7 @@ class Test_ResultsGroup:
 
     @pytest.fixture
     def results_1(self):
-        return results.Results(
+        return results_module.Results(
             sequence=[1],
             ndarray_mean=np.array([1, 1, 1]),
             ndarray_sum=np.array([1, 1, 1, 1]),
@@ -143,7 +143,7 @@ class Test_ResultsGroup:
 
     @pytest.fixture
     def merger(self):
-        RG = parallel.ResultsGroup
+        RG = results_module.ResultsGroup
         lookup = {
             "sequence": RG.flatten_sequence,
             "ndarray_mean": RG.ndarray_mean,

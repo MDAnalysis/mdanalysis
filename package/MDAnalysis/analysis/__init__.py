@@ -41,10 +41,12 @@ __all__ = [
     'msd',
     'nuclinfo',
     'nucleicacids',
+    'parallel',
     'polymer',
     'pca',
     'psa',
     'rdf',
+    'results',
     'rms',
     'waterdynamics',
 ]
