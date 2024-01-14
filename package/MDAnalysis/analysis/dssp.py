@@ -156,6 +156,8 @@ def _check_input(coord):
     -------
     (np.ndarray, tuple)
         coordinates and original shape
+    
+    .. versionadded:: 2.8.0
     """
 
     org_shape = coord.shape
@@ -179,6 +181,8 @@ def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
     -------
     np.ndarray
         coordinates of additional hydrogens, shape (n_atoms, 3)
+
+    .. versionadded:: 2.8.0
     """
     # A little bit lazy (but should be OK) definition of H position here.
     vec_cn = coord[:, 1:, 0] - coord[:, :-1, 2]
@@ -214,6 +218,8 @@ def get_hbond_map(
     -------
     np.ndarray
         output hbond map or energy depending on return_e param
+
+    .. versionadded:: 2.8.0
     """
     # check input
     coord, org_shape = _check_input(coord)
@@ -268,6 +274,8 @@ def assign(coord: np.ndarray) -> np.ndarray:
     np.ndarray
         output (n,) array with one-hot labels in C3 notation ('-', 'H', 'E'),
         representing loop, helix and sheet, respectively.
+
+    .. versionadded:: 2.8.0
     """
     # check input
     coord, org_shape = _check_input(coord)
@@ -339,6 +347,8 @@ def translate(onehot: np.ndarray) -> np.ndarray:
     -------
     np.ndarray
         array of '-', 'H' and 'E' symbols with secondary structure
+
+    .. versionadded:: 2.8.0
     """
     C3_ALPHABET = np.array(["-", "H", "E"])
     index = np.argmax(onehot, axis=-1)
@@ -420,6 +430,8 @@ class DSSP(AnalysisBase):
         ------
         ValueError
             if input Universe contains different number of (N,CA,C,O) atoms
+
+        .. versionadded:: 2.8.0
         """
         positions = [group.positions for group in self._heavy_atoms.values()]
         if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
