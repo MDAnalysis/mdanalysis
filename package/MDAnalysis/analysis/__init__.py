@@ -23,6 +23,7 @@
 
 __all__ = [
     'align',
+    'backends',
     'base',
     'contacts',
     'density',
@@ -41,7 +42,6 @@ __all__ = [
     'msd',
     'nuclinfo',
     'nucleicacids',
-    'parallel',
     'polymer',
     'pca',
     'psa',
