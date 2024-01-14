@@ -6,14 +6,14 @@ Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.anal
 :Year: 2023
 :Copyright: GNU Public License v2
 
-.. versionadded:: 2.7.0
+.. versionadded:: 2.8.0
 
 The module contains code to build hydrogend bond contact map,
 and use it to assign protein secondary structure (:class:`DSSP`).
 
 This module uses the python version of the original algorithm by Kabsch & Sander (1983),
 re-implemented by @ShintaroMinami. For more details, read [here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp).
- 
+
 When using this module in published work please cite [Kabsch1983]_.
 
 
@@ -49,7 +49,6 @@ In this example, we will extract the coordinates of atoms necessary for the seco
 assignment, and plot their hydrogen map, as implemented in `pydssp`.
 
 
-      
 Functions
 ---------
 
@@ -74,7 +73,7 @@ Analysis classes
 
        Contains the one-hot encoding of the time series of the DSSP assignment as chars N×mx3 :class:`numpy.ndarray`
        array with content ``[frame, residue, encoding]``, where `encoding`
-       is a (3,) shape :class:`numpy.ndarray` of booleans 
+       is a (3,) shape :class:`numpy.ndarray` of booleans
        with axes representing loop '-', helix 'H' and sheet 'E', consequtively.
 """
 
@@ -88,23 +87,26 @@ CONST_F = 332
 DEFAULT_CUTOFF = -0.5
 DEFAULT_MARGIN = 1.0
 
-# code of the off-class functions
-# is borrowed from https://github.com/ShintaroMinami/PyDSSP
-# in accordance with the MIT License
 
-
-def _unfold(a: np.ndarray, window: int, axis: int):
+def _unfold(a: np.ndarray, window: int, axis: int) -> np.ndarray:
     """Unfolds an ndarray if it was batched (pydssp legacy)
 
-    Args:
-        a (np.ndarray): input array
-        window (int): window
-        axis (int): axis to unfold across
+    Parameters
+    ----------
+    a : np.ndarray
+        input array
+    window : int
+        batching window
+    axis : int
+        axis to unfold across
 
-    Returns:
-        np.ndarray: unfolded array
+    Returns
+    -------
+    np.ndarray
+        unfolded array
     """
-    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
+    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window +
+                                                 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
@@ -112,28 +114,38 @@ def _unfold(a: np.ndarray, window: int, axis: int):
 def _check_input(coord):
     """Check if input coordinates have appropriate shape
 
-    Args:
-        coord (np.ndarray): input coordinates
+    Parameters
+    ----------
+    coord : np.ndarray
+        input coordinates
 
-    Returns:
-        (np.ndarray, tuple): coordinates and appropriate shape
+    Returns
+    -------
+    (np.ndarray, tuple)
+        coordinates and original shape
     """
+
     org_shape = coord.shape
     assert (len(org_shape) == 3) or (
         len(org_shape) == 4
-    ), "Shape of input tensor should be [batch, L, atom, xyz] or [L, atom, xyz]"
-    coord = repeat(coord, "... -> b ...", b=1) if len(org_shape) == 3 else coord
+    ), "Shape of input tensor must be [batch, L, atom, xyz] or [L, atom, xyz]"
+    coord = repeat(coord, "... -> b ...",
+                   b=1) if len(org_shape) == 3 else coord
     return coord, org_shape
 
 
 def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
-    """Fills in hydrogen atoms positions is they're abscent
+    """Fills in hydrogen atoms positions if they are abscent
 
-    Args:
-        coord (np.ndarray): input coordinates, shape (n_atoms, 4, 3)
+    Parameters
+    ----------
+    coord : np.ndarray
+        input coordinates, shape (n_atoms, 4, 3)
 
-    Returns:
-        np.ndarray: coordinates of additional hydrogens, shape (n_atoms, 3)
+    Returns
+    -------
+    np.ndarray
+        coordinates of additional hydrogens, shape (n_atoms, 3)
     """
     # A little bit lazy (but should be OK) definition of H position here.
     vec_cn = coord[:, 1:, 0] - coord[:, :-1, 2]
@@ -153,22 +165,28 @@ def get_hbond_map(
 ) -> np.ndarray:
     """Returns hydrogen bond map
 
-    Args:
-        coord (np.ndarray): input coordinates in either (n, 4, 3) or (n, 5, 3) shape (without or with hydrogens)
-        cutoff (float, optional): Defaults to DEFAULT_CUTOFF.
-        margin (float, optional): margin. Defaults to DEFAULT_MARGIN.
-        return_e (bool, optional): if to return energy instead of hbond map. Defaults to False.
+    Parameters
+    ----------
+    coord : np.ndarray
+        input coordinates in either (n, 4, 3) or (n, 5, 3) shape (without or with hydrogens)
+    cutoff : float, optional
+        cutoff, by default DEFAULT_CUTOFF
+    margin : float, optional
+        margin, by default DEFAULT_MARGIN
+    return_e : bool, optional
+        if to return energy instead of hbond map, by default False
 
-    Returns:
-        np.ndarray: output hbond map or energy depending on return_e param
+    Returns
+    -------
+    np.ndarray
+        output hbond map or energy depending on return_e param
     """
     # check input
     coord, org_shape = _check_input(coord)
     b, l, a, _ = coord.shape
     # add pseudo-H atom if not available
     assert (a == 4) or (
-        a == 5
-    ), "Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)"
+        a == 5), "Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)"
     h = coord[:, 1:, 4] if a == 5 else _get_hydrogen_atom_position(coord)
     # distance matrix
     nmap = repeat(coord[:, 1:, 0], "... m c -> ... m n c", n=l - 1)
@@ -181,7 +199,8 @@ def get_hbond_map(
     d_cn = np.linalg.norm(cmap - nmap, axis=-1)
     # electrostatic interaction energy
     e = np.pad(
-        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F,
+        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) *
+        CONST_F,
         [[0, 0], [1, 0], [0, 1]],
     )
     if return_e:
@@ -195,26 +214,33 @@ def get_hbond_map(
     hbond_map = (np.sin(hbond_map / margin * np.pi / 2) + 1.0) / 2
     hbond_map = hbond_map * repeat(local_mask, "l1 l2 -> b l1 l2", b=b)
     # return h-bond map
-    hbond_map = np.squeeze(hbond_map, axis=0) if len(org_shape) == 3 else hbond_map
+    hbond_map = np.squeeze(hbond_map,
+                           axis=0) if len(org_shape) == 3 else hbond_map
     return hbond_map
 
 
 def assign(coord: np.ndarray) -> np.ndarray:
-    """Assigns secondary structure for a given coordinate array
+    """Assigns secondary structure for a given coordinate array,
+    either with or without assigned hydrogens
 
-    Args:
-        coord (np.ndarray): input coordinates in either (n, 4, 3) or (n, 5, 3) shape -- without or with hydrogens
+    Parameters
+    ----------
+    coord : np.ndarray
+        input coordinates in either (n, 4, 3) or (n, 5, 3) shape,
+        without or with hydrogens, respectively
 
-    Returns:
-        np.ndarray: output (n,) array with labels in C3 notation ('-', 'H', 'E')
+    Returns
+    -------
+    np.ndarray
+        output (n,) array with one-hot labels in C3 notation ('-', 'H', 'E'),
+        representing loop, helix and sheet, respectively.
     """
     # check input
     coord, org_shape = _check_input(coord)
     # get hydrogen bond map
     hbmap = get_hbond_map(coord)
     hbmap = rearrange(
-        hbmap, "... l1 l2 -> ... l2 l1"
-    )  # convert into "i:C=O, j:N-H" form
+        hbmap, "... l1 l2 -> ... l2 l1")  # convert into "i:C=O, j:N-H" form
     # identify turn 3, 4, 5
     turn3 = np.diagonal(hbmap, axis1=-2, axis2=-1, offset=3) > 0.0
     turn4 = np.diagonal(hbmap, axis1=-2, axis2=-1, offset=4) > 0.0
@@ -228,23 +254,16 @@ def assign(coord: np.ndarray) -> np.ndarray:
     h3 = h3 * ~np.roll(helix4, -1, 1) * ~helix4  # helix4 is higher prioritized
     h5 = h5 * ~np.roll(helix4, -1, 1) * ~helix4  # helix4 is higher prioritized
     helix3 = h3 + np.roll(h3, 1, 1) + np.roll(h3, 2, 1)
-    helix5 = (
-        h5
-        + np.roll(h5, 1, 1)
-        + np.roll(h5, 2, 1)
-        + np.roll(h5, 3, 1)
-        + np.roll(h5, 4, 1)
-    )
+    helix5 = (h5 + np.roll(h5, 1, 1) + np.roll(h5, 2, 1) + np.roll(h5, 3, 1) +
+              np.roll(h5, 4, 1))
     # identify bridge
     unfoldmap = _unfold(_unfold(hbmap, 3, -2), 3, -2) > 0.0
     unfoldmap_rev = rearrange(unfoldmap, "b l1 l2 ... -> b l2 l1 ...")
     p_bridge = (unfoldmap[:, :, :, 0, 1] * unfoldmap_rev[:, :, :, 1, 2]) + (
-        unfoldmap_rev[:, :, :, 0, 1] * unfoldmap[:, :, :, 1, 2]
-    )
+        unfoldmap_rev[:, :, :, 0, 1] * unfoldmap[:, :, :, 1, 2])
     p_bridge = np.pad(p_bridge, [[0, 0], [1, 1], [1, 1]])
     a_bridge = (unfoldmap[:, :, :, 1, 1] * unfoldmap_rev[:, :, :, 1, 1]) + (
-        unfoldmap[:, :, :, 0, 2] * unfoldmap_rev[:, :, :, 0, 2]
-    )
+        unfoldmap[:, :, :, 0, 2] * unfoldmap_rev[:, :, :, 0, 2])
     a_bridge = np.pad(a_bridge, [[0, 0], [1, 1], [1, 1]])
     # ladder
     ladder = (p_bridge + a_bridge).sum(-1) > 0
@@ -253,29 +272,39 @@ def assign(coord: np.ndarray) -> np.ndarray:
     strand = ladder
     loop = ~helix * ~strand
     onehot = np.stack([loop, helix, strand], axis=-1)
-    onehot = rearrange(onehot, "1 ... -> ...") if len(org_shape) == 3 else onehot
+    onehot = rearrange(onehot,
+                       "1 ... -> ...") if len(org_shape) == 3 else onehot
     return onehot
 
 
 def translate(onehot: np.ndarray) -> np.ndarray:
-    """Translate a one-hot encoding ndarray into char-based secondary structure assignment.
-    One-hot encoding corresponds to '-', 'H', 'E' (in that order) -- loop, helix and sheet respectively.
-    Input array must have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3), etc.
+    """Translate a one-hot encoding summary into char-based secondary
+    structure assignment. One-hot encoding corresponds to C3 notation:
+    '-', 'H', 'E' are loop, helix and sheet, respectively. Input array must
+    have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3)
 
-    Example:
+    Examples
+    --------
 
     >>> from MDAnalysis.analysis.dssp import translate
     >>> import numpy as np
     >>> # encoding 'HE-'
-    >>> onehot = np.array([[False, True, False], [False, False, True], [True, False, False]]])
+    >>> onehot = np.array([
+        [False, True, False],  # 'H'
+        [False, False, True],  # 'E'
+        [True, False, False]]) # '-'
     >>> ''.join(translate(onehot))
     'HE-'
 
-    Args:
-        onehot (np.ndarray): _description_
+    Parameters
+    ----------
+    onehot : np.ndarray
+        input array of one-hot encoding in ('-', 'H', 'E') order
 
-    Returns:
-        np.ndarray: _description_
+    Returns
+    -------
+    np.ndarray
+        array of '-', 'H' and 'E' symbols with secondary structure
     """
     C3_ALPHABET = np.array(["-", "H", "E"])
     index = np.argmax(onehot, axis=-1)
@@ -283,30 +312,43 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
 
 class DSSP(AnalysisBase):
-    """Assign secondary structure using DSSP algorithm as implemented by pydssp package (v. 0.9.0): https://github.com/ShintaroMinami/PyDSSP
+    """Assign secondary structure using DSSP algorithm as implemented
+    by pydssp package (v. 0.9.0): https://github.com/ShintaroMinami/PyDSSP
     Here:
      - 'H' represents a generic helix (alpha-helix, pi-helix or 3-10 helix)
-     - 'E' represents 'extended strand', participating in beta-ladder (parallel or antiparallel)
+     - 'E' represents 'extended strand', participating in beta-ladder, (parallel or antiparallel)
      - '-' represents unordered part
 
-    Example:
-    >>> from MDAnalysis.analysis.dssp import DSSP
-    >>> from MDAnalysisTests.datafiles import PDB
-    >>> import MDAnalysis as mda
-    >>> u = mda.Universe(PDB)
-    >>> run = DSSP(u).run()
-    >>> print("".join(run.results.dssp[0]))
-    '--EEEEE-----HHHHHHHHHHHH--EEE-HHHHHHHHHHH--HHHHHHHHHHHH-----HHHHHHHHHHH---HHH---EEEE-----HHHHHHHHHH-----EEEEEE--HHHHHHHH--EE--------EE---E------E------E----HHH-HHHHHHHHHHHHHHHHHHHHHHHHHHHH---EEEEEE----HHHHHHHHHHHH-'
+    Examples
+    --------
 
-    Also, per-frame dssp assignment allows you to build average secondary structure -- `DSSP.results.dssp_ndarray`
-    holds (n_frames, n_residues, 3) shape ndarray with one-hot encoding of loop, helix and sheet, respectively:
+    For example, you can assign secondary structure for a single PDB file:
 
-    >>> from MDAnalysis.analysis.dssp import translate
-    >>> u = mda.Universe(...)
-    >>> long_run = DSSP(u).run()
-    >>> mean_secondary_structure = translate(long_run.results.dssp_ndarray.mean(axis=0))
-    >>> ''.join(mean_secondary_structure)
-    ---HHHHHHHH--------------------------HHHHHH-------HHHH---HHHHHHHHHHHHHH------------HHHHH------------------HHHHHHHH---
+    .. code-block:: python
+        from MDAnalysis.analysis.dssp import DSSP
+        from MDAnalysisTests.datafiles import PDB
+        import MDAnalysis as mda
+        u = mda.Universe(PDB)
+        run = DSSP(u).run()
+        print("".join(run.results.dssp[0][:20]))
+        # '--EEEEE-----HHHHHHHH'
+
+    Also, per-frame dssp assignment allows you to build average
+    secondary structure -- `DSSP.results.dssp_ndarray` holds
+    (n_frames, n_residues, 3) shape ndarray with one-hot encoding of
+    loop, helix and sheet, respectively:
+
+    .. code-block:: python
+        from MDAnalysis.analysis.dssp import translate
+        u = mda.Universe(...)
+        long_run = DSSP(u).run()
+        mean_secondary_structure = translate(
+            long_run.results.dssp_ndarray.mean(axis=0)
+            )
+        print(''.join(mean_secondary_structure)[:20])
+        # '---HHHHHHHH---------'
+
+    .. versionadded:: 2.8.0
     """
 
     def __init__(self, u: Universe, guess_hydrogens: bool = True):
@@ -317,33 +359,47 @@ class DSSP(AnalysisBase):
         # O1 is for C-terminal residue
         heavyatom_names = ("N", "CA", "C", "O O1")
         self._heavy_atoms: dict[str, "AtomGroup"] = {
-            t: u.select_atoms(f"protein and name {t}") for t in heavyatom_names
+            t: u.select_atoms(f"protein and name {t}")
+            for t in heavyatom_names
         }
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms("name H")
             for res in u.select_atoms("protein").residues
-        ]  # can't do it the other way because I need missing values to exist so that I could fill them in later
+        ]
+        # can't do it the other way because I need missing values to exist
+        # so that I could fill them in later
 
     def _prepare(self):
         self.results.dssp_ndarray = []
 
     def _get_coords(self) -> np.ndarray:
-        """Returns coordinates of (N,CA,C,O,H) atoms, as required by :func:`get_hbond_map` and :func:`assign` functions."""
+        """Returns coordinates of (N,CA,C,O,H) atoms, as required by
+        :func:`get_hbond_map` and :func:`assign` functions.
+
+        Returns
+        -------
+        np.ndarray
+            coordinates of (N,CA,C,O,H) atoms
+
+        Raises
+        ------
+        ValueError
+            if input Universe contains different number of (N,CA,C,O) atoms
+        """
         positions = [group.positions for group in self._heavy_atoms.values()]
         if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
-            raise ValueError(
-                "Universe contains not equal number of (N,CA,C,O) atoms. Please select appropriate sub-universe manually."
-            )
+            raise ValueError((
+                "Universe contains not equal number of (N,CA,C,O) atoms ('name' field)."
+                " Please select appropriate sub-universe manually."))
         coords = np.array(positions)
 
         if not self._guess_hydrogens:
-            guessed_h_coords = _get_hydrogen_atom_position(coords.swapaxes(0, 1))
-            h_coords = np.array(
-                [
-                    group.positions[0] if group else guessed_h_coords[idx]
-                    for idx, group in enumerate(self._hydrogens)
-                ]
-            )
+            guessed_h_coords = _get_hydrogen_atom_position(
+                coords.swapaxes(0, 1))
+            h_coords = np.array([
+                group.positions[0] if group else guessed_h_coords[idx]
+                for idx, group in enumerate(self._hydrogens)
+            ])
             h_coords = np.expand_dims(h_coords, axis=0)
             coords = np.vstack([coords, h_coords])
 
@@ -358,4 +414,5 @@ class DSSP(AnalysisBase):
     def _conclude(self):
         self.results.dssp = translate(np.array(self.results.dssp_ndarray))
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
-        self.results.resids = np.array([at.resid for at in self._heavy_atoms["CA"]])
+        self.results.resids = np.array(
+            [at.resid for at in self._heavy_atoms["CA"]])
