@@ -3,7 +3,7 @@ Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.anal
 ==========================================================================
 
 :Author: Egor Marin
-:Year: 2023
+:Year: 2024
 :Copyright: GNU Public License v2
 
 .. versionadded:: 2.8.0
@@ -13,6 +13,8 @@ and use it to assign protein secondary structure (:class:`DSSP`).
 
 This module uses the python version of the original algorithm by Kabsch & Sander (1983),
 re-implemented by @ShintaroMinami. For more details, read [here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp).
+Note that this implementation does not discriminate different types of beta-sheets,
+as well as different types of helices, meaning you will get 3_10 helices and pi-helices labelled as "helix" too.
 
 When using this module in published work please cite [Kabsch1983]_.
 
@@ -24,6 +26,7 @@ Assigning secondary structure of a PDB file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 In this example we will simply print a string representing protein's secondary structure.
 
+.. code-block:: python
     from MDAnalysis.tests.datafiles import PDB
     from MDAnalysis.analysis.dssp import DSSP
     u = mda.Universe(PDB)
@@ -37,16 +40,40 @@ Here we take a trajectory and calculate its average secondary structure,
 i.e. assign a secondary structure label 'X' to a residue if most of the frames
 in the trajectory got assigned 'X' label.
 
+.. code-block:: python
+    from MDAnalysis.analysis.dssp import DSSP, translate
+    from MDAnalysisTests.datafiles import TPR, XTC
+    u = mda.Universe(TPR, XTC)
+    long_run = DSSP(u).run(stop=20)
+    mean_secondary_structure = translate(
+        long_run.results.dssp_ndarray.mean(axis=0)
+        )
+    print(''.join(mean_secondary_structure)[:20])
+    # '-EEEEEE------HHHHHHH'
+
 Find parts of the protein that maintain their secondary structure during simulation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 In this example, we will find residue groups that maintain their secondary structure
 along the simulation, and have some meaningful ('E' or 'H') secondary structure
-during more than set threshold share of frames.
+during more than set `threshold` share of frames. We will call these residues
+"persistent", for clarity, and label them according to the structure
+that they maintain during the run:
 
-Plot hydrogen bond energy map for a single frame
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In this example, we will extract the coordinates of atoms necessary for the secondary structure
-assignment, and plot their hydrogen map, as implemented in `pydssp`.
+.. code-block:: python
+    from MDAnalysis.analysis.dssp import DSSP, translate
+    from MDAnalysisTests.datafiles import TPR, XTC
+    u = mda.Universe(TPR, XTC)
+    threshold = 0.8
+
+    long_run = DSSP(u).run()
+    persistent_residues = translate(
+        long_run
+        .results
+        .dssp_ndarray
+        .mean(axis=0) > threshold
+    )
+    print(''.join(persistent_residues)[:20])
+    # '--EEEE----------HHHH'
 
 
 Functions
