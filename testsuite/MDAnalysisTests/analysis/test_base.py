@@ -20,14 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pickle
-from collections import UserDict
-
 import MDAnalysis as mda
 import numpy as np
 import pytest
-from MDAnalysis.analysis import base, parallel
-from MDAnalysis.lib.util import is_installed
+from MDAnalysis.analysis import base, backends
 from MDAnalysisTests.datafiles import DCD, PSF, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
 from numpy.testing import assert_almost_equal, assert_equal
@@ -91,7 +87,7 @@ class ParallelizableWithDaskOnly(FrameAnalysis):
     _is_parallelizable = True
     supported_backends = ('dask',)
 
-class CustomSerialBackend(parallel.BackendBase):
+class CustomSerialBackend(backends.BackendBase):
     def apply(self, func, computations):
         return [func(task) for task in computations]
 

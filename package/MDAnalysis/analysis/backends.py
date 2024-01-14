@@ -1,9 +1,8 @@
-"""Analysis backends --- :mod:`MDAnalysis.analysis.parallel`
+"""Analysis backends --- :mod:`MDAnalysis.analysis.backends`
 ==============================================================
 """
 import warnings
 from typing import Callable
-from .results import Results, ResultsGroup
 from MDAnalysis.lib.util import is_installed
 
 
@@ -19,7 +18,7 @@ class BackendBase:
     --------
     .. code-block:: python
         # implement a thread-based backend
-        from MDAnalysis.analysis.parallel import BackendBase
+        from MDAnalysis.analysis.backends import BackendBase
         class ThreadsBackend(BackendBase):
             def apply(self, func, computations):
                 from multiprocessing.dummy import Pool

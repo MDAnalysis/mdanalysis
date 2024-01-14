@@ -48,7 +48,7 @@ class Results(UserDict):
     .. versionadded:: 2.0.0
 
     .. versionchanged:: 2.8.0
-        Moved :class:`Results` to `MDAnalysis.analysis.parallel`
+        Moved :class:`Results` to `MDAnalysis.analysis.results`
     """
 
     def _validate_key(self, key):
@@ -111,7 +111,7 @@ class ResultsGroup:
 
     Examples
     --------
-    >>> from MDAnalysis.analysis.parallel import ResultsGroup, Results
+    >>> from MDAnalysis.analysis.results import ResultsGroup, Results
     >>> group = ResultsGroup(lookup={'mass': ResultsGroup.float_mean})
     >>> obj1 = Results(mass=1)
     >>> obj2 = Results(mass=3)

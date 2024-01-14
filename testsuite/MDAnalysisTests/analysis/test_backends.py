@@ -1,5 +1,5 @@
 import pytest
-from MDAnalysis.analysis import parallel
+from MDAnalysis.analysis import backends
 from MDAnalysis.lib.util import is_installed
 
 
@@ -16,13 +16,14 @@ def upper(s):
 
 
 class Test_Backends:
+
     @pytest.mark.parametrize(
         "backend_cls,n_workers",
         [
-            (parallel.BackendBase, -1),
-            (parallel.BackendSerial, None),
-            (parallel.BackendMultiprocessing, "string"),
-            (parallel.BackendDask, ()),
+            (backends.BackendBase, -1),
+            (backends.BackendSerial, None),
+            (backends.BackendMultiprocessing, "string"),
+            (backends.BackendDask, ()),
         ],
     )
     def test_fails_incorrect_n_workers(self, backend_cls, n_workers):
@@ -40,12 +41,12 @@ class Test_Backends:
     )
     def test_all_backends_give_correct_results(self, func, iterable, answer):
         backend_instances = [
-            parallel.BackendMultiprocessing(n_workers=2),
-            parallel.BackendSerial(n_workers=1),
+            backends.BackendMultiprocessing(n_workers=2),
+            backends.BackendSerial(n_workers=1),
         ]
         if is_installed("dask"):
-            backend_instances.append(parallel.BackendDask(n_workers=2))
+            backend_instances.append(backends.BackendDask(n_workers=2))
 
-        backends = {b: b.apply(func, iterable) for b in backend_instances}
-        for answ in backends.values():
+        backends_dict = {b: b.apply(func, iterable) for b in backend_instances}
+        for answ in backends_dict.values():
             assert answ == answer
