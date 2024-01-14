@@ -1,5 +1,6 @@
 """
-Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.analysis.dssp`
+Secondary structure assignment (helix, sheet
+and loop) --- :mod:`MDAnalysis.analysis.dssp`
 ==========================================================================
 
 :Author: Egor Marin
@@ -12,9 +13,11 @@ The module contains code to build hydrogend bond contact map,
 and use it to assign protein secondary structure (:class:`DSSP`).
 
 This module uses the python version of the original algorithm by Kabsch & Sander (1983),
-re-implemented by @ShintaroMinami. For more details, read [here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp).
+re-implemented by @ShintaroMinami and available under MIT license
+[here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
 Note that this implementation does not discriminate different types of beta-sheets,
-as well as different types of helices, meaning you will get 3_10 helices and pi-helices labelled as "helix" too.
+as well as different types of helices, meaning you will get 3_10 helices
+and pi-helices labelled as "helix" too.
 
 When using this module in published work please cite [Kabsch1983]_.
 
@@ -24,7 +27,8 @@ Example applications
 
 Assigning secondary structure of a PDB file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In this example we will simply print a string representing protein's secondary structure.
+In this example we will simply print a string representing 
+protein's secondary structure.
 
 .. code-block:: python
     from MDAnalysis.tests.datafiles import PDB
@@ -92,16 +96,18 @@ Analysis classes
 
    .. attribute:: results.dssp
 
-       Contains the time series of the DSSP assignment as chars N×m :class:`numpy.ndarray`
-       array with content ``[frame, residue]``, where `structure_type`
-       is one of three characters: ['H', 'E', '-'], representing alpha-helix, sheet and loop, respectively.
+       Contains the time series of the DSSP assignment
+       as chars N×m :class:`numpy.ndarray` array with content
+       ``[frame, residue]``, where `structure_type` is one of three characters:
+       ['H', 'E', '-'], representing alpha-helix, sheet and loop, respectively.
 
    .. attribute:: results.dssp_ndarray
 
-       Contains the one-hot encoding of the time series of the DSSP assignment as chars N×mx3 :class:`numpy.ndarray`
-       array with content ``[frame, residue, encoding]``, where `encoding`
-       is a (3,) shape :class:`numpy.ndarray` of booleans
-       with axes representing loop '-', helix 'H' and sheet 'E', consequtively.
+       Contains the one-hot encoding of the time series of the DSSP assignment
+       as chars N×mx3 :class:`numpy.ndarray` array with content
+       ``[frame, residue, encoding]``, where `encoding` is a (3,) shape
+       :class:`numpy.ndarray` of booleans with axes representing loop '-',
+       helix 'H' and sheet 'E', consequtively.
 """
 
 from .base import AnalysisBase
@@ -195,7 +201,8 @@ def get_hbond_map(
     Parameters
     ----------
     coord : np.ndarray
-        input coordinates in either (n, 4, 3) or (n, 5, 3) shape (without or with hydrogens)
+        input coordinates in either (n, 4, 3) or (n, 5, 3) shape 
+        (without or with hydrogens)
     cutoff : float, optional
         cutoff, by default DEFAULT_CUTOFF
     margin : float, optional
@@ -343,7 +350,8 @@ class DSSP(AnalysisBase):
     by pydssp package (v. 0.9.0): https://github.com/ShintaroMinami/PyDSSP
     Here:
      - 'H' represents a generic helix (alpha-helix, pi-helix or 3-10 helix)
-     - 'E' represents 'extended strand', participating in beta-ladder, (parallel or antiparallel)
+     - 'E' represents 'extended strand', participating in beta-ladder
+     (parallel or antiparallel)
      - '-' represents unordered part
 
     Examples
