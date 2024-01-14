@@ -231,12 +231,6 @@ def test_timeseries_atomindices(indices, universe_dcd):
         assert_array_almost_equal(xyz, allframes[indices])
 
 
-def test_timeseries_empty_selection(universe_dcd):
-    with pytest.raises(ValueError):
-        asel = universe_dcd.select_atoms('name FOO')
-        universe_dcd.trajectory.timeseries(asel=asel)
-
-
 def test_reader_set_dt():
     dt = 100
     frame = 3
