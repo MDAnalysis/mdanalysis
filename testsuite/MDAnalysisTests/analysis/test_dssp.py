@@ -7,10 +7,10 @@ from MDAnalysisTests.datafiles import DSSP_FOLDER
 from MDAnalysisTests.datafiles import XTC_multi_frame
 
 
-@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/*.pdb"))
+@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/*.pdb.gz"))
 def test_file_guess_hydrogens(pdb_filename):
     u = mda.Universe(pdb_filename)
-    with open(f"{pdb_filename}.dssp", "r") as fin:
+    with open(f"{pdb_filename.rstrip('.gz')}.dssp", "r") as fin:
         correct_answ = fin.read().strip().split()[0]
 
     run = DSSP(u, guess_hydrogens=True).run()
@@ -18,7 +18,7 @@ def test_file_guess_hydrogens(pdb_filename):
     assert answ == correct_answ
 
 
-@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/*.pdb"))
+@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/*.pdb.gz"))
 def test_trajectory_without_guess_hydrogens(pdb_filename):
     u = mda.Universe(pdb_filename)
     DSSP(u, guess_hydrogens=False).run()
