@@ -22,6 +22,7 @@ Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
+ * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
 
 Changes
  * As per NEP29, the minimum version of numpy has been raised to 1.23.
