@@ -655,7 +655,7 @@ SURFACE_PDB = (_data_ref / 'surface.pdb.bz2').as_posix()
 SURFACE_TRR = (_data_ref / 'surface.trr').as_posix()
 
 # DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
-DSSP_FOLDER = (_data_ref / 'dssp').as_posix()
+DSSP = (_data_ref / 'dssp').as_posix()
 
 # This should be the last line: clean up namespace
 del resources

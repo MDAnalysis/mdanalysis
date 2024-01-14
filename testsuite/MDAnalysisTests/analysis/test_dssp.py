@@ -3,7 +3,7 @@ import glob
 import MDAnalysis as mda
 
 from MDAnalysis.analysis.dssp import DSSP, translate
-from MDAnalysisTests.datafiles import DSSP_FOLDER
+from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
 
 
