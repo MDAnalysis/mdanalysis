@@ -659,6 +659,7 @@ if __name__ == '__main__':
                   ],
               'analysis': [
                   'biopython>=1.80',  # sequence generation & alignment
+                  'einops>=0.4.1',  # for pydssp-based DSSP implementation
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
                   'scikit-learn',  # For clustering and dimensionality
