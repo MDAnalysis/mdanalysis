@@ -23,6 +23,7 @@ Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
+ * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
 
 Changes
  * As per NEP29, the minimum version of numpy has been raised to 1.23.

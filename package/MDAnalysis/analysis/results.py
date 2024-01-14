@@ -179,6 +179,7 @@ class ResultsGroup:
         -------
         list
             flattened list
+        .. versionadded:: 2.8.0
         """
         return [item for sublist in arrs for item in sublist]
 
@@ -195,6 +196,8 @@ class ResultsGroup:
         -------
         np.ndarray
             sum of input arrays
+
+        .. versionadded:: 2.8.0
         """
         return np.array(arrs).sum(axis=0)
 
@@ -211,6 +214,8 @@ class ResultsGroup:
         -------
         np.ndarray
             mean of input arrays
+
+        .. versionadded:: 2.8.0
         """
         return np.array(arrs).mean(axis=0)
 
@@ -227,6 +232,8 @@ class ResultsGroup:
         -------
         float
             mean value
+
+        .. versionadded:: 2.8.0
         """
         return np.array(floats).mean()
 
@@ -243,6 +250,8 @@ class ResultsGroup:
         -------
         np.ndarray
             result of stacking
+
+        .. versionadded:: 2.8.0
         """
         return np.hstack(arrs)
 
@@ -259,5 +268,7 @@ class ResultsGroup:
         -------
         np.ndarray
             result of stacking
+
+        .. versionadded:: 2.8.0
         """
         return np.vstack(arrs)
