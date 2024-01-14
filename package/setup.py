@@ -640,6 +640,7 @@ if __name__ == '__main__':
           # typically can be installed without difficulties through setuptools
           setup_requires=[
               'numpy>=1.23.2',
+              'einops>=0.4.1',  # for pydssp-based DSSP implementation
               'packaging',
           ],
           install_requires=install_requires,
@@ -659,7 +660,6 @@ if __name__ == '__main__':
                   ],
               'analysis': [
                   'biopython>=1.80',  # sequence generation & alignment
-                  'einops>=0.4.1',  # for pydssp-based DSSP implementation
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
                   'scikit-learn',  # For clustering and dimensionality
