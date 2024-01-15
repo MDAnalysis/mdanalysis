@@ -116,10 +116,10 @@ from .. import Universe
 
 try:
     from einops import repeat, rearrange
-except ImportError:
-    EINOPS_PRESENT = False
+except ModuleNotFoundError:
+    HAS_EINOPS = False
 else:
-    EINOPS_PRESENT = True
+    HAS_EINOPS = True
 
 CONST_Q1Q2 = 0.084
 CONST_F = 332
@@ -225,8 +225,16 @@ def get_hbond_map(
     np.ndarray
         output hbond map or energy depending on return_e param
 
+    Raises
+    ------
+    
+        if module `einops` is not present
+
     .. versionadded:: 2.8.0
     """
+    if not HAS_EINOPS:
+        raise ImportError('DSSP: to use DSSP, please install einops')
+
     # check input
     coord, org_shape = _check_input(coord)
     b, l, a, _ = coord.shape
@@ -281,8 +289,17 @@ def assign(coord: np.ndarray) -> np.ndarray:
         output (n,) array with one-hot labels in C3 notation ('-', 'H', 'E'),
         representing loop, helix and sheet, respectively.
 
+    Raises
+    ------
+    
+        if module `einops` is not present
+
     .. versionadded:: 2.8.0
     """
+
+    if not HAS_EINOPS:
+        raise ImportError('DSSP: to use DSSP, please install einops')
+    
     # check input
     coord, org_shape = _check_input(coord)
     # get hydrogen bond map
@@ -403,6 +420,8 @@ class DSSP(AnalysisBase):
     """
 
     def __init__(self, u: Universe, guess_hydrogens: bool = True):
+        if not HAS_EINOPS:
+            raise ImportError('DSSP: to use DSSP, please install einops')
         super().__init__(u.trajectory)
         self._guess_hydrogens = guess_hydrogens
 
