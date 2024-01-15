@@ -604,7 +604,6 @@ if __name__ == '__main__':
           'mda-xdrlib',
           'waterdynamics',
           'pathsimanalysis',
-          'einops>=0.4.1',  # for pydssp-based DSSP implementation
     ]
 
     setup(name='MDAnalysis',

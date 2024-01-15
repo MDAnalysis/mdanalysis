@@ -112,8 +112,14 @@ Analysis classes
 
 from .base import AnalysisBase
 import numpy as np
-from einops import repeat, rearrange
 from .. import Universe
+
+try:
+    from einops import repeat, rearrange
+except ImportError:
+    EINOPS_PRESENT = False
+else:
+    EINOPS_PRESENT = True
 
 CONST_Q1Q2 = 0.084
 CONST_F = 332
