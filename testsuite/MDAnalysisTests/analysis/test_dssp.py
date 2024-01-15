@@ -11,13 +11,7 @@ from MDAnalysisTests.datafiles import TPR, XTC
 def test_without_einops():
     u = mda.Universe(TPR, XTC).select_atoms('protein').universe
     with pytest.raises(ImportError):
-        run = DSSP(u).run()
-
-    first_frame = ''.join(run.results.dssp[0])
-    last_frame = ''.join(run.results.dssp[-1])
-    avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
-
-    assert first_frame and last_frame and avg_frame
+        DSSP(u).run()
 
 
 @pytest.mark.skipif(not HAS_EINOPS, reason="einops present")
