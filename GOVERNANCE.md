@@ -6,7 +6,7 @@ Below is a summary of the governance model (but note that if the text on this pa
 
 ----
 
-Project leadership is provided by a subset of contributors, the **MDAnalysis Core Developers** ([@MDAnalysis/coredevs](https://github.com/orgs/MDAnalysis/teams/coredevs)) who have produced substantial contributions over extended lengths of time and who remain active in reviewing issues and discussions on the various mailing lists. MDAnalysis Core Developers are granted commit rights (write access) to the GitHub source code repository. New MDAnalysis Core Developers are elected with a simple majority of current MDAnalysis Core Developers.
+Project leadership is provided by a subset of contributors, the **MDAnalysis Core Developers** ([@MDAnalysis/coredevs](https://github.com/orgs/MDAnalysis/teams/coredevs)) who have produced substantial contributions over extended lengths of time and who remain active in reviewing issues and discussions on the various discussion channels. MDAnalysis Core Developers are granted commit rights (write access) to the GitHub source code repository. New MDAnalysis Core Developers are elected with a simple majority of current MDAnalysis Core Developers.
 
 All decisions are made by simple majority of the MDAnalysis Core Developers.
 

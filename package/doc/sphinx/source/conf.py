@@ -348,4 +348,5 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
     'parmed': ('https://parmed.github.io/ParmEd/html/', None),
     'rdkit': ('https://rdkit.org/docs/', None),
+    'pathsimanalysis': ('https://www.mdanalysis.org/PathSimAnalysis/', None),
 }

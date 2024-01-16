@@ -35,12 +35,10 @@ MDAnalysis Wiki:
 
   https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
 
-Also free to ask on the MDAnalysis mailing list for help:
+Also free to ask on GitHub Discussions for help:
 
-  http://groups.google.com/group/mdnalysis-discussion
+  https://github.com/MDAnalysis/mdanalysis/discussions/categories/installation
 
-(Note that the group really is called `mdnalysis-discussion' because
-Google groups forbids any name that contains the string `anal'.)
 """
 
 from setuptools import setup, Extension, find_packages
@@ -67,7 +65,7 @@ import configparser
 from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.7.0-dev0"
+RELEASE = "2.8.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -593,7 +591,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.22.3',
+          'numpy>=1.23.2',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
@@ -604,6 +602,7 @@ if __name__ == '__main__':
           'packaging',
           'fasteners',
           'mda-xdrlib',
+          'pathsimanalysis',
     ]
 
     setup(name='MDAnalysis',
@@ -639,7 +638,7 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.21.0',
+              'numpy>=1.23.2',
               'packaging',
           ],
           install_requires=install_requires,
