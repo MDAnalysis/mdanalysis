@@ -14,11 +14,12 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, HeetVekariya
 
  * 2.8.0
 
 Fixes
+ * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
