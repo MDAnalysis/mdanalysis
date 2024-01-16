@@ -20,7 +20,6 @@ The rules for this file:
  * 2.7.0
 
 Fixes
-  * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
   * Fix doctest errors of lib/transformations.py (Issue #3925, PR #4370)
   * Fix documentation building errors due to `html_static_path` and unindented
     block of code (Issue #4362, PR #4365)
