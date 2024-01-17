@@ -166,10 +166,10 @@ import numpy as np
 import logging
 import warnings
 
-import MDAnalysis.lib.qcprot as qcp
-from MDAnalysis.analysis.base import AnalysisBase, ResultsGroup
-from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.util import asiterable, iterable, get_weights
+from ..lib import qcprot as qcp
+from ..analysis.base import AnalysisBase, ResultsGroup
+from ..exceptions import SelectionError
+from ..lib.util import asiterable, iterable, get_weights
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -358,16 +358,16 @@ class RMSD(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`rmsd` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.8.0
+       introduced a :attr:`supported_backends` allowing for execution on with 
+       ``multiprocessing`` and ``dask`` backends.
     """
 
     @classmethod
-    @property
     def supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask',)
 
     @classmethod
-    @property
     def _is_parallelizable(cls):
         return True
 
