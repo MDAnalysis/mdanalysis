@@ -142,7 +142,8 @@ class PCA(AnalysisBase):
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
-    instructions.
+    instructions. When using mean selections, the first frame of the selected 
+    trajectory slice is used as a reference.
 
     Parameters
     ----------
@@ -235,7 +236,6 @@ class PCA(AnalysisBase):
        described by #4425 and fixed by #4423). Previously, behaviour was to
        manually iterate through ``self._trajectory``, which starting #3415 that
        introduced ``frames`` is wrong, and should use ``self._sliced_trajectory``.
-       It is now fixed.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
