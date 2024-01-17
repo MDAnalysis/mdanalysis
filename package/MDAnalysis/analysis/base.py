@@ -230,9 +230,10 @@ class AnalysisBase(object):
         Added :attr:`results`
 
     .. versionadded:: 2.8.0
-        Added ability to run analysis in parallel using either a built-in backend (`multiprocessing` or `dask`)
-        of a custom `parallel.BackendBase` instance with an implemented `apply` method that is used to run
-        the computations.
+        Added ability to run analysis in parallel using either a
+        built-in backend (`multiprocessing` or `dask`) or a custom
+        `backends.BackendBase` instance with an implemented `apply` method
+        that is used to run the computations.
 
     """
 
@@ -240,14 +241,17 @@ class AnalysisBase(object):
     @property
     def supported_backends(cls):
         """Tuple with backends supported by the core library for a given class.
-        User can pass either one of these values as `backend=...` to :meth:`run()` method,
-        or a custom object that has `apply` method (see documentation for :meth:`run()`):
+        User can pass either one of these values as `backend=...` to
+        :meth:`run()` method, or a custom object that has `apply` method
+        (see documentation for :meth:`run()`):
          - 'serial': no parallelization
          - 'multiprocessing': parallelization using `multiprocessing.Pool`
-         - 'dask': parallelization using `dask.delayed.compute()`. Requires installation of `mdanalysis[parallel]`
+         - 'dask': parallelization using `dask.delayed.compute()`.
+         Requires installation of `mdanalysis[dask]`
 
-        If you want to add your own backend to an existing class, pass a :class:`parallel.BackendBase` subclass
-        (see its documentation to learn how to implement it properly), and specify `unsupported_backend=True`.
+        If you want to add your own backend to an existing class, pass a
+        :class:`backends.BackendBase` subclass (see its documentation to learn
+        how to implement it properly), and specify `unsupported_backend=True`.
 
         Returns
         -------
@@ -259,15 +263,17 @@ class AnalysisBase(object):
     @classmethod
     @property
     def _is_parallelizable(cls):
-        """Boolean mark showing that a given class can be parallelizable with split-apply-combine procedure.
-        Namely, if we can safely distribute :meth:`_single_frame` to multiple workers and then combine them
-        with a proper :meth:`_conclude` call.
-        If set to `False`, no backends except for `serial` are supported.
+        """Boolean mark showing that a given class can be parallelizable with
+        split-apply-combine procedure. Namely, if we can safely distribute
+        :meth:`_single_frame` to multiple workers and then combine them with a
+        proper :meth:`_conclude` call. If set to `False`, no backends except
+        for `serial` are supported.
 
         Returns
         -------
         bool
-            if a given `AnalysisBase` subclass is parallelizable with split-apply-combine, or not
+            if a given `AnalysisBase` subclass is parallelizable with
+            split-apply-combine, or not
         """
         return False
 
@@ -304,8 +310,8 @@ class AnalysisBase(object):
         Raises
         ------
         ValueError
-            if *both* `frames` and at least one of `start`, `stop`, or `step` is provided
-            (i.e. set to not ``None`` value).
+            if *both* `frames` and at least one of `start`, `stop`, or `step` 
+            is provided (i.e. set to not ``None`` value).
         """
         self._trajectory = trajectory
         if frames is not None:
@@ -389,8 +395,8 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def _compute(self, indexed_frames: np.ndarray, 
-                 verbose: bool = None, 
+    def _compute(self, indexed_frames: np.ndarray,
+                 verbose: bool = None,
                  *, progressbar_kwargs={}) -> "AnalysisBase":
         """Perform the calculation on a balanced slice of frames
         that have been setup prior to that using _setup_computation_groups()
@@ -405,8 +411,9 @@ class AnalysisBase(object):
             Turn on verbosity
 
         progressbar_kwargs : dict, optional
-            ProgressBar keywords with custom parameters regarding progress bar position, etc;
-            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
+            ProgressBar keywords with custom parameters regarding progress bar
+            position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
+            for full list.
 
         .. versionadded:: 2.8.0
         """
@@ -422,7 +429,10 @@ class AnalysisBase(object):
         if len(frames) == 0:  # if `frames` were empty in `run` or `stop=0`
             return self
 
-        for idx, ts in enumerate(ProgressBar(self._sliced_trajectory, verbose=verbose, **progressbar_kwargs)):
+        for idx, ts in enumerate(ProgressBar(
+                self._sliced_trajectory,
+                verbose=verbose,
+                **progressbar_kwargs)):
             self._frame_index = idx  # accessed later by subclasses
             self._ts = ts
             self.frames[idx] = ts.frame
@@ -486,20 +496,30 @@ class AnalysisBase(object):
 
         return np.array_split(enumerated_frames, n_parts)
 
-    def _configure_backend(self, backend: Union[str, BackendBase], n_workers: int, unsupported_backend: bool = False):
-        """Matches a passed backend string value with class attributes :meth:`_is_parallelizable` and :meth:`supported_backends`
+    def _configure_backend(
+            self,
+            backend: Union[str, BackendBase],
+            n_workers: int,
+            unsupported_backend: bool = False
+            ):
+        """Matches a passed backend string value with class attributes
+        :meth:`_is_parallelizable` and :meth:`supported_backends`
         to check if downstream calculations can be performed.
 
         Parameters
         ----------
         backend : Union[str, BackendBase]
             backend to be used:
-               - `str` is matched to a builtin backend (one of `serial`, `multiprocessing` and `dask`)
-               - `BackendBase` subclass is checked for the presence of `apply` method
+               - `str` is matched to a builtin backend (one of `serial`,
+               `multiprocessing` and `dask`)
+               - `BackendBase` subclass is checked for the presence of
+               `apply` method
         n_workers : int
-            positive integer with number of workers (processes, in case of built-in backends) to split the work between
+            positive integer with number of workers (processes, in case of
+            built-in backends) to split the work between
         unsupported_backend : bool, optional
-            if you want to run your custom backend on a parallelizable class that has not been tested by developers, by default False
+            if you want to run your custom backend on a parallelizable class
+            that has not been tested by developers, by default False
 
         Returns
         -------
@@ -511,42 +531,58 @@ class AnalysisBase(object):
         ValueError
             if :meth:`_is_parallelizable` is set to `False` but backend is not `serial`
         ValueError
-            if `_is_parallelizable` and you're using custom backend instance without specifying `unsupported_backend=True`
+            if `_is_parallelizable` and you're using custom backend instance
+            without specifying `unsupported_backend=True`
         ValueError
-            if your trajectory has associated parallelizable transformations but backend is not serial
+            if your trajectory has associated parallelizable transformations
+            but backend is not serial
         ValueError
             if your backend object instance doesn't have an `apply` method
 
         .. versionadded:: 2.8.0
         """
-        builtin_backends = {"serial": BackendSerial, "multiprocessing": BackendMultiprocessing, "dask": BackendDask}
+        builtin_backends = {
+            "serial": BackendSerial,
+            "multiprocessing": BackendMultiprocessing,
+            "dask": BackendDask
+        }
 
         backend_class = builtin_backends.get(backend, backend)
-        supported_backend_classes = [builtin_backends.get(b) for b in self.supported_backends]
+        supported_backend_classes = [
+            builtin_backends.get(b)
+            for b in self.supported_backends
+        ]
 
         # check for serial-only classes
         if not self._is_parallelizable and backend_class is not BackendSerial:
             raise ValueError(f"Can not parallelize class {self.__class__}")
 
-        # make sure user enabled 'unsupported_backend=True' for custom classes
-        if not unsupported_backend and self._is_parallelizable and backend_class not in supported_backend_classes:
-            raise ValueError(
-                f"Must specify 'unsupported_backend=True' if you want to use a custom {backend_class=} for {self.__class__}"
-            )
+        # mak,e sure user enabled 'unsupported_backend=True' for custom classes
+        if (not unsupported_backend and self._is_parallelizable
+                and backend_class not in supported_backend_classes):
+            raise ValueError((
+                f"Must specify 'unsupported_backend=True'"
+                f"if you want to use a custom {backend_class=} for {self.__class__}"
+            ))
 
         # check for the presence of parallelizable transformations
-        if backend_class is not BackendSerial and any(t.parallelizable for t in self._trajectory.transformations):
-            raise ValueError("Trajectory should not have associated parallelizable transformations")
+        if backend_class is not BackendSerial and any(
+                t.parallelizable for t in self._trajectory.transformations):
+            raise ValueError((
+                "Trajectory should not have "
+                "associated parallelizable transformations"))
 
         # conclude mapping from string to backend class if it's a builtin backend
         if isinstance(backend, str):
             return backend_class(n_workers=n_workers)
 
-        # or pass along an instance of the class itself after ensuring it has apply method
+        # or pass along an instance of the class itself
+        # after ensuring it has apply method
         if not isinstance(backend, BackendBase) or not hasattr(backend, "apply"):
-            raise ValueError(
-                f"{backend=} is invalid: should have 'apply' method and be instance of MDAnalysis.analysis.parallel.BackendBase"
-            )
+            raise ValueError((
+                f"{backend=} is invalid: should have 'apply' method "
+                "and be instance of MDAnalysis.analysis.backends.BackendBase"
+            ))
         return backend
 
     def run(
@@ -585,20 +621,24 @@ class AnalysisBase(object):
 
         .. versionadded:: 2.5.0
         progressbar_kwargs : dict, optional
-            ProgressBar keywords with custom parameters regarding progress bar position, etc;
-            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
-            Available only for `backend='serial'`
+            ProgressBar keywords with custom parameters regarding progress bar
+            position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
+            for full list. Available only for `backend='serial'`
         backend : Union[str, BackendBase], optional
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend:
-               - `str` is matched to a builtin backend (one of `serial`, `multiprocessing` and `dask`)
+               - `str` is matched to a builtin backend (one of `serial`,
+               `multiprocessing` and `dask`)
                - `BackendBase` subclass is checked for the presence of `apply` method
         n_workers : int
-            positive integer with number of workers (processes, in case of built-in backends) to split the work between
+            positive integer with number of workers (processes, in case of
+            built-in backends) to split the work between
         n_parts : int, optional
-            number of parts to split computations across. Can be more than number of workers.
+            number of parts to split computations across. Can be more than
+            number of workers.
         unsupported_backend : bool, optional
-            if you want to run your custom backend on a parallelizable class that has not been tested by developers, by default False
+            if you want to run your custom backend on a parallelizable class
+            that has not been tested by developers, by default False
 
         .. versionchanged:: 2.2.0
             Added ability to analyze arbitrary frames by passing a list of
@@ -619,23 +659,36 @@ class AnalysisBase(object):
         # set n_parts and check that is has a reasonable value
         n_parts = n_workers if n_parts is None else n_parts
 
-        # do this as early as possible to check client parameters before any computations occur
-        executor = self._configure_backend(backend=backend, n_workers=n_workers, unsupported_backend=unsupported_backend)
+        # do this as early as possible to check client parameters
+        # before any computations occur
+        executor = self._configure_backend(
+            backend=backend,
+            n_workers=n_workers,
+            unsupported_backend=unsupported_backend)
         if (
             hasattr(executor, "n_workers") and n_parts < executor.n_workers
         ):  # using executor's value here for non-default executors
-            warnings.warn(f"Analysis not making use of all workers: {executor.n_workers=} is greater than {n_parts=}")
+            warnings.warn((
+                f"Analysis not making use of all workers: "
+                f"{executor.n_workers=} is greater than {n_parts=}"))
 
         # start preparing the run
-        worker_func = partial(self._compute, progressbar_kwargs=progressbar_kwargs, verbose=verbose)
-        self._setup_frames(trajectory=self._trajectory, start=start, stop=stop, step=step, frames=frames)
+        worker_func = partial(
+            self._compute,
+            progressbar_kwargs=progressbar_kwargs,
+            verbose=verbose)
+        self._setup_frames(
+            trajectory=self._trajectory,
+            start=start, stop=stop, step=step, frames=frames)
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
 
-        # get all results from workers in other processes
-        # we need `AnalysisBase` classes, since they hold `frames`, `times` and `results` attributes
-        remote_objects: list["AnalysisBase"] = executor.apply(worker_func, computation_groups)
+        # get all results from workers in other processes.
+        # we need `AnalysisBase` classes
+        # since they hold `frames`, `times` and `results` attributes
+        remote_objects: list["AnalysisBase"] = executor.apply(
+            worker_func, computation_groups)
         self.frames = np.hstack([obj.frames for obj in remote_objects])
         self.times = np.hstack([obj.times for obj in remote_objects])
 
@@ -648,8 +701,8 @@ class AnalysisBase(object):
         return self
 
     def _get_aggregator(self):
-        """Returns a default aggregator that takes entire results if there is a single object, 
-        and raises ValueError otherwise
+        """Returns a default aggregator that takes entire results
+        if there is a single object, and raises ValueError otherwise
 
         Returns
         -------
@@ -723,7 +776,8 @@ class AnalysisFromFunction(AnalysisBase):
         return True
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
-        if (trajectory is not None) and (not isinstance(trajectory, coordinates.base.ProtoReader)):
+        if (trajectory is not None) and (not isinstance(
+                trajectory, coordinates.base.ProtoReader)):
             args = (trajectory,) + args
             trajectory = None
 
@@ -813,12 +867,11 @@ def analysis_class(function):
     class WrapperClass(AnalysisFromFunction):
         def __init__(self, trajectory=None, *args, **kwargs):
             super(WrapperClass, self).__init__(function, trajectory, *args, **kwargs)
-        
+ 
         @classmethod
         @property
         def supported_backends(cls):
             return ("serial", "dask")
-
 
     return WrapperClass
 
@@ -856,7 +909,11 @@ def _filter_baseanalysis_kwargs(function, kwargs):
         base_argspec = inspect.getargspec(AnalysisBase.__init__)
 
     n_base_defaults = len(base_argspec.defaults)
-    base_kwargs = {name: val for name, val in zip(base_argspec.args[-n_base_defaults:], base_argspec.defaults)}
+    base_kwargs = {
+        name: val
+        for name, val in zip(base_argspec.args[-n_base_defaults:],
+                             base_argspec.defaults)
+    }
 
     try:
         # pylint: disable=deprecated-method
