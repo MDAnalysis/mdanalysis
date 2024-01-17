@@ -194,9 +194,9 @@ from functools import partial
 from typing import Iterable, Union
 
 import numpy as np
-from MDAnalysis import coordinates
-from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.lib.log import ProgressBar
+from .. import coordinates
+from ..core.groups import AtomGroup
+from ..lib.log import ProgressBar
 
 from .backends import BackendDask, BackendMultiprocessing, BackendSerial, BackendBase
 from .results import Results, ResultsGroup
