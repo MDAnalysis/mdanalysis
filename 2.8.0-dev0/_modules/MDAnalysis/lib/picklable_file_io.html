@@ -236,11 +236,13 @@
 <span class="sd">    -------</span>
 <span class="sd">    ::</span>
 
+<span class="sd">        &gt;&gt;&gt; import pickle</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PDB</span>
 <span class="sd">        &gt;&gt;&gt; file = FileIOPicklable(PDB)</span>
-<span class="sd">        &gt;&gt;&gt; file.readline()</span>
+<span class="sd">        &gt;&gt;&gt; _ = file.readline()</span>
 <span class="sd">        &gt;&gt;&gt; file_pickled = pickle.loads(pickle.dumps(file))</span>
 <span class="sd">        &gt;&gt;&gt; print(file.tell(), file_pickled.tell())</span>
-<span class="sd">            55 55</span>
+<span class="sd">        55 55</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    ---------</span>
@@ -416,11 +418,13 @@
 <span class="sd">    -------</span>
 <span class="sd">    ::</span>
 
+<span class="sd">        &gt;&gt;&gt; import pickle</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import XYZ_bz2</span>
 <span class="sd">        &gt;&gt;&gt; file = BZ2Picklable(XYZ_bz2)</span>
-<span class="sd">        &gt;&gt;&gt; file.readline()</span>
+<span class="sd">        &gt;&gt;&gt; _ = file.readline()</span>
 <span class="sd">        &gt;&gt;&gt; file_pickled = pickle.loads(pickle.dumps(file))</span>
 <span class="sd">        &gt;&gt;&gt; print(file.tell(), file_pickled.tell())</span>
-<span class="sd">            5 5</span>
+<span class="sd">        5 5</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    ---------</span>
@@ -484,11 +488,13 @@
 <span class="sd">    -------</span>
 <span class="sd">    ::</span>
 
+<span class="sd">        &gt;&gt;&gt; import pickle</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import MMTF_gz</span>
 <span class="sd">        &gt;&gt;&gt; file = GzipPicklable(MMTF_gz)</span>
-<span class="sd">        &gt;&gt;&gt; file.readline()</span>
+<span class="sd">        &gt;&gt;&gt; _ = file.readline()</span>
 <span class="sd">        &gt;&gt;&gt; file_pickled = pickle.loads(pickle.dumps(file))</span>
 <span class="sd">        &gt;&gt;&gt; print(file.tell(), file_pickled.tell())</span>
-<span class="sd">            1218 1218</span>
+<span class="sd">        1218 1218</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    ---------</span>
