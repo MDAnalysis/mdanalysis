@@ -230,6 +230,12 @@ class PCA(AnalysisBase):
        ``mean`` input now accepts coordinate arrays instead of atomgroup.
        :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`
        are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.8.0
+       ``self.run()`` can now appropriately use ``frames`` parameter (bug
+       described by #4425 and fixed by #4423). Previously, behaviour was to
+       manually iterate through ``self._trajectory``, which starting #3415 that
+       introduced ``frames`` is wrong, and should use ``self._sliced_trajectory``.
+       It is now fixed.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
@@ -247,7 +253,6 @@ class PCA(AnalysisBase):
 
     def _prepare(self):
         # access start index
-        # self._u.trajectory[self.start]
         self._sliced_trajectory[0]
         # reference will be start index
         self._reference = self._u.select_atoms(self._select)
@@ -276,7 +281,7 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+            for ts in ProgressBar(self._sliced_trajectory,
                                   verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
