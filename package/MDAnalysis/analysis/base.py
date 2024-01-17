@@ -140,8 +140,8 @@ and define at least the :meth:`_single_frame` method, as described in
 :class:`AnalysisBase`.
 
 If your analysis is operating independently on each frame, you might consider
-making it parallelizable via adding ``supported_backends`` attribute, and appropriate
-aggregation function for each of its results:
+making it parallelizable via adding ``get_supported_backends()`` attribute,
+and appropriate aggregation function for each of its results:
 
 .. code-block:: python
     from MDAnalysis.analysis.parallel import ResultsGroup
@@ -175,8 +175,8 @@ See :mod:`MDAnalysis.analysis.results` for aggregation reference.
 Classes
 -------
 
-The :class:`Results` and :class:`AnalysisBase` classes are the essential
-building blocks for almost all MDAnalysis tools in the
+The :class:`MDAnalysis.results.Results` and :class:`AnalysisBase` classes
+are the essential building blocks for almost all MDAnalysis tools in the
 :mod:`MDAnalysis.analysis` module. They aim to be easily useable and
 extendable.
 
@@ -301,7 +301,7 @@ class AnalysisBase(object):
     """
 
     @classmethod
-    def supported_backends(cls):
+    def get_supported_backends(cls):
         """Tuple with backends supported by the core library for a given class.
         User can pass either one of these values as `backend=...` to
         :meth:`run()` method, or a custom object that has `apply` method
@@ -594,7 +594,7 @@ class AnalysisBase(object):
             unsupported_backend: bool = False
             ) -> BackendBase:
         """Matches a passed backend string value with class attributes
-        :meth:`_is_parallelizable` and :meth:`supported_backends`
+        :meth:`_is_parallelizable` and :meth:`get_supported_backends()`
         to check if downstream calculations can be performed.
 
         Parameters
@@ -641,7 +641,7 @@ class AnalysisBase(object):
         backend_class = builtin_backends.get(backend, backend)
         supported_backend_classes = [
             builtin_backends.get(b)
-            for b in self.supported_backends
+            for b in self.get_supported_backends()
         ]
 
         # check for serial-only classes
@@ -861,12 +861,12 @@ class AnalysisFromFunction(AnalysisBase):
         Former :attr:`results` are now stored as :attr:`results.timeseries`
 
     .. versionchanged:: 2.8.0
-        Added :meth:`supported_backends`, introducing 'serial', 'multiprocessing'
+        Added :meth:`get_supported_backends()`, introducing 'serial', 'multiprocessing'
         and 'dask' backends.
     """
 
     @classmethod
-    def supported_backends(cls):
+    def get_supported_backends(cls):
         return ("serial", "multiprocessing", "dask")
 
     @classmethod
@@ -967,7 +967,7 @@ def analysis_class(function):
             super(WrapperClass, self).__init__(function, trajectory, *args, **kwargs)
 
         @classmethod
-        def supported_backends(cls):
+        def get_supported_backends(cls):
             return ("serial", "dask")
 
     return WrapperClass

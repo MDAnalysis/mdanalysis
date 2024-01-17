@@ -1,9 +1,4 @@
 import pytest
-import inspect
-import functools
-import importlib
-import multiprocessing
-import warnings
 
 from MDAnalysis.analysis.base import AnalysisBase, AnalysisFromFunction
 from MDAnalysisTests.analysis.test_base import (
@@ -17,7 +12,7 @@ from MDAnalysis.lib.util import is_installed
 
 def params_for_cls(cls, exclude: list[str] = None):
     """
-    This part contains fixtures for simultaneous testing 
+    This part contains fixtures for simultaneous testing
     of all available (=installed & supported) backends
     for analysis subclasses.
 
@@ -36,20 +31,21 @@ def params_for_cls(cls, exclude: list[str] = None):
         dictionary with all tested keyword combinations for the run
     """
     exclude = [] if exclude is None else exclude
-    possible_backends = cls.supported_backends
+    possible_backends = cls.get_supported_backends()
     installed_backends = [
-        b for b in possible_backends if is_installed(b) and b not in exclude]
+        b for b in possible_backends if is_installed(b) and b not in exclude
+    ]
 
     params = [
-        pytest.param(
-            {"backend": backend, "n_workers": nproc},
-        )
-        for backend in installed_backends
-        for nproc in (2,)
+        pytest.param({
+            "backend": backend,
+            "n_workers": nproc
+        }, ) for backend in installed_backends for nproc in (2, )
         if backend != "serial"
     ]
     params.extend([{"backend": "serial"}])
     return params
+
 
 # -----------------
 
@@ -69,7 +65,9 @@ def client_AnalysisFromFunction(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(AnalysisFromFunction, exclude=['multiprocessing']))
+@pytest.fixture(scope='module',
+                params=params_for_cls(AnalysisFromFunction,
+                                      exclude=['multiprocessing']))
 def client_AnalysisFromFunctionAnalysisClass(request):
     return request.param
 

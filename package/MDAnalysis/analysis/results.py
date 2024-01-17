@@ -1,5 +1,48 @@
 """Analysis results and their aggregation --- :mod:`MDAnalysis.analysis.results`
 ==============================================================
+
+Module introduces two classes, :class:`Results` and :class:`ResultsGroup`,
+used for storing and aggregating data in
+:meth:`MDAnalysis.analysis.base.AnalysisBase.run()`, respectively.
+
+
+Classes
+-------
+
+The :class:`Results` class is an extension of a built-in dictionary
+type, that holds all assigned attributes in :attr:`self.data` and 
+allows for access either via dict-like syntax, or via class-like syntax:
+
+.. code-block:: python
+    from MDAnalysis.analysis.results import Results
+    r = Results()
+    r.array = [1, 2, 3, 4]
+    assert r['array'] == r.array == [1, 2, 3, 4]
+
+
+The :class:`ResultsGroup` can merge multiple :class:`Results` objects.
+It is mainly used by :class:`MDAnalysis.analysis.base.AnalysisBase` class, 
+that uses :meth:`ResultsGroup.merge()` method to aggregate results from
+multiple workers, initialized during a parallel run:
+
+.. code-block:: python
+    from MDAnalysis.analysis.results import Results, ResultsGroup
+    r1, r2 = Results(), Results()
+    r1.masses = [1, 2, 3, 4, 5]
+    r2.masses = [0, 0, 0, 0]
+    r1.vectors = np.arange(10).reshape(5, 2)
+    r2.vectors = np.arange(8).reshape(4, 2)
+
+    group = ResultsGroup(
+        lookup = {
+            'masses': ResultsGroup.flatten_sequence,
+            'vectors': ResultsGroup.ndarray_vstack
+            }
+        )
+
+    r = group.merge([r1, r2])
+    assert r.masses == list((*r1.masses, *r2.masses))
+    assert (r.vectors == np.vstack([r1.vectors, r2.vectors])).all()
 """
 from collections import UserDict
 import numpy as np
