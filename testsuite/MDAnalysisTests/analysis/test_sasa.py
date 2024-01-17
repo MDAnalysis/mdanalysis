@@ -150,6 +150,7 @@ class TestSASA(object):
         with pytest.raises(ValueError):
             R = SASA(no_elements)
 
+
 class TestSASA_r(object):
 
     def test_rsasa_analytical(self, protein, co, analytical_co, radii_dict):
