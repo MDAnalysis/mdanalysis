@@ -64,6 +64,8 @@ To build your own analysis class start by reading the documentation.
    :maxdepth: 1
 
    analysis/base
+   analysis/backends
+   analysis/results
 
 Distances and contacts
 ======================
