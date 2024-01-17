@@ -90,12 +90,77 @@ root-mean-square distance analysis in the following way:
    plt.ylabel("RMSD (Å)")
 
 
+Using parallelization in your analysis
+-------------------------------------
+
+Starting v.2.8.0, MDAnalysis `AnalysisBase` subclasses can run on a backend
+that supports parallelization (see :mod:`MDAnalysis.analysis.backends`). By
+default, only one backend is supported -- built-in `multiprocessing`, that
+processes parts of a trajectory running separate *processes*, i.e. utilizing
+multi-core processors properly. For now, parallelization is added to `rms.RMSD`,
+but by 3.0 version it will be introduced to all subclasses that can support it.
+
+In order to use that feature, simply add `backend='multiprocessing' to your
+run, and supply it with proper `n_workers` (use `multiprocessing.cpu_count()`
+for maximum available on your machine):
+
+.. code-block:: python
+
+   import multiprocessing
+   import MDAnalysis as mda
+   from MDAnalysisTests.datafiles import PSF, DCD
+   from MDAnalysis.analysis.rms import RMSD
+   from MDAnalysis.analysis.align import AverageStructure
+
+   # initialize the universe
+   u = mda.Universe(PSF, DCD)
+
+   # calculate average structure for reference
+   avg = AverageStructure(mobile=u).run()
+   ref = avg.results.universe
+
+   # initialize RMSD run
+   rmsd = RMSD(u, ref, select='backbone')
+   rmsd.run(backend='multiprocessing', n_workers=multiprocessing.cpu_count())
+
+For now, you have to be verbal and specify both `backend` and `n_workers`,
+since the feature is new and there are no good defaults for it. For example,
+if you specify too big `n_workers`, and your trajectory frames are big,
+you might get and out-of-memory error when executing your run.
+
+You can also implement your own backends -- see :mod:`MDAnalysis.analysis.backends`.
+
+
 Writing new analysis tools
 --------------------------
 
 In order to write new analysis tools, derive a class from :class:`AnalysisBase`
 and define at least the :meth:`_single_frame` method, as described in
 :class:`AnalysisBase`.
+
+If your analysis is operating independently on each frame, you might consider
+making it parallelizable via adding `supported_backends` property, and appropriate
+aggregation function for each of its results:
+
+.. code-block:: python
+    from MDAnalysis.analysis.parallel import ResultsGroup
+
+    class MyAnalysis(AnalysisBase):
+        @classmethod
+        @property
+        def available_backends(cls):
+            return ('serial', 'multiprocessing', 'dask',)
+
+        @classmethod
+        @property
+        def is_parallelizable(self):
+          return True
+
+        def _get_aggregator(self):
+          return ResultsGroup(lookup={'some_timeseries': ResultsGroup.ndarray_vstack})
+
+See :mod:`MDAnalysis.analysis.results` for aggregation reference.
+
 
 .. SeeAlso::
 
