@@ -93,15 +93,16 @@ root-mean-square distance analysis in the following way:
 Using parallelization in your analysis
 -------------------------------------
 
-Starting v.2.8.0, MDAnalysis `AnalysisBase` subclasses can run on a backend
+Starting v.2.8.0, MDAnalysis ``AnalysisBase`` subclasses can run on a backend
 that supports parallelization (see :mod:`MDAnalysis.analysis.backends`). By
 default, only one backend is supported -- built-in `multiprocessing`, that
 processes parts of a trajectory running separate *processes*, i.e. utilizing
-multi-core processors properly. For now, parallelization is added to `rms.RMSD`,
-but by 3.0 version it will be introduced to all subclasses that can support it.
+multi-core processors properly. For now, parallelization is added to
+:class:`MDAnalysis.analysis.RMS.RMSD`, but by 3.0 version it will be introduced
+to all subclasses that can support it.
 
-In order to use that feature, simply add `backend='multiprocessing' to your
-run, and supply it with proper `n_workers` (use `multiprocessing.cpu_count()`
+In order to use that feature, simply add ``backend='multiprocessing'`` to your
+run, and supply it with proper ``n_workers`` (use ``multiprocessing.cpu_count()``
 for maximum available on your machine):
 
 .. code-block:: python
@@ -123,7 +124,7 @@ for maximum available on your machine):
    rmsd = RMSD(u, ref, select='backbone')
    rmsd.run(backend='multiprocessing', n_workers=multiprocessing.cpu_count())
 
-For now, you have to be verbal and specify both `backend` and `n_workers`,
+For now, you have to be verbal and specify both ``backend`` and ``n_workers``,
 since the feature is new and there are no good defaults for it. For example,
 if you specify too big `n_workers`, and your trajectory frames are big,
 you might get and out-of-memory error when executing your run.
@@ -139,7 +140,7 @@ and define at least the :meth:`_single_frame` method, as described in
 :class:`AnalysisBase`.
 
 If your analysis is operating independently on each frame, you might consider
-making it parallelizable via adding `supported_backends` property, and appropriate
+making it parallelizable via adding ``supported_backends`` attribute, and appropriate
 aggregation function for each of its results:
 
 .. code-block:: python
@@ -147,12 +148,10 @@ aggregation function for each of its results:
 
     class MyAnalysis(AnalysisBase):
         @classmethod
-        @property
         def available_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
         @classmethod
-        @property
         def is_parallelizable(self):
           return True
 
@@ -297,13 +296,11 @@ class AnalysisBase(object):
     .. versionadded:: 2.8.0
         Added ability to run analysis in parallel using either a
         built-in backend (`multiprocessing` or `dask`) or a custom
-        `backends.BackendBase` instance with an implemented `apply` method
+        `backends.BackendBase` instance with an implemented `_compute` method
         that is used to run the computations.
-
     """
 
     @classmethod
-    @property
     def supported_backends(cls):
         """Tuple with backends supported by the core library for a given class.
         User can pass either one of these values as `backend=...` to
@@ -326,7 +323,6 @@ class AnalysisBase(object):
         return ("serial",)
 
     @classmethod
-    @property
     def _is_parallelizable(cls):
         """Boolean mark showing that a given class can be parallelizable with
         split-apply-combine procedure. Namely, if we can safely distribute
@@ -377,6 +373,8 @@ class AnalysisBase(object):
         ValueError
             if *both* `frames` and at least one of `start`, `stop`, or `step` 
             is provided (i.e. set to not ``None`` value).
+
+        .. versionadded:: 2.8.0
         """
         self._trajectory = trajectory
         if frames is not None:
@@ -398,6 +396,8 @@ class AnalysisBase(object):
         ----------
         slicer : Union[slice, np.ndarray]
             appropriate slicer for the trajectory
+
+        .. versionadded:: 2.8.0
         """
         self._sliced_trajectory = self._trajectory[slicer]
         self.n_frames = len(self._sliced_trajectory)
@@ -438,6 +438,14 @@ class AnalysisBase(object):
         .. versionchanged:: 2.2.0
             Added ability to iterate through trajectory by passing a list of
             frame indices in the `frames` keyword argument
+        .. versionchanged:: 2.8.0
+            Split function into two: :meth:`_define_run_frames` and
+            :meth:`_prepare_sliced_trajectory`: first one defines the limits
+            for the whole run and is executed once during :meth:`run` in
+            :metn:`_setup_frames`, second one prepares sliced trajectory for
+            each of the workers and gets executed twice: one time in
+            :meth:`_setup_frames` for the whole trajectory, second time in
+            :meth:`_compute` for each of the computation groups.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
         self._prepare_sliced_trajectory(slicer)
@@ -446,17 +454,35 @@ class AnalysisBase(object):
         """Calculate data from a single frame of trajectory
 
         Don't worry about normalising, just deal with a single frame.
+        Attributes accessible during your calculations:
+          - `self._frame_index`: index of the frame in results array
+          - `self._ts` -- frame timestamp value
+          - `self._sliced_trajectory` -- trajectory that you're iterating over
+          - `self.results` -- :class:`MDAnalysis.analysis.results.Results` instance
+            holding run results initialized in :meth:`_prepare`.
         """
         raise NotImplementedError("Only implemented in child classes")
 
     def _prepare(self):
-        """Set things up before the analysis loop begins"""
+        """
+        Set things up before the analysis loop begins.
+        Note that `self.results` is initialized already in :meth:`self.__init__`
+        with an empty instance of :class:`MDAnalysis.analysis.results.Results`
+        object. You can still call your attributes as if they were usual ones,
+        `Results` just keeps track of that to be able to run a proper aggregation
+        after a parallel run, if necessary.
+        """
         pass  # pylint: disable=unnecessary-pass
 
     def _conclude(self):
         """Finalize the results you've gathered.
 
         Called at the end of the :meth:`run` method to finish everything up.
+        Note that aggregation of results from individual workers happens
+        in :meth:`self.run()`, so here you have to implement everything as if
+        you had a non-parallel run. If you want to enable proper aggregation
+        for parallel runs for you analysis class, implement `self._get_aggregator`
+        and check :mod:`MDAnalysis.analysis.results` for how to use it.
         """
         pass  # pylint: disable=unnecessary-pass
 
@@ -507,8 +533,8 @@ class AnalysisBase(object):
         return self
 
     def _setup_computation_groups(
-        self, n_parts: int, 
-        start: int = None, stop: int = None, step: int = None, 
+        self, n_parts: int,
+        start: int = None, stop: int = None, step: int = None,
         frames: Union[slice, np.ndarray] = None
     ) -> list[np.ndarray]:
         """
@@ -566,7 +592,7 @@ class AnalysisBase(object):
             backend: Union[str, BackendBase],
             n_workers: int,
             unsupported_backend: bool = False
-            ):
+            ) -> BackendBase:
         """Matches a passed backend string value with class attributes
         :meth:`_is_parallelizable` and :meth:`supported_backends`
         to check if downstream calculations can be performed.
@@ -712,6 +738,11 @@ class AnalysisBase(object):
         .. versionchanged:: 2.5.0
             Add `progressbar_kwargs` parameter,
             allowing to modify description, position etc of tqdm progressbars
+
+        .. versionadded:: 2.8.0
+            Introduced `backend`, `n_workers`, `n_parts` and `unsupported_backend`
+            keywords, and refactored the method logic to support parallelizable
+            execution.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
@@ -765,7 +796,7 @@ class AnalysisBase(object):
         self._conclude()
         return self
 
-    def _get_aggregator(self):
+    def _get_aggregator(self) -> ResultsGroup:
         """Returns a default aggregator that takes entire results
         if there is a single object, and raises ValueError otherwise
 
@@ -828,15 +859,17 @@ class AnalysisFromFunction(AnalysisBase):
 
     .. versionchanged:: 2.0.0
         Former :attr:`results` are now stored as :attr:`results.timeseries`
+
+    .. versionchanged:: 2.8.0
+        Added :meth:`supported_backends`, introducing 'serial', 'multiprocessing'
+        and 'dask' backends.
     """
 
     @classmethod
-    @property
     def supported_backends(cls):
         return ("serial", "multiprocessing", "dask")
 
     @classmethod
-    @property
     def _is_parallelizable(cls):
         return True
 
@@ -932,9 +965,8 @@ def analysis_class(function):
     class WrapperClass(AnalysisFromFunction):
         def __init__(self, trajectory=None, *args, **kwargs):
             super(WrapperClass, self).__init__(function, trajectory, *args, **kwargs)
- 
+
         @classmethod
-        @property
         def supported_backends(cls):
             return ("serial", "dask")
 
