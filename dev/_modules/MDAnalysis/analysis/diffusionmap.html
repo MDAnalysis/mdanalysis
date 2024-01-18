@@ -376,6 +376,9 @@
 <span class="sd">         :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">    .. versionchanged:: 2.2.0</span>
 <span class="sd">         :class:`DistanceMatrix` now also accepts `AtomGroup`.</span>
+<span class="sd">    .. versionchanged:: 2.8.0</span>
+<span class="sd">         :class:`DistanceMatrix` is now correctly works with `frames=...`</span>
+<span class="sd">         parameter (#4432) by iterating over `self._sliced_trajectory`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">rmsd</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">1E0</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span>
                  <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -399,12 +402,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">iframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span>
+        <span class="n">iframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span>
         <span class="n">i_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
         <span class="c1"># diagonal entries need not be calculated due to metric(x,x) == 0 in</span>
         <span class="c1"># theory, _ts not updated properly. Possible savings by setting a</span>
         <span class="c1"># cutoff for significant decimal places to sparsify matrix</span>
-        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">:]):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="n">ts</span>
             <span class="n">j_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span><span class="p">(</span><span class="n">i_ref</span><span class="p">,</span> <span class="n">j_ref</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
@@ -415,7 +418,7 @@
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span>
                                                          <span class="n">j</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dist_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
