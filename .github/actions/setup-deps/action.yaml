@@ -51,6 +51,8 @@ inputs:
     default: 'threadpoolctl'
   tqdm:
     default: 'tqdm>=4.43.0'
+  waterdynamics:
+    default: 'waterdynamics'
   # conda-installed optional dependencies
   biopython:
     default: 'biopython>=1.80'
@@ -124,6 +126,7 @@ runs:
           ${{ inputs.scipy }}
           ${{ inputs.threadpoolctl }}
           ${{ inputs.tqdm }}
+          ${{ inputs.waterdynamics }}
         CONDA_OPT_DEPS: |
           ${{ inputs.biopython }}
           ${{ inputs.chemfiles-python }}
