@@ -234,8 +234,9 @@ class PCA(AnalysisBase):
     .. versionchanged:: 2.8.0
        ``self.run()`` can now appropriately use ``frames`` parameter (bug
        described by #4425 and fixed by #4423). Previously, behaviour was to
-       manually iterate through ``self._trajectory``, which starting #3415 that
-       introduced ``frames`` is wrong, and should use ``self._sliced_trajectory``.
+       manually iterate through ``self._trajectory``, which would
+       incorrectly handle cases where the ``frame`` argument
+       was passed.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
