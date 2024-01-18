@@ -20,7 +20,8 @@ The rules for this file:
 
 Fixes
  * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
- over `self._sliced_trajectory`, hence supporting `DistanceMatrix.run(frames=...)`
+  over `self._sliced_trajectory`, hence supporting `DistanceMatrix.run(frames=...)`
+  (PR #4433)
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
