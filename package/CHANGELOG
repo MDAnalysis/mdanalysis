@@ -19,7 +19,7 @@ The rules for this file:
  * 2.8.0
 
 Fixes
- * Fix bug in PCA -- wasn't possible to use `frames=...` syntax before.
+ * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
  * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
    over `self._sliced_trajectory`, hence supporting
    `DistanceMatrix.run(frames=...)` (PR #4433)
