@@ -136,7 +136,7 @@ def test_no_frames(u):
 def test_can_run_frames(u):
     atoms = u.select_atoms(SELECTION)
     u.transfer_to_memory()
-    PCA(u, select=SELECTION).run(frames=[0, 1])
+    PCA(u, select=SELECTION, mean=True).run(frames=[0, 1])
 
 
 def test_transform(pca, u):
