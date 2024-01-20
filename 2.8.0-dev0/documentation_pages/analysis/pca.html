@@ -256,7 +256,8 @@ variance will be available for analysis. As an example::</p>
 <p>generates the principal components of the backbone of the atomgroup and
 then transforms those atomgroup coordinates by the direction of those
 variances. Please refer to the <a class="reference internal" href="#pca-tutorial"><span class="std std-ref">PCA Tutorial</span></a> for more detailed
-instructions.</p>
+instructions. When using mean selections, the first frame of the selected
+trajectory slice is used as a reference.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -388,6 +389,13 @@ positions.
 <code class="docutils literal notranslate"><span class="pre">mean</span></code> input now accepts coordinate arrays instead of atomgroup.
 <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.p_components" title="MDAnalysis.analysis.pca.PCA.p_components"><code class="xref py py-attr docutils literal notranslate"><span class="pre">p_components</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.variance" title="MDAnalysis.analysis.pca.PCA.variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">variance</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cumulated_variance</span></code></a>
 are now stored in a <a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span><code class="docutils literal notranslate"><span class="pre">self.run()</span></code> can now appropriately use <code class="docutils literal notranslate"><span class="pre">frames</span></code> parameter (bug
+described by #4425 and fixed by #4423). Previously, behaviour was to
+manually iterate through <code class="docutils literal notranslate"><span class="pre">self._trajectory</span></code>, which would
+incorrectly handle cases where the <code class="docutils literal notranslate"><span class="pre">frame</span></code> argument
+was passed.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.cumulative_overlap">

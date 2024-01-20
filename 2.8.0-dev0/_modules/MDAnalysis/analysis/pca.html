@@ -287,7 +287,8 @@
 <span class="sd">    generates the principal components of the backbone of the atomgroup and</span>
 <span class="sd">    then transforms those atomgroup coordinates by the direction of those</span>
 <span class="sd">    variances. Please refer to the :ref:`PCA-tutorial` for more detailed</span>
-<span class="sd">    instructions.</span>
+<span class="sd">    instructions. When using mean selections, the first frame of the selected </span>
+<span class="sd">    trajectory slice is used as a reference.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -375,6 +376,12 @@
 <span class="sd">       ``mean`` input now accepts coordinate arrays instead of atomgroup.</span>
 <span class="sd">       :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`</span>
 <span class="sd">       are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.</span>
+<span class="sd">    .. versionchanged:: 2.8.0</span>
+<span class="sd">       ``self.run()`` can now appropriately use ``frames`` parameter (bug</span>
+<span class="sd">       described by #4425 and fixed by #4423). Previously, behaviour was to</span>
+<span class="sd">       manually iterate through ``self._trajectory``, which would</span>
+<span class="sd">       incorrectly handle cases where the ``frame`` argument</span>
+<span class="sd">       was passed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -392,7 +399,7 @@
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># access start index</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1"># reference will be start index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">)</span>
@@ -420,7 +427,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_atom_positions</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_cog</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_mean</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">],</span>
+            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span>
                                   <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Mean Calculation&quot;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">:</span>
                     <span class="n">mobile_cog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
