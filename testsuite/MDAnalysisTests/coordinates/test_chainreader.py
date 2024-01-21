@@ -455,3 +455,9 @@ def test_issue_4008():
     # in the issue report values of ~25 were seen before the fix
     # with the fix all values should be <1e-6
     assert np.abs(com).max() < 1e-6
+
+def test_issue_3349():
+    # test for repr of a chainreader when the subreaders are memoryreaders 
+    cdx = np.random.random(3341*3*10).reshape(-1, 3341, 3).astype(np.float32) * 10
+    u = mda.Universe(PSF, (cdx, cdx))
+    assert(repr(u.trajectory) == "<ChainReader containing NumPy array with 20 frames of 3341 atoms>")

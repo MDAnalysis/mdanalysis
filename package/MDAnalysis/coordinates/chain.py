@@ -271,6 +271,13 @@ class ChainReader(base.ReaderBase):
                         for filename in filenames]
         self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn
                                                         for fn in filenames])
+        # Set filenames array to array of "None" if chainreader initialized with
+        # numpy arrays
+        if isinstance(filenames[0], np.ndarray):
+            self.filenames = np.array(["None" for _ in range(len(filenames))])
+        else:
+            self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn
+                                      for fn in filenames])
         # pointer to "active" trajectory index into self.readers
         self.__active_reader_index = 0
 
@@ -597,7 +604,9 @@ class ChainReader(base.ReaderBase):
         self._apply('close')
 
     def __repr__(self):
-        if len(self.filenames) > 3:
+        if self.filenames[0] == "None":
+            fnames = "NumPy array"
+        elif len(self.filenames) > 3:
             fnames = "{fname} and {nfanmes} more".format(
                     fname=os.path.basename(self.filenames[0]),
                     nfanmes=len(self.filenames) - 1)
