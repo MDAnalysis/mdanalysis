@@ -602,6 +602,7 @@ if __name__ == '__main__':
           'packaging',
           'fasteners',
           'mda-xdrlib',
+          'waterdynamics',
           'pathsimanalysis',
     ]
 
