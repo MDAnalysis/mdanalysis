@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, HeetVekariya, marinegor
+??/??/?? IAlibay, HeetVekariya, marinegor, ljwoods2
 
  * 2.8.0
 
@@ -25,6 +25,8 @@ Fixes
    `DistanceMatrix.run(frames=...)` (PR #4433)
  * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
  * Fix deploy action to use the correct version of the pypi upload action.
+ * Fix ChainReader repr() method when sub-reader is MemoryReader 
+   (Issue #3349, PR #4407)
 
 Enhancements
 
