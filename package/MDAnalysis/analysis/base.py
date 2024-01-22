@@ -594,7 +594,7 @@ class AnalysisBase(object):
             unsupported_backend: bool = False
             ) -> BackendBase:
         """Matches a passed backend string value with class attributes
-        :meth:`_is_parallelizable` and :meth:`get_supported_backends()`
+        :meth:`_is_parallelizable()` and :meth:`get_supported_backends()`
         to check if downstream calculations can be performed.
 
         Parameters
@@ -620,9 +620,9 @@ class AnalysisBase(object):
         Raises
         ------
         ValueError
-            if :meth:`_is_parallelizable` is set to `False` but backend is not `serial`
+            if :meth:`_is_parallelizable()` is set to `False` but backend is not `serial`
         ValueError
-            if `_is_parallelizable` and you're using custom backend instance
+            if `_is_parallelizable()` and you're using custom backend instance
             without specifying `unsupported_backend=True`
         ValueError
             if your trajectory has associated parallelizable transformations
@@ -644,12 +644,13 @@ class AnalysisBase(object):
             for b in self.get_supported_backends()
         ]
 
+        print(f'{backend=}, {backend_class=}, {supported_backend_classes=}')
         # check for serial-only classes
-        if not self._is_parallelizable and backend_class is not BackendSerial:
+        if not self._is_parallelizable() and backend_class is not BackendSerial:
             raise ValueError(f"Can not parallelize class {self.__class__}")
 
-        # mak,e sure user enabled 'unsupported_backend=True' for custom classes
-        if (not unsupported_backend and self._is_parallelizable
+        # make sure user enabled 'unsupported_backend=True' for custom classes
+        if (not unsupported_backend and self._is_parallelizable()
                 and backend_class not in supported_backend_classes):
             raise ValueError((
                 f"Must specify 'unsupported_backend=True'"
@@ -747,7 +748,7 @@ class AnalysisBase(object):
         # default to serial execution
         backend = "serial" if backend is None else backend
 
-        if progressbar_kwargs and backend != "serial":
+        if (progressbar_kwargs or verbose) and backend != "serial":
             raise ValueError("Can not display progressbar with non-serial backend")
 
         n_workers = 1 if n_workers is None else n_workers

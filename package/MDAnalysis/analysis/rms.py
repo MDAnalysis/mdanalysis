@@ -359,12 +359,12 @@ class RMSD(AnalysisBase):
        :attr:`rmsd` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     .. versionchanged:: 2.8.0
-       introduced a :attr:`supported_backends` allowing for execution on with 
+       introduced a :attr:`supported_backends` allowing for execution on with
        ``multiprocessing`` and ``dask`` backends.
     """
 
     @classmethod
-    def supported_backends(cls):
+    def get_supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask',)
 
     @classmethod
@@ -755,8 +755,7 @@ class RMSF(AnalysisBase):
     """
 
     @classmethod
-    @property
-    def supported_backends(cls):
+    def get_supported_backends(cls):
         return ('serial',)
 
     def __init__(self, atomgroup, **kwargs):
