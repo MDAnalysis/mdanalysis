@@ -127,9 +127,9 @@ class BackendSerial(BackendBase):
     .. versionadded:: 2.8.0
     """
 
-    def _get_warnigns(self):
+    def _get_warnings(self):
         return {
-            self.n_workers > 1,
+            self.n_workers == 1:
             "n_workers is ignored when executing with backend='serial'"
         }
 
@@ -176,7 +176,7 @@ class BackendDask(BackendBase):
         base_checks = super()._get_checks()
         checks = {
             is_installed("dask"):
-            ("module 'dask' should be installed:"
+            ("module 'dask' should be installed: "
              "https://docs.dask.org/en/stable/install.html")
         }
         return base_checks | checks

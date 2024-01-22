@@ -50,3 +50,23 @@ class Test_Backends:
         backends_dict = {b: b.apply(func, iterable) for b in backend_instances}
         for answ in backends_dict.values():
             assert answ == answer
+
+    @pytest.mark.parametrize("backend_cls,params,warning_message", [
+        (backends.BackendSerial, {
+            'n_workers': 5
+        }, "n_workers is ignored when executing with backend='serial'"),
+    ])
+    def test_get_warnings(self, backend_cls, params, warning_message):
+        with pytest.warns(UserWarning, match=warning_message):
+            backend_cls(**params)
+
+    @pytest.mark.parametrize("backend_cls,params,error_message", [
+        pytest.param(backends.BackendDask, {'n_workers': 2},
+                     ("module 'dask' should be installed: "
+                      "https://docs.dask.org/en/stable/install.html"),
+                     marks=pytest.mark.skipif(is_installed('dask'),
+                                              reason='dask is installed'))
+    ])
+    def test_get_errors(self, backend_cls, params, error_message):
+        with pytest.raises(ValueError, match=error_message):
+            backend_cls(**params)
