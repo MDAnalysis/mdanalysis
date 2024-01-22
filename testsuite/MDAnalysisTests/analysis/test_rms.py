@@ -425,3 +425,25 @@ class TestRMSF(object):
         wmsg = "The `rmsf` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(rmsfs.rmsf, rmsfs.results.rmsf)
+
+
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (MDAnalysis.analysis.rms.RMSD, True),
+        (MDAnalysis.analysis.rms.RMSF, False),
+    ]
+)
+def test_not_parallelizable(classname, is_parallelizable):
+    assert classname._is_parallelizable() == is_parallelizable
+
+
+@pytest.mark.parametrize(
+    "classname,backends",
+    [
+        (MDAnalysis.analysis.rms.RMSD,  ('serial', 'multiprocessing', 'dask',)),
+        (MDAnalysis.analysis.rms.RMSF, ('serial',)),
+    ]
+)
+def test_supported_backends(classname, backends):
+    assert classname.get_supported_backends() == backends

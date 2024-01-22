@@ -32,8 +32,11 @@ from numpy.testing import assert_almost_equal, assert_equal
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
 
-    supported_backends = ['serial', 'dask', 'multiprocessing']
-    _is_parallelizable = True
+    @classmethod
+    def get_supported_backends(cls): return ('serial', 'dask', 'multiprocessing')
+
+    @classmethod
+    def _is_parallelizable(cls): return True
 
     def __init__(self, reader, **kwargs):
         super(FrameAnalysis, self).__init__(reader, **kwargs)
@@ -77,15 +80,22 @@ def u():
 FRAMES_ERR = 'AnalysisBase.frames is incorrect'
 TIMES_ERR = 'AnalysisBase.times is incorrect'
 
-class Parallelizable(FrameAnalysis):
-    _is_parallelizable = True
+class Parallelizable(base.AnalysisBase):
+    @classmethod
+    def _is_parallelizable(cls): return True
+    @classmethod
+    def get_supported_backends(cls): return ('multiprocessing', 'dask')
+    def _single_frame(self): pass
 
-class SerialOnly(FrameAnalysis):
-    _is_parallelizable = False
+class SerialOnly(base.AnalysisBase):
+    def _single_frame(self): pass
 
-class ParallelizableWithDaskOnly(FrameAnalysis):
-    _is_parallelizable = True
-    supported_backends = ('dask',)
+class ParallelizableWithDaskOnly(base.AnalysisBase):
+    @classmethod
+    def _is_parallelizable(cls): return True
+    @classmethod
+    def get_supported_backends(cls): return ('dask',)
+    def _single_frame(self): pass
 
 class CustomSerialBackend(backends.BackendBase):
     def apply(self, func, computations):
@@ -238,6 +248,24 @@ def test_verbose(u):
     assert a._verbose
 
 
+def test_warn_nparts_nworkers(u):
+    a = FrameAnalysis(u.trajectory)
+    with pytest.warns(UserWarning):
+        a.run(backend='multiprocessing', n_workers=3, n_parts=2)
+
+
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (base.AnalysisBase, False),
+        (base.AnalysisFromFunction, True),
+        (FrameAnalysis, True)
+    ]
+)
+def test_not_parallelizable(classname, is_parallelizable):
+    assert classname._is_parallelizable() == is_parallelizable
+
+
 def test_verbose_progressbar(u, capsys):
     an = FrameAnalysis(u.trajectory).run()
     out, err = capsys.readouterr()
@@ -259,6 +287,12 @@ def test_verbose_progressbar_run_with_kwargs(u, capsys):
     expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
     actual = err.strip().split('\r')[-1]
     assert actual[:30] == expected[:30]
+
+
+def test_progressbar_multiprocessing(u):
+    with pytest.raises(ValueError):
+        FrameAnalysis(u.trajectory).run(backend='multiprocessing', verbose=True)
+
 
 def test_incomplete_defined_analysis(u):
     with pytest.raises(NotImplementedError):
