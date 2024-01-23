@@ -409,7 +409,7 @@ class Contacts(AnalysisBase):
         ----------
         n_initial_contacts : int
              Total number of initial contacts.
-        r0 : list
+        r0 : list[numpy.ndarray]
              List of distance arrays between reference groups.
 
         Notes
