@@ -213,6 +213,9 @@ class TestITPCharges(ParserBase):
         assert_allclose(universe.atoms[2].charge, 0)
         assert_allclose(universe.atoms[3].charge, -1.)
 
+    def test_masses_are_read(self, universe):
+        assert_allclose(universe.atoms.masses, [100] * 9)
+
 class TestDifferentDirectivesITP(BaseITP):
 
     ref_filename = ITP_edited
