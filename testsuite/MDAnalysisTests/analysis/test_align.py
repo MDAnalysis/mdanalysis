@@ -31,7 +31,6 @@ import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
-import numpy as np
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
                                        ALIGN_UNBOUND, PDB_helix)
 from numpy.testing import (
@@ -201,8 +200,6 @@ class TestAlign(object):
         first_frame = bb.positions
         universe.trajectory[-1]
         last_frame = bb.positions
-        # assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
-        #                     err_msg="error: rmsd(X,X) should be 0")
 
         assert_allclose(rms.rmsd(first_frame, first_frame), 0.0, rtol=0, atol=1.5*1e-5,
                         err_msg="error: rmsd(X,X) should be 0")
@@ -212,17 +209,14 @@ class TestAlign(object):
         # 9th decimal have been observed (see Issue 57 comment #1) so we relax
         # the test to 6 decimals.
         rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
-        # assert_almost_equal(
-        #     rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 6,
-        #     err_msg="error: rmsd() is not symmetric")
 
         assert_allclose(
             rms.rmsd(last_frame, first_frame, superposition=True), rmsd, rtol=0, atol=1.5*1e-6,
             err_msg="error: rmsd() is not symmetric")
 
-
         assert_allclose(rmsd, 6.820321761927005, rtol=0, atol=1.5*(1e-5),
                         err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
+        
         # test masses as weights
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
@@ -366,7 +360,9 @@ class TestAlign(object):
 
         # check in memory trajectory
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
-        def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
+        self._assert_rmsd(reference, universe, -1, 0.0)
+
+    def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
             fitted.trajectory[frame]
             rmsd = rms.rmsd(reference.atoms.positions, fitted.atoms.positions,
                             superposition=True)
@@ -374,18 +370,39 @@ class TestAlign(object):
                                         err_msg="frame {0:d} of fit does not have "
                                                 "expected RMSD".format(frame))
 
+
+    def test_alignto_checks_selections(self, universe, reference):
+        """Testing that alignto() fails if selections do not
+        match (Issue 143)"""
+        u = universe
+
+        def different_size():
+            a = u.atoms[10:100]
+            b = u.atoms[10:101]
+            return align.alignto(a, b)
+
+        with pytest.raises(SelectionError):
+            different_size()
+
+        def different_atoms():
+            a = u.atoms[10:20]
+            b = u.atoms[10:17] + u.atoms[18:21]
+            return align.alignto(a, b)
+
+        with pytest.raises(SelectionError):
+            different_atoms()
+
     def test_alignto_partial_universe(self, universe, reference):
         u_bound = mda.Universe(ALIGN_BOUND)
         u_free = mda.Universe(ALIGN_UNBOUND)
         selection = 'segid B'
-
         segB_bound = u_bound.select_atoms(selection)
         segB_free = u_free.select_atoms(selection)
         segB_free.translate(segB_bound.centroid() - segB_free.centroid())
 
         align.alignto(u_free, u_bound, select=selection)
-        np.testing.assert_allclose(segB_bound.positions, segB_free.positions,
-                                rtol=0, atol=1.5*(1e-3))
+        assert_array_almost_equal(segB_bound.positions, segB_free.positions,
+                                  decimal=3)
 
 
 
