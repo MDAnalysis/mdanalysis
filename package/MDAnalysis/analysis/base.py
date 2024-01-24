@@ -189,7 +189,7 @@ import inspect
 import itertools
 import logging
 import warnings
-from functools import partial
+from functools import partial, wraps
 from typing import Iterable, Union
 
 import numpy as np
@@ -689,7 +689,7 @@ class AnalysisBase(object):
         backend: Union[str, BackendBase] = None,
         *,
         unsupported_backend: bool = False,
-        progressbar_kwargs={},
+        progressbar_kwargs=None,
     ):
         """Perform the calculation
 
@@ -748,6 +748,7 @@ class AnalysisBase(object):
         # default to serial execution
         backend = "serial" if backend is None else backend
 
+        progressbar_kwargs = {} if progressbar_kwargs is None else progressbar_kwargs
         if (progressbar_kwargs or verbose) and backend != "serial":
             raise ValueError("Can not display progressbar with non-serial backend")
 
