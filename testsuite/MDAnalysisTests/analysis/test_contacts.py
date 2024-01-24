@@ -376,7 +376,7 @@ class TestContacts(object):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
 
     @pytest.mark.parametrize("datafiles, expected", [((PSF, DCD), 0), ([TPR, XTC], 41814)])
-    def test_n_initial_contacts(self, universe, datafiles, expected):
+    def test_n_initial_contacts(self, datafiles, expected):
         """Test for n_initial_contacts attribute"""
         u = mda.Universe(*datafiles)
         select = ('protein', 'not protein')
