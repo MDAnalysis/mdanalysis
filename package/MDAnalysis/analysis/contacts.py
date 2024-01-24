@@ -464,8 +464,7 @@ class Contacts(AnalysisBase):
 
         if len(self.initial_contacts) > 0:
             self.n_initial_contacts = self.initial_contacts[0].sum()
-        else:
-            self.n_initial_contacts = 0
+
 
     @staticmethod
     def _get_atomgroup(u, sel):
