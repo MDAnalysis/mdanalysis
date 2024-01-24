@@ -184,10 +184,10 @@ class TestITPAtomtypes(ParserBase):
         assert_allclose(universe.atoms[3].charge, 1.)
 
     def test_mass_parse_or_guess(self, universe):
-        assert_allclose(universe.atoms[0].mass, 8.0)
-        assert_allclose(universe.atoms[1].mass, 20.989)
-        assert_allclose(universe.atoms[2].mass, 20.989)
-        assert_allclose(universe.atoms[3].mass, 1.008)
+        assert_allclose(universe.atoms[0].mass, 8.0)  # read from [ atoms ] section
+        assert_allclose(universe.atoms[1].mass, 20.989)  # read from [ atomtypes ] section
+        assert_allclose(universe.atoms[2].mass, 20.989) # read from [ atomtypes ] section
+        assert_allclose(universe.atoms[3].mass, 1.008)  # guessed from element
 
 
 class TestITPCharges(ParserBase):
