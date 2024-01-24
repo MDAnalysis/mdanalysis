@@ -69,6 +69,23 @@ def test_dist_weights(u):
                                 [.707, -.707, 0, 0]]), 2)
 
 
+def test_dist_weights_frames(u):
+    backbone = u.select_atoms('backbone')
+    weights_atoms = np.ones(len(backbone.atoms))
+    dist = diffusionmap.DistanceMatrix(u,
+                                       select='backbone',
+                                       weights=weights_atoms)
+    frames = np.arange(len(u.trajectory))
+    dist.run(frames=frames[::3])
+    dmap = diffusionmap.DiffusionMap(dist)
+    dmap.run()
+    assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
+    assert_array_almost_equal(dmap._eigenvectors,
+                              ([[0, 0, 1, 0],
+                                [0, 0, 0, 1],
+                                [-.707, -.707, 0, 0],
+                                [.707, -.707, 0, 0]]), 2)
+
 def test_distvalues_ag_universe(u):
     dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run()
     ag = u.select_atoms('backbone')
