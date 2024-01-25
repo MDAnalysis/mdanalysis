@@ -269,7 +269,7 @@ class ChainReader(base.ReaderBase):
             kwargs['dt'] = dt
         self.readers = [core.reader(filename, convert_units=convert_units, **kwargs)
                         for filename in filenames]
-        # Iterate through
+        # Iterate through all filenames, appending NoneType None for ndarrays
         self.filenames = []
         for fn in filenames:
             if isinstance(fn, np.ndarray):
@@ -610,7 +610,7 @@ class ChainReader(base.ReaderBase):
             fname = (os.path.basename(self.filenames[0])
                      if self.filenames[0] else "numpy.ndarray")
             fnames = "{fname} and {nfnames} more".format(
-                
+
                     fname=fname,
                     nfnames=len(self.filenames) - 1)
         else:
