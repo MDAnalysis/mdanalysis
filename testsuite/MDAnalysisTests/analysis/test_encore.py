@@ -32,7 +32,7 @@ import warnings
 import platform
 
 import pytest
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
 from MDAnalysisTests import block_import
