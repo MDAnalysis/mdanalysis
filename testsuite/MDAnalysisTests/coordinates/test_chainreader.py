@@ -461,6 +461,11 @@ def test_issue_3349():
     # test for repr of a chainreader when the subreaders are memoryreaders
     cdx = np.random.random(3341 * 3 * 10)
     cdx = cdx.reshape(-1, 3341, 3).astype(np.float32) * 10
-    u = mda.Universe(PSF, (cdx, cdx))
-    assert_equal("<ChainReader containing NumPy array with 20 frames of 3341 atoms>",
-                  u.trajectory.__repr__())
+    u = mda.Universe(PSF, (cdx, DCD))
+    u2 = mda.Universe(PSF, (cdx, cdx, cdx, DCD))
+    assert_equal("<ChainReader containing numpy.ndarray, adk_dims.dcd with " +
+                 "108 frames of 3341 atoms>",
+                 u.trajectory.__repr__())
+    assert_equal("<ChainReader containing numpy.ndarray and 3 more with " +
+                 "128 frames of 3341 atoms>",
+                 u2.trajectory.__repr__())
