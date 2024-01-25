@@ -306,7 +306,8 @@ inconsistent results")
         results, details = encore.hes([ens1, ens2], align=True)
         result_value = results[0,1]
         expected_value = 2047.05
-        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-3)))
+        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-3)),
+                        err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value)))
 
     def test_ces_to_self(self, ens1):
         results, details = \
@@ -314,13 +315,15 @@ inconsistent results")
             clustering_method=encore.AffinityPropagationNative(preference = -3.0))
         result_value = results[0,1]
         expected_value = 0.
-        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-7)))
+        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-7)),
+                        err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_ces(self, ens1, ens2):
         results, details = encore.ces([ens1, ens2])
         result_value = results[0,1]
         expected_value = 0.51
-        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-2)))
+        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-2)),
+                        err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value)))
 
     def test_dres_to_self(self, ens1):
         results, details = encore.dres([ens1, ens1])
@@ -412,33 +415,33 @@ inconsistent results")
             assert_allclose(stdev, expected_stdev, rtol=0, atol=0,
                             err_msg="Unexpected standard deviation for bootstrapped samples in Clustering Ensemble similarity")
 
-        def test_ces_error_estimation_ensemble_bootstrap(self, ens1):
-            # Error estimation using a method that does not take a distance
-            # matrix as input, and therefore relies on bootstrapping the ensembles
-            # instead
+    def test_ces_error_estimation_ensemble_bootstrap(self, ens1):
+        # Error estimation using a method that does not take a distance
+        # matrix as input, and therefore relies on bootstrapping the ensembles
+        # instead
 
-            pytest.importorskip('sklearn')
+        pytest.importorskip('sklearn')
 
-            expected_average = 0.03
-            expected_stdev = 0.02
-            averages, stdevs = encore.ces([ens1, ens1],
-                                          estimate_error=True,
-                                          bootstrapping_samples=10,
-                                          clustering_method=encore.KMeans(n_clusters=2),
-                                          select="name CA and resnum 1-10")
-            average = averages[0, 1]
-            stdev = stdevs[0, 1]
-            err_msg = (
-                "Unexpected average value for bootstrapped samples in"
-                " Clustering Ensemble similarity")
-            assert_allclose(average, expected_average, rtol=0, atol=1.5*(1e-(1)),
-                            err_msg=err_msg)
-            error_msg = (
-                "Unexpected standard deviation for bootstrapped samples in"
-                " Clustering Ensemble similarity"
-            )
-            assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5*(1e-(1)),
-                            err_msg=error_msg)
+        expected_average = 0.03
+        expected_stdev = 0.02
+        averages, stdevs = encore.ces([ens1, ens1],
+                                        estimate_error=True,
+                                        bootstrapping_samples=10,
+                                        clustering_method=encore.KMeans(n_clusters=2),
+                                        select="name CA and resnum 1-10")
+        average = averages[0, 1]
+        stdev = stdevs[0, 1]
+        err_msg = (
+            "Unexpected average value for bootstrapped samples in"
+            " Clustering Ensemble similarity")
+        assert_allclose(average, expected_average, rtol=0, atol=1.5*(1e-(1)),
+                        err_msg=err_msg)
+        error_msg = (
+            "Unexpected standard deviation for bootstrapped samples in"
+            " Clustering Ensemble similarity"
+        )
+        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5*(1e-(1)),
+                        err_msg=error_msg)
     def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
         stdev_upper_bound = 0.2
