@@ -167,7 +167,6 @@ class TestGetMatchingAtoms(object):
 
         with expectation:
             rmsd = align.alignto(universe, reference, subselection=subselection)
-            # assert_almost_equal(rmsd[1], 0.0, decimal=9)
             assert_allclose(rmsd[1], 0.0, rtol=0, atol=1.5*1e-9)
 
     def test_no_atom_masses(self, universe):
@@ -230,10 +229,10 @@ class TestAlign(object):
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
         B = reference.trajectory[-1]
-        rmsd = align.alignto(universe, reference,
-                                weights=reference.atoms.masses)
+        rmsd = align.alignto(universe, reference, 
+                             weights=reference.atoms.masses)
         rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
-                                    superposition=True)
+                                   superposition=True)
         assert_allclose(rmsd[1], rmsd_sup_weight, rtol=0, atol=1.5*(1e-6))
 
     def test_rmsd_custom_weights(self, universe, reference):
@@ -446,31 +445,30 @@ class TestAverageStructure(object):
     def test_average_structure(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
         avg = align.AverageStructure(universe, reference).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5*(1e-4))
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5*(1e-7))
 
     def test_average_structure_mass_weighted(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
         avg = align.AverageStructure(universe, reference, weights='mass').run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref,
+                            rtol=0, atol=1.5*(1e-4))
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5*(1e-7))
 
     def test_average_structure_select(self, universe, reference):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
         avg = align.AverageStructure(universe, reference, select=select).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref,
+                            rtol=0, atol=1.5*(1e-4))
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5*(1e-7))
 
     def test_average_structure_no_ref(self, universe):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
         avg = align.AverageStructure(universe).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref,
+                        rtol=0, atol=1.5*(1e-4))
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5*(1e-7))
 
     def test_average_structure_no_msf(self, universe):
         avg = align.AverageStructure(universe).run()
@@ -494,11 +492,8 @@ class TestAverageStructure(object):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
         assert_allclose(avg.results.universe.atoms.positions, ref,
-                        rtol=0, atol=1.5*(1e-4),
-                        err_msg="assert_allclose failed for positions")
-        assert_allclose(avg.results.rmsd, rmsd,
-                        rtol=0, atol=1.5*(1e-4),
-                        err_msg="assert_allclose failed for rmsd")
+                        rtol=0, atol=1.5*(1e-4))
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5*(1e-7))
 
     def test_average_structure_in_memory(self, universe):
         avg = align.AverageStructure(universe, in_memory=True).run()
