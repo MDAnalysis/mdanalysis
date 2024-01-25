@@ -222,14 +222,14 @@ class TestAlign(object):
         B = reference.trajectory[-1]
         rmsd = align.alignto(universe, reference, weights='mass')
         rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
-                                    superposition=True)
+                                   superposition=True)
         assert_allclose(rmsd[1], rmsd_sup_weight, rtol=0, atol=1.5*(1e-6))
 
     def test_rmsd_custom_mass_weights(self, universe, reference):
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
         B = reference.trajectory[-1]
-        rmsd = align.alignto(universe, reference, 
+        rmsd = align.alignto(universe, reference,
                              weights=reference.atoms.masses)
         rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
                                    superposition=True)
@@ -309,9 +309,9 @@ class TestAlign(object):
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5*(1e-3))
 
         self._assert_rmsd(reference, fitted, 0, 0.0,
-                            weights=universe.atoms.masses)
+                          weights=universe.atoms.masses)
         self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
-                            weights=universe.atoms.masses)
+                          weights=universe.atoms.masses)
 
     def test_AlignTraj_custom_weights(self, universe, reference, tmpdir):
         weights = np.zeros(universe.atoms.n_atoms)
@@ -499,8 +499,7 @@ class TestAverageStructure(object):
         avg = align.AverageStructure(universe, in_memory=True).run()
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
         assert_allclose(avg.results.universe.atoms.positions,
-                        reference_coordinates, rtol=0, atol=1.5*(1e-4),
-                        err_msg="assert_allclose failed for positions")
+                        reference_coordinates, rtol=0, atol=1.5*(1e-4))
         assert avg.filename is None
 
 
