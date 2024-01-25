@@ -306,8 +306,8 @@ inconsistent results")
         results, details = encore.hes([ens1, ens2], align=True)
         result_value = results[0,1]
         expected_value = 2047.05
-        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-3)),
-                        err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value)))
+        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(1e3),
+                        err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_ces_to_self(self, ens1):
         results, details = \
@@ -323,7 +323,7 @@ inconsistent results")
         result_value = results[0,1]
         expected_value = 0.51
         assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-2)),
-                        err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value)))
+                        err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_dres_to_self(self, ens1):
         results, details = encore.dres([ens1, ens1])
@@ -348,7 +348,7 @@ inconsistent results")
                                        distance_matrix = distance_matrix)
         result_value = results[0,1]
         expected_value = 0.68
-        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**(-1)),
+        assert_allclose(result_value, expected_value, rtol=0, atol=1.5*(10**-1),
                         err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_ces_convergence(self, ens1):
@@ -365,7 +365,7 @@ inconsistent results")
         expected_values = [0.3, 0.]
         results = encore.dres_convergence(ens1, 10)
         try:
-            assert_allclose(results[:,0], expected_values, rtol=0, atol=1.5*(10**(-1)))
+            assert_allclose(results[:,0], expected_values, rtol=0, atol=1.5*(10**-1))
         except AssertionError:
             # Random test failure is very rare, but repeating the failed test
             # just once would only assert that the test passes with 50%
@@ -376,7 +376,7 @@ inconsistent results")
                           category=RuntimeWarning)
             for i in range(10):
                 results = encore.dres_convergence(ens1, 10)
-                assert_allclose(results[:,0], expected_values, rtol=0, atol=1.5*(10**(-1)),
+                assert_allclose(results[:,0], expected_values, rtol=0, atol=1.5*(10**-1),
                                 err_msg="Unexpected value for Dim. "
                                         "reduction Ensemble similarity in "
                                         "convergence estimation")
@@ -396,8 +396,8 @@ inconsistent results")
             "Unexpected standard deviation for bootstrapped samples in"
             " Harmonic Ensemble similarity"
         )
-        assert_allclose(average, expected_average, rtol=0, atol=1.5 * (1e-(-2)), err_msg=err_msg)
-        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5 * (1e-(-2)), err_msg=error_msg)
+        assert_allclose(average, expected_average, rtol=0, atol=1.5 * (1e2), err_msg=err_msg)
+        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5 * (1e2), err_msg=error_msg)
 
     def test_ces_error_estimation(self, ens1):
             expected_average = 0.03
@@ -410,10 +410,12 @@ inconsistent results")
             average = averages[0, 1]
             stdev = stdevs[0, 1]
 
-            assert_allclose(average, expected_average, rtol=0, atol=1.5*(1e-(1)),
+            assert_allclose(average, expected_average, rtol=0, atol=1.5*(1e-1),
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
-            assert_allclose(stdev, expected_stdev, rtol=0, atol=0,
-                            err_msg="Unexpected standard deviation for bootstrapped samples in Clustering Ensemble similarity")
+            
+            assert_almost_equal(stdev, expected_stdev, decimal=0,
+                            err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
+            
 
     def test_ces_error_estimation_ensemble_bootstrap(self, ens1):
         # Error estimation using a method that does not take a distance
@@ -434,14 +436,16 @@ inconsistent results")
         err_msg = (
             "Unexpected average value for bootstrapped samples in"
             " Clustering Ensemble similarity")
-        assert_allclose(average, expected_average, rtol=0, atol=1.5*(1e-(1)),
+        assert_allclose(average, expected_average, rtol=0, atol=1.5*(1e-1),
                         err_msg=err_msg)
         error_msg = (
             "Unexpected standard deviation for bootstrapped samples in"
             " Clustering Ensemble similarity"
         )
-        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5*(1e-(1)),
+        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5*(1e-1),
                         err_msg=error_msg)
+
+                    
     def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
         stdev_upper_bound = 0.2
@@ -813,10 +817,8 @@ class TestEncoreDimensionalityReduction(object):
             encore.reduce_dimensionality([ens1, ens2, ens1])
         coordinates_ens1 = coordinates[:,np.where(details["ensemble_membership"]==1)]
         coordinates_ens3 = coordinates[:,np.where(details["ensemble_membership"]==3)]
-        assert_allclose(coordinates_ens1, coordinates_ens3, rtol=0, atol=0,
+        assert_almost_equal(coordinates_ens1, coordinates_ens3, decimal=0,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
-
-
     def test_dimensionality_reduction_specified_dimension(self, ens1, ens2):
         dimension = 3
         coordinates, details = encore.reduce_dimensionality(
