@@ -610,7 +610,6 @@ class ChainReader(base.ReaderBase):
             fname = (os.path.basename(self.filenames[0])
                      if self.filenames[0] else "numpy.ndarray")
             fnames = "{fname} and {nfnames} more".format(
-
                     fname=fname,
                     nfnames=len(self.filenames) - 1)
         else:
