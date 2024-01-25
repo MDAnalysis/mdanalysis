@@ -46,25 +46,22 @@ class TestDihedral(object):
         dihedral = Dihedral([atomgroup]).run()
         test_dihedral = np.load(DihedralArray)
 
-        assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(dihedral.results.angles, test_dihedral, rtol=0, atol=1.5*(1e-5),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_dihedral_single_frame(self, atomgroup):
         dihedral = Dihedral([atomgroup]).run(start=5, stop=6)
         test_dihedral = [np.load(DihedralArray)[5]]
 
-        assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
-                            err_msg="error: dihedral angles should "
-                            "match test vales")
+        assert_allclose(dihedral.results.angles, test_dihedral, rtol=0, atol=1.5*(1e-5),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_atomgroup_list(self, atomgroup):
         dihedral = Dihedral([atomgroup, atomgroup]).run()
         test_dihedral = np.load(DihedralsArray)
 
-        assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(dihedral.results.angles, test_dihedral, rtol=0, atol=1.5*(1e-5),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_enough_atoms(self, atomgroup):
         with pytest.raises(ValueError):
@@ -91,25 +88,22 @@ class TestRamachandran(object):
     def test_ramachandran(self, universe, rama_ref_array):
         rama = Ramachandran(universe.select_atoms("protein")).run()
 
-        assert_almost_equal(rama.results.angles, rama_ref_array, 5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(rama.results.angles, rama_ref_array, rtol=0, atol=1.5*(1e-5),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_ramachandran_single_frame(self, universe, rama_ref_array):
         rama = Ramachandran(universe.select_atoms("protein")).run(
             start=5, stop=6)
 
-        assert_almost_equal(rama.results.angles[0], rama_ref_array[5], 5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(rama.results.angles[0], rama_ref_array[5], rtol=0, atol=1.5*(1e-5),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_ramachandran_residue_selections(self, universe):
         rama = Ramachandran(universe.select_atoms("resname GLY")).run()
         test_rama = np.load(GLYRamaArray)
 
-        assert_almost_equal(rama.results.angles, test_rama, 5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(rama.results.angles, test_rama, rtol=0, atol=1.5*(1e-5),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_outside_protein_length(self, universe):
         with pytest.raises(ValueError):
@@ -169,24 +163,21 @@ class TestJanin(object):
         janin = Janin(u.select_atoms("protein")).run()
 
         # Test precision lowered to account for platform differences with osx
-        assert_almost_equal(janin.results.angles, ref_array, 3,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(janin.results.angles, ref_array, rtol=0, atol=1.5*(10**(-3)),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_janin_single_frame(self, universe, janin_ref_array):
         janin = Janin(universe.select_atoms("protein")).run(start=5, stop=6)
 
-        assert_almost_equal(janin.results.angles[0], janin_ref_array[5], 3,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(janin.results.angles[0], janin_ref_array[5], rtol=0, atol=1.5*(10**(-3)),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_janin_residue_selections(self, universe):
         janin = Janin(universe.select_atoms("resname LYS")).run()
         test_janin = np.load(LYSJaninArray)
 
-        assert_almost_equal(janin.results.angles, test_janin, 3,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(janin.results.angles, test_janin, rtol=0, atol=1.5*(10**(-3)),
+                        err_msg="error: dihedral angles should match test values")
 
     def test_outside_protein_length(self, universe):
         with pytest.raises(ValueError):
