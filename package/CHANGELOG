@@ -14,7 +14,34 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
+??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium
+
+ * 2.8.0
+
+Fixes
+ * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
+ * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
+   over `self._sliced_trajectory`, hence supporting
+   `DistanceMatrix.run(frames=...)` (PR #4433)
+ * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
+ * Fix deploy action to use the correct version of the pypi upload action.
+
+Enhancements
+
+Changes
+ * As per NEP29, the minimum version of numpy has been raised to 1.23.
+   We have opted to pin to 1.23.2 to ensure the same minimum numpy version
+   is used from python 3.9 to 3.11 (Issue #4401, PR #4402)
+
+Deprecations
+ * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
+   of the waterdynamics MDAKit and will be removed in version 3.0.0 (PR #4404)
+ * The MDAnalysis.analysis.psa module has been deprecated in favour of
+   the PathSimAnalysis MDAKit and will be removed in version 3.0.0
+   (PR #4403)
+
+
+12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
          richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 
          JoStoe, jennaswa, ljwoods2
 
