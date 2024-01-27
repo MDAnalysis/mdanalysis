@@ -462,8 +462,7 @@ class Contacts(AnalysisBase):
                                                 box=self._get_box(refA.universe)))
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
-        if len(self.initial_contacts) > 0:
-            self.n_initial_contacts = self.initial_contacts[0].sum()
+        self.n_initial_contacts = self.initial_contacts[0].sum()
 
 
     @staticmethod
