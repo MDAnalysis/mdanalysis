@@ -34,7 +34,7 @@ jobs:
           include:
             - name: macOS_monterey_py311
               os: macOS-12
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: true
               codecov: true
             - name: macOS_M1
