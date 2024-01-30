@@ -35,13 +35,12 @@ jobs:
             - name: macOS_monterey_py311
               os: macOS-12
               python-version: "3.11"
-              full-deps: false
-              extra-conda-deps: ''
+              full-deps: true
               codecov: true
             - name: macOS_M1
               os: macos-14
               python-version: "3.11"
-              full-deps: true
+              full-deps: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
