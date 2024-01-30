@@ -22,6 +22,7 @@
 #
 import os
 import errno
+import shutil
 import tempfile
 import textwrap
 import logging
@@ -228,7 +229,7 @@ def hole(pdbfile,
         warnings.warn(msg.format(output_level))
 
     # get executable
-    exe = util.which(executable)
+    exe = shutil.which(executable)
     if exe is None:
         raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                    kw='executable'))
@@ -521,23 +522,23 @@ class HoleAnalysis(AnalysisBase):
         self.ignore_residues = ignore_residues
 
         # --- finding executables ----
-        hole = util.which(executable)
+        hole = shutil.which(executable)
         if hole is None:
             raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                        kw='executable'))
         self.base_path = os.path.dirname(hole)
 
-        sos_triangle_path = util.which(sos_triangle)
+        sos_triangle_path = shutil.which(sos_triangle)
         if sos_triangle_path is None:
             path = os.path.join(self.base_path, sos_triangle)
-            sos_triangle_path = util.which(path)
+            sos_triangle_path = shutil.which(path)
         if sos_triangle_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sos_triangle,
                                                        kw='sos_triangle'))
-        sph_process_path = util.which(sph_process)
+        sph_process_path = shutil.which(sph_process)
         if sph_process_path is None:
             path = os.path.join(self.base_path, sph_process)
-            sph_process_path = util.which(path)
+            sph_process_path = shutil.which(path)
         if sph_process_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
                                                        kw='sph_process'))
@@ -871,7 +872,7 @@ class HoleAnalysis(AnalysisBase):
             frames = util.asiterable(frames)
 
         if color is None:
-            colormap = plt.cm.get_cmap(cmap)
+            colormap = matplotlib.colormaps.get_cmap(cmap)
             norm = matplotlib.colors.Normalize(vmin=min(frames),
                                                vmax=max(frames))
             colors = colormap(norm(frames))

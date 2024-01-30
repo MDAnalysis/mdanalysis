@@ -142,7 +142,8 @@ class PCA(AnalysisBase):
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
-    instructions.
+    instructions. When using mean selections, the first frame of the selected 
+    trajectory slice is used as a reference.
 
     Parameters
     ----------
@@ -230,6 +231,12 @@ class PCA(AnalysisBase):
        ``mean`` input now accepts coordinate arrays instead of atomgroup.
        :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`
        are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.8.0
+       ``self.run()`` can now appropriately use ``frames`` parameter (bug
+       described by #4425 and fixed by #4423). Previously, behaviour was to
+       manually iterate through ``self._trajectory``, which would
+       incorrectly handle cases where the ``frame`` argument
+       was passed.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
@@ -247,7 +254,7 @@ class PCA(AnalysisBase):
 
     def _prepare(self):
         # access start index
-        self._u.trajectory[self.start]
+        self._sliced_trajectory[0]
         # reference will be start index
         self._reference = self._u.select_atoms(self._select)
         self._atoms = self._u.select_atoms(self._select)
@@ -275,7 +282,7 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+            for ts in ProgressBar(self._sliced_trajectory,
                                   verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
@@ -747,8 +754,8 @@ def cosine_content(pca_space, i):
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
-    return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
-            scipy.integrate.simps(pca_space[:, i] ** 2))
+    return ((2.0 / T) * (scipy.integrate.simpson(cos*pca_space[:, i])) ** 2 /
+            scipy.integrate.simpson(pca_space[:, i] ** 2))
 
 
 @due.dcite(

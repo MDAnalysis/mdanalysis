@@ -20,9 +20,9 @@ macos_arm64_task:
 
   ci_script: |
     brew update
-    brew install python@3.11
-    /opt/homebrew/bin/python3 -m venv ~/py_311
-    source ~/py_311/bin/activate
+    brew install python@3.12
+    /opt/homebrew/bin/python3 -m venv ~/py_312
+    source ~/py_312/bin/activate
     cd package
     python -m pip install .
     cd ../testsuite

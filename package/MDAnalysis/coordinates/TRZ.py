@@ -86,6 +86,9 @@ class TRZReader(base.ReaderBase):
        obtained from the difference between two frames.
     .. versionchanged:: 2.3.0
        _frame attribute moved to `ts.data` dictionary.
+    .. deprecated:: 2.7.0
+       The TRZ Reader and Writer are deprecated as of version 2.7.0
+       and will be removed in version 3.0.0.
     """
 
     format = "TRZ"
@@ -111,6 +114,10 @@ class TRZReader(base.ReaderBase):
            If `n_atoms` or the number of atoms in the topology file do not
            match the number of atoms in the trajectory.
         """
+        wmsg = ("The TRZ reader is deprecated and will be removed in "
+                "MDAnalysis version 3.0.0")
+        warnings.warn(wmsg, DeprecationWarning)
+
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
 
         if n_atoms is None:
@@ -390,6 +397,10 @@ class TRZWriter(base.WriterBase):
     ----
     Binary TRZ trajectories are *always* written in *little-endian* byte order.
 
+
+    .. deprecated:: 2.7.0
+       The TRZ Reader and Writer are deprecated as of version 2.7.0
+       and will be removed in version 3.0.0.
     """
 
     format = 'TRZ'
@@ -412,6 +423,10 @@ class TRZWriter(base.WriterBase):
         convert_units : bool (optional)
             units are converted to the MDAnalysis base format; [``True``]
         """
+        wmsg = ("The TRZ writer is deprecated and will be removed in "
+                "MDAnalysis version 3.0.0")
+        warnings.warn(wmsg, DeprecationWarning)
+
         self.filename = filename
         if n_atoms is None:
             raise ValueError("TRZWriter requires the n_atoms keyword")
