@@ -36,6 +36,7 @@ jobs:
               os: macOS-12
               python-version: "3.11"
               full-deps: false
+              extra-conda-deps: ''
               codecov: true
             - name: macOS_M1
               os: macos-14
