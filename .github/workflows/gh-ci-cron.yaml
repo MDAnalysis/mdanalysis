@@ -224,7 +224,7 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu, macos]
-          python-version: ["3.9", "3.10", "3.11"]
+          python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
     - uses: actions/checkout@v4
 
@@ -270,7 +270,7 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu, macos, windows]
-          python-version: ["3.9", "3.10", "3.11"]
+          python-version: ["3.9", "3.10", "3.11", "3.12"]
           wheels: ['true', 'false']
     steps:
       # Checkout to have access to local actions (i.e. setup-os)
