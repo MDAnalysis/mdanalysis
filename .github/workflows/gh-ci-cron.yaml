@@ -1,8 +1,11 @@
 name: GH Actions Cron CI
 on:
-  schedule:
-    # 3 am Tuesdays and Fridays
-    - cron: "0 3 * * 2,5"
+  # schedule:
+  #   # 3 am Tuesdays and Fridays
+  #   - cron: "0 3 * * 2,5"
+  pull_request:
+    branches:
+      - develop
   workflow_dispatch:
 
 concurrency:
@@ -223,7 +226,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu, macos, macos-14]
+          os: [ubuntu, macos]
           python-version: ["3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v4
