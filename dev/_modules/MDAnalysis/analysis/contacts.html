@@ -562,6 +562,13 @@
 <span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
 <span class="sd">             default is ``False``.</span>
 
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_initial_contacts : int</span>
+<span class="sd">             Total number of initial contacts.</span>
+<span class="sd">        r0 : list[numpy.ndarray]</span>
+<span class="sd">             List of distance arrays between reference groups.</span>
+
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 
@@ -611,6 +618,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance_array</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">refB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                                 <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">universe</span><span class="p">)))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contact_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_initial_contacts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_atomgroup</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
