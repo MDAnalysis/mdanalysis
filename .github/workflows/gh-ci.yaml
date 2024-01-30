@@ -39,7 +39,7 @@ jobs:
               codecov: true
             - name: macOS_M1
               os: macOS-14
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: false
               codecov: true
             - name: numpy_min
