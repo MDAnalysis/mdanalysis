@@ -37,6 +37,11 @@ jobs:
               python-version: "3.11"
               full-deps: true
               codecov: true
+            - name: macOS_M1
+              os: macos-14
+              python-version: "3.11"
+              full-deps: true
+              codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.9
