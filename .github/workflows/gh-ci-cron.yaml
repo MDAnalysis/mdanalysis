@@ -223,7 +223,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu, macos]
+          os: [ubuntu, macos, macos-14]
           python-version: ["3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v4
@@ -269,7 +269,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu, macos, windows]
+          os: [ubuntu, macos, macos-14, windows]
           python-version: ["3.9", "3.10", "3.11"]
           wheels: ['true', 'false']
     steps:
