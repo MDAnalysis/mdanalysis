@@ -92,8 +92,8 @@ root-mean-square distance analysis in the following way:
 
 Using parallelization in your analysis
 -------------------------------------
-
-Starting v.2.8.0, MDAnalysis ``AnalysisBase`` subclasses can run on a backend
+--------------------------------------
+Starting from 2.8.0, MDAnalysis ``AnalysisBase`` subclasses can run on a backend
 that supports parallelization (see :mod:`MDAnalysis.analysis.backends`). By
 default, only one backend is supported -- built-in `multiprocessing`, that
 processes parts of a trajectory running separate *processes*, i.e. utilizing
@@ -103,7 +103,7 @@ to all subclasses that can support it.
 
 In order to use that feature, simply add ``backend='multiprocessing'`` to your
 run, and supply it with proper ``n_workers`` (use ``multiprocessing.cpu_count()``
-for maximum available on your machine):
+for the maximum available on your machine):
 
 .. code-block:: python
 
@@ -144,7 +144,6 @@ making it parallelizable via adding ``get_supported_backends()`` attribute,
 and appropriate aggregation function for each of its results:
 
 .. code-block:: python
-    from MDAnalysis.analysis.parallel import ResultsGroup
 
     class MyAnalysis(AnalysisBase):
         @classmethod

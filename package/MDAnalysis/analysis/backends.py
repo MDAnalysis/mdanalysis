@@ -1,8 +1,8 @@
 """Analysis backends --- :mod:`MDAnalysis.analysis.backends`
 
-Module introduces :class:`BackendBase` base class to implement custom
+Provides :class:`BackendBase` base class to implement custom
 backends for :meth:`MDAnalysis.analysis.base.AnalysisBase.run()` and its
-subclasses. Also, it introduces 2 built-in backend classes:
+subclasses. Two built-in backend classes classes are provided:
 :class:`BackendMultiprocessing` that supports parallelization via standard
 python ``multiprocessing`` module, and :class:`BackendDask`, that uses the same
 process-based parallelization as :class:`BackendMultiprocessing`, but different
@@ -26,7 +26,7 @@ class BackendBase:
     Examples
     --------
     .. code-block:: python
-        # implement a thread-based backend
+    
         from MDAnalysis.analysis.backends import BackendBase
         class ThreadsBackend(BackendBase):
             def apply(self, func, computations):
