@@ -231,6 +231,9 @@ class DistanceMatrix(AnalysisBase):
          :class:`MDAnalysis.analysis.base.Results` instance.
     .. versionchanged:: 2.2.0
          :class:`DistanceMatrix` now also accepts `AtomGroup`.
+    .. versionchanged:: 2.8.0
+         :class:`DistanceMatrix` is now correctly works with `frames=...`
+         parameter (#4432) by iterating over `self._sliced_trajectory`
     """
     def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
@@ -254,12 +257,12 @@ class DistanceMatrix(AnalysisBase):
         self.results.dist_matrix = np.zeros((self.n_frames, self.n_frames))
 
     def _single_frame(self):
-        iframe = self._ts.frame
+        iframe = self._frame_index
         i_ref = self.atoms.positions
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._trajectory[iframe:self.stop:self.step]):
+        for j, ts in enumerate(self._sliced_trajectory[iframe:]):
             self._ts = ts
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
@@ -270,7 +273,7 @@ class DistanceMatrix(AnalysisBase):
                                      self._frame_index] = (
                                 self.results.dist_matrix[self._frame_index,
                                                          j+self._frame_index])
-        self._ts = self._trajectory[iframe]
+        self._ts = self._sliced_trajectory[iframe]
 
     @property
     def dist_matrix(self):
