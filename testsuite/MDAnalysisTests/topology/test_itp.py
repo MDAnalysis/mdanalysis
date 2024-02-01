@@ -170,10 +170,9 @@ class TestITPAtomtypes(ParserBase):
     ref_filename = ITP_atomtypes
     expected_attrs = ['ids', 'names', 'types',
                       'charges', 'chargegroups',
-                      'resids', 'resnames', 'masses'
+                      'resids', 'resnames', 'masses',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
-    guessed_attrs = ['elements', ]
 
     expected_n_atoms = 4
     expected_n_residues = 1
