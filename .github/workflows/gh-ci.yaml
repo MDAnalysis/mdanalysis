@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 concurrency:
   # Probably overly cautious group naming.
@@ -41,7 +42,7 @@ jobs:
               python-version: 3.9
               full-deps: false
               codecov: true
-              numpy: numpy=1.22.3
+              numpy: numpy=1.23.2
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.9

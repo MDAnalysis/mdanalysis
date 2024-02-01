@@ -10,7 +10,7 @@ matplotlib
 mmtf-python
 netcdf4
 networkx
-numpy>=1.22.3
+numpy>=1.23.2
 packaging
 parmed
 pytest
