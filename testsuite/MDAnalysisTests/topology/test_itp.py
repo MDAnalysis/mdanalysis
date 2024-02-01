@@ -171,9 +171,7 @@ class TestITPNoMass(ParserBase):
         masses = np.array(top.masses.values)
         names = np.array(top.names.values)
 
-        empty = []
-        for a in masses:
-            empty.append(np.isnan(a))
+        empty = np.isnan(masses)
 
         guessed_types = DefaultGuesser(None).guess_types(atom_types=names[empty])
         masses[empty] = DefaultGuesser(None).guess_masses(atom_types=guessed_types)

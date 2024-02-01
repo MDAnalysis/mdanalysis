@@ -69,7 +69,7 @@ class TestGuessMasses(object):
 
         with pytest.warns(PendingDeprecationWarning,
                           match="Unknown masses are set to 0.0 "
-                                "for current version, this will be depracated "):
+                                "for current version. In 3.0.0 this will be deprecated and missing values will be represented with np.nan"):
             u = mda.Universe(topology, to_guess=['masses'])
             assert_allclose(u.atoms.masses, np.array([0.0, 0.0]), atol=0)
 

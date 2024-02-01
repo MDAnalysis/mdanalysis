@@ -10,11 +10,11 @@ Having such guessers makes attribute guessing more accurate and reliable than ha
 Example uses of guessers
 ------------------------
 
-Guessing using :meth:`~MDAnalysis.core.Universe.guess_TopologyAttributes` API
+Guessing using :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Guessing can be done through the universe's :func:`~MDAnalysis.core.Universe.guess_TopologyAttributes` as following::
+Guessing can be done through the universe's :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` as following::
 
   import MDAnalysis as mda
   from MDAnalysisTests.datafiles import PDB
@@ -25,7 +25,7 @@ Guessing can be done through the universe's :func:`~MDAnalysis.core.Universe.gue
   print(u.atoms.elements) # print ['N' 'H' 'H' ... 'NA' 'NA' 'NA']
 
 In the above example, we passed ``elements`` as the attribute we want to guess, and
-:func:`~MDAnalysis.core.Universe.guess_TopologyAttributes` guess then add it as a topology
+:meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` guess then add it as a topology
 attribute to the ``AtomGroup`` of the universe.
 
 If the attribute already exist in the universe, passing the attribute of interest to the ``to_guess`` parameter will only fill the empty values of the attribute if any exists.
