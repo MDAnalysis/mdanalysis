@@ -22,11 +22,9 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_allclose
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import CONECT, PDBX, PDB
 
 
@@ -140,10 +138,10 @@ class OpenMMTopologyBase(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
-        universe_guessed_attrs = [a.attrname for a in u._topology.guessed_attributes]
+        u_guessed_attrs = [attr.attrname for attr in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
-            assert attr in universe_guessed_attrs
+            assert attr in u_guessed_attrs
 
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
@@ -211,6 +209,8 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
             assert mda_top.types.values[3388] == 'X'
             assert mda_top.elements.values[3344] == ''
             assert mda_top.elements.values[3388] == ''
+            assert mda_top.masses.values[3344] == 0.0
+            assert mda_top.masses.values[3388] == 0.0
 
             assert len(warnings) == 2
             assert str(warnings[0].message) == wmsg1

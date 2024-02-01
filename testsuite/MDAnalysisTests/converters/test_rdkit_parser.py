@@ -60,10 +60,10 @@ class RDKitParserBase(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, format='RDKIT')
-        universe_guessed_attrs = [a.attrname for a in u._topology.guessed_attributes]
+        u_guessed_attrs = [a.attrname for a in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
-            assert attr in universe_guessed_attrs
+            assert attr in u_guessed_attrs
 
 
 class TestRDKitParserMOL2(RDKitParserBase):

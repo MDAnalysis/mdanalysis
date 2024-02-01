@@ -167,7 +167,7 @@ def test_guess_charge(default_guesser):
 def test_guess_bonds_Error():
     u = make_Universe(trajectory=True)
     with pytest.raises(ValueError):
-        u.guess_TopologyAttributes(to_guess=['bonds'])
+        u.guess_TopologyAttributes(to_guess=['bonds'], match="This Universe does not contain type information")
 
 
 def test_guess_bond_vdw_error():

@@ -201,6 +201,13 @@ class TestAtomnames(TestAtomAttr):
         assert_equal(attr.are_values_missing(self.values),
                      np.array([False, False, False, False, False, False, False, False, False, False]))
 
+    def test_missing_value_label(self):
+        self.attrclass.missing_value_label = 'FOO'
+        values = np.array(['NA', 'C', 'N', 'FOO'])
+        assert_equal(self.attrclass.are_values_missing(values),
+                                np.array([False, False, False, True]))
+
+
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
         assert_equal(attr.get_residues(DummyGroup([2, 1])),

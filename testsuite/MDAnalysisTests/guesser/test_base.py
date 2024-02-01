@@ -36,10 +36,10 @@ class TesttBaseGuesser():
         class TestGuesser1(GuesserBase):
             context = 'test1'
 
-        class TestGuesser2(TestGuesser1):
+        class TestGuesser2(GuesserBase):
             context = 'test2'
 
-        assert get_guesser(TestGuesser1()).context == 'test1'
+        assert get_guesser(TestGuesser1).context == 'test1'
         assert get_guesser('test1').context == 'test1'
         assert get_guesser(TestGuesser2()).context == 'test2'
     
