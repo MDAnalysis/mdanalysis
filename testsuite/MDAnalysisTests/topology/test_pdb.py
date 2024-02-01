@@ -28,7 +28,6 @@ from numpy.testing import assert_equal
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     PDB,
     PDB_HOLE,

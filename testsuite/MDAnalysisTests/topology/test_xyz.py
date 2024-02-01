@@ -30,9 +30,6 @@ from MDAnalysisTests.datafiles import (
     XYZ_mini,
 )
 
-from MDAnalysis.guesser import DefaultGuesser
-import pytest
-
 
 class XYZBase(ParserBase):
     parser = mda.topology.XYZParser.XYZParser

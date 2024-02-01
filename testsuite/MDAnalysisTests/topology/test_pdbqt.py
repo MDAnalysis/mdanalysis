@@ -23,7 +23,6 @@
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-import pytest
 
 from MDAnalysisTests.datafiles import (
     PDBQT_input,  # pdbqt_inputpdbqt.pdbqt

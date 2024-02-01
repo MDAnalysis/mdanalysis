@@ -24,7 +24,6 @@ import MDAnalysis as mda
 import pytest
 import numpy as np
 
-from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
 from numpy.testing import assert_equal

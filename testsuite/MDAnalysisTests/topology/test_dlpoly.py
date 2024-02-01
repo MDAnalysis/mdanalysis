@@ -22,10 +22,8 @@
 #
 from numpy.testing import assert_equal
 import pytest
-from numpy.testing import assert_allclose
 
 import MDAnalysis as mda
-from MDAnalysis.guesser import DefaultGuesser
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (

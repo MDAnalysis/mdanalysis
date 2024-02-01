@@ -24,7 +24,6 @@ import MDAnalysis as mda
 import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     CRD,
 )

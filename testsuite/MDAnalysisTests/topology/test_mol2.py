@@ -28,7 +28,6 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysis.guesser import DefaultGuesser
 
 from MDAnalysisTests.datafiles import (
     mol2_molecule,

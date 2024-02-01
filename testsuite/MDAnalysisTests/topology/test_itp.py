@@ -28,7 +28,6 @@ import numpy as np
 from numpy.testing import assert_allclose, assert_equal
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
     ITP_nomass,  # from Automated Topology Builder
@@ -154,10 +153,6 @@ class TestITPNoMass(ParserBase):
                       'bonds', 'angles', 'dihedrals', 'impropers', 'masses', ]
     guessed_attrs = ['elements', ]
 
-    @pytest.fixture
-    def guessed_types(self, top):
-        return top.types.values
-
     expected_n_atoms = 60
     expected_n_residues = 1
     expected_n_segments = 1
@@ -165,17 +160,6 @@ class TestITPNoMass(ParserBase):
     @pytest.fixture
     def universe(self, filename):
         return mda.Universe(filename)
-
-    @pytest.fixture
-    def guessed_masses(self, top):
-        masses = np.array(top.masses.values)
-        names = np.array(top.names.values)
-
-        empty = np.isnan(masses)
-
-        guessed_types = DefaultGuesser(None).guess_types(atom_types=names[empty])
-        masses[empty] = DefaultGuesser(None).guess_masses(atom_types=guessed_types)
-        return masses
 
     def test_mass_guess(self, universe):
         assert not np.isnan(universe.atoms[0].mass)
@@ -195,26 +179,11 @@ class TestITPAtomtypes(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    @pytest.fixture
-    def guessed_typess(self, top):
-        return top.types.values
 
     @pytest.fixture
     def universe(self, filename):
         return mda.Universe(filename)
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        masses = np.array(top.masses.values)
-        names = np.array(top.names.values)
-
-        empty = []
-        for a in masses:
-            empty.append(np.isnan(a))
-
-        masses[empty] = DefaultGuesser(None).guess_masses(
-            atom_types=DefaultGuesser(None).guess_types(atom_types=names[empty]))
-        return masses
 
     def test_charge_parse(self, universe):
         assert_allclose(universe.atoms[0].charge, 4)
@@ -247,19 +216,6 @@ class TestITPAtomtypes(ParserBase):
     def universe(self, filename):
         return mda.Universe(filename)
 
-    @pytest.fixture
-    def guessed_masses(self, top):
-        masses = np.array(top.masses.values)
-        names = np.array(top.names.values)
-
-        empty = []
-        for a in masses:
-            empty.append(np.isnan(a))
-
-        masses[empty] = DefaultGuesser(None).guess_masses(
-            atom_types=DefaultGuesser(None).guess_types(atom_types=names[empty]))
-        return masses
-
     def test_charge_parse(self, universe):
         assert_allclose(universe.atoms[0].charge, -1.0)
         assert_allclose(universe.atoms[1].charge, 0)
@@ -271,10 +227,6 @@ class TestITPAtomtypes(ParserBase):
         assert_allclose(universe.atoms[1].mass, 100.0)
         assert_allclose(universe.atoms[2].mass, 100.0)
         assert_allclose(universe.atoms[3].mass, 100.0)
-
-    @pytest.mark.skip(reason="TPParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
 
 
 class TestDifferentDirectivesITP(BaseITP):

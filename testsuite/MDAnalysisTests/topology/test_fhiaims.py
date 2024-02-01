@@ -26,7 +26,6 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import FHIAIMS
-from MDAnalysis.guesser import DefaultGuesser
 import pytest
 
 
