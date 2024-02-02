@@ -463,9 +463,15 @@ def test_issue_3349():
     cdx = cdx.reshape(-1, 3341, 3).astype(np.float32) * 10
     u = mda.Universe(PSF, (cdx, DCD))
     u2 = mda.Universe(PSF, (cdx, cdx, cdx, DCD))
+    print(u.trajectory.filenames)
+    u_expected_filenames = np.array([None, str(DCD)])
+    u2_expected_filenames = np.array([None, None, None, str(DCD)])
+
     assert_equal("<ChainReader containing numpy.ndarray, adk_dims.dcd with " +
                  "108 frames of 3341 atoms>",
                  u.trajectory.__repr__())
+    assert_equal(u_expected_filenames, u.trajectory.filenames)
     assert_equal("<ChainReader containing numpy.ndarray and 3 more with " +
                  "128 frames of 3341 atoms>",
                  u2.trajectory.__repr__())
+    assert_equal(u2_expected_filenames, u2.trajectory.filenames)
