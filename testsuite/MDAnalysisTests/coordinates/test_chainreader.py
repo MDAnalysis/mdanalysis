@@ -463,7 +463,6 @@ def test_issue_3349():
     cdx = cdx.reshape(-1, 3341, 3).astype(np.float32) * 10
     u = mda.Universe(PSF, (cdx, DCD))
     u2 = mda.Universe(PSF, (cdx, cdx, cdx, DCD))
-    print(u.trajectory.filenames)
     u_expected_filenames = np.array([None, str(DCD)])
     u2_expected_filenames = np.array([None, None, None, str(DCD)])
 
