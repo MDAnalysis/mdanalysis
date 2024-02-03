@@ -1,11 +1,8 @@
 name: GH Actions Cron CI
 on:
-  # schedule:
-  #   # 3 am Tuesdays and Fridays
-  #   - cron: "0 3 * * 2,5"
-  pull_request:
-    branches:
-      - develop
+  schedule:
+    # 3 am Tuesdays and Fridays
+    - cron: "0 3 * * 2,5"
   workflow_dispatch:
 
 concurrency:
