@@ -493,6 +493,13 @@ cdef class Timestep:
         vectors lengths followed by their respective angle, or as three
         triclinic vectors.
 
+          .. testsetup::
+
+               from MDAnalysis.coordinates.timestep import Timestep
+               ts = Timestep()
+               
+          .. doctest::
+
           >>> ts.dimensions
           array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)
           >>> ts.triclinic_dimensions
