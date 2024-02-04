@@ -37,7 +37,7 @@ jobs:
               python-version: "3.12"
               full-deps: true
               codecov: true
-            - name: macOS_M1
+            - name: macOS_14_arm64_py312
               os: macOS-14
               python-version: "3.12"
               full-deps: false
