@@ -278,8 +278,6 @@ def get_hbond_map(
     # distance matrix
     n_1, c_0, o_0 = coord[1:, 0], coord[0:-1, 2], coord[0:-1, 3]
 
-    # print(f'{n_1.shape=}, {c_0.shape=}, {o_0.shape=}, {h_1.shape=}')
-
     n = n_atoms - 1
     cmap = np.tile(c_0, (n, 1, 1))
     omap = np.tile(o_0, (n, 1, 1))
