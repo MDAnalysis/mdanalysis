@@ -112,6 +112,7 @@ Analysis classes
 
 from .base import AnalysisBase
 import numpy as np
+import pytest
 from .. import Universe
 
 try:
@@ -127,27 +128,57 @@ DEFAULT_CUTOFF = -0.5
 DEFAULT_MARGIN = 1.0
 
 
-def _unfold(a: np.ndarray, window: int, axis: int) -> np.ndarray:
-    """Unfolds an ndarray if it was batched (pydssp legacy)
+def _upsample(a: np.ndarray, window: int) -> np.ndarray:
+    """Performs array upsampling with given window along given axis.
+    
+    Example
+    -------
+    .. code-block:: python
+        hbmap = np.arange(4*4).reshape(4,4)
+        print(hbmap)
+        # [[ 0  1  2  3]
+        #  [ 4  5  6  7]
+        #  [ 8  9 10 11]
+        #  [12 13 14 15]]
+        
+        print(_upsample(hbmap))
+        # [[[[ 0  1  2]
+        #    [ 4  5  6]
+        #    [ 8  9 10]]
 
+        #   [[ 1  2  3]
+        #    [ 5  6  7]
+        #    [ 9 10 11]]]
+
+
+        #  [[[ 4  5  6]
+        #    [ 8  9 10]
+        #    [12 13 14]]
+
+        #   [[ 5  6  7]
+        #    [ 9 10 11]
+        #    [13 14 15]]]]
+        
     Parameters
     ----------
     a : np.ndarray
         input array
     window : int
-        batching window
-    axis : int
-        axis to unfold across
+        upsample window
 
     Returns
     -------
     np.ndarray
         unfolded array
     """
-    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window +
-                                                 1)[None, :]
+    return _unfold(_unfold(a, window, -2), window, -2)
+
+
+def _unfold(a: np.ndarray, window: int, axis: int):
+    "Helper function for 2D array upsampling"
+    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
-    return np.moveaxis(unfolded, axis - 1, -1)
+    return  np.moveaxis(unfolded, axis-1, -1)
 
 
 def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
@@ -230,7 +261,6 @@ def get_hbond_map(
     if not HAS_EINOPS:
         raise ImportError('DSSP: to use DSSP, please install einops')
 
-    # l, a, _ = 
     n_atoms, n_atom_types, _ = coord.shape
     assert n_atom_types in (4, 5), "Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)"
 
@@ -255,11 +285,6 @@ def get_hbond_map(
     omap = np.tile(o_0, (n, 1, 1))
     nmap = np.tile(n_1, (1, 1, n)).reshape(n, n, 3)
     hmap = np.tile(h_1, (1, 1, n)).reshape(n, n, 3)
-
-    # nmap = repeat(coord[:, 1:, 0], "... m c -> ... m n c", n=l - 1)
-    # hmap = repeat(h, "... m c -> ... m n c", n=l - 1)
-    # cmap = repeat(coord[:, 0:-1, 2], "... n c -> ... m n c", m=l - 1)
-    # omap = repeat(coord[:, 0:-1, 3], "... n c -> ... m n c", m=l - 1)
 
     d_on = np.linalg.norm(omap - nmap, axis=-1)
     d_ch = np.linalg.norm(cmap - hmap, axis=-1)
@@ -314,44 +339,50 @@ def assign(coord: np.ndarray) -> np.ndarray:
 
     if not HAS_EINOPS:
         raise ImportError('DSSP: to use DSSP, please install einops')
-    
+
     # get hydrogen bond map
     hbmap = get_hbond_map(coord)
-    hbmap = rearrange(
-        hbmap, "... l1 l2 -> ... l2 l1")  # convert into "i:C=O, j:N-H" form
+    hbmap = np.swapaxes(hbmap, -1, -2) # convert into "i:C=O, j:N-H" form
+
     # identify turn 3, 4, 5
-    turn3 = np.diagonal(hbmap, axis1=-2, axis2=-1, offset=3) > 0.0
-    turn4 = np.diagonal(hbmap, axis1=-2, axis2=-1, offset=4) > 0.0
-    turn5 = np.diagonal(hbmap, axis1=-2, axis2=-1, offset=5) > 0.0
-    # assignment of helical sses
-    h3 = np.pad(turn3[:, :-1] * turn3[:, 1:], [[0, 0], [1, 3]])
-    h4 = np.pad(turn4[:, :-1] * turn4[:, 1:], [[0, 0], [1, 4]])
-    h5 = np.pad(turn5[:, :-1] * turn5[:, 1:], [[0, 0], [1, 5]])
-    # helix4 first
-    helix4 = h4 + np.roll(h4, 1, 1) + np.roll(h4, 2, 1) + np.roll(h4, 3, 1)
-    h3 = h3 * ~np.roll(helix4, -1, 1) * ~helix4  # helix4 is higher prioritized
-    h5 = h5 * ~np.roll(helix4, -1, 1) * ~helix4  # helix4 is higher prioritized
-    helix3 = h3 + np.roll(h3, 1, 1) + np.roll(h3, 2, 1)
-    helix5 = (h5 + np.roll(h5, 1, 1) + np.roll(h5, 2, 1) + np.roll(h5, 3, 1) +
-              np.roll(h5, 4, 1))
+    turn3 = np.diagonal(hbmap, offset=3) > 0.0
+    turn4 = np.diagonal(hbmap, offset=4) > 0.0
+    turn5 = np.diagonal(hbmap, offset=5) > 0.0
+
+    # assignment of helical secondary structures
+    h3 = np.pad(turn3[:-1] * turn3[1:], [[1, 3]])
+    h4 = np.pad(turn4[:-1] * turn4[1:], [[1, 4]])
+    h5 = np.pad(turn5[:-1] * turn5[1:], [[1, 5]])
+
+    # helix4 first, as alpha helix
+    helix4 = h4 + np.roll(h4, 1, 0) + np.roll(h4, 2, 0) + np.roll(h4, 3, 0)
+    h3 = h3 * ~np.roll(helix4, -1, 0) * ~helix4  # helix4 is higher prioritized
+    h5 = h5 * ~np.roll(helix4, -1, 0) * ~helix4  # helix4 is higher prioritized
+    helix3 = h3 + np.roll(h3, 1, 0) + np.roll(h3, 2, 0)
+    helix5 = (h5 + np.roll(h5, 1, 0) + np.roll(h5, 2, 0) + np.roll(h5, 3, 0) +
+              np.roll(h5, 4, 0))
+
     # identify bridge
-    unfoldmap = _unfold(_unfold(hbmap, 3, -2), 3, -2) > 0.0
-    unfoldmap_rev = rearrange(unfoldmap, "b l1 l2 ... -> b l2 l1 ...")
-    p_bridge = (unfoldmap[:, :, :, 0, 1] * unfoldmap_rev[:, :, :, 1, 2]) + (
-        unfoldmap_rev[:, :, :, 0, 1] * unfoldmap[:, :, :, 1, 2])
-    p_bridge = np.pad(p_bridge, [[0, 0], [1, 1], [1, 1]])
-    a_bridge = (unfoldmap[:, :, :, 1, 1] * unfoldmap_rev[:, :, :, 1, 1]) + (
-        unfoldmap[:, :, :, 0, 2] * unfoldmap_rev[:, :, :, 0, 2])
-    a_bridge = np.pad(a_bridge, [[0, 0], [1, 1], [1, 1]])
+    unfoldmap = _upsample(hbmap, 3) > 0.
+    unfoldmap_rev = np.swapaxes(unfoldmap, 0, 1)
+
+    p_bridge = (unfoldmap[:, :, 0, 1] * unfoldmap_rev[:, :, 1, 2]) + (
+        unfoldmap_rev[:, :, 0, 1] * unfoldmap[:, :, 1, 2])
+    p_bridge = np.pad(p_bridge, [[1, 1], [1, 1]])
+
+    a_bridge = (unfoldmap[:, :, 1, 1] * unfoldmap_rev[:, :, 1, 1]) + (
+        unfoldmap[:, :, 0, 2] * unfoldmap_rev[:, :, 0, 2])
+    a_bridge = np.pad(a_bridge, [[1, 1], [1, 1]])
+
     # ladder
-    ladder = (p_bridge + a_bridge).sum(-1) > 0
+    ladder = (p_bridge + a_bridge).sum(-1) > 0.
+
     # H, E, L of C3
-    helix = (helix3 + helix4 + helix5) > 0
+    helix = (helix3 + helix4 + helix5) > 0.
     strand = ladder
     loop = ~helix * ~strand
+
     onehot = np.stack([loop, helix, strand], axis=-1)
-    onehot = rearrange(onehot,
-                       "1 ... -> ...") if len(coord.shape) == 3 else onehot
     return onehot
 
 
