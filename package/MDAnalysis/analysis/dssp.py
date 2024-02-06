@@ -183,7 +183,7 @@ def _unfold(a: np.ndarray, window: int, axis: int):
 def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
     """Fills in hydrogen atoms positions if they are abscent, under the
     assumption that C-N-H and H-N-CA angles are perfect 120 degrees,
-    and N-H bond is 1.01 A.
+    and N-H bond length is 1.01 A.
 
     Parameters
     ----------
@@ -481,6 +481,12 @@ class DSSP(AnalysisBase):
         # can't do it the other way because I need missing values to exist
         # so that I could fill them in later
 
+        if not self._guess_hydrogens:
+            for calpha, hydrogen in zip(self._heavy_atoms['CA'][1:], self._hydrogens[1:]):
+                if not hydrogen and calpha.resname != 'PRO':
+                    raise ValueError(('Universe is missing non-PRO hydrogen '
+                                      f'on residue {calpha.residue}'))
+
     def _prepare(self):
         self.results.dssp_ndarray = []
 
@@ -510,6 +516,7 @@ class DSSP(AnalysisBase):
         if not self._guess_hydrogens:
             guessed_h_coords = _get_hydrogen_atom_position(
                 coords.swapaxes(0, 1))
+       
             h_coords = np.array([
                 group.positions[0] if group else guessed_h_coords[idx]
                 for idx, group in enumerate(self._hydrogens)

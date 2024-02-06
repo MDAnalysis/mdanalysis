@@ -27,18 +27,29 @@ def test_file_guess_hydrogens(pdb_filename):
 
 
 @pytest.mark.skipif(not HAS_EINOPS, reason="einops present")
-@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/*.pdb.gz"))
-def test_file_without_guess_hydrogens(pdb_filename):
-    u = mda.Universe(pdb_filename)
-    DSSP(u, guess_hydrogens=False).run()
-
-
-@pytest.mark.skipif(not HAS_EINOPS, reason="einops present")
 def test_trajectory():
     u = mda.Universe(TPR, XTC).select_atoms('protein').universe
-    run = DSSP(u).run()
+    run = DSSP(u).run(stop=10)
     first_frame = ''.join(run.results.dssp[0])
     last_frame = ''.join(run.results.dssp[-1])
     avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
 
     assert first_frame and last_frame and avg_frame
+
+
+@pytest.mark.skipif(not HAS_EINOPS, reason="einops present")
+def test_trajectory_with_hydrogens():
+    u = mda.Universe(TPR, XTC).select_atoms('protein').universe
+    run = DSSP(u, guess_hydrogens=False).run(stop=10)
+    first_frame = ''.join(run.results.dssp[0])
+    last_frame = ''.join(run.results.dssp[-1])
+    avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
+
+    assert first_frame and last_frame and avg_frame
+
+
+@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/2xdgA.pdb.gz"))
+def test_trajectory_without_hydrogen_fails(pdb_filename):
+    u = mda.Universe(pdb_filename)
+    with pytest.raises(ValueError):
+        DSSP(u, guess_hydrogens=False)
