@@ -112,7 +112,6 @@ Analysis classes
 
 from .base import AnalysisBase
 import numpy as np
-import pytest
 from .. import Universe
 
 try:
@@ -307,6 +306,7 @@ def get_hbond_map(
     # hydrogen bond map (continuous value extension of original definition)
     hbond_map = np.clip(cutoff - margin - e, a_min=-margin, a_max=margin)
     hbond_map = (np.sin(hbond_map / margin * np.pi / 2) + 1.0) / 2
+    hbond_map = hbond_map * local_mask
 
     return hbond_map
 
