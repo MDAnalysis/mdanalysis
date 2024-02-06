@@ -85,7 +85,6 @@ analysis = [
     "scikit-learn",
     "tidynamics>=1.0.0",
     'networkx>=2.0',
-    'einops>=0.4.1',
 ]
 doc = [
     "sphinx",
