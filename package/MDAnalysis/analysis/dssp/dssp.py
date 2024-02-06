@@ -1,11 +1,10 @@
 """
-Secondary structure assignment (helix, sheet
-and loop) --- :mod:`MDAnalysis.analysis.dssp`
-==========================================================================
+Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.analysis.dssp`
+=========================================================================================
 
 :Author: Egor Marin
 :Year: 2024
-:Copyright: GNU Public License v2
+:Copyright: LGPL v2.1+
 
 .. versionadded:: 2.8.0
 
@@ -107,13 +106,13 @@ Analysis classes
        as chars N×mx3 :class:`numpy.ndarray` array with content
        ``[frame, residue, encoding]``, where `encoding` is a (3,) shape
        :class:`numpy.ndarray` of booleans with axes representing loop '-',
-       helix 'H' and sheet 'E', consequtively.
+       helix 'H' and sheet 'E', consequently.
 """
 
 import numpy as np
 
 from ..base import AnalysisBase
-from ... import Universe
+from MDAnalysis import Universe
 
 try:
     from pydssp.pydssp_numpy import (
@@ -169,13 +168,36 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
 
 class DSSP(AnalysisBase):
-    """Assign secondary structure using DSSP algorithm as implemented
-    by pydssp package (v. 0.9.0): https://github.com/ShintaroMinami/PyDSSP
-    Here:
-     - 'H' represents a generic helix (alpha-helix, pi-helix or 3-10 helix)
-     - 'E' represents 'extended strand', participating in beta-ladder
-     (parallel or antiparallel)
-     - '-' represents unordered part
+    """Assign secondary structure using DSSP algorithm.
+    
+    Analyze a selection containing a protein and assign secondary structure
+    using the Kabsch-Sander algorithm [Kabsch1983]_. Only a subset of secondary
+    structure categories are implemented:
+
+    - 'H' represents a generic helix (alpha-helix, pi-helix or 3-10 helix)
+    - 'E' represents 'extended strand', participating in beta-ladder
+      (parallel or antiparallel)
+    - '-' represents unordered part
+
+    The implementation was taken from the pydssp package (v. 0.9.0)
+    https://github.com/ShintaroMinami/PyDSSP by Shintaro Minami.
+
+    Parameters
+    ----------
+    u : Universe
+        input universe
+    guess_hydrogens : bool, optional
+        whether you want to guess hydrogens positions, by default True.
+        Guessing is made assuming perfect 120 degrees for all bonds that N
+        atom makes, and a N-H bond length of 1.01 A.
+        If `guess_hydrogens` is False, hydrogen atom positions on N atoms
+        will be parsed from the trajectory, except for the "hydrogen" atom
+        positions on PRO residues, and an N-terminal residue.
+
+    Raises
+    ------
+    ValueError
+        if `guess_hydrogens` is True but some non-PRO hydrogens are missing.
 
     Examples
     --------

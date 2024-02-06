@@ -1,4 +1,13 @@
-"""Default numpy implementation for pydssp that doesn't use `einops` package"""
+"""
+A re-implementation of DSSP algorithm [Kabsch1983]_, taken from `pydssp` v.0.9.0
+(https://github.com/ShintaroMinami/PyDSSP) by Shintaro Minami, distributed under
+MIT license.
+
+Current implementation doesn't use `einops` as a dependency, instead directly
+using `numpy` operations for axis rearrangement. However, this implementation
+does not allow for batch computation, in contrast with `pydssp`, since it's
+designed to be used in per-frame manner in protein trajectories.
+"""
 
 import numpy as np
 

@@ -25,7 +25,7 @@ def test_trajectory():
     last_frame = ''.join(run.results.dssp[-1])
     avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
 
-    assert first_frame and last_frame and avg_frame
+    assert first_frame[:10] != last_frame[:10] == avg_frame[:10] == '-EEEEEE---'
 
 
 def test_trajectory_with_hydrogens():
@@ -35,7 +35,7 @@ def test_trajectory_with_hydrogens():
     last_frame = ''.join(run.results.dssp[-1])
     avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
 
-    assert first_frame and last_frame and avg_frame
+    assert first_frame[:10] == last_frame[:10] == avg_frame[:10] == '-EEEEEE---'
 
 
 @pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/2xdgA.pdb.gz"))
