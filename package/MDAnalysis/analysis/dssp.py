@@ -150,31 +150,6 @@ def _unfold(a: np.ndarray, window: int, axis: int) -> np.ndarray:
     return np.moveaxis(unfolded, axis - 1, -1)
 
 
-def _check_input(coord):
-    """Check if input coordinates have appropriate shape
-
-    Parameters
-    ----------
-    coord : np.ndarray
-        input coordinates
-
-    Returns
-    -------
-    (np.ndarray, tuple)
-        coordinates and original shape
-    
-    .. versionadded:: 2.8.0
-    """
-
-    org_shape = coord.shape
-    assert (len(org_shape) == 3) or (
-        len(org_shape) == 4
-    ), "Shape of input tensor must be [batch, L, atom, xyz] or [L, atom, xyz]"
-    coord = repeat(coord, "... -> b ...",
-                   b=1) if len(org_shape) == 3 else coord
-    return coord, org_shape
-
-
 def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
     """Fills in hydrogen atoms positions if they are abscent
 
@@ -235,8 +210,8 @@ def get_hbond_map(
     if not HAS_EINOPS:
         raise ImportError('DSSP: to use DSSP, please install einops')
 
-    # check input
-    coord, org_shape = _check_input(coord)
+    coord = repeat(coord, "... -> b ...",
+                   b=1) if len(coord.shape) == 3 else coord
     b, l, a, _ = coord.shape
     # add pseudo-H atom if not available
     assert (a == 4) or (
@@ -269,7 +244,7 @@ def get_hbond_map(
     hbond_map = hbond_map * repeat(local_mask, "l1 l2 -> b l1 l2", b=b)
     # return h-bond map
     hbond_map = np.squeeze(hbond_map,
-                           axis=0) if len(org_shape) == 3 else hbond_map
+                           axis=0) if len(coord.shape) == 3 else hbond_map
     return hbond_map
 
 
@@ -300,8 +275,6 @@ def assign(coord: np.ndarray) -> np.ndarray:
     if not HAS_EINOPS:
         raise ImportError('DSSP: to use DSSP, please install einops')
     
-    # check input
-    coord, org_shape = _check_input(coord)
     # get hydrogen bond map
     hbmap = get_hbond_map(coord)
     hbmap = rearrange(
@@ -338,7 +311,7 @@ def assign(coord: np.ndarray) -> np.ndarray:
     loop = ~helix * ~strand
     onehot = np.stack([loop, helix, strand], axis=-1)
     onehot = rearrange(onehot,
-                       "1 ... -> ...") if len(org_shape) == 3 else onehot
+                       "1 ... -> ...") if len(coord.shape) == 3 else onehot
     return onehot
 
 
