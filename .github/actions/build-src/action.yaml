@@ -63,8 +63,8 @@ runs:
         which python
         which pip
         pip list
-        conda info
-        conda list
+        micromamba info
+        micromamba list
 
     - name: build_mda_main
       shell: bash -l {0}
