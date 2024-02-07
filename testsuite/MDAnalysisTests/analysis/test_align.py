@@ -158,15 +158,14 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
-    @pytest.mark.parametrize('subselection',
-        ['resname ALA and name CA', mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA')])
-    def test_subselection_alignto_works(self, universe, reference, subselection):
-        rmsd = align.alignto(universe, reference, subselection=subselection)
-        assert_almost_equal(rmsd[1], 0.0, decimal=9)
+    @pytest.mark.parametrize('subselection, expectation', [
+        ('resname ALA and name CA', does_not_raise()),
+        (mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA'), does_not_raise()),
+        (1234, pytest.raises(TypeError)),
+    ])
+    def test_subselection_alignto(self, universe, reference, subselection, expectation):
 
-    @pytest.mark.parametrize('subselection', [1234])
-    def test_subselection_alignto_fails(self, universe, reference, subselection):
-        with pytest.raises(TypeError):
+        with expectation:
             rmsd = align.alignto(universe, reference, subselection=subselection)
             assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
