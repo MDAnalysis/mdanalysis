@@ -90,48 +90,6 @@ root-mean-square distance analysis in the following way:
    plt.ylabel("RMSD (Å)")
 
 
-Using parallelization in your analysis
--------------------------------------
-
-Starting v.2.8.0, MDAnalysis ``AnalysisBase`` subclasses can run on a backend
-that supports parallelization (see :mod:`MDAnalysis.analysis.backends`). By
-default, only one backend is supported -- built-in `multiprocessing`, that
-processes parts of a trajectory running separate *processes*, i.e. utilizing
-multi-core processors properly. For now, parallelization is added to
-:class:`MDAnalysis.analysis.RMS.RMSD`, but by 3.0 version it will be introduced
-to all subclasses that can support it.
-
-In order to use that feature, simply add ``backend='multiprocessing'`` to your
-run, and supply it with proper ``n_workers`` (use ``multiprocessing.cpu_count()``
-for maximum available on your machine):
-
-.. code-block:: python
-
-   import multiprocessing
-   import MDAnalysis as mda
-   from MDAnalysisTests.datafiles import PSF, DCD
-   from MDAnalysis.analysis.rms import RMSD
-   from MDAnalysis.analysis.align import AverageStructure
-
-   # initialize the universe
-   u = mda.Universe(PSF, DCD)
-
-   # calculate average structure for reference
-   avg = AverageStructure(mobile=u).run()
-   ref = avg.results.universe
-
-   # initialize RMSD run
-   rmsd = RMSD(u, ref, select='backbone')
-   rmsd.run(backend='multiprocessing', n_workers=multiprocessing.cpu_count())
-
-For now, you have to be verbal and specify both ``backend`` and ``n_workers``,
-since the feature is new and there are no good defaults for it. For example,
-if you specify too big `n_workers`, and your trajectory frames are big,
-you might get and out-of-memory error when executing your run.
-
-You can also implement your own backends -- see :mod:`MDAnalysis.analysis.backends`.
-
-
 Writing new analysis tools
 --------------------------
 
@@ -628,6 +586,9 @@ class AnalysisBase(object):
             if your trajectory has associated parallelizable transformations
             but backend is not serial
         ValueError
+            if ``n_workers`` was specified twice -- in the run() method and durin
+            ``__init__`` of a custom backend
+        ValueError
             if your backend object instance doesn't have an `apply` method
 
         .. versionadded:: 2.8.0
@@ -667,6 +628,18 @@ class AnalysisBase(object):
         # conclude mapping from string to backend class if it's a builtin backend
         if isinstance(backend, str):
             return backend_class(n_workers=n_workers)
+        
+        # make sure we haven't specified n_workers twice
+        if (
+            isinstance(backend, BackendBase)
+            and n_workers is not None
+            and hasattr(backend, n_workers)
+            and backend.n_workers != n_workers
+        ):
+            raise ValueError((
+                f"n_workers specified twice: in {backend.n_workers=}"
+                f"and in run({n_workers=}). Remove it from run()"
+            ))
 
         # or pass along an instance of the class itself
         # after ensuring it has apply method
