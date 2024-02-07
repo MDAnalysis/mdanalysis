@@ -253,7 +253,7 @@ class AnalysisBase(object):
     .. versionadded:: 2.8.0
         Added ability to run analysis in parallel using either a
         built-in backend (`multiprocessing` or `dask`) or a custom
-        `backends.BackendBase` instance with an implemented `_compute` method
+        `backends.BackendBase` instance with an implemented `apply` method
         that is used to run the computations.
     """
 

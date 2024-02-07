@@ -41,7 +41,7 @@ class BackendBase:
         R = RMSD(...) # setup the run
         n_workers = 2
         backend = ThreadsBackend(n_workers=n_workers)
-        R.run(backend=backend)
+        R.run(backend=backend, unsupported_backend=True)
 
     .. versionadded:: 2.8.0
     """
@@ -100,7 +100,7 @@ class BackendBase:
                 warnings.warn(msg)
 
     def apply(self, func: Callable, computations: list) -> list:
-        """Main function that will get called when using an instance of an object,
+        """Main function that will get called when using an instance of `BackendBase`,
         mapping function to all tasks in the `computations` list. Should effectively
         be equivalent to running `[func(item) for item in computations]`
         while using the parallel backend capabilities.
