@@ -102,7 +102,6 @@ making it parallelizable via adding ``get_supported_backends()`` attribute,
 and appropriate aggregation function for each of its results:
 
 .. code-block:: python
-    from MDAnalysis.analysis.parallel import ResultsGroup
 
     class MyAnalysis(AnalysisBase):
         @classmethod

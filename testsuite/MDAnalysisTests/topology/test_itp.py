@@ -184,13 +184,17 @@ class TestITPAtomtypes(ParserBase):
         assert_allclose(universe.atoms[3].charge, 1.)
 
     def test_mass_parse_or_guess(self, universe):
+        # read from [ atoms ] section
         assert_allclose(universe.atoms[0].mass, 8.0)
+        # read from [ atomtypes ] section
         assert_allclose(universe.atoms[1].mass, 20.989)
+        # read from [ atomtypes ] section
         assert_allclose(universe.atoms[2].mass, 20.989)
+        # guessed from element
         assert_allclose(universe.atoms[3].mass, 1.008)
 
 
-class TestITPAtomtypes(ParserBase):
+class TestITPCharges(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
     ref_filename = ITP_charges
     expected_attrs = ['ids', 'names', 'types', 'masses',
@@ -213,11 +217,8 @@ class TestITPAtomtypes(ParserBase):
         assert_allclose(universe.atoms[2].charge, 0)
         assert_allclose(universe.atoms[3].charge, -1.)
 
-    def test_mass_parse_or_guess(self, universe):
-        assert_allclose(universe.atoms[0].mass, 100.0)
-        assert_allclose(universe.atoms[1].mass, 100.0)
-        assert_allclose(universe.atoms[2].mass, 100.0)
-        assert_allclose(universe.atoms[3].mass, 100.0)
+    def test_masses_are_read(self, universe):
+        assert_allclose(universe.atoms.masses, [100] * 9)
 
 class TestDifferentDirectivesITP(BaseITP):
 

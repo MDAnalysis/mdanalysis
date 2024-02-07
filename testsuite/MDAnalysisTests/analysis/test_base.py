@@ -101,6 +101,15 @@ class CustomSerialBackend(backends.BackendBase):
     def apply(self, func, computations):
         return [func(task) for task in computations]
 
+class ManyWorkersBackend(backends.BackendBase):
+    def apply(self, func, computations):
+        return [func(task) for task in computations]
+
+def test_incompatible_n_workers(u):
+    backend = ManyWorkersBackend(n_workers=2)
+    with pytest.raises(ValueError):
+        FrameAnalysis(u).run(backend=backend, n_workers=3)
+
 @pytest.mark.parametrize('run_class,backend,n_workers', [
     (Parallelizable, 'not-existing-backend', 2),
     (Parallelizable, 'not-existing-backend', None),

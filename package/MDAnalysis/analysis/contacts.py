@@ -405,6 +405,13 @@ class Contacts(AnalysisBase):
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
 
+        Attributes
+        ----------
+        n_initial_contacts : int
+             Total number of initial contacts.
+        r0 : list[numpy.ndarray]
+             List of distance arrays between reference groups.
+
         Notes
         -----
 
@@ -454,6 +461,9 @@ class Contacts(AnalysisBase):
                 self.r0.append(distance_array(refA.positions, refB.positions,
                                                 box=self._get_box(refA.universe)))
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
+
+        self.n_initial_contacts = self.initial_contacts[0].sum()
+
 
     @staticmethod
     def _get_atomgroup(u, sel):
