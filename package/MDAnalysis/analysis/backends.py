@@ -1,4 +1,5 @@
 """Analysis backends --- :mod:`MDAnalysis.analysis.backends`
+============================================================
 
 Module introduces :class:`BackendBase` base class to implement custom
 backends for :meth:`MDAnalysis.analysis.base.AnalysisBase.run()` and its
@@ -6,8 +7,9 @@ subclasses. Also, it introduces 2 built-in backend classes:
 :class:`BackendMultiprocessing` that supports parallelization via standard
 python ``multiprocessing`` module, and :class:`BackendDask`, that uses the same
 process-based parallelization as :class:`BackendMultiprocessing`, but different
-serialization algorithm.
-==============================================================
+serialization algorithm (see https://distributed.dask.org/en/latest/serialization.html
+for explanation of ``dask`` serialization algorithms; ``multiprocessing`` uses
+default ``pickle`` serialization).
 """
 import warnings
 from typing import Callable
@@ -124,27 +126,94 @@ class BackendSerial(BackendBase):
     """A built-in backend that does serial execution of the function, without any
     parallelization
 
+    Parameters
+    ----------
+    n_workers : int
+        Is ignored in this class, and if ``n_workers`` > 1, a warning will be
+        given.
+
     .. versionadded:: 2.8.0
     """
 
     def _get_warnings(self):
+        """Get dictionary with `condition: warning_message` pairs that ensure
+        the good usage of the backend instance. Here, it checks if the number
+        of workers is not 1, otherwise gives warning.
+
+        Returns
+        -------
+        dict
+            dictionary with `condition: warning_message` pairs that will get
+            checked during _validate() run
+
+        .. versionadded:: 2.8.0
+        """
         return {
             self.n_workers == 1:
             "n_workers is ignored when executing with backend='serial'"
         }
 
     def apply(self, func: Callable, computations: list) -> list:
+        """
+        Applies ``func`` to each object in ``computations``.
+        
+        Parameters
+        ----------
+        func : Callable
+            function to be called on each of the tasks in computations list
+        computations : list
+            computation tasks to apply function to
+
+        Returns
+        -------
+        list
+            list of results of the function
+
+        .. versionadded:: 2.8.0
+        """
         return [func(task) for task in computations]
 
 
 class BackendMultiprocessing(BackendBase):
     """A built-in backend that executes a given function using
-    multiprocessing.Pool.map method
+    multiprocessing.Pool.map method.
+
+    Parameters
+    ----------
+    n_workers : int
+        number of processes in ``multiprocessing.Pool`` to distribute the
+        workload between. Should be a positive integer.
+
+    Examples
+    --------
+    
+    .. code-block:: python
+        from MDAnalysis.analysis.backends import BackendMultiprocessing
+        import multiprocessing as mp
+
+        backend_obj = BackendMultiprocessing(n_workers=mp.cpu_count())
+
 
     .. versionadded:: 2.8.0
     """
 
     def apply(self, func: Callable, computations: list) -> list:
+        """Applies ``func`` to each object in ``computations``.
+        
+        Parameters
+        ----------
+        func : Callable
+            function to be called on each of the tasks in computations list
+        computations : list
+            computation tasks to apply function to
+
+        Returns
+        -------
+        list
+            list of results of the function
+
+        .. versionadded:: 2.8.0
+        """
         from multiprocessing import Pool
 
         with Pool(processes=self.n_workers) as pool:
@@ -158,10 +227,43 @@ class BackendDask(BackendBase):
     distribution of tasks among processes). Requires `dask` module to be installed;
     see [documentation](https://docs.dask.org/en/stable/install.html)
 
+    Parameters
+    ----------
+    n_workers : int
+        number of processes in to distribute the workload between. Should be a
+        positive integer. Workers are actually ``multiprocessing.Pool`` processes,
+        but they use different and more flexible serialization protocol (see
+        https://docs.dask.org/en/stable/phases-of-computation.html#graph-serialization).
+
+    Examples
+    --------
+    
+    .. code-block:: python
+        from MDAnalysis.analysis.backends import BackendDask
+        import multiprocessing as mp
+
+        backend_obj = BackendDask(n_workers=mp.cpu_count())
+
     .. versionadded:: 2.8.0
     """
 
     def apply(self, func: Callable, computations: list) -> list:
+        """Applies ``func`` to each object in ``computations``.
+        
+        Parameters
+        ----------
+        func : Callable
+            function to be called on each of the tasks in computations list
+        computations : list
+            computation tasks to apply function to
+
+        Returns
+        -------
+        list
+            list of results of the function
+
+        .. versionadded:: 2.8.0
+        """
         from dask.delayed import delayed
         import dask
 
@@ -173,6 +275,18 @@ class BackendDask(BackendBase):
         return results
 
     def _get_checks(self):
+        """Get dictionary with `condition: error_message` pairs that ensure the
+        validity of the backend instance. Here checks if ``dask`` module is
+        installed in the environment.
+
+        Returns
+        -------
+        dict
+            dictionary with `condition: error_message` pairs that will get
+            checked during _validate() run
+
+        .. versionadded:: 2.8.0
+        """
         base_checks = super()._get_checks()
         checks = {
             is_installed("dask"):
