@@ -120,9 +120,20 @@ Analysis classes
 """
 
 import numpy as np
+from MDAnalysis import Universe
 
 from ..base import AnalysisBase
-from MDAnalysis import Universe
+from ...due import due, Doi
+
+due.cite(
+    Doi("10.1002/bip.360221211"),
+    description="DSSP algorithm description",
+    path="MDAnalysis.analysis.dssp",
+    cite_module=True,
+)
+
+del Doi
+
 
 try:
     from pydssp.pydssp_numpy import (
@@ -130,6 +141,7 @@ try:
         get_hbond_map,
         _get_hydrogen_atom_position,
     )
+
     HAS_PYDSSP = True
 
 except ModuleNotFoundError:
@@ -179,7 +191,7 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
 class DSSP(AnalysisBase):
     """Assign secondary structure using DSSP algorithm.
-    
+
     Analyze a selection containing a protein and assign secondary structure
     using the Kabsch-Sander algorithm [Kabsch1983]_. Only a subset of secondary
     structure categories are implemented:
