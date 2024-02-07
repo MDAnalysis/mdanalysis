@@ -632,7 +632,7 @@ class AnalysisBase(object):
         if (
             isinstance(backend, BackendBase)
             and n_workers is not None
-            and hasattr(backend, n_workers)
+            and hasattr(backend, 'n_workers')
             and backend.n_workers != n_workers
         ):
             raise ValueError((
