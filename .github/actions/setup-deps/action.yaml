@@ -39,6 +39,8 @@ inputs:
     default: 'numpy'
   packaging:
     default: 'packaging'
+  pathsimanalysis:
+    default: 'pathsimanalysis'
   pip:
     default: 'pip'
   pytest:
@@ -49,6 +51,8 @@ inputs:
     default: 'threadpoolctl'
   tqdm:
     default: 'tqdm>=4.43.0'
+  waterdynamics:
+    default: 'waterdynamics'
   # conda-installed optional dependencies
   biopython:
     default: 'biopython>=1.80'
@@ -116,11 +120,13 @@ runs:
           ${{ inputs.mmtf-python }}
           ${{ inputs.numpy }}
           ${{ inputs.packaging }}
+          ${{ inputs.pathsimanalysis }}
           ${{ inputs.pip }}
           ${{ inputs.pytest }}
           ${{ inputs.scipy }}
           ${{ inputs.threadpoolctl }}
           ${{ inputs.tqdm }}
+          ${{ inputs.waterdynamics }}
         CONDA_OPT_DEPS: |
           ${{ inputs.biopython }}
           ${{ inputs.chemfiles-python }}

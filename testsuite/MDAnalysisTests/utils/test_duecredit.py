@@ -56,7 +56,7 @@ class TestDuecredit(object):
     # note: citekeys are *all lower case*
     @pytest.mark.parametrize("module,path,citekey", [
         ("MDAnalysis.analysis.psa",
-         "MDAnalysis.analysis.psa",
+         "pathsimanalysis.psa",
          "10.1371/journal.pcbi.1004568"),
         ("MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel",
          "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel",

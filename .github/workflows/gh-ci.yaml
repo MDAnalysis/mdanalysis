@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 concurrency:
   # Probably overly cautious group naming.
@@ -33,8 +34,13 @@ jobs:
           include:
             - name: macOS_monterey_py311
               os: macOS-12
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: true
+              codecov: true
+            - name: macOS_14_arm64_py312
+              os: macOS-14
+              python-version: "3.12"
+              full-deps: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
