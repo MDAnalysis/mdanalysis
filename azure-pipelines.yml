@@ -113,7 +113,7 @@ jobs:
       parmed
       pytng>=0.2.3
       tidynamics>=1.0.0
-      rdkit>=2020.03.1
+      rdkit>=2022.09.1
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - script: >-
