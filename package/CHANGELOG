@@ -14,11 +14,14 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli
+??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
+         ljwoods2
 
  * 2.8.0
 
 Fixes
+ * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
+   (Issue #3349, PR #4407)
  * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
  * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
    over `self._sliced_trajectory`, hence supporting
