@@ -27,7 +27,7 @@ import pytest
 
 import numpy as np
 
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import base
@@ -194,7 +194,7 @@ def test_start_stop_step(u, run_kwargs, frames):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames+1, rtol=0, atol=1.5*(1e-4), err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames+1, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 @pytest.mark.parametrize('run_kwargs, frames', [
@@ -251,7 +251,7 @@ def test_frames_times():
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames*100, rtol=0, atol=1.5*(1e-4), err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames*100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):
@@ -372,7 +372,7 @@ def test_AnalysisFromFunction_args_content(u):
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
     result = np.sum(ans.run().results.timeseries)
-    assert_allclose(result, -317054.67757345125, rtol=0, atol=1.5*(1e-6))
+    assert_allclose(result, -317054.67757345125, rtol=0, atol=1.5e-6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
 

@@ -27,7 +27,6 @@ from MDAnalysis.analysis import contacts
 from MDAnalysis.analysis.distances import distance_array
 
 from numpy.testing import (
-    assert_almost_equal,
     assert_equal,
     assert_array_equal,
     assert_array_almost_equal,
@@ -49,8 +48,8 @@ from MDAnalysisTests.datafiles import (
 def test_soft_cut_q():
     # just check some of the extremal points
     assert contacts.soft_cut_q([0], [0]) == .5
-    assert_allclose(contacts.soft_cut_q([100], [0]), 0, rtol=0, atol=1.5*(1e-7))
-    assert_allclose(contacts.soft_cut_q([-100], [0]), 1, rtol=0, atol=1.5*(1e-7))
+    assert_allclose(contacts.soft_cut_q([100], [0]), 0, rtol=0, atol=1.5e-7)
+    assert_allclose(contacts.soft_cut_q([-100], [0]), 1, rtol=0, atol=1.5e-7)
 
 
 def test_soft_cut_q_folded():
@@ -68,7 +67,7 @@ def test_soft_cut_q_folded():
     lambda_constant = 1.8
     Q = 1 / (1 + np.exp(beta * (r - lambda_constant * r0)))
 
-    assert_allclose(Q.mean(), 1.0, rtol=0, atol=1.5*(1e-3))
+    assert_allclose(Q.mean(), 1.0, rtol=0, atol=1.5e-3)
 
 
 def test_soft_cut_q_unfolded():
@@ -86,7 +85,7 @@ def test_soft_cut_q_unfolded():
     lambda_constant = 1.8
     Q = 1 / (1 + np.exp(beta * (r - lambda_constant * r0)))
 
-    assert_allclose(Q.mean(), 0.0, rtol=0, atol=1.5*(1e-1))
+    assert_allclose(Q.mean(), 0.0, rtol=0, atol=1.5e-1)
 
 
 @pytest.mark.parametrize('r, cutoff, expected_value', [
@@ -264,7 +263,7 @@ class TestContacts(object):
         q.run()
 
         results = soft_cut(f, u, sel, sel)
-        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5*(1e-7))
+        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
 
     def test_villin_unfolded(self):
         # both folded
@@ -281,7 +280,7 @@ class TestContacts(object):
         q.run()
 
         results = soft_cut(f, u, sel, sel)
-        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5*(1e-7))
+        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
 
     def test_hard_cut_method(self, universe):
         ca = self._run_Contacts(universe)

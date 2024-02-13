@@ -23,7 +23,7 @@
 from __future__ import absolute_import
 
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+from numpy.testing import assert_equal, assert_allclose
 import pytest
 import copy
 
@@ -66,46 +66,39 @@ class TestBAT(object):
 
     def test_bat_coordinates(self, bat):
         test_bat = np.load(BATArray)
-        np.testing.assert_allclose(
+        assert_allclose(
             bat,
             test_bat,
             rtol=0,
-            atol=1.5*(1e-5),
-            err_msg="error: BAT coordinates should match test values"
-        )
+            atol=1.5e-5,
+            err_msg="error: BAT coordinates should match test values")
 
     def test_bat_coordinates_single_frame(self, selected_residues):
         bat = BAT(selected_residues).run(start=1, stop=2).results.bat
         test_bat = [np.load(BATArray)[1]]
-        np.testing.assert_allclose(
+        assert_allclose(
             bat,
             test_bat,
             rtol=0,
-            atol=1.5*(1e-5),
-            err_msg="error: BAT coordinates should match test values"
-        )
+            atol=1.5e-5,
+            err_msg="error: BAT coordinates should match test values")
 
     def test_bat_reconstruction(self, selected_residues, bat):
         R = BAT(selected_residues)
         XYZ = R.Cartesian(bat[0])
-        np.testing.assert_allclose(
-            XYZ,
-            selected_residues.positions,
-            rtol=0,
-            atol=1.5*(1e-5),
-            err_msg="error: Reconstructed Cartesian coordinates don't match original"
-        )
+        assert_allclose(XYZ, selected_residues.positions, rtol=0, atol=1.5e-5,
+            err_msg="error: Reconstructed Cartesian coordinates " + \
+                    "don't match original")
 
     def test_bat_IO(self, bat_npz, selected_residues, bat):
         R2 = BAT(selected_residues, filename=bat_npz)
         test_bat = R2.results.bat
-        np.testing.assert_allclose(
+        assert_allclose(
             bat,
             test_bat,
             rtol=0,
-            atol=1.5*(1e-5),
-            err_msg="error: Loaded BAT coordinates should match test values"
-        )
+            atol=1.5e-5,
+            err_msg="error: Loaded BAT coordinates should match test values")
 
     def test_bat_nobonds(self):
         u = mda.Universe(XYZ_mini)
@@ -116,7 +109,7 @@ class TestBAT(object):
     def test_bat_bad_initial_atom(self, selected_residues):
         errmsg = 'Initial atom is not a terminal atom'
         with pytest.raises(ValueError, match=errmsg):
-            R = BAT(selected_residues, initial_atom=selected_residues[0])
+            R = BAT(selected_residues, initial_atom = selected_residues[0])
 
     def test_bat_disconnected_atom_group(self):
         u = mda.Universe(PSF, DCD)
@@ -143,10 +136,7 @@ class TestBAT(object):
         R = BAT(selected_residues)
         pre_transformation = copy.deepcopy(bat[0])
         R.Cartesian(bat[0])
-        np.testing.assert_allclose(
-            pre_transformation,
-            bat[0],
-            rtol=0,
-            atol=1.5*(1e-7),
+        assert_allclose(
+            pre_transformation, bat[0], rtol=0, atol=1.5e-7,
             err_msg="BAT.Cartesian modified input data"
         )

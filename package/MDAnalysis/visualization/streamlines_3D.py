@@ -246,10 +246,9 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
         array_cube_vertex_distances_from_centroid = scipy.spatial.distance.cdist(array_cube_vertices,
                                                                                  cube_centroid[np.newaxis, :])
         np.testing.assert_allclose(array_cube_vertex_distances_from_centroid.min(),
-                                          array_cube_vertex_distances_from_centroid.max(), rtol=0, atol=1.5*(1e-4),
+                                          array_cube_vertex_distances_from_centroid.max(), rtol=0, atol=1.5e-4,
                                           err_msg="not all cube vertex to centroid distances are the same, "
                                                   "so not a true cube")
-
         absolute_delta_coords = np.absolute(np.subtract(array_point_coordinates, cube_centroid))
         absolute_delta_x_coords = absolute_delta_coords[..., 0]
         indices_delta_x_acceptable = np.where(absolute_delta_x_coords <= cube_half_side_length)
