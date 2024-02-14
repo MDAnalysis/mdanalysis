@@ -70,6 +70,8 @@ PCA class.
 
 First load all modules and test data::
 
+.. testsetup::
+
     import MDAnalysis as mda
     import MDAnalysis.analysis.pca as pca
     from MDAnalysis.tests.datafiles import PSF, DCD
@@ -78,6 +80,8 @@ First load all modules and test data::
 Given a universe containing trajectory data we can perform Principal Component
 Analysis by using the class :class:`PCA` and retrieving the principal
 components.::
+
+.. doctest::
 
     u = mda.Universe(PSF, DCD)
     PSF_pca = pca.PCA(u, select='backbone')
@@ -624,24 +628,26 @@ class PCA(AnalysisBase):
 
         .. testsetup::
 
-            >>> import MDAnalysis as mda
-            >>> import MDAnalysis.analysis.pca as pca
-            >>> from MDAnalysis.tests.datafiles import PSF, DCD
-            >>> u = mda.Universe(PSF, DCD)
-
+            import MDAnalysis as mda
+            import MDAnalysis.analysis.pca as pca
+            from MDAnalysis.tests.datafiles import PSF, DCD
+            
 
         You can compare the RMSIP between different intervals of the same trajectory.
         For example, to compare similarity within the top three principal components:
 
         .. doctest::
 
+            >>> u = mda.Universe(PSF, DCD)
             >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
             >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
             >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-            >>> first_interval.rmsip(second_interval, n_components=3)
-            0.38147609331128324
-            >>> first_interval.rmsip(last_interval, n_components=3)
-            0.17478244043688052
+            >>> first_second_interval_rmsip = first_interval.rmsip(second_interval, n_components=3)
+            >>> print(round(first_second_interval_rmsip,6))
+            0.381476
+            >>> first_last_interval_rmsip = first_interval.rmsip(last_interval, n_components=3)
+            >>> print(round(first_last_interval_rmsip,6))
+            0.174782
 
 
         See also
@@ -800,28 +806,30 @@ def rmsip(a, b, n_components=None):
 
     .. testsetup::
 
-        >>> import MDAnalysis as mda
-        >>> import MDAnalysis.analysis.pca as pca
-        >>> from MDAnalysis.tests.datafiles import PSF, DCD
-        >>> u = mda.Universe(PSF, DCD)
-
+        import MDAnalysis as mda
+        import MDAnalysis.analysis.pca as pca
+        from MDAnalysis.tests.datafiles import PSF, DCD
+        
 
     You can compare the RMSIP between different intervals of the same trajectory.
     For example, to compare similarity within the top three principal components:
 
     .. doctest::
 
+        >>> u = mda.Universe(PSF, DCD)
         >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
         >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
         >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-        >>> pca.rmsip(first_interval.results.p_components.T,
+        >>> first_second_interval_pca = pca.rmsip(first_interval.results.p_components.T,
         ...           second_interval.results.p_components.T,
         ...           n_components=3)
-        0.38147609331128324
-        >>> pca.rmsip(first_interval.results.p_components.T,
+        >>> print(round(first_second_interval_pca,6))
+        0.381476
+        >>> first_last_interval_pca = pca.rmsip(first_interval.results.p_components.T,
         ...           last_interval.results.p_components.T,
         ...           n_components=3)
-        0.17478244043688052
+        >>> print(round(first_last_interval_pca,6))
+        0.174782
 
 
     .. versionadded:: 1.0.0
