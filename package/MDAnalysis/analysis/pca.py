@@ -630,8 +630,7 @@ class PCA(AnalysisBase):
 
             import MDAnalysis as mda
             import MDAnalysis.analysis.pca as pca
-            from MDAnalysis.tests.datafiles import PSF, DCD
-            
+            from MDAnalysis.tests.datafiles import PSF, DCD            
 
         You can compare the RMSIP between different intervals of the same trajectory.
         For example, to compare similarity within the top three principal components:
@@ -642,11 +641,11 @@ class PCA(AnalysisBase):
             >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
             >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
             >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-            >>> first_second_interval_rmsip = first_interval.rmsip(second_interval, n_components=3)
-            >>> print(round(first_second_interval_rmsip,6))
+            >>> first_second_rmsip = first_interval.rmsip(second_interval, n_components=3)
+            >>> print(round(first_second_rmsip,6))
             0.381476
-            >>> first_last_interval_rmsip = first_interval.rmsip(last_interval, n_components=3)
-            >>> print(round(first_last_interval_rmsip,6))
+            >>> first_last_rmsip = first_interval.rmsip(last_interval, n_components=3)
+            >>> print(round(first_last_rmsip,6))
             0.174782
 
 
@@ -820,15 +819,15 @@ def rmsip(a, b, n_components=None):
         >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
         >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
         >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-        >>> first_second_interval_pca = pca.rmsip(first_interval.results.p_components.T,
+        >>> first_second_pca = pca.rmsip(first_interval.results.p_components.T,
         ...           second_interval.results.p_components.T,
         ...           n_components=3)
-        >>> print(round(first_second_interval_pca,6))
+        >>> print(round(first_second_pca,6))
         0.381476
-        >>> first_last_interval_pca = pca.rmsip(first_interval.results.p_components.T,
+        >>> first_last_pca = pca.rmsip(first_interval.results.p_components.T,
         ...           last_interval.results.p_components.T,
         ...           n_components=3)
-        >>> print(round(first_last_interval_pca,6))
+        >>> print(round(first_last_pca,6))
         0.174782
 
 
