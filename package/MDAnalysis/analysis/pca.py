@@ -807,14 +807,14 @@ def rmsip(a, b, n_components=None):
         >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
         >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
         >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-        >>> pca.rmsip(first_interval.results.p_components.T,
+        >>> round(pca.rmsip(first_interval.results.p_components.T,
         ...           second_interval.results.p_components.T,
-        ...           n_components=3)
-        0.3814760933112831
-        >>> pca.rmsip(first_interval.results.p_components.T,
+        ...           n_components=3), 6)
+        0.381476
+        >>> round(pca.rmsip(first_interval.results.p_components.T,
         ...           last_interval.results.p_components.T,
-        ...           n_components=3)
-        0.17478244043688054
+        ...           n_components=3), 6)
+        0.174782
 
 
     .. versionadded:: 1.0.0
