@@ -66,18 +66,18 @@ To load a LAMMPS simulation from a LAMMPS data file (using the
 :class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a
 LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
 
-..testsetup:: 
-    
+..testsetup::
+
     import MDAnalysis
 
-..doctest::    
+..doctest::
 
     >>> u = MDAnalysis.Universe("lammps.data", "lammps_real.dcd", format="LAMMPS")
 
 If the trajectory uses *units nano* then use ::
 
-.. testsetup:: 
-    
+.. testsetup::
+
     import MDAnalysis
 
 .. doctest::
@@ -94,14 +94,14 @@ data file,
 
 .. doctest::
 
->>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
-...                          lengthunit="nm", timeunit="ns")
->>> for ts in u.trajectory:
-...     # analyze frame
-...     if take_this_frame == True:
-...         with mda.Writer('frame.data') as W:
-...             W.write(u.atoms)
-...         break
+    >>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
+    ...                          lengthunit="nm", timeunit="ns")
+    >>> for ts in u.trajectory:
+    ...     # analyze frame
+    ...     if take_this_frame == True:
+    ...         with mda.Writer('frame.data') as W:
+    ...             W.write(u.atoms)
+    ...         break
 
 Note
 ----
