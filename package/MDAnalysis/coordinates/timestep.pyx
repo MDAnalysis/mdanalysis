@@ -1,4 +1,4 @@
-Fts.dimensions# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
@@ -511,13 +511,7 @@ cdef class Timestep:
                  [40.06504 , 40.06504 , 56.660522]], dtype=float32)
 
         Setting the attribute also works::
-
-          .. testsetup::
-
-              import MDAnalysis as mda
-              rom MDAnalysis.tests.datafiles import TPR, XTC
-              import numpy as np
-               
+          
           .. doctest::
 
           >>> u = mda.Universe(TPR, XTC)
