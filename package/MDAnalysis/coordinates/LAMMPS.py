@@ -88,14 +88,14 @@ If the trajectory uses *units nano* then use ::
 To scan through a trajectory to find a desirable frame and write to a LAMMPS
 data file,
 
-.. testsetup:: 
-    
+.. testsetup::
+
     import MDAnalysis
 
 .. doctest::
 
-    >>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
-    ...                          lengthunit="nm", timeunit="ns")
+    >>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", 
+    ...                             format="LAMMPS", lengthunit="nm", timeunit="ns")
     >>> for ts in u.trajectory:
     ...     # analyze frame
     ...     if take_this_frame == True:
