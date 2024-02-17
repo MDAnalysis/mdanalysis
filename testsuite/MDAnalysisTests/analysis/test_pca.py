@@ -132,6 +132,11 @@ def test_no_frames(u):
     with pytest.raises(ValueError):
         PCA(u, select=SELECTION).run(stop=1)
 
+def test_can_run_frames(u):
+    atoms = u.select_atoms(SELECTION)
+    u.transfer_to_memory()
+    PCA(u, select=SELECTION).run(frames=[0,1])
+
 
 def test_can_run_frames(u):
     atoms = u.select_atoms(SELECTION)

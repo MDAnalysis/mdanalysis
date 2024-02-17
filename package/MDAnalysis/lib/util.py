@@ -205,6 +205,7 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import importlib
 
 import mmtf
 import numpy as np
@@ -2552,3 +2553,13 @@ def store_init_arguments(func):
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
     return wrapper
+
+def is_installed(modulename: str):
+    """Checks if module is installed
+
+    Parameters
+    ----------
+    modulename : str
+        name of the module to be tested
+    """
+    return importlib.util.find_spec(modulename) is not None

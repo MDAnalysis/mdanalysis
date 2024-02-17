@@ -666,6 +666,9 @@ if __name__ == '__main__':
                   'tidynamics>=1.0.0', # For MSD analysis method
                   'networkx>=2.0',  # For LeafletFinder
               ],
+              'parallel': [
+                'dask',  # for parallelised execution using `dask` as a backend
+              ]
           },
           test_suite="MDAnalysisTests",
           tests_require=[

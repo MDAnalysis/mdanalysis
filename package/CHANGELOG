@@ -32,6 +32,7 @@ Fixes
 Enhancements
  * Documented the r0 attribute in the `Contacts` class and added the 
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
+ * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
 
 Changes
  * As per NEP29, the minimum version of numpy has been raised to 1.23.
