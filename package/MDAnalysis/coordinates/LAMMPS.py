@@ -68,40 +68,34 @@ LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
 
 ..testsetup::
 
-    import MDAnalysis
-
+    >>> import MDAnalysis
+    >>> from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2
 ..doctest::
 
-    >>> u = MDAnalysis.Universe("lammps.data", "lammps_real.dcd", format="LAMMPS")
+    >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS")
 
 If the trajectory uses *units nano* then use ::
 
-.. testsetup::
-
-    import MDAnalysis
-
 .. doctest::
 
-    >>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
-    ...                          lengthunit="nm", timeunit="ns")
+   >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS",
+   ...                          lengthunit="nm", timeunit="ns")
 
 To scan through a trajectory to find a desirable frame and write to a LAMMPS
 data file,
 
-.. testsetup::
-
-    import MDAnalysis
-
-.. doctest::
-
-    >>> u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", 
-    ...                             format="LAMMPS", lengthunit="nm", timeunit="ns")
-    >>> for ts in u.trajectory:
-    ...     # analyze frame
-    ...     if take_this_frame == True:
-    ...         with mda.Writer('frame.data') as W:
-    ...             W.write(u.atoms)
-    ...         break
+   >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS",
+   ...                          lengthunit="nm", timeunit="ns")
+   >>> take_this_frame = False
+   >>> for ts in u.trajectory:
+   ...     # analyze frame
+   ...     if ts.frame == 4:
+   ...         take_this_frame = True
+   ...     if take_this_frame == True:
+   ...         with MDAnalysis.Writer('frame.data') as W:
+   ...             W.write(u.atoms)
+   ...         break
+    
 
 Note
 ----
