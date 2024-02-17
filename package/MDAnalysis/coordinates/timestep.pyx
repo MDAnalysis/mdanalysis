@@ -495,9 +495,9 @@ cdef class Timestep:
 
           .. testsetup::
 
-              import MDAnalysis as mda
-              rom MDAnalysis.tests.datafiles import TPR, XTC
-              import numpy as np
+          >>> import MDAnalysis as mda
+          >>> from MDAnalysis.tests.datafiles import TPR, XTC
+          >>> import numpy as np
                
           .. doctest::
 
