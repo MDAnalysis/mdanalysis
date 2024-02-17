@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+Fts.dimensions# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
@@ -495,22 +495,35 @@ cdef class Timestep:
 
           .. testsetup::
 
-               from MDAnalysis.coordinates.timestep import Timestep
-               ts = Timestep()
+              import MDAnalysis as mda
+              rom MDAnalysis.tests.datafiles import TPR, XTC
+              import numpy as np
                
           .. doctest::
 
-          >>> ts.dimensions
-          array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)
-          >>> ts.triclinic_dimensions
-          array([[ 13.,   0.,   0.],
-                 [  0.,  14.,   0.],
-                 [  0.,   0.,  15.]], dtype=float32)
+          >>> u = mda.Universe(TPR, XTC)
+          >>> ts_1 = u.trajectory[0]           
+          >>> ts_1.dimensions
+          array([80.13008, 80.13008, 80.13008, 60. , 60. , 90. ], dtype=float32)
+          >>> ts_1.triclinic_dimensions
+          array([[80.13008 ,  0.      ,  0.      ],
+                 [ 0.      , 80.13008 ,  0.      ],
+                 [40.06504 , 40.06504 , 56.660522]], dtype=float32)
 
         Setting the attribute also works::
 
-          >>> ts.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
-          >>> ts.dimensions
+          .. testsetup::
+
+              import MDAnalysis as mda
+              rom MDAnalysis.tests.datafiles import TPR, XTC
+              import numpy as np
+               
+          .. doctest::
+
+          >>> u = mda.Universe(TPR, XTC)
+          >>> ts_2 = u.trajectory[0]
+          >>> ts_2.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
+          >>> ts_2.dimensions
           array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,
                   72.45159912,  71.56504822], dtype=float32)
 
