@@ -503,12 +503,12 @@ cdef class Timestep:
 
           >>> u = mda.Universe(TPR, XTC)
           >>> ts_1 = u.trajectory[0]           
-          >>> ts_1.dimensions
-          array([80.13008, 80.13008, 80.13008, 60. , 60. , 90. ], dtype=float32)
-          >>> ts_1.triclinic_dimensions
-          array([[80.13008 ,  0.      ,  0.      ],
-                 [ 0.      , 80.13008 ,  0.      ],
-                 [40.06504 , 40.06504 , 56.660522]], dtype=float32)
+          >>> print(np.round(ts_1.dimensions))
+          [80. 80. 80. 60. 60. 90.]
+          >>> print(np.round(ts_1.triclinic_dimensions))
+          [[80.  0.  0.]
+          [ 0. 80.  0.]
+          [40. 40. 57.]]
 
         Setting the attribute also works::
           
@@ -517,10 +517,9 @@ cdef class Timestep:
           >>> u = mda.Universe(TPR, XTC)
           >>> ts_2 = u.trajectory[0]
           >>> ts_2.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
-          >>> ts_2.dimensions
-          array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,
-                  72.45159912,  71.56504822], dtype=float32)
-
+          >>> print(np.round(ts_2.dimensions))
+          [15. 16. 17. 68. 72. 72.]
+          
         See Also
         --------
         :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
