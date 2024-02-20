@@ -70,6 +70,7 @@ LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
 
     >>> import MDAnalysis
     >>> from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2
+
 ..doctest::
 
     >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS")
@@ -94,8 +95,7 @@ data file,
    ...     if take_this_frame == True:
    ...         with MDAnalysis.Writer('frame.data') as W:
    ...             W.write(u.atoms)
-   ...         break
-    
+   ...         break    
 
 Note
 ----
