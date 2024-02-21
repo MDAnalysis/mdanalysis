@@ -498,11 +498,11 @@ cdef class Timestep:
           >>> import MDAnalysis as mda
           >>> from MDAnalysis.tests.datafiles import TPR, XTC
           >>> import numpy as np
+          >>> u = mda.Universe(TPR, XTC)
+          >>> ts = u.trajectory[0] 
                
           .. doctest::
-
-          >>> u = mda.Universe(TPR, XTC)
-          >>> ts_1 = u.trajectory[0]           
+                    
           >>> print(np.round(ts_1.dimensions))
           [80. 80. 80. 60. 60. 90.]
           >>> print(np.round(ts_1.triclinic_dimensions))
@@ -513,10 +513,8 @@ cdef class Timestep:
         Setting the attribute also works::
           
           .. doctest::
-
-          >>> u = mda.Universe(TPR, XTC)
-          >>> ts_2 = u.trajectory[0]
-          >>> ts_2.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
+          
+          >>> ts.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
           >>> print(np.round(ts_2.dimensions))
           [15. 16. 17. 68. 72. 72.]
           
