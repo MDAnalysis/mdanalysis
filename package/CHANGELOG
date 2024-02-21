@@ -20,6 +20,8 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Raise an error in analysis if `parallelizable=True` is passed to the `NoJump`
+   transformation (Issue #4259)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
    (Issue #3349, PR #4407)
  * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
@@ -30,9 +32,10 @@ Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
+ * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
+   (Issue #4158, PR #4304)
  * Documented the r0 attribute in the `Contacts` class and added the 
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
- * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
 
 Changes
  * As per NEP29, the minimum version of numpy has been raised to 1.23.
