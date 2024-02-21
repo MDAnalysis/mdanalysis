@@ -503,9 +503,9 @@ cdef class Timestep:
                
           .. doctest::
                     
-          >>> print(np.round(ts_1.dimensions))
+          >>> print(np.round(ts.dimensions))
           [80. 80. 80. 60. 60. 90.]
-          >>> print(np.round(ts_1.triclinic_dimensions))
+          >>> print(np.round(ts.triclinic_dimensions))
           [[80.  0.  0.]
           [ 0. 80.  0.]
           [40. 40. 57.]]
