@@ -192,7 +192,23 @@ def test_start_stop_step(u, run_kwargs, frames, client_FrameAnalysis):
     ({'frames': [True, True, False, True, False, True, True, False, True,
                  False]}, (0, 1, 3, 5, 6, 8)),
 ])
-def test_frame_slice(run_kwargs, frames, client_FrameAnalysis):
+def test_frame_slice(run_kwargs, frames):
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
+    assert an.n_frames == len(frames)
+    assert_equal(an.found_frames, frames)
+    assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
+
+
+@pytest.mark.parametrize('run_kwargs, frames', [
+    ({'frames': [4, 5, 6, 7, 8, 9]}, np.arange(4, 10)),
+    ({'frames': [0, 2, 4, 6, 8]}, np.arange(0, 10, 2)),
+    ({'frames': [4, 6, 8]}, np.arange(4, 10, 2)),
+    ({'frames': [0, 3, 4, 3, 5]}, [0, 3, 4, 3, 5]),
+    ({'frames': [True, True, False, True, False, True, True, False, True,
+                 False]}, (0, 1, 3, 5, 6, 8)),
+])
+def test_frame_slice_parallel(run_kwargs, frames, client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)

@@ -105,7 +105,7 @@ and appropriate aggregation function for each of its results:
 
     class MyAnalysis(AnalysisBase):
         @classmethod
-        def available_backends(cls):
+        def get_supported_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
         @classmethod
