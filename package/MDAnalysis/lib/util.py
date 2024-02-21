@@ -2554,6 +2554,7 @@ def store_init_arguments(func):
         return func(self, *args, **kwargs)
     return wrapper
 
+
 def is_installed(modulename: str):
     """Checks if module is installed
 
