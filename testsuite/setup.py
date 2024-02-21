@@ -23,32 +23,27 @@
 #
 """Setuptools-based setup script for tests of MDAnalysis.
 
-A working installation of NumPy <http://numpy.scipy.org> is required.
+A working installation of MDAnalysis of the same version is required.
 
 For a basic installation just type the command::
 
-  python setup.py install
+  pip install .
 
-For more in-depth instructions, see the installation section at the
-MDAnalysis Wiki:
+For more in-depth instructions, see the installation section in the
+MDAnalysis User Guide:
 
-  https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
+  https://userguide.mdanalysis.org/stable/installation.html
 
 Also free to ask on GitHub Discussions for help:
 
   https://github.com/MDAnalysis/mdanalysis/discussions
 
-(Note that the group really is called `mdnalysis-discussion' because
-Google groups forbids any name that contains the string `anal'.)
 """
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command import sdist
 
 import os
 import shutil
-import codecs
-import sys
-import warnings
 
 
 class MDA_SDist(sdist.sdist):
@@ -77,122 +72,16 @@ class MDA_SDist(sdist.sdist):
                 os.remove(os.path.join(here, 'AUTHORS'))
 
 
-# Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 9):
-    print("MDAnalysis requires Python 3.9 or better. "
-          "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
-    print("Please upgrade your version of Python.")
-    sys.exit(-1)
-
-
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
     RELEASE = "2.8.0-dev0"
-    with open("README") as summary:
-        LONG_DESCRIPTION = summary.read()
 
-    CLASSIFIERS = [
-        'Development Status :: 6 - Mature',
-        'Environment :: Console',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-        'Operating System :: POSIX',
-        'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows ',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: C',
-        'Topic :: Scientific/Engineering',
-        'Topic :: Scientific/Engineering :: Bio-Informatics',
-        'Topic :: Scientific/Engineering :: Chemistry',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-    ]
-
-    setup(name='MDAnalysisTests',
-          version=RELEASE,
-          description='MDAnalysis testsuite',
-          long_description=LONG_DESCRIPTION,
-          long_description_content_type='text/x-rst',
-          author='MDAnalysis Development Team',
-          author_email='mdanalysis@numfocus.org',
-          maintainer='MDAnalysis Core Developers',
-          maintainer_email='mdanalysis@numfocus.org',
-          url='https://www.mdanalysis.org',
-          download_url='https://github.com/MDAnalysis/mdanalysis/releases',
-          project_urls={'Documentation': 'https://userguide.mdanalysis.org/stable/testing.html',
-                        'CI Coverage': 'https://codecov.io/gh/MDAnalysis/mdanalysis',
-                        'Developer Group': 'https://groups.google.com/g/mdnalysis-devel',
-                        'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
-                        'Source': 'https://github.com/mdanalysis/mdanalysis',
-                        },
-          license='GPL-3.0-or-later',
-          classifiers=CLASSIFIERS,
-          packages=find_packages(),
-          package_dir={'MDAnalysisTests': 'MDAnalysisTests',
-                       'MDAnalysisTests.plugins': 'MDAnalysisTests/plugins'},
-          package_data={'MDAnalysisTests':
-                        ['data/*.psf', 'data/*.dcd', 'data/*.pdb',
-                         'data/tprs/*.tpr',
-                         'data/tprs/all_bonded/*.gro',
-                         'data/tprs/all_bonded/*.top',
-                         'data/tprs/all_bonded/*.mdp', 'data/*.tpr',
-                         'data/tprs/*/*.tpr',
-                         'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
-                         'data/*.crd', 'data/*.xyz',
-                         'data/Amber/*.bz2',
-                         'data/Amber/*.prmtop', 'data/Amber/*.top',
-                         'data/Amber/*.parm7',
-                         'data/Amber/*.rst7',
-                         'data/Amber/*.trj', 'data/Amber/*.mdcrd',
-                         'data/Amber/*.ncdf', 'data/Amber/*.nc',
-                         'data/Amber/*.inpcrd',
-                         'data/gromos11/*.gz', 'data/gromos11/*.trc',
-                         'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2', 'data/*.gz',
-                         'data/*.ent',
-                         'data/*.fasta',
-                         'data/*.dat',
-                         'data/*.dms',
-                         'data/merge/2zmm/*.pdb',
-                         'data/*.trz',
-                         'data/mol2/*.mol2',
-                         'data/contacts/*.gro.bz2', 'data/contacts/*.dat',
-                         'data/capping/*.gro', 'data/capping/*.pdb',
-                         'data/lammps/*',
-                         'data/gms/*.xyz', 'data/gms/*.gms',
-                         'data/gms/*.gms.gz',
-                         'data/*.inpcrd',
-                         'data/dlpoly/CONFIG*',
-                         'data/dlpoly/HISTORY*',
-                         'data/*.xml',
-                         'data/coordinates/*',
-                         'data/*xvg',
-                         'data/*.mmtf', 'data/*.mmtf.gz',
-                         'data/analysis/*',
-                         'data/*.gsd',
-                         'data/windows/*',
-                         'data/*.itp', "data/gromacs/gromos54a7_edited.ff/*",
-                         'data/*.coor',
-                         'data/*.h5md',
-                         'data/*.in',
-                         'data/*.top',
-                         'data/*.sdf',
-                         'data/*.edr',
-                         'data/*.tng',
-                         'data/*.pdbx',
-                         'data/*.txt',
-                        ],
-          },
-          python_requires='>=3.9',
-          install_requires=[
-              'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
-              'hypothesis',
-          ],
-          # had 'KeyError' as zipped egg (2MB savings are not worth the
-          # trouble)
-          zip_safe=False,
-          cmdclass={'sdist': MDA_SDist},
-          )
+    setup(
+        version=RELEASE,
+        install_requires=[
+            'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
+            'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
+            'hypothesis',
+        ],
+        cmdclass={'sdist': MDA_SDist},
+    )
