@@ -31,9 +31,9 @@ For a basic installation just type the command::
   pip install .
 
 For more in-depth instructions, see the installation section at the
-MDAnalysis Wiki:
+MDAnalysis User Guide:
 
-  https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
+  https://userguide.mdanalysis.org/stable/installation.html
 
 Also free to ask on GitHub Discussions for help:
 
@@ -53,13 +53,6 @@ import shutil
 import tempfile
 import warnings
 import platform
-
-# Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 9):
-    print('MDAnalysis requires Python 3.9+. Python {0:d}.{1:d} detected'.format(*
-          sys.version_info[:2]))
-    print('Please upgrade your version of Python.')
-    sys.exit(-1)
 
 import configparser
 from subprocess import getoutput
@@ -582,7 +575,6 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires='>=3.9',
           test_suite="MDAnalysisTests",
           tests_require=[
               'MDAnalysisTests=={0!s}'.format(RELEASE),  # same as this release!
