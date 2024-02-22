@@ -579,8 +579,6 @@ if __name__ == '__main__':
           tests_require=[
               'MDAnalysisTests=={0!s}'.format(RELEASE),  # same as this release!
           ],
-          zip_safe=False,  # as a zipped egg the *.so files are not found (at
-                           # least in Ubuntu/Linux)
     )
 
     # Releases keep their cythonized stuff for shipping.
