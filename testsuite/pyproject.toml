@@ -156,7 +156,7 @@ filterwarnings = [
     # don't enforce for third party packages though:
     "ignore:`np.*` is a deprecated alias for the builtin:DeprecationWarning:networkx.*:",
     "error:Creating an ndarray from ragged nested sequences",
-    "error:invalid escape sequence \\:DeprecationWarning",
+    "error:invalid escape sequence \\\\:DeprecationWarning",
     # Ignore frequent errors popping up in our tests
     # Elements
     "ignore:Element information:UserWarning",
