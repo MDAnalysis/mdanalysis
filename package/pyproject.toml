@@ -111,3 +111,11 @@ Source = 'https://github.com/mdanalysis/mdanalysis'
 # as a zipped egg the *.so files are not found (at
 # least in Ubuntu/Linux)
 zip-safe = false
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools.package-data]
+MDAnalysis = [
+    'analysis/data/*.npy',
+]

@@ -569,11 +569,6 @@ if __name__ == '__main__':
           long_description_content_type='text/x-rst',
           license='GPL-3.0-or-later',
           provides=['MDAnalysis'],
-          packages=find_packages(),
-          package_data={'MDAnalysis':
-                        ['analysis/data/*.npy',
-                        ],
-          },
           ext_modules=exts,
           test_suite="MDAnalysisTests",
           tests_require=[
