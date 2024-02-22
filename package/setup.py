@@ -567,7 +567,7 @@ if __name__ == '__main__':
           version=RELEASE,
           long_description=LONG_DESCRIPTION,
           long_description_content_type='text/x-rst',
-          license='GPL-3.0-or-later',
+          # currently unused & may become obsolte see setuptools #1569
           provides=['MDAnalysis'],
           ext_modules=exts,
           test_suite="MDAnalysisTests",
