@@ -507,15 +507,15 @@ cdef class Timestep:
           [80. 80. 80. 60. 60. 90.]
           >>> print(np.round(ts.triclinic_dimensions))
           [[80.  0.  0.]
-          [ 0. 80.  0.]
-          [40. 40. 57.]]
+           [ 0. 80.  0.]
+           [40. 40. 57.]]
 
         Setting the attribute also works::
           
           .. doctest::
           
           >>> ts.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
-          >>> print(np.round(ts_2.dimensions))
+          >>> print(np.round(ts.dimensions))
           [15. 16. 17. 68. 72. 72.]
           
         See Also
