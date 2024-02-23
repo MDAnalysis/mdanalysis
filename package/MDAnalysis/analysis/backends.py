@@ -59,8 +59,6 @@ class BackendBase:
         dict
             dictionary with `condition: error_message` pairs that will get
             checked during _validate() run
-
-        .. versionadded:: 2.8.0
         """
         return {
             isinstance(self.n_workers, int) and self.n_workers > 0:
@@ -76,8 +74,6 @@ class BackendBase:
         dict
             dictionary with `condition: warning_message` pairs that will get
             checked during _validate() run
-
-        .. versionadded:: 2.8.0
         """
         return dict()
 
@@ -89,8 +85,6 @@ class BackendBase:
         ------
         ValueError
             if one of the conditions in :meth:`self._get_checks()` is True
-
-        .. versionadded:: 2.8.0
         """
         for check, msg in self._get_checks().items():
             if not check:
@@ -116,8 +110,6 @@ class BackendBase:
         -------
         list
             list of results of the function
-
-        .. versionadded:: 2.8.0
         """
         raise NotImplementedError
 
@@ -145,8 +137,6 @@ class BackendSerial(BackendBase):
         dict
             dictionary with `condition: warning_message` pairs that will get
             checked during _validate() run
-
-        .. versionadded:: 2.8.0
         """
         return {
             self.n_workers == 1:
@@ -168,8 +158,6 @@ class BackendSerial(BackendBase):
         -------
         list
             list of results of the function
-
-        .. versionadded:: 2.8.0
         """
         return [func(task) for task in computations]
 
@@ -212,8 +200,6 @@ class BackendMultiprocessing(BackendBase):
         -------
         list
             list of results of the function
-
-        .. versionadded:: 2.8.0
         """
         from multiprocessing import Pool
 
@@ -263,8 +249,6 @@ class BackendDask(BackendBase):
         -------
         list
             list of results of the function
-
-        .. versionadded:: 2.8.0
         """
         from dask.delayed import delayed
         import dask
@@ -286,8 +270,6 @@ class BackendDask(BackendBase):
         dict
             dictionary with `condition: error_message` pairs that will get
             checked during _validate() run
-
-        .. versionadded:: 2.8.0
         """
         base_checks = super()._get_checks()
         checks = {
