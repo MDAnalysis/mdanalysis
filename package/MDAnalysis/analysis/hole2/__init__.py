@@ -34,15 +34,6 @@ This module contains the tools to interface with HOLE_
 :footcite:p:`Smart1993,Smart1996` to analyse an ion channel pore or transporter
 pathway :footcite:p:`Stelzl2014`.
 
-.. deprecated:: 2.8.0
-  This module is deprecated in favour of the mdakit
-  `mdahole2 <https://www.mdanalysis.org/mdahole2/>`_ and
-  will be removed in MDAnalysis 3.0.0.
-
-See Also
---------
-:mod:`mdahole2.analysis.hole`
-
 """
 from .hole import hole, HoleAnalysis
 from .utils import create_vmd_surface
