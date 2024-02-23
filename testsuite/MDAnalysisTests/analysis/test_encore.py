@@ -32,7 +32,7 @@ import warnings
 import platform
 
 import pytest
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+from numpy.testing import assert_equal, assert_allclose
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
 from MDAnalysisTests import block_import
@@ -412,8 +412,8 @@ inconsistent results")
 
         assert_allclose(average, expected_average, rtol=0, atol=1.5e-1,
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
-        assert_almost_equal(stdev, expected_stdev, decimal=0,
-                            err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
+        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5,
+                            err_msg="Unexpected standard deviation  for bootstrapped samples in Clustering Ensemble similarity")
 
     def test_ces_error_estimation_ensemble_bootstrap(self, ens1):
         # Error estimation using a method that does not take a distance
@@ -822,7 +822,7 @@ class TestEncoreDimensionalityReduction(object):
             encore.reduce_dimensionality([ens1, ens2, ens1])
         coordinates_ens1 = coordinates[:,np.where(details["ensemble_membership"]==1)]
         coordinates_ens3 = coordinates[:,np.where(details["ensemble_membership"]==3)]
-        assert_almost_equal(coordinates_ens1, coordinates_ens3, decimal=0,
+        assert_allclose(coordinates_ens1, coordinates_ens3, rtol=0, atol=1.5,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
 

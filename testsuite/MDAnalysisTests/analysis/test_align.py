@@ -36,7 +36,6 @@ from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
 from numpy.testing import (
     assert_equal,
     assert_array_equal,
-    assert_array_almost_equal,
     assert_allclose,
 )
 
@@ -318,7 +317,7 @@ class TestAlign(object):
         x_weights = align.AlignTraj(universe, reference,
                                     filename=outfile, weights=weights).run()
 
-        assert_array_almost_equal(x.results.rmsd, x_weights.results.rmsd)
+        assert_allclose(x.results.rmsd, x_weights.results.rmsd, rtol=0, atol=1.5e-7)
 
     def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
@@ -393,8 +392,8 @@ class TestAlign(object):
         segB_free.translate(segB_bound.centroid() - segB_free.centroid())
 
         align.alignto(u_free, u_bound, select=selection)
-        assert_array_almost_equal(segB_bound.positions, segB_free.positions,
-                                  decimal=3)
+        assert_allclose(segB_bound.positions, segB_free.positions,
+                                  rtol=0, atol=1.5e-7)
 
 
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
