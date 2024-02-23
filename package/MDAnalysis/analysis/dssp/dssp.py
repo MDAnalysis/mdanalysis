@@ -144,7 +144,7 @@ due.cite(
 del Doi
 
 
-try:
+try:  # pragma: no cover
     from pydssp.pydssp_numpy import (
         assign,
         _get_hydrogen_atom_position,
