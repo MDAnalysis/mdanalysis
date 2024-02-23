@@ -3336,8 +3336,3 @@ Testsuite
 
 11/12/07 naveen
   * prepared for release outside lab
-
-24/02/23 aditya292002
-  * "updated tests that used assert_almost_equal(..., decimal={N}) with equivalent assert_allclose(..., rtol=0, atol=1.5e-{N}) (issue modernize testing code #3743, PR Replaced numpy.testing.assert_almost_equal to numpy.testing.assert_allclose #4438)"
-
-  /workspaces/mdanalysis/package/CHANGELOG
