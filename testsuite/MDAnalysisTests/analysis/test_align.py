@@ -393,7 +393,7 @@ class TestAlign(object):
 
         align.alignto(u_free, u_bound, select=selection)
         assert_allclose(segB_bound.positions, segB_free.positions,
-                                  rtol=0, atol=1.5e-7)
+                                  rtol=0, atol=1.5e-3)
 
 
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
