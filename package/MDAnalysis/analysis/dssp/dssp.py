@@ -13,7 +13,7 @@ and use it to assign protein secondary structure (:class:`DSSP`).
 
 This module uses the python version of the original algorithm by Kabsch & Sander (1983),
 re-implemented by @ShintaroMinami and available under MIT license
-[here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
+from [ShintaroMinami/PyDSSP](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
 Note that this implementation does not discriminate different types of beta-sheets,
 as well as different types of helices, meaning you will get 3_10 helices
 and pi-helices labelled as "helix" too.
