@@ -39,15 +39,14 @@ requires-python = ">=3.9"
 dynamic = ["version", "dependencies"]
 
 [project.urls]
-"Project URL" = "https://www.mdanalysis.org"
-"Download URL" = "https://github.com/MDAnalysis/mdanalysis/releases"
+Homepage = "https://www.mdanalysis.org"
+Download = "https://github.com/MDAnalysis/mdanalysis/releases"
 Documentation = "https://docs.mdanalysis.org/"
 "User Guide" = "https://userguide.mdanalysis.org/"
 "Issue Tracker" = "https://github.com/mdanalysis/mdanalysis/issues"
 "Github Discussions" = "https://github.com/MDAnalysis/mdanalysis/discussions"
 Discord = "https://discord.com/channels/807348386012987462/"
 Blog = "https://www.mdanalysis.org/blog/"
-Twitter = "https://twitter.com/mdanalysis"
 Source = "https://github.com/mdanalysis/mdanalysis"
 
 [tool.setuptools]
