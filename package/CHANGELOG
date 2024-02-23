@@ -53,6 +53,13 @@ Deprecations
          richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 
          JoStoe, jennaswa, ljwoods2
 
+
+ * 2.8.0
+
+Enhancements
+  * Add calculation for the accessible surface area, and relative accessible
+    surface area using Shrake-Rupley algorithm (PR #2439)
+
  * 2.7.0
 
 Fixes
