@@ -176,8 +176,22 @@ def test_fails_for_unparallelizable(u, run_class, backend, n_workers):
     ({'stop': 30}, np.arange(30)),
     ({'step': 10}, np.arange(0, 98, 10))
 ])
-def test_start_stop_step(u, run_kwargs, frames, client_FrameAnalysis):
+def test_start_stop_step_parallel(u, run_kwargs, frames, client_FrameAnalysis):
     an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
+    assert an.n_frames == len(frames)
+    assert_equal(an.found_frames, frames)
+    assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
+    assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
+
+
+@pytest.mark.parametrize('run_kwargs,frames', [
+    ({}, np.arange(98)),
+    ({'start': 20}, np.arange(20, 98)),
+    ({'stop': 30}, np.arange(30)),
+    ({'step': 10}, np.arange(0, 98, 10))
+])
+def test_start_stop_step(u, run_kwargs, frames):
+    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)

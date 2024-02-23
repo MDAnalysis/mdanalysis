@@ -93,7 +93,7 @@ class Results(UserDict):
     .. versionadded:: 2.0.0
 
     .. versionchanged:: 2.8.0
-        Moved :class:`Results` to `MDAnalysis.analysis.results`
+        Moved :class:`Results` to :mod:`MDAnalysis.analysis.results`
     """
 
     def _validate_key(self, key):
@@ -156,19 +156,23 @@ class ResultsGroup:
 
     Examples
     --------
-    >>> from MDAnalysis.analysis.results import ResultsGroup, Results
-    >>> group = ResultsGroup(lookup={'mass': ResultsGroup.float_mean})
-    >>> obj1 = Results(mass=1)
-    >>> obj2 = Results(mass=3)
-    >>> group.merge([obj1, obj2])
-    {'mass': 2.0}
 
-    >>> # you can also set `None` for those attributes that you want to skip
-    >>> lookup = {'mass': ResultsGroup.float_mean, 'trajectory': None}
-    >>> group = ResultsGroup(lookup)
-    >>> objects = [Results(mass=1, skip=None), Results(mass=3, skip=object)]
-    >>> group.merge(objects, require_all_aggregators=False)
-    {'mass': 2.0}
+    .. code-block:: python
+
+        from MDAnalysis.analysis.results import ResultsGroup, Results
+        group = ResultsGroup(lookup={'mass': ResultsGroup.float_mean})
+        obj1 = Results(mass=1)
+        obj2 = Results(mass=3)
+        assert {'mass': 2.0} == group.merge([obj1, obj2])
+    
+
+    .. code-block:: python
+
+        # you can also set `None` for those attributes that you want to skip
+        lookup = {'mass': ResultsGroup.float_mean, 'trajectory': None}
+        group = ResultsGroup(lookup)
+        objects = [Results(mass=1, skip=None), Results(mass=3, skip=object)]
+        assert group.merge(objects, require_all_aggregators=False) == {'mass': 2.0}
 
     .. versionadded:: 2.8.0
     """
@@ -193,7 +197,7 @@ class ResultsGroup:
         Raises
         ------
         ValueError
-            if no aggregation function for a key is found and `require_all_aggregators=True`
+            if no aggregation function for a key is found and ``require_all_aggregators=True``
         """
         if len(objects) == 1:
             merged_results = objects[0]
@@ -227,7 +231,7 @@ class ResultsGroup:
 
     @staticmethod
     def ndarray_sum(arrs: list[np.ndarray]):
-        """sums an ndarray along `axis=0`
+        """sums an ndarray along ``axis=0``
 
         Parameters
         ----------
@@ -243,7 +247,7 @@ class ResultsGroup:
 
     @staticmethod
     def ndarray_mean(arrs: list[np.ndarray]):
-        """calculates mean of input ndarrays along `axis=0`
+        """calculates mean of input ndarrays along ``axis=0``
 
         Parameters
         ----------

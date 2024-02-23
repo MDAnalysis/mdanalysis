@@ -6,7 +6,7 @@ Parallel analysis
 
 Starting v.2.8.0, MDAnalysis has introduced process-based parallelization for
 virtually all analysis classes. This page will briefly explain what has changed
-in the :class:`mdanalysis.analysis.base.AnalysisBase` protocol, how it affects
+in the :class:`MDanalysis.analysis.base.AnalysisBase` protocol, how it affects
 users and developers, when you should use parallelization (almost always!), and
 when you can abstain from doing so (rarely).
 
@@ -85,7 +85,7 @@ New methods in ``AnalysisBase``
 
 From a user point of new, there are no new (non-trivial) methods. Meaning, if
 you want to write your own analysis class, you still have to implement only
-`_prepare`, `_single_frame` and `_conclude`. However, from a developer point of
+``_prepare``, ``_single_frame`` and ``_conclude``. However, from a developer point of
 view, there are few:
 
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._define_run_frames`
@@ -121,7 +121,7 @@ by default equal to the number of workers.
 
 In the ``_compute`` method, frames get initialized again with
 ``_prepare_sliced_trajectory``, and also attributes necessary for a specific
-analysis get initialized with `_prepare` method. Then the function iterates over
+analysis get initialized with ``_prepare`` method. Then the function iterates over
 ``self._sliced_trajectory``, assigning ``self._frame_index`` and ``self._ts`` as
 frame index (within a computation group) and timestamp, and also setting
 respective ``self.frames`` and ``self.times`` array values.
@@ -175,7 +175,7 @@ default the ``serial`` version will be run, and the parallelization won't be
 enabled by default. Although we expect the parallelization to be useful in most
 cases, there are some known caveats from the inital benchmarks.
 
-Fast `_single_frame` compared to reading from disk
+Fast ``_single_frame`` compared to reading from disk
 --------------------------------------------------
 
 In all cases, parallelization will be useful only when frames are being

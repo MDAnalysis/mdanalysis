@@ -99,7 +99,9 @@ and define at least the :meth:`_single_frame` method, as described in
 
 If your analysis is operating independently on each frame, you might consider
 making it parallelizable via adding ``get_supported_backends()`` method,
-and appropriate aggregation function for each of its results:
+and appropriate aggregation function for each of its results. For example, if
+you have your ``_single_frame()`` method storing important values under
+``self.results.timeseries``, you will write:
 
 .. code-block:: python
 
@@ -113,7 +115,7 @@ and appropriate aggregation function for each of its results:
           return True
 
         def _get_aggregator(self):
-          return ResultsGroup(lookup={'some_timeseries': ResultsGroup.ndarray_vstack})
+          return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
 
 See :mod:`MDAnalysis.analysis.results` for aggregation reference.
 
@@ -146,7 +148,7 @@ import inspect
 import itertools
 import logging
 import warnings
-from functools import partial, wraps
+from functools import partial
 from typing import Iterable, Union
 
 import numpy as np
@@ -171,8 +173,8 @@ class AnalysisBase(object):
     To define a new Analysis, :class:`AnalysisBase` needs to be subclassed
     and :meth:`_single_frame` must be defined. It is also possible to define
     :meth:`_prepare` and :meth:`_conclude` for pre- and post-processing.
-    All results should be stored as attributes of the :class:`Results`
-    container.
+    All results should be stored as attributes of the
+    :class:`MDAnalysis.analysis.results.Results` container.
 
     Parameters
     ----------
@@ -260,8 +262,8 @@ class AnalysisBase(object):
     @classmethod
     def get_supported_backends(cls):
         """Tuple with backends supported by the core library for a given class.
-        User can pass either one of these values as `backend=...` to
-        :meth:`run()` method, or a custom object that has `apply` method
+        User can pass either one of these values as ``backend=...`` to
+        :meth:`run()` method, or a custom object that has ``apply`` method
         (see documentation for :meth:`run()`):
 
          - 'serial': no parallelization
@@ -271,7 +273,7 @@ class AnalysisBase(object):
 
         If you want to add your own backend to an existing class, pass a
         :class:`backends.BackendBase` subclass (see its documentation to learn
-        how to implement it properly), and specify `unsupported_backend=True`.
+        how to implement it properly), and specify ``unsupported_backend=True``.
 
         Returns
         -------
@@ -285,13 +287,13 @@ class AnalysisBase(object):
         """Boolean mark showing that a given class can be parallelizable with
         split-apply-combine procedure. Namely, if we can safely distribute
         :meth:`_single_frame` to multiple workers and then combine them with a
-        proper :meth:`_conclude` call. If set to `False`, no backends except
-        for `serial` are supported.
+        proper :meth:`_conclude` call. If set to ``False``, no backends except
+        for ``serial`` are supported.
 
         Returns
         -------
         bool
-            if a given `AnalysisBase` subclass is parallelizable with
+            if a given ``AnalysisBase`` subclass is parallelizable with
             split-apply-combine, or not
         """
         return False
@@ -318,7 +320,7 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame, by default None
         frames : array_like, optional
             array of integers or booleans to slice trajectory; cannot be 
-            combined with `start`, `stop`, `step`; by default None
+            combined with ``start``, ``stop``, ``step``; by default None
 
         Returns
         -------
@@ -329,7 +331,7 @@ class AnalysisBase(object):
         Raises
         ------
         ValueError
-            if *both* `frames` and at least one of `start`, `stop`, or `step` 
+            if *both* `frames` and at least one of ``start``, ``stop``, or ``step`` 
             is provided (i.e. set to not ``None`` value).
 
         .. versionadded:: 2.8.0
@@ -380,14 +382,14 @@ class AnalysisBase(object):
         .. versionadded:: 2.2.0
         frames : array_like, optional
             array of integers or booleans to slice trajectory; cannot be
-            combined with `start`, `stop`, `step`
+            combined with ``start``, ``stop``, ``step``
 
 
         Raises
         ------
         ValueError
-            if *both* `frames` and at least one of `start`, `stop`, or `frames`
-            is provided (i.e., set to another value than ``None``)
+            if *both* `frames` and at least one of ``start``, ``stop``, or
+            ``frames`` is provided (i.e., set to another value than ``None``)
 
 
         .. versionchanged:: 1.0.0
@@ -413,22 +415,23 @@ class AnalysisBase(object):
 
         Don't worry about normalising, just deal with a single frame.
         Attributes accessible during your calculations:
-          - `self._frame_index`: index of the frame in results array
-          - `self._ts` -- frame timestamp value
-          - `self._sliced_trajectory` -- trajectory that you're iterating over
-          - `self.results` -- :class:`MDAnalysis.analysis.results.Results` instance
+
+          - ``self._frame_index``: index of the frame in results array
+          - ``self._ts`` -- frame timestamp value
+          - ``self._sliced_trajectory`` -- trajectory that you're iterating over
+          - ``self.results`` -- :class:`MDAnalysis.analysis.results.Results` instance
             holding run results initialized in :meth:`_prepare`.
         """
         raise NotImplementedError("Only implemented in child classes")
 
     def _prepare(self):
         """
-        Set things up before the analysis loop begins.
-        Note that `self.results` is initialized already in :meth:`self.__init__`
-        with an empty instance of :class:`MDAnalysis.analysis.results.Results`
-        object. You can still call your attributes as if they were usual ones,
-        `Results` just keeps track of that to be able to run a proper aggregation
-        after a parallel run, if necessary.
+        Set things up before the analysis loop begins. Note that
+        ``self.results`` is initialized already in :meth:`self.__init__` with an
+        empty instance of :class:`MDAnalysis.analysis.results.Results` object.
+        You can still call your attributes as if they were usual ones,
+        ``Results`` just keeps track of that to be able to run a proper
+        aggregation after a parallel run, if necessary.
         """
         pass  # pylint: disable=unnecessary-pass
 
@@ -436,10 +439,10 @@ class AnalysisBase(object):
         """Finalize the results you've gathered.
 
         Called at the end of the :meth:`run` method to finish everything up.
-        Note that aggregation of results from individual workers happens
-        in :meth:`self.run()`, so here you have to implement everything as if
-        you had a non-parallel run. If you want to enable proper aggregation
-        for parallel runs for you analysis class, implement `self._get_aggregator`
+        Note that aggregation of results from individual workers happens in
+        :meth:`self.run()`, so here you have to implement everything as if you
+        had a non-parallel run. If you want to enable proper aggregation for
+        parallel runs for you analysis class, implement ``self._get_aggregator``
         and check :mod:`MDAnalysis.analysis.results` for how to use it.
         """
         pass  # pylint: disable=unnecessary-pass
@@ -453,8 +456,8 @@ class AnalysisBase(object):
         Parameters
         ----------
         indexed_frames : np.ndarray
-            np.ndarray of (n, 2) shape, where first column is frame iteration indices
-            and second is frame numbers
+            np.ndarray of (n, 2) shape, where first column is frame iteration
+            indices and second is frame numbers
 
         verbose : bool, optional
             Turn on verbosity
@@ -496,8 +499,8 @@ class AnalysisBase(object):
         frames: Union[slice, np.ndarray] = None
     ) -> list[np.ndarray]:
         """
-        Splits the trajectory frames, defined by `start/stop/step` or `frames`, into
-        `n_parts` even groups, preserving their indices.
+        Splits the trajectory frames, defined by ``start/stop/step`` or
+        ``frames``, into ``n_parts`` even groups, preserving their indices.
 
         Parameters
         ----------
@@ -510,16 +513,16 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; `frames` can
-            only be used *instead* of `start`, `stop`, and `step`. Setting
-            *both* `frames` and at least one of `start`, `stop`, `step` to a
-            non-default value will raise a :exc:`ValueError`.
+            array of integers or booleans to slice trajectory; ``frames`` can
+            only be used *instead* of ``start``, ``stop``, and ``step``. Setting
+            *both* ``frames`` and at least one of ``start``, ``stop``, ``step``
+            to a non-default value will raise a :exc:`ValueError`.
 
         Raises
         ------
         ValueError
-            if *both* `frames` and at least one of `start`, `stop`, or `frames`
-            is provided (i.e., set to another value than ``None``)
+            if *both* ``frames`` and at least one of ``start``, ``stop``, or
+            ``frames`` is provided (i.e., set to another value than ``None``)
 
         Returns
         -------
@@ -559,10 +562,10 @@ class AnalysisBase(object):
         ----------
         backend : Union[str, BackendBase]
             backend to be used:
-               - `str` is matched to a builtin backend (one of `serial`,
-               `multiprocessing` and `dask`)
-               - `BackendBase` subclass is checked for the presence of
-               `apply` method
+               - ``str`` is matched to a builtin backend (one of ``serial``,
+               ``multiprocessing`` and ``dask``)
+               - ``BackendBase`` subclass is checked for the presence of
+               ``apply`` method
         n_workers : int
             positive integer with number of workers (processes, in case of
             built-in backends) to split the work between
@@ -573,15 +576,16 @@ class AnalysisBase(object):
         Returns
         -------
         BackendBase
-            instance of a `BackendBase` class that will be used for computations
+            instance of a ``BackendBase`` class that will be used for computations
 
         Raises
         ------
         ValueError
-            if :meth:`_is_parallelizable()` is set to `False` but backend is not `serial`
+            if :meth:`_is_parallelizable()` is set to ``False`` but backend is
+            not ``serial``
         ValueError
-            if `_is_parallelizable()` and you're using custom backend instance
-            without specifying `unsupported_backend=True`
+            if ``_is_parallelizable()`` and you're using custom backend instance
+            without specifying ``unsupported_backend=True``
         ValueError
             if your trajectory has associated parallelizable transformations
             but backend is not serial
@@ -589,7 +593,7 @@ class AnalysisBase(object):
             if ``n_workers`` was specified twice -- in the run() method and durin
             ``__init__`` of a custom backend
         ValueError
-            if your backend object instance doesn't have an `apply` method
+            if your backend object instance doesn't have an ``apply`` method
 
         .. versionadded:: 2.8.0
         """
@@ -675,10 +679,10 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; `frames` can
-            only be used *instead* of `start`, `stop`, and `step`. Setting
-            *both* `frames` and at least one of `start`, `stop`, `step` to a
-            non-default value will raise a :exc:`ValueError`.
+            array of integers or booleans to slice trajectory; ``frames`` can
+            only be used *instead* of ``start``, ``stop``, and ``step``. Setting
+            *both* ``frames`` and at least one of ``start``, ``stop``, ``step``
+            to a non-default value will raise a :exc:`ValueError`.
 
         .. versionadded:: 2.2.0
         verbose : bool, optional
@@ -688,7 +692,7 @@ class AnalysisBase(object):
         progressbar_kwargs : dict, optional
             ProgressBar keywords with custom parameters regarding progress bar
             position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
-            for full list. Available only for `backend='serial'`
+            for full list. Available only for ``backend='serial'``
         backend : Union[str, BackendBase], optional
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend: ``str`` is matched to a
@@ -715,9 +719,9 @@ class AnalysisBase(object):
             allowing to modify description, position etc of tqdm progressbars
 
         .. versionadded:: 2.8.0
-            Introduced `backend`, `n_workers`, `n_parts` and `unsupported_backend`
-            keywords, and refactored the method logic to support parallelizable
-            execution.
+            Introduced ``backend``, ``n_workers``, ``n_parts`` and
+            ``unsupported_backend`` keywords, and refactored the method logic to
+            support parallelizable execution.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend

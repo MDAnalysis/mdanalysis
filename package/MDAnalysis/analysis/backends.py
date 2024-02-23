@@ -51,14 +51,14 @@ class BackendBase:
         self._validate()
 
     def _get_checks(self):
-        """Get dictionary with `condition: error_message` pairs that ensure the
+        """Get dictionary with ``condition: error_message`` pairs that ensure the
         validity of the backend instance
 
         Returns
         -------
         dict
-            dictionary with `condition: error_message` pairs that will get
-            checked during _validate() run
+            dictionary with ``condition: error_message`` pairs that will get
+            checked during ``_validate()`` run
         """
         return {
             isinstance(self.n_workers, int) and self.n_workers > 0:
@@ -66,20 +66,20 @@ class BackendBase:
         }
 
     def _get_warnings(self):
-        """Get dictionary with `condition: warning_message` pairs that ensure
+        """Get dictionary with ``condition: warning_message`` pairs that ensure
         the good usage of the backend instance
 
         Returns
         -------
         dict
-            dictionary with `condition: warning_message` pairs that will get
-            checked during _validate() run
+            dictionary with ``condition: warning_message`` pairs that will get
+            checked during ``_validate()`` run
         """
         return dict()
 
     def _validate(self):
-        """Check correctness (e.g. `dask` is installed if using `backend='dask'`)
-        and good usage (e.g. `n_workers=1` if backend is serial) of the backend
+        """Check correctness (e.g. ``dask`` is installed if using ``backend='dask'``)
+        and good usage (e.g. ``n_workers=1`` if backend is serial) of the backend
 
         Raises
         ------
@@ -94,9 +94,9 @@ class BackendBase:
                 warnings.warn(msg)
 
     def apply(self, func: Callable, computations: list) -> list:
-        """Main function that will get called when using an instance of `BackendBase`,
-        mapping function to all tasks in the `computations` list. Should effectively
-        be equivalent to running `[func(item) for item in computations]`
+        """Main function that will get called when using an instance of ``BackendBase``,
+        mapping function to all tasks in the ``computations`` list. Should effectively
+        be equivalent to running ``[func(item) for item in computations]``
         while using the parallel backend capabilities.
 
         Parameters
@@ -128,15 +128,15 @@ class BackendSerial(BackendBase):
     """
 
     def _get_warnings(self):
-        """Get dictionary with `condition: warning_message` pairs that ensure
+        """Get dictionary with ``condition: warning_message`` pairs that ensure
         the good usage of the backend instance. Here, it checks if the number
         of workers is not 1, otherwise gives warning.
 
         Returns
         -------
         dict
-            dictionary with `condition: warning_message` pairs that will get
-            checked during _validate() run
+            dictionary with ``condition: warning_message`` pairs that will get
+            checked during ``_validate()`` run
         """
         return {
             self.n_workers == 1:
@@ -209,7 +209,7 @@ class BackendMultiprocessing(BackendBase):
 
 class BackendDask(BackendBase):
     """A built-in backend that executes a given function using dask.delayed.compute
-    method with `scheduler='processes'` and `chunksize=1` (this ensures uniform
+    method with ``scheduler='processes'`` and ``chunksize=1`` (this ensures uniform
     distribution of tasks among processes). Requires `dask` module to be installed;
     see [documentation](https://docs.dask.org/en/stable/install.html)
 
@@ -260,15 +260,15 @@ class BackendDask(BackendBase):
         return results
 
     def _get_checks(self):
-        """Get dictionary with `condition: error_message` pairs that ensure the
+        """Get dictionary with ``condition: error_message`` pairs that ensure the
         validity of the backend instance. Here checks if ``dask`` module is
         installed in the environment.
 
         Returns
         -------
         dict
-            dictionary with `condition: error_message` pairs that will get
-            checked during _validate() run
+            dictionary with ``condition: error_message`` pairs that will get
+            checked during ``_validate()`` run
         """
         base_checks = super()._get_checks()
         checks = {
