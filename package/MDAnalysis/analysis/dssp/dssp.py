@@ -11,23 +11,22 @@ Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.anal
 The module contains code to build hydrogend bond contact map,
 and use it to assign protein secondary structure (:class:`DSSP`).
 
-This module uses the python version of the original algorithm by Kabsch & Sander (1983),
-re-implemented by @ShintaroMinami and available under MIT license
+This module uses the python version of the original algorithm by Kabsch & Sander
+[Kabsch1983]_, re-implemented by @ShintaroMinami and available under MIT license
 [here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
-Note that this implementation does not discriminate different types of beta-sheets,
-as well as different types of helices, meaning you will get 3_10 helices
-and pi-helices labelled as "helix" too.
+Note that this implementation does not discriminate different types of
+beta-sheets, as well as different types of helices, meaning you will get 3_10
+helices and pi-helices labelled as "helix" too.
 
 
 Using original `pydssp`
 ----------------------
 
-The default implementation uses the original `pydssp` (v.0.9.0) code,
-rewritten without usage of `einops` library and hence having no dependencies.
-If you want to explicitly use `pydssp` (or its particular version), install it
-to your current environment with `python3 -m pip install pydssp`. Please note
-that using `batch` parameter, as well as `torch.Tensor`, would still be
-inaccessible.
+The default implementation uses the original `pydssp` (v.0.9.0) code, rewritten
+without usage of `einops` library and hence having no dependencies. If you want
+to explicitly use `pydssp` (or its particular version), install it to your
+current environment with `python -m pip install pydssp`. Please note that using
+`batch` parameter, as well as `torch.Tensor`, would still be inaccessible.
 
 When using this module in published work please cite [Kabsch1983]_.
 
@@ -40,6 +39,7 @@ In this example we will simply print a string representing
 protein's secondary structure.
 
 .. code-block:: python
+
     from MDAnalysis.tests.datafiles import PDB
     from MDAnalysis.analysis.dssp import DSSP
     u = mda.Universe(PDB)
@@ -49,11 +49,13 @@ protein's secondary structure.
 
 Calculating average secondary structure of a trajectory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Here we take a trajectory and calculate its average secondary structure,
-i.e. assign a secondary structure label 'X' to a residue if most of the frames
-in the trajectory got assigned 'X' label.
+
+Here we take a trajectory and calculate its average secondary structure, i.e.
+assign a secondary structure label 'X' to a residue if most of the frames in the
+trajectory got assigned 'X' label.
 
 .. code-block:: python
+
     from MDAnalysis.analysis.dssp import DSSP, translate
     from MDAnalysisTests.datafiles import TPR, XTC
     u = mda.Universe(TPR, XTC)
