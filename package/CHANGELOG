@@ -34,6 +34,7 @@ Enhancements
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
 
 Changes
+ * Testsuite packaging now uses a pyproject.toml file (PR #4463)
  * Improvement of setuptools packaging, including deduplication of
    dependency lists (PR #4424)
  * As per NEP29, the minimum version of numpy has been raised to 1.23.
