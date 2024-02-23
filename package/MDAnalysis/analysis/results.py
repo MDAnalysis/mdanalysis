@@ -1,5 +1,5 @@
 """Analysis results and their aggregation --- :mod:`MDAnalysis.analysis.results`
-==============================================================
+================================================================================
 
 Module introduces two classes, :class:`Results` and :class:`ResultsGroup`,
 used for storing and aggregating data in
@@ -14,6 +14,7 @@ type, that holds all assigned attributes in :attr:`self.data` and
 allows for access either via dict-like syntax, or via class-like syntax:
 
 .. code-block:: python
+
     from MDAnalysis.analysis.results import Results
     r = Results()
     r.array = [1, 2, 3, 4]
@@ -26,6 +27,7 @@ that uses :meth:`ResultsGroup.merge()` method to aggregate results from
 multiple workers, initialized during a parallel run:
 
 .. code-block:: python
+
     from MDAnalysis.analysis.results import Results, ResultsGroup
     r1, r2 = Results(), Results()
     r1.masses = [1, 2, 3, 4, 5]

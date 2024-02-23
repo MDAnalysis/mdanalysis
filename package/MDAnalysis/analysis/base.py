@@ -98,7 +98,7 @@ and define at least the :meth:`_single_frame` method, as described in
 :class:`AnalysisBase`.
 
 If your analysis is operating independently on each frame, you might consider
-making it parallelizable via adding ``get_supported_backends()`` attribute,
+making it parallelizable via adding ``get_supported_backends()`` method,
 and appropriate aggregation function for each of its results:
 
 .. code-block:: python
@@ -263,10 +263,11 @@ class AnalysisBase(object):
         User can pass either one of these values as `backend=...` to
         :meth:`run()` method, or a custom object that has `apply` method
         (see documentation for :meth:`run()`):
+
          - 'serial': no parallelization
          - 'multiprocessing': parallelization using `multiprocessing.Pool`
-         - 'dask': parallelization using `dask.delayed.compute()`.
-         Requires installation of `mdanalysis[dask]`
+         - 'dask': parallelization using `dask.delayed.compute()`. Requires
+           installation of `mdanalysis[dask]`
 
         If you want to add your own backend to an existing class, pass a
         :class:`backends.BackendBase` subclass (see its documentation to learn
@@ -690,10 +691,11 @@ class AnalysisBase(object):
             for full list. Available only for `backend='serial'`
         backend : Union[str, BackendBase], optional
             By default, performs calculations in a serial fashion.
-            Otherwise, user can choose a backend:
-               - `str` is matched to a builtin backend (one of `serial`,
-               `multiprocessing` and `dask`)
-               - `BackendBase` subclass is checked for the presence of `apply` method
+            Otherwise, user can choose a backend: ``str`` is matched to a
+            builtin backend (one of ``serial``, ``multiprocessing`` and 
+            ``dask``), or a :class:`MDAnalysis.analysis.results.BackendBase`
+            subclass.
+
         n_workers : int
             positive integer with number of workers (processes, in case of
             built-in backends) to split the work between

@@ -188,6 +188,7 @@ class BackendMultiprocessing(BackendBase):
     --------
     
     .. code-block:: python
+
         from MDAnalysis.analysis.backends import BackendMultiprocessing
         import multiprocessing as mp
 
@@ -239,6 +240,7 @@ class BackendDask(BackendBase):
     --------
     
     .. code-block:: python
+
         from MDAnalysis.analysis.backends import BackendDask
         import multiprocessing as mp
 

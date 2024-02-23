@@ -109,6 +109,7 @@ To build your own analysis class start by reading the documentation.
    analysis/base
    analysis/backends
    analysis/results
+   analysis/parallelization
 
 Distances and contacts
 ======================
