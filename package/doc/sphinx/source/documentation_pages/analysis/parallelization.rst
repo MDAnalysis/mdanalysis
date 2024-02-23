@@ -170,22 +170,137 @@ given they're serializable.
 When to use parallelization *aka* known limitations
 ===================================================
 
+For now, the syntax for running parallel analysis is explicit, meaning by
+default the ``serial`` version will be run, and the parallelization won't be
+enabled by default. Although we expect the parallelization to be useful in most
+cases, there are some known caveats from the inital benchmarks.
+
 Fast `_single_frame` compared to reading from disk
 --------------------------------------------------
+
+In all cases, parallelization will be useful only when frames are being
+processed faster than being read from the disk, otherwise reading is the
+bottleneck here. Hence, you'll benefit from parallelization only if you have
+relatively much compute per frame, or a fast drive, as illustrated below:
+
+.. figure:: /images/parallelization_time.png
+
+In other words, if you have *fast* analysis (say,
+:class:`MDAnalysis.analysis.rms.RMSD`) **and** a slow HDD drive, you are likely
+to not get any benefits from parallelization. Otherwise, you'll be fine.
 
 Seriralization issues
 ---------------------
 
+For built-in analysis classes, the default serialization with both
+``multiprocessing`` and ``dask`` is known to work. If you're using some custom
+analysis class that e.g. stores a non-serializable object in one of its
+attributes, you might get a serialization error (``PicklingError`` if you're
+using a ``multiprocessing`` backend). If you want to get around that, we suggest
+trying ``backend='dask'`` (it uses ``dask`` serialization engine instead of
+``pickle``).
+
 Out of memory issues
 --------------------
+
+If you have large memory footprint of each worker, you can run into
+out-of-memory errors (i.e. your server freezes when executing a run). In this
+case we suggest decreasing the number of workers from all available CPUs (that
+you can get with ``multiprocessing.cpu_count()``) to a smaller number.
 
 Progress bar is missing
 -----------------------
 
+It is yet not possible to get a progress bar running with any parallel backend.
+If you want an ETA of your analysis, we suggest running it in ``serial`` mode
+for the first 10-100 frames with ``verbose=True``, and then running it with
+multiple workers. Processing time scales almost linearly, so you can get your
+ETA by dividing ``serial`` ETA by the number of workers.
 
 
 Adding parallelization to your own analysis class
 =================================================
 
-Which methods need to be implemented, and how to make sure of that -- see RMSD as example.
+If you want to add parallelization to your own analysis class, first make sure
+your algorithm allows you to do that, i.e. you process each frame independently.
+Then it's rather simple -- let's look at the actual code that added
+parallelization to the :class:`MDAnalysis.analysis.rms.RMSD`:
 
+.. code-block:: python
+
+    from MDAnalysis.analysis.base import AnalysisBase
+    from MDAnalysis.analysis.results import ResultsGroup
+
+    class RMSD(BackendBase):
+        @classmethod
+        def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
+
+        @classmethod
+        def is_parallelizable(self):
+            return True
+        
+        def _get_aggregator(self):
+            return ResultsGroup(lookup={'rmsd': ResultsGroup.ndarray_vstack})
+
+
+That's it! First two methods are boilerplate -- ``get_supported_backends``
+returns a tuple with built-in backends that will work for your class (if there
+are no serialization issues, it should be all three), and ``is_parallelizable``
+is ``True`` (which is set to ``False`` in ``AnalysisBase``, hence we have to
+re-define it), and ``_get_aggregator`` will be used as described earlier. Note
+that :mod:`MDAnalysis.analysis.results` also provides few convenient functions
+(defined as class methods of ``ResultsGroup``) for results aggregation:
+
+#. :meth:`MDAnalysis.analysis.results.ResultsGroup.flatten_sequence`
+#. :meth:`MDAnalysis.analysis.results.ResultsGroup.ndarray_sum`
+#. :meth:`MDAnalysis.analysis.results.ResultsGroup.ndarray_mean`
+#. :meth:`MDAnalysis.analysis.results.ResultsGroup.float_mean`
+#. :meth:`MDAnalysis.analysis.results.ResultsGroup.ndarray_hstack`
+#. :meth:`MDAnalysis.analysis.results.ResultsGroup.ndarray_vstack`
+
+
+So you'll likely find appropriate functions for basic aggregation there.
+
+Writing custom backends
+=======================
+
+In order to write your custom backend (e.g. using ``dask.distributed``), inherit
+the :class:`MDAnalysis.analysis.backends.BackendBase` and (re)-implement
+``__init__`` and ``apply`` methods. Optionally, you can implement methods for
+validation of correct backend initialization -- ``_get_checks`` and
+``get_warnings``:
+
+.. code-block:: python
+
+    from MDAnalysis.analysis.backends import BackendBase
+    class ThreadsBackend(BackendBase):
+        def __init__(self, n_workers: int, starting_message: str = "Useless backend"):
+            self.n_workers = n_workers
+            self.starting_message = starting_message
+            self._validate()
+
+        def _get_warnings(self):
+            return {True: 'warning: this backend is useless'}
+        
+        def _get_checks(self):
+            return {isinstance(self.n_workers, int), 'error: self.n_workers is not an integer'}
+
+        def apply(self, func, computations):
+            from multiprocessing.dummy import Pool
+
+            with Pool(processes=self.n_workers) as pool:
+                print(self.starting_message)
+                results = pool.map(func, computations)
+            return results
+    
+
+In order to use a custom backend, you must explicitly state that you're about to use an unsupported_backend:
+
+.. code-block:: python
+
+    from MDAnalysis.analysis.rms import RMSD
+    R = RMSD(...) # setup the run
+    n_workers = 2
+    backend = ThreadsBackend(n_workers=n_workers)
+    R.run(backend=backend, unsupported_backend=True)
