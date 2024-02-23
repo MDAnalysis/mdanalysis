@@ -35,5 +35,13 @@ This module contains the tools to interface with HOLE_
 pathway :footcite:p:`Stelzl2014`.
 
 """
-from .hole import hole, HoleAnalysis
-from .utils import create_vmd_surface
+import warnings
+from mdahole2.analysis.hole import hole, HoleAnalysis
+from mdahole2.analysis import utils, templates
+from mdahole2.analysis.utils import create_vmd_surface
+
+wmsg = ("Deprecation in version 2.8.0\n"
+        "MDAnalysis.analysis.hole2 is deprecated in favour of the "
+        "MDAKit madahole2 (https://www.mdanalysis.org/mdahole2/) "
+        "and will be removed in MDAnalysis version 3.0.0")
+warnings.warn(wmsg, category=DeprecationWarning)
