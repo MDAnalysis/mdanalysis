@@ -11,12 +11,12 @@ Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.anal
 The module contains code to build hydrogend bond contact map,
 and use it to assign protein secondary structure (:class:`DSSP`).
 
-This module uses the python version of the original algorithm by Kabsch & Sander
-[Kabsch1983]_, re-implemented by @ShintaroMinami and available under MIT license
-[here](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
+This module uses the python version of the original algorithm [Kabsch1983]_,
+re-implemented by @ShintaroMinami and available under MIT license from
+[ShintaroMinami/PyDSSP](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
 Note that this implementation does not discriminate different types of
-beta-sheets, as well as different types of helices, meaning you will get 3_10
-helices and pi-helices labelled as "helix" too.
+beta-sheets, as well as different types of helices, meaning you will get
+3_<sub>10</sub> helices and π-helices labelled as "helix" too.
 
 
 Using original `pydssp`
@@ -25,8 +25,9 @@ Using original `pydssp`
 The default implementation uses the original `pydssp` (v.0.9.0) code, rewritten
 without usage of `einops` library and hence having no dependencies. If you want
 to explicitly use `pydssp` (or its particular version), install it to your
-current environment with `python -m pip install pydssp`. Please note that using
-`batch` parameter, as well as `torch.Tensor`, would still be inaccessible.
+current environment with `python -m pip install pydssp`. Please note that the
+way MDAnalysis uses pydssp does not support pydssp's capability for batch
+processing or its use of the pytorch library.
 
 When using this module in published work please cite [Kabsch1983]_.
 
@@ -35,8 +36,9 @@ Example applications
 
 Assigning secondary structure of a PDB file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In this example we will simply print a string representing 
-protein's secondary structure.
+
+In this example we will simply print a string representing a protein's secondary
+structure.
 
 .. code-block:: python
 
@@ -52,19 +54,22 @@ Calculating average secondary structure of a trajectory
 
 Here we take a trajectory and calculate its average secondary structure, i.e.
 assign a secondary structure label 'X' to a residue if most of the frames in the
-trajectory got assigned 'X' label.
+trajectory got assigned the 'X' label.
 
 .. code-block:: python
 
     from MDAnalysis.analysis.dssp import DSSP, translate
     from MDAnalysisTests.datafiles import TPR, XTC
     u = mda.Universe(TPR, XTC)
-    long_run = DSSP(u).run(stop=20)
+    long_run = DSSP(u).run()
     mean_secondary_structure = translate(
         long_run.results.dssp_ndarray.mean(axis=0)
         )
     print(''.join(mean_secondary_structure)[:20])
-    # '-EEEEEE------HHHHHHH'
+
+Running this code produces ::
+
+   '-EEEEEE------HHHHHHH'
 
 Find parts of the protein that maintain their secondary structure during simulation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,13 +93,15 @@ that they maintain during the run:
         .mean(axis=0) > threshold
     )
     print(''.join(persistent_residues)[:20])
-    # '--EEEE----------HHHH'
+
+Running this code produces ::
+
+    '--EEEE----------HHHH'
 
 
 Functions
 ---------
 
-.. autofunction:: get_hbond_map
 .. autofunction:: assign
 .. autofunction:: translate
 
@@ -116,7 +123,7 @@ Analysis classes
 
        Contains the one-hot encoding of the time series of the DSSP assignment
        as chars N×mx3 :class:`numpy.ndarray` array with content
-       ``[frame, residue, encoding]``, where `encoding` is a (3,) shape
+       ``[frame, residue, encoding]``, where ``encoding`` is a (3,) shape
        :class:`numpy.ndarray` of booleans with axes representing loop '-',
        helix 'H' and sheet 'E', consequently.
 """
@@ -140,7 +147,6 @@ del Doi
 try:
     from pydssp.pydssp_numpy import (
         assign,
-        get_hbond_map,
         _get_hydrogen_atom_position,
     )
 
@@ -150,7 +156,6 @@ except ModuleNotFoundError:
     HAS_PYDSSP = False
     from .pydssp_numpy import (
         assign,
-        get_hbond_map,
         _get_hydrogen_atom_position,
     )
 
@@ -198,9 +203,9 @@ class DSSP(AnalysisBase):
     using the Kabsch-Sander algorithm [Kabsch1983]_. Only a subset of secondary
     structure categories are implemented:
 
-    - 'H' represents a generic helix (alpha-helix, pi-helix or 3-10 helix)
-    - 'E' represents 'extended strand', participating in beta-ladder
-      (parallel or antiparallel)
+    - 'H' represents a generic helix (α-helix, π-helix or 3-<sub>10</sub> helix)
+    - 'E' represents 'extended strand', participating in beta-ladder (parallel
+      or antiparallel)
     - '-' represents unordered part
 
     The implementation was taken from the pydssp package (v. 0.9.0)
@@ -211,17 +216,17 @@ class DSSP(AnalysisBase):
     u : Universe
         input universe
     guess_hydrogens : bool, optional
-        whether you want to guess hydrogens positions, by default True.
+        whether you want to guess hydrogens positions, by default ``True``.
         Guessing is made assuming perfect 120 degrees for all bonds that N
         atom makes, and a N-H bond length of 1.01 A.
-        If `guess_hydrogens` is False, hydrogen atom positions on N atoms
+        If ``guess_hydrogens`` is False, hydrogen atom positions on N atoms
         will be parsed from the trajectory, except for the "hydrogen" atom
         positions on PRO residues, and an N-terminal residue.
 
     Raises
     ------
     ValueError
-        if `guess_hydrogens` is True but some non-PRO hydrogens are missing.
+        if ``guess_hydrogens`` is True but some non-PRO hydrogens are missing.
 
     Examples
     --------
@@ -235,14 +240,18 @@ class DSSP(AnalysisBase):
         u = mda.Universe(PDB)
         run = DSSP(u).run()
         print("".join(run.results.dssp[0][:20]))
-        # '--EEEEE-----HHHHHHHH'
+
+    Running this code produces ::
+
+    '--EEEEE-----HHHHHHHH'
 
     Also, per-frame dssp assignment allows you to build average
-    secondary structure -- `DSSP.results.dssp_ndarray` holds
+    secondary structure -- ``DSSP.results.dssp_ndarray`` holds
     (n_frames, n_residues, 3) shape ndarray with one-hot encoding of
     loop, helix and sheet, respectively:
 
     .. code-block:: python
+
         from MDAnalysis.analysis.dssp import translate
         u = mda.Universe(...)
         long_run = DSSP(u).run()
@@ -250,7 +259,10 @@ class DSSP(AnalysisBase):
             long_run.results.dssp_ndarray.mean(axis=0)
             )
         print(''.join(mean_secondary_structure)[:20])
-        # '---HHHHHHHH---------'
+    
+    Running this code produces ::
+
+    '---HHHHHHHH---------'
 
     .. versionadded:: 2.8.0
     """
