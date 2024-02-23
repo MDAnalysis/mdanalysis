@@ -182,7 +182,6 @@ class BackendMultiprocessing(BackendBase):
 
         backend_obj = BackendMultiprocessing(n_workers=mp.cpu_count())
 
-
     .. versionadded:: 2.8.0
     """
 

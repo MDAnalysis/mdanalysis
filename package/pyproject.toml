@@ -12,9 +12,11 @@ requires = [
     # For unreleased versions of Python there is currently no known supported
     # NumPy version. In that case we just let it be a bare NumPy install
     "numpy<2.0; python_version>='3.13'",
-    "setuptools",
+    # Set to minimum version of setuptools that allows pyproject.toml
+    "setuptools >= 40.9.0",
     "wheel",
 ]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "MDAnalysis"
@@ -98,13 +100,26 @@ parallel = [
     "dask",
 ]
 
-
 [project.urls]
-Documentation = 'https://docs.mdanalysis.org/'
-"User Guide" = 'https://userguide.mdanalysis.org/'
-"Issue Tracker" = 'https://github.com/mdanalysis/mdanalysis/issues'
-"User Group" = 'https://groups.google.com/g/mdnalysis-discussion/'
-Discord = 'https://discord.com/channels/807348386012987462/'
-Blog = 'https://www.mdanalysis.org/blog/'
-Twitter = 'https://twitter.com/mdanalysis'
+Homepage = "https://www.mdanalysis.org"
+Download = "https://github.com/MDAnalysis/mdanalysis/releases"
+Documentation = "https://docs.mdanalysis.org/"
+"User Guide" = "https://userguide.mdanalysis.org/"
+"Issue Tracker" = "https://github.com/mdanalysis/mdanalysis/issues"
+"Github Discussions" = "https://github.com/MDAnalysis/mdanalysis/discussions"
+Discord = "https://discord.com/channels/807348386012987462/"
+Blog = "https://www.mdanalysis.org/blog/"
 Source = 'https://github.com/mdanalysis/mdanalysis'
+
+[tool.setuptools]
+# as a zipped egg the *.so files are not found (at
+# least in Ubuntu/Linux)
+zip-safe = false
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools.package-data]
+MDAnalysis = [
+    'analysis/data/*.npy',
+]
