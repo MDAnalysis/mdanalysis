@@ -26,8 +26,8 @@ The default implementation uses the original `pydssp` (v.0.9.0) code,
 rewritten without usage of `einops` library and hence having no dependencies.
 If you want to explicitly use `pydssp` (or its particular version), install it
 to your current environment with `python3 -m pip install pydssp`. Please note
-that using `batch` parameter, as well as `torch.Tensor`, would still be
-inaccessible.
+that the way MDAnalysis uses pydssp does not support pydssp's capability
+for batch processing or its use of the pytorch library.
 
 When using this module in published work please cite [Kabsch1983]_.
 
