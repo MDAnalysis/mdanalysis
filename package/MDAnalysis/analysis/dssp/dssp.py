@@ -290,6 +290,15 @@ class DSSP(AnalysisBase):
     def _prepare(self):
         self.results.dssp_ndarray = []
 
+        positions = [group.positions for group in self._heavy_atoms.values()]
+        if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
+            raise ValueError(
+                (
+                    "Universe contains not equal number of (N,CA,C,O) atoms ('name' field)."
+                    " Please select appropriate sub-universe manually."
+                )
+            )
+
     def _get_coords(self) -> np.ndarray:
         """Returns coordinates of (N,CA,C,O,H) atoms, as required by
         :func:`get_hbond_map` and :func:`assign` functions.
@@ -307,13 +316,6 @@ class DSSP(AnalysisBase):
         .. versionadded:: 2.8.0
         """
         positions = [group.positions for group in self._heavy_atoms.values()]
-        if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
-            raise ValueError(
-                (
-                    "Universe contains not equal number of (N,CA,C,O) atoms ('name' field)."
-                    " Please select appropriate sub-universe manually."
-                )
-            )
         coords = np.array(positions)
 
         if not self._guess_hydrogens:

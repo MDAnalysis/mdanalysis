@@ -7,7 +7,7 @@ from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
 
 
-@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/*.pdb.gz"))
+@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/?????.pdb.gz"))
 def test_file_guess_hydrogens(pdb_filename):
     u = mda.Universe(pdb_filename)
     with open(f"{pdb_filename.rstrip('.gz')}.dssp", "r") as fin:
@@ -40,6 +40,13 @@ def test_trajectory_with_hydrogens():
 
 @pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/2xdgA.pdb.gz"))
 def test_trajectory_without_hydrogen_fails(pdb_filename):
+    u = mda.Universe(pdb_filename)
+    with pytest.raises(ValueError):
+        DSSP(u, guess_hydrogens=False)
+
+
+@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/1mr1D_failing.pdb.gz"))
+def test_trajectory_with_uneven_number_of_atoms_fails(pdb_filename):
     u = mda.Universe(pdb_filename)
     with pytest.raises(ValueError):
         DSSP(u, guess_hydrogens=False)
