@@ -233,16 +233,12 @@ class DSSP(AnalysisBase):
 
     For example, you can assign secondary structure for a single PDB file:
 
-    .. code-block:: python
-        from MDAnalysis.analysis.dssp import DSSP
-        from MDAnalysisTests.datafiles import PDB
-        import MDAnalysis as mda
-        u = mda.Universe(PDB)
-        run = DSSP(u).run()
-        print("".join(run.results.dssp[0][:20]))
-
-    Running this code produces ::
-
+    >>> from MDAnalysis.analysis.dssp import DSSP
+    >>> from MDAnalysisTests.datafiles import PDB
+    >>> import MDAnalysis as mda
+    >>> u = mda.Universe(PDB)
+    >>> run = DSSP(u).run()
+    >>> print("".join(run.results.dssp[0][:20]))
     '--EEEEE-----HHHHHHHH'
 
     Also, per-frame dssp assignment allows you to build average
@@ -250,18 +246,13 @@ class DSSP(AnalysisBase):
     (n_frames, n_residues, 3) shape ndarray with one-hot encoding of
     loop, helix and sheet, respectively:
 
-    .. code-block:: python
-
-        from MDAnalysis.analysis.dssp import translate
-        u = mda.Universe(...)
-        long_run = DSSP(u).run()
-        mean_secondary_structure = translate(
-            long_run.results.dssp_ndarray.mean(axis=0)
-            )
-        print(''.join(mean_secondary_structure)[:20])
-    
-    Running this code produces ::
-
+    >>> from MDAnalysis.analysis.dssp import translate
+    >>> u = mda.Universe(...)
+    >>> long_run = DSSP(u).run()
+    >>> mean_secondary_structure = translate(
+    >>>     long_run.results.dssp_ndarray.mean(axis=0)
+    >>>     )
+    >>> print(''.join(mean_secondary_structure)[:20])
     '---HHHHHHHH---------'
 
     .. versionadded:: 2.8.0

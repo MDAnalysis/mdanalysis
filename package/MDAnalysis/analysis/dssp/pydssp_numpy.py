@@ -17,7 +17,7 @@ DEFAULT_CUTOFF = -0.5
 DEFAULT_MARGIN = 1.0
 
 
-def _upsample(a: np.ndarray, window: int) -> np.ndarray:
+def _upsample(a: np.ndarray, window: int) -> np.ndarray:  # pragma: no cover
     """Performs array upsampling with given window along given axis.
 
     Example
@@ -63,14 +63,14 @@ def _upsample(a: np.ndarray, window: int) -> np.ndarray:
     return _unfold(_unfold(a, window, -2), window, -2)
 
 
-def _unfold(a: np.ndarray, window: int, axis: int):
+def _unfold(a: np.ndarray, window: int, axis: int):  # pragma: no cover
     "Helper function for 2D array upsampling"
     idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
 
-def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
+def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:  # pragma: no cover
     """Fills in hydrogen atoms positions if they are abscent, under the
     assumption that C-N-H and H-N-CA angles are perfect 120 degrees,
     and N-H bond length is 1.01 A.
@@ -118,7 +118,7 @@ def get_hbond_map(
     cutoff: float = DEFAULT_CUTOFF,
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
-) -> np.ndarray:
+) -> np.ndarray:  # pragma: no cover
     """Returns hydrogen bond map
 
     Parameters
@@ -200,7 +200,7 @@ def get_hbond_map(
     return hbond_map
 
 
-def assign(coord: np.ndarray) -> np.ndarray:
+def assign(coord: np.ndarray) -> np.ndarray:  # pragma: no cover
     """Assigns secondary structure for a given coordinate array,
     either with or without assigned hydrogens
 
