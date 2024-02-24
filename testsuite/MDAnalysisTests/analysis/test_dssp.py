@@ -42,11 +42,11 @@ def test_trajectory_with_hydrogens():
 def test_trajectory_without_hydrogen_fails(pdb_filename):
     u = mda.Universe(pdb_filename)
     with pytest.raises(ValueError):
-        DSSP(u, guess_hydrogens=False)
+        DSSP(u, guess_hydrogens=False).run()
 
 
 @pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/1mr1D_failing.pdb.gz"))
 def test_trajectory_with_uneven_number_of_atoms_fails(pdb_filename):
     u = mda.Universe(pdb_filename)
     with pytest.raises(ValueError):
-        DSSP(u, guess_hydrogens=False)
+        DSSP(u, guess_hydrogens=True).run()

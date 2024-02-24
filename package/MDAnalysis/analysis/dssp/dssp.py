@@ -1,6 +1,6 @@
 """
 Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.analysis.dssp`
-=========================================================================================
+==========================================================================================
 
 :Author: Egor Marin
 :Year: 2024
@@ -11,7 +11,7 @@ Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.anal
 The module contains code to build hydrogend bond contact map,
 and use it to assign protein secondary structure (:class:`DSSP`).
 
-This module uses the python version of the original algorithm [Kabsch1983]_,
+This module uses the python version of the original algorithm [Kabsch1983],
 re-implemented by @ShintaroMinami and available under MIT license from
 [ShintaroMinami/PyDSSP](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
 Note that this implementation does not discriminate different types of
@@ -20,7 +20,7 @@ beta-sheets, as well as different types of helices, meaning you will get
 
 
 Using original `pydssp`
-----------------------
+-----------------------
 
 The default implementation uses the original `pydssp` (v.0.9.0) code, rewritten
 without usage of `einops` library and hence having no dependencies. If you want
@@ -29,7 +29,7 @@ current environment with `python -m pip install pydssp`. Please note that the
 way MDAnalysis uses pydssp does not support pydssp's capability for batch
 processing or its use of the pytorch library.
 
-When using this module in published work please cite [Kabsch1983]_.
+When using this module in published work please cite [Kabsch1983].
 
 Example applications
 --------------------
@@ -80,6 +80,7 @@ during more than set `threshold` share of frames. We will call these residues
 that they maintain during the run:
 
 .. code-block:: python
+
     from MDAnalysis.analysis.dssp import DSSP, translate
     from MDAnalysisTests.datafiles import TPR, XTC
     u = mda.Universe(TPR, XTC)
@@ -200,7 +201,7 @@ class DSSP(AnalysisBase):
     """Assign secondary structure using DSSP algorithm.
 
     Analyze a selection containing a protein and assign secondary structure
-    using the Kabsch-Sander algorithm [Kabsch1983]_. Only a subset of secondary
+    using the Kabsch-Sander algorithm [Kabsch1983]. Only a subset of secondary
     structure categories are implemented:
 
     - 'H' represents a generic helix (α-helix, π-helix or 3-<sub>10</sub> helix)
