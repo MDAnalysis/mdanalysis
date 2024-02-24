@@ -1,1 +1,1 @@
-.. automodule:: MDAnalysis.analysis.dssp
+.. automodule:: MDAnalysis.analysis.dssp.dssp
