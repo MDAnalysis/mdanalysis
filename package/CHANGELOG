@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2
+         ljwoods2, aditya292002
 
  * 2.8.0
 
@@ -40,6 +40,10 @@ Changes
  * As per NEP29, the minimum version of numpy has been raised to 1.23.
    We have opted to pin to 1.23.2 to ensure the same minimum numpy version
    is used from python 3.9 to 3.11 (Issue #4401, PR #4402)
+ * updated tests that used assert_almost_equal(..., decimal={N}) with 
+   equivalent assert_allclose(...  rtol=0, atol=1.5e-{N}) (issue modernize
+   testing code #3743, PR Replaced numpy.testing.assert_almost_equal to 
+   numpy.testing.assert_allclose #4438)
 
 Deprecations
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
