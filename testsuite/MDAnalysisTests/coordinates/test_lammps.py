@@ -500,7 +500,6 @@ class TestLammpsDumpReader(object):
             # no conversion needed
             f = LAMMPSDUMP
         else:
-            # Select if one wants to use the additional column format
             f = str(tmpdir.join('lammps.' + trjtype))
             with bz2.BZ2File(LAMMPSDUMP, 'rb') as datain:
                 data = datain.read()
