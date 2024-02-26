@@ -491,7 +491,7 @@ class DumpReader(base.ReaderBase):
 
     .. code-block:: python
 
-        u = mda.Universe('path_to_data', 'path_to_lammpsdump',
+        u = mda.Universe('structure.data', 'traj.lammpsdump',
                          additional_columns=['q', 'l'])
 
     The additional data is then available for each time step via:
