@@ -135,6 +135,7 @@ from .. import units
 from ..topology.LAMMPSParser import DATAParser
 from ..exceptions import NoDataError
 from . import base
+import warnings
 
 btype_sections = {'bond':'Bonds', 'angle':'Angles',
                   'dihedral':'Dihedrals', 'improper':'Impropers'}
@@ -745,6 +746,9 @@ class DumpReader(base.ReaderBase):
             # elsewhere (total \ parsable)
             additional_keys = set(attrs).difference(self._parsable_columns)
         elif self._additional_columns:
+            if not all([key in attrs for key in self._additional_columns]):
+                warnings.warn("Some of the additional columns are not present "
+                              "in the file, they will be ignored")
             additional_keys = \
                 [key for key in self._additional_columns if key in attrs]
         else:
