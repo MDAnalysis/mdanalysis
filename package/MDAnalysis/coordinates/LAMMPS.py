@@ -590,7 +590,7 @@ class DumpReader(base.ReaderBase):
             raise ValueError(f"additional_columns={additional_columns} "
                              "is not a valid option. Pleae provide an"
                              "iterable containing the additional"
-                             "coloum headers.")
+                             "column headers.")
 
         self._cache = {}
 
