@@ -537,7 +537,7 @@ class DumpReader(base.ReaderBase):
 
     .. versionchanged:: 2.7.0
        Reading of arbitrary, additional columns is now supported.
-       (Issue `#3608 <https://github.com/MDAnalysis/mdanalysis/pull/3608>`__)
+       (Issue #3608)
     .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
        and optionally unwraps trajectories with image flags upon loading.
