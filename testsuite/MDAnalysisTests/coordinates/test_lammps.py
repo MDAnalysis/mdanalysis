@@ -538,6 +538,14 @@ class TestLammpsDumpReader(object):
                             additional_columns=['q', 'l'])
 
     @pytest.fixture()
+    def u_additional_columns_wrong_format(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns='q')
+
+    @pytest.fixture()
     def reference_positions(self):
         # manually copied from traj file
         data = {}
@@ -630,6 +638,13 @@ class TestLammpsDumpReader(object):
             assert_allclose(data,
                             getattr(RefLAMMPSDataAdditionalColumns, field))
 
+    @pytest.mark.parametrize("system", [
+        ('u_additional_columns_wrong_format'),
+    ])
+    def test_wrong_format_additional_colums(self, system, request):
+        with pytest.raises(ValueError,
+                           match="Please provide an iterable containing"):
+            request.getfixturevalue(system)
 
 @pytest.mark.parametrize("convention",
                          ["unscaled", "unwrapped", "scaled_unwrapped"])

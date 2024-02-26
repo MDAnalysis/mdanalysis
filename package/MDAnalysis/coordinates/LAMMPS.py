@@ -589,7 +589,7 @@ class DumpReader(base.ReaderBase):
             self._additional_columns = additional_columns
         else:
             raise ValueError(f"additional_columns={additional_columns} "
-                             "is not a valid option. Pleae provide an"
+                             "is not a valid option. Please provide an "
                              "iterable containing the additional"
                              "column headers.")
 
