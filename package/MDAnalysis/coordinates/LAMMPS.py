@@ -478,8 +478,8 @@ class DumpReader(base.ReaderBase):
     length unit (Å), and angles are in degrees.
 
     By using the keyword `additional_columns`, you can specify arbitrary data
-    to be read. The keyword expects a list of the names of the columns or `True`
-    to read all additional columns. The results are saved to
+    to be read. The keyword expects a list of the names of the columns or
+    `True` to read all additional columns. The results are saved to
     :attr:`Timestep.data`. For example, if your LAMMPS dump looks like this
 
     .. code-block::
