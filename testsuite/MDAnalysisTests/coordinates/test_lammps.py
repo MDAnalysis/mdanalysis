@@ -535,7 +535,7 @@ class TestLammpsDumpReader(object):
         top = LAMMPSdata_additional_columns
         return mda.Universe(top, f, format='LAMMPSDUMP',
                             lammps_coordinate_convention="auto",
-                            additional_columns=['q', 'l'])
+                            additional_columns=['q', 'p'])
 
     @pytest.fixture()
     def u_additional_columns_wrong_format(self):
