@@ -627,9 +627,9 @@ class TestLammpsDumpReader(object):
             assert_allclose(atom13.position, atom13_pos-bmin, atol=1e-5)
 
     @pytest.mark.parametrize("system, fields", [
-        ('u_additional_columns_true', ['q', 'l']),
+        ('u_additional_columns_true', ['q', 'p']),
         ('u_additional_columns_single', ['q']),
-        ('u_additional_columns_multiple', ['q', 'l']),
+        ('u_additional_columns_multiple', ['q', 'p']),
     ])
     def test_additional_columns(self, system, fields, request):
         u = request.getfixturevalue(system)

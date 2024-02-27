@@ -233,4 +233,4 @@ class RefLAMMPSDataAdditionalColumns(object):
     q = np.array([2.58855e-03, 6.91952e-05, 1.05548e-02, 4.20319e-03,
                   9.19172e-03, 4.79777e-03, 6.36864e-04, 5.87125e-03,
                   -2.18125e-03, 6.88910e-03])
-    l = np.array(5 * [1.1, 1.2])
+    p = np.array(5 * [1.1, 1.2])
