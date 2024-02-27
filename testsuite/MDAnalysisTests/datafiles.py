@@ -123,6 +123,7 @@ __all__ = [
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
+    "PDBQT_tyrosol",
     "PDB_multipole",
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
@@ -214,6 +215,12 @@ __all__ = [
     "legacy_DCD_NAMD_coords",  # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords",  # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD", "GSD_bonds", "GSD_long",
+    "TRC_PDB_VAC", "TRC_TRAJ1_VAC", "TRC_TRAJ2_VAC",  # 2x 3 frames of vacuum trajectory from GROMOS11 tutorial
+    "TRC_CLUSTER_VAC",  # three frames without TIMESTEP and GENBOX block but with unsupported POSITION block
+    "TRC_TRICLINIC_SOLV", "TRC_TRUNCOCT_VAC",
+    "TRC_GENBOX_ORIGIN", "TRC_GENBOX_EULER",
+    "TRC_EMPTY",  # Empty file containing only one space
+    "TRC_PDB_SOLV", "TRC_TRAJ_SOLV",  # 2 frames of solvated trajectory from GROMOS11 tutorial
     "GRO_MEMPROT", "XTC_MEMPROT",  # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray",  # time series of single dihedral
     "RamaArray", "GLYRamaArray",  # time series of phi/psi angles
@@ -478,8 +485,9 @@ PRM19SBOPC = (_data_ref / 'Amber/ala.ff19SB.OPC.parm7.bz2').as_posix()
 PQR = (_data_ref / 'adk_open.pqr').as_posix()
 PQR_icodes = (_data_ref / '1A2C.pqr').as_posix()
 
-PDBQT_input = (_data_ref / 'pdbqt_inputpdbqt.pdbqt').as_posix()
-PDBQT_querypdb = (_data_ref / 'pdbqt_querypdb.pdb').as_posix()
+PDBQT_input = (_data_ref / "pdbqt_inputpdbqt.pdbqt").as_posix()
+PDBQT_querypdb = (_data_ref / "pdbqt_querypdb.pdb").as_posix()
+PDBQT_tyrosol = (_data_ref / "tyrosol.pdbqt.bz2").as_posix()
 
 FASTA = (_data_ref / 'test.fasta').as_posix()
 HELANAL_BENDING_MATRIX = (_data_ref / 'helanal_bending_matrix_AdK_DIMS_H8.dat').as_posix()
@@ -606,6 +614,18 @@ ALIGN_UNBOUND = (_data_ref / 'analysis/align_unbound.pdb.gz').as_posix()
 GSD = (_data_ref / 'example.gsd').as_posix()
 GSD_bonds = (_data_ref / 'example_bonds.gsd').as_posix()
 GSD_long = (_data_ref / 'example_longer.gsd').as_posix()
+
+TRC_PDB_VAC = (_data_ref / 'gromos11/gromos11_traj_vac.pdb.gz').as_posix()
+TRC_TRAJ1_VAC = (_data_ref / 'gromos11/gromos11_traj_vac_1.trc.gz').as_posix()
+TRC_TRAJ2_VAC = (_data_ref / 'gromos11/gromos11_traj_vac_2.trc.gz').as_posix()
+TRC_PDB_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.pdb.gz').as_posix()
+TRC_TRAJ_SOLV = (_data_ref / 'gromos11/gromos11_traj_solv.trc.gz').as_posix()
+TRC_CLUSTER_VAC = (_data_ref / 'gromos11/gromos11_cluster_vac.trj.gz').as_posix()
+TRC_TRICLINIC_SOLV = (_data_ref / 'gromos11/gromos11_triclinic_solv.trc.gz').as_posix()
+TRC_TRUNCOCT_VAC = (_data_ref / 'gromos11/gromos11_truncOcta_vac.trc.gz').as_posix()
+TRC_GENBOX_ORIGIN = (_data_ref / 'gromos11/gromos11_genbox_origin.trc.gz').as_posix()
+TRC_GENBOX_EULER = (_data_ref / 'gromos11/gromos11_genbox_euler.trc.gz').as_posix()
+TRC_EMPTY = (_data_ref / 'gromos11/gromos11_empty.trc').as_posix()
 
 DihedralArray = (_data_ref / 'adk_oplsaa_dihedral.npy').as_posix()
 DihedralsArray = (_data_ref / 'adk_oplsaa_dihedral_list.npy').as_posix()

@@ -14,12 +14,57 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium, pstaerk
+??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
+         ljwoods2, aditya292002, pstaerk
+
+ * 2.8.0
+
+Fixes
+ * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
+   (Issue #3349, PR #4407)
+ * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
+ * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
+   over `self._sliced_trajectory`, hence supporting
+   `DistanceMatrix.run(frames=...)` (PR #4433)
+ * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
+ * Fix deploy action to use the correct version of the pypi upload action.
+
+Enhancements
+ * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
+ * Documented the r0 attribute in the `Contacts` class and added the 
+   `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
+
+Changes
+ * Testsuite packaging now uses a pyproject.toml file (PR #4463)
+ * Improvement of setuptools packaging, including deduplication of
+   dependency lists (PR #4424)
+ * As per NEP29, the minimum version of numpy has been raised to 1.23.
+   We have opted to pin to 1.23.2 to ensure the same minimum numpy version
+   is used from python 3.9 to 3.11 (Issue #4401, PR #4402)
+ * updated tests that used assert_almost_equal(..., decimal={N}) with 
+   equivalent assert_allclose(...  rtol=0, atol=1.5e-{N}) (issue modernize
+   testing code #3743, PR Replaced numpy.testing.assert_almost_equal to 
+   numpy.testing.assert_allclose #4438)
+
+Deprecations
+ * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
+   of the waterdynamics MDAKit and will be removed in version 3.0.0 (PR #4404)
+ * The MDAnalysis.analysis.psa module has been deprecated in favour of
+   the PathSimAnalysis MDAKit and will be removed in version 3.0.0
+   (PR #4403)
+
+
+12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
+         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 
+         JoStoe, jennaswa, ljwoods2
 
  * 2.7.0
 
 Fixes
+  * Fix doctest errors of lib/transformations.py (Issue #3925, PR #4370)
+  * Fix documentation building errors due to `html_static_path` and unindented
+    block of code (Issue #4362, PR #4365)
+  * Updated cimport for numpy to maintain cimport consistency (Issue #3908)
   * Fix `NoJump` unwrapping for jumps on the second frame in a
     trajectory (PR #4258, Issue #4257)
   * Deprecated np.float_ and np.NaN aliases have been replaced with
@@ -27,9 +72,17 @@ Fixes
   * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
     RMSD of None
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
+  * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
+  * Fix doctests failing from separated blocks of imports and 
+    execution and incorrectly formatted test output (Issue #3925, PR #4366)
 
 Enhancements
-  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
+  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
+  * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
+  * Refactor c_distances backend to have a cython .pxd header and expose in
+    libmdanalysis (Issue #4315, PR #4324)
+  * Add faster nucleic acid Major and Minor pair distance calculators using
+    AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
   * Adds external sidebar links (Issue #4296)
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
     inputs (PR #4273, part of #3927)
@@ -42,6 +95,8 @@ Enhancements
     PR #4284)
 
 Changes
+  * Biopython is now an optional dependency (Issue #3820, PR #4332)
+  * Networkx is now an optional dependency (Issue #3822).
   * High memory tests (enabled through the environment variable
     `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
     is set to "true") (PR #4295)
@@ -49,13 +104,28 @@ Changes
     replacing the now deprecated `xdrlib` core Python library
     (PR #4271)
   * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+  * Results for WatsonCrickDist nucleic acids analysis are now stored in 
+    `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
 
 Deprecations
+  * The `asel` argument to timeseries will be renamed to `atomgroup` in 3.0.0.
+    (Issue #3911)
+  * MDAnalysis.lib.util is deprecated and will be removed in version 3.0
+    (Issue #3649)
+  * The TRZ reader & writer are deprecated and will be removed in version 3.0
+    (PR #4335)
+  * X3DNA has been deprecated and will be removed in 3.0.0 (Issue #3788)
   * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
     use converters.base.ConvertBase instead (Issue #3404)
+  * In `nucleicacids.WatsonCrickDist`, accepting lists of `Residue` objects was deprecated
+    in favor of using `ResidueGroup`: using `List[Residue]` will be removed in release
+    3.0.0; instead use a `ResidueGroup` (Issue #3720, PR #3735)
+  * In `nucleicacids.WatsonCrickDist` the result `results.pair_distances` was
+    deprecated and will be removed in 3.0.0; use `results.distances` (Issue #3720, 
+    PR #3735)
 
 
-28/08/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+08/28/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
 
  * 2.6.1
 
@@ -79,7 +149,7 @@ Deprecations
 
 
 08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
-         ztimol, orbeckst
+         ztimol, orbeckst, Shubx10
 
  * 2.6.0
 
@@ -138,7 +208,7 @@ Deprecations
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
          SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers,
-         cbouy
+         cbouy, DanielJamesEvans, jvermaas, egormarin
 
  * 2.5.0
 
@@ -395,7 +465,7 @@ Deprecations
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
          mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst, yuxuanzhuang,
-         rsexton2, rafaelpap, richardjgowers, orioncohen
+         rsexton2, rafaelpap, richardjgowers, orioncohen, mdpoleto
 
  * 2.2.0
 
@@ -1020,7 +1090,7 @@ Deprecations
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
          wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150,
-         tylerjereddy, Marcello-Sega
+         tylerjereddy, Marcello-Sega, mimischi, mquevill, siddharthjain1611
 
   * 1.0.0
 
@@ -1233,9 +1303,10 @@ Fixes
 
 
 08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
+         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium, fenilsuchak,
+         Yibo-Zhang
 
   * 0.20.0
 
@@ -1689,7 +1760,7 @@ Changes
     they are part of the Universe topology (Issue #1092 PR #1186)
 
 
-06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal, bsipocz
 
   * 0.16.2
 
@@ -1764,7 +1835,7 @@ Changes
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
-         xiki-tempula, kash1102, vedantrathore
+         xiki-tempula, kash1102, Akshay0724, bsipocz, jeiros, tbengtsen
 
   * 0.16.0
 
@@ -1934,7 +2005,7 @@ Testsuite
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle, pedrishi,
-         fiona-naughton, jdetle
+         fiona-naughton, jdetle, Endle
 
   * 0.15.0
 
@@ -3069,7 +3140,7 @@ Testsuite
     removal in 0.8
   * uses cython instead of pyrex
 
-11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
+11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose, dspoel
   * major release 0.7.0
     (includes changes that can BREAK BACKWARDS COMPATIBILITY)
   * Removed ALL DEPRECATED code:

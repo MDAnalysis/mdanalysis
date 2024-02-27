@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 concurrency:
   # Probably overly cautious group naming.
@@ -27,21 +28,26 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: ["3.9", "3.10", "3.11"]
+          python-version: ["3.9", "3.10", "3.11", "3.12"]
           full-deps: [true, ]
           codecov: [true, ]
           include:
             - name: macOS_monterey_py311
               os: macOS-12
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: true
+              codecov: true
+            - name: macOS_14_arm64_py312
+              os: macOS-14
+              python-version: "3.12"
+              full-deps: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.9
               full-deps: false
               codecov: true
-              numpy: numpy=1.22.3
+              numpy: numpy=1.23.2
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.9
@@ -53,7 +59,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -134,7 +140,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v1
@@ -232,7 +238,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: actions/setup-python@v4
       with:

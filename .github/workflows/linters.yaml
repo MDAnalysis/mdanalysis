@@ -27,7 +27,7 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -102,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: actions/setup-python@v4
       with:
@@ -124,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: setup_micromamba
         uses: mamba-org/setup-micromamba@v1
@@ -145,7 +145,7 @@ jobs:
         with:
           micromamba: true
           full-deps: true
-          numpy: numpy=1.22.3
+          numpy: numpy=1.23.2
 
       - name: install
         run: |

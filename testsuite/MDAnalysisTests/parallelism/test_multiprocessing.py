@@ -56,6 +56,7 @@ from MDAnalysisTests.datafiles import (
     PDB, PDB_small, PDB_multiframe,
     PDBQT_input,
     PQR,
+    TRC_PDB_VAC, TRC_TRAJ1_VAC, TRC_TRAJ2_VAC,
     TRR,
     TRJ,
     TRZ,
@@ -83,6 +84,8 @@ from MDAnalysisTests.datafiles import (
     (GRO, [GRO, GRO, GRO, GRO, GRO]),
     (PDB, [PDB, PDB, PDB, PDB, PDB]),
     (GRO, [XTC, XTC]),
+    (TRC_PDB_VAC, TRC_TRAJ1_VAC),
+    (TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC]),
 ])
 def u(request):
     if len(request.param) == 1:
@@ -193,6 +196,8 @@ def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
     ('NCDF', NCDF, dict()),
     ('TXYZ', TXYZ, dict()),
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
+    ('TRC', TRC_TRAJ1_VAC, dict()),
+    ('CHAIN', [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC], dict()),
     ('CHAIN', [GRO, GRO, GRO], dict()),
     ('CHAIN', [PDB, PDB, PDB], dict()),
     ('CHAIN', [XTC, XTC, XTC], dict()),

@@ -196,10 +196,14 @@ import collections
 
 import numpy as np
 
-import Bio.SeqIO
-import Bio.AlignIO
-import Bio.Align
-import Bio.Align.Applications
+try:
+    import Bio.AlignIO
+    import Bio.Align
+    import Bio.Align.Applications
+except ImportError:
+    HAS_BIOPYTHON = False
+else:
+    HAS_BIOPYTHON = True
 
 import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
@@ -1018,6 +1022,11 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
         Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
         begin, end)`
 
+    Raises
+    ------
+    ImportError
+      If optional dependency Biopython is not available.
+
     Notes
     -----
     If you prefer to work directly with :mod:`Bio.Align` objects then you can
@@ -1057,7 +1066,16 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
        Replace use of deprecated :func:`Bio.pairwise2.align.globalms` with
        :class:`Bio.Align.PairwiseAligner`.
 
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
+
     """
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `sequence_alignment` method requires an installation "
+                  "of `Biopython`. Please install `Biopython` to use this "
+                  "method: https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
     aligner = Bio.Align.PairwiseAligner(
         mode="global",
         match_score=match_score,
@@ -1159,6 +1177,12 @@ def fasta2select(fastafilename, is_aligned=False,
     :func:`sequence_alignment`, which does not require external
     programs.
 
+    
+    Raises
+    ------
+    ImportError
+      If optional dependency Biopython is not available.
+
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
@@ -1166,8 +1190,16 @@ def fasta2select(fastafilename, is_aligned=False,
     .. versionchanged:: 1.0.0
        Passing `alnfilename` or `treefilename` as `None` will create a file in
        the current working directory.
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
 
     """
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `fasta2select` method requires an installation "
+                  "of `Biopython`. Please install `Biopython` to use this "
+                  "method: https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
     if is_aligned:
         logger.info("Using provided alignment {}".format(fastafilename))
         with open(fastafilename) as fasta:

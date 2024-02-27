@@ -41,7 +41,7 @@ welcome reports](#reporting) by filling out [*this form*][conduct-form].
 
 This code applies equally to founders, developers, mentors and new
 community members, in all spaces managed by MDAnalysis. This
-includes the mailing lists, our GitHub organizations, our chat rooms,
+includes GitHub Discussions, our GitHub organizations, our chat rooms,
 in-person events, and any other forums created by the project team. In
 addition, violations of this code outside these spaces may affect a
 person's ability to participate within them.
@@ -49,7 +49,7 @@ person's ability to participate within them.
 By embracing the following principles, guidelines and actions to follow or
 avoid, you will help us make MDAnalysis a welcoming and productive community. If
 that doesn't answer your questions, feel free to contact us
-at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
+via [GitHub Discussions](https://github.com/MDAnalysis/mdanalysis/discussions).
 
 
 1. **Be friendly and patient**.
