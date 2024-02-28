@@ -1217,10 +1217,30 @@ class PDBWriter(base.WriterBase):
         else:
             atom_ids = np.arange(len(atoms)) + 1
 
-        for i, atom in enumerate(atoms):
+        def get_atom_name_lookup_dict() -> dict[tuple[str, str], str]:
+            """Creates a lookup dictionary for deduced atom names
+
+            Unique pairs of atomnames and resnames are found first to avoid
+            redundant calls to `_deduce_PDB_atom_name`
+            """
+            pairs = [(atomnames[i], resnames[i])
+                     for i in range(len(atomnames))]
+
+            unique_pairs = set(pairs)
+
+            deduced_PDB_atom_names = {
+                (atom, res): self._deduce_PDB_atom_name(atom, res)
+                for atom, res in unique_pairs
+                }
+
+            return deduced_PDB_atom_names
+
+        PDB_atom_names = get_atom_name_lookup_dict()
+
+        for i in range(len(atoms)):
             vals = {}
             vals['serial'] = util.ltruncate_int(atom_ids[i], 5)  # check for overflow here?
-            vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
+            vals['name'] = PDB_atom_names[(atomnames[i], resnames[i])]
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
