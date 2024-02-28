@@ -30,7 +30,7 @@ Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
- * Improved performance of PDBWriter (Issue # 2785, PR # 4465)
+ * Improved performance of PDBWriter (Issue # 2785, PR # 4472)
  * Documented the r0 attribute in the `Contacts` class and added the 
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
 
