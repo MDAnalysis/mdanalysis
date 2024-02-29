@@ -546,6 +546,14 @@ class TestLammpsDumpReader(object):
                             additional_columns='q')
 
     @pytest.fixture()
+    def u_additional_columns_not_present(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns=['q', 'w'])
+
+    @pytest.fixture()
     def reference_positions(self):
         # manually copied from traj file
         data = {}
@@ -644,6 +652,13 @@ class TestLammpsDumpReader(object):
     def test_wrong_format_additional_colums(self, system, request):
         with pytest.raises(ValueError,
                            match="Please provide an iterable containing"):
+            request.getfixturevalue(system)
+
+    @pytest.mark.parametrize("system", [
+        ('u_additional_columns_not_present'),
+    ])
+    def test_warning(self, system, request):
+        with pytest.warns(match="Some of the additional"):
             request.getfixturevalue(system)
 
 @pytest.mark.parametrize("convention",
