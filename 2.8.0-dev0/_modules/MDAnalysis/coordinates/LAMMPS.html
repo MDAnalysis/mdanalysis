@@ -278,6 +278,7 @@
 <span class="kn">from</span> <span class="nn">..topology.LAMMPSParser</span> <span class="kn">import</span> <span class="n">DATAParser</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="n">btype_sections</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span><span class="s1">&#39;Bonds&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span><span class="s1">&#39;Angles&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span><span class="s1">&#39;Dihedrals&#39;</span><span class="p">,</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span><span class="s1">&#39;Impropers&#39;</span><span class="p">}</span>
@@ -618,12 +619,50 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads the default `LAMMPS dump format </span>
 <span class="sd">    &lt;https://docs.lammps.org/dump.html&gt;`__</span>
 
-<span class="sd">    Supports coordinates in various LAMMPS coordinate conventions and both </span>
-<span class="sd">    orthogonal and triclinic simulation box dimensions (for more details see </span>
-<span class="sd">    `documentation &lt;https://docs.lammps.org/Howto_triclinic.html&gt;`__). In </span>
-<span class="sd">    either case, MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*,</span>
-<span class="sd">    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the </span>
-<span class="sd">    MDAnalysis length unit (Å), and angles are in degrees.</span>
+<span class="sd">    Supports coordinates in the LAMMPS &quot;unscaled&quot; (x,y,z), &quot;scaled&quot; (xs,ys,zs),</span>
+<span class="sd">    &quot;unwrapped&quot; (xu,yu,zu) and &quot;scaled_unwrapped&quot; (xsu,ysu,zsu) coordinate</span>
+<span class="sd">    conventions (see https://docs.lammps.org/dump.html for more details).</span>
+<span class="sd">    If `lammps_coordinate_convention=&#39;auto&#39;` (default),</span>
+<span class="sd">    one will be guessed. Guessing checks whether the coordinates fit each</span>
+<span class="sd">    convention in the order &quot;unscaled&quot;, &quot;scaled&quot;, &quot;unwrapped&quot;,</span>
+<span class="sd">    &quot;scaled_unwrapped&quot; and whichever set of coordinates is detected first will</span>
+<span class="sd">    be used. If coordinates are given in the scaled coordinate convention</span>
+<span class="sd">    (xs,ys,zs) or scaled unwrapped coordinate convention (xsu,ysu,zsu) they</span>
+<span class="sd">    will automatically be converted from their scaled/fractional representation</span>
+<span class="sd">    to their real values.</span>
+
+<span class="sd">    Supports both orthogonal and triclinic simulation box dimensions (for more</span>
+<span class="sd">    details see https://docs.lammps.org/Howto_triclinic.html). In either case,</span>
+<span class="sd">    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``</span>
+<span class="sd">    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis</span>
+<span class="sd">    length unit (Å), and angles are in degrees.</span>
+
+<span class="sd">    By using the keyword `additional_columns`, you can specify arbitrary data</span>
+<span class="sd">    to be read. The keyword expects a list of the names of the columns or</span>
+<span class="sd">    `True` to read all additional columns. The results are saved to</span>
+<span class="sd">    :attr:`Timestep.data`. For example, if your LAMMPS dump looks like this</span>
+
+<span class="sd">    .. code-block::</span>
+
+<span class="sd">        ITEM: ATOMS id x y z q l</span>
+<span class="sd">        1 2.84 8.17 -25 0.00258855 1.1</span>
+<span class="sd">        2 7.1 8.17 -25 6.91952e-05 1.2</span>
+
+<span class="sd">    Then you may parse the additional columns `q` and `l` via:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        u = mda.Universe(&#39;structure.data&#39;, &#39;traj.lammpsdump&#39;,</span>
+<span class="sd">                         additional_columns=[&#39;q&#39;, &#39;l&#39;])</span>
+
+<span class="sd">    The additional data is then available for each time step via:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        for ts in u.trajectory:</span>
+<span class="sd">            charges = ts.data[&#39;q&#39;] # Access additional data, sorted by the id</span>
+<span class="sd">            ls = ts.data[&#39;l&#39;]</span>
+<span class="sd">        ...</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -657,6 +696,9 @@
 <span class="sd">    **kwargs</span>
 <span class="sd">       Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`</span>
 
+<span class="sd">    .. versionchanged:: 2.7.0</span>
+<span class="sd">       Reading of arbitrary, additional columns is now supported.</span>
+<span class="sd">       (Issue #3608)</span>
 <span class="sd">    .. versionchanged:: 2.4.0</span>
 <span class="sd">       Now imports velocities and forces, translates the box to the origin,</span>
 <span class="sd">       and optionally unwraps trajectories with image flags upon loading.</span>
@@ -670,6 +712,7 @@
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;LAMMPSDUMP&#39;</span>
     <span class="n">_conventions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;unscaled&quot;</span><span class="p">,</span> <span class="s2">&quot;scaled&quot;</span><span class="p">,</span> <span class="s2">&quot;unwrapped&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;scaled_unwrapped&quot;</span><span class="p">]</span>
+
     <span class="n">_coordtype_column_names</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;unscaled&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">],</span>
         <span class="s2">&quot;scaled&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;xs&quot;</span><span class="p">,</span> <span class="s2">&quot;ys&quot;</span><span class="p">,</span> <span class="s2">&quot;zs&quot;</span><span class="p">],</span>
@@ -677,11 +720,15 @@
         <span class="s2">&quot;scaled_unwrapped&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;xsu&quot;</span><span class="p">,</span> <span class="s2">&quot;ysu&quot;</span><span class="p">,</span> <span class="s2">&quot;zsu&quot;</span><span class="p">]</span>
     <span class="p">}</span>
 
+    <span class="n">_parsable_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;vx&quot;</span><span class="p">,</span> <span class="s2">&quot;vy&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">,</span> <span class="s2">&quot;fx&quot;</span><span class="p">,</span> <span class="s2">&quot;fy&quot;</span><span class="p">,</span> <span class="s2">&quot;fz&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_coordtype_column_names</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">_parsable_columns</span> <span class="o">+=</span> <span class="n">_coordtype_column_names</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
     <span class="nd">@store_init_arguments</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span>
                  <span class="n">lammps_coordinate_convention</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
                  <span class="n">unwrap_images</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">additional_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DumpReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -695,6 +742,16 @@
                              <span class="sa">f</span><span class="s2">&quot;Please choose one of </span><span class="si">{</span><span class="n">option_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span> <span class="o">=</span> <span class="n">unwrap_images</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">additional_columns</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">additional_columns</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">or</span> <span class="n">additional_columns</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span> <span class="o">=</span> <span class="n">additional_columns</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;additional_columns=</span><span class="si">{</span><span class="n">additional_columns</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="s2">&quot;is not a valid option. Please provide an &quot;</span>
+                             <span class="s2">&quot;iterable containing the additional&quot;</span>
+                             <span class="s2">&quot;column headers.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -844,6 +901,25 @@
             <span class="n">coord_cols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">image_cols</span><span class="p">)</span>
 
         <span class="n">ids</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">attr_to_col_ix</span>
+
+        <span class="c1"># Create the data arrays for additional attributes which will be saved</span>
+        <span class="c1"># under ts.data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Parse every column that is not already parsed</span>
+            <span class="c1"># elsewhere (total \ parsable)</span>
+            <span class="n">additional_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsable_columns</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span><span class="p">]):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Some of the additional columns are not present &quot;</span>
+                              <span class="s2">&quot;in the file, they will be ignored&quot;</span><span class="p">)</span>
+            <span class="n">additional_keys</span> <span class="o">=</span> \
+                <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">additional_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">additional_keys</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+
+        <span class="c1"># Parse all the atoms</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
             <span class="n">fields</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ids</span><span class="p">:</span>
@@ -864,12 +940,22 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
                 <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fields</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">force_cols</span><span class="p">]</span>
 
+            <span class="c1"># Collect additional cols</span>
+            <span class="k">for</span> <span class="n">attribute_key</span> <span class="ow">in</span> <span class="n">additional_keys</span><span class="p">:</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">fields</span><span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">]]</span>
+
         <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_vels</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="c1"># Also need to sort the additional keys</span>
+        <span class="k">for</span> <span class="n">attribute_key</span> <span class="ow">in</span> <span class="n">additional_keys</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">][</span><span class="n">order</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;scaled&quot;</span><span class="p">)):</span>
             <span class="c1"># if coordinates are given in scaled format, undo that</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">transform_StoR</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
@@ -888,7 +974,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2024, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2024, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
