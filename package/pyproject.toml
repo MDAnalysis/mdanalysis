@@ -44,6 +44,7 @@ dependencies = [
     'mda-xdrlib',
     'waterdynamics',
     'pathsimanalysis',
+    'mdahole2',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",

@@ -29,7 +29,11 @@ dependencies:
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
+  - mdaencore
+  - waterdynamics
   - pip:
+      - mdahole2
+      - pathsimanalysis
       - duecredit
       - parmed
       - sphinx-sitemap
