@@ -24,7 +24,7 @@ from contextlib import contextmanager
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
-from MDAnalysis.analysis.align import HAS_BIOPYTHON
+from MDAnalysis.analysis.align import biopython
 import MDAnalysis.analysis.rms as rms
 import os
 import numpy as np
@@ -498,13 +498,13 @@ class TestAlignmentProcessing:
     seq = FASTA
     error_msg = "selection string has unexpected length"
 
-    @pytest.mark.skipif(HAS_BIOPYTHON, reason='biopython is installed')
+    @pytest.mark.skipif(biopython is not None, reason='biopython is installed')
     def test_importerror_biopython(self):
         errmsg = "The `fasta2select` method requires an installation"
         with pytest.raises(ImportError, match=errmsg):
             _ = align.fasta2select(self.seq, is_aligned=True)
 
-    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
+    @pytest.mark.skipif(biopython is None, reason='requires biopython')
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
@@ -513,7 +513,7 @@ class TestAlignmentProcessing:
         assert len(sel['mobile']) == 30623, self.error_msg
 
     @pytest.mark.skipif(
-        executable_not_found("clustalw2") or not HAS_BIOPYTHON,
+        executable_not_found("clustalw2") or biopython is None,
         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_file(self, tmpdir):
         """test align.fasta2select() on a non-aligned FASTA with default
@@ -525,7 +525,7 @@ class TestAlignmentProcessing:
             assert len(sel['mobile']) == 23090, self.error_msg
 
     @pytest.mark.skipif(
-        executable_not_found("clustalw2") or not HAS_BIOPYTHON,
+        executable_not_found("clustalw2") or biopython is None,
         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
         """MDAnalysis.analysis.align: test fasta2select() with ClustalW
@@ -540,7 +540,7 @@ class TestAlignmentProcessing:
         assert len(sel['reference']) == 23080, self.error_msg
         assert len(sel['mobile']) == 23090, self.error_msg
 
-    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
+    @pytest.mark.skipif(biopython is None, reason='requires biopython')
     def test_fasta2select_resids(self, tmpdir):
         """test align.fasta2select() when resids provided (Issue #3124)"""
         resids = [x for x in range(705)]
@@ -562,14 +562,14 @@ class TestSequenceAlignmentFunction:
         mobile = universe.select_atoms("resid 122-159")
         return reference, mobile
 
-    @pytest.mark.skipif(HAS_BIOPYTHON, reason='biopython installed')
+    @pytest.mark.skipif(biopython is not None, reason='biopython installed')
     def test_biopython_import_error(self, atomgroups):
         ref, mob = atomgroups
         errmsg = "The `sequence_alignment` method requires an installation of"
         with pytest.raises(ImportError, match=errmsg):
             align.sequence_alignment(mob, ref)
 
-    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
+    @pytest.mark.skipif(biopython is None, reason='requires biopython')
     @pytest.mark.filterwarnings("ignore:`sequence_alignment` is deprecated!")
     def test_sequence_alignment(self, atomgroups):
         reference, mobile = atomgroups
@@ -585,7 +585,7 @@ class TestSequenceAlignmentFunction:
         assert score  == pytest.approx(54.6)
         assert_array_equal([begin, end], [0, reference.n_residues])
 
-    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
+    @pytest.mark.skipif(biopython is None, reason='requires biopython')
     def test_sequence_alignment_deprecation(self, atomgroups):
         reference, mobile = atomgroups
         wmsg = ("`sequence_alignment` is deprecated!\n"

@@ -196,24 +196,23 @@ import collections
 
 import numpy as np
 
-try:
-    import Bio.AlignIO
-    import Bio.Align
-    import Bio.Align.Applications
-except ImportError:
-    HAS_BIOPYTHON = False
-else:
-    HAS_BIOPYTHON = True
-
 import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
-from MDAnalysis.lib.util import get_weights
+from MDAnalysis.lib.util import get_weights, optional_import
 from MDAnalysis.lib.util import deprecate   # remove 3.0
 
 from .base import AnalysisBase
+
+biopython = optional_import('Bio', min_version='1.80')
+
+if biopython is not None:
+    import Bio.AlignIO
+    import Bio.Align
+    import Bio.Align.Applications
+
 
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
@@ -1070,7 +1069,7 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
        Biopython is now an optional dependency which this method requires.
 
     """
-    if not HAS_BIOPYTHON:
+    if biopython is None:
         errmsg = ("The `sequence_alignment` method requires an installation "
                   "of `Biopython`. Please install `Biopython` to use this "
                   "method: https://biopython.org/wiki/Download")
@@ -1194,7 +1193,7 @@ def fasta2select(fastafilename, is_aligned=False,
        Biopython is now an optional dependency which this method requires.
 
     """
-    if not HAS_BIOPYTHON:
+    if biopython is None:
         errmsg = ("The `fasta2select` method requires an installation "
                   "of `Biopython`. Please install `Biopython` to use this "
                   "method: https://biopython.org/wiki/Download")

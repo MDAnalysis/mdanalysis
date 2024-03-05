@@ -200,14 +200,18 @@ import bz2
 import gzip
 import re
 import io
+import importlib
 import warnings
 import functools
 from functools import wraps
+import types
+from typing import Optional
 import textwrap
 import weakref
 
 import mmtf
 import numpy as np
+from packaging.version import Version
 
 from numpy.testing import assert_equal
 import inspect
@@ -2552,3 +2556,59 @@ def store_init_arguments(func):
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
     return wrapper
+
+
+def optional_import(
+    module_name: str,
+    min_version: Optional[str] = None,
+    max_version: Optional[str] = None
+) -> Optional[types.ModuleType]:
+    """
+    Optionally import modules, optionally checking the version
+
+    Parameters
+    ----------
+    module_name : str
+      Name of the package to be optionally imported.
+    min_version : Optional[str]
+      The minimum package version. If ``None`` will not check the lower
+      version bound.
+    max_version : Optional[str]
+      The maximum package version. If ``None`` will not check the upper
+      version bound.
+
+    Returns
+    -------
+    module : Optional[types.ModuleType]
+      The imported module. If the module could not be imported, will
+      return ``None``.
+
+    Raises
+    ------
+    ImportError
+      If the imported module version (assumed to be accessed under
+      ``module.__version__``) does not fit within the upper or lower
+      bound set by `min_version` and `max_version`.
+    """
+    def _check_version(
+        lower_version: Optional[str], upper_version: Optional[str]
+    ):
+        if lower_version is None or upper_version is None:
+            return True
+        else:
+            return Version(lower_version) <= Version(upper_version)
+
+    try:
+        module = importlib.import_module(module_name)
+    except ModuleNotFoundError:
+        return None
+
+    if ((not _check_version(min_version, module.__version__)) or
+        (not _check_version(module.__version__, max_version))):
+        wmsg = (f"{module_name} version is {module.__version__} "
+                f"and allowed version ranges are >= {min_version} "
+                f"<= {max_version}")
+        warnings.warn(wmsg)
+        return None
+
+    return module
