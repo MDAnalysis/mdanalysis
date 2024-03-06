@@ -244,7 +244,7 @@ parallelization to the :class:`MDAnalysis.analysis.rms.RMSD`:
             return ResultsGroup(lookup={'rmsd': ResultsGroup.ndarray_vstack})
 
 
-That's it! First two methods are boilerplate -- ``get_supported_backends``
+That's it! The first two methods are boilerplate -- ``get_supported_backends``
 returns a tuple with built-in backends that will work for your class (if there
 are no serialization issues, it should be all three), and ``is_parallelizable``
 is ``True`` (which is set to ``False`` in ``AnalysisBase``, hence we have to
