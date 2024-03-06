@@ -4,14 +4,14 @@
 Parallel analysis
 =================
 
-Starting v.2.8.0, MDAnalysis has introduced process-based parallelization for
+Starting from v2.8.0, MDAnalysis has introduced process-based parallelization for
 virtually all analysis classes. This page will briefly explain what has changed
 in the :class:`MDanalysis.analysis.base.AnalysisBase` protocol, how it affects
 users and developers, when you should use parallelization (almost always!), and
-when you can abstain from doing so (rarely).
+when you should abstain from doing so (rarely).
 
-All this work was done within Google Summer of Code summer project by @marinegor
-and MDAnalysis core developers team.
+All this work was done as part of Google Summer of Code 2023 by @marinegor
+and MDAnalysis GSoC mentors.
 
 
 How to use parallelization
@@ -35,15 +35,15 @@ impossible with any but ``serial`` backend.
 
 Also, backends are getting added to the new classes slowly -- in 2.8.0 only
 :class:`MDAnalysis.analysis.rms.RMSD` got new backends. But since adding
-parallelization to a class is very simple, it won't take much time untill it's
+parallelization to a class is very simple, it won't take much time until it's
 introduced to all trivial classes.
 
 
 How does parallelization work
 =============================
 
-The main idea behind its current version is that a trajectory analysis is almost
-always trivially parallelizable, meaning you can analyze all frames
+The main idea behind its current implementation is that a trajectory analysis is
+often trivially parallelizable, meaning you can analyze all frames
 independently, and then merge them in a single object. This approach is also
 known as "split-apply-combine", and isn't new to MDAnalysis users, since it was
 first introduced in [pmda](https://github.com/mdanalysis/pmda). Version 2.8.0 of
@@ -59,9 +59,9 @@ The following scheme explains the current ``AnalysisBase.run()`` protocol
 .. figure:: /images/AnalysisBase_parallel.png
 
 
-In short, after checking input parameters and configuring backend,
-``AnalysisBase`` splits all the frames into *computation_groups* (equally sized
-sequencial groups of frames to be processed by each worker). All groups then get
+In short, after checking input parameters and configuring the backend,
+``AnalysisBase`` splits all the frames into *computation groups* (equally sized
+sequential groups of frames to be processed by each worker). All groups then get
 **split** between workers of a backend configured early, the main instance gets
 serialized and distributed between workers, and then
 :meth:`MDAnalysis.analysis.AnalysisBase._compute()` method gets called for all
@@ -83,10 +83,10 @@ same in both cases.
 New methods in ``AnalysisBase``
 -------------------------------
 
-From a user point of new, there are no new (non-trivial) methods. Meaning, if
+From a user point of new, there are no new (non-trivial) methods. If
 you want to write your own analysis class, you still have to implement only
 ``_prepare``, ``_single_frame`` and ``_conclude``. However, from a developer point of
-view, there are few:
+view, there are a few new methods:
 
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._define_run_frames`
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._prepare_sliced_trajectory`
@@ -95,32 +95,32 @@ view, there are few:
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._compute`
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._get_aggregator`
 
-First two methods share the functionality of ``_setup_frames``.
+The first two methods share the functionality of ``_setup_frames``.
 ``_define_run_frames`` is run once during analysis, as it checks that input
 parameters ``start, stop, step`` or ``frames`` are consistent with the given
 trajectory and prepares the ``slicer`` object that defines the iteration pattern
-through trajectory. ``_prepare_sliced_trajectory`` assigns
+through the trajectory. ``_prepare_sliced_trajectory`` assigns
 ``self._sliced_trajectory`` attribute, and also number of frames in it, and
 ``self.frames`` and ``self.times`` arrays. In case the computation will be later
 split between other processes, this method will be called again on each of the
 computation groups.
 
 Method ``_configure_backend`` performs basic health checks for a given analysis
-class -- namely, it compares given backend (if it's a ``str`` instance, such as
+class -- namely, it compares a given backend (if it's a ``str`` instance, such as
 ``'multiprocessing'``) with the list of builtin backends (and also backends
 implemented for a given analysis subclass), and configures a
-:class:`MDAnalysis.analysis.backends.BackendBase` instance accordingly. If user
+:class:`MDAnalysis.analysis.backends.BackendBase` instance accordingly. If the user
 decides to provide a custom backend (any subclass of
 :class:`MDAnalysis.analysis.backends.BackendBase`, or anything with ``apply``
-method), ensures that number of workers wasn't specified twice (during backend
+method), it ensures that number of workers wasn't specified twice (during backend
 initialization and in ``run()`` arguments).
 
-After backend is configured, ``_setup_computation_groups`` splits the frames
-prepared earlier in ``self._prepare_sliced_trajectory`` into number of groups,
+After a backend is configured, ``_setup_computation_groups`` splits the frames
+prepared earlier in ``self._prepare_sliced_trajectory`` into a number of groups,
 by default equal to the number of workers. 
 
 In the ``_compute`` method, frames get initialized again with
-``_prepare_sliced_trajectory``, and also attributes necessary for a specific
+``_prepare_sliced_trajectory``, and attributes necessary for a specific
 analysis get initialized with ``_prepare`` method. Then the function iterates over
 ``self._sliced_trajectory``, assigning ``self._frame_index`` and ``self._ts`` as
 frame index (within a computation group) and timestamp, and also setting
@@ -167,8 +167,8 @@ function, in principle it can be used to any arbitrary function and arguments,
 given they're serializable.
 
 
-When to use parallelization *aka* known limitations
-===================================================
+When to use parallelization? (Known limitations)
+================================================
 
 For now, the syntax for running parallel analysis is explicit, meaning by
 default the ``serial`` version will be run, and the parallelization won't be
@@ -178,7 +178,7 @@ cases, there are some known caveats from the inital benchmarks.
 Fast ``_single_frame`` compared to reading from disk
 --------------------------------------------------
 
-In all cases, parallelization will be useful only when frames are being
+In all cases, parallelization will not be useful only when frames are being
 processed faster than being read from the disk, otherwise reading is the
 bottleneck here. Hence, you'll benefit from parallelization only if you have
 relatively much compute per frame, or a fast drive, as illustrated below:
@@ -187,10 +187,10 @@ relatively much compute per frame, or a fast drive, as illustrated below:
 
 In other words, if you have *fast* analysis (say,
 :class:`MDAnalysis.analysis.rms.RMSD`) **and** a slow HDD drive, you are likely
-to not get any benefits from parallelization. Otherwise, you'll be fine.
+to not get any benefits from parallelization. Otherwise, you should be fine.
 
-Seriralization issues
----------------------
+Serialization issues
+--------------------
 
 For built-in analysis classes, the default serialization with both
 ``multiprocessing`` and ``dask`` is known to work. If you're using some custom
@@ -222,7 +222,7 @@ Adding parallelization to your own analysis class
 =================================================
 
 If you want to add parallelization to your own analysis class, first make sure
-your algorithm allows you to do that, i.e. you process each frame independently.
+your algorithm allows you to do that, i.e. you can process each frame independently.
 Then it's rather simple -- let's look at the actual code that added
 parallelization to the :class:`MDAnalysis.analysis.rms.RMSD`:
 
@@ -234,7 +234,7 @@ parallelization to the :class:`MDAnalysis.analysis.rms.RMSD`:
     class RMSD(BackendBase):
         @classmethod
         def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
+            return ('serial', 'multiprocessing', 'dask',)
 
         @classmethod
         def is_parallelizable(self):
