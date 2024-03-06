@@ -269,6 +269,7 @@ class DistanceMatrix(AnalysisBase):
             self.results.dist_matrix[self._frame_index,
                                      j+self._frame_index] = (
                                             dist if dist > self._cutoff else 0)
+            # TODO: move this calculation to _conclude
             self.results.dist_matrix[j+self._frame_index,
                                      self._frame_index] = (
                                 self.results.dist_matrix[self._frame_index,

@@ -31,6 +31,49 @@ usually follows the same structure
 Please see the individual module documentation for any specific caveats 
 and also read and cite the reference papers associated with these algorithms.
 
+.. rubric:: Using parallelization for built-in analysis runs
+
+Starting from v2.8.0, MDAnalysis ``AnalysisBase`` subclasses can run on a backend
+that supports parallelization (see :mod:`MDAnalysis.analysis.backends`). All analysis
+runs, however, use ``backend='serial'`` by default, which is identical to the previous
+behavior.
+
+Without any dependencies, only one backend is supported -- built-in ``multiprocessing``, that
+processes parts of a trajectory running separate *processes*, i.e. utilizing
+multi-core processors properly. For now, parallelization is added to
+:class:`MDAnalysis.analysis.RMS.RMSD`, but by 3.0 version it will be introduced
+to all subclasses that can support it.
+
+In order to use that feature, simply add ``backend='multiprocessing'`` to your
+run, and supply it with proper ``n_workers`` (use ``multiprocessing.cpu_count()``
+for maximum available on your machine):
+
+.. code-block:: python
+
+   import multiprocessing
+   import MDAnalysis as mda
+   from MDAnalysisTests.datafiles import PSF, DCD
+   from MDAnalysis.analysis.rms import RMSD
+   from MDAnalysis.analysis.align import AverageStructure
+
+   # initialize the universe
+   u = mda.Universe(PSF, DCD)
+
+   # calculate average structure for reference
+   avg = AverageStructure(mobile=u).run()
+   ref = avg.results.universe
+
+   # initialize RMSD run
+   rmsd = RMSD(u, ref, select='backbone')
+   rmsd.run(backend='multiprocessing', n_workers=multiprocessing.cpu_count())
+
+For now, you have to be verbal and specify both ``backend`` and ``n_workers``,
+since the feature is new and there are no good defaults for it. For example,
+if you specify a too big `n_workers`, and your trajectory frames are big,
+you might get and out-of-memory error when executing your run.
+
+You can also implement your own backends -- see :mod:`MDAnalysis.analysis.backends`.
+
 .. rubric:: Additional dependencies
 
 Some of the modules in :mod:`MDAnalysis.analysis` require additional Python
@@ -64,6 +107,9 @@ To build your own analysis class start by reading the documentation.
    :maxdepth: 1
 
    analysis/base
+   analysis/backends
+   analysis/results
+   analysis/parallelization
 
 Distances and contacts
 ======================

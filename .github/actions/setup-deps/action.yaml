@@ -62,6 +62,8 @@ inputs:
     default: 'chemfiles-python>=0.9'
   clustalw:
     default: 'clustalw=2.1'
+  dask:
+    default: 'dask'
   distopia:
     default: 'distopia>=0.2.0'
   h5py:
@@ -134,6 +136,7 @@ runs:
           ${{ inputs.biopython }}
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
+          ${{ inputs.dask }}
           ${{ inputs.distopia }}
           ${{ inputs.gsd }}
           ${{ inputs.h5py }}
