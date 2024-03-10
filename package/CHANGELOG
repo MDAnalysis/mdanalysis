@@ -15,11 +15,13 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2, aditya292002, pstaerk
+         ljwoods2, aditya292002, pstaerk, PicoCentauri
 
  * 2.8.0
 
 Fixes
+ * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
+   (PR #4459)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
    (Issue #3349, PR #4407)
  * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
