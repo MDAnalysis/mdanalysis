@@ -20,7 +20,7 @@ dependencies:
   - networkx
   - numpy>=1.23.2
   - pytest
-  - python==3.9
+  - python==3.10
   - pytng>=0.2.3
   - scikit-learn
   - scipy
