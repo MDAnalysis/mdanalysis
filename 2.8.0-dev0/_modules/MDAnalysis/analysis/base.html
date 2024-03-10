@@ -540,7 +540,7 @@
 <div class="viewcode-block" id="AnalysisBase.run">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progressbar_kwargs</span><span class="o">=</span><span class="p">{}):</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progressbar_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform the calculation</span>
 
 <span class="sd">        Parameters</span>
@@ -561,10 +561,11 @@
 
 <span class="sd">        verbose : bool, optional</span>
 <span class="sd">            Turn on verbosity</span>
-<span class="sd">        </span>
+
 <span class="sd">        progressbar_kwargs : dict, optional</span>
-<span class="sd">            ProgressBar keywords with custom parameters regarding progress bar position, etc; </span>
-<span class="sd">            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.</span>
+<span class="sd">            ProgressBar keywords with custom parameters regarding progress bar</span>
+<span class="sd">            position, etc; see :class:`MDAnalysis.lib.log.ProgressBar` for full</span>
+<span class="sd">            list.</span>
 
 
 <span class="sd">        .. versionchanged:: 2.2.0</span>
@@ -572,7 +573,7 @@
 <span class="sd">            frame indices in the `frames` keyword argument.</span>
 
 <span class="sd">        .. versionchanged:: 2.5.0</span>
-<span class="sd">            Add `progressbar_kwargs` parameter, </span>
+<span class="sd">            Add `progressbar_kwargs` parameter,</span>
 <span class="sd">            allowing to modify description, position etc of tqdm progressbars</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Choosing frames to analyze&quot;</span><span class="p">)</span>
@@ -586,6 +587,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis loop over </span><span class="si">%d</span><span class="s2"> trajectory frames&quot;</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">progressbar_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">progressbar_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ProgressBar</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span>
