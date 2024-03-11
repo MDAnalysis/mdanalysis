@@ -38,6 +38,8 @@ Enhancements
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
 
 Changes
+ * As per SPEC0 the minimum supported Python version has been raised
+   to 3.10 (PR #4502)
  * MDAnalysis.analysis.hole2 is now directly imported from the mdakit
    mdahole2. This module is deprecated and will be fully removed in
    MDAnalysis version 3.0 (PR #4464)
