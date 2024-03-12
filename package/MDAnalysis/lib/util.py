@@ -2552,3 +2552,11 @@ def store_init_arguments(func):
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
     return wrapper
+
+
+def no_copy_shim():
+    if np.__version__[0] == "2":
+        copy = None
+    else:
+        copy = False
+    return copy
