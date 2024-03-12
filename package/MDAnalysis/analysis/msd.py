@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 r"""
 Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 ==============================================================
@@ -227,7 +226,18 @@ to control which frames are incorporated may be required.
 References
 ----------
 
+<<<<<<< HEAD
+.. bibliography::
+    :filter: False
+    :style: MDA
+
+    Maginn2019
+    Yeh2004
+    Bulow2020
+    Fuchs1998
+=======
 .. footbibliography::
+>>>>>>> develop
 
 
 Classes
@@ -262,21 +272,34 @@ del Doi
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
+    If `fft=False` so that the "windowed" algorithm is used, the second order
+    nongaussian parameter can also computed with ``nongaussian==True`` to 
+    capture heterogeneity as different time scales. See :cite:p:`Fuchs1998` 
+    for more information. 
+
+    .. math::
+    
+       \alpha_{2}(r_{d}) = \frac{3}{5} \frac{ \bigg{\langle} \frac{1}{N} \sum_{i=1}^{N} |r_{d}
+        - r_{d}(t_0)|^4 \bigg{\rangle} } { \bigg{\langle} \frac{1}{N} \sum_{i=1}^{N} |r_{d}
+        - r_{d}(t_0)|^2 \bigg{\rangle}^2 } - 1
+
     Parameters
     ----------
     u : Universe or AtomGroup
         An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
         Note that :class:`UpdatingAtomGroup` instances are not accepted.
-    select : str
+    select : str (optional)
         A selection string. Defaults to "all" in which case
         all atoms are selected.
-    msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
+    msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'} (optional)
         Desired dimensions to be included in the MSD. Defaults to 'xyz'.
-    fft : bool
+    fft : bool (optional)
         If ``True``, uses a fast FFT based algorithm for computation of
         the MSD. Otherwise, use the simple "windowed" algorithm.
         The tidynamics package is required for `fft=True`.
         Defaults to ``True``.
+    nongaussian : bool (optional)
+        If ``True`` the second order nongaussian parameter is calculated.
 
     Attributes
     ----------
@@ -286,6 +309,12 @@ class EinsteinMSD(AnalysisBase):
         The averaged MSD over all the particles with respect to lag-time.
     results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
+    results.nongaussian_parameter : :class:`numpy.ndarray`
+        Can only be ``True`` when `fft==False`. The averaged nongaussian 
+        parameter  over all the particles with respect to lag-time.
+    results.nongaussian_by_particle : :class:`numpy.ndarray`
+        Only available when `fft==False`. The nongaussian parameter 
+        of each individual particle with respect to lag-time.
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
     n_frames : int
@@ -294,24 +323,36 @@ class EinsteinMSD(AnalysisBase):
         Number of particles MSD was calculated over.
 
 
+    .. versionchanged:: 2.4.0
+       Added optional second order non-gaussian parameter to output for 
+       "simple" algorithm.
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
+    def __init__(self,
+                 u,
+                 select='all',
+                 msd_type='xyz',
+                 fft=True,
+                 nongaussian=False,
+                 **kwargs):
         r"""
         Parameters
         ----------
         u : Universe or AtomGroup
             An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
-        select : str
+        select : str (optional)
             A selection string. Defaults to "all" in which case
             all atoms are selected.
-        msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
-            Desired dimensions to be included in the MSD.
-        fft : bool
+        msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'} (optional)
+            Desired dimensions to be included in the MSD. Defaults to 'xyz'.
+        fft : bool (optional)
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             The tidynamics package is required for `fft=True`.
+        nongaussian : bool (optional)
+            If ``True`` the nongaussian parameter is calculated.
+            Can only be ``True`` when `fft==False`. The averaged nongaussian 
         """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
@@ -324,6 +365,7 @@ class EinsteinMSD(AnalysisBase):
         self.msd_type = msd_type
         self._parse_msd_type()
         self.fft = fft
+        self.nongaussian = nongaussian
 
         # local
         self.ag = u.select_atoms(self.select)
@@ -333,12 +375,21 @@ class EinsteinMSD(AnalysisBase):
         # result
         self.results.msds_by_particle = None
         self.results.timeseries = None
+        if fft and nongaussian:
+            raise ValueError("The nongaussian parameter can only be computed"
+                             " when `fft=False`")
+        elif nongaussian:
+            self.results.nongaussian_by_particle = None
+            self.results.nongaussian_parameter = None
 
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.results.msds_by_particle = np.zeros((self.n_frames,
-                                                  self.n_particles))
+        self.results.msds_by_particle = np.zeros(
+            (self.n_frames, self.n_particles))
+        if self.nongaussian:
+            self.results.nongaussian_by_particle = np.zeros(
+                (self.n_frames, self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
@@ -347,8 +398,15 @@ class EinsteinMSD(AnalysisBase):
         r""" Sets up the desired dimensionality of the MSD.
 
         """
-        keys = {'x': [0], 'y': [1], 'z': [2], 'xy': [0, 1],
-                'xz': [0, 2], 'yz': [1, 2], 'xyz': [0, 1, 2]}
+        keys = {
+            'x': [0],
+            'y': [1],
+            'z': [2],
+            'xy': [0, 1],
+            'xz': [0, 2],
+            'yz': [1, 2],
+            'xyz': [0, 1, 2]
+        }
 
         self.msd_type = self.msd_type.lower()
 
@@ -377,7 +435,8 @@ class EinsteinMSD(AnalysisBase):
             self._conclude_simple()
 
     def _conclude_simple(self):
-        r""" Calculates the MSD via the simple "windowed" algorithm.
+        r""" Calculates the MSD via the simple "windowed" algorithm 
+        with nongaussian parameter.
 
         """
         lagtimes = np.arange(1, self.n_frames)
@@ -386,7 +445,18 @@ class EinsteinMSD(AnalysisBase):
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
+            if self.nongaussian:
+                self.results.nongaussian_by_particle[
+                    lag, :] = 3.0 / 5.0 * np.mean(
+                        np.square(sqdist), axis=0) / np.square(
+                            self.results.msds_by_particle[lag, :]) - 1.0
+
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
+        if self.nongaussian:
+            self.results.nongaussian_parameter = (3.0 / 5.0 * np.mean(
+                (self.results.nongaussian_by_particle + 1.0) * 5.0 / 3.0 *
+                np.square(self.results.msds_by_particle),
+                axis=1) / np.square(self.results.timeseries) - 1.0)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
