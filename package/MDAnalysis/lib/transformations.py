@@ -170,6 +170,7 @@ import numpy as np
 from numpy.linalg import norm
 
 from .mdamath import angle as vecangle
+from MDAnalysis.lib.util import no_copy_shim
 
 def identity_matrix():
     """Return 4x4 identity/unit matrix.
@@ -326,7 +327,7 @@ def rotation_matrix(angle, direction, point=None):
     M[:3, :3] = R
     if point is not None:
         # rotation not around origin
-        point = np.array(point[:3], dtype=np.float64, copy=False)
+        point = np.array(point[:3], dtype=np.float64, copy=no_copy_shim)
         M[:3, 3] = point - np.dot(R, point)
     return M
 
@@ -497,7 +498,7 @@ def projection_matrix(point, normal, direction=None,
 
     """
     M = np.identity(4)
-    point = np.array(point[:3], dtype=np.float64, copy=False)
+    point = np.array(point[:3], dtype=np.float64, copy=no_copy_shim)
     normal = unit_vector(normal[:3])
     if perspective is not None:
         # perspective projection
@@ -515,7 +516,7 @@ def projection_matrix(point, normal, direction=None,
         M[3, 3] = np.dot(perspective, normal)
     elif direction is not None:
         # parallel projection
-        direction = np.array(direction[:3], dtype=np.float64, copy=False)
+        direction = np.array(direction[:3], dtype=np.float64, copy=no_copy_shim)
         scale = np.dot(direction, normal)
         M[:3, :3] -= np.outer(direction, normal) / scale
         M[:3, 3] = direction * (np.dot(point, normal) / scale)
@@ -970,8 +971,8 @@ def superimposition_matrix(v0, v1, scaling=False, usesvd=True):
     True
 
     """
-    v0 = np.array(v0, dtype=np.float64, copy=False)[:3]
-    v1 = np.array(v1, dtype=np.float64, copy=False)[:3]
+    v0 = np.array(v0, dtype=np.float64, copy=no_copy_shim)[:3]
+    v1 = np.array(v1, dtype=np.float64, copy=no_copy_shim)[:3]
 
     if v0.shape != v1.shape or v0.shape[1] < 3:
         raise ValueError("vector sets are of wrong shape or type")
@@ -1314,7 +1315,7 @@ def quaternion_from_matrix(matrix, isprecise=False):
     True
 
     """
-    M = np.array(matrix, dtype=np.float64, copy=False)[:4, :4]
+    M = np.array(matrix, dtype=np.float64, copy=no_copy_shim)[:4, :4]
     if isprecise:
         q = np.empty((4, ), dtype=np.float64)
         t = np.trace(M)

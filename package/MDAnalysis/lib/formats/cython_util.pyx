@@ -26,6 +26,8 @@ cimport numpy as cnp
 from libc.stdlib cimport free
 from cpython cimport PyObject, Py_INCREF
 
+from MDAnalysis.lib.util import no_copy_shim
+
 cnp.import_array()
 
 
@@ -71,7 +73,7 @@ cdef class ArrayWrapper:
         self.data_type = data_type
         self.ndim = ndim
 
-    def __array__(self):
+    def __array__(self, dtype=None, copy=None):
         """ Here we use the __array__ method, that is called when numpy
             tries to get an array from the object."""
         ndarray = cnp.PyArray_SimpleNewFromData(self.ndim,
@@ -110,7 +112,7 @@ cdef cnp.ndarray ptr_to_ndarray(void* data_ptr, cnp.int64_t[:] dim, int data_typ
     array_wrapper = ArrayWrapper()
     array_wrapper.set_data(<void*> data_ptr, <int*> &dim[0], dim.size, data_type)
 
-    cdef cnp.ndarray ndarray = np.array(array_wrapper, copy=False)
+    cdef cnp.ndarray ndarray = np.array(array_wrapper, copy=no_copy_shim)
     # Assign our object to the 'base' of the ndarray object
     ndarray[:] = array_wrapper.__array__()
     # Increment the reference count, as the above assignement was done in
