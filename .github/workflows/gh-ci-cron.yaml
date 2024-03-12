@@ -151,7 +151,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=3.9
+          python=3.10
           pip
         condarc: |
           channels:
