@@ -56,7 +56,6 @@ include-package-data = true
 namespaces = false
 where = ["."]
 include=[
-    "MDAnalysisTests",
     "MDAnalysisTests.data",
     "MDAnalysisTests.data.Amber",
     "MDAnalysisTests.data.capping",
