@@ -54,26 +54,26 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 namespaces = false
-where = ["."]
-include=[
-    "MDAnalysisTests.data",
-    "MDAnalysisTests.data.Amber",
-    "MDAnalysisTests.data.capping",
-    "MDAnalysisTests.data.coordinates",
-    "MDAnalysisTests.data.gms",
-    "MDAnalysisTests.data.gromos11",
-    "MDAnalysisTests.data.merge",
-    "MDAnalysisTests.data.tprs",
-    "MDAnalysisTests.data.tprs.all_bonded",
-    "MDAnalysisTests.data.tprs.virtual_sites",
-    "MDAnalysisTests.data.analysis",
-    "MDAnalysisTests.data.contacts",
-    "MDAnalysisTests.data.dlpoly",
-    "MDAnalysisTests.data.gromacs",
-    "MDAnalysisTests.data.lammps",
-    "MDAnalysisTests.data.mol2",
-    "MDAnalysisTests.data.windows",
-]
+#where = ["."]
+#include=[
+#    "MDAnalysisTests.data",
+#    "MDAnalysisTests.data.Amber",
+#    "MDAnalysisTests.data.capping",
+#    "MDAnalysisTests.data.coordinates",
+#    "MDAnalysisTests.data.gms",
+#    "MDAnalysisTests.data.gromos11",
+#    "MDAnalysisTests.data.merge",
+#    "MDAnalysisTests.data.tprs",
+#    "MDAnalysisTests.data.tprs.all_bonded",
+#    "MDAnalysisTests.data.tprs.virtual_sites",
+#    "MDAnalysisTests.data.analysis",
+#    "MDAnalysisTests.data.contacts",
+#    "MDAnalysisTests.data.dlpoly",
+#    "MDAnalysisTests.data.gromacs",
+#    "MDAnalysisTests.data.lammps",
+#    "MDAnalysisTests.data.mol2",
+#    "MDAnalysisTests.data.windows",
+#]
 
 [tool.setuptools.package-data]
 MDAnalysisTests = [
