@@ -52,8 +52,9 @@ Source = "https://github.com/mdanalysis/mdanalysis"
 zip-safe = false
 include-package-data = true
 
-[tool.setuptools.packages.find]
-namespaces = false
+[tool.setuptools.packages]
+find = {}
+#namespaces = false
 #where = ["."]
 #include=[
 #    "MDAnalysisTests.data",
