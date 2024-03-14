@@ -54,7 +54,7 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 namespaces = false
-where = ["MDAnalysisTests"]
+where = ["."]
 include=[
     "MDAnalysisTests",
     "MDAnalysisTests.data",
