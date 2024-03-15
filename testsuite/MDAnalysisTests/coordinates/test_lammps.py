@@ -230,14 +230,14 @@ def test_datawriter_universe(filename, tmpdir):
     """
     fn = str(tmpdir.join(filename))
 
-    u = mda.Universe(LAMMPSdata_mini)
+    u = mda.Universe(LAMMPSdata_mini, convert_units = False) # ref, by defaul convert_units = True
 
-    with mda.Writer(fn, n_atoms=len(u.atoms)) as w:
+    with mda.Writer(fn, n_atoms=len(u.atoms), convert_units = False) as w:
         w.write(u)
 
-    u2 = mda.Universe(fn)
-
+    u2 = mda.Universe(fn, convert_units = False)
     assert_allclose(u.atoms.positions, u2.atoms.positions)
+    assert_allclose(u.atoms.velocities, u2.atoms.velocities)
     assert_allclose(u.dimensions, u2.dimensions)
 
 

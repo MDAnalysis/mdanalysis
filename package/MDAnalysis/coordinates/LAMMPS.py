@@ -204,12 +204,13 @@ class DATAReader(base.SingleFrameReaderBase):
     units = {'time': None, 'length': 'Angstrom', 'velocity': 'Angstrom/fs'}
 
     @store_init_arguments
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, convert_units = True, **kwargs):
+        self.convert_units = convert_units
         self.n_atoms = kwargs.pop('n_atoms', None)
         if self.n_atoms is None:  # this should be done by parsing DATA first
             raise ValueError("DATAReader requires n_atoms keyword")
         self.atom_style = kwargs.pop('atom_style', None)
-        super(DATAReader, self).__init__(filename, **kwargs)
+        super(DATAReader, self).__init__(filename, convert_units, **kwargs)
 
     def _read_first_frame(self):
         with DATAParser(self.filename) as p:
@@ -230,12 +231,14 @@ class DATAWriter(base.WriterBase):
     This writer supports the sections Atoms, Masses, Velocities, Bonds,
     Angles, Dihedrals, and Impropers. This writer will write the header
     and these sections (if applicable). Atoms section is written in the
-    "full" sub-style if charges are available or "molecular" sub-style
-    if they are not. Molecule id is set to 0 for all atoms.
+    "full" sub-style if charges and molecular ID are available, and leave 
+    empty if they are not. 
 
     Note
     ----
-    This writer assumes "conventional" or "real" LAMMPS units where length
+    By defaul this writer does not convert units. It will write whatever value
+    as appeared in the universe. If set convert_units=True, this writer assumes
+    "conventional" or "real" LAMMPS units where length
     is measured in Angstroms and velocity is measured in Angstroms per
     femtosecond. To write in different units, specify `lengthunit`
 
@@ -246,7 +249,7 @@ class DATAWriter(base.WriterBase):
     To preserve numerical atom types when writing a selection, the Masses
     section will have entries for each atom type up to the maximum atom type.
     If the universe does not contain atoms of some type in
-    {1, ... max(atom_types)}, then the mass for that type will be set to 1.
+    {1, ... max(atom_types)}, then the mass for that type will be set to 0.
 
     In order to write bonds, each selected bond type must be explicitly set to
     an integer >= 1.
@@ -289,31 +292,48 @@ class DATAWriter(base.WriterBase):
         indices = atoms.indices + 1
         types = atoms.types.astype(np.int32)
 
-        moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
+        try:
+            moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
+        except (NoDataError, AttributeError):
+            has_moltag = False
+        else:
+            has_moltag = True
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(atoms.positions, inplace=False)
+        else: 
+            coordinates = atoms.positions
 
-        if has_charges:
+        if has_charges and has_moltag:
             for index, moltag, atype, charge, coords in zip(indices, moltags,
                     types, charges, coordinates):
                 x, y, z = coords
                 self.f.write(f"{index:d} {moltag:d} {atype:d} {charge:f}"
                              f" {x:f} {y:f} {z:f}\n")
-        else:
+        if has_moltag and not has_charges:
             for index, moltag, atype, coords in zip(indices, moltags, types,
                     coordinates):
                 x, y, z = coords
                 self.f.write(f"{index:d} {moltag:d} {atype:d}"
                              f" {x:f} {y:f} {z:f}\n")
+        if not has_moltag and not has_charges :
+            for index, atype, coords in zip(indices, types,
+                    coordinates):
+                x, y, z = coords
+                self.f.write(f"{index:d} {atype:d}"
+                             f" {x:f} {y:f} {z:f}\n")
+
 
     def _write_velocities(self, atoms):
         self.f.write('\n')
         self.f.write('Velocities\n')
         self.f.write('\n')
         indices = atoms.indices + 1
-        velocities = self.convert_velocities_to_native(atoms.velocities,
-                                                       inplace=False)
+        if self.convert_units:
+            velocities = self.convert_velocities_to_native(atoms.velocities,
+                                                           inplace=False)
+        else: 
+            velocities = atoms.velocities
         for index, vel in zip(indices, velocities):
             self.f.write('{i:d} {x:f} {y:f} {z:f}\n'.format(i=index, x=vel[0],
                 y=vel[1], z=vel[2]))
@@ -329,7 +349,7 @@ class DATAWriter(base.WriterBase):
             masses = set(atoms.universe.atoms.select_atoms(
                 'type {:d}'.format(atype)).masses)
             if len(masses) == 0:
-                mass_dict[atype] = 1.0
+                mass_dict[atype] = 0.0
             else:
                 mass_dict[atype] = masses.pop()
             if masses:
@@ -358,6 +378,8 @@ class DATAWriter(base.WriterBase):
         if self.convert_units:
             triv = self.convert_pos_to_native(mdamath.triclinic_vectors(
                                               dimensions),inplace=False)
+        else:
+            triv = mdamath.triclinic_vectors(dimensions)
         self.f.write('\n')
         self.f.write('{:f} {:f} xlo xhi\n'.format(0., triv[0][0]))
         self.f.write('{:f} {:f} ylo yhi\n'.format(0., triv[1][1]))
