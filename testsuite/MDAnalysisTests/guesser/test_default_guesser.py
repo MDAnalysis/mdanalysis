@@ -175,9 +175,13 @@ def test_guess_bond_vdw_error():
     with pytest.raises(ValueError, match="vdw radii for types: DUMMY"):
         DefaultGuesser(u).guess_bonds(u.atoms)
 
+def test_guess_bond_coord_error(default_guesser):
+    with pytest.raises(ValueError, match="atoms' and 'coord' must be the same length"):
+        default_guesser.guess_bonds(['N', 'O', 'C'], [[1, 2, 3]])
+
 def test_guess_angles_with_no_bonds():
-    "Test guessing bonds first before guessing "
-    "angles for a univers with no bonds and angles "
+    "Test guessing angles for atoms with no bonds"
+    " information without adding bonds to universe "
     u = mda.Universe(datafiles.two_water_gro)
     u.guess_TopologyAttributes(to_guess=['angles'])
     assert hasattr(u, 'angles')
@@ -193,21 +197,30 @@ def test_guess_impropers(default_guesser):
     vals = default_guesser.guess_improper_dihedrals(ag.angles)
     assert_equal(len(vals), 12)
 
-def test_guess_impropers_with_no_angles():
-    "Test guessing bonds and angles first before guessing "
-    "impropers for a univers with no bonds and angles "
-    u = mda.Universe(datafiles.two_water_gro)
-    u.guess_TopologyAttributes(to_guess=['impropers'])
-    assert hasattr(u, 'impropers')
-    assert not hasattr(u, 'angles')
-    assert not hasattr(u, 'bonds')
-
 def test_guess_dihedrals_with_no_angles():
-    "Test guessing bonds and angles first before guessing "
-    "dihedrals for a univers with no bonds and angles "
+    "Test guessing dihedrals for atoms with no angles "
+    "information without adding bonds or angles to universe"
     u = mda.Universe(datafiles.two_water_gro)
     u.guess_TopologyAttributes(to_guess=['dihedrals'])
     assert hasattr(u, 'dihedrals')
+    assert not hasattr(u, 'angles')
+    assert not hasattr(u, 'bonds')
+
+def test_guess_impropers_with_angles():
+    "Test guessing impropers for atoms with angles "
+    "and bonds information "
+    u = mda.Universe(datafiles.two_water_gro, to_guess=['bonds', 'angles', 'impropers'])
+    u.guess_TopologyAttributes(to_guess=['impropers'])
+    assert hasattr(u, 'impropers')
+    assert hasattr(u, 'angles')
+    assert hasattr(u, 'bonds')
+
+def test_guess_impropers_with_no_angles():
+    "Test guessing impropers for atoms with no angles "
+    "information without adding bonds or angles to universe"
+    u = mda.Universe(datafiles.two_water_gro)
+    u.guess_TopologyAttributes(to_guess=['impropers'])
+    assert hasattr(u, 'impropers')
     assert not hasattr(u, 'angles')
     assert not hasattr(u, 'bonds')
 
@@ -288,3 +301,8 @@ def test_guess_gasteiger_charges(smi):
     guesser = DefaultGuesser(None)
     values = guesser.guess_gasteiger_charges(u.atoms)
     assert_equal(values, expected)
+
+def test_aromaticity():
+    u = mda.Universe(datafiles.PDB_small, to_guess=['elements', 'aromaticities'])
+    c_aromatic = u.select_atoms('resname PHE and name CD1')
+    assert_equal(c_aromatic.aromaticities[0], True)
