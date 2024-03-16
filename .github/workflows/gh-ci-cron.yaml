@@ -264,14 +264,17 @@ jobs:
   pypi-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu, macos, windows]
+          os: [ubuntu-latest, macos-latest, macos-14, windows-latest]
           python-version: ["3.9", "3.10", "3.11", "3.12"]
           wheels: ['true', 'false']
+          exclude:
+          - os: "macos-14"
+            python-version: "3.9"
     steps:
       # Checkout to have access to local actions (i.e. setup-os)
     - uses: actions/checkout@v4
