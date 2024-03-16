@@ -93,7 +93,7 @@ class DefaultGuesser(GuesserBase):
             'bonds': self.guess_bonds,
             'angles': self.guess_angles,
             'dihedrals': self.guess_dihedrals,
-            'improper dihedrals': self.guess_improper_dihedrals,
+            'impropers': self.guess_improper_dihedrals,
             'aromaticities': self.guess_aromaticities,
         }
 
@@ -141,31 +141,6 @@ class DefaultGuesser(GuesserBase):
         masses = np.array([self.get_atom_mass(atom)
                            for atom in atom_types], dtype=np.float64)
         return masses
-
-    def validate_atom_types(self, atom_types):
-        """Vaildates the atom types based on whether
-        they are available in our tables
-
-        Parameters
-        ----------
-        atom_types
-          Type of each atom
-
-        Raises
-        ------
-        :exc:`KeyError` if atom_types is invalid atomic symbol.
-
-        """
-        for atom_type in np.unique(atom_types):
-            try:
-                tables.masses[atom_type]
-            except KeyError:
-                try:
-                    tables.masses[atom_type.upper()]
-                except KeyError:
-                    warnings.warn(
-                        "Failed to guess the mass for the "
-                        "following atom types: {}".format(atom_type))
 
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
@@ -216,7 +191,6 @@ class DefaultGuesser(GuesserBase):
          or masses to guess types from.
 
         """
-
         if atom_types is None and masses is None:
             try:
                 atom_types = self._universe.atoms.names
@@ -314,7 +288,7 @@ class DefaultGuesser(GuesserBase):
                     return e.upper()
         return ''
 
-    def guess_bonds(self, atoms=None):
+    def guess_bonds(self, atoms=None, coords=None):
         r"""Guess if bonds exist between two atoms based on their distance.
 
         Bond between two atoms is created, if the two atoms are within
@@ -370,9 +344,15 @@ class DefaultGuesser(GuesserBase):
            http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
 
         """
-        if not atoms:
+        if atoms is None:
             atoms = self._universe.atoms
+        
+        if coords is None:
+            coords = self._universe.atoms.positions
 
+        if len(atoms) != len(coords):
+            raise ValueError("'atoms' and 'coord' must be the same length")
+    
         fudge_factor = self._kwargs.get('fudge_factor', 0.55)
 
         # so I don't permanently change it
@@ -410,7 +390,7 @@ class DefaultGuesser(GuesserBase):
 
         bonds = []
 
-        pairs, dist = distances.self_capped_distance(atoms.positions,
+        pairs, dist = distances.self_capped_distance(coords,
                                                      max_cutoff=2.0 * max_vdw,
                                                      min_cutoff=lower_bound,
                                                      box=box)
@@ -444,8 +424,7 @@ class DefaultGuesser(GuesserBase):
         :meth:`guess_bonds`
 
       """
-        from ..core.topologyattrs import Bonds
-        from ..core.groups import AtomGroup
+        from ..core.universe import Universe
 
         angles_found = set()
         
@@ -453,9 +432,10 @@ class DefaultGuesser(GuesserBase):
             if hasattr(self._universe.atoms, 'bonds'):
                 bonds = self._universe.atoms.bonds
             else:
-                u_copy = self._universe.copy()
-                u_copy.add_bonds(self.guess_bonds(u_copy.atoms))
-                bonds = u_copy.atoms.bonds
+                temp_u = Universe.empty(n_atoms=len(self._universe.atoms))
+                temp_u.add_bonds(self.guess_bonds(
+                    self._universe.atoms, self._universe.atoms.positions))
+                bonds = temp_u.atoms.bonds
 
         for b in bonds:
             for atom in b:
@@ -490,22 +470,23 @@ class DefaultGuesser(GuesserBase):
             Suitable for use in u._topology
 
         """
-
-        dihedrals_found = set()
+        from ..core.universe import Universe
 
         if angles is None:
             if hasattr(self._universe.atoms, 'angles'):
                 angles = self._universe.atoms.angles
 
-            elif hasattr(self._universe.atoms, 'bonds'):
-                u_copy = self._universe.copy()
-                u_copy.add_angles(self.guess_angles(u_copy.bonds))
-                angles = u_copy.atoms.angles
             else:
-                u_copy = self._universe.copy()
-                u_copy.add_bonds(self.guess_bonds(u_copy.atoms))
-                u_copy.add_angles(self.guess_angles(u_copy.bonds))
-                angles = u_copy.atoms.angles
+                temp_u = Universe.empty(n_atoms=len(self._universe.atoms))
+
+                temp_u.add_bonds(self.guess_bonds(
+                    self._universe.atoms, self._universe.atoms.positions))
+                    
+                temp_u.add_angles(self.guess_angles(temp_u.atoms.bonds))
+
+                angles = temp_u.atoms.angles
+
+        dihedrals_found = set()
 
         for b in angles:
             a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
@@ -523,8 +504,7 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(dihedrals_found)
 
-
-    def guess_improper_dihedrals(self, angles):
+    def guess_improper_dihedrals(self, angles=None):
         """Given a list of Angles, find all improper dihedrals
         that exist between atoms.
 
@@ -539,6 +519,22 @@ class DefaultGuesser(GuesserBase):
             Suitable for use in u._topology
 
         """
+
+        from ..core.universe import Universe
+
+        if angles is None:
+            if hasattr(self._universe.atoms, 'angles'):
+                angles = self._universe.atoms.angles
+
+            else:
+                temp_u = Universe.empty(n_atoms=len(self._universe.atoms))
+
+                temp_u.add_bonds(self.guess_bonds(
+                    self._universe.atoms, self._universe.atoms.positions))
+                    
+                temp_u.add_angles(self.guess_angles(temp_u.atoms.bonds))
+
+                angles = temp_u.atoms.angles
 
         dihedrals_found = set()
 

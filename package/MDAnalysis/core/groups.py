@@ -3327,7 +3327,7 @@ class AtomGroup(GroupBase):
                                  lower_bound=lower_bound,
                                  box=self.dimensions,
                                  vdwradii=vdwradii)
-        b = guesser.guess_bonds(self.atoms)
+        b = guesser.guess_bonds(self.atoms, self.atoms.positions)
 
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
