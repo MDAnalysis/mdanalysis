@@ -23,7 +23,6 @@
 import MDAnalysis as mda
 import numpy as np
 import pytest
-import warnings
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity

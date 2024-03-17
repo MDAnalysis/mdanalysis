@@ -23,7 +23,6 @@
 import MDAnalysis as mda
 import numpy as np
 import pytest
-from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY)
 from numpy.testing import assert_almost_equal, assert_equal
 
 

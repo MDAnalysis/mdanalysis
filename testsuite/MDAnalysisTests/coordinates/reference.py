@@ -23,12 +23,10 @@
 import numpy as np
 
 from MDAnalysisTests import datafiles
-from MDAnalysisTests.datafiles import (PDB_small, PDB, LAMMPSdata,
+from MDAnalysisTests.datafiles import (LAMMPSdata,
                                        LAMMPSdata2, LAMMPSdcd2,
                                        LAMMPSdata_mini,
-                                       LAMMPSdata_additional_columns,
-                                       PSF_TRICLINIC, DCD_TRICLINIC,
-                                       PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC)
+                                       )
 
 
 class RefAdKSmall(object):

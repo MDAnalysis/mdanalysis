@@ -28,8 +28,6 @@ from MDAnalysis.topology.GSDParser import HAS_GSD
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import GSD
 from MDAnalysisTests.datafiles import GSD_bonds
-from numpy.testing import assert_equal
-import os
 
 
 @pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')

@@ -43,7 +43,6 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               assert_timestep_almost_equal)
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.lib.mdamath import triclinic_box, triclinic_vectors
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid

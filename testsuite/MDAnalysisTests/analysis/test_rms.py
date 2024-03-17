@@ -31,7 +31,7 @@ from numpy.testing import assert_equal, assert_almost_equal
 import numpy as np
 import pytest
 
-from MDAnalysis.exceptions import SelectionError, NoDataError
+from MDAnalysis.exceptions import SelectionError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
 
 

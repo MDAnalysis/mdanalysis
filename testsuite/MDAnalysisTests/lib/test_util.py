@@ -42,11 +42,10 @@ from MDAnalysis.core._get_readers import get_parser_for
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
-                                 check_coords, store_init_arguments, 
-                                 check_atomgroup_not_empty,)
+                                 check_coords, store_init_arguments,
+                                 )
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
-from MDAnalysis.core.groups import AtomGroup
 from MDAnalysisTests.datafiles import (PSF, DCD,
     Make_Whole, TPR, GRO, fullerene, two_water_gro,
 )

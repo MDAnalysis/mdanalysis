@@ -23,7 +23,6 @@ import numpy as np
 from numpy.testing import assert_allclose
 import scipy
 import pytest
-from packaging.version import Version
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.chemfiles import ChemfilesReader, ChemfilesWriter

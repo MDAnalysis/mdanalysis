@@ -30,7 +30,6 @@ from MDAnalysisTests.datafiles import (
 from numpy.testing import assert_almost_equal
 import numpy as np
 from unittest import mock
-from importlib import reload
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.hydrogenbonds import (HydrogenBondAutoCorrel as HBAC,

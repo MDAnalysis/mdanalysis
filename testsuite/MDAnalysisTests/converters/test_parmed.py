@@ -23,7 +23,7 @@
 import pytest
 import MDAnalysis as mda
 
-from numpy.testing import (assert_allclose, assert_equal)
+from numpy.testing import assert_allclose
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -31,13 +31,10 @@ from MDAnalysis.converters.ParmEd import ParmEdConverter
 
 from MDAnalysisTests.datafiles import (
     GRO,
-    PDB,
-    PSF,
     PSF_NAMD,
     PSF_cmap,
     PDB_small,
     PRM,
-    PRM12,
     PRM_UreyBradley,
 )
 
