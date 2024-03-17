@@ -307,4 +307,4 @@ def test_incorrect_object_passed_typeerror():
 def test_old_import_warning():
     wmsg = "Please import the ParmEd classes from MDAnalysis.converters"
     with pytest.warns(DeprecationWarning, match=wmsg):
-        from MDAnalysis.coordinates.ParmEd import ParmEdConverter
+        import MDAnalysis.coordinates.ParmEd

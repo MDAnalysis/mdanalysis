@@ -61,7 +61,7 @@ import numpy as np
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d, check_atomgroup_not_empty)
 from ..lib import transformations, mdamath
-from ..exceptions import NoDataError, SelectionError
+from ..exceptions import NoDataError
 from .topologyobjects import TopologyGroup
 from . import selection
 from .groups import (ComponentBase, GroupBase,

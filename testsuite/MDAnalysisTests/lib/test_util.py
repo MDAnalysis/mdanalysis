@@ -38,6 +38,7 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 from itertools import combinations_with_replacement as comb_wr
 
 import MDAnalysis as mda
+from MDAnalysis.core._get_readers import get_parser_for
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
@@ -1081,7 +1082,7 @@ class TestGuessFormat(object):
                              )
     def test_get_parser(self, extention, parser):
         file_name = 'file.{0}'.format(extention)
-        a = mda.topology.core.get_parser_for(file_name)
+        a = get_parser_for(file_name)
 
         assert a == parser
 
@@ -1094,7 +1095,7 @@ class TestGuessFormat(object):
     def test_get_parser_compressed(self, extention, parser,
                                    compression_extention):
         file_name = 'file.{0}{1}'.format(extention, compression_extention)
-        a = mda.topology.core.get_parser_for(file_name)
+        a = get_parser_for(file_name)
 
         assert a == parser
 
@@ -1106,7 +1107,7 @@ class TestGuessFormat(object):
     def test_get_parser_invalid(self, extention):
         file_name = 'file.{0}'.format(extention)
         with pytest.raises(ValueError):
-            mda.topology.core.get_parser_for(file_name)
+            get_parser_for(file_name)
 
     @pytest.mark.parametrize('extention, reader',
                              [(format_tuple[0], format_tuple[2]) for

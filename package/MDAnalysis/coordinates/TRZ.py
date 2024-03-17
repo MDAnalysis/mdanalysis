@@ -55,7 +55,7 @@ from ..exceptions import NoDataError
 from .timestep import Timestep
 from ..lib import util
 from ..lib.util import cached, store_init_arguments
-from .core import triclinic_box, triclinic_vectors
+from ..lib.mdamath import triclinic_box, triclinic_vectors
 
 
 class TRZReader(base.ReaderBase):

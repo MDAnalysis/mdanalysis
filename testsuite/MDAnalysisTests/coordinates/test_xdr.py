@@ -44,6 +44,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
+from MDAnalysis.lib.mdamath import triclinic_box, triclinic_vectors
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid
 
@@ -590,8 +591,8 @@ class TestTRRWriterIssue117(_GromacsWriterIssue117):
 def test_triclinic_box():
     """Test coordinates.core.triclinic_box() (Issue 61)"""
     unitcell = np.array([80.017, 55, 100.11, 60.00, 30.50, 90.00])
-    box = mda.coordinates.core.triclinic_vectors(unitcell)
-    new_unitcell = mda.coordinates.core.triclinic_box(box[0], box[1], box[2])
+    box = triclinic_vectors(unitcell)
+    new_unitcell = triclinic_box(box[0], box[1], box[2])
     assert_almost_equal(
         new_unitcell,
         unitcell,

@@ -46,23 +46,6 @@ See Also
 
 import warnings
 
-from pathsimanalysis import (
-    get_path_metric_func,
-    sqnorm,
-    get_msd_matrix,
-    reshaper,
-    get_coord_axes,
-    hausdorff,
-    hausdorff_wavg,
-    hausdorff_avg,
-    hausdorff_neighbors,
-    discrete_frechet,
-    dist_mat_to_vec,
-    Path,
-    PSAPair,
-    PSAnalysis,
-)
-
 
 wmsg = ('Deprecation in version 2.8.0:\n'
         'MDAnalysis.analysis.psa is deprecated in favour of the MDAKit '

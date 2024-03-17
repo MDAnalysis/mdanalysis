@@ -97,8 +97,7 @@ import os
 import contextlib
 import warnings
 
-from .. import (_CONVERTERS,
-                _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
+from .. import (_TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique,
                         unique_int_1d, unique_int_1d_unsorted,
@@ -112,8 +111,7 @@ from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
 from . import topologyobjects
-from ._get_readers import get_writer_for, get_converter_for
-
+from ._get_readers import get_writer_for
 
 def _unpickle(u, ix):
     return u.atoms[ix]
@@ -3309,7 +3307,7 @@ class AtomGroup(GroupBase):
            Corrected misleading docs, and now allows passing of `fudge_factor`
            and `lower_bound` arguments.
         """
-        from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
+        from ..topology.guessers import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
 
         def get_TopAttr(u, name, cls):

@@ -38,7 +38,7 @@ from .util import unique_rows
 
 from MDAnalysis.lib.distances import apply_PBC
 import numpy.typing as npt
-from typing import Optional, ClassVar
+from typing import Optional
 
 __all__ = [
     'PeriodicKDTree'

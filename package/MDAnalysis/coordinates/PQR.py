@@ -106,7 +106,6 @@ In all cases the `dimensions` attribute will be set to `None`.
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 """
 import itertools
-import numpy as np
 import warnings
 
 from ..lib import util

@@ -55,11 +55,11 @@ def _donothing_func(*args, **kwargs):
 try:
     # Avoid call of fork inside duecredit; see
     # https://github.com/MDAnalysis/mdanalysis/pull/1822#issuecomment-373009050
-    import sys
-    import os
-    import duecredit
+    #import sys
+    #import os
+    #import duecredit
 
-    from duecredit import due, BibTeX, Doi, Url
+    from duecredit import due#, BibTeX, Doi, Url
     if 'due' in locals() and not hasattr(due, 'cite'):
         raise RuntimeError(
             "Imported due lacks .cite. DueCredit is now disabled")

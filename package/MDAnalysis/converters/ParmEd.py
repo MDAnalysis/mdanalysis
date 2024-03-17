@@ -84,7 +84,6 @@ import warnings
 from . import base
 from ..coordinates.base import SingleFrameReaderBase
 from ..topology.tables import SYMB2Z
-from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 

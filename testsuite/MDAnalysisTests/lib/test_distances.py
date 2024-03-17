@@ -31,6 +31,7 @@ from MDAnalysis.lib import distances
 from MDAnalysis.lib.distances import HAS_DISTOPIA
 from MDAnalysis.lib import mdamath
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
+from MDAnalysis.lib.c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
 class TestCheckResultArray(object):
@@ -662,7 +663,7 @@ class TestTriclinicDistances(object):
     @staticmethod
     @pytest.fixture()
     def tri_vec_box(TRIC):
-        return MDAnalysis.coordinates.core.triclinic_vectors(TRIC.dimensions)
+        return mdamath.triclinic_vectors(TRIC.dimensions)
 
     @staticmethod
     @pytest.fixture()
@@ -1847,7 +1848,7 @@ class TestDistanceBackendSelection(object):
                            backend="not implemented stuff")
 
 def test_used_openmpflag():
-    assert isinstance(distances.USED_OPENMP, bool)
+    assert isinstance(USED_OPENMP, bool)
 
 
 # test both orthognal and triclinic boxes

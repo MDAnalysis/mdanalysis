@@ -58,7 +58,6 @@ import numpy as np
 import logging
 import copy
 import warnings
-import contextlib
 import collections
 
 import MDAnalysis
@@ -69,10 +68,9 @@ import sys
 # os.fork(). This happens if MPI_Init() has been called prior to importing
 # MDAnalysis. The problem is actually caused by the uuid module and not by
 # MDAnalysis itself. Python 3.7 fixes the problem.
-import os
-import uuid
 
-from .. import _TOPOLOGY_ATTRS, _PARSERS
+
+from .. import _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressBar
@@ -80,7 +78,7 @@ from ..lib.util import cached, NamedStream, isstream
 from ..lib.mdamath import find_fragments
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
-from .groups import (ComponentBase, GroupBase,
+from .groups import (GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
