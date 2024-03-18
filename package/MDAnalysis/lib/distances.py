@@ -166,28 +166,28 @@ def _run(funcname: str, args: Optional[tuple] = None,
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from .c_distances import (_UINT64_MAX,
-#                          calc_distance_array,
-#                          calc_distance_array_ortho,
-#                          calc_distance_array_triclinic,
-#                          calc_self_distance_array,
-#                          calc_self_distance_array_ortho,
-#                          calc_self_distance_array_triclinic,
-#                          coord_transform,
-#                          calc_bond_distance,
-#                          calc_bond_distance_ortho,
-#                          calc_bond_distance_triclinic,
-#                          calc_angle,
-#                          calc_angle_ortho,
-#                          calc_angle_triclinic,
-#                          calc_dihedral,
-#                          calc_dihedral_ortho,
-#                          calc_dihedral_triclinic,
-#                          ortho_pbc,
-#                          triclinic_pbc
+from .c_distances import (_UINT64_MAX, # pylint: disable=unused-import
+                          calc_distance_array,
+                          calc_distance_array_ortho,
+                          calc_distance_array_triclinic,
+                          calc_self_distance_array,
+                          calc_self_distance_array_ortho,
+                          calc_self_distance_array_triclinic,
+                          coord_transform,
+                          calc_bond_distance,
+                          calc_bond_distance_ortho,
+                          calc_bond_distance_triclinic,
+                          calc_angle,
+                          calc_angle_ortho,
+                          calc_angle_triclinic,
+                          calc_dihedral,
+                          calc_dihedral_ortho,
+                          calc_dihedral_triclinic,
+                          ortho_pbc,
+                          triclinic_pbc
                           )
 
-#from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
+from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP # pylint: disable=unused-import
 
 
 def _check_result_array(result: Optional[npt.NDArray],

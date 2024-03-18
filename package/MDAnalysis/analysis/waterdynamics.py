@@ -41,6 +41,12 @@ See Also
 """
 import warnings
 
+from waterdynamics.waterdynamics import ( # pylint: disable=unused-import #will be removed in version 3.0.0
+    WaterOrientationalRelaxation,
+    AngularDistribution,
+    MeanSquareDisplacement,
+    SurvivalProbability,
+) 
 
 wmsg = ("Deprecation in version 2.8.0\n"
         "MDAnalysis.analysis.waterdynamics is deprecated in favour of the "
