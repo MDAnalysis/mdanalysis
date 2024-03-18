@@ -59,7 +59,7 @@ try:
     #import os
     #import duecredit
 
-    from duecredit import due#, BibTeX, Doi, Url
+    from duecredit import due, BibTeX, Doi, Url # pylint: disable=unused-import
     if 'due' in locals() and not hasattr(due, 'cite'):
         raise RuntimeError(
             "Imported due lacks .cite. DueCredit is now disabled")
