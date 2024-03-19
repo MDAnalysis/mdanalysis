@@ -2679,12 +2679,12 @@ class AtomGroup(GroupBase):
            >>> ag
            <AtomGroup with 6 atoms>
            >>> ag.ix
-           array([2, 1, 2, 2, 1, 0], dtype=int64)
+           array([2, 1, 2, 2, 1, 0])
            >>> ag2 = ag.unique
            >>> ag2
            <AtomGroup with 3 atoms>
            >>> ag2.ix
-           array([0, 1, 2], dtype=int64)
+           array([0, 1, 2])
            >>> ag2.unique is ag2
            False
 
@@ -2736,14 +2736,14 @@ class AtomGroup(GroupBase):
            >>> ag2 is ag
            True
            >>> ag2.ix
-           array([2, 1, 0], dtype=int64)
+           array([2, 1, 0])
            >>> ag3 = ag.asunique(sorted=True)
            >>> ag3 is ag
            False
            >>> ag3.ix
-           array([0, 1, 2], dtype=int64)
+           array([0, 1, 2])
            >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
-           array([2, 1, 0], dtype=int64)
+           array([2, 1, 0])
 
 
         .. versionadded:: 2.0.0
