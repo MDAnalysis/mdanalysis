@@ -229,15 +229,16 @@ class DATAWriter(base.WriterBase):
 
     This writer supports the sections Atoms, Masses, Velocities, Bonds,
     Angles, Dihedrals, and Impropers. This writer will write the header
-    and these sections (if applicable). Atoms section is written in the
-    "full" sub-style if charges are available or "molecular" sub-style
-    if they are not. Molecule id is set to 0 for all atoms.
+    and these sections (if applicable). See `write()` for details.
 
     Note
     ----
-    This writer assumes "conventional" or "real" LAMMPS units where length
+    By defaul this writer set `convert_units=True`, and assumes
+    "conventional" or "real" LAMMPS units where length
     is measured in Angstroms and velocity is measured in Angstroms per
-    femtosecond. To write in different units, specify `lengthunit`
+    femtosecond. To write in different units, specify `lengthunit`. 
+    If set `convert_units=False', it will not convert units and write whatever
+    value as appeared in the universe.
 
     If atom types are not already positive integers, the user must set them
     to be positive integers, because the writer will not automatically
@@ -262,7 +263,7 @@ class DATAWriter(base.WriterBase):
         filename : str
             output filename
         convert_units : bool, optional
-            units are converted to the MDAnalysis base format; [``True``]
+            units are converted to the MDAnalysis default; [``True``]
         """
         self.filename = util.filename(filename, ext='data', keep=True)
 
@@ -274,46 +275,63 @@ class DATAWriter(base.WriterBase):
         self.units['velocity'] = kwargs.pop('velocityunit',
                                  self.units['length']+'/'+self.units['time'])
 
-    def _write_atoms(self, atoms, data):
+    def _write_atoms(self, atoms, data, atom_style):
         self.f.write('\n')
-        self.f.write('Atoms\n')
+        self.f.write('Atoms  # ' + atom_style + '\n')
         self.f.write('\n')
 
         try:
             charges = atoms.charges
+            has_charges = True
         except (NoDataError, AttributeError):
             has_charges = False
-        else:
-            has_charges = True
 
         indices = atoms.indices + 1
         types = atoms.types.astype(np.int32)
 
-        moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
+        if atom_style == 'full':
+            print_moltag = True
+            moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
+            # TODO: if not exist, shall return None and not print to file, instead of 0s
+            # also may use resid instead of 'molecule_tag'
+        else:  # assume style is atomic.
+            print_moltag = False
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(atoms.positions, inplace=False)
+        else: 
+            coordinates = atoms.positions
 
-        if has_charges:
+        if has_charges and print_moltag:
             for index, moltag, atype, charge, coords in zip(indices, moltags,
                     types, charges, coordinates):
                 x, y, z = coords
                 self.f.write(f"{index:d} {moltag:d} {atype:d} {charge:f}"
                              f" {x:f} {y:f} {z:f}\n")
-        else:
+        if not has_charges and print_moltag:
             for index, moltag, atype, coords in zip(indices, moltags, types,
                     coordinates):
                 x, y, z = coords
                 self.f.write(f"{index:d} {moltag:d} {atype:d}"
                              f" {x:f} {y:f} {z:f}\n")
+        if not print_moltag and not has_charges:
+            for index, atype, coords in zip(indices, types,
+                    coordinates):
+                x, y, z = coords
+                self.f.write(f"{index:d} {atype:d}"
+                             f" {x:f} {y:f} {z:f}\n")
+
 
     def _write_velocities(self, atoms):
         self.f.write('\n')
         self.f.write('Velocities\n')
         self.f.write('\n')
         indices = atoms.indices + 1
-        velocities = self.convert_velocities_to_native(atoms.velocities,
-                                                       inplace=False)
+        if self.convert_units:
+            velocities = self.convert_velocities_to_native(atoms.velocities,
+                                                           inplace=False)
+        else: 
+            velocities = atoms.velocities
         for index, vel in zip(indices, velocities):
             self.f.write('{i:d} {x:f} {y:f} {z:f}\n'.format(i=index, x=vel[0],
                 y=vel[1], z=vel[2]))
@@ -358,6 +376,8 @@ class DATAWriter(base.WriterBase):
         if self.convert_units:
             triv = self.convert_pos_to_native(mdamath.triclinic_vectors(
                                               dimensions),inplace=False)
+        else:
+            triv = mdamath.triclinic_vectors(dimensions)
         self.f.write('\n')
         self.f.write('{:f} {:f} xlo xhi\n'.format(0., triv[0][0]))
         self.f.write('{:f} {:f} ylo yhi\n'.format(0., triv[1][1]))
@@ -368,14 +388,15 @@ class DATAWriter(base.WriterBase):
         self.f.write('\n')
 
     @requires('types', 'masses')
-    def write(self, selection, frame=None):
+    def write(self, selection, frame=None, atom_style = 'full'):
         """Write selection at current trajectory frame to file.
 
         The sections for Atoms, Masses, Velocities, Bonds, Angles,
         Dihedrals, and Impropers (if these are defined) are
-        written. The Atoms section is written in the "full" sub-style
-        if charges are available or "molecular" sub-style if they are
-        not. Molecule id in atoms section is set to to 0.
+        written. The Atoms section is written by default in the "full" style:
+        charges will be left empty if not available, and "molecular tag" will 
+        be printed to 0 if not available. If specify "atomic", not print 
+        'molecular tag'. TODO: write a test for 'atom_style' argument.
 
         No other sections are written to the DATA file.
         As of this writing, other sections are not parsed into the topology
@@ -393,6 +414,7 @@ class DATAWriter(base.WriterBase):
             MDAnalysis AtomGroup (selection or Universe.atoms) or also Universe
         frame : int (optional)
             optionally move to frame number `frame`
+        atom_style : by default 'full', or 'atomic'. 
 
         """
         u = selection.universe
@@ -445,7 +467,7 @@ class DATAWriter(base.WriterBase):
             self._write_dimensions(atoms.dimensions)
 
             self._write_masses(atoms)
-            self._write_atoms(atoms, u.trajectory.ts.data)
+            self._write_atoms(atoms, u.trajectory.ts.data, atom_style)
             for attr in features.values():
                 if attr is None or len(attr) == 0:
                     continue
