@@ -230,7 +230,7 @@ def test_datawriter_universe(filename, tmpdir):
     """
     fn = str(tmpdir.join(filename))
 
-    u = mda.Universe(LAMMPSdata_mini, convert_units = False) # ref, by defaul convert_units = True
+    u = mda.Universe(LAMMPSdata_mini, convert_units = False) # By defaul convert_units = True
 
     with mda.Writer(fn, n_atoms=len(u.atoms), convert_units = False) as w:
         w.write(u)

@@ -247,7 +247,7 @@ class DATAWriter(base.WriterBase):
     To preserve numerical atom types when writing a selection, the Masses
     section will have entries for each atom type up to the maximum atom type.
     If the universe does not contain atoms of some type in
-    {1, ... max(atom_types)}, then the mass for that type will be set to 0.
+    {1, ... max(atom_types)}, then the mass for that type will be set to 1.
 
     In order to write bonds, each selected bond type must be explicitly set to
     an integer >= 1.
