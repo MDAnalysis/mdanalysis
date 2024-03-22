@@ -73,12 +73,16 @@ LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
 
 If the trajectory uses *units nano* then use
 
+>>> import MDAnalysis
+>>> from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2
 >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS",
 ...                          lengthunit="nm", timeunit="ns")
 
 To scan through a trajectory to find a desirable frame and write to a LAMMPS
 data file,
 
+   >>> import MDAnalysis
+   >>> from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2 
    >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS",
    ...                          lengthunit="nm", timeunit="ns")
    >>> take_this_frame = False
