@@ -420,3 +420,38 @@ class TestRMSF(object):
         wmsg = "The `rmsf` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(rmsfs.rmsf, rmsfs.results.rmsf)
+
+
+class TestIterativeAverage(object):
+    @pytest.fixture()
+    def mobile(self):
+        u = mda.Universe(PSF, DCD)
+        u1 = mda.Merge(u.select_atoms("bynum 1:10"))
+        return u1
+
+    @pytest.fixture()
+    def reference(self):
+        u = mda.Universe(PSF, DCD)
+        u1 = mda.Merge(u.select_atoms("bynum 1:10"))
+        return u1
+
+    def test_iterative_average(self, mobile, reference):
+
+        res = rms.iterative_average(mobile, reference, niter=5, eps=0)
+        res = rms.iterative_average(mobile, reference, niter=10, verbose=True)
+        assert_almost_equal(
+            res.positions,
+            [
+                [11.73604393, 8.50079727, -10.44528103],
+                [12.36511898, 7.83993578, -10.83484173],
+                [12.09194851, 9.441535, -10.72461128],
+                [10.83195686, 8.30861378, -10.96393108],
+                [11.66462231, 8.39347267, -8.98323059],
+                [12.67261219, 8.5604887, -8.6807642],
+                [10.73963833, 9.56992817, -8.59075069],
+                [9.63879013, 9.27048492, -8.96795273],
+                [11.09461403, 10.51888371, -9.14199638],
+                [10.55657101, 9.93423939, -7.11236286],
+            ],
+            decimal=5,
+        )

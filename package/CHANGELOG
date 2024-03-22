@@ -62,6 +62,12 @@ Deprecations
    (PR #4403)
 
 
+03/22/24 leonwehrhan
+
+Changes
+  * Implement average structures with iterative algorithm from DOI 10.1021/acs.jpcb.7b11988. (Issue #2039)
+
+
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
          richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 
          JoStoe, jennaswa, ljwoods2

@@ -167,6 +167,7 @@ import logging
 import warnings
 
 import MDAnalysis.lib.qcprot as qcp
+import MDAnalysis.analysis.align as align
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.util import asiterable, iterable, get_weights
@@ -330,6 +331,65 @@ def process_selection(select):
     select['mobile'] = asiterable(select['mobile'])
     select['reference'] = asiterable(select['reference'])
     return select
+
+
+def iterative_average(
+    mobile, ref, weights=None, niter=100, eps=1e-8, verbose=False, **kwargs
+):
+    """Calculate an optimal reference that is also the average structure
+    after an RMSD alignment.
+    The optional reference is defined as average structure of a
+    trajectory, with the optimal reference used as input.
+    This function computes the optimal reference by using a starting
+    reference for the average structure, which is used to calculate the
+    average structure again. This is repeated until the reference
+    structure has converged.
+
+    Parameters
+    ----------
+    mobile : mda.AtomGroup
+        mobile atomgroup to find the average for
+    ref : mda.AtomGroup
+        initial reference structure. Positions are changed by this function!
+    weights : str, array_like (optional)
+        weights that can be used. If `None` use equal weights, if `'mass'`
+        use masses of ref as weights or give an array of arbitrary weights.
+    niter : int (optional)
+        maximum number of iterations
+    eps : float (optional)
+        RMSD distance at which reference and average are assumed to be equal
+    verbose : bool (optional)
+        verbosity
+    **kwargs : dict (optional)
+        AverageStructure kwargs
+
+    Returns
+    -------
+    res : AverageStructure
+        AverageStructure result from the last iteration
+
+    """
+    drmsd = np.inf
+    for i in range(niter):
+        # found a converged structure
+        if drmsd < eps:
+            break
+
+        res = align.AverageStructure(
+            mobile, reference=ref, weights=weights, **kwargs
+        ).run()
+        ref_ag = ref.atoms
+        drmsd = rmsd(ref_ag.positions, res.positions, weights=weights)
+        ref.positions = res.positions
+
+        if verbose:
+            print(
+                "i = {}, rmsd-change = {:.2f}, ave-rmsd = {:.2f}".format(
+                    i, drmsd, res.results.rmsd
+                )
+            )
+
+    return res
 
 
 class RMSD(AnalysisBase):
