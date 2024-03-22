@@ -61,23 +61,17 @@ The DumpReader expects ascii dump files written with the default
 
 Example: Loading a LAMMPS simulation
 ------------------------------------
+..testsetup::
 
 To load a LAMMPS simulation from a LAMMPS data file (using the
 :class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a
 LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
 
-..testsetup::
-
     >>> import MDAnalysis
     >>> from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2
-
-..doctest::
-
     >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS")
 
-If the trajectory uses *units nano* then use ::
-
-.. doctest::
+If the trajectory uses *units nano* then use 
 
    >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS",
    ...                          lengthunit="nm", timeunit="ns")
