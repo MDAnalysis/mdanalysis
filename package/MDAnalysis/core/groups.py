@@ -588,12 +588,19 @@ class GroupBase(_MutableBase):
         # so just return ourselves sliced by the item
         if item is None:
             raise TypeError('None cannot be used to index a group.')
+        
         elif isinstance(item, numbers.Integral):
+            if self.ix.size ==0:
+                return self.level.singular([])
             return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
+                #SampurnaM,24-3-24,to fix issue #3089
+                if not item:#incase of empty list
+                    return [] #return empty list
+
                 item = np.array(item)
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class

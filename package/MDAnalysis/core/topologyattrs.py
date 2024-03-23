@@ -861,11 +861,12 @@ class Atomnames(AtomStringAttr):
         list of AtomGroups
             4-atom selections in the correct order. If no C' found in the
             previous residue (by resid) then corresponding item in the list
-            is ``None``.
+            is ``None``. 
 
         .. versionadded:: 1.0.0
         """
-
+        if residues.size ==0:
+            u = []
         u = residues[0].universe
         prev = u.residues[residues.ix-1]  # obv candidates first
         rsid = residues.segids
