@@ -58,16 +58,30 @@ else:
 
 import numpy as np
 
-from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
-                        unique_int_1d, check_atomgroup_not_empty)
+from ..lib.util import (
+    cached,
+    convert_aa_code,
+    iterable,
+    warn_if_not_unique,
+    unique_int_1d,
+    check_atomgroup_not_empty,
+)
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
 from . import selection
-from .groups import (ComponentBase, GroupBase,
-                     Atom, Residue, Segment,
-                     AtomGroup, ResidueGroup, SegmentGroup,
-                     check_wrap_and_unwrap, _pbc_to_wrap)
+from .groups import (
+    ComponentBase,
+    GroupBase,
+    Atom,
+    Residue,
+    Segment,
+    AtomGroup,
+    ResidueGroup,
+    SegmentGroup,
+    check_wrap_and_unwrap,
+    _pbc_to_wrap,
+)
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
@@ -90,13 +104,17 @@ def _check_length(func):
         values must be single value OR same length as group
 
     """
-    _SINGLE_VALUE_ERROR = ("Setting {cls} {attrname} with wrong sized input. "
-                           "Must use single value, length of supplied values: {lenvalues}.")
+    _SINGLE_VALUE_ERROR = (
+        "Setting {cls} {attrname} with wrong sized input. "
+        "Must use single value, length of supplied values: {lenvalues}."
+    )
     # Eg "Setting Residue resid with wrong sized input. Must use single value, length of supplied
     # values: 2."
 
-    _GROUP_VALUE_ERROR = ("Setting {group} {attrname} with wrong sized array. "
-                          "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
+    _GROUP_VALUE_ERROR = (
+        "Setting {group} {attrname} with wrong sized array. "
+        "Length {group}: {lengroup}, length of supplied values: {lenvalues}."
+    )
 
     # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
     # supplied values: 50."
@@ -116,14 +134,23 @@ def _check_length(func):
 
         if isinstance(group, ComponentBase):
             if not val_len == 0:
-                raise ValueError(_SINGLE_VALUE_ERROR.format(
-                    cls=group.__class__.__name__, attrname=attr.singular,
-                    lenvalues=val_len))
+                raise ValueError(
+                    _SINGLE_VALUE_ERROR.format(
+                        cls=group.__class__.__name__,
+                        attrname=attr.singular,
+                        lenvalues=val_len,
+                    )
+                )
         else:
             if not (val_len == 0 or val_len == len(group)):
-                raise ValueError(_GROUP_VALUE_ERROR.format(
-                    group=group.__class__.__name__, attrname=attr.attrname,
-                    lengroup=len(group), lenvalues=val_len))
+                raise ValueError(
+                    _GROUP_VALUE_ERROR.format(
+                        group=group.__class__.__name__,
+                        attrname=attr.attrname,
+                        lengroup=len(group),
+                        lenvalues=val_len,
+                    )
+                )
         # if everything went OK, continue with the function
         return func(attr, group, values)
 
@@ -153,13 +180,13 @@ def _wronglevel_error(attr, group):
 
     # What level to go to before trying to set this attr
     if isinstance(attr, AtomAttr):
-        corr_classes = ('atoms', 'atom')
+        corr_classes = ("atoms", "atom")
         attr_level = 1
     elif isinstance(attr, ResidueAttr):
-        corr_classes = ('residues', 'residue')
+        corr_classes = ("residues", "residue")
         attr_level = 2
     elif isinstance(attr, SegmentAttr):
-        corr_classes = ('segments', 'segment')
+        corr_classes = ("segments", "segment")
         attr_level = 3
 
     if isinstance(group, ComponentBase) and (attr_level > group_level):
@@ -174,9 +201,13 @@ def _wronglevel_error(attr, group):
     err_msg = "Cannot set {attr} from {cls}. Use '{cls}.{correct}.{attr} = '"
     # eg "Cannot set masses from Residue.  'Use Residue.atoms.masses = '"
 
-    return NotImplementedError(err_msg.format(
-        attr=attrname, cls=group.__class__.__name__, correct=correct,
-    ))
+    return NotImplementedError(
+        err_msg.format(
+            attr=attrname,
+            cls=group.__class__.__name__,
+            correct=correct,
+        )
+    )
 
 
 def _build_stub(method_name, method, attribute_name):
@@ -204,10 +235,11 @@ def _build_stub(method_name, method, attribute_name):
     -------
     The stub.
     """
+
     def stub_method(self, *args, **kwargs):
         message = (
-            '{class_name}.{method_name}() '
-            'not available; this requires {attribute_name}'
+            "{class_name}.{method_name}() "
+            "not available; this requires {attribute_name}"
         ).format(
             class_name=self.__class__.__name__,
             method_name=method_name,
@@ -215,21 +247,23 @@ def _build_stub(method_name, method, attribute_name):
         )
         raise NoDataError(message)
 
-    annotation = textwrap.dedent("""\
+    annotation = textwrap.dedent(
+        """\
         .. note::
 
           This requires the underlying topology to have {}. Otherwise, a
           :exc:`~MDAnalysis.exceptions.NoDataError` is raised.
 
 
-    """.format(attribute_name))
+    """.format(
+            attribute_name
+        )
+    )
     # The first line of the original docstring is not indented, but the
     # subsequent lines are. We want to dedent the whole docstring.
-    first_line, other_lines = method.__doc__.split('\n', 1)
+    first_line, other_lines = method.__doc__.split("\n", 1)
     stub_method.__doc__ = (
-        first_line + '\n'
-        + textwrap.dedent(other_lines)
-        + '\n\n' + annotation
+        first_line + "\n" + textwrap.dedent(other_lines) + "\n\n" + annotation
     )
     stub_method.__name__ = method_name
     stub_method.__signature__ = inspect_signature(method)
@@ -251,10 +285,11 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
     """
     transplants = topology_attribute_class.transplants
     for dest_class, methods in transplants.items():
-        if dest_class == 'Universe':
+        if dest_class == "Universe":
             # Cannot be imported at the top level, it creates issues with
             # circular imports.
             from .universe import Universe
+
             dest_class = Universe
         for method_name, method_callback in methods:
             # Methods the name of which is prefixed by _ should not be accessed
@@ -262,7 +297,7 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
             # only relevant for user-facing method and properties. Also,
             # methods _-prefixed can be operator methods, and we do not want
             # to overwrite these with a stub.
-            if method_name.startswith('_'):
+            if method_name.startswith("_"):
                 continue
 
             is_property = False
@@ -279,11 +314,13 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
 
 
 # TODO: remove bfactors in 3.0
-BFACTOR_WARNING = ("The bfactor topology attribute is only "
-                   "provided as an alias to the tempfactor "
-                   "attribute. It will be removed in "
-                   "3.0. Please use the tempfactor attribute "
-                   "instead.")
+BFACTOR_WARNING = (
+    "The bfactor topology attribute is only "
+    "provided as an alias to the tempfactor "
+    "attribute. It will be removed in "
+    "3.0. Please use the tempfactor attribute "
+    "instead."
+)
 
 
 def deprecate_bfactor_warning(func):
@@ -321,26 +358,26 @@ class _TopologyAttrMeta(type):
 
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
-        attrname = classdict.get('attrname')
-        singular = classdict.get('singular', attrname)
+        attrname = classdict.get("attrname")
+        singular = classdict.get("singular", attrname)
 
         if attrname is None:
             attrname = singular
 
         if singular:
             _TOPOLOGY_ATTRS[singular] = _TOPOLOGY_ATTRS[attrname] = cls
-            _singular = singular.lower().replace('_', '')
-            _attrname = attrname.lower().replace('_', '')
+            _singular = singular.lower().replace("_", "")
+            _attrname = attrname.lower().replace("_", "")
             _TOPOLOGY_ATTRNAMES[_singular] = singular
             _TOPOLOGY_ATTRNAMES[_attrname] = attrname
 
             for clstype, transplants in cls.transplants.items():
                 for name, method in transplants:
                     _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
-                    clean = name.lower().replace('_', '')
+                    clean = name.lower().replace("_", "")
                     _TOPOLOGY_ATTRNAMES[clean] = name
 
-        for attr in ['singular', 'attrname']:
+        for attr in ["singular", "attrname"]:
             try:
                 attrname = classdict[attr]
             except KeyError:
@@ -362,22 +399,23 @@ class _TopologyAttrMeta(type):
             if dtype is not None:
                 per_obj = classdict.get("per_object", bases[0].per_object)
                 try:
-                    selection.gen_selection_class(singular, attrname,
-                                                  dtype, per_obj)
+                    selection.gen_selection_class(singular, attrname, dtype, per_obj)
                 except ValueError:
-                    msg = ("A selection keyword could not be "
-                           "automatically generated for the "
-                           f"{singular} attribute. If you need a "
-                           "selection keyword, define it manually "
-                           "by subclassing core.selection.Selection")
+                    msg = (
+                        "A selection keyword could not be "
+                        "automatically generated for the "
+                        f"{singular} attribute. If you need a "
+                        "selection keyword, define it manually "
+                        "by subclassing core.selection.Selection"
+                    )
                     warnings.warn(msg)
 
         # TODO: remove in 3.0
         if attrname == "tempfactors":
             _TOPOLOGY_ATTRS["bfactor"] = _TOPOLOGY_ATTRS["bfactors"] = cls
-            selcls = selection.gen_selection_class("bfactor", "bfactors",
-                                                   classdict.get("dtype"),
-                                                   per_object="atom")
+            selcls = selection.gen_selection_class(
+                "bfactor", "bfactors", classdict.get("dtype"), per_object="atom"
+            )
             selcls.apply = deprecate_bfactor_warning(selcls.apply)
 
 
@@ -406,8 +444,9 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         handle for the Topology object TopologyAttr is associated with
 
     """
-    attrname = 'topologyattrs'
-    singular = 'topologyattr'
+
+    attrname = "topologyattrs"
+    singular = "topologyattr"
     per_object = None  # ie Resids per_object = 'residue'
     top = None  # pointer to Topology object
     transplants = defaultdict(list)
@@ -435,8 +474,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         raise NotImplementedError("No default values")
 
     @classmethod
-    def from_blank(cls, n_atoms=None, n_residues=None, n_segments=None,
-                   values=None):
+    def from_blank(cls, n_atoms=None, n_residues=None, n_segments=None, values=None):
         """Create a blank version of this TopologyAttribute
 
         Parameters
@@ -534,8 +572,9 @@ class Atomindices(TopologyAttr):
     elements in that group.
 
     """
-    attrname = 'indices'
-    singular = 'index'
+
+    attrname = "indices"
+    singular = "index"
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
     dtype = int
 
@@ -567,8 +606,9 @@ class Resindices(TopologyAttr):
     order of the elements in that group.
 
     """
-    attrname = 'resindices'
-    singular = 'resindex'
+
+    attrname = "resindices"
+    singular = "resindex"
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     dtype = int
 
@@ -601,11 +641,11 @@ class Segindices(TopologyAttr):
     order of the elements in that group.
 
     """
-    attrname = 'segindices'
-    singular = 'segindex'
+
+    attrname = "segindices"
+    singular = "segindex"
     dtype = int
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
-                      Atom, Residue, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue, Segment]
 
     def __init__(self):
         self._guessed = False
@@ -627,11 +667,10 @@ class Segindices(TopologyAttr):
 
 
 class AtomAttr(TopologyAttr):
-    """Base class for atom attributes.
+    """Base class for atom attributes."""
 
-    """
-    attrname = 'atomattrs'
-    singular = 'atomattr'
+    attrname = "atomattrs"
+    singular = "atomattr"
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
 
     def get_atoms(self, ag):
@@ -668,11 +707,11 @@ class AtomAttr(TopologyAttr):
 
 # TODO: update docs to property doc
 class Atomids(AtomAttr):
-    """ID for each atom.
-    """
-    attrname = 'ids'
-    singular = 'id'
-    per_object = 'atom'
+    """ID for each atom."""
+
+    attrname = "ids"
+    singular = "id"
+    per_object = "atom"
     dtype = int
 
     @staticmethod
@@ -782,20 +821,20 @@ class AtomStringAttr(_StringInternerMixin, AtomAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.full(na, '', dtype=object)
+        return np.full(na, "", dtype=object)
 
 
 # TODO: update docs to property doc
 class Atomnames(AtomStringAttr):
-    """Name for each atom.
-    """
-    attrname = 'names'
-    singular = 'name'
-    per_object = 'atom'
+    """Name for each atom."""
+
+    attrname = "names"
+    singular = "name"
+    per_object = "atom"
     dtype = object
     transplants = defaultdict(list)
 
-    def phi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+    def phi_selection(residue, c_name="C", n_name="N", ca_name="CA"):
         """Select AtomGroup corresponding to the phi protein backbone dihedral
         C'-N-CA-C.
 
@@ -819,11 +858,11 @@ class Atomnames(AtomStringAttr):
             faster atom matching with boolean arrays.
         """
         # fnmatch is expensive. try the obv candidate first
-        prev = residue.universe.residues[residue.ix-1]
+        prev = residue.universe.residues[residue.ix - 1]
         sid = residue.segment.segid
-        rid = residue.resid-1
+        rid = residue.resid - 1
         if not (prev.segment.segid == sid and prev.resid == rid):
-            sel = 'segid {} and resid {}'.format(sid, rid)
+            sel = "segid {} and resid {}".format(sid, rid)
             try:
                 prev = residue.universe.select_atoms(sel).residues[0]
             except IndexError:
@@ -838,12 +877,12 @@ class Atomnames(AtomStringAttr):
         if not all(len(ag) == 1 for ag in ncac):
             return None
 
-        sel = c_+sum(ncac)
+        sel = c_ + sum(ncac)
         return sel
 
-    transplants[Residue].append(('phi_selection', phi_selection))
+    transplants[Residue].append(("phi_selection", phi_selection))
 
-    def phi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+    def phi_selections(residues, c_name="C", n_name="N", ca_name="CA"):
         """Select list of AtomGroups corresponding to the phi protein
         backbone dihedral C'-N-CA-C.
 
@@ -867,11 +906,11 @@ class Atomnames(AtomStringAttr):
         """
 
         u = residues[0].universe
-        prev = u.residues[residues.ix-1]  # obv candidates first
+        prev = u.residues[residues.ix - 1]  # obv candidates first
         rsid = residues.segids
-        prid = residues.resids-1
+        prid = residues.resids - 1
         ncac_names = [n_name, ca_name, c_name]
-        sel = 'segid {} and resid {}'
+        sel = "segid {} and resid {}"
 
         # replace wrong residues
         wix = np.where((prev.segids != rsid) | (prev.resids != prid))[0]
@@ -886,8 +925,9 @@ class Atomnames(AtomStringAttr):
             prev = sum(prevls)
 
         keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names)
-                    for r in residues]
+        keep_res = [
+            all(sum(r.atoms.names == n) == 1 for n in ncac_names) for r in residues
+        ]
         keep = np.array(keep_prev) & np.array(keep_res)
         keep[invalid] = False
         results = np.zeros_like(residues, dtype=object)
@@ -903,9 +943,9 @@ class Atomnames(AtomStringAttr):
         results[keepix] = [sum(atoms) for atoms in zip(c_, n, ca, c)]
         return list(results)
 
-    transplants[ResidueGroup].append(('phi_selections', phi_selections))
+    transplants[ResidueGroup].append(("phi_selections", phi_selections))
 
-    def psi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+    def psi_selection(residue, c_name="C", n_name="N", ca_name="CA"):
         """Select AtomGroup corresponding to the psi protein backbone dihedral
         N-CA-C-N'.
 
@@ -932,9 +972,9 @@ class Atomnames(AtomStringAttr):
         # fnmatch is expensive. try the obv candidate first
         _manual_sel = False
         sid = residue.segment.segid
-        rid = residue.resid+1
+        rid = residue.resid + 1
         try:
-            nxt = residue.universe.residues[residue.ix+1]
+            nxt = residue.universe.residues[residue.ix + 1]
         except IndexError:
             _manual_sel = True
         else:
@@ -942,7 +982,7 @@ class Atomnames(AtomStringAttr):
                 _manual_sel = True
 
         if _manual_sel:
-            sel = 'segid {} and resid {}'.format(sid, rid)
+            sel = "segid {} and resid {}".format(sid, rid)
             try:
                 nxt = residue.universe.select_atoms(sel).residues[0]
             except IndexError:
@@ -960,7 +1000,7 @@ class Atomnames(AtomStringAttr):
         sel = sum(ncac) + n_
         return sel
 
-    transplants[Residue].append(('psi_selection', psi_selection))
+    transplants[Residue].append(("psi_selection", psi_selection))
 
     def _get_next_residues_by_resid(residues):
         """Select list of Residues corresponding to the next resid for each
@@ -978,19 +1018,19 @@ class Atomnames(AtomStringAttr):
             u = residues[0].universe
         except IndexError:
             return residues
-        nxres = np.array([None]*len(residues), dtype=object)
+        nxres = np.array([None] * len(residues), dtype=object)
         ix = np.arange(len(residues))
         # no guarantee residues is ordered or unique
         last = max(residues.ix)
-        if last == len(u.residues)-1:
+        if last == len(u.residues) - 1:
             notlast = residues.ix != last
             ix = ix[notlast]
             residues = residues[notlast]
 
-        nxres[ix] = nxt = u.residues[residues.ix+1]
+        nxres[ix] = nxt = u.residues[residues.ix + 1]
         rsid = residues.segids
-        nrid = residues.resids+1
-        sel = 'segid {} and resid {}'
+        nrid = residues.resids + 1
+        sel = "segid {} and resid {}"
 
         # replace wrong residues
         wix = np.where((nxt.segids != rsid) | (nxt.resids != nrid))[0]
@@ -1002,8 +1042,9 @@ class Atomnames(AtomStringAttr):
                     nxres[ix[i]] = None
         return nxres
 
-    transplants[ResidueGroup].append(('_get_next_residues_by_resid',
-                                      _get_next_residues_by_resid))
+    transplants[ResidueGroup].append(
+        ("_get_next_residues_by_resid", _get_next_residues_by_resid)
+    )
 
     def _get_prev_residues_by_resid(residues):
         """Select list of Residues corresponding to the previous resid for each
@@ -1021,11 +1062,11 @@ class Atomnames(AtomStringAttr):
             u = residues[0].universe
         except IndexError:
             return residues
-        pvres = np.array([None]*len(residues))
-        pvres[:] = prev = u.residues[residues.ix-1]
+        pvres = np.array([None] * len(residues))
+        pvres[:] = prev = u.residues[residues.ix - 1]
         rsid = residues.segids
-        prid = residues.resids-1
-        sel = 'segid {} and resid {}'
+        prid = residues.resids - 1
+        sel = "segid {} and resid {}"
 
         # replace wrong residues
         wix = np.where((prev.segids != rsid) | (prev.resids != prid))[0]
@@ -1037,10 +1078,11 @@ class Atomnames(AtomStringAttr):
                     pvres[i] = None
         return pvres
 
-    transplants[ResidueGroup].append(('_get_prev_residues_by_resid',
-                                      _get_prev_residues_by_resid))
+    transplants[ResidueGroup].append(
+        ("_get_prev_residues_by_resid", _get_prev_residues_by_resid)
+    )
 
-    def psi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+    def psi_selections(residues, c_name="C", n_name="N", ca_name="CA"):
         """Select list of AtomGroups corresponding to the psi protein
         backbone dihedral N-CA-C-N'.
 
@@ -1062,7 +1104,11 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        results = np.array([None]*len(residues), dtype=object)
+
+        if not residues:
+            return []
+
+        results = np.array([None] * len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
         nxt = sum(nxtres[rix])
@@ -1070,8 +1116,9 @@ class Atomnames(AtomStringAttr):
         ncac_names = [n_name, ca_name, c_name]
 
         keep_nxt = [sum(r.atoms.names == n_name) == 1 for r in nxt]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names)
-                    for r in residues]
+        keep_res = [
+            all(sum(r.atoms.names == n) == 1 for n in ncac_names) for r in residues
+        ]
         keep = np.array(keep_nxt) & np.array(keep_res)
         nxt = nxt[keep]
         residues = residues[keep]
@@ -1084,9 +1131,9 @@ class Atomnames(AtomStringAttr):
         results[rix[keepix]] = [sum(atoms) for atoms in zip(n, ca, c, n_)]
         return list(results)
 
-    transplants[ResidueGroup].append(('psi_selections', psi_selections))
+    transplants[ResidueGroup].append(("psi_selections", psi_selections))
 
-    def omega_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+    def omega_selection(residue, c_name="C", n_name="N", ca_name="CA"):
         """Select AtomGroup corresponding to the omega protein backbone dihedral
         CA-C-N'-CA'.
 
@@ -1116,9 +1163,9 @@ class Atomnames(AtomStringAttr):
         # fnmatch is expensive. try the obv candidate first
         _manual_sel = False
         sid = residue.segment.segid
-        rid = residue.resid+1
+        rid = residue.resid + 1
         try:
-            nxt = residue.universe.residues[residue.ix+1]
+            nxt = residue.universe.residues[residue.ix + 1]
         except IndexError:
             _manual_sel = True
         else:
@@ -1126,7 +1173,7 @@ class Atomnames(AtomStringAttr):
                 _manual_sel = True
 
         if _manual_sel:
-            sel = 'segid {} and resid {}'.format(sid, rid)
+            sel = "segid {} and resid {}".format(sid, rid)
             try:
                 nxt = residue.universe.select_atoms(sel).residues[0]
             except IndexError:
@@ -1140,11 +1187,11 @@ class Atomnames(AtomStringAttr):
         if not all(len(ag) == 1 for ag in [ca_, n_, ca, c]):
             return None
 
-        return ca+c+n_+ca_
+        return ca + c + n_ + ca_
 
-    transplants[Residue].append(('omega_selection', omega_selection))
+    transplants[Residue].append(("omega_selection", omega_selection))
 
-    def omega_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+    def omega_selections(residues, c_name="C", n_name="N", ca_name="CA"):
         """Select list of AtomGroups corresponding to the omega protein
         backbone dihedral CA-C-N'-CA'.
 
@@ -1170,7 +1217,11 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        results = np.array([None]*len(residues), dtype=object)
+
+        if not residues:
+            return []
+
+        results = np.array([None] * len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
         nxt = sum(nxtres[rix])
@@ -1178,10 +1229,10 @@ class Atomnames(AtomStringAttr):
 
         nxtatoms = [ca_name, n_name]
         resatoms = [ca_name, c_name]
-        keep_nxt = [all(sum(r.atoms.names == n) == 1 for n in nxtatoms)
-                    for r in nxt]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in resatoms)
-                    for r in residues]
+        keep_nxt = [all(sum(r.atoms.names == n) == 1 for n in nxtatoms) for r in nxt]
+        keep_res = [
+            all(sum(r.atoms.names == n) == 1 for n in resatoms) for r in residues
+        ]
         keep = np.array(keep_nxt) & np.array(keep_res)
         nxt = nxt[keep]
         residues = residues[keep]
@@ -1195,10 +1246,11 @@ class Atomnames(AtomStringAttr):
         results[rix[keepix]] = [sum(atoms) for atoms in zip(ca, c, n_, ca_)]
         return list(results)
 
-    transplants[ResidueGroup].append(('omega_selections', omega_selections))
+    transplants[ResidueGroup].append(("omega_selections", omega_selections))
 
-    def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB',
-                       cg_name='CG CG1 OG OG1 SG'):
+    def chi1_selection(
+        residue, n_name="N", ca_name="CA", cb_name="CB", cg_name="CG CG1 OG OG1 SG"
+    ):
         r"""Select AtomGroup corresponding to the chi1 sidechain dihedral ``N-CA-CB-*G.``
         The gamma atom is taken to be the heavy atom in the gamma position. If more than one
         heavy atom is present (e.g. CG1 and CG2), the one with the lower number is used (CG1).
@@ -1241,10 +1293,11 @@ class Atomnames(AtomStringAttr):
             return None
         return sum(ags)
 
-    transplants[Residue].append(('chi1_selection', chi1_selection))
+    transplants[Residue].append(("chi1_selection", chi1_selection))
 
-    def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
-                        cg_name='CG CG1 OG OG1 SG'):
+    def chi1_selections(
+        residues, n_name="N", ca_name="CA", cb_name="CB", cg_name="CG CG1 OG OG1 SG"
+    ):
         """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
@@ -1267,10 +1320,16 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        results = np.array([None]*len(residues))
+
+        if not residues:
+            return []
+
+        results = np.array([None] * len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
-                    for n in names) for r in residues]
+        keep = [
+            all(sum(np.isin(r.atoms.names, n.split())) == 1 for n in names)
+            for r in residues
+        ]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
@@ -1279,36 +1338,39 @@ class Atomnames(AtomStringAttr):
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
-    transplants[ResidueGroup].append(('chi1_selections', chi1_selections))
+    transplants[ResidueGroup].append(("chi1_selections", chi1_selections))
 
 
 # TODO: update docs to property doc
 class Atomtypes(AtomStringAttr):
     """Type for each atom"""
-    attrname = 'types'
-    singular = 'type'
-    per_object = 'atom'
+
+    attrname = "types"
+    singular = "type"
+    per_object = "atom"
     dtype = object
 
 
 # TODO: update docs to property doc
 class Elements(AtomStringAttr):
     """Element for each atom"""
-    attrname = 'elements'
-    singular = 'element'
+
+    attrname = "elements"
+    singular = "element"
     dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
+        return np.array(["" for _ in range(na)], dtype=object)
 
 
 # TODO: update docs to property doc
 class Radii(AtomAttr):
     """Radii for each atom"""
-    attrname = 'radii'
-    singular = 'radius'
-    per_object = 'atom'
+
+    attrname = "radii"
+    singular = "radius"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -1324,14 +1386,15 @@ class RecordTypes(AtomStringAttr):
     .. versionchanged:: 0.20.0
        Now stores array of dtype object rather than boolean mapping
     """
-    attrname = 'record_types'
-    singular = 'record_type'
-    per_object = 'atom'
+
+    attrname = "record_types"
+    singular = "record_type"
+    per_object = "atom"
     dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array(['ATOM'] * na, dtype=object)
+        return np.array(["ATOM"] * na, dtype=object)
 
 
 class ChainIDs(AtomStringAttr):
@@ -1341,17 +1404,19 @@ class ChainIDs(AtomStringAttr):
     ----
     This is an attribute of the Atom, not Residue or Segment
     """
-    attrname = 'chainIDs'
-    singular = 'chainID'
-    per_object = 'atom'
+
+    attrname = "chainIDs"
+    singular = "chainID"
+    per_object = "atom"
     dtype = object
 
 
 class Tempfactors(AtomAttr):
     """Tempfactor for atoms"""
-    attrname = 'tempfactors'
-    singular = 'tempfactor'
-    per_object = 'atom'
+
+    attrname = "tempfactors"
+    singular = "tempfactor"
+    per_object = "atom"
     dtype = float
     transplants = defaultdict(list)
 
@@ -1413,21 +1478,20 @@ class Tempfactors(AtomAttr):
         self.universe.atoms[self.atoms.ix].tempfactors = value
 
     transplants[Atom].append(
-        ('bfactor', property(bfactor, bfactor_setter, None,
-                             bfactor.__doc__)))
+        ("bfactor", property(bfactor, bfactor_setter, None, bfactor.__doc__))
+    )
 
     for group in (AtomGroup, Residue, ResidueGroup, Segment, SegmentGroup):
         transplants[group].append(
-            ("bfactors", property(bfactors, bfactors_setter, None,
-                                  bfactors.__doc__)))
+            ("bfactors", property(bfactors, bfactors_setter, None, bfactors.__doc__))
+        )
 
 
 class Masses(AtomAttr):
-    attrname = 'masses'
-    singular = 'mass'
-    per_object = 'atom'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
-                      Atom, Residue, Segment]
+    attrname = "masses"
+    singular = "mass"
+    per_object = "atom"
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue, Segment]
     transplants = defaultdict(list)
     dtype = np.float64
 
@@ -1475,7 +1539,7 @@ class Masses(AtomAttr):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     @check_atomgroup_not_empty
-    def center_of_mass(group, wrap=False, unwrap=False, compound='group'):
+    def center_of_mass(group, wrap=False, unwrap=False, compound="group"):
         r"""Center of mass of (compounds of) the group
 
         .. math::
@@ -1541,15 +1605,15 @@ class Masses(AtomAttr):
            is deprecated and will be removed in version 3.0.
         """
         atoms = group.atoms
-        return atoms.center(weights=atoms.masses, wrap=wrap, compound=compound,
-                            unwrap=unwrap)
+        return atoms.center(
+            weights=atoms.masses, wrap=wrap, compound=compound, unwrap=unwrap
+        )
 
-    transplants[GroupBase].append(
-        ('center_of_mass', center_of_mass))
+    transplants[GroupBase].append(("center_of_mass", center_of_mass))
 
     @warn_if_not_unique
     @check_atomgroup_not_empty
-    def total_mass(group, compound='group'):
+    def total_mass(group, compound="group"):
         r"""Total mass of (compounds of) the group.
 
         Computes the total mass of :class:`Atoms<Atom>` in the group.
@@ -1581,8 +1645,7 @@ class Masses(AtomAttr):
         """
         return group.accumulate("masses", compound=compound)
 
-    transplants[GroupBase].append(
-        ('total_mass', total_mass))
+    transplants[GroupBase].append(("total_mass", total_mass))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1651,11 +1714,9 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
 
-        com = atomgroup.center_of_mass(
-            wrap=wrap, unwrap=unwrap, compound=compound)
-        if compound != 'group':
-            com = (com * group.masses[:, None]
-                   ).sum(axis=0) / group.masses.sum()
+        com = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
+        if compound != "group":
+            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
 
         if wrap:
             pos = atomgroup.pack_into_box(inplace=False) - com
@@ -1678,20 +1739,19 @@ class Masses(AtomAttr):
         # xx
         tens[0][0] = (masses * (pos[:, 1] ** 2 + pos[:, 2] ** 2)).sum()
         # xy & yx
-        tens[0][1] = tens[1][0] = - (masses * pos[:, 0] * pos[:, 1]).sum()
+        tens[0][1] = tens[1][0] = -(masses * pos[:, 0] * pos[:, 1]).sum()
         # xz & zx
-        tens[0][2] = tens[2][0] = - (masses * pos[:, 0] * pos[:, 2]).sum()
+        tens[0][2] = tens[2][0] = -(masses * pos[:, 0] * pos[:, 2]).sum()
         # yy
         tens[1][1] = (masses * (pos[:, 0] ** 2 + pos[:, 2] ** 2)).sum()
         # yz + zy
-        tens[1][2] = tens[2][1] = - (masses * pos[:, 1] * pos[:, 2]).sum()
+        tens[1][2] = tens[2][1] = -(masses * pos[:, 1] * pos[:, 2]).sum()
         # zz
         tens[2][2] = (masses * (pos[:, 0] ** 2 + pos[:, 1] ** 2)).sum()
 
         return tens
 
-    transplants[GroupBase].append(
-        ('moment_of_inertia', moment_of_inertia))
+    transplants[GroupBase].append(("moment_of_inertia", moment_of_inertia))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1721,26 +1781,29 @@ class Masses(AtomAttr):
         else:
             recenteredpos = atomgroup.positions - com
 
-        rog_sq = np.einsum('i,i->',masses,np.einsum('ij,ij->i',
-                                     recenteredpos,recenteredpos))/atomgroup.total_mass()
+        rog_sq = (
+            np.einsum(
+                "i,i->", masses, np.einsum("ij,ij->i", recenteredpos, recenteredpos)
+            )
+            / atomgroup.total_mass()
+        )
 
         return np.sqrt(rog_sq)
 
-    transplants[GroupBase].append(
-        ('radius_of_gyration', radius_of_gyration))
+    transplants[GroupBase].append(("radius_of_gyration", radius_of_gyration))
 
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_atomgroup_not_empty
-    def gyration_moments(group, wrap=False, unwrap=False, compound='group'):
+    def gyration_moments(group, wrap=False, unwrap=False, compound="group"):
         r"""Moments of the gyration tensor.
 
         The moments are defined as the eigenvalues of the gyration
         tensor.
 
         .. math::
-        
-            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} - 
+
+            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} -
                 \mathbf{r}_\mathrm{COM})(\mathbf{r}_\mathrm{i} - \mathbf{r}_\mathrm{COM})
 
         Where :math:`\mathbf{r}_\mathrm{COM}` is the center of mass.
@@ -1772,60 +1835,62 @@ class Masses(AtomAttr):
         def _gyration(recenteredpos, masses):
             if len(masses.shape) > 1:
                 masses = np.squeeze(masses)
-            tensor = np.einsum( "ki,kj->ij",
-                                recenteredpos,
-                                np.einsum("ij,i->ij", recenteredpos, masses),
-                              )
-            return np.linalg.eigvalsh(tensor/np.sum(masses))
+            tensor = np.einsum(
+                "ki,kj->ij",
+                recenteredpos,
+                np.einsum("ij,i->ij", recenteredpos, masses),
+            )
+            return np.linalg.eigvalsh(tensor / np.sum(masses))
 
         atomgroup = group.atoms
         masses = atomgroup.masses
 
-        com = atomgroup.center_of_mass(
-            wrap=wrap, unwrap=unwrap, compound=compound)
+        com = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
 
-        if compound == 'group':
-             if wrap:
-                 recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
-             elif unwrap:
-                 recenteredpos = (atomgroup.unwrap(inplace=False,
-                                                   compound=compound, 
-                                                   reference=None, 
-                                                  ) - com)
-             else:
-                 recenteredpos = (atomgroup.positions - com)
-             eig_vals = _gyration(recenteredpos, masses)
+        if compound == "group":
+            if wrap:
+                recenteredpos = atomgroup.pack_into_box(inplace=False) - com
+            elif unwrap:
+                recenteredpos = (
+                    atomgroup.unwrap(
+                        inplace=False,
+                        compound=compound,
+                        reference=None,
+                    )
+                    - com
+                )
+            else:
+                recenteredpos = atomgroup.positions - com
+            eig_vals = _gyration(recenteredpos, masses)
         else:
-             (atom_masks, 
-              compound_masks, 
-              n_compounds) = atomgroup._split_by_compound_indices(compound)
+            (atom_masks, compound_masks, n_compounds) = (
+                atomgroup._split_by_compound_indices(compound)
+            )
 
-             if unwrap:
-                 coords = atomgroup.unwrap(
-                     compound=compound, 
-                     reference=None, 
-                     inplace=False
-                 )
-             else:
-                 coords = atomgroup.positions
+            if unwrap:
+                coords = atomgroup.unwrap(
+                    compound=compound, reference=None, inplace=False
+                )
+            else:
+                coords = atomgroup.positions
 
-             eig_vals = np.empty((n_compounds, 3), dtype=np.float64)
-             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                 eig_vals[compound_mask, :] = [_gyration(
-                      coords[mask] - com[compound_mask][i],
-                      masses[mask][:, None]
-                     ) for i, mask in enumerate(atom_mask)]
+            eig_vals = np.empty((n_compounds, 3), dtype=np.float64)
+            for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                eig_vals[compound_mask, :] = [
+                    _gyration(
+                        coords[mask] - com[compound_mask][i], masses[mask][:, None]
+                    )
+                    for i, mask in enumerate(atom_mask)
+                ]
 
         return eig_vals
 
-    transplants[GroupBase].append(
-        ('gyration_moments', gyration_moments))
-
+    transplants[GroupBase].append(("gyration_moments", gyration_moments))
 
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_atomgroup_not_empty
-    def shape_parameter(group, wrap=False, unwrap=False, compound='group'):
+    def shape_parameter(group, wrap=False, unwrap=False, compound="group"):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -1852,24 +1917,31 @@ class Masses(AtomAttr):
            Added calculation for any `compound` type
         """
         atomgroup = group.atoms
-        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        eig_vals = atomgroup.gyration_moments(
+            wrap=wrap, unwrap=unwrap, compound=compound
+        )
         if len(eig_vals.shape) > 1:
-            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals, axis=1), axis=1
-                                   ) / np.power(np.sum(eig_vals, axis=1), 3)
+            shape = (
+                27.0
+                * np.prod(eig_vals - np.mean(eig_vals, axis=1), axis=1)
+                / np.power(np.sum(eig_vals, axis=1), 3)
+            )
         else:
-            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
-                                   ) / np.power(np.sum(eig_vals), 3)
+            shape = (
+                27.0
+                * np.prod(eig_vals - np.mean(eig_vals))
+                / np.power(np.sum(eig_vals), 3)
+            )
 
         return shape
 
-    transplants[GroupBase].append(
-        ('shape_parameter', shape_parameter))
+    transplants[GroupBase].append(("shape_parameter", shape_parameter))
 
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     @check_atomgroup_not_empty
-    def asphericity(group, wrap=False, unwrap=False, compound='group'):
+    def asphericity(group, wrap=False, unwrap=False, compound="group"):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1897,18 +1969,22 @@ class Masses(AtomAttr):
            Added calculation for any `compound` type
         """
         atomgroup = group.atoms
-        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        eig_vals = atomgroup.gyration_moments(
+            wrap=wrap, unwrap=unwrap, compound=compound
+        )
         if len(eig_vals.shape) > 1:
-            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals, axis=1))**2, axis=1) /
-                                   np.sum(eig_vals, axis=1)**2)
+            shape = (3.0 / 2.0) * (
+                np.sum((eig_vals - np.mean(eig_vals, axis=1)) ** 2, axis=1)
+                / np.sum(eig_vals, axis=1) ** 2
+            )
         else:
-            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
-                                   np.sum(eig_vals)**2)
+            shape = (3.0 / 2.0) * (
+                np.sum((eig_vals - np.mean(eig_vals)) ** 2) / np.sum(eig_vals) ** 2
+            )
 
         return shape
 
-    transplants[GroupBase].append(
-        ('asphericity', asphericity))
+    transplants[GroupBase].append(("asphericity", asphericity))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1959,8 +2035,7 @@ class Masses(AtomAttr):
 
         return e_vec
 
-    transplants[GroupBase].append(
-        ('principal_axes', principal_axes))
+    transplants[GroupBase].append(("principal_axes", principal_axes))
 
     def align_principal_axis(group, axis, vector):
         """Align principal axis with index `axis` with `vector`.
@@ -1988,17 +2063,15 @@ class Masses(AtomAttr):
         # print "axis = %r, angle = %f deg" % (ax, angle)
         return group.rotateby(angle, ax)
 
-    transplants[GroupBase].append(
-        ('align_principal_axis', align_principal_axis))
+    transplants[GroupBase].append(("align_principal_axis", align_principal_axis))
 
 
 # TODO: update docs to property doc
 class Charges(AtomAttr):
-    attrname = 'charges'
-    singular = 'charge'
-    per_object = 'atom'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
-                      Atom, Residue, Segment]
+    attrname = "charges"
+    singular = "charge"
+    per_object = "atom"
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue, Segment]
     transplants = defaultdict(list)
     dtype = float
 
@@ -2034,7 +2107,7 @@ class Charges(AtomAttr):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     @check_atomgroup_not_empty
-    def center_of_charge(group, wrap=False, unwrap=False, compound='group'):
+    def center_of_charge(group, wrap=False, unwrap=False, compound="group"):
         r"""Center of (absolute) charge of (compounds of) the group
 
         .. math::
@@ -2092,18 +2165,15 @@ class Charges(AtomAttr):
         .. versionadded:: 2.2.0
         """
         atoms = group.atoms
-        return atoms.center(weights=atoms.charges.__abs__(),
-                            wrap=wrap,
-                            compound=compound,
-                            unwrap=unwrap)
+        return atoms.center(
+            weights=atoms.charges.__abs__(), wrap=wrap, compound=compound, unwrap=unwrap
+        )
 
-
-    transplants[GroupBase].append(
-        ('center_of_charge', center_of_charge))
+    transplants[GroupBase].append(("center_of_charge", center_of_charge))
 
     @warn_if_not_unique
     @check_atomgroup_not_empty
-    def total_charge(group, compound='group'):
+    def total_charge(group, compound="group"):
         r"""Total charge of (compounds of) the group.
 
         Computes the total charge of :class:`Atoms<Atom>` in the group.
@@ -2135,17 +2205,12 @@ class Charges(AtomAttr):
         """
         return group.accumulate("charges", compound=compound)
 
-    transplants[GroupBase].append(
-        ('total_charge', total_charge))
+    transplants[GroupBase].append(("total_charge", total_charge))
 
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
-    def dipole_vector(group,
-                      wrap=False,
-                      unwrap=False,
-                      compound='group',
-                      center="mass"):
+    def dipole_vector(group, wrap=False, unwrap=False, compound="group", center="mass"):
         r"""Dipole vector of the group.
 
         .. math::
@@ -2211,54 +2276,57 @@ class Charges(AtomAttr):
 
         if center == "mass":
             masses = atomgroup.masses
-            ref = atomgroup.center_of_mass(wrap=wrap,
-                                           unwrap=unwrap,
-                                           compound=compound)
+            ref = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
         elif center == "charge":
-            ref = atomgroup.center_of_charge(wrap=wrap,
-                                             unwrap=unwrap,
-                                             compound=compound)
+            ref = atomgroup.center_of_charge(
+                wrap=wrap, unwrap=unwrap, compound=compound
+            )
         else:
             choices = ["mass", "charge"]
             raise ValueError(
                 f"The dipole center, {center}, is not supported. Choose"
-                " one of: {choices}")
+                " one of: {choices}"
+            )
 
-        if compound == 'group':
+        if compound == "group":
             if wrap:
-                recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
+                recenteredpos = atomgroup.pack_into_box(inplace=False) - ref
             elif unwrap:
-                recenteredpos = (atomgroup.unwrap(
-                    inplace=False,
-                    compound=compound,
-                    reference=None,
-                ) - ref)
+                recenteredpos = (
+                    atomgroup.unwrap(
+                        inplace=False,
+                        compound=compound,
+                        reference=None,
+                    )
+                    - ref
+                )
             else:
-                recenteredpos = (atomgroup.positions - ref)
-            dipole_vector = np.einsum('ij,ij->j',recenteredpos, 
-                                       charges[:, np.newaxis])
+                recenteredpos = atomgroup.positions - ref
+            dipole_vector = np.einsum("ij,ij->j", recenteredpos, charges[:, np.newaxis])
         else:
-            (atom_masks, compound_masks,
-             n_compounds) = atomgroup._split_by_compound_indices(compound)
+            (atom_masks, compound_masks, n_compounds) = (
+                atomgroup._split_by_compound_indices(compound)
+            )
 
             if unwrap:
-                coords = atomgroup.unwrap(compound=compound,
-                                          reference=None,
-                                          inplace=False)
+                coords = atomgroup.unwrap(
+                    compound=compound, reference=None, inplace=False
+                )
             else:
                 coords = atomgroup.positions
             chgs = atomgroup.charges
 
             dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                dipole_vector[compound_mask] = np.einsum('ijk,ijk->ik',
-                                                          (coords[atom_mask]-
-                                                           ref[compound_mask][:, None, :]),
-                                                          chgs[atom_mask][:, :, None])
+                dipole_vector[compound_mask] = np.einsum(
+                    "ijk,ijk->ik",
+                    (coords[atom_mask] - ref[compound_mask][:, None, :]),
+                    chgs[atom_mask][:, :, None],
+                )
 
         return dipole_vector
 
-    transplants[GroupBase].append(('dipole_vector', dipole_vector))
+    transplants[GroupBase].append(("dipole_vector", dipole_vector))
 
     def dipole_moment(group, **kwargs):
         r"""Dipole moment of the group or compounds in a group.
@@ -2318,22 +2386,20 @@ class Charges(AtomAttr):
         dipole_vector = atomgroup.dipole_vector(**kwargs)
 
         if len(dipole_vector.shape) > 1:
-            dipole_moment = np.sqrt(np.einsum('ij,ij->i',dipole_vector,dipole_vector))
+            dipole_moment = np.sqrt(np.einsum("ij,ij->i", dipole_vector, dipole_vector))
         else:
-            dipole_moment = np.sqrt(np.einsum('i,i->',dipole_vector,dipole_vector))
+            dipole_moment = np.sqrt(np.einsum("i,i->", dipole_vector, dipole_vector))
 
         return dipole_moment
 
-    transplants[GroupBase].append(('dipole_moment', dipole_moment))
+    transplants[GroupBase].append(("dipole_moment", dipole_moment))
 
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
-    def quadrupole_tensor(group,
-                          wrap=False,
-                          unwrap=False,
-                          compound='group',
-                          center="mass"):
+    def quadrupole_tensor(
+        group, wrap=False, unwrap=False, compound="group", center="mass"
+    ):
         r"""Traceless quadrupole tensor of the group or compounds.
 
         This tensor is first computed as the outer product of vectors from
@@ -2398,8 +2464,7 @@ class Charges(AtomAttr):
         """
 
         def __quadrupole_tensor(recenteredpos, charges):
-            """ Calculate the traceless quadrupole tensor
-            """
+            """Calculate the traceless quadrupole tensor"""
             if len(charges.shape) > 1:
                 charges = np.squeeze(charges)
             tensor = np.einsum(
@@ -2416,39 +2481,42 @@ class Charges(AtomAttr):
 
         if center == "mass":
             masses = atomgroup.masses
-            ref = atomgroup.center_of_mass(wrap=wrap,
-                                           unwrap=unwrap,
-                                           compound=compound)
+            ref = atomgroup.center_of_mass(wrap=wrap, unwrap=unwrap, compound=compound)
         elif center == "charge":
-            ref = atomgroup.center_of_charge(wrap=wrap,
-                                             unwrap=unwrap,
-                                             compound=compound)
+            ref = atomgroup.center_of_charge(
+                wrap=wrap, unwrap=unwrap, compound=compound
+            )
         else:
             choices = ["mass", "charge"]
             raise ValueError(
                 f"The quadrupole center, {center}, is not supported. Choose"
-                " one of: {choices}")
+                " one of: {choices}"
+            )
 
-        if compound == 'group':
+        if compound == "group":
             if wrap:
-                recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
+                recenteredpos = atomgroup.pack_into_box(inplace=False) - ref
             elif unwrap:
-                recenteredpos = (atomgroup.unwrap(
-                    inplace=False,
-                    compound=compound,
-                    reference=None,
-                ) - ref)
+                recenteredpos = (
+                    atomgroup.unwrap(
+                        inplace=False,
+                        compound=compound,
+                        reference=None,
+                    )
+                    - ref
+                )
             else:
-                recenteredpos = (atomgroup.positions - ref)
+                recenteredpos = atomgroup.positions - ref
             quad_tensor = __quadrupole_tensor(recenteredpos, charges)
         else:
-            (atom_masks, compound_masks,
-             n_compounds) = atomgroup._split_by_compound_indices(compound)
+            (atom_masks, compound_masks, n_compounds) = (
+                atomgroup._split_by_compound_indices(compound)
+            )
 
             if unwrap:
-                coords = atomgroup.unwrap(compound=compound,
-                                          reference=None,
-                                          inplace=False)
+                coords = atomgroup.unwrap(
+                    compound=compound, reference=None, inplace=False
+                )
             else:
                 coords = atomgroup.positions
             chgs = atomgroup.charges
@@ -2456,14 +2524,15 @@ class Charges(AtomAttr):
             quad_tensor = np.empty((n_compounds, 3, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
                 quad_tensor[compound_mask, :, :] = [
-                    __quadrupole_tensor(coords[mask] - ref[compound_mask][i],
-                                 chgs[mask][:, None])
+                    __quadrupole_tensor(
+                        coords[mask] - ref[compound_mask][i], chgs[mask][:, None]
+                    )
                     for i, mask in enumerate(atom_mask)
                 ]
 
         return quad_tensor
 
-    transplants[GroupBase].append(('quadrupole_tensor', quadrupole_tensor))
+    transplants[GroupBase].append(("quadrupole_tensor", quadrupole_tensor))
 
     def quadrupole_moment(group, **kwargs):
         r"""Quadrupole moment of the group according to :footcite:p:`Gray1984`.
@@ -2533,14 +2602,15 @@ class Charges(AtomAttr):
 
         return quad_moment
 
-    transplants[GroupBase].append(('quadrupole_moment', quadrupole_moment))
+    transplants[GroupBase].append(("quadrupole_moment", quadrupole_moment))
 
 
 class FormalCharges(AtomAttr):
     """Formal charge on each atom"""
-    attrname = 'formalcharges'
-    singular = 'formalcharge'
-    per_object = 'atom'
+
+    attrname = "formalcharges"
+    singular = "formalcharge"
+    per_object = "atom"
     dtype = int
 
     @staticmethod
@@ -2550,9 +2620,9 @@ class FormalCharges(AtomAttr):
 
 # TODO: update docs to property doc
 class Occupancies(AtomAttr):
-    attrname = 'occupancies'
-    singular = 'occupancy'
-    per_object = 'atom'
+    attrname = "occupancies"
+    singular = "occupancy"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -2563,21 +2633,23 @@ class Occupancies(AtomAttr):
 # TODO: update docs to property doc
 class AltLocs(AtomStringAttr):
     """AltLocs for each atom"""
-    attrname = 'altLocs'
-    singular = 'altLoc'
-    per_object = 'atom'
+
+    attrname = "altLocs"
+    singular = "altLoc"
+    per_object = "atom"
     dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
+        return np.array(["" for _ in range(na)], dtype=object)
 
 
 class GBScreens(AtomAttr):
     """Generalized Born screening factor"""
-    attrname = 'gbscreens'
-    singular = 'gbscreen'
-    per_object = 'atom'
+
+    attrname = "gbscreens"
+    singular = "gbscreen"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -2587,9 +2659,10 @@ class GBScreens(AtomAttr):
 
 class SolventRadii(AtomAttr):
     """Intrinsic solvation radius"""
-    attrname = 'solventradii'
-    singular = 'solventradius'
-    per_object = 'atom'
+
+    attrname = "solventradii"
+    singular = "solventradius"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -2599,9 +2672,10 @@ class SolventRadii(AtomAttr):
 
 class NonbondedIndices(AtomAttr):
     """Nonbonded index (AMBER)"""
-    attrname = 'nbindices'
-    singular = 'nbindex'
-    per_object = 'atom'
+
+    attrname = "nbindices"
+    singular = "nbindex"
+    per_object = "atom"
     dtype = int
 
     @staticmethod
@@ -2611,9 +2685,10 @@ class NonbondedIndices(AtomAttr):
 
 class RMins(AtomAttr):
     """The Rmin/2 LJ parameter"""
-    attrname = 'rmins'
-    singular = 'rmin'
-    per_object = 'atom'
+
+    attrname = "rmins"
+    singular = "rmin"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -2623,9 +2698,10 @@ class RMins(AtomAttr):
 
 class Epsilons(AtomAttr):
     """The epsilon LJ parameter"""
-    attrname = 'epsilons'
-    singular = 'epsilon'
-    per_object = 'atom'
+
+    attrname = "epsilons"
+    singular = "epsilon"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -2635,9 +2711,10 @@ class Epsilons(AtomAttr):
 
 class RMin14s(AtomAttr):
     """The Rmin/2 LJ parameter for 1-4 interactions"""
-    attrname = 'rmin14s'
-    singular = 'rmin14'
-    per_object = 'atom'
+
+    attrname = "rmin14s"
+    singular = "rmin14"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -2647,9 +2724,10 @@ class RMin14s(AtomAttr):
 
 class Epsilon14s(AtomAttr):
     """The epsilon LJ parameter for 1-4 interactions"""
-    attrname = 'epsilon14s'
-    singular = 'epsilon14'
-    per_object = 'atom'
+
+    attrname = "epsilon14s"
+    singular = "epsilon14"
+    per_object = "atom"
     dtype = float
 
     @staticmethod
@@ -2659,6 +2737,7 @@ class Epsilon14s(AtomAttr):
 
 class Aromaticities(AtomAttr):
     """Aromaticity"""
+
     attrname = "aromaticities"
     singular = "aromaticity"
     per_object = "atom"
@@ -2671,16 +2750,17 @@ class Aromaticities(AtomAttr):
 
 class RSChirality(AtomAttr):
     """R/S chirality"""
-    attrname = 'chiralities'
-    singular= 'chirality'
-    dtype = 'U1'
+
+    attrname = "chiralities"
+    singular = "chirality"
+    dtype = "U1"
 
 
 class ResidueAttr(TopologyAttr):
-    attrname = 'residueattrs'
-    singular = 'residueattr'
+    attrname = "residueattrs"
+    singular = "residueattr"
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
-    per_object = 'residue'
+    per_object = "residue"
 
     def get_atoms(self, ag):
         rix = self.top.tt.atoms2residues(ag.ix)
@@ -2719,14 +2799,15 @@ class ResidueStringAttr(_StringInternerMixin, ResidueAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.full(nr, '', dtype=object)
+        return np.full(nr, "", dtype=object)
 
 
 # TODO: update docs to property doc
 class Resids(ResidueAttr):
     """Residue ID"""
-    attrname = 'resids'
-    singular = 'resid'
+
+    attrname = "resids"
+    singular = "resid"
     dtype = int
 
     @staticmethod
@@ -2736,14 +2817,14 @@ class Resids(ResidueAttr):
 
 # TODO: update docs to property doc
 class Resnames(ResidueStringAttr):
-    attrname = 'resnames'
-    singular = 'resname'
+    attrname = "resnames"
+    singular = "resname"
     transplants = defaultdict(list)
     dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(nr)], dtype=object)
+        return np.array(["" for _ in range(nr)], dtype=object)
 
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
@@ -2824,24 +2905,30 @@ class Resnames(ResidueStringAttr):
            Biopython is now an optional dependency
         """
         if not HAS_BIOPYTHON:
-            errmsg = ("The `sequence_alignment` method requires an "
-                      "installation of `Biopython`. Please install "
-                      "`Biopython` to use this method: "
-                      "https://biopython.org/wiki/Download")
+            errmsg = (
+                "The `sequence_alignment` method requires an "
+                "installation of `Biopython`. Please install "
+                "`Biopython` to use this method: "
+                "https://biopython.org/wiki/Download"
+            )
             raise ImportError(errmsg)
 
-        formats = ('string', 'Seq', 'SeqRecord')
+        formats = ("string", "Seq", "SeqRecord")
 
         format = kwargs.pop("format", "SeqRecord")
         if format not in formats:
-            raise TypeError("Unknown format='{0}': must be one of: {1}".format(
-                format, ", ".join(formats)))
+            raise TypeError(
+                "Unknown format='{0}': must be one of: {1}".format(
+                    format, ", ".join(formats)
+                )
+            )
         try:
-            sequence = "".join([convert_aa_code(r)
-                                for r in self.residues.resnames])
+            sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
         except KeyError as err:
-            errmsg = (f"AtomGroup contains a residue name '{err.message}' that"
-                      f" does not have a IUPAC protein 1-letter character")
+            errmsg = (
+                f"AtomGroup contains a residue name '{err.message}' that"
+                f" does not have a IUPAC protein 1-letter character"
+            )
             raise ValueError(errmsg) from None
         if format == "string":
             return sequence
@@ -2850,14 +2937,13 @@ class Resnames(ResidueStringAttr):
             return seq
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
 
-    transplants[ResidueGroup].append(
-        ('sequence', sequence))
+    transplants[ResidueGroup].append(("sequence", sequence))
 
 
 # TODO: update docs to property doc
 class Resnums(ResidueAttr):
-    attrname = 'resnums'
-    singular = 'resnum'
+    attrname = "resnums"
+    singular = "resnum"
     dtype = int
 
     @staticmethod
@@ -2867,8 +2953,9 @@ class Resnums(ResidueAttr):
 
 class ICodes(ResidueStringAttr):
     """Insertion code for Atoms"""
-    attrname = 'icodes'
-    singular = 'icode'
+
+    attrname = "icodes"
+    singular = "icode"
     dtype = object
 
 
@@ -2877,16 +2964,17 @@ class Moltypes(ResidueStringAttr):
 
     Two molecules that share a molecule type share a common template topology.
     """
-    attrname = 'moltypes'
-    singular = 'moltype'
+
+    attrname = "moltypes"
+    singular = "moltype"
     dtype = object
 
 
 class Molnums(ResidueAttr):
-    """Index of molecule from 0
-    """
-    attrname = 'molnums'
-    singular = 'molnum'
+    """Index of molecule from 0"""
+
+    attrname = "molnums"
+    singular = "molnum"
     dtype = np.intp
 
 
@@ -2894,14 +2982,12 @@ class Molnums(ResidueAttr):
 
 
 class SegmentAttr(TopologyAttr):
-    """Base class for segment attributes.
+    """Base class for segment attributes."""
 
-    """
-    attrname = 'segmentattrs'
-    singular = 'segmentattr'
-    target_classes = [AtomGroup, ResidueGroup,
-                      SegmentGroup, Atom, Residue, Segment]
-    per_object = 'segment'
+    attrname = "segmentattrs"
+    singular = "segmentattr"
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue, Segment]
+    per_object = "segment"
 
     def get_atoms(self, ag):
         six = self.top.tt.atoms2segments(ag.ix)
@@ -2935,19 +3021,19 @@ class SegmentStringAttr(_StringInternerMixin, SegmentAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.full(ns, '', dtype=object)
+        return np.full(ns, "", dtype=object)
 
 
 # TODO: update docs to property doc
 class Segids(SegmentStringAttr):
-    attrname = 'segids'
-    singular = 'segid'
+    attrname = "segids"
+    singular = "segid"
     transplants = defaultdict(list)
     dtype = object
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(ns)], dtype=object)
+        return np.array(["" for _ in range(ns)], dtype=object)
 
 
 def _check_connection_values(func):
@@ -2963,12 +3049,15 @@ def _check_connection_values(func):
 
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
-        if not all(len(x) == self._n_atoms
-                   and all(isinstance(y, (int, np.integer)) for y in x)
-                   for x in values):
-            raise ValueError(("{} must be an iterable of tuples with {}"
-                              " atom indices").format(self.attrname,
-                                                      self._n_atoms))
+        if not all(
+            len(x) == self._n_atoms and all(isinstance(y, (int, np.integer)) for y in x)
+            for x in values
+        ):
+            raise ValueError(
+                ("{} must be an iterable of tuples with {}" " atom indices").format(
+                    self.attrname, self._n_atoms
+                )
+            )
         clean = []
         for v in values:
             if v[0] > v[-1]:
@@ -2991,13 +3080,12 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
     def __init__(cls, name, bases, classdict):
         super().__init__(name, bases, classdict)
 
-        attrname = classdict.get('attrname')
+        attrname = classdict.get("attrname")
 
         if attrname is not None:
 
             def intra_connection(self, ag):
-                """Get connections only within this AtomGroup
-                """
+                """Get connections only within this AtomGroup"""
                 return ag.get_connections(attrname, outside=False)
 
             method = MethodType(intra_connection, cls)
@@ -3030,22 +3118,23 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
     def copy(self):
         """Return a deepcopy of this attribute"""
-        return self.__class__(copy.copy(self.values),
-                              copy.copy(self.types),
-                              copy.copy(self._guessed),
-                              copy.copy(self.order))
+        return self.__class__(
+            copy.copy(self.values),
+            copy.copy(self.types),
+            copy.copy(self._guessed),
+            copy.copy(self.order),
+        )
 
     def __len__(self):
         return len(self._bondDict)
 
     @property
-    @cached('bd')
+    @cached("bd")
     def _bondDict(self):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
 
-        for b, t, g, o in zip(self.values, self.types,
-                              self._guessed, self.order):
+        for b, t, g, o in zip(self.values, self.types, self._guessed, self.order):
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
@@ -3064,8 +3153,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
         """
         try:
-            unique_bonds = set(itertools.chain(
-                *[self._bondDict[a] for a in ag.ix]))
+            unique_bonds = set(itertools.chain(*[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
@@ -3075,11 +3163,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         types = types.ravel()
         guessed = guessed.ravel()
         order = order.ravel()
-        return TopologyGroup(bond_idx, ag.universe,
-                             self.singular[:-1],
-                             types,
-                             guessed,
-                             order)
+        return TopologyGroup(
+            bond_idx, ag.universe, self.singular[:-1], types, guessed, order
+        )
 
     @_check_connection_values
     def _add_bonds(self, values, types=None, guessed=True, order=None):
@@ -3099,7 +3185,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                 self.order.append(o)
         # kill the old cache of bond Dict
         try:
-            del self._cache['bd']
+            del self._cache["bd"]
         except KeyError:
             pass
 
@@ -3112,23 +3198,26 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         to_check = set(values)
         self_values = set(self.values)
         if not to_check.issubset(self_values):
-            missing = to_check-self_values
-            indices = ', '.join(map(str, missing))
-            raise ValueError(('Cannot delete nonexistent '
-                              '{attrname} with atom indices:'
-                              '{indices}').format(attrname=self.attrname,
-                                                  indices=indices))
+            missing = to_check - self_values
+            indices = ", ".join(map(str, missing))
+            raise ValueError(
+                (
+                    "Cannot delete nonexistent "
+                    "{attrname} with atom indices:"
+                    "{indices}"
+                ).format(attrname=self.attrname, indices=indices)
+            )
         idx = [self.values.index(v) for v in to_check]
         for i in sorted(idx, reverse=True):
             del self.values[i]
 
-        for attr in ('types', '_guessed', 'order'):
-            arr = np.array(getattr(self, attr), dtype='object')
+        for attr in ("types", "_guessed", "order"):
+            arr = np.array(getattr(self, attr), dtype="object")
             new = np.delete(arr, idx)
             setattr(self, attr, list(new))
         # kill the old cache of bond Dict
         try:
-            del self._cache['bd']
+            del self._cache["bd"]
         except KeyError:
             pass
 
@@ -3143,10 +3232,11 @@ class Bonds(_Connection):
     Also adds the `bonded_atoms`, `fragment` and `fragments`
     attributes.
     """
-    attrname = 'bonds'
+
+    attrname = "bonds"
     # Singular is the same because one Atom might have
     # many bonds, so still asks for "bonds" in the plural
-    singular = 'bonds'
+    singular = "bonds"
     transplants = defaultdict(list)
     _n_atoms = 2
 
@@ -3158,8 +3248,8 @@ class Bonds(_Connection):
         return self.universe.atoms[idx]
 
     transplants[Atom].append(
-        ('bonded_atoms', property(bonded_atoms, None, None,
-                                  bonded_atoms.__doc__)))
+        ("bonded_atoms", property(bonded_atoms, None, None, bonded_atoms.__doc__))
+    )
 
     def fragindex(self):
         """The index (ID) of the
@@ -3171,7 +3261,7 @@ class Bonds(_Connection):
         """
         return self.universe._fragdict[self.ix].ix
 
-    @cached('fragindices', universe_validation=True)
+    @cached("fragindices", universe_validation=True)
     def fragindices(self):
         r"""The
         :class:`fragment indices<MDAnalysis.core.topologyattrs.Bonds.fragindex>`
@@ -3205,7 +3295,7 @@ class Bonds(_Connection):
         """
         return self.universe._fragdict[self.ix].fragment
 
-    @cached('fragments', universe_validation=True)
+    @cached("fragments", universe_validation=True)
     def fragments(self):
         """Read-only :class:`tuple` of
         :class:`fragments<MDAnalysis.core.topologyattrs.Bonds.fragment>`.
@@ -3231,8 +3321,11 @@ class Bonds(_Connection):
         .. versionadded:: 0.9.0
         """
         fragdict = self.universe._fragdict
-        return tuple(sorted(set(fragdict[aix].fragment for aix in self.ix),
-                            key=lambda x: x[0].ix))
+        return tuple(
+            sorted(
+                set(fragdict[aix].fragment for aix in self.ix), key=lambda x: x[0].ix
+            )
+        )
 
     def n_fragments(self):
         """The number of unique
@@ -3246,24 +3339,24 @@ class Bonds(_Connection):
         return len(unique_int_1d(self.fragindices))
 
     transplants[Atom].append(
-        ('fragment', property(fragment, None, None,
-                              fragment.__doc__)))
+        ("fragment", property(fragment, None, None, fragment.__doc__))
+    )
 
     transplants[Atom].append(
-        ('fragindex', property(fragindex, None, None,
-                               fragindex.__doc__)))
+        ("fragindex", property(fragindex, None, None, fragindex.__doc__))
+    )
 
     transplants[AtomGroup].append(
-        ('fragments', property(fragments, None, None,
-                               fragments.__doc__)))
+        ("fragments", property(fragments, None, None, fragments.__doc__))
+    )
 
     transplants[AtomGroup].append(
-        ('fragindices', property(fragindices, None, None,
-                                 fragindices.__doc__)))
+        ("fragindices", property(fragindices, None, None, fragindices.__doc__))
+    )
 
     transplants[AtomGroup].append(
-        ('n_fragments', property(n_fragments, None, None,
-                                 n_fragments.__doc__)))
+        ("n_fragments", property(n_fragments, None, None, n_fragments.__doc__))
+    )
 
 
 class UreyBradleys(_Connection):
@@ -3275,8 +3368,9 @@ class UreyBradleys(_Connection):
 
     .. versionadded:: 1.0.0
     """
-    attrname = 'ureybradleys'
-    singular = 'ureybradleys'
+
+    attrname = "ureybradleys"
+    singular = "ureybradleys"
     transplants = defaultdict(list)
     _n_atoms = 2
 
@@ -3289,24 +3383,27 @@ class Angles(_Connection):
 
     These indices refer to the atom indices.
     """
-    attrname = 'angles'
-    singular = 'angles'
+
+    attrname = "angles"
+    singular = "angles"
     transplants = defaultdict(list)
     _n_atoms = 3
 
 
 class Dihedrals(_Connection):
     """A connection between four sequential atoms"""
-    attrname = 'dihedrals'
-    singular = 'dihedrals'
+
+    attrname = "dihedrals"
+    singular = "dihedrals"
     transplants = defaultdict(list)
     _n_atoms = 4
 
 
 class Impropers(_Connection):
     """An imaginary dihedral between four atoms"""
-    attrname = 'impropers'
-    singular = 'impropers'
+
+    attrname = "impropers"
+    singular = "impropers"
     transplants = defaultdict(list)
     _n_atoms = 4
 
@@ -3316,7 +3413,8 @@ class CMaps(_Connection):
     A connection between five atoms
     .. versionadded:: 1.0.0
     """
-    attrname = 'cmaps'
-    singular = 'cmaps'
+
+    attrname = "cmaps"
+    singular = "cmaps"
     transplants = defaultdict(list)
     _n_atoms = 5
