@@ -149,6 +149,7 @@ import warnings
 import logging
 import collections
 import numpy as np
+import functools
 
 from ..lib import util
 from ..lib.util import store_init_arguments
@@ -1028,6 +1029,7 @@ class PDBWriter(base.WriterBase):
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
+    @functools.cache
     def _deduce_PDB_atom_name(self, atomname, resname):
         """Deduce how the atom name should be aligned.
 
@@ -1217,7 +1219,7 @@ class PDBWriter(base.WriterBase):
         else:
             atom_ids = np.arange(len(atoms)) + 1
 
-        for i, atom in enumerate(atoms):
+        for i in range(len(atoms)):
             vals = {}
             vals['serial'] = util.ltruncate_int(atom_ids[i], 5)  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])

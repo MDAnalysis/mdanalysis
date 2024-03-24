@@ -27,10 +27,9 @@ from MDAnalysis.analysis import contacts
 from MDAnalysis.analysis.distances import distance_array
 
 from numpy.testing import (
-    assert_almost_equal,
     assert_equal,
     assert_array_equal,
-    assert_array_almost_equal
+    assert_allclose,
 )
 import numpy as np
 
@@ -48,8 +47,8 @@ from MDAnalysisTests.datafiles import (
 def test_soft_cut_q():
     # just check some of the extremal points
     assert contacts.soft_cut_q([0], [0]) == .5
-    assert_almost_equal(contacts.soft_cut_q([100], [0]), 0)
-    assert_almost_equal(contacts.soft_cut_q([-100], [0]), 1)
+    assert_allclose(contacts.soft_cut_q([100], [0]), 0, rtol=0, atol=1.5e-7)
+    assert_allclose(contacts.soft_cut_q([-100], [0]), 1, rtol=0, atol=1.5e-7)
 
 
 def test_soft_cut_q_folded():
@@ -67,7 +66,7 @@ def test_soft_cut_q_folded():
     lambda_constant = 1.8
     Q = 1 / (1 + np.exp(beta * (r - lambda_constant * r0)))
 
-    assert_almost_equal(Q.mean(), 1.0, decimal=3)
+    assert_allclose(Q.mean(), 1.0, rtol=0, atol=1.5e-3)
 
 
 def test_soft_cut_q_unfolded():
@@ -85,7 +84,7 @@ def test_soft_cut_q_unfolded():
     lambda_constant = 1.8
     Q = 1 / (1 + np.exp(beta * (r - lambda_constant * r0)))
 
-    assert_almost_equal(Q.mean(), 0.0, decimal=1)
+    assert_allclose(Q.mean(), 0.0, rtol=0, atol=1.5e-1)
 
 
 @pytest.mark.parametrize('r, cutoff, expected_value', [
@@ -263,7 +262,7 @@ class TestContacts(object):
         q.run()
 
         results = soft_cut(f, u, sel, sel)
-        assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
+        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
 
     def test_villin_unfolded(self):
         # both folded
@@ -280,7 +279,7 @@ class TestContacts(object):
         q.run()
 
         results = soft_cut(f, u, sel, sel)
-        assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
+        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
 
     def test_hard_cut_method(self, universe):
         ca = self._run_Contacts(universe)
@@ -305,7 +304,7 @@ class TestContacts(object):
                     0.48543689, 0.45631068, 0.46601942, 0.47572816, 0.51456311,
                     0.45631068, 0.37864078, 0.42718447]
         assert len(ca.results.timeseries) == len(expected)
-        assert_array_almost_equal(ca.results.timeseries[:, 1], expected)
+        assert_allclose(ca.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7)
 
     def test_radius_cut_method(self, universe):
         acidic = universe.select_atoms(self.sel_acidic)
@@ -365,7 +364,7 @@ class TestContacts(object):
         r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                         refgroup=(acidic, basic), radius=6.0, pbc=pbc)
         r.run()
-        assert_array_almost_equal(r.results.timeseries[:, 1], expected)
+        assert_allclose(r.results.timeseries[:, 1], expected,rtol=0, atol=1.5e-7)
 
     def test_warn_deprecated_attr(self, universe):
         """Test for warning message emitted on using deprecated `timeseries`
@@ -375,6 +374,16 @@ class TestContacts(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
 
+    @pytest.mark.parametrize("datafiles, expected", [((PSF, DCD), 0),
+                                                     ([TPR, XTC], 41814)])
+    def test_n_initial_contacts(self, datafiles, expected):
+        """Test for n_initial_contacts attribute"""
+        u = mda.Universe(*datafiles)
+        select = ('protein', 'not protein')
+        refgroup = (u.select_atoms('protein'), u.select_atoms('not protein'))
+
+        r = contacts.Contacts(u, select=select, refgroup=refgroup)
+        assert_equal(r.n_initial_contacts, expected)
 
 def test_q1q2():
     u = mda.Universe(PSF, DCD)
@@ -401,7 +410,7 @@ def test_q1q2():
                    0.93097184, 0.93006358, 0.93188011, 0.93278837, 0.93006358,
                    0.92915531, 0.92824705, 0.92733878, 0.92643052, 0.93188011,
                    0.93006358, 0.9346049, 0.93188011]
-    assert_array_almost_equal(q1q2.results.timeseries[:, 1], q1_expected)
+    assert_allclose(q1q2.results.timeseries[:, 1], q1_expected, rtol=0, atol=1.5e-7)
 
     q2_expected = [0.94649446, 0.94926199, 0.95295203, 0.95110701, 0.94833948,
                    0.95479705, 0.94926199, 0.9501845, 0.94926199, 0.95387454,
@@ -423,4 +432,4 @@ def test_q1q2():
                    0.97140221, 0.97601476, 0.97693727, 0.98154982, 0.98431734,
                    0.97601476, 0.9797048, 0.98154982, 0.98062731, 0.98431734,
                    0.98616236, 0.9898524, 1.]
-    assert_array_almost_equal(q1q2.results.timeseries[:, 2], q2_expected)
+    assert_allclose(q1q2.results.timeseries[:, 2], q2_expected, rtol=0, atol=1.5e-7)

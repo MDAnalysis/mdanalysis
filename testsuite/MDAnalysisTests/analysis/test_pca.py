@@ -133,6 +133,12 @@ def test_no_frames(u):
         PCA(u, select=SELECTION).run(stop=1)
 
 
+def test_can_run_frames(u):
+    atoms = u.select_atoms(SELECTION)
+    u.transfer_to_memory()
+    PCA(u, select=SELECTION, mean=None).run(frames=[0, 1])
+
+
 def test_transform(pca, u):
     ag = u.select_atoms(SELECTION)
     pca_space = pca.transform(ag, n_components=1)
