@@ -20,6 +20,8 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix doctest errors of analysis/pca.py related to rounding issues 
+   (Issue #3925, PR #4377)
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
    (PR #4459)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
