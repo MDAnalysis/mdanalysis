@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 from io import StringIO
 
@@ -282,6 +282,13 @@ class TestDumpParser(ParserBase):
         assert isinstance(u, mda.Universe)
         assert len(u.atoms) == 24
 
+    def test_masses_warning(self):
+        # masses are mandatory, but badly guessed
+        # check that user is alerted
+        with self.parser(self.ref_filename) as p:
+            with pytest.warns(UserWarning, match='Guessed all Masses to 1.0'):
+                p.parse()
+
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, format='LAMMPSDUMP')
         for attr in self.guessed_attrs:
@@ -292,6 +299,16 @@ class TestDumpParser(ParserBase):
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        expected = [1., 1., 1., 1., 1., 1., 1.]
+        assert_allclose(u.atoms.masses[:7], expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        expected = ['2', '1', '1', '2', '1', '1', '2']
+        assert (u.atoms.types[:7] == expected).all()
 
 # this tests that topology can still be constructed if non-standard or uneven
 # column present.

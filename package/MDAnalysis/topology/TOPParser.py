@@ -294,7 +294,7 @@ class TOPParser(TopologyReaderBase):
         if 'elements' not in attrs:
             msg = ("ATOMIC_NUMBER record not found, elements attribute will "
                    "not be populated. If needed these can be guessed using "
-                   "universe.guess_TopologyAttributes(to_guess=['elements']).")
+                   "universe.guess_TopologyAttrs(to_guess=['elements']).")
             logger.warning(msg)
             warnings.warn(msg)
         elif np.any(attrs['elements'].values == ""):
@@ -302,7 +302,7 @@ class TOPParser(TopologyReaderBase):
             msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
                    "have been given an empty element record. If needed these "
                    "can be guessed using "
-                   "universe.guess_TopologyAttributes(to_guess=['elements']).")
+                   "universe.guess_TopologyAttrs(to_guess=['elements']).")
             logger.warning(msg)
             warnings.warn(msg)
 

@@ -198,14 +198,15 @@ class TestAtomnames(TestAtomAttr):
         assert groupsize == len(u.residues[[]].atoms)
 
     def test_missing_values(self, attr):
-        assert_equal(attr.are_values_missing(self.values),
-                     np.array([False, False, False, False, False, False, False, False, False, False]))
+        assert_equal(attr.are_values_missing(self.values), np.array(
+            [False, False, False, False, False, False,
+             False, False, False, False]))
 
     def test_missing_value_label(self):
         self.attrclass.missing_value_label = 'FOO'
         values = np.array(['NA', 'C', 'N', 'FOO'])
         assert_equal(self.attrclass.are_values_missing(values),
-                                np.array([False, False, False, True]))
+                     np.array([False, False, False, True]))
 
 
 class AggregationMixin(TestAtomAttr):

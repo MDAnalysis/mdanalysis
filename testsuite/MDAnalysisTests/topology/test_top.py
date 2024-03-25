@@ -52,7 +52,6 @@ class TOPBase(ParserBase):
         "names", "types", "type_indices", "charges", "masses", "resnames",
         "bonds", "angles", "dihedrals", "impropers", "elements"
     ]
-
     expected_n_segments = 1
 
     def test_attr_size(self, top):

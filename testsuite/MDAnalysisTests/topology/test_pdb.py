@@ -309,30 +309,33 @@ def test_wrong_elements_warnings():
     column which have been parsed and returns an appropriate warning.
     """
     with pytest.warns(UserWarning, match='Unknown element XX found'):
-        u = mda.Universe(StringIO(PDB_wrong_ele,), 
-                         force_guess=("types", "masses",), format='PDB')
+        u = mda.Universe(StringIO(PDB_wrong_ele,), format='PDB')
 
     expected_elements = np.array(['N', '', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
-                        dtype=object)
-    gussed_types = np.array(['N', 'C', 'C', 'O', 'X', 'CU', 'FE', 'MG'])
+                                 dtype=object)
+    gussed_types = np.array(['N', '', 'C', 'O', 'XX', 'CU', 'Fe', 'MG'])
     guseed_masses = np.array([14.007, 0.0, 12.011, 15.999,  0.0,
-                               63.546, 55.847, 24.305], dtype=float)
+                              63.546, 55.847, 24.305], dtype=float)
 
     assert_equal(u.atoms.elements, expected_elements)
     assert_equal(u.atoms.types, gussed_types)
     assert_allclose(u.atoms.masses, guseed_masses)
 
+
 def test_guessed_masses_and_types_values():
     """Test that guessed masses and types have the expected values for universe
        constructed from PDB file.
     """
-    u = mda.Universe(PDB, force_guess=("types", "masses"), format='PDB')
+    u = mda.Universe(PDB, format='PDB')
     gussed_types = np.array(['N', 'H', 'H', 'H', 'C', 'H', 'C', 'H', 'H', 'C'])
-    guseed_masses = [tables.masses[element.upper()] if element != '' else 0.0 
-                     for element in u.atoms.types]
+    guseed_masses = [14.007, 1.008, 1.008, 1.008,
+                     12.011, 1.008, 12.011, 1.008, 1.008, 12.011]
+    failed_type_guesses = u.atoms.types == ""
 
-    assert_allclose(u.atoms.masses, guseed_masses)
+    assert_allclose(u.atoms.masses[:10], guseed_masses)
     assert_equal(u.atoms.types[:10], gussed_types)
+    assert not failed_type_guesses.any()
+
 
 def test_nobonds_error():
     """Issue #2832: PDB without CONECT record should not have a bonds

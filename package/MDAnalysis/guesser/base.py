@@ -59,7 +59,7 @@ class _GuesserMeta(type):
       class FooGuesser(GuesserBase):
           format = 'foo'
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
     """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -75,12 +75,12 @@ class GuesserBase(metaclass=_GuesserMeta):
     universe : Universe, optional
         Supply a Universe to the Guesser. This then become the source of atom
         attributes to be used in guessing processes. (this is relevant to how
-        the universe's guess_topologyAttributes API works.
-        See :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes`).
+        the universe's guess_TopologyAttrs API works.
+        See :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`).
     **kwargs: to pass additional data to the guesser that can be used with
               different methos.
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
 
     """
     context = 'base'
@@ -104,7 +104,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Parameters
         ----------
-        guess: string
+        guess: str
             Atrribute to be guessed then added to the universe
 
         Returns
@@ -121,7 +121,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Parameters
         ----------
-        attr_to_guess: string
+        attr_to_guess: str
             an atrribute to be guessed then to be added to the universe
         force_guess: boolean
             To indicate wether to only partialy guess the empty values of the
@@ -135,7 +135,8 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
-            attr_values = np.array(getattr(self._universe.atoms, attr_to_guess, None))
+            attr_values = np.array(
+                getattr(self._universe.atoms, attr_to_guess, None))
 
             top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
 
@@ -143,7 +144,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
             if True in empty_values:
                 # pass to the guesser_method boolean mask to only guess the
-                # empty values 
+                # empty values
                 attr_values[empty_values] = self._guesser_methods[attr_to_guess](
                     indices_to_guess=empty_values)
                 return attr_values
@@ -165,7 +166,7 @@ def get_guesser(context, u=None, **kwargs):
     ----------
     u: Universe
         to be passed to the guesser
-    context: string or Guesser
+    context: str or Guesser
     **kwargs: extra arguments are passed to the guesser.
 
     Returns
@@ -176,7 +177,7 @@ def get_guesser(context, u=None, **kwargs):
     ------
     * :exc:`KeyError` upon failing to return a guesser class
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
 
     """
     if isinstance(context, GuesserBase):

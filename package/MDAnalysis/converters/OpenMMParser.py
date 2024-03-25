@@ -25,9 +25,9 @@
 ===================================================================
 
 .. versionadded:: 2.0.0
-.. versionchanged:: 2.7.0
+.. versionchanged:: 2.8.0
    Removed type and mass guessing (attributes guessing takes place
-   now through universe.guess_TopologyAttributes() API)
+   now through universe.guess_TopologyAttrs() API)
 
 
 Converts an
@@ -185,7 +185,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
                         "For absent elements, atomtype has been  "
                         "set to 'X' and mass has been set to 0.0. "
                         "If needed these can be guessed using "
-                        "universe.guess_TopologyAttributes("
+                        "universe.guess_TopologyAttrs("
                         "to_guess=['masses', 'types']). "
                         "(for MDAnalysis version 2.x "
                         "this is done automatically,"
@@ -205,7 +205,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
                     "for MDAnalysis version 2.x this is done automatically, "
                     "but it will be removed in future versions. "
                     "These can be guessed using "
-                    "universe.guess_TopologyAttributes("
+                    "universe.guess_TopologyAttrs("
                     "to_guess=['masses', 'types']) "
                     "See MDAnalysis.guessers.")
 

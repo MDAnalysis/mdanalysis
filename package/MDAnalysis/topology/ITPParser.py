@@ -475,11 +475,12 @@ class ITPParser(TopologyReaderBase):
 
     .. versionchanged:: 2.2.0
       no longer adds angles for water molecules with SETTLE constraint
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
       Removed mass guessing (attributes guessing takes place now
-      through universe.guess_TopologyAttributes() API).
+      through universe.guess_TopologyAttrs() API).
       Added guessed elements if all elements are valid to preserve partial
       mass guessing behavior
+
     """
     format = 'ITP'
 
@@ -535,7 +536,7 @@ class ITPParser(TopologyReaderBase):
 
                     else:
                         self.parser = self._pass
-                    
+ 
                 else:
                     self.parser(line)
 
@@ -589,7 +590,7 @@ class ITPParser(TopologyReaderBase):
         attrs.append(Masses(np.array(self.masses, dtype=np.float64),
                             guessed=False))
 
-        self.elements = DefaultGuesser(None).guess_types(self.names)
+        self.elements = DefaultGuesser(None).guess_types(self.types)
         if all(e.capitalize() in SYMB2Z for e in self.elements):
             attrs.append(Elements(np.array(self.elements,
                          dtype=object), guessed=True))
@@ -597,7 +598,7 @@ class ITPParser(TopologyReaderBase):
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed using universe.guess_topologyAttributes("
+                          "guessed using universe.guess_TopologyAttrs("
                           "to_guess=['elements']).")
 
         # residue stuff

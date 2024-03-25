@@ -30,6 +30,8 @@ from MDAnalysisTests.datafiles import (
     XYZ_mini,
 )
 
+from numpy.testing import assert_equal, assert_allclose
+
 
 class XYZBase(ParserBase):
     parser = mda.topology.XYZParser.XYZParser
@@ -50,3 +52,13 @@ class TestXYZParser(XYZBase):
     @pytest.fixture(params=[XYZ, XYZ_bz2])
     def filename(self, request):
         return request.param
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        expected = [1.008, 1.008, 1.008, 1.008, 1.008, 1.008, 1.008]
+        assert_allclose(u.atoms.masses[:7], expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        expected = ['H', 'H', 'H', 'H', 'H', 'H', 'H']
+        assert_equal(u.atoms.types[:7], expected)

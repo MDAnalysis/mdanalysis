@@ -58,7 +58,7 @@ class DefaultGuesser(GuesserBase):
     guessing different topology attribute. It has the same methods that was
     originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
-     *masses
+    * masses
     * types
     * elements
     * angles
@@ -67,8 +67,8 @@ class DefaultGuesser(GuesserBase):
     * improper dihedrals
     * aromaticities
 
-    You can use this guesser either directly through an instance, or through the 
-    :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttributes` method.
+    You can use this guesser either directly through an instance, or through
+    the :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` method.
 
     Examples
     --------
@@ -77,9 +77,9 @@ class DefaultGuesser(GuesserBase):
         import MDAnalysis as mda
         from MDAnalysisTests.datafiles import two_water_gro
 
-        u = mda.Universe(two_water_gro, context = 'default', to_guess=['bonds'])
+        u = mda.Universe(two_water_gro, context='default', to_guess=['bonds'])
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
 
     """
     context = 'default'
@@ -99,7 +99,7 @@ class DefaultGuesser(GuesserBase):
 
     def guess_masses(self, atom_types=None, indices_to_guess=None):
         """Guess the mass of many atoms based upon their type.
-        For guessing masses through Univese.guess_topologyAttribute():
+        For guessing masses through Univese.guess_TopologyAttrs():
         First it try to guess masses from atom elements, if not available,
         try to guess masses from types and if not availaible, try to guess
         types.
@@ -129,14 +129,16 @@ class DefaultGuesser(GuesserBase):
                     atom_types = self._universe.atoms.types
                 except AttributeError:
                     try:
-                        atom_types = self.guess_types(atom_types=self._universe.atoms.names)
+                        atom_types = self.guess_types(
+                            atom_types=self._universe.atoms.names)
                     except ValueError:
                         raise ValueError(
-                            "there is no reference attributes (elements, types, or names)"
+                            "there is no reference attributes"
+                            " (elements, types, or names)"
                             " in this universe to guess mass from")
 
         if indices_to_guess is not None:
-            atom_types = atom_types[indices_to_guess] 
+            atom_types = atom_types[indices_to_guess]
 
         masses = np.array([self.get_atom_mass(atom)
                            for atom in atom_types], dtype=np.float64)
@@ -145,6 +147,7 @@ class DefaultGuesser(GuesserBase):
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
         Masses are looked up in :data:`MDAnalysis.guesser.tables.masses`.
+
         .. Warning:: Untill vesion 3.0.0 unknown masses are set to 0.0
 
         """
@@ -165,6 +168,7 @@ class DefaultGuesser(GuesserBase):
         """Guess a mass based on the atom name.
 
         :func:`guess_atom_element` is used to determine the kind of atom.
+
         .. warning:: Untill vesion 3.0.0 anything not recognized is simply
         set to 0.0; if you rely on the masses you might want to double check.
         """
@@ -205,14 +209,14 @@ class DefaultGuesser(GuesserBase):
 
         if masses is not None:
             if indices_to_guess is not None:
-                masses = masses[indices_to_guess] 
+                masses = masses[indices_to_guess]
 
             return np.array([self.guess_element_from_mass(mass)
                              for mass in masses], dtype=object)
 
         else:
             if indices_to_guess is not None:
-                atom_types = atom_types[indices_to_guess] 
+                atom_types = atom_types[indices_to_guess]
 
             return np.array([self.guess_atom_element(atom)
                             for atom in atom_types], dtype=object)
@@ -346,13 +350,13 @@ class DefaultGuesser(GuesserBase):
         """
         if atoms is None:
             atoms = self._universe.atoms
-        
+
         if coords is None:
             coords = self._universe.atoms.positions
 
         if len(atoms) != len(coords):
             raise ValueError("'atoms' and 'coord' must be the same length")
-    
+
         fudge_factor = self._kwargs.get('fudge_factor', 0.55)
 
         # so I don't permanently change it
@@ -427,7 +431,7 @@ class DefaultGuesser(GuesserBase):
         from ..core.universe import Universe
 
         angles_found = set()
-        
+   
         if bonds is None:
             if hasattr(self._universe.atoms, 'bonds'):
                 bonds = self._universe.atoms.bonds
@@ -481,7 +485,7 @@ class DefaultGuesser(GuesserBase):
 
                 temp_u.add_bonds(self.guess_bonds(
                     self._universe.atoms, self._universe.atoms.positions))
-                    
+     
                 temp_u.add_angles(self.guess_angles(temp_u.atoms.bonds))
 
                 angles = temp_u.atoms.angles
@@ -531,7 +535,7 @@ class DefaultGuesser(GuesserBase):
 
                 temp_u.add_bonds(self.guess_bonds(
                     self._universe.atoms, self._universe.atoms.positions))
-                    
+
                 temp_u.add_angles(self.guess_angles(temp_u.atoms.bonds))
 
                 angles = temp_u.atoms.angles

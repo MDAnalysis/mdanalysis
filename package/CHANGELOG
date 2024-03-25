@@ -15,7 +15,8 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder
+         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
+         aya9aladdin
 
  * 2.8.0
 
@@ -36,6 +37,19 @@ Enhancements
  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
  * Documented the r0 attribute in the `Contacts` class and added the 
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
+ * Removed type and mass guessing from all topology parsers (PR #3753)
+ * Added guess_topologyAttributes() API to the Universe to handle attribute
+   guessing (pr #3753)
+ * Added the DefaultGuesser class, which is a general-purpose guesser with
+    the same functionalities as the existing guesser.py methods (PR #3753)
+ * Removed type guessing from RDKitParser and assigned type attribute
+   to be equal to the element attribute, if type is not provided (PR #3753)
+ * Added is_value_missing() to `topology attributes` to check for missing
+   values (PR #3753)
+ * Added the `Element` attribute if all names are valid element symbols for
+   TXYZParser (PR #3753)
+ * Added guessed `Element` attribute to the ITPParser to preserve old mass
+   partial guessing behavior from being broken (PR #3753)
 
 Changes
  * As per SPEC0 the minimum supported Python version has been raised
@@ -60,7 +74,9 @@ Deprecations
  * The MDAnalysis.analysis.psa module has been deprecated in favour of
    the PathSimAnalysis MDAKit and will be removed in version 3.0.0
    (PR #4403)
-
+ * Unknown masses are set to 0.0 for current version, this will be depracated
+   in version 3.0.0 and replaced by Masse's no_value_label attribute(np.nan)
+   (pr #3753)
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
          richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 

@@ -22,6 +22,7 @@
 #
 import pytest
 import numpy as np
+
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -54,7 +55,6 @@ class OpenMMTopologyBase(ParserBase):
         "elements",
         "types"
     ]
-
     expected_n_bonds = 0
 
     @pytest.fixture()
@@ -138,7 +138,8 @@ class OpenMMTopologyBase(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
-        u_guessed_attrs = [attr.attrname for attr in u._topology.guessed_attributes]
+        u_guessed_attrs = [attr.attrname for attr
+                           in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
             assert attr in u_guessed_attrs
@@ -199,7 +200,7 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
             "For absent elements, atomtype has been  "
             "set to 'X' and mass has been set to 0.0. "
             "If needed these can be guessed using "
-            "universe.guess_TopologyAttributes(to_guess=['masses', 'types']). "
+            "universe.guess_TopologyAttrs(to_guess=['masses', 'types']). "
             "(for MDAnalysis version 2.x this is done automatically,"
             " but it will be removed in future versions).")
 
@@ -231,7 +232,7 @@ def test_no_elements_warn():
         "for MDAnalysis version 2.x this is done automatically, "
         "but it will be removed in future versions. "
         "These can be guessed using "
-        "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
+        "universe.guess_TopologyAttrs(to_guess=['masses', 'types']) "
         "See MDAnalysis.guessers.")
 
     with pytest.warns(UserWarning) as warnings:

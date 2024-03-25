@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 import pytest
 from pathlib import Path
 import MDAnalysis as mda
@@ -178,11 +177,9 @@ class TestITPAtomtypes(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
 
-
     @pytest.fixture
     def universe(self, filename):
         return mda.Universe(filename)
-
 
     def test_charge_parse(self, universe):
         assert_allclose(universe.atoms[0].charge, 4)
@@ -259,7 +256,7 @@ class TestITPNoKeywords(BaseITP):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers', 'masses', ]
-    guessed_attrs = ['elements', ]
+    guessed_attrs = ['elements', 'masses', ]
 
     """
     Test reading ITP files *without* defined keywords.
@@ -297,6 +294,11 @@ class TestITPNoKeywords(BaseITP):
     def test_defines(self, top):
         assert_allclose(top.charges.values[1], 0.241)
         assert_allclose(top.charges.values[2], 0.241)
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        assert_allclose(u.atoms.masses,
+                        [15.999, 15.999, 15.999, 15.999, 15.999])
 
 
 class TestITPKeywords(TestITPNoKeywords):

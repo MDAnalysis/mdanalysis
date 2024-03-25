@@ -20,8 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from numpy.testing import assert_equal
-import pytest
+from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 
@@ -52,6 +51,16 @@ class TestGMSASYMOPT(GMSBase):
     def test_types(self, top):
         assert_equal(top.atomiccharges.values,
                      [8, 1, 1, 8, 1, 1])
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        expected = [15.999, 1.008, 1.008, 15.999, 1.008, 1.008]
+        assert_allclose(u.atoms.masses, expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        expected = ['O', 'H', 'H', 'O', 'H', 'H']
+        assert (u.atoms.types == expected).all()
 
 
 class TestGMSSYMOPT(GMSBase):

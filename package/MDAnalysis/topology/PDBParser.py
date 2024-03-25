@@ -192,9 +192,9 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 2.5.0
        Formal charges will not be populated if an unknown entry is encountered,
        instead a UserWarning is emitted.
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
-        through universe.guess_TopologyAttributes() API).
+        through universe.guess_TopologyAttrs() API).
     """
     format = ['PDB', 'ENT']
 
@@ -334,7 +334,7 @@ class PDBParser(TopologyReaderBase):
                     wmsg = (f"Unknown element {elem} found for some atoms. "
                             f"These have been given an empty element record. "
                             f"If needed they can be guessed using "
-                            f"universe.guess_TopologyAttributes(context='default',"
+                            f"universe.guess_TopologyAttrs(context='default',"
                             " to_guess=['elements']).")
                     warnings.warn(wmsg)
                     validated_elements.append('')
@@ -342,7 +342,7 @@ class PDBParser(TopologyReaderBase):
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be"
-                          " guessed using universe.guess_TopologyAttributes("
+                          " guessed using universe.guess_TopologyAttrs("
                           "context='default', to_guess=['elements']).")
 
         if any(formalcharges):

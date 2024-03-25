@@ -181,9 +181,10 @@ class DATAParser(TopologyReaderBase):
     see :ref:`atom_style_kwarg`.
 
     .. versionadded:: 0.9.0
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
         Removed mass guessing (attributes guessing takes place now
-        through universe.guess_TopologyAttributes() API).
+        through universe.guess_TopologyAttrs() API).
+
     """
     format = 'DATA'
 

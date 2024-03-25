@@ -3285,7 +3285,7 @@ class AtomGroup(GroupBase):
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
-        context : string
+        context : str
             context of the universe
         fudge_factor : float, optional
             The factor by which atoms must overlap each other to be considered

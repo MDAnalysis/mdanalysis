@@ -385,7 +385,7 @@ class TestTransformations(object):
         assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
 
-class TestGuessTopologyAttr(object):
+class TestGuessTopologyAttrs(object):
     def test_automatic_type_and_mass_guessing(self):
         u = mda.Universe(PDB_small)
         assert_equal(len(u.atoms.masses), 3341)
@@ -399,12 +399,12 @@ class TestGuessTopologyAttr(object):
     def test_invalid_context(self):
         u = mda.Universe(PDB_small)
         with pytest.raises(KeyError):
-            u.guess_TopologyAttributes(context='trash', to_guess=['masses'])
+            u.guess_TopologyAttrs(context='trash', to_guess=['masses'])
 
     def test_invalid_attributes(self):
         u = mda.Universe(PDB_small)
         with pytest.raises(ValueError):
-            u.guess_TopologyAttributes(to_guess=['trash'])
+            u.guess_TopologyAttrs(to_guess=['trash'])
 
     def test_guess_masses_before_types(self):
         u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
@@ -414,9 +414,10 @@ class TestGuessTopologyAttr(object):
     def test_guessing_read_attributes(self):
         u = mda.Universe(PSF)
         old_types = u.atoms.types
-        u.guess_TopologyAttributes(force_guess=['types'])
+        u.guess_TopologyAttrs(force_guess=['types'])
         with pytest.raises(AssertionError):
             assert_equal(old_types, u.atoms.types)
+
 
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
@@ -466,7 +467,7 @@ class TestGuessBonds(object):
     def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
         u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
-                                vdwradii=vdw)
+                         vdwradii=vdw)
         self._check_universe(u)
         assert u.kwargs['guess_bonds']
         assert_equal(vdw, u.kwargs['vdwradii'])
@@ -483,7 +484,7 @@ class TestGuessBonds(object):
         are being passed correctly.
         """
         u = mda.Universe(two_water_gro, guess_bonds=True)
-        
+
         self._check_universe(u)
         assert u.kwargs["guess_bonds"]
         assert u.kwargs["fudge_factor"]
@@ -552,7 +553,7 @@ class TestGuessBonds(object):
     def guess_bonds_with_to_guess(self):
         u = mda.Universe(two_water_gro)
         has_bonds = hasattr(u.atoms, 'bonds')
-        u.guess_TopologyAttributes(to_guess=['bonds'])
+        u.guess_TopologyAttrs(to_guess=['bonds'])
         assert not has_bonds
         assert u.atoms.bonds
 

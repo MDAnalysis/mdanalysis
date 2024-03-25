@@ -47,7 +47,6 @@ import itertools
 import numpy as np
 import warnings
 
-
 from ..guesser.tables import SYMB2Z
 from ..lib.util import openany
 from .base import TopologyReaderBase
@@ -77,9 +76,9 @@ class TXYZParser(TopologyReaderBase):
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.4.0
        Adding the `Element` attribute if all names are valid element symbols.
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
        Removed mass guessing (attributes guessing takes place now
-       through universe.guess_TopologyAttributes() API).
+       through universe.guess_TopologyAttrs() API).
 
     """
     format = ['TXYZ', 'ARC']
@@ -125,6 +124,7 @@ class TXYZParser(TopologyReaderBase):
                     other_atom = int(other_atom) - 1
                     if i < other_atom:
                         bonds.append((i, other_atom))
+
         for n in names:
             if n.capitalize() in SYMB2Z:
                 validated_elements.append(n.capitalize())
@@ -145,7 +145,7 @@ class TXYZParser(TopologyReaderBase):
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed using universe.guess_topologyAttributes("
+                          "guessed using universe.guess_TopologyAttrs("
                           "to_guess=['elements']).")
 
         top = Topology(natoms, 1, 1,

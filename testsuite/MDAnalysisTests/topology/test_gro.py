@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 import pytest
 
 import MDAnalysis as mda
@@ -35,7 +34,7 @@ from MDAnalysisTests.datafiles import (
     GRO_residwrap_0base,
     GRO_sameresid_diffresname,
 )
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 
 class TestGROParser(ParserBase):
@@ -52,6 +51,16 @@ class TestGROParser(ParserBase):
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        expected = [14.007,  1.008,  1.008,  1.008, 12.011,  1.008, 12.011]
+        assert_allclose(u.atoms.masses[:7], expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        expected = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+        assert_equal(u.atoms.types[:7], expected)
 
 
 class TestGROWideBox(object):

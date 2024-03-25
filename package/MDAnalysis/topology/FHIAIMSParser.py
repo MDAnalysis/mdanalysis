@@ -56,7 +56,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
-    Elements
+    Elements,
 )
 
 
@@ -66,9 +66,9 @@ class FHIAIMSParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
-        through universe.guess_TopologyAttributes() API).
+        through universe.guess_TopologyAttrs() API).
     """
     format = ['IN', 'FHIAIMS']
 

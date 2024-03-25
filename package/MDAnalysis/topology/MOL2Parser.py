@@ -125,9 +125,9 @@ class MOL2Parser(TopologyReaderBase):
        Parse elements from atom types.
     .. versionchanged:: 2.2.0
        Read MOL2 files with optional columns omitted.
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
         Removed mass guessing (attributes guessing takes place now
-        through universe.guess_TopologyAttributes() API).
+        through universe.guess_TopologyAttrs() API).
 
     """
     format = 'MOL2'

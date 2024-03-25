@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import pytest
 
 import MDAnalysis as mda
@@ -56,6 +56,16 @@ class DLPBase2(DLPUniverse):
     expected_n_atoms = 216
     expected_n_residues = 1
     expected_n_segments = 1
+
+    def test_guesssed_masses(self, filename):
+        u = mda.Universe(filename, topology_format=self.format)
+        assert_allclose(u.atoms.masses[0], 39.102)
+        assert_allclose(u.atoms.masses[4], 35.45)
+
+    def test__guessed_types(self, filename):
+        u = mda.Universe(filename, topology_format=self.format)
+        assert u.atoms.types[0] == 'K'
+        assert u.atoms.types[4] == 'CL'
 
     def test_names(self, top):
         assert top.names.values[0] == 'K+'
@@ -102,10 +112,12 @@ class TestDLPHistoryMinimal(DLPBase):
     ref_filename = DLP_HISTORY_minimal
     format = 'HISTORY'
 
+
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_minimal_cell
     format = 'HISTORY'
+
 
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser

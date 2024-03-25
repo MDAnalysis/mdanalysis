@@ -49,7 +49,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
-    Elements
+    Elements,
 )
 
 
@@ -64,9 +64,9 @@ class XYZParser(TopologyReaderBase):
 
     .. versionchanged: 1.0.0
        Store elements attribute, based on XYZ atom names
-     .. versionchanged:: 2.7.0
+     .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
-        through universe.guess_TopologyAttributes() API).
+        through universe.guess_TopologyAttrs() API).
 
     """
     format = 'XYZ'

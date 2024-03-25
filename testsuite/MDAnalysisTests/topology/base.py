@@ -95,7 +95,8 @@ class ParserBase(object):
         """check that the universe created with certain parser have the same
         guessed attributes as  when it was guessed inside the parser"""
         u = mda.Universe(filename)
-        u_guessed_attrs = [attr.attrname for attr in u._topology.guessed_attributes]
+        u_guessed_attrs = [attr.attrname for attr
+                           in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
             assert attr in u_guessed_attrs

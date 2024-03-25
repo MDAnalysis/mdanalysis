@@ -26,12 +26,13 @@ import numpy as np
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
+
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
-    expected_attrs = ['ids', 'names', 'bonds', 'types', 'elements']
     guessed_attrs = ['masses']
+    expected_attrs = ['ids', 'names', 'bonds', 'types', 'elements']
 
     expected_n_residues = 1
     expected_n_atoms = 9
@@ -75,3 +76,10 @@ def test_missing_elements_noattribute():
         u = mda.Universe(ARC_PBC)
     with pytest.raises(AttributeError):
         _ = u.atoms.elements
+
+
+def test_guessed_masses():
+    u = mda.Universe(TXYZ)
+    expected = [12.011,  1.008,  1.008, 15.999,  1.008, 12.011,
+                1.008,  1.008, 1.008]
+    assert_allclose(u.atoms.masses, expected)

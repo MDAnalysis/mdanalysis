@@ -90,9 +90,10 @@ class PQRParser(TopologyReaderBase):
        Added parsing of Record types
        Can now read PQR files from Gromacs, these provide atom type as last column
        but don't have segids
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
-        through universe.guess_TopologyAttributes() API).
+        through universe.guess_TopologyAttrs() API).
+
     """
     format = 'PQR'
 

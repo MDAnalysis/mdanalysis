@@ -73,8 +73,7 @@ class TestGuessMasses(object):
             u = mda.Universe(topology, to_guess=['masses'])
             assert_allclose(u.atoms.masses, np.array([0.0, 0.0]), atol=0)
 
-
-    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
+    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0),))
     def test_get_atom_mass(self, element, value, default_guesser):
         default_guesser.get_atom_mass(element) == approx(value)
 
@@ -85,7 +84,7 @@ class TestGuessMasses(object):
         u = mda.Universe.empty(3)
         with pytest.raises(ValueError,
                            match=('there is no reference attributes ')):
-            u.guess_TopologyAttributes('default', ['masses'])
+            u.guess_TopologyAttrs('default', ['masses'])
 
 
 class TestGuessTypes(object):
@@ -166,8 +165,9 @@ def test_guess_charge(default_guesser):
 
 def test_guess_bonds_Error():
     u = make_Universe(trajectory=True)
-    with pytest.raises(ValueError, match="This Universe does not contain name information"):
-        u.guess_TopologyAttributes(to_guess=['bonds'])
+    msg = "This Universe does not contain name information"
+    with pytest.raises(ValueError, match=msg):
+        u.guess_TopologyAttrs(to_guess=['bonds'])
 
 
 def test_guess_bond_vdw_error():
@@ -175,17 +175,21 @@ def test_guess_bond_vdw_error():
     with pytest.raises(ValueError, match="vdw radii for types: DUMMY"):
         DefaultGuesser(u).guess_bonds(u.atoms)
 
+
 def test_guess_bond_coord_error(default_guesser):
-    with pytest.raises(ValueError, match="atoms' and 'coord' must be the same length"):
+    msg = "atoms' and 'coord' must be the same length"
+    with pytest.raises(ValueError, match=msg):
         default_guesser.guess_bonds(['N', 'O', 'C'], [[1, 2, 3]])
+
 
 def test_guess_angles_with_no_bonds():
     "Test guessing angles for atoms with no bonds"
     " information without adding bonds to universe "
     u = mda.Universe(datafiles.two_water_gro)
-    u.guess_TopologyAttributes(to_guess=['angles'])
+    u.guess_TopologyAttrs(to_guess=['angles'])
     assert hasattr(u, 'angles')
     assert not hasattr(u, 'bonds')
+
 
 def test_guess_impropers(default_guesser):
     u = make_starshape()
@@ -197,32 +201,37 @@ def test_guess_impropers(default_guesser):
     vals = default_guesser.guess_improper_dihedrals(ag.angles)
     assert_equal(len(vals), 12)
 
+
 def test_guess_dihedrals_with_no_angles():
     "Test guessing dihedrals for atoms with no angles "
     "information without adding bonds or angles to universe"
     u = mda.Universe(datafiles.two_water_gro)
-    u.guess_TopologyAttributes(to_guess=['dihedrals'])
+    u.guess_TopologyAttrs(to_guess=['dihedrals'])
     assert hasattr(u, 'dihedrals')
     assert not hasattr(u, 'angles')
     assert not hasattr(u, 'bonds')
 
+
 def test_guess_impropers_with_angles():
     "Test guessing impropers for atoms with angles "
     "and bonds information "
-    u = mda.Universe(datafiles.two_water_gro, to_guess=['bonds', 'angles', 'impropers'])
-    u.guess_TopologyAttributes(to_guess=['impropers'])
+    u = mda.Universe(datafiles.two_water_gro,
+                     to_guess=['bonds', 'angles', 'impropers'])
+    u.guess_TopologyAttrs(to_guess=['impropers'])
     assert hasattr(u, 'impropers')
     assert hasattr(u, 'angles')
     assert hasattr(u, 'bonds')
+
 
 def test_guess_impropers_with_no_angles():
     "Test guessing impropers for atoms with no angles "
     "information without adding bonds or angles to universe"
     u = mda.Universe(datafiles.two_water_gro)
-    u.guess_TopologyAttributes(to_guess=['impropers'])
+    u.guess_TopologyAttrs(to_guess=['impropers'])
     assert hasattr(u, 'impropers')
     assert not hasattr(u, 'angles')
     assert not hasattr(u, 'bonds')
+
 
 def bond_sort(arr):
     # sort from low to high, also within a tuple
@@ -237,8 +246,8 @@ def bond_sort(arr):
 
 def test_guess_bonds_water():
     u = mda.Universe(datafiles.two_water_gro)
-    bonds = bond_sort(
-        DefaultGuesser(None, box=u.dimensions).guess_bonds(u.atoms, u.atoms.positions))
+    bonds = bond_sort(DefaultGuesser(
+        None, box=u.dimensions).guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(bonds, ((0, 1),
                          (0, 2),
                          (3, 4),
@@ -247,7 +256,7 @@ def test_guess_bonds_water():
 
 def test_guess_bonds_adk():
     u = mda.Universe(datafiles.PSF, datafiles.DCD)
-    u.guess_TopologyAttributes(force_guess=['types'])
+    u.guess_TopologyAttrs(force_guess=['types'])
     guesser = DefaultGuesser(None)
     bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
@@ -256,7 +265,7 @@ def test_guess_bonds_adk():
 
 def test_guess_bonds_peptide():
     u = mda.Universe(datafiles.PSF_NAMD, datafiles.PDB_NAMD)
-    u.guess_TopologyAttributes(force_guess=['types'])
+    u.guess_TopologyAttrs(force_guess=['types'])
     guesser = DefaultGuesser(None)
     bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
@@ -278,7 +287,7 @@ def test_guess_aromaticities(smi):
     u = mda.Universe(mol)
     guesser = DefaultGuesser(None)
     values = guesser.guess_aromaticities(u.atoms)
-    u.guess_TopologyAttributes(to_guess=['aromaticities'])
+    u.guess_TopologyAttrs(to_guess=['aromaticities'])
     assert_equal(values, expected)
     assert_equal(u.atoms.aromaticities, expected)
 
@@ -302,7 +311,9 @@ def test_guess_gasteiger_charges(smi):
     values = guesser.guess_gasteiger_charges(u.atoms)
     assert_equal(values, expected)
 
+
 def test_aromaticity():
-    u = mda.Universe(datafiles.PDB_small, to_guess=['elements', 'aromaticities'])
+    u = mda.Universe(datafiles.PDB_small,
+                     to_guess=['elements', 'aromaticities'])
     c_aromatic = u.select_atoms('resname PHE and name CD1')
     assert_equal(c_aromatic.aromaticities[0], True)

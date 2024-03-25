@@ -72,9 +72,9 @@ class CRDParser(TopologyReaderBase):
      - Resnums
      - Segids
 
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
        Removed type and mass guessing (attributes guessing takes place now
-       through universe.guess_TopologyAttributes() API).
+       through universe.guess_TopologyAttrs() API).
     """
     format = 'CRD'
 
@@ -154,4 +154,5 @@ class CRDParser(TopologyReaderBase):
                        ],
                        atom_resindex=atom_residx,
                        residue_segindex=res_segidx)
+
         return top

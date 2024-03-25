@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from numpy.testing import assert_almost_equal
-import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase

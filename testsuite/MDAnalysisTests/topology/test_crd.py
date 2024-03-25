@@ -21,12 +21,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
-import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     CRD,
 )
+
+from numpy.testing import assert_allclose
 
 
 class TestCRDParser(ParserBase):
@@ -40,3 +41,13 @@ class TestCRDParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        expected = [14.007,  1.008,  1.008,  1.008, 12.011,  1.008, 12.011]
+        assert_allclose(u.atoms.masses[:7], expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        expected = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+        assert (u.atoms.types[:7] == expected).all()

@@ -26,7 +26,7 @@ context-specific guessers --- :mod:`MDAnalysis.guesser`
 ========================================================
 
 You can use guesser classes either directly by initiating an instance of it and use its guessing methods or through
-the :meth:`guess_TopologyAttributes <guess_TopologyAttributes>`: API of the universe.
+the :meth:`guess_TopologyAttrs <guess_TopologyAttrs>`: API of the universe.
 
 The following table lists the currently supported Context-aware Guessers along with
 the attributes they can guess.

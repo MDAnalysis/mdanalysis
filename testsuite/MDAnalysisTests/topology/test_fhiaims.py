@@ -20,14 +20,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import FHIAIMS
-import pytest
-
 
 
 class TestFHIAIMS(ParserBase):
@@ -42,6 +40,17 @@ class TestFHIAIMS(ParserBase):
     def test_names(self, top):
         assert_equal(top.names.values,
                      ['O', 'H', 'H', 'O', 'H', 'H'])
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        assert_equal(u.atoms.types,
+                     ['O', 'H', 'H', 'O', 'H', 'H'])
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        assert_allclose(u.atoms.masses,
+                        [15.999,  1.008,  1.008, 15.999,
+                         1.008,  1.008])
 
     def test_elements(self, top):
         assert_equal(top.elements.values,

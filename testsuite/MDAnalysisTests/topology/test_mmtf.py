@@ -1,5 +1,5 @@
 import pytest
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import mmtf
 from unittest import mock
 
@@ -8,6 +8,7 @@ from MDAnalysis.core.groups import AtomGroup
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import MMTF, MMTF_gz, MMTF_skinny, MMTF_skinny2
+
 
 class MMTFBase(ParserBase):
     expected_attrs = [
@@ -96,6 +97,10 @@ class TestMMTFUniverse(object):
     def test_altlocs(self, u):
         assert all(u.atoms.altLocs[:3] == '')
 
+    def test_guessed_masses(self, u):
+        expected = [15.999, 12.011, 12.011, 15.999, 12.011, 15.999, 12.011]
+        assert_allclose(u.atoms.masses[:7], expected)
+
 
 class TestMMTFUniverseFromDecoder(TestMMTFUniverse):
     @pytest.fixture()
@@ -118,6 +123,10 @@ class TestMMTFgzUniverse(object):
         for m in u.models:
             assert isinstance(m, AtomGroup)
             assert len(m) == 570
+
+    def test_guessed_masses(self, u):
+        expected = [15.999, 12.011, 12.011, 15.999, 12.011, 15.999, 12.011]
+        assert_allclose(u.atoms.masses[:7], expected)
 
 
 class TestMMTFgzUniverseFromDecoder(TestMMTFgzUniverse):

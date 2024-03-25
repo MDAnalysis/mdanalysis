@@ -153,9 +153,9 @@ class RDKitParser(TopologyReaderBase):
     .. versionadded:: 2.0.0
     .. versionchanged:: 2.1.0
        Added R/S chirality support
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
        Removed type guessing (attributes guessing takes place now
-       through universe.guess_TopologyAttributes() API). If atoms types is not
+       through universe.guess_TopologyAttrs() API). If atoms types is not
        provided, the type attribute get the same values as the element attribute.
 
     """
@@ -302,11 +302,10 @@ class RDKitParser(TopologyReaderBase):
             attrs.append(Atomnames(np.array(names, dtype=object)))
 
         # Atom type
-        if atomtypes:
-            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
-        else:
+        if not atomtypes:
             atomtypes = elements
-            attrs.append(Atomtypes(atomtypes))
+
+        attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
 
         # Partial charges
         if charges:

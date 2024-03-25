@@ -39,7 +39,7 @@ class RDKitParserBase(ParserBase):
                       'resids', 'resnums', 'chiralities',
                       'segids',
                       'bonds', 'types',
-                     ]
+                      ]
 
     expected_n_atoms = 0
     expected_n_residues = 1

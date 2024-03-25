@@ -42,12 +42,12 @@ class TesttBaseGuesser():
         assert get_guesser(TestGuesser1).context == 'test1'
         assert get_guesser('test1').context == 'test1'
         assert get_guesser(TestGuesser2()).context == 'test2'
-    
+
     def test_get_guesser_with_universe(self):
         class TestGuesser1(GuesserBase):
             context = 'test1'
 
-        u = mda.Universe.empty(n_atoms = 5)
+        u = mda.Universe.empty(n_atoms=5)
         guesser = get_guesser(TestGuesser1(), u, foo=1)
 
         assert len(guesser._universe.atoms) == 5
