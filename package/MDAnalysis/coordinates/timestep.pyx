@@ -493,20 +493,31 @@ cdef class Timestep:
         vectors lengths followed by their respective angle, or as three
         triclinic vectors.
 
-          >>> ts.dimensions
-          array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)
-          >>> ts.triclinic_dimensions
-          array([[ 13.,   0.,   0.],
-                 [  0.,  14.,   0.],
-                 [  0.,   0.,  15.]], dtype=float32)
+          .. testsetup::
+
+          >>> import MDAnalysis as mda
+          >>> from MDAnalysis.tests.datafiles import TPR, XTC
+          >>> import numpy as np
+          >>> u = mda.Universe(TPR, XTC)
+          >>> ts = u.trajectory[0] 
+               
+          .. doctest::
+                    
+          >>> print(np.round(ts.dimensions))
+          [80. 80. 80. 60. 60. 90.]
+          >>> print(np.round(ts.triclinic_dimensions))
+          [[80.  0.  0.]
+           [ 0. 80.  0.]
+           [40. 40. 57.]]
 
         Setting the attribute also works::
-
+          
+          .. doctest::
+          
           >>> ts.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
-          >>> ts.dimensions
-          array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,
-                  72.45159912,  71.56504822], dtype=float32)
-
+          >>> print(np.round(ts.dimensions))
+          [15. 16. 17. 68. 72. 72.]
+          
         See Also
         --------
         :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
