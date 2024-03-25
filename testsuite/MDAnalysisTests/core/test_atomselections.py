@@ -246,6 +246,22 @@ class TestSelectionsCHARMM(object):
 
         assert_equal(set(ag.indices), set(idx))
 
+    @pytest.mark.parametrize(
+        "selstr, expected_value",
+        [
+            ("box x -2.0 2.0 index 1281", 418),
+            ("box yz -2.0 2.0 -2.0 2.0 index 1280", 58),
+            ("box xyz -2.0 2.0 -2.0 2.0 -2.0 2.0 index 1279", 10),
+        ],
+    )
+    def test_box(self, universe, selstr, expected_value):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), expected_value)
+
+    def test_empty_box(self, universe):
+        empty = universe.select_atoms("box y 10 -10 name NOT_A_NAME")
+        assert_equal(len(empty), 0)
+
     def test_prop(self, universe):
         sel = universe.select_atoms('prop y <= 16')
         sel2 = universe.select_atoms('prop abs z < 8')
@@ -798,6 +814,34 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
         assert len(sel) == expected
 
+    @pytest.mark.parametrize("periodic,expected", ([True, 29], [False, 17]))
+    def test_box(self, u, periodic, expected):
+        sel = u.select_atoms("box xyz 2 5 -5 10 -2 6 resid 1", periodic=periodic)
+
+        assert len(sel) == expected
+
+    @pytest.mark.parametrize(
+        "selection,error,expected",
+        (
+            [
+                "box xyz -5 10 -90 90 -2 6 resid 1",
+                NotImplementedError,
+                "The total length of the box selection in y",
+            ],
+            [
+                "box yyy -5 10 -7 7 -2 6 resid 1",
+                SelectionError,
+                "Must be combination of",
+            ],
+            ["box a 10 -5 resid 1", SelectionError, "Must be combination of"],
+        ),
+    )
+    def test_box_error(self, u, selection, error, expected):
+        with pytest.raises(error) as excinfo:
+            u.select_atoms(selection)
+        exec_msg = str(excinfo.value)
+        assert expected in exec_msg
+
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
     @pytest.fixture()
@@ -860,6 +904,14 @@ class TestTriclinicSelections(object):
     def test_empty_sphzone(self, u):
         empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
         assert len(empty) == 0
+
+    def test_box(self, u):
+        ag = u.select_atoms("box z -2.5 2.5 resid 1")
+        assert len(ag) == 4237
+
+    def test_empty_box(self, u):
+        ag = u.select_atoms("box z -2.5 2.5 name NOT_A_NAME")
+        assert len(ag) == 0
 
     def test_point_1(self, u):
         # The example selection
@@ -1270,6 +1322,7 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
 
     assert len(sel.atoms) == n_atoms
 
+
 @pytest.mark.parametrize('selection', [
     'all', 'protein', 'backbone', 'nucleic', 'nucleicbackbone',
     'name O', 'name N*', 'resname stuff', 'resname ALA', 'type O',
@@ -1279,6 +1332,7 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
     'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
     'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
     'byres index 0', 'same resid as index 0',
+    'box xz 3 2 4 -5 index 0',
 ])
 def test_selections_on_empty_group(u_pdb_icodes, selection):
     ag = u_pdb_icodes.atoms[[]].select_atoms(selection)

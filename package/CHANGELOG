@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder
+         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder, Cloudac7
 
  * 2.8.0
 
@@ -32,6 +32,7 @@ Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
+ * Add a new geometric selection: box (Issue #4323, PR #4324)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
  * Documented the r0 attribute in the `Contacts` class and added the 
