@@ -1068,7 +1068,7 @@ class Atomnames(AtomStringAttr):
 
         if not residues:
             return []
-        
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1180,7 +1180,7 @@ class Atomnames(AtomStringAttr):
 
         if not results:
             return []
-        
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1281,7 +1281,7 @@ class Atomnames(AtomStringAttr):
 
         if not residues:
             return []
-        
+
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
         keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
