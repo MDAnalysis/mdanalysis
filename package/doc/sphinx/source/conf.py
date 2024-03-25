@@ -191,7 +191,7 @@ html_context = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # For RTD theme: custom.css to override theme defaults.
-html_static_path = ['_static']
+html_static_path = []
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -349,4 +349,7 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable/', None),
     'parmed': ('https://parmed.github.io/ParmEd/html/', None),
     'rdkit': ('https://rdkit.org/docs/', None),
+    'waterdynamics': ('https://www.mdanalysis.org/waterdynamics/', None),
+    'pathsimanalysis': ('https://www.mdanalysis.org/PathSimAnalysis/', None),
+    'mdahole2': ('https://www.mdanalysis.org/mdahole2/', None),
 }

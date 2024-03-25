@@ -235,6 +235,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | the first frame present will be read.                |
    | [#a]_         |           |       | Module :mod:`MDAnalysis.coordinates.GRO`             |
    +---------------+-----------+-------+------------------------------------------------------+
+   | GROMOS11      | trc       |  r    | Basic GROMOS11 trajectory format.                    |
+   |               |           |       | Can read positions, box-sizes and timesteps.         |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TRC`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | CHARMM        | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
    | CARD [#a]_    |           |       | either standard or EXTended format. Module           |
    |               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
@@ -772,6 +776,7 @@ from . import MOL2
 from . import PDB
 from . import PDBQT
 from . import PQR
+from . import TRC
 from . import TRJ
 from . import TRR
 from . import H5MD

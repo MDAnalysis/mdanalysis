@@ -23,9 +23,9 @@ file) and README and check the MDAnalysis project pages at
 in particular https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL and
 related pages.
 
-You can always ask questions on the MDAnalysis mailing list:
+You can always ask questions on GitHub Discussions:
 
-      https://groups.google.com/group/mdnalysis-discussion
+      https://github.com/MDAnalysis/mdanalysis/discussions/categories/installation
 
 People there are very happy to help. When posting please remember to mention
 the release of MDAnalysis you are trying to install (e.g. "tar file

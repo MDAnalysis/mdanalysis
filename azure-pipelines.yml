@@ -21,8 +21,8 @@ jobs:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python39-64bit-full:
-          PYTHON_VERSION: '3.9'
+        Win-Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
@@ -37,11 +37,11 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.26.0'
           imageName: 'windows-2019'
-        Win-Python39-64bit-full-wheel:
-          PYTHON_VERSION: '3.9'
+        Win-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.22.3'
+          NUMPY_MIN: '1.23.2'
           imageName: 'windows-2019'
         Linux-Python312-64bit-full-wheel:
           PYTHON_VERSION: '3.12'
@@ -49,11 +49,11 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.26.0'
           imageName: 'ubuntu-latest'
-        Linux-Python39-64bit-full-wheel:
-          PYTHON_VERSION: '3.9'
+        Linux-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.22.3'
+          NUMPY_MIN: '1.23.2'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)

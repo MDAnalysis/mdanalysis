@@ -71,12 +71,12 @@ import string
 import sys
 import cython 
 
-cimport numpy as np
+cimport numpy as cnp
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
 
-np.import_array()
+cnp.import_array()
 
 _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
                 "FIO_SEEK_CUR": SEEK_CUR,
@@ -342,14 +342,14 @@ cdef class DCDFile:
         self.remarks = py_remarks
 
     cdef void _setup_buffers(self):
-        cdef np.npy_intp[2] dims 
+        cdef cnp.npy_intp[2] dims 
         dims[0] = self.natoms
         dims[1] = self.ndims
         # note use of fortran flag (1)
-        self._coordinate_buffer = np.PyArray_EMPTY(2, dims, np.NPY_FLOAT32, 1)
-        cdef np.npy_intp[1] unitcell_dims
+        self._coordinate_buffer = cnp.PyArray_EMPTY(2, dims, cnp.NPY_FLOAT32, 1)
+        cdef cnp.npy_intp[1] unitcell_dims
         unitcell_dims[0] = 6
-        self._unitcell_buffer = np.PyArray_EMPTY(1, unitcell_dims, np.NPY_FLOAT64, 0)
+        self._unitcell_buffer = cnp.PyArray_EMPTY(1, unitcell_dims, cnp.NPY_FLOAT64, 0)
 
         # fortran contiguity
         self.xview = self._coordinate_buffer[:, 0]
@@ -515,8 +515,8 @@ cdef class DCDFile:
 
         if not self.wrote_header:
             raise IOError("write header first before frames can be written")
-        cdef np.ndarray xyz_ = np.asarray(xyz, order='F', dtype=FLOAT)
-        cdef np.npy_intp[2] shape = np.PyArray_DIMS(xyz_)
+        cdef cnp.ndarray xyz_ = np.asarray(xyz, order='F', dtype=FLOAT)
+        cdef cnp.npy_intp[2] shape = cnp.PyArray_DIMS(xyz_)
         if (shape[0] != self.natoms) or (shape[1] != 3):
             raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
         cdef double[::1] c_box = np.asarray(box, order='C', dtype=DOUBLE)
@@ -638,15 +638,15 @@ cdef class DCDFile:
         cdef int n
         n = len(range(start, stop, step))
         cdef int natoms
-        cdef np.ndarray[np.int64_t, ndim=1] c_indices
+        cdef cnp.ndarray[cnp.int64_t, ndim=1] c_indices
         if indices is None:
-            c_indices = np.PyArray_Arange(0, self.natoms, 1, np.NPY_INT64)
+            c_indices = cnp.PyArray_Arange(0, self.natoms, 1, cnp.NPY_INT64)
             natoms = self.natoms
         else:
             natoms = len(indices)
             c_indices = np.asarray(indices, dtype=np.int64)
         
-        cdef np.npy_intp[3] dims
+        cdef cnp.npy_intp[3] dims
         cdef int hash_order = -1
         if order == 'fac':
             dims[0] = n
@@ -681,17 +681,17 @@ cdef class DCDFile:
         else:
             raise ValueError("unkown order '{}'".format(order))
 
-        cdef np.ndarray[float, ndim=3] xyz = np.PyArray_EMPTY(3, dims, np.NPY_FLOAT32, 0)
-        cdef np.npy_intp[2] unitcell_dims
+        cdef cnp.ndarray[float, ndim=3] xyz = cnp.PyArray_EMPTY(3, dims, cnp.NPY_FLOAT32, 0)
+        cdef cnp.npy_intp[2] unitcell_dims
         unitcell_dims[0] = n
         unitcell_dims[1] = 6
-        cdef np.ndarray[double, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dims, np.NPY_FLOAT64, 0)
+        cdef cnp.ndarray[double, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dims, cnp.NPY_FLOAT64, 0)
 
-        cdef np.npy_intp[2] xyz_tmp_dims
+        cdef cnp.npy_intp[2] xyz_tmp_dims
         xyz_tmp_dims[0] = self.natoms
         xyz_tmp_dims[1] = self.ndims
         # note fortran flag (1)
-        cdef np.ndarray[float, ndim=2] xyz_tmp = np.PyArray_EMPTY(2, xyz_tmp_dims, np.NPY_FLOAT32, 1)
+        cdef cnp.ndarray[float, ndim=2] xyz_tmp = cnp.PyArray_EMPTY(2, xyz_tmp_dims, cnp.NPY_FLOAT32, 1)
 
         # memoryviews for slices into xyz_temp, note fortran contiguous
         cdef float[::1] x = xyz_tmp[:, 0]

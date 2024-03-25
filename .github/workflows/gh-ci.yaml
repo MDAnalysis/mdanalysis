@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 concurrency:
   # Probably overly cautious group naming.
@@ -27,32 +28,32 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: ["3.9", "3.10", "3.11"]
+          python-version: ["3.10", "3.11", "3.12"]
           full-deps: [true, ]
           codecov: [true, ]
           include:
             - name: macOS_monterey_py311
               os: macOS-12
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: true
               codecov: true
-            - name: numpy_min
-              os: ubuntu-latest
-              python-version: 3.9
-              full-deps: false
-              codecov: true
-              numpy: numpy=1.22.3
-            - name: asv_check
-              os: ubuntu-latest
-              python-version: 3.9
-              full-deps: true
-              codecov: false
-              extra-pip-deps: asv
-            - name: python_312
-              os: ubuntu-latest
+            - name: macOS_14_arm64_py312
+              os: macOS-14
               python-version: "3.12"
               full-deps: false
               codecov: true
+            - name: numpy_min
+              os: ubuntu-latest
+              python-version: "3.10"
+              full-deps: false
+              codecov: true
+              numpy: numpy=1.23.2
+            - name: asv_check
+              os: ubuntu-latest
+              python-version: "3.10"
+              full-deps: true
+              codecov: false
+              extra-pip-deps: asv
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
@@ -146,7 +147,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=3.9
+          python=3.10
           pip
         # using jaime's shim to avoid pulling down the cudatoolkit
         condarc: |
