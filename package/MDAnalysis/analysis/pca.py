@@ -121,11 +121,12 @@ import scipy.integrate
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
-from MDAnalysis.lib.log import ProgressBar
+from MDAnalysis.lib.log import ProgressBar, ProgressBar_Dual
 
 from ..lib import util
 from ..due import due, Doi
 from .base import AnalysisBase
+from tqdm.auto import tqdm
 
 
 class PCA(AnalysisBase):
@@ -355,12 +356,12 @@ class PCA(AnalysisBase):
                 n = len(self._variance)
             self.results.variance = self._variance[:n]
             self.results.cumulated_variance = (np.cumsum(self._variance) /
-                                       np.sum(self._variance))[:n]
+                                               np.sum(self._variance))[:n]
             self.results.p_components = self._p_components[:, :n]
         self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
-                  step=None):
+                  step=None, verbose=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -382,6 +383,7 @@ class PCA(AnalysisBase):
             Include every `step` frames in the PCA transform. If set to
             ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
+        verbose: Boolean,optional
 
         Returns
         -------
@@ -398,7 +400,7 @@ class PCA(AnalysisBase):
         if isinstance(atomgroup, Universe):
             atomgroup = atomgroup.atoms
 
-        if(self._n_atoms != atomgroup.n_atoms):
+        if (self._n_atoms != atomgroup.n_atoms):
             raise ValueError('PCA has been fit for'
                              '{} atoms. Your atomgroup'
                              'has {} atoms'.format(self._n_atoms,
@@ -415,7 +417,15 @@ class PCA(AnalysisBase):
 
         dot = np.zeros((n_frames, dim))
 
-        for i, ts in enumerate(traj[start:stop:step]):
+        if verbose == True:
+            self.disabled = False
+        else:
+            self.disabled = True
+
+        # for i, ts in tqdm(enumerate(traj[start:stop:step]), desc="Transform progress"):
+        for i, ts in tqdm(enumerate(traj[start:stop:step]), disable=self.disabled, desc="Transform progress"):
+            # print("Iteration", i, "Timestep",ts)
+            # verbose=self._verbose, desc="Transform progress"):
             xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
@@ -561,7 +571,7 @@ class PCA(AnalysisBase):
             for res in group.residues:
                 # n_common is the number of pca atoms in a residue
                 n_common = pca_res_counts[np.where(
-                           pca_res_indices == res.resindex)][0]
+                    pca_res_indices == res.resindex)][0]
                 non_pca_atoms = np.append(non_pca_atoms,
                                           res.atoms.n_atoms - n_common)
             # index_extrapolate records the anchor number for each non-PCA atom
