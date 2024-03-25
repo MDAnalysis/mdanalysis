@@ -135,6 +135,7 @@ from .. import units
 from ..topology.LAMMPSParser import DATAParser
 from ..exceptions import NoDataError
 from . import base
+import warnings
 
 btype_sections = {'bond':'Bonds', 'angle':'Angles',
                   'dihedral':'Dihedrals', 'improper':'Impropers'}
@@ -458,12 +459,50 @@ class DumpReader(base.ReaderBase):
     """Reads the default `LAMMPS dump format 
     <https://docs.lammps.org/dump.html>`__
 
-    Supports coordinates in various LAMMPS coordinate conventions and both 
-    orthogonal and triclinic simulation box dimensions (for more details see 
-    `documentation <https://docs.lammps.org/Howto_triclinic.html>`__). In 
-    either case, MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*,
-    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the 
-    MDAnalysis length unit (Å), and angles are in degrees.
+    Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
+    "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
+    conventions (see https://docs.lammps.org/dump.html for more details).
+    If `lammps_coordinate_convention='auto'` (default),
+    one will be guessed. Guessing checks whether the coordinates fit each
+    convention in the order "unscaled", "scaled", "unwrapped",
+    "scaled_unwrapped" and whichever set of coordinates is detected first will
+    be used. If coordinates are given in the scaled coordinate convention
+    (xs,ys,zs) or scaled unwrapped coordinate convention (xsu,ysu,zsu) they
+    will automatically be converted from their scaled/fractional representation
+    to their real values.
+
+    Supports both orthogonal and triclinic simulation box dimensions (for more
+    details see https://docs.lammps.org/Howto_triclinic.html). In either case,
+    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
+    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
+    length unit (Å), and angles are in degrees.
+
+    By using the keyword `additional_columns`, you can specify arbitrary data
+    to be read. The keyword expects a list of the names of the columns or
+    `True` to read all additional columns. The results are saved to
+    :attr:`Timestep.data`. For example, if your LAMMPS dump looks like this
+
+    .. code-block::
+
+        ITEM: ATOMS id x y z q l
+        1 2.84 8.17 -25 0.00258855 1.1
+        2 7.1 8.17 -25 6.91952e-05 1.2
+
+    Then you may parse the additional columns `q` and `l` via:
+
+    .. code-block:: python
+
+        u = mda.Universe('structure.data', 'traj.lammpsdump',
+                         additional_columns=['q', 'l'])
+
+    The additional data is then available for each time step via:
+
+    .. code-block:: python
+
+        for ts in u.trajectory:
+            charges = ts.data['q'] # Access additional data, sorted by the id
+            ls = ts.data['l']
+        ...
 
     Parameters
     ----------
@@ -497,6 +536,9 @@ class DumpReader(base.ReaderBase):
     **kwargs
        Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
+    .. versionchanged:: 2.7.0
+       Reading of arbitrary, additional columns is now supported.
+       (Issue #3608)
     .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
        and optionally unwraps trajectories with image flags upon loading.
@@ -510,6 +552,7 @@ class DumpReader(base.ReaderBase):
     format = 'LAMMPSDUMP'
     _conventions = ["auto", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
+
     _coordtype_column_names = {
         "unscaled": ["x", "y", "z"],
         "scaled": ["xs", "ys", "zs"],
@@ -517,11 +560,15 @@ class DumpReader(base.ReaderBase):
         "scaled_unwrapped": ["xsu", "ysu", "zsu"]
     }
 
+    _parsable_columns = ["id", "vx", "vy", "vz", "fx", "fy", "fz"]
+    for key in _coordtype_column_names.keys():
+        _parsable_columns += _coordtype_column_names[key]
+
     @store_init_arguments
-    def __init__(self, filename, 
+    def __init__(self, filename,
                  lammps_coordinate_convention="auto",
                  unwrap_images=False,
-                 **kwargs):
+                 additional_columns=None, **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
@@ -535,6 +582,16 @@ class DumpReader(base.ReaderBase):
                              f"Please choose one of {option_string}")
 
         self._unwrap = unwrap_images
+
+        if (util.iterable(additional_columns)
+                or additional_columns is None
+                or additional_columns is True):
+            self._additional_columns = additional_columns
+        else:
+            raise ValueError(f"additional_columns={additional_columns} "
+                             "is not a valid option. Please provide an "
+                             "iterable containing the additional"
+                             "column headers.")
 
         self._cache = {}
 
@@ -681,6 +738,25 @@ class DumpReader(base.ReaderBase):
             coord_cols.extend(image_cols)
 
         ids = "id" in attr_to_col_ix
+
+        # Create the data arrays for additional attributes which will be saved
+        # under ts.data
+        if self._additional_columns is True:
+            # Parse every column that is not already parsed
+            # elsewhere (total \ parsable)
+            additional_keys = set(attrs).difference(self._parsable_columns)
+        elif self._additional_columns:
+            if not all([key in attrs for key in self._additional_columns]):
+                warnings.warn("Some of the additional columns are not present "
+                              "in the file, they will be ignored")
+            additional_keys = \
+                [key for key in self._additional_columns if key in attrs]
+        else:
+            additional_keys = []
+        for key in additional_keys:
+            ts.data[key] = np.empty(self.n_atoms)
+
+        # Parse all the atoms
         for i in range(self.n_atoms):
             fields = f.readline().split()
             if ids:
@@ -701,12 +777,22 @@ class DumpReader(base.ReaderBase):
             if self._has_forces:
                 ts.forces[i] = [fields[dim] for dim in force_cols]
 
+            # Collect additional cols
+            for attribute_key in additional_keys:
+                ts.data[attribute_key][i] = \
+                    fields[attr_to_col_ix[attribute_key]]
+
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
         if self._has_vels:
             ts.velocities = ts.velocities[order]
         if self._has_forces:
             ts.forces = ts.forces[order]
+
+        # Also need to sort the additional keys
+        for attribute_key in additional_keys:
+            ts.data[attribute_key] = ts.data[attribute_key][order]
+
         if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,

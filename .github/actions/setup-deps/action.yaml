@@ -31,6 +31,8 @@ inputs:
     default: 'hypothesis'
   matplotlib:
     default: 'matplotlib-base'
+  mdahole2:
+    default: 'mdahole2-base'
   mda_xdrlib:
     default: 'mda-xdrlib'
   mmtf-python:
@@ -116,6 +118,7 @@ runs:
           ${{ inputs.griddataformats }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
+          ${{ inputs.mdahole2 }}
           ${{ inputs.mda_xdrlib }}
           ${{ inputs.mmtf-python }}
           ${{ inputs.numpy }}

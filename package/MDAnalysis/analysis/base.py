@@ -390,7 +390,7 @@ class AnalysisBase(object):
         pass  # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None, *, progressbar_kwargs={}):
+            verbose=None, *, progressbar_kwargs=None):
         """Perform the calculation
 
         Parameters
@@ -411,10 +411,11 @@ class AnalysisBase(object):
 
         verbose : bool, optional
             Turn on verbosity
-        
+
         progressbar_kwargs : dict, optional
-            ProgressBar keywords with custom parameters regarding progress bar position, etc; 
-            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
+            ProgressBar keywords with custom parameters regarding progress bar
+            position, etc; see :class:`MDAnalysis.lib.log.ProgressBar` for full
+            list.
 
 
         .. versionchanged:: 2.2.0
@@ -422,7 +423,7 @@ class AnalysisBase(object):
             frame indices in the `frames` keyword argument.
 
         .. versionchanged:: 2.5.0
-            Add `progressbar_kwargs` parameter, 
+            Add `progressbar_kwargs` parameter,
             allowing to modify description, position etc of tqdm progressbars
         """
         logger.info("Choosing frames to analyze")
@@ -436,6 +437,8 @@ class AnalysisBase(object):
         self._prepare()
         logger.info("Starting analysis loop over %d trajectory frames",
                     self.n_frames)
+        if progressbar_kwargs is None:
+            progressbar_kwargs = {}
 
         for i, ts in enumerate(ProgressBar(
                 self._sliced_trajectory,
