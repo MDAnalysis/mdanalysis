@@ -156,6 +156,7 @@ __all__ = [
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSdata_triclinic",  # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSdata_PairIJ",  # lammps datafile with a PairIJ Coeffs section
+    "LAMMPSdata_additional_columns",  # structure for the additional column lammpstrj
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
@@ -166,6 +167,7 @@ __all__ = [
     "LAMMPSDUMP_chain1", # Lammps dump file with chain reader
     "LAMMPSDUMP_chain2", # Lammps dump file with chain reader
     "LAMMPS_chain", # Lammps data file with chain reader
+    "LAMMPSDUMP_additional_columns",  # lammpsdump file with additional data (an additional charge column)
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -553,6 +555,8 @@ LAMMPSDUMP_chain1 = (_data_ref / "lammps/chain_dump_1.lammpstrj").as_posix()
 LAMMPSDUMP_chain2 = (_data_ref / "lammps/chain_dump_2.lammpstrj").as_posix()
 LAMMPS_chain = (_data_ref / "lammps/chain_initial.data").as_posix()
 LAMMPSdata_many_bonds = (_data_ref / "lammps/a_lot_of_bond_types.data").as_posix()
+LAMMPSdata_additional_columns = (_data_ref / "lammps/additional_columns.data").as_posix()
+LAMMPSDUMP_additional_columns = (_data_ref / "lammps/additional_columns.lammpstrj").as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
 
