@@ -166,6 +166,7 @@ import numpy as np
 import logging
 import warnings
 
+import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
 import MDAnalysis.analysis.align as align
 from MDAnalysis.analysis.base import AnalysisBase
@@ -334,11 +335,12 @@ def process_selection(select):
 
 
 def iterative_average(
-    mobile, ref, weights=None, niter=100, eps=1e-8, verbose=False, **kwargs
+    mobile, ref, select='all', weights=None, niter=100, eps=1e-6,
+    verbose=False, **kwargs
 ):
     """Calculate an optimal reference that is also the average structure
     after an RMSD alignment.
-    The optional reference is defined as average structure of a
+    The optimal reference is defined as average structure of a
     trajectory, with the optimal reference used as input.
     This function computes the optimal reference by using a starting
     reference for the average structure, which is used to calculate the
@@ -347,28 +349,38 @@ def iterative_average(
 
     Parameters
     ----------
-    mobile : mda.AtomGroup
-        mobile atomgroup to find the average for
-    ref : mda.AtomGroup
-        initial reference structure. Positions are changed by this function!
+    mobile : mda.Universe
+        Universe containing trajectory to be fitted to reference.
+    ref : mda.Universe
+        Universe containing the initial reference structure.
+    select : str or tuple or dict (optional)
+        Atom selection for fitting a substructue. Default is set to all.
+        Can be tuple or dict to define different selection strings for
+        mobile and target.
     weights : str, array_like (optional)
-        weights that can be used. If `None` use equal weights, if `'mass'`
+        Weights that can be used. If `None` use equal weights, if `'mass'`
         use masses of ref as weights or give an array of arbitrary weights.
     niter : int (optional)
-        maximum number of iterations
+        Maximum number of iterations.
     eps : float (optional)
-        RMSD distance at which reference and average are assumed to be equal
+        RMSD distance at which reference and average are assumed to be equal.
     verbose : bool (optional)
-        verbosity
+        Verbosity.
     **kwargs : dict (optional)
-        AverageStructure kwargs
+        AverageStructure kwargs.
 
     Returns
     -------
     res : AverageStructure
-        AverageStructure result from the last iteration
+        AverageStructure result from the last iteration.
 
     """
+    select = process_selection(select)
+    ref = mda.Merge(ref.select_atoms(*select['reference']))
+    sel_mobile = select['mobile'][0]
+
+    weights = get_weights(ref.atoms, weights)
+
     drmsd = np.inf
     for i in range(niter):
         # found a converged structure
@@ -376,15 +388,17 @@ def iterative_average(
             break
 
         res = align.AverageStructure(
-            mobile, reference=ref, weights=weights, **kwargs
+            mobile, reference=ref, select={
+                'mobile': sel_mobile, 'reference': 'all'
+                },
+            weights=weights, **kwargs
         ).run()
-        ref_ag = ref.atoms
-        drmsd = rmsd(ref_ag.positions, res.positions, weights=weights)
-        ref.positions = res.positions
+        drmsd = rmsd(ref.atoms.positions, res.results.positions, weights=weights)
+        ref = res.results.universe
 
         if verbose:
             print(
-                "i = {}, rmsd-change = {:.2f}, ave-rmsd = {:.2f}".format(
+                "i = {}, rmsd-change = {:.5f}, ave-rmsd = {:.5f}".format(
                     i, drmsd, res.results.rmsd
                 )
             )

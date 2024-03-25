@@ -426,32 +426,53 @@ class TestIterativeAverage(object):
     @pytest.fixture()
     def mobile(self):
         u = mda.Universe(PSF, DCD)
-        u1 = mda.Merge(u.select_atoms("bynum 1:10"))
-        return u1
+        return u
 
     @pytest.fixture()
     def reference(self):
         u = mda.Universe(PSF, DCD)
-        u1 = mda.Merge(u.select_atoms("bynum 1:10"))
-        return u1
+        return u
 
     def test_iterative_average(self, mobile, reference):
+        res = rms.iterative_average(mobile, reference, niter=1, eps=0)
+        res = rms.iterative_average(mobile, reference, eps=1e-5)
+        res = rms.iterative_average(mobile, reference, select='bynum 1:10',
+                                    weights=np.ones(10))
 
-        res = rms.iterative_average(mobile, reference, niter=5, eps=0)
-        res = rms.iterative_average(mobile, reference, niter=10, verbose=True)
+        res = rms.iterative_average(mobile, reference, select='bynum 1:10',
+                                    niter=10, verbose=True)
         assert_almost_equal(
             res.positions,
             [
-                [11.73604393, 8.50079727, -10.44528103],
-                [12.36511898, 7.83993578, -10.83484173],
-                [12.09194851, 9.441535, -10.72461128],
-                [10.83195686, 8.30861378, -10.96393108],
-                [11.66462231, 8.39347267, -8.98323059],
-                [12.67261219, 8.5604887, -8.6807642],
-                [10.73963833, 9.56992817, -8.59075069],
-                [9.63879013, 9.27048492, -8.96795273],
-                [11.09461403, 10.51888371, -9.14199638],
-                [10.55657101, 9.93423939, -7.11236286],
+                [11.93075595, 8.6729893, -10.49887605],
+                [12.60587898, 7.91673117, -10.73327464],
+                [12.45662411, 9.51900517, -10.35551193],
+                [11.27452274, 8.83003843, -11.2619057],
+                [11.25808119, 8.26794477, -9.23340715],
+                [12.02767222, 7.95332228, -8.57249317],
+                [10.54679871, 9.49505306, -8.61215292],
+                [9.99500556, 9.16624224, -7.75231192],
+                [9.83897407, 9.93134598, -9.29541129],
+                [11.45760169, 10.5857071, -8.13037669]
+            ],
+            decimal=5,
+        )
+
+        res = rms.iterative_average(mobile, reference, select='bynum 1:10',
+                                    niter=10, weights='mass')
+        assert_almost_equal(
+            res.positions,
+            [
+                [11.96438784, 8.85426235, -10.24735737],
+                [12.75920431, 8.27294545, -10.54295766],
+                [12.3285704, 9.72083717, -9.9419435],
+                [11.33941507, 9.03249423, -11.01306158],
+                [11.30988499, 8.14958885, -9.1205501],
+                [12.09108655, 7.85155906, -8.46681943],
+                [10.37499697, 9.13535837, -8.3732586],
+                [9.83883314, 8.57939098, -7.6195549],
+                [9.64405257, 9.55924307, -9.04315991],
+                [11.0678934, 10.27798773, -7.64881842]
             ],
             decimal=5,
         )
