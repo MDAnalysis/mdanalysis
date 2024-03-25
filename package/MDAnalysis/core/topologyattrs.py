@@ -865,8 +865,9 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        if residues.size ==0:
-            u = []
+        
+        #    u = [] # I am not clear yet on how the [[]] selection affects residue parameter,
+        #i.e. can we check if residues.size ==0 and set []
         u = residues[0].universe
         prev = u.residues[residues.ix-1]  # obv candidates first
         rsid = residues.segids

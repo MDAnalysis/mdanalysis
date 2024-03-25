@@ -147,6 +147,7 @@ def make_classes():
 
     # The 'GBase' middle man is needed so that a single topologyattr
     #  patching applies automatically to all groups.
+    
     GBase = bases[GroupBase] = _TopologyAttrContainer._subclass(is_group=True)
     for cls in groups:
         bases[cls] = GBase._subclass(is_group=True)
@@ -350,12 +351,14 @@ class _MutableBase(object):
                 raise TypeError(errmsg) from None
             newcls = u._classes[cls] = parent_cls._mix(cls)
             return object.__new__(newcls)
-
+#change 1:AttributeError is raised when the the residue size is [[]].
+#If we want to change this, will have to put an elif condition
+        
     def __getattr__(self, attr):
-        selfcls = type(self).__name__
+        selfcls = type(self).__name__ #checking if object type is valid
 
         if attr in _TOPOLOGY_TRANSPLANTS:
-            topattr, meth, clstype = _TOPOLOGY_TRANSPLANTS[attr]
+            topattr, meth, clstype = _TOPOLOGY_TRANSPLANTS[attr] #is method a property or not
             if isinstance(meth, property):
                 attrname = attr
                 attrtype = 'property'
@@ -381,7 +384,8 @@ class _MutableBase(object):
                 raise NoDataError(err.format(selfcls=selfcls,
                                              attrname=attrname,
                                              topattr=topattr))
-
+##change 3: need to add another elif condition to raise no attribute error
+            
         else:
             clean = attr.lower().replace('_', '')
             err = '{selfcls} has no attribute {attr}. '.format(selfcls=selfcls,
@@ -550,8 +554,20 @@ class GroupBase(_MutableBase):
     """
 
     def __init__(self, *args):
+       
         try:
-            if len(args) == 1:
+            empty = [[]]
+            if args:
+                ix = []
+                u = []
+                
+                raise TypeError("Empty list")
+            
+
+             #   # list of atoms/res/segs, old init method
+            #    ix = [at.ix for at in args[0]]
+            #    u = args[0][0].universe
+            elif len(args) == 1:
                 # list of atoms/res/segs, old init method
                 ix = [at.ix for at in args[0]]
                 u = args[0][0].universe
@@ -588,20 +604,27 @@ class GroupBase(_MutableBase):
         # so just return ourselves sliced by the item
         if item is None:
             raise TypeError('None cannot be used to index a group.')
-        
+       # elif item == []:
+            #print("You have given an empty nested list as input")
+
         elif isinstance(item, numbers.Integral):
-            if self.ix.size ==0:
-                return self.level.singular([])
+            #if self.ix.size ==0:
+            #    print("You have given an empty nested list as input")
+             #   self.ix =[]
+             #   return self.level.singular (self.ix,self.universe) # tried or self.level.singular([]) /[] 
+            #print("This is item",item)
             return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
                 #SampurnaM,24-3-24,to fix issue #3089
-                if not item:#incase of empty list
-                    return [] #return empty list
+                #if not item:#incase of empty list
+                    #return [] #return empty list
 
                 item = np.array(item)
+            else: ## return empty list for empty list:change 2
+                item = []
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class
             # resulting from slicing.
@@ -609,6 +632,7 @@ class GroupBase(_MutableBase):
 
     def __getattr__(self, attr):
         selfcls = type(self).__name__
+        ## edit 2: Cls is assigned
         if attr in _TOPOLOGY_ATTRS:
             cls = _TOPOLOGY_ATTRS[attr]
             if attr == cls.singular and attr != cls.attrname:
@@ -616,6 +640,10 @@ class GroupBase(_MutableBase):
                        'Do you mean {plural}?')
                 raise AttributeError(err.format(selfcls=selfcls, attr=attr,
                                                 plural=cls.attrname))
+            ##another condition just for empty list
+            #elif attr != cls.singular :
+                #print("Reached the elif condition",cls.singular)
+                
             else:
                 err = 'This Universe does not contain {singular} information'
                 raise NoDataError(err.format(singular=cls.singular))
