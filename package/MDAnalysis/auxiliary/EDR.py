@@ -142,8 +142,10 @@ specify which data to add under which name. Any number of terms can be added
 using this method. The data is then accessible in the `ts.aux` namespace via
 both attribute and dictionary syntax::
 
-    In [4]: u.trajectory.add_auxiliary({"epot": "Potential",
-                                        "angle": "Angle"}, aux)
+    In [4]: u.trajectory.add_auxiliary(aux,
+                                        {"epot": "Potential",
+                                        "angle": "Angle"}, 
+                                        )
     In [5]: u.trajectory.ts.aux.epot
     Out[5]: -525164.0625
     In [6]: u.trajectory.ts.aux.Angle
