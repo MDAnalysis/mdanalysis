@@ -1100,7 +1100,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         pull-force.xvg::
 
             u = MDAnalysis.Universe(PDB, XTC)
-            u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
+            u.trajectory.add_auxiliary('pull-force.xvg', 'pull')
 
         The representative value for the current timestep may then be accessed
         as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.
@@ -1119,7 +1119,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         added as identified by a :attr:`data_selector`::
 
             term_dict = {"temp": "Temperature", "epot": "Potential"}
-            u.trajectory.add_auxiliary(term_dict, "ener.edr")
+            u.trajectory.add_auxiliary("ener.edr", term_dict)
 
         Adding this data can be useful, for example, to filter trajectory
         frames based on non-coordinate data like the potential energy of each
@@ -1700,7 +1700,7 @@ class SingleFrameReaderBase(ProtoReader):
 
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
-            new.add_auxiliary(auxname, auxread.copy())
+            new.add_auxiliary(auxread.copy(), auxname)
         # since the transformations have already been applied to the frame
         # simply copy the property
         new.transformations = self.transformations
