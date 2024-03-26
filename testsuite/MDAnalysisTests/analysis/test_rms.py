@@ -434,6 +434,7 @@ class TestIterativeAverage(object):
         return u
 
     def test_iterative_average(self, mobile, reference):
+        res = rms.iterative_average(mobile, niter=1)
         res = rms.iterative_average(mobile, reference, niter=1, eps=0)
         res = rms.iterative_average(mobile, reference, eps=1e-5)
         res = rms.iterative_average(mobile, reference, select='bynum 1:10',
@@ -442,7 +443,7 @@ class TestIterativeAverage(object):
         res = rms.iterative_average(mobile, reference, select='bynum 1:10',
                                     niter=10, verbose=True)
         assert_almost_equal(
-            res.positions,
+            res.results.positions,
             [
                 [11.93075595, 8.6729893, -10.49887605],
                 [12.60587898, 7.91673117, -10.73327464],
@@ -461,7 +462,7 @@ class TestIterativeAverage(object):
         res = rms.iterative_average(mobile, reference, select='bynum 1:10',
                                     niter=10, weights='mass')
         assert_almost_equal(
-            res.positions,
+            res.results.positions,
             [
                 [11.96438784, 8.85426235, -10.24735737],
                 [12.75920431, 8.27294545, -10.54295766],

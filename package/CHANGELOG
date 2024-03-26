@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder
+         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder, leonwehrhan
 
  * 2.8.0
 
@@ -53,6 +53,8 @@ Changes
    equivalent assert_allclose(...  rtol=0, atol=1.5e-{N}) (issue modernize
    testing code #3743, PR Replaced numpy.testing.assert_almost_equal to 
    numpy.testing.assert_allclose #4438)
+ * Implement average structures with iterative algorithm from 
+   DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Deprecations
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
@@ -60,12 +62,6 @@ Deprecations
  * The MDAnalysis.analysis.psa module has been deprecated in favour of
    the PathSimAnalysis MDAKit and will be removed in version 3.0.0
    (PR #4403)
-
-
-03/22/24 leonwehrhan
-
-Changes
-  * Implement average structures with iterative algorithm from DOI 10.1021/acs.jpcb.7b11988. (Issue #2039)
 
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
