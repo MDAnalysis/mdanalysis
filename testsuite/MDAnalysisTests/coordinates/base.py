@@ -213,8 +213,8 @@ class BaseReaderTest(object):
     @pytest.fixture()
     def reader(ref):
         reader = ref.reader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary(ref.aux_lowf, 'lowf', dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary(ref.aux_highf, 'highf', dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
         return reader
 
     @staticmethod
@@ -303,7 +303,7 @@ class BaseReaderTest(object):
 
     def test_add_same_auxname_raises_ValueError(self, ref, reader):
         with pytest.raises(ValueError):
-            reader.add_auxiliary('lowf', ref.aux_lowf)
+            reader.add_auxiliary(ref.aux_lowf, 'lowf')
 
     def test_remove_auxiliary(self, reader):
         reader.remove_auxiliary('lowf')
@@ -330,7 +330,7 @@ class BaseReaderTest(object):
     def test_iter_as_aux_cutoff(self, ref, reader):
         # load an auxiliary with the same dt but offset from trajectory, and a
         # cutoff of 0
-        reader.add_auxiliary('offset', ref.aux_lowf,
+        reader.add_auxiliary(ref.aux_lowf, 'offset',
                                   dt=ref.dt, time_selector=None,
                                   initial_time=ref.aux_offset_by,
                                   cutoff=0)
