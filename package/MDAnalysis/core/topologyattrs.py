@@ -518,6 +518,16 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         """Set segmentattributes for a given SegmentGroup"""
         raise NotImplementedError
 
+    @classmethod
+    def are_values_missing(self, values):
+        """check if an attribute has a missing value
+
+        .. versionadded:: 2.8.0
+        """
+        if hasattr(self, 'missing_value_label'):
+            return values == self.missing_value_label
+        else:
+            return np.zeros_like(values, dtype=bool)
 
 # core attributes
 
@@ -1426,6 +1436,7 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
+    missing_value_label = np.nan
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
@@ -1990,6 +2001,14 @@ class Masses(AtomAttr):
 
     transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
+
+    @classmethod
+    def are_values_missing(self, values):
+        """Check if an attribute has a missing value
+        
+        .. versionadded:: 2.8.0
+        """
+        return np.isnan(values)
 
 
 # TODO: update docs to property doc

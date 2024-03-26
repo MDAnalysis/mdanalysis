@@ -57,7 +57,7 @@ class TestDielectric(object):
         assert_allclose(eps.results['eps_mean'], 9.621, rtol=1e-03)
 
     def test_non_charges(self):
-        u = mda.Universe(DCD_TRICLINIC)
+        u = mda.Universe(DCD_TRICLINIC, to_guess=())
         with pytest.raises(NoDataError,
                            match="No charges defined given atomgroup."):
             DielectricConstant(u.atoms).run()

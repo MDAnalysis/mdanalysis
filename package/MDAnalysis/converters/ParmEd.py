@@ -81,9 +81,9 @@ import functools
 import itertools
 import warnings
 
+from ..guesser.tables import SYMB2Z
 from . import base
 from ..coordinates.base import SingleFrameReaderBase
-from ..topology.tables import SYMB2Z
 from ..core.universe import Universe
 from ..exceptions import NoDataError
 

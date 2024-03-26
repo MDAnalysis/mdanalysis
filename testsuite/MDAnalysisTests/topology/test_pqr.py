@@ -21,8 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from io import StringIO
-from numpy.testing import assert_equal, assert_almost_equal
-import pytest
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -52,11 +51,25 @@ class TestPQRParser(ParserBase):
         assert len(top.resnames) == top.n_residues
         assert len(top.segids) == top.n_segments
 
+    expected_masses = [14.007,  1.008,  1.008,  1.008, 12.011,  1.008, 12.011]
+    expected_types = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        assert_allclose(u.atoms.masses[:7], self.expected_masses)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        assert (u.atoms.types[:7] == self.expected_types).all()
+
 
 class TestPQRParser2(TestPQRParser):
     ref_filename = PQR_icodes
     expected_n_atoms = 5313
     expected_n_residues = 474
+
+    expected_masses = [14.007, 12.011, 12.011, 15.999, 12.011, 12.011, 12.011]
+    expected_types = ['N', 'C', 'C', 'O', 'C', 'C', 'C']
 
 
 def test_record_types():
@@ -81,6 +94,7 @@ TER
 ENDMDL
 '''
 
+
 def test_gromacs_flavour():
     u = mda.Universe(StringIO(GROMACS_PQR), format='PQR')
 
@@ -88,7 +102,6 @@ def test_gromacs_flavour():
     # topology things
     assert u.atoms[0].type == 'O'
     assert u.atoms[0].segid == 'SYSTEM'
-    assert not u._topology.types.is_guessed
     assert_almost_equal(u.atoms[0].radius, 1.48, decimal=5)
     assert_almost_equal(u.atoms[0].charge, -0.67, decimal=5)
     # coordinatey things

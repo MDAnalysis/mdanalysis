@@ -82,9 +82,9 @@ can be installed either with conda_ or pip_.
 conda
 -----
 
-First installation with conda_:	
+First installation with conda_:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    conda config --add channels conda-forge
    conda install mdanalysis
@@ -93,7 +93,7 @@ which will automatically install a *full set of dependencies*.
 
 To upgrade later:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    conda update mdanalysis
 
@@ -102,14 +102,14 @@ pip
 
 Installation with `pip`_ and a *minimal set of dependencies*:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    pip install --upgrade MDAnalysis
 
 To install with a *full set of dependencies* (which includes everything needed
 for :mod:`MDAnalysis.analysis`), add the ``[analysis]`` tag:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    pip install --upgrade MDAnalysis[analysis]
 
@@ -121,7 +121,7 @@ If you want to `run the tests`_ or use example files to follow some of the
 examples in the documentation or the tutorials_, also install the
 ``MDAnalysisTests`` package:
 
-.. code-block:: bash 
+.. code-block:: bash
 
    conda install mdanalysistests            # with conda
    pip install --upgrade MDAnalysisTests    # with pip
@@ -187,12 +187,13 @@ Thank you!
    :caption: Documentation
    :numbered:		
    :hidden:
-   
+
    ./documentation_pages/overview
    ./documentation_pages/topology
    ./documentation_pages/selections
    ./documentation_pages/analysis_modules
    ./documentation_pages/topology_modules
+   ./documentation_pages/guesser_modules
    ./documentation_pages/coordinates_modules
    ./documentation_pages/converters
    ./documentation_pages/trajectory_transformations
@@ -205,7 +206,7 @@ Thank you!
    ./documentation_pages/units
    ./documentation_pages/exceptions
    ./documentation_pages/references
-	
+
 
 Indices and tables
 ==================
@@ -213,4 +214,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

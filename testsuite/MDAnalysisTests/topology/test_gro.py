@@ -34,13 +34,13 @@ from MDAnalysisTests.datafiles import (
     GRO_residwrap_0base,
     GRO_sameresid_diffresname,
 )
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 
 class TestGROParser(ParserBase):
     parser = mda.topology.GROParser.GROParser
     ref_filename = GRO
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses']
+    expected_attrs = ['ids', 'names', 'resids', 'resnames']
     guessed_attrs = ['masses', 'types']
     expected_n_atoms = 47681
     expected_n_residues = 11302
@@ -51,6 +51,16 @@ class TestGROParser(ParserBase):
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        expected = [14.007,  1.008,  1.008,  1.008, 12.011,  1.008, 12.011]
+        assert_allclose(u.atoms.masses[:7], expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        expected = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+        assert_equal(u.atoms.types[:7], expected)
 
 
 class TestGROWideBox(object):
@@ -74,6 +84,7 @@ def test_parse_missing_atomname_IOerror():
     with parser(GRO_missing_atomname) as p:
         with pytest.raises(IOError):
             p.parse()
+
 
 class TestGroResidWrapping(object):
     # resid is 5 digit field, so is limited to 100k

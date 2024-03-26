@@ -49,7 +49,6 @@ from math import ceil
 import numpy as np
 
 from ..lib.util import openany
-from . import guessers
 from .base import TopologyReaderBase, squash_by, change_squash
 from ..core.topologyattrs import (
     Atomids,

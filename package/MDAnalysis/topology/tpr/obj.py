@@ -32,7 +32,7 @@ Class definitions for the TPRParser
 
 """
 from collections import namedtuple
-from ..tables import Z2SYMB
+from ...guesser.tables import Z2SYMB
 
 TpxHeader = namedtuple(
     "TpxHeader", [

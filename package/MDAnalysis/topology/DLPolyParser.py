@@ -29,9 +29,6 @@ Read DL Poly_ format topology files
 DLPoly files have the following Attributes:
  - Atomnames
  - Atomids
-Guesses the following attributes:
- - Atomtypes
- - Masses
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 
@@ -46,14 +43,11 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Atomtypes,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -65,6 +59,9 @@ class ConfigParser(TopologyReaderBase):
     """DL_Poly CONFIG file parser
 
     .. versionadded:: 0.10.1
+    .. versionchanged:: 2.8.0
+       Removed type and mass guessing (attributes guessing takes place now
+       through universe.guess_TopologyAttrs() API).
     """
     format = 'CONFIG'
 
@@ -109,14 +106,9 @@ class ConfigParser(TopologyReaderBase):
         else:
             ids = np.arange(n_atoms)
 
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(atomtypes)
-
         attrs = [
             Atomnames(names),
             Atomids(ids),
-            Atomtypes(atomtypes, guessed=True),
-            Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),
             Segids(np.array(['SYSTEM'], dtype=object)),
@@ -176,14 +168,9 @@ class HistoryParser(TopologyReaderBase):
         else:
             ids = np.arange(n_atoms)
 
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(atomtypes)
-
         attrs = [
             Atomnames(names),
             Atomids(ids),
-            Atomtypes(atomtypes, guessed=True),
-            Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),
             Segids(np.array(['SYSTEM'], dtype=object)),
