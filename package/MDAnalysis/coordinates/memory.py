@@ -451,7 +451,7 @@ class MemoryReader(base.ProtoReader):
         new[self.ts.frame]
 
         for auxname, auxread in self._auxs.items():
-            new.add_auxiliary(auxname, auxread.copy())
+            new.add_auxiliary(auxread.copy(), auxname)
         # since transformations are already applied to the whole trajectory
         # simply copy the property
         new.transformations = self.transformations
