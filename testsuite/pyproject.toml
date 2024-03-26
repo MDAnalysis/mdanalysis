@@ -72,6 +72,7 @@ include=[
     "MDAnalysisTests.data.gromacs",
     "MDAnalysisTests.data.lammps",
     "MDAnalysisTests.data.mol2",
+    "MDAnalysisTests.data.dssp",
     "MDAnalysisTests.data.windows",
 ]
 
@@ -145,6 +146,8 @@ MDAnalysisTests = [
     "data/*.tng",
     "data/*.pdbx",
     "data/*.txt",
+    "data/dssp/*.pdb.gz",
+    "data/dssp/*.pdb.dssp",
 ]
 
 [tool.pytest.ini_options]
