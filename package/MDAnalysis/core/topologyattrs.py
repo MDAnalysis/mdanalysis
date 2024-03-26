@@ -1178,7 +1178,7 @@ class Atomnames(AtomStringAttr):
         .. versionadded:: 1.0.0
         """
 
-        if not results:
+        if not residues:
             return []
 
         results = np.array([None]*len(residues), dtype=object)
