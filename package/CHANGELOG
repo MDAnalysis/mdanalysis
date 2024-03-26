@@ -14,6 +14,17 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
+03/26/24 orbeckst, SampurnaM
+
+ * 2.8.0
+
+Fixes:
+ * Added a tqdm progress bar for ``MDAnalysis.analysis.pca.PCA.transform()``
+    It can be displayed or disabled using ``verbose`` parameter 
+    ``True = display | False = display off``
+     (PR #4531)
+
+
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder
 

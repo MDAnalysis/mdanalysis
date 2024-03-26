@@ -118,15 +118,15 @@ import warnings
 
 import numpy as np
 import scipy.integrate
+from tqdm.auto import tqdm
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
-from MDAnalysis.lib.log import ProgressBar, ProgressBar_Dual
+from MDAnalysis.lib.log import ProgressBar
 
 from ..lib import util
 from ..due import due, Doi
 from .base import AnalysisBase
-from tqdm.auto import tqdm
 
 
 class PCA(AnalysisBase):
@@ -383,7 +383,11 @@ class PCA(AnalysisBase):
             Include every `step` frames in the PCA transform. If set to
             ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
-        verbose: Boolean,optional
+        verbose : bool, optional
+            ``verbose = True`` option displays a progress bar for the 
+            iterations of transform. ``verbose = False`` disables the 
+            progress bar, just returns the pca_space array when the 
+            calculations are finished.
 
         Returns
         -------
@@ -393,6 +397,9 @@ class PCA(AnalysisBase):
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
            otherwise a :exc:`ValueError` is raised.
+        .. versionadded:: 2.8.0
+           Transform now has shows a tqdm progressbar, which can be toggled
+           on with verbose = True, or off with verbose = False
         """
         if not self._calculated:
             raise ValueError('Call run() on the PCA before using transform')
@@ -400,7 +407,7 @@ class PCA(AnalysisBase):
         if isinstance(atomgroup, Universe):
             atomgroup = atomgroup.atoms
 
-        if (self._n_atoms != atomgroup.n_atoms):
+        if self._n_atoms != atomgroup.n_atoms:
             raise ValueError('PCA has been fit for'
                              '{} atoms. Your atomgroup'
                              'has {} atoms'.format(self._n_atoms,
@@ -417,15 +424,10 @@ class PCA(AnalysisBase):
 
         dot = np.zeros((n_frames, dim))
 
-        if verbose == True:
-            self.disabled = False
-        else:
-            self.disabled = True
+        for i, ts in tqdm(enumerate(traj[start:stop:step]), disable=not verbose,
+                          total=len(traj[start:stop:step])
+                          ):
 
-        # for i, ts in tqdm(enumerate(traj[start:stop:step]), desc="Transform progress"):
-        for i, ts in tqdm(enumerate(traj[start:stop:step]), disable=self.disabled, desc="Transform progress"):
-            # print("Iteration", i, "Timestep",ts)
-            # verbose=self._verbose, desc="Transform progress"):
             xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
