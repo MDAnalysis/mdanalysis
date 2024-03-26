@@ -195,8 +195,7 @@ class TestEDRReader(BaseAuxReaderTest):
     @pytest.fixture
     def ref_universe(ref):
         u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
-        u.trajectory.add_auxiliary({"test": "Bond"}, ref.testdata)
+        u.trajectory.add_auxiliary(ref.testdata, {"test": "Bond"})
         return u
 
     @staticmethod
@@ -309,7 +308,6 @@ class TestEDRReader(BaseAuxReaderTest):
                         err_msg="Representative value does not match when "
                                 "applying cutoff")
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_all_terms_from_file(self, ref, ref_universe):
         ref_universe.trajectory.add_auxiliary(auxdata=ref.testdata)
         # adding "test" manually to match above addition of test term
@@ -317,57 +315,54 @@ class TestEDRReader(BaseAuxReaderTest):
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_all_terms_from_reader(self, ref_universe, reader):
         ref_universe.trajectory.add_auxiliary(auxdata=reader)
         ref_terms = ["test"] + [key for key in get_auxstep_data(0).keys()]
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_term_list_custom_names_from_file(self, ref, ref_universe):
-        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
+        ref_universe.trajectory.add_auxiliary(ref.testdata,
+                                              {"bond": "Bond",
                                                "temp": "Temperature"},
-                                              ref.testdata)
+                                              )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_term_list_custom_names_from_reader(self, ref_universe,
                                                     reader):
-        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
+        ref_universe.trajectory.add_auxiliary(reader,
+                                              {"bond": "Bond",
                                                "temp": "Temperature"},
-                                              reader)
+                                              )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_raise_error_if_auxname_already_assigned(self, ref_universe,
                                                      reader):
         with pytest.raises(ValueError, match="Auxiliary data with name"):
-            ref_universe.trajectory.add_auxiliary("test", reader, "Bond")
+            ref_universe.trajectory.add_auxiliary(reader, "test", "Bond")
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_single_term_custom_name_from_file(self, ref, ref_universe):
-        ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
-                                              ref.testdata)
+        ref_universe.trajectory.add_auxiliary(ref.testdata,
+                                              {"temp": "Temperature"},
+                                              )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_single_term_custom_name_from_reader(self, ref_universe,
                                                      reader):
-        ref_universe.trajectory.add_auxiliary({"temp": "Temperature"}, reader)
+        ref_universe.trajectory.add_auxiliary(reader, {"temp": "Temperature"})
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_terms_update_on_iter(self, ref_universe, reader):
-        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
+        ref_universe.trajectory.add_auxiliary(reader,
+                                              {"bond": "Bond",
                                                "temp": "Temperature"},
-                                              reader)
+                                              )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
@@ -376,11 +371,11 @@ class TestEDRReader(BaseAuxReaderTest):
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_invalid_data_selector(self, ref, ref_universe):
         with pytest.raises(KeyError, match="'Nonsense' is not a key"):
-            ref_universe.trajectory.add_auxiliary({"something": "Nonsense"},
-                                                  AUX_EDR)
+            ref_universe.trajectory.add_auxiliary(AUX_EDR,
+                                                  {"something": "Nonsense"},
+                                                  )
 
     def test_read_all_times(self, reader):
         all_times_expected = np.array([0., 0.02, 0.04, 0.06])
@@ -414,20 +409,20 @@ class TestEDRReader(BaseAuxReaderTest):
         with pytest.raises(KeyError, match="data selector"):
             reader.get_data(get_data_input)
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warning_when_space_in_aux_spec(self, ref_universe, reader):
         with pytest.warns(UserWarning, match="Auxiliary name"):
-            ref_universe.trajectory.add_auxiliary({"Pres. DC": "Pres. DC"},
-                                                  reader)
+            ref_universe.trajectory.add_auxiliary(reader,
+                                                  {"Pres. DC": "Pres. DC"},
+                                                  )
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warn_too_much_memory_usage(self, ref_universe, reader):
         with pytest.warns(UserWarning, match="AuxReader: memory usage "
                           "warning! Auxiliary data takes up 3[0-9.]*e-06 GB of"
                           r" memory \(Warning limit: 1e-08 GB\)"):
-            ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
-                                                  reader,
-                                                  memory_limit=10)
+            ref_universe.trajectory.add_auxiliary(reader,
+                                                  {"temp": "Temperature"},
+                                                  memory_limit=10,
+                                                  )
 
     def test_auxreader_picklable(self, reader):
         new_reader = pickle.loads(pickle.dumps(reader))
@@ -441,11 +436,11 @@ class TestEDRReader(BaseAuxReaderTest):
         for term in ["Box-X", "Box-Vel-XX"]:
             assert original_units[term] != reader_units[term]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warning_when_unknown_unit(self, ref_universe, reader):
         with pytest.warns(UserWarning, match="Could not find"):
-            ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
-                                                  reader)
+            ref_universe.trajectory.add_auxiliary(reader,
+                                                  {"temp": "Temperature"},
+                                                  )
 
     def test_unit_conversion_is_optional(self, ref):
         reader = ref.reader(

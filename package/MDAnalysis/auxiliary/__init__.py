@@ -131,7 +131,7 @@ which case :func:`~MDAnalysis.auxiliary.core.get_auxreader_for` is used to
 guess an appropriate reader. e.g.::
 
     u = MDAnalysis.Universe(PDB, XTC)
-    u.trajectory.add_auxiliary('pullforce', './pull_force.xvg')
+    u.trajectory.add_auxiliary('./pull_force.xvg', 'pullforce')
 
 As the trajectory frame is updated, the auxiliary data will be read 
 correspondingly, 
@@ -149,7 +149,7 @@ through only trajectory timesteps to which one or more steps that fall within
 avoid representative values set to ``np.nan``, particularly when auxiliary data
 is less frequent::
 
-    u.trajectory.add_auxiliary('low_f', 'low_freq_aux_data.xvg')
+    u.trajectory.add_auxiliary('low_freq_aux_data.xvg', 'low_f')
     for ts in u.trajectory.iter_as_aux('low_f'):
         do_something(ts.aux.low_f) # do something with 'low_f' auxiliary data without
                                    # worrying about having to deal with np.nan

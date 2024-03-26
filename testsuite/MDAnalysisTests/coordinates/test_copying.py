@@ -294,7 +294,7 @@ def test_positions_share_memory(original_and_copy):
 def test_copy_with_auxiliary_no_pyedr():
     # Check that AuxReaders are copied when reader is copied
     u = mda.Universe(XYZ_mini)
-    u.trajectory.add_auxiliary("myaux", AUX_XVG)
+    u.trajectory.add_auxiliary(AUX_XVG, "myaux")
     reader = u.trajectory
     copy = reader.copy()
     for auxname in reader._auxs:
@@ -306,8 +306,8 @@ def test_copy_with_auxiliary_no_pyedr():
 def test_copy_with_auxiliary_pyedr():
     # Check that AuxReaders are copied when reader is copied
     u = mda.Universe(XYZ_mini)
-    u.trajectory.add_auxiliary("myaux", AUX_XVG)
-    u.trajectory.add_auxiliary({"1": "Bond", "2": "Angle"}, AUX_EDR)
+    u.trajectory.add_auxiliary(AUX_XVG, "myaux")
+    u.trajectory.add_auxiliary(AUX_EDR, {"1": "Bond", "2": "Angle"})
 
     reader = u.trajectory
     copy = reader.copy()

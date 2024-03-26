@@ -285,10 +285,10 @@ class TestGROReaderNoConversion(BaseReaderTest):
     @pytest.fixture(scope='class')
     def reader(ref):
         reader = ref.reader(ref.trajectory, convert_units=False)
-        reader.add_auxiliary('lowf', ref.aux_lowf,
+        reader.add_auxiliary(ref.aux_lowf, 'lowf',
                              dt=ref.aux_lowf_dt,
                              initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf,
+        reader.add_auxiliary(ref.aux_highf, 'highf',
                              dt=ref.aux_highf_dt,
                              initial_time=0, time_selector=None)
         return reader
