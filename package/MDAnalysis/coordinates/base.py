@@ -1073,10 +1073,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                 raise ValueError(errmsg)
         return coordinates
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,
-                      aux_spec: Union[str, Dict[str, str]] = None,
                       auxdata: Union[str, AuxReader] = None,
+                      aux_spec: Union[str, Dict[str, str]] = None,
                       format: str = None,
                       **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
