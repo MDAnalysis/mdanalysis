@@ -312,6 +312,7 @@ def test_guess_gasteiger_charges(smi):
     assert_equal(values, expected)
 
 
+@requires_rdkit
 def test_aromaticity():
     u = mda.Universe(datafiles.PDB_small,
                      to_guess=['elements', 'aromaticities'])

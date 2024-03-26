@@ -38,13 +38,13 @@ Enhancements
  * Documented the r0 attribute in the `Contacts` class and added the 
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
  * Removed type and mass guessing from all topology parsers (PR #3753)
- * Added guess_topologyAttributes() API to the Universe to handle attribute
+ * Added guess_TopologyAttrs() API to the Universe to handle attribute
    guessing (pr #3753)
  * Added the DefaultGuesser class, which is a general-purpose guesser with
     the same functionalities as the existing guesser.py methods (PR #3753)
  * Removed type guessing from RDKitParser and assigned type attribute
    to be equal to the element attribute, if type is not provided (PR #3753)
- * Added is_value_missing() to `topology attributes` to check for missing
+ * Added is_value_missing() to `TopologyAttrs` to check for missing
    values (PR #3753)
  * Added the `Element` attribute if all names are valid element symbols for
    TXYZParser (PR #3753)
