@@ -80,14 +80,14 @@ two structures, using :func:`rmsd`::
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
-mass (or geometry) first:
+mass (or geometry) first::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, center=True)
    21.892591663632704
 
 This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
-minimized RMSD between the reference and mobile structure.
+minimized RMSD between the reference and mobile structure::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, 
    ...      superposition=True)
