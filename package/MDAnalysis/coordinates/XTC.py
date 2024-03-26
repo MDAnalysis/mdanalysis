@@ -33,6 +33,7 @@ MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
 
 import errno
+import warnings
 from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
@@ -149,6 +150,9 @@ class XTCReader(XDRBaseReader):
             read_direct_x method of XTCFile to read the data directly
             into the timestep rather than copying it from a temporary array.
         """
+        if ts:
+            warnings.warn("ts argument to _read_next_timestep is deprecated as of 2.7.0 and will be removed in 3.0.0, see #3928")
+
         if self._frame == self.n_frames - 1:
             raise IOError(errno.EIO, 'trying to go over trajectory limit')
         if ts is None:
