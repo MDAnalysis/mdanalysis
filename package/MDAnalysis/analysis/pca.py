@@ -361,7 +361,7 @@ class PCA(AnalysisBase):
         self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
-                  step=None, verbose=None):
+                  step=None, verbose=False):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -384,9 +384,9 @@ class PCA(AnalysisBase):
             ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
         verbose : bool, optional
-            ``verbose = True`` option displays a progress bar for the 
-            iterations of transform. ``verbose = False`` disables the 
-            progress bar, just returns the pca_space array when the 
+            ``verbose = True`` option displays a progress bar for the
+            iterations of transform. ``verbose = False`` disables the
+            progress bar, just returns the pca_space array when the
             calculations are finished.
 
         Returns
@@ -397,9 +397,9 @@ class PCA(AnalysisBase):
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
            otherwise a :exc:`ValueError` is raised.
-        .. versionadded:: 2.8.0
+        .. versionchanged:: 2.8.0
            Transform now has shows a tqdm progressbar, which can be toggled
-           on with verbose = True, or off with verbose = False
+           on with ``verbose = True``, or off with ``verbose = False``
         """
         if not self._calculated:
             raise ValueError('Call run() on the PCA before using transform')
@@ -573,7 +573,7 @@ class PCA(AnalysisBase):
             for res in group.residues:
                 # n_common is the number of pca atoms in a residue
                 n_common = pca_res_counts[np.where(
-                    pca_res_indices == res.resindex)][0]
+            		   pca_res_indices == res.resindex)][0]
                 non_pca_atoms = np.append(non_pca_atoms,
                                           res.atoms.n_atoms - n_common)
             # index_extrapolate records the anchor number for each non-PCA atom
