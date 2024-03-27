@@ -710,7 +710,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results.hbonds = [[], [], [], [], [], []]
 
         # Set unpaired acceptor and hydrogen AtomGroups
-        self.acceptors_ag = self.guess_acceptors() #do i need this?
+        self.acceptors_ag = self.guess_acceptors() #NOTE: do I need this?
         self.hydrogens_ag = self.guess_hydrogens()
         self.donors_ag = self.guess_donors()
 

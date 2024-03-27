@@ -14,6 +14,27 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
+03/27/23 lunamorrow
+
+ * 2.8.1
+
+Fixes
+
+Enhancements
+  * modernise `HydrogenBondAnalysis` to use `AtomGroups` as objects internally 
+    instead of selection strings
+
+Changes
+  * `guess_acceptors`, `guess_hydrogens` and `guess_donators` no longer return
+    selection strings (return `AtomGroups`instead)
+  * `_prepare` and `_single_frame` no longer pass selection strings to other
+    class methods (pass `AtomGroups` instead)
+
+Deprecations
+  * Selection string return of `guess_acceptors`, `guess_hydrogens` and 
+    `guess_donators` has been deprecated in favour of return of `AtomGroups`
+    and will removed in removed in version 3.0.0 (PR #4533)
+
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy
