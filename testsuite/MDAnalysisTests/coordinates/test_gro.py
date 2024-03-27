@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from io import StringIO
+from pathlib import Path
 
 import MDAnalysis as mda
 import numpy as np
@@ -46,7 +47,6 @@ from numpy.testing import (
     assert_equal,
 )
 import pytest
-from io import StringIO
 
 
 class TestGROReaderOld(RefAdK):
@@ -529,3 +529,14 @@ def test_gro_empty_box_write_read(tmpdir):
         with pytest.warns(UserWarning, match=wmsg):
             u2 = mda.Universe('test.gro')
         assert u2.dimensions is None
+
+def test_pathlib_singleframereaderbase():
+    top = Path(GRO)
+    assert isinstance(top, Path)
+    u = mda.Universe(top)
+    assert u.atoms.n_atoms == 47681
+
+def test_string_singleframereaderbase():
+    assert isinstance(GRO, str)
+    u = mda.Universe(GRO)
+    assert u.atoms.n_atoms == 47681
