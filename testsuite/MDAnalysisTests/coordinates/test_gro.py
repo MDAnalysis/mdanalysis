@@ -530,13 +530,13 @@ def test_gro_empty_box_write_read(tmpdir):
             u2 = mda.Universe('test.gro')
         assert u2.dimensions is None
 
-def test_pathlib_singleframereaderbase():
+def test_gro_pathlib_singleframereaderbase():
     top = Path(GRO)
     assert isinstance(top, Path)
     u = mda.Universe(top)
     assert u.atoms.n_atoms == 47681
 
-def test_string_singleframereaderbase():
+def test_gro_string_singleframereaderbase():
     assert isinstance(GRO, str)
     u = mda.Universe(GRO)
     assert u.atoms.n_atoms == 47681
