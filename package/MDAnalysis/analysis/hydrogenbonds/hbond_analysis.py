@@ -618,50 +618,52 @@ class HydrogenBondAnalysis(AnalysisBase):
             produce a list of donor-hydrogen pairs.
         """
 
-        # # If donors_sel is not provided, use topology to find d-h pairs
-        # if self.donors_sel is None:
+        # If donors_sel is not provided, use topology to find d-h pairs
+        if self.donors_sel is None:
 
-        #     # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
-        #     # This is because u.bonds also calculates properties of each bond (e.g bond length).
-        #     # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
-        #     if not (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
-        #         raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bond information is present. '
-        #                           'Please either: load a topology file with bond information; use the guess_bonds() '
-        #                           'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
-        #                           'can be used.')
+            # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
+            # This is because u.bonds also calculates properties of each bond (e.g bond length).
+            # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
+            if not (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
+                raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bond information is present. '
+                                  'Please either: load a topology file with bond information; use the guess_bonds() '
+                                  'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
+                                  'can be used.')
 
-        #     hydrogens = self.u.select_atoms(self.hydrogens_sel)
-        #     donors = sum(h.bonded_atoms[0] for h in hydrogens) if hydrogens \
-        #         else AtomGroup([], self.u)
+            hydrogens = self.hydrogens_ag
+            donors = sum(h.bonded_atoms[0] for h in hydrogens) if hydrogens \
+                else AtomGroup([], self.u)
 
-        # # Otherwise, use d_h_cutoff as a cutoff distance
-        # else:
+        # Otherwise, use d_h_cutoff as a cutoff distance
+        else:
 
-        #     hydrogens = self.guess_hydrogens()
-        #     donors = self.guess_donors()
-        #     donors_indices, hydrogen_indices = capped_distance(
-        #         donors.positions,
-        #         hydrogens.positions,
-        #         max_cutoff=self.d_h_cutoff,
-        #         box=self.u.dimensions,
-        #         return_distances=False
-        #     ).T
+            # hydrogens = self.guess_hydrogens()
+            # donors = self.guess_donors()
+            hydrogens = self.hydrogens_ag #NOTE: do I need this?
+            donors = self.donors_ag #NOTE: do I need this?
+            donors_indices, hydrogen_indices = capped_distance(
+                donors.positions,
+                hydrogens.positions,
+                max_cutoff=self.d_h_cutoff,
+                box=self.u.dimensions,
+                return_distances=False
+            ).T
 
-        #     donors = donors[donors_indices]
-        #     hydrogens = hydrogens[hydrogen_indices]
+            donors = donors[donors_indices]
+            hydrogens = hydrogens[hydrogen_indices]
 
-        hydrogens = self.hydrogens_ag #NOTE: do I need this?
-        donors = self.donors_ag #NOTE: do I need this?
-        donors_indices, hydrogen_indices = capped_distance(
-            donors.positions,
-            hydrogens.positions,
-            max_cutoff=self.d_h_cutoff,
-            box=self.u.dimensions,
-            return_distances=False
-        ).T
+        # hydrogens = self.hydrogens_ag #NOTE: do I need this?
+        # donors = self.donors_ag #NOTE: do I need this?
+        # donors_indices, hydrogen_indices = capped_distance(
+        #     donors.positions,
+        #     hydrogens.positions,
+        #     max_cutoff=self.d_h_cutoff,
+        #     box=self.u.dimensions,
+        #     return_distances=False
+        # ).T
 
-        donors = donors[donors_indices]
-        hydrogens = hydrogens[hydrogen_indices]
+        # donors = donors[donors_indices]
+        # hydrogens = hydrogens[hydrogen_indices]
 
         return donors, hydrogens
 
@@ -710,17 +712,20 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results.hbonds = [[], [], [], [], [], []]
 
         # Set unpaired acceptor and hydrogen AtomGroups
-        self.acceptors_ag = self.guess_acceptors() #NOTE: do I need this?
-        self.hydrogens_ag = self.guess_hydrogens()
-        self.donors_ag = self.guess_donors()
+        # self.acceptors_ag = self.guess_acceptors() #NOTE: do I need this?
+        # self.hydrogens_ag = self.guess_hydrogens()
+        # self.donors_ag = self.guess_donors()
 
         # Set atom selections if they have not been provided
         if self.acceptors_sel is None:
+            self.acceptors_ag = self.guess_acceptors()
             self.acceptors_sel = self._group_categories(self.acceptors_ag) #NOTE: do I need this?
         if self.hydrogens_sel is None:
+            self.hydrogens_ag = self.guess_hydrogens()
             self.hydrogens_sel = self._group_categories(self.hydrogens_ag)
         #NOTE: add in self.donors_sel? Is this not done for a reason?
         if self.donors_sel is None:
+            self.donors_ag = self.guess_donors()
             self.donors_sel = self._group_categories(self.donors_ag)
 
         # Select atom groups
