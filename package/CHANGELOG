@@ -14,19 +14,9 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-03/26/24 orbeckst, SampurnaM
-
- * 2.8.0
-
-Fixes:
- * Added a tqdm progress bar for ``MDAnalysis.analysis.pca.PCA.transform()``
-    It can be displayed or disabled using ``verbose`` parameter 
-    ``True = display | False = display off``
-     (PR #4531)
-
-
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder
+         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
+         SampurnaM,orbeckst
 
  * 2.8.0
 
@@ -43,6 +33,8 @@ Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
+* Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
+   (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
  * Documented the r0 attribute in the `Contacts` class and added the 
