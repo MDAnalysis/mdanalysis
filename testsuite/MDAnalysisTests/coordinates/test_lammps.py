@@ -821,11 +821,13 @@ class TestLammpsTriclinic(object):
 
         assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)
 
+
 def test_pathlib_lammps_singleframereaderbase():
     top = Path(LAMMPSdata)
     assert isinstance(top, Path)
     u = mda.Universe(top)
     assert u.atoms.n_atoms == 18364
+
 
 def test_string_lammps_singleframereaderbase():
     assert isinstance(LAMMPSdata, str)
