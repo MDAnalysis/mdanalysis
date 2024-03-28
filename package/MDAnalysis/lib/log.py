@@ -342,20 +342,3 @@ class ProgressBar(tqdm):
         # disable should take precedence over verbose if both are set
         kwargs['disable'] = kwargs.pop('disable', disable)
         super(ProgressBar, self).__init__(*args, **kwargs)
-
-
-class ProgressBar_Dual(tqdm):
-    def __init__(self, iterable1=None, iterable2=None, *args, **kwargs):
-        """"""
-        # ^^^^ keep the empty doc string to avoid Sphinx doc errors with the
-        # original doc string from tqdm.auto.tqdm
-        verbose = kwargs.pop('verbose', True)
-        # disable: Whether to disable the entire progressbar wrapper [default: False].
-        # If set to None, disable on non-TTY.
-        # disable should be the opposite of verbose unless it's None
-        disable = verbose if verbose is None else not verbose
-        # disable should take precedence over verbose if both are set
-        kwargs['disable'] = kwargs.pop('disable', disable)
-        # we are getting the second variable from enumerate
-
-        super(ProgressBar_Dual, self).__init__(*args, **kwargs)
