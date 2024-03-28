@@ -213,6 +213,8 @@ import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.lib.util import get_weights
 from MDAnalysis.lib.util import deprecate   # remove 3.0
+from MDAnalysis.lib.log import ProgressBar
+from ..due import due, Doi
 
 from .base import AnalysisBase
 
@@ -542,12 +544,19 @@ def alignto(mobile, reference, select=None, weights=None,
     return old_rmsd, new_rmsd
 
 
+@due.dcite(
+        Doi("10.1021/acs.jpcb.7b11988"),
+        description="Iterative Calculation of Opimal Reference",
+        path="MDAnalysis.analysis.align.iterative_average"
+)
 def iterative_average(
     mobile, reference=None, select='all', weights=None, niter=100,
     eps=1e-6, verbose=False, **kwargs
 ):
-    """Calculate an optimal reference that is also the average structure
-    after an RMSD alignment. The optimal reference is defined as average
+    """Iteratively calculate an optimal reference that is also the average
+    structure after an RMSD alignment.
+
+    The optimal reference is defined as average
     structure of a trajectory, with the optimal reference used as input.
     This function computes the optimal reference by using a starting
     reference for the average structure, which is used as the reference
@@ -584,15 +593,17 @@ def iterative_average(
 
     Example
     -------
+    `iterative_average` can be used to obtain a `MDAnalysis.Universe` with
+    the optimal reference structure.
 
     ::
 
         import MDAnalysis as mda
-        from MDAnalysis.analysis import rms
+        from MDAnalysis.analysis import align
         from MDAnalysisTests.datafiles import PSF, DCD
 
         u = mda.Universe(PSF, DCD)
-        av = rms.iterative_average(u, u, verbose=True)
+        av = align.iterative_average(u, u, verbose=True)
 
         averaged_universe = av.results.universe
 
@@ -608,7 +619,7 @@ def iterative_average(
     weights = get_weights(ref.atoms, weights)
 
     drmsd = np.inf
-    for i in range(niter):
+    for i in ProgressBar(range(niter)):
         # found a converged structure
         if drmsd < eps:
             break
@@ -624,11 +635,25 @@ def iterative_average(
         ref = avg_struc.results.universe
 
         if verbose:
-            print(
-                "i = {}, rmsd-change = {:.5f}, ave-rmsd = {:.5f}".format(
-                    i, drmsd, avg_struc.results.rmsd
-                )
+            logger.debug(
+                f"iterative_average(): i = {i}, "
+                f"rmsd-change = {drmsd:.5f}, "
+                f"ave-rmsd = {avg_struc.results.rmsd:.5f}"
             )
+
+    else:
+        errmsg = (
+            "iterative_average(): Did not converge in "
+            f"{niter} iterations to DRMSD < {eps}. "
+            f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+        )
+        logger.error(errmsg)
+        raise RuntimeError(errmsg)
+
+    logger.info(
+        f"iterative_average(): Converged to DRMSD < {eps}. "
+        f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+    )
 
     return avg_struc
 

@@ -35,7 +35,6 @@ from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
                                        ALIGN_UNBOUND, PDB_helix)
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal,
     assert_array_equal,
     assert_allclose,
 )
@@ -607,15 +606,17 @@ class TestIterativeAverage(object):
         return u
 
     def test_iterative_average(self, mobile, reference):
-        res = align.iterative_average(mobile, niter=1)
-        res = align.iterative_average(mobile, reference, niter=1, eps=0)
+        res = align.iterative_average(mobile, niter=10)
         res = align.iterative_average(mobile, reference, eps=1e-5)
         res = align.iterative_average(mobile, reference, select='bynum 1:10',
                                       weights=np.ones(10))
 
+        with pytest.raises(RuntimeError):
+            _ = align.iterative_average(mobile, reference, niter=1, eps=0)
+
         res = align.iterative_average(mobile, reference, select='bynum 1:10',
                                       niter=10, verbose=True)
-        assert_almost_equal(
+        assert_allclose(
             res.results.positions,
             [
                 [11.93075595, 8.6729893, -10.49887605],
@@ -629,12 +630,12 @@ class TestIterativeAverage(object):
                 [9.83897407, 9.93134598, -9.29541129],
                 [11.45760169, 10.5857071, -8.13037669]
             ],
-            decimal=5,
+            atol=1e-5,
         )
 
         res = align.iterative_average(mobile, reference, select='bynum 1:10',
                                       niter=10, weights='mass')
-        assert_almost_equal(
+        assert_allclose(
             res.results.positions,
             [
                 [11.96438784, 8.85426235, -10.24735737],
@@ -648,7 +649,7 @@ class TestIterativeAverage(object):
                 [9.64405257, 9.55924307, -9.04315991],
                 [11.0678934, 10.27798773, -7.64881842]
             ],
-            decimal=5,
+            atol=1e-5,
         )
 
 
