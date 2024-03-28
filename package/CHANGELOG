@@ -16,11 +16,16 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
+<<<<<<< HEAD
          SampurnaM,orbeckst
+=======
+         SampurnaM,orbeckst,tyler.je.reddy
+>>>>>>> 446de5007010092faa006ca76b43607bc96b10e7
 
  * 2.8.0
 
 Fixes
+ * Add support for TPR files produced by Gromacs 2024.1
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
    (PR #4459)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
