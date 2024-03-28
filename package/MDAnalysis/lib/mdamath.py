@@ -59,9 +59,7 @@ Connectivity
 """
 import numpy as np
 
-from ..exceptions import NoDataError
-from . import util
-from ._cutil import (make_whole, find_fragments, _sarrus_det_single,
+from ._cutil import (make_whole, find_fragments, _sarrus_det_single, # pylint: disable=unused-import
                      _sarrus_det_multiple)
 import numpy.typing as npt
 from typing import Union

@@ -70,7 +70,7 @@ import numpy as np
 
 import MDAnalysis as mda
 from .distances import calc_bonds
-from .base import AnalysisBase, Results
+from .base import AnalysisBase
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
 

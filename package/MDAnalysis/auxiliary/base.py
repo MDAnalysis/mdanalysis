@@ -50,7 +50,6 @@ import pickle
 import numpy as np
 
 from ..lib.util import asiterable, anyopen
-from .. import units
 
 from . import _AUXREADERS
 from .core import auxreader

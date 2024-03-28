@@ -29,7 +29,6 @@ import pickle
 import MDAnalysis as mda
 
 from MDAnalysisTests import make_Universe
-from MDAnalysis.tests.datafiles import PSF, DCD
 
 
 class TestSegment(object):

@@ -25,7 +25,6 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-import MDAnalysis as mda
 from MDAnalysis.transformations import rotateby
 from MDAnalysis.lib.transformations import rotation_matrix
 from MDAnalysisTests import make_Universe

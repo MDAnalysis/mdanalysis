@@ -30,7 +30,7 @@ import numpy as np
 from numpy.testing import (assert_array_almost_equal, assert_equal,
                            assert_array_equal, assert_almost_equal)
 
-from MDAnalysis.lib.formats.libdcd import DCDFile, DCD_IS_CHARMM, DCD_HAS_EXTRA_BLOCK
+from MDAnalysis.lib.formats.libdcd import DCDFile
 
 from MDAnalysisTests.datafiles import (
     DCD, DCD_NAMD_TRICLINIC, legacy_DCD_ADK_coords, legacy_DCD_NAMD_coords,

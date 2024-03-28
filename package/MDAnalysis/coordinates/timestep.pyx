@@ -130,6 +130,7 @@ MDAnalysis.
 from ..lib.util import Namespace
 from ..exceptions import NoDataError
 from . import core
+from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 from libc.stdint cimport uint64_t
 import weakref
 import warnings
@@ -476,7 +477,7 @@ cdef class Timestep:
         if self.dimensions is None:
             return 0
         else:
-            return core.box_volume(self.dimensions)
+            return box_volume(self.dimensions)
 
     @property
     def triclinic_dimensions(self):
@@ -517,7 +518,7 @@ cdef class Timestep:
         if self.dimensions is None:
             return None
         else:
-            return core.triclinic_vectors(self.dimensions)
+            return triclinic_vectors(self.dimensions)
 
     @triclinic_dimensions.setter
     def triclinic_dimensions(self, new_dimensions):
@@ -527,7 +528,7 @@ cdef class Timestep:
         if new_dimensions is None:
             self.dimensions = None
         else:
-            self.dimensions = core.triclinic_box(*new_dimensions)
+            self.dimensions = triclinic_box(*new_dimensions)
 
     @property
     def velocities(self):

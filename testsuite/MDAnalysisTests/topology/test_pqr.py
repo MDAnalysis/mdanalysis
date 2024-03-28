@@ -22,7 +22,6 @@
 #
 from io import StringIO
 from numpy.testing import assert_equal, assert_almost_equal
-import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase

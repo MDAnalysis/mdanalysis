@@ -102,18 +102,15 @@ lines in ``.in`` files.  These are as follows:
 .. _FHI-AIMS format: https://doi.org/10.6084/m9.figshare.12413477.v1
 
 """
-import re
-
 import itertools
 import warnings
 
 import numpy as np
 
 from . import base
-from .core import triclinic_box, triclinic_vectors
+from ..lib.mdamath import triclinic_box
 from ..exceptions import NoDataError
 from ..lib import util
-from ..lib import mdamath
 
 
 class FHIAIMSReader(base.SingleFrameReaderBase):

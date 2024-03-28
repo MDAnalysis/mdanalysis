@@ -20,12 +20,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import os
 from unittest import mock
 
 """Tests whether os.fork() is called as a side effect when importing MDAnalysis.
 See PR #1794 for details."""
 
 with mock.patch('os.fork') as os_dot_fork:
-    import MDAnalysis
+    import MDAnalysis # pylint: disable=unused-import
     assert not os_dot_fork.called

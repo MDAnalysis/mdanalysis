@@ -40,7 +40,6 @@ from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.util import block_import
 
 
 class _NCDFReaderTest(_TRJReaderTest):

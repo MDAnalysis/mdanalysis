@@ -45,13 +45,12 @@ Classes
    :inherited-members:
 
 """
-import numpy as np
 import os
 import errno
 
 from ..lib import util
 from . import base
-from ..lib.util import openany, cached, store_init_arguments
+from ..lib.util import cached, store_init_arguments
 from .timestep import Timestep
 
 class TXYZReader(base.ReaderBase):

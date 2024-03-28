@@ -24,7 +24,7 @@ import os
 from unittest.mock import patch
 
 import MDAnalysis as mda
-import MDAnalysis.analysis.gnm
+from MDAnalysis.analysis.gnm import (GNMAnalysis, closeContactGNMAnalysis)
 
 from numpy.testing import assert_almost_equal
 import numpy as np
@@ -40,7 +40,7 @@ def universe():
 
 def test_gnm(universe, tmpdir):
     output = os.path.join(str(tmpdir), 'output.txt')
-    gnm = mda.analysis.gnm.GNMAnalysis(universe, ReportVector=output)
+    gnm = GNMAnalysis(universe, ReportVector=output)
     gnm.run()
     result = gnm.results
     assert len(result.times) == 10
@@ -52,7 +52,7 @@ def test_gnm(universe, tmpdir):
 
 
 def test_gnm_run_step(universe):
-    gnm = mda.analysis.gnm.GNMAnalysis(universe)
+    gnm = GNMAnalysis(universe)
     gnm.run(step=3)
     result = gnm.results
     assert len(result.times) == 4
@@ -62,7 +62,7 @@ def test_gnm_run_step(universe):
 
 
 def test_generate_kirchoff(universe):
-    gnm = mda.analysis.gnm.GNMAnalysis(universe)
+    gnm = GNMAnalysis(universe)
     gen = gnm.generate_kirchoff()
     assert_almost_equal(gen[0],
       [7,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -85,11 +85,11 @@ def test_gnm_SVD_fail(universe):
         msg = "SVD with cutoff 7.0 failed to converge. "
         msg += "Skip frame at 0.0."
         with pytest.warns(UserWarning, match=msg):
-            mda.analysis.gnm.GNMAnalysis(universe).run(stop=1)
+            GNMAnalysis(universe).run(stop=1)
 
 
 def test_closeContactGNMAnalysis(universe):
-    gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, weights="size")
+    gnm = closeContactGNMAnalysis(universe, weights="size")
     gnm.run(stop=2)
     result = gnm.results
     assert len(result.times) == 2
@@ -115,7 +115,7 @@ def test_closeContactGNMAnalysis(universe):
 
 
 def test_closeContactGNMAnalysis_weights_None(universe):
-    gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, weights=None)
+    gnm = closeContactGNMAnalysis(universe, weights=None)
     gnm.run(stop=2)
     result = gnm.results
     assert len(result.times) == 2

@@ -185,6 +185,7 @@ enable=abstract-class-instantiated,
        unsubscriptable-object,
        unsupported-binary-operation,
        unsupported-membership-test,
+       unused-import,
        unused-format-string-argument,
        unused-format-string-key,
        useless-else-on-loop,
@@ -260,7 +261,6 @@ enable=abstract-class-instantiated,
        # unnecessary-semicolon,
        # unpacking-non-sequence,
        # unused-argument,
-       # unused-import,
        # unused-variable,
        # unused-wildcard-import,
        # used-before-assignment,
@@ -609,4 +609,4 @@ analyse-fallback-blocks=no
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception

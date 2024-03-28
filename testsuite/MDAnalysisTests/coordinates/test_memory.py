@@ -28,7 +28,7 @@ from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               MultiframeReaderTest)
-from MDAnalysis.coordinates.memory import Timestep
+from MDAnalysis.coordinates.timestep import Timestep
 from numpy.testing import assert_equal, assert_almost_equal
 
 

@@ -662,7 +662,7 @@ class TestTriclinicDistances(object):
     @staticmethod
     @pytest.fixture()
     def tri_vec_box(TRIC):
-        return MDAnalysis.coordinates.core.triclinic_vectors(TRIC.dimensions)
+        return mdamath.triclinic_vectors(TRIC.dimensions)
 
     @staticmethod
     @pytest.fixture()

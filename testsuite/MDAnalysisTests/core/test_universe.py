@@ -43,11 +43,10 @@ from MDAnalysisTests.datafiles import (
     PSF, DCD,
     PSF_BAD,
     PDB_small,
-    PDB_chainidrepeat,
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
-    PDB, MMTF,
+    PDB,
 )
 
 import MDAnalysis as mda

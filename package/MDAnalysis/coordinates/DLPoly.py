@@ -31,7 +31,7 @@ Read DL Poly_ format coordinate files
 import numpy as np
 
 from . import base
-from . import core
+from ..lib.mdamath import triclinic_box
 from ..lib import util
 from ..lib.util import cached, store_init_arguments
 
@@ -123,7 +123,7 @@ class ConfigReader(base.SingleFrameReaderBase):
         if has_forces:
             ts._forces = forces
         if not imcon == 0:
-            ts.dimensions = core.triclinic_box(*unitcell)
+            ts.dimensions = triclinic_box(*unitcell)
 
         ts.frame = 0
 
@@ -176,7 +176,7 @@ class HistoryReader(base.ReaderBase):
             unitcell[0] = self._file.readline().split()
             unitcell[1] = self._file.readline().split()
             unitcell[2] = self._file.readline().split()
-            ts.dimensions = core.triclinic_box(*unitcell)            
+            ts.dimensions = triclinic_box(*unitcell)            
 
         # If ids are given, put them in here
         # and later sort by them

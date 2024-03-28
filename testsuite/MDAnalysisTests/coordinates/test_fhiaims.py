@@ -22,16 +22,12 @@
 #
 import pytest
 from io import StringIO
-import os
 
 import MDAnalysis as mda
 import numpy as np
-from MDAnalysisTests import make_Universe
-from MDAnalysisTests.coordinates.base import (
-    _SingleFrameReader, BaseWriterTest)
+from MDAnalysisTests.coordinates.base import BaseWriterTest
 from MDAnalysisTests.datafiles import FHIAIMS
 from numpy.testing import (assert_equal,
-                           assert_array_almost_equal,
                            assert_almost_equal)
 
 

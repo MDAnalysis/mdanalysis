@@ -24,12 +24,11 @@ import re
 
 import numpy as np
 import pytest
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import helix_analysis as hel
-from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
-                                       HELANAL_BENDING_MATRIX,
+from MDAnalysisTests.datafiles import (PSF, DCD, PDB_small,
                                        HELANAL_BENDING_MATRIX_SUBSET,
                                        XYZ)
 

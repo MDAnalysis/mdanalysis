@@ -56,8 +56,6 @@ Helper functions
 .. autofunction:: make_downshift_arrays
 
 """
-import contextlib
-
 import numpy as np
 import typing
 

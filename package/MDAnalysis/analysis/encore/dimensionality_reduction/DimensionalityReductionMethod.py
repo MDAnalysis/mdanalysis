@@ -33,7 +33,6 @@ while others are available only if scikit-learn is installed
 .. versionadded:: 0.16.0
 
 """
-import logging
 import warnings
 
 # Import native affinity propagation implementation

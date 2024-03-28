@@ -40,11 +40,8 @@ import numpy as np
 from getpass import getuser
 from socket import gethostname
 from datetime import datetime
-from time import sleep
 import logging
-import warnings
 
-from ...core.universe import Universe
 
 from ..align import rotation_matrix
 

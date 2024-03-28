@@ -26,8 +26,6 @@ import pytest
 
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib.mdamath import triclinic_vectors
-
 from MDAnalysisTests.datafiles import (DMS)
 
 

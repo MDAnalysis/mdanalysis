@@ -45,7 +45,6 @@ MDAnalysis.visualization.streamlines_3D : streamplots in 3D
 import multiprocessing
 
 import numpy as np
-import scipy
 
 try:
     import matplotlib

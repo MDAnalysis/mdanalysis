@@ -77,12 +77,11 @@ Classes
 """
 import numpy as np
 import logging
-import string
 import functools
 import warnings
 
 from . import guessers
-from ..lib.util import openany, conv_float
+from ..lib.util import openany
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReaderBase, squash_by
 from ..core.topology import Topology

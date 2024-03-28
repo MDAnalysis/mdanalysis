@@ -37,7 +37,6 @@ from MDAnalysis.lib.picklable_file_io import (
     gzip_pickle_open,
 )
 from MDAnalysis.coordinates.GSD import (
-    GSDPicklable,
     gsd_pickle_open,
     HAS_GSD
 )
@@ -64,7 +63,6 @@ from MDAnalysis.tests.datafiles import (
     GMS_ASYMOPT,
     GSD,
     NCDF,
-    TPR_xvf,
     H5MD_xvf
 )
 

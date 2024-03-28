@@ -53,7 +53,6 @@ from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import calc_bonds
 
 
-import warnings
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 

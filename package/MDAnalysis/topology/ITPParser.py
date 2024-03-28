@@ -129,7 +129,6 @@ Classes
 from collections import defaultdict
 import os
 
-import logging
 import numpy as np
 
 from ..lib.util import openany

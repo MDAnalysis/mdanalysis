@@ -56,15 +56,11 @@ Classes
    :inherited-members:
 
 """
-import os
-import errno
 import numpy as np
-import struct
-import types
 import warnings
 
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
-from . import base, core
+from . import base
 from ..lib.formats.libdcd import DCDFile
 from ..lib.mdamath import triclinic_box
 from ..lib.util import store_init_arguments

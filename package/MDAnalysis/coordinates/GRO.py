@@ -108,7 +108,7 @@ import warnings
 import numpy as np
 
 from . import base
-from .core import triclinic_box, triclinic_vectors
+from ..lib.mdamath import triclinic_box
 from ..exceptions import NoDataError
 from ..lib import util
 from .timestep import Timestep

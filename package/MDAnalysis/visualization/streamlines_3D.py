@@ -49,7 +49,6 @@ MDAnalysis.visualization.streamlines : streamplots in 2D
 import multiprocessing
 
 import numpy as np
-import numpy.testing
 import scipy
 import scipy.spatial.distance
 

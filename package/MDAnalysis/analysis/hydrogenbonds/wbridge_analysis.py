@@ -714,7 +714,7 @@ import numpy as np
 from ..base import AnalysisBase
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import capped_distance, calc_angles
-from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
+from MDAnalysis import NoDataError, MissingDataWarning
 
 logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 

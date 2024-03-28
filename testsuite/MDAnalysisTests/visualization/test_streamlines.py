@@ -29,8 +29,6 @@ from MDAnalysis.coordinates.XTC import XTCWriter
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 import pytest
 from pytest import approx
-import matplotlib.pyplot as plt
-import os
 
 @pytest.fixture(scope="session")
 def univ():

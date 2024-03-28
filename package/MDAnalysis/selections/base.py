@@ -37,8 +37,6 @@ methods.
 .. autofunction:: join
 
 """
-import os.path
-
 from ..lib import util
 from . import _SELECTION_WRITERS
 

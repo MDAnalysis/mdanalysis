@@ -210,10 +210,11 @@ Classes
 
 import numpy as np
 import MDAnalysis as mda
-from . import base, core
+from . import base
 from ..exceptions import NoDataError
 from ..due import due, Doi
 from MDAnalysis.lib.util import store_init_arguments
+from MDAnalysis.lib.mdamath import triclinic_box
 try:
     import h5py
 except ImportError:
@@ -652,7 +653,7 @@ class H5MDReader(base.ReaderBase):
             if edges.shape == (3,):
                 ts.dimensions = [*edges, 90, 90, 90]
             else:
-                ts.dimensions = core.triclinic_box(*edges)
+                ts.dimensions = triclinic_box(*edges)
         else:
             ts.dimensions = None
 
