@@ -573,7 +573,7 @@ class PCA(AnalysisBase):
             for res in group.residues:
                 # n_common is the number of pca atoms in a residue
                 n_common = pca_res_counts[np.where(
-            		   pca_res_indices == res.resindex)][0]
+                            pca_res_indices == res.resindex)][0]
                 non_pca_atoms = np.append(non_pca_atoms,
                                           res.atoms.n_atoms - n_common)
             # index_extrapolate records the anchor number for each non-PCA atom
