@@ -605,17 +605,8 @@ class TestIterativeAverage(object):
         u = mda.Universe(PSF, DCD)
         return u
 
-    def test_iterative_average(self, mobile, reference):
-        res = align.iterative_average(mobile, niter=10)
-        res = align.iterative_average(mobile, reference, eps=1e-5)
-        res = align.iterative_average(mobile, reference, select='bynum 1:10',
-                                      weights=np.ones(10))
-
-        with pytest.raises(RuntimeError):
-            _ = align.iterative_average(mobile, reference, niter=1, eps=0)
-
-        res = align.iterative_average(mobile, reference, select='bynum 1:10',
-                                      niter=10, verbose=True)
+    def test_iterative_average_default(self, mobile):
+        res = align.iterative_average(mobile, select="bynum 1:10")
         assert_allclose(
             res.results.positions,
             [
@@ -633,8 +624,30 @@ class TestIterativeAverage(object):
             atol=1e-5,
         )
 
-        res = align.iterative_average(mobile, reference, select='bynum 1:10',
-                                      niter=10, weights='mass')
+    def test_iterative_average_eps_high(self, mobile):
+        res = align.iterative_average(mobile, select="bynum 1:10",
+                                      eps=1e-5)
+        assert_allclose(
+            res.results.positions,
+            [
+                [11.93075595, 8.6729893, -10.49887605],
+                [12.60587898, 7.91673117, -10.73327464],
+                [12.45662411, 9.51900517, -10.35551193],
+                [11.27452274, 8.83003843, -11.2619057],
+                [11.25808119, 8.26794477, -9.23340715],
+                [12.02767222, 7.95332228, -8.57249317],
+                [10.54679871, 9.49505306, -8.61215292],
+                [9.99500556, 9.16624224, -7.75231192],
+                [9.83897407, 9.93134598, -9.29541129],
+                [11.45760169, 10.5857071, -8.13037669]
+            ],
+            atol=1e-5,
+        )
+
+    def test_iterative_average_weights_mass(self, mobile, reference):
+        res = align.iterative_average(mobile, reference,
+                                      select="bynum 1:10",
+                                      niter=10, weights="mass")
         assert_allclose(
             res.results.positions,
             [
@@ -651,6 +664,11 @@ class TestIterativeAverage(object):
             ],
             atol=1e-5,
         )
+
+    def test_iterative_average_convergence_failure(self, mobile, reference):
+        with pytest.raises(RuntimeError):
+            _ = align.iterative_average(mobile, reference,
+                                        niter=1, eps=0)
 
 
 def test_alignto_reorder_atomgroups():

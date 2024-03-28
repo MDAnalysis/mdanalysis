@@ -593,8 +593,8 @@ def iterative_average(
 
     Example
     -------
-    `iterative_average` can be used to obtain a `MDAnalysis.Universe` with
-    the optimal reference structure.
+    `iterative_average` can be used to obtain a :class:`MDAnalysis.Universe`
+    with the optimal reference structure.
 
     ::
 
