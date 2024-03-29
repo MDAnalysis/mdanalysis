@@ -128,7 +128,7 @@ class BaseAuxReference(object):
 class BaseAuxReaderTest(object):
 
     def test_raise_error_no_auxdata_provided(self, ref, ref_universe):
-        with pytest.raises(ValueError, match="No input `auxdata`"):
+        with pytest.raises(TypeError):
             ref_universe.trajectory.add_auxiliary()
 
     def test_n_steps(self, ref, reader):
