@@ -670,6 +670,10 @@ class TestIterativeAverage(object):
             _ = align.iterative_average(mobile, reference,
                                         niter=1, eps=0)
 
+    def test_iterative_average_convergence_verbose(self, mobile, reference):
+        _ = align.iterative_average(mobile, select="bynum 1:10",
+                                    verbose=True)
+
 
 def test_alignto_reorder_atomgroups():
     # Issue 2977

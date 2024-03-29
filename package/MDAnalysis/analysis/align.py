@@ -607,6 +607,11 @@ def iterative_average(
 
         averaged_universe = av.results.universe
 
+    References
+    ----------
+
+    .. footbibliography::
+
     .. versionadded:: 2.8.0
     """
     if not reference:
