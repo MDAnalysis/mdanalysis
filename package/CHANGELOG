@@ -16,13 +16,13 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
-         tyler.je.reddy, SampurnaM, leonwehrhan
-
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs
 
  * 2.8.0
 
 Fixes
- * Add support for TPR files produced by Gromacs 2024.1
+ * Atomname methods can handle empty groups (Issue #2879, PR #4529)
+ * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
    (PR #4459)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
