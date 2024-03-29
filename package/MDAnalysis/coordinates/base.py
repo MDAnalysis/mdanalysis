@@ -1074,7 +1074,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return coordinates
 
     def add_auxiliary(self,
-                      auxdata: Union[str, AuxReader] = None,
+                      auxdata: Union[str, AuxReader],
                       aux_spec: Union[str, Dict[str, str]] = None,
                       format: str = None,
                       **kwargs) -> None:
@@ -1139,9 +1139,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See
         the :ref:`Auxiliary API`.
         """
-        if auxdata is None:
-            raise ValueError("No input `auxdata` specified, but it needs "
-                             "to be provided.")
         if type(auxdata) not in list(_AUXREADERS.values()):
             # i.e. if auxdata is a file, not an instance of an AuxReader
             reader_type = get_auxreader_for(auxdata)
