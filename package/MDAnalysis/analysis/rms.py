@@ -168,7 +168,6 @@ import warnings
 
 import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
-import MDAnalysis.analysis.align as align
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.util import asiterable, iterable, get_weights
