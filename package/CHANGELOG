@@ -16,12 +16,13 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
-         kainszs
+         kainszs, tyler.je.reddy, SampurnaM
 
  * 2.8.0
 
 Fixes
  * Atomname methods can handle empty groups (Issue #2879, PR #4529)
+ * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
    (PR #4459)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
@@ -34,6 +35,8 @@ Fixes
  * Fix deploy action to use the correct version of the pypi upload action.
 
 Enhancements
+ * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
+   (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
  * Documented the r0 attribute in the `Contacts` class and added the 

@@ -135,7 +135,8 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
 
     # handler that writes to logfile
     logfile_handler = logging.FileHandler(logfile)
-    logfile_formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+    logfile_formatter = logging.Formatter(
+        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
     logfile_handler.setFormatter(logfile_formatter)
     logger.addHandler(logfile_handler)
 
@@ -172,6 +173,7 @@ class NullHandler(logging.Handler):
     see the advice on logging and libraries in
     http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
     """
+
     def emit(self, record):
         pass
 
@@ -327,6 +329,7 @@ class ProgressBar(tqdm):
     .. _`tqdm documentation`: https://tqdm.github.io/
 
     """
+
     def __init__(self, *args, **kwargs):
         """"""
         # ^^^^ keep the empty doc string to avoid Sphinx doc errors with the
