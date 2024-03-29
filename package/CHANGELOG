@@ -32,6 +32,7 @@ Fixes
    `DistanceMatrix.run(frames=...)` (PR #4433)
  * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
  * Fix deploy action to use the correct version of the pypi upload action.
+ * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
