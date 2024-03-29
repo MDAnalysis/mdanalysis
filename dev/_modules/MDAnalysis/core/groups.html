@@ -218,17 +218,19 @@
 <span class="sd">------</span>
 
 <span class="sd">Each of the above classes has a *level* attribute.  This can be used to verify</span>
-<span class="sd">that two objects are of the same level, or to access a particular class::</span>
+<span class="sd">that two objects are of the same level, or to access a particular class</span>
 
-<span class="sd">   u = mda.Universe()</span>
+<span class="sd">.. code-block:: python</span>
 
-<span class="sd">   ag = u.atoms[:10]</span>
-<span class="sd">   at = u.atoms[11]</span>
+<span class="sd">    u = mda.Universe()</span>
 
-<span class="sd">   ag.level == at.level  # Returns True</span>
+<span class="sd">    ag = u.atoms[:10]</span>
+<span class="sd">    at = u.atoms[11]</span>
 
-<span class="sd">   ag.level.singular  # Returns Atom class</span>
-<span class="sd">   at.level.plural  # Returns AtomGroup class</span>
+<span class="sd">    ag.level == at.level  # Returns True</span>
+
+<span class="sd">    ag.level.singular  # Returns Atom class</span>
+<span class="sd">    at.level.plural  # Returns AtomGroup class</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
@@ -914,16 +916,24 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">           &gt;&gt;&gt; ag = u.atoms[[2, 1, 2, 2, 1, 0]]</span>
-<span class="sd">           &gt;&gt;&gt; ag</span>
-<span class="sd">           &lt;AtomGroup with 6 atoms&gt;</span>
-<span class="sd">           &gt;&gt;&gt; ag.isunique</span>
-<span class="sd">           False</span>
-<span class="sd">           &gt;&gt;&gt; ag2 = ag.unique</span>
-<span class="sd">           &gt;&gt;&gt; ag2</span>
-<span class="sd">           &lt;AtomGroup with 3 atoms&gt;</span>
-<span class="sd">           &gt;&gt;&gt; ag2.isunique</span>
-<span class="sd">           True</span>
+<span class="sd">        .. testsetup:: GroupBase.isunique</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PDB, XTC</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(PDB, XTC)</span>
+
+<span class="sd">        .. doctest:: GroupBase.isunique</span>
+
+<span class="sd">            &gt;&gt;&gt; ag = u.atoms[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">            &gt;&gt;&gt; ag</span>
+<span class="sd">            &lt;AtomGroup with 6 atoms&gt;</span>
+<span class="sd">            &gt;&gt;&gt; ag.isunique</span>
+<span class="sd">            False</span>
+<span class="sd">            &gt;&gt;&gt; ag2 = ag.unique</span>
+<span class="sd">            &gt;&gt;&gt; ag2</span>
+<span class="sd">            &lt;AtomGroup with 3 atoms&gt;</span>
+<span class="sd">            &gt;&gt;&gt; ag2.isunique</span>
+<span class="sd">            True</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -1171,15 +1181,33 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">        To find the center of charge of a given :class:`AtomGroup`::</span>
+<span class="sd">        To find the center of charge of a given :class:`AtomGroup`:</span>
+
+<span class="sd">        .. testsetup:: GroupBase.center</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PDB, XTC</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">        .. doctest:: GroupBase.center</span>
 
 <span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;prop mass &gt; 4.0&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; sel.center(sel.charges)</span>
+<span class="sd">            array([-0.22925091, -0.04771193, -0.16728489])</span>
 
-<span class="sd">        To find the centers of mass per residue of all CA :class:`Atoms&lt;Atom&gt;`::</span>
+<span class="sd">        To find the centers of mass per residue of all CA :class:`Atoms&lt;Atom&gt;`:</span>
+
+<span class="sd">        .. doctest:: GroupBase.center</span>
+<span class="sd">           :options: +NORMALIZE_WHITESPACE</span>
 
 <span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; sel.center(sel.masses, compound=&#39;residues&#39;)</span>
+<span class="sd">            array([[ 11.66462231,   8.39347267,  -8.98323059],</span>
+<span class="sd">                  [ 11.41483879,   5.43442154,  -6.51348448],</span>
+<span class="sd">                  [  8.95975494,   5.61292315,  -3.61323047],</span>
+<span class="sd">                  [  8.29006767,   3.07599092,  -0.79665166],</span>
+<span class="sd">                  [  5.01112604,   3.76389837,   1.130355  ],</span>
+<span class="sd">                  ...</span>
 
 
 <span class="sd">        .. versionchanged:: 0.19.0 Added `compound` parameter</span>
@@ -1370,20 +1398,42 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">        To find the total charge of a given :class:`AtomGroup`::</span>
+<span class="sd">        To find the total charge of a given :class:`AtomGroup`:</span>
+
+<span class="sd">        .. testsetup:: GroupBase.center</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">        .. doctest:: GroupBase.center</span>
 
 <span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;prop mass &gt; 4.0&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; sel.accumulate(&#39;charges&#39;)</span>
+<span class="sd">            -251.68500316143036</span>
 
-<span class="sd">        To find the total mass per residue of all CA :class:`Atoms&lt;Atom&gt;`::</span>
+<span class="sd">        To find the total mass per residue of all CA :class:`Atoms&lt;Atom&gt;`:</span>
+
+<span class="sd">        .. doctest:: GroupBase.center</span>
+<span class="sd">           :options: +NORMALIZE_WHITESPACE</span>
 
 <span class="sd">            &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; sel.accumulate(&#39;masses&#39;, compound=&#39;residues&#39;)</span>
+<span class="sd">            array([12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="sd">                   12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="sd">                   12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="sd">                   12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="sd">                   12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="sd">                   ...</span>
 
 <span class="sd">        To find the maximum atomic charge per fragment of a given</span>
-<span class="sd">        :class:`AtomGroup`::</span>
+<span class="sd">        :class:`AtomGroup`:</span>
 
+<span class="sd">        .. doctest:: GroupBase.center</span>
+
+<span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; sel.accumulate(&#39;charges&#39;, compound=&quot;fragments&quot;, function=np.max)</span>
+<span class="sd">            array([0.20999999])</span>
 
 
 <span class="sd">        .. versionadded:: 0.20.0</span>
@@ -2100,23 +2150,41 @@
 <span class="sd">        -------</span>
 <span class="sd">        To group atoms with the same mass together:</span>
 
-<span class="sd">        &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
-<span class="sd">        {12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="sd">         14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="sd">         15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<span class="sd">        .. testsetup:: GroupBase.groupby</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(PSF, DCD)</span>
+<span class="sd">            ag = u.atoms</span>
+
+<span class="sd">        .. doctest:: GroupBase.groupby</span>
+<span class="sd">           :options: +NORMALIZE_WHITESPACE</span>
+
+<span class="sd">            &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
+<span class="sd">            {32.06: &lt;AtomGroup with 7 atoms&gt;,</span>
+<span class="sd">             1.008: &lt;AtomGroup with 1685 atoms&gt;,</span>
+<span class="sd">             12.011: &lt;AtomGroup with 1040 atoms&gt;,</span>
+<span class="sd">             14.007: &lt;AtomGroup with 289 atoms&gt;,</span>
+<span class="sd">             15.999: &lt;AtomGroup with 320 atoms&gt;}</span>
 
 <span class="sd">        To group atoms with the same residue name and mass together:</span>
 
-<span class="sd">          &gt;&gt;&gt; ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])</span>
-<span class="sd">          {(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
-<span class="sd">           (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
-<span class="sd">           (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
-<span class="sd">           (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
-<span class="sd">           (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
-<span class="sd">           ...}</span>
+<span class="sd">        .. doctest:: GroupBase.groupby</span>
+<span class="sd">           :options: +NORMALIZE_WHITESPACE</span>
 
-<span class="sd">          &gt;&gt;&gt; ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])(&#39;ALA&#39;, 15.999)</span>
-<span class="sd">           &lt;AtomGroup with 19 atoms&gt;</span>
+<span class="sd">            &gt;&gt;&gt; group_dict = ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])</span>
+<span class="sd">            &gt;&gt;&gt; dict(sorted(group_dict.items()))</span>
+<span class="sd">            {(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="sd">             (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="sd">             (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="sd">             (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="sd">             (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="sd">             ...</span>
+
+<span class="sd">        .. doctest:: GroupBase.groupby</span>
+
+<span class="sd">            &gt;&gt;&gt; ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])[&#39;ALA&#39;, 15.999]</span>
+<span class="sd">            &lt;AtomGroup with 19 atoms&gt;</span>
 
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
@@ -2166,13 +2234,21 @@
 <span class="sd">        The order of the original contents (including duplicates)</span>
 <span class="sd">        are preserved when performing a concatenation.</span>
 
-<span class="sd">        &gt;&gt;&gt; ag1 = u.select_atoms(&#39;name O&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; ag2 = u.select_atoms(&#39;name N&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; ag3 = ag1 + ag2  # or ag1.concatenate(ag2)</span>
-<span class="sd">        &gt;&gt;&gt; ag3[:3].names</span>
-<span class="sd">        array([&#39;O&#39;, &#39;O&#39;, &#39;O&#39;], dtype=object)</span>
-<span class="sd">        &gt;&gt;&gt; ag3[-3:].names</span>
-<span class="sd">        array([&#39;N&#39;, &#39;N&#39;, &#39;N&#39;], dtype=object)</span>
+<span class="sd">        .. testsetup:: GroupBase.concatenate</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PDB, XTC</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(PDB, XTC)</span>
+
+<span class="sd">        .. doctest:: GroupBase.concatenate</span>
+
+<span class="sd">            &gt;&gt;&gt; ag1 = u.select_atoms(&#39;name O&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; ag2 = u.select_atoms(&#39;name N&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; ag3 = ag1 + ag2  # or ag1.concatenate(ag2)</span>
+<span class="sd">            &gt;&gt;&gt; ag3[:3].names</span>
+<span class="sd">            array([&#39;O&#39;, &#39;O&#39;, &#39;O&#39;], dtype=object)</span>
+<span class="sd">            &gt;&gt;&gt; ag3[-3:].names</span>
+<span class="sd">            array([&#39;N&#39;, &#39;N&#39;, &#39;N&#39;], dtype=object)</span>
 
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
@@ -2204,11 +2280,19 @@
 <span class="sd">        In contrast to :meth:`concatenate`, any duplicates are dropped</span>
 <span class="sd">        and the result is sorted.</span>
 
-<span class="sd">        &gt;&gt;&gt; ag1 = u.select_atoms(&#39;name O&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; ag2 = u.select_atoms(&#39;name N&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; ag3 = ag1 | ag2  # or ag1.union(ag2)</span>
-<span class="sd">        &gt;&gt;&gt; ag3[:3].names</span>
-<span class="sd">        array([&#39;N&#39;, &#39;O&#39;, &#39;N&#39;], dtype=object)</span>
+<span class="sd">        .. testsetup:: GroupBase.union</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PDB, XTC</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(PDB, XTC)</span>
+
+<span class="sd">        .. doctest:: GroupBase.union</span>
+
+<span class="sd">            &gt;&gt;&gt; ag1 = u.select_atoms(&#39;name O&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; ag2 = u.select_atoms(&#39;name N&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; ag3 = ag1 | ag2  # or ag1.union(ag2)</span>
+<span class="sd">            &gt;&gt;&gt; ag3[:3].names</span>
+<span class="sd">            array([&#39;N&#39;, &#39;O&#39;, &#39;N&#39;], dtype=object)</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -2244,9 +2328,11 @@
 <span class="sd">        become too complicated.  For example to find the water atoms</span>
 <span class="sd">        which are within 4.0A of two segments:</span>
 
-<span class="sd">        &gt;&gt;&gt; shell1 = u.select_atoms(&#39;resname SOL and around 4.0 segid 1&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; shell2 = u.select_atoms(&#39;resname SOL and around 4.0 segid 2&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; common = shell1 &amp; shell2  # or shell1.intersection(shell2)</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt;&gt; shell1 = u.select_atoms(&#39;resname SOL and around 4.0 segid 1&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; shell2 = u.select_atoms(&#39;resname SOL and around 4.0 segid 2&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; common = shell1 &amp; shell2  # or shell1.intersection(shell2)</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -2283,11 +2369,19 @@
 <span class="sd">        Unlike :meth:`difference` this method will not sort or remove</span>
 <span class="sd">        duplicates.</span>
 
-<span class="sd">        &gt;&gt;&gt; ag1 = u.atoms[[3, 3, 2, 2, 1, 1]]</span>
-<span class="sd">        &gt;&gt;&gt; ag2 = u.atoms[2]</span>
-<span class="sd">        &gt;&gt;&gt; ag3 = ag1 - ag2  # or ag1.subtract(ag2)</span>
-<span class="sd">        &gt;&gt;&gt; ag1.indices</span>
-<span class="sd">        array([3, 3, 1, 1])</span>
+<span class="sd">        .. testsetup:: GroupBase.subtract</span>
+
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            u = mda.Universe(PSF,DCD)</span>
+
+<span class="sd">        .. doctest:: GroupBase.subtract</span>
+
+<span class="sd">            &gt;&gt;&gt; ag1 = u.atoms[[3, 3, 2, 2, 1, 1]]</span>
+<span class="sd">            &gt;&gt;&gt; ag2 = u.atoms[2]</span>
+<span class="sd">            &gt;&gt;&gt; ag3 = ag1.subtract(ag2)</span>
+<span class="sd">            &gt;&gt;&gt; ag3.indices</span>
+<span class="sd">            array([3, 3, 1, 1])</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -2350,11 +2444,19 @@
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
 
-<span class="sd">        &gt;&gt;&gt; ag1 = u.atoms[[0, 1, 5, 3, 3, 2]]</span>
-<span class="sd">        &gt;&gt;&gt; ag2 = u.atoms[[4, 4, 6, 2, 3, 5]]</span>
-<span class="sd">        &gt;&gt;&gt; ag3 = ag1 ^ ag2  # or ag1.symmetric_difference(ag2)</span>
-<span class="sd">        &gt;&gt;&gt; ag3.indices  # 0 and 1 are only in ag1, 4 and 6 are only in ag2</span>
-<span class="sd">        [0, 1, 4, 6]</span>
+<span class="sd">        .. testsetup:: GroupBase.symmetric_difference</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">        .. doctest:: GroupBase.symmetric_difference</span>
+
+<span class="sd">            &gt;&gt;&gt; ag1 = u.atoms[[0, 1, 5, 3, 3, 2]]</span>
+<span class="sd">            &gt;&gt;&gt; ag2 = u.atoms[[4, 4, 6, 2, 3, 5]]</span>
+<span class="sd">            &gt;&gt;&gt; ag3 = ag1 ^ ag2  # or ag1.symmetric_difference(ag2)</span>
+<span class="sd">            &gt;&gt;&gt; ag3.indices  # 0 and 1 are only in ag1, 4 and 6 are only in ag2</span>
+<span class="sd">            array([0, 1, 4, 6])</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -2609,25 +2711,34 @@
 <span class="sd">    be attached by the new :class:`AtomGroup`. If the Universe is serialized</span>
 <span class="sd">    with its :class:`AtomGroup`, they will still be bound together afterwards:</span>
 
-<span class="sd">    .. code-block:: python</span>
+<span class="sd">    .. testsetup:: AtomGroup</span>
+
+<span class="sd">        import MDAnalysis as mda</span>
+<span class="sd">        from MDAnalysis.tests.datafiles import PSF, DCD</span>
+
+<span class="sd">    .. doctest:: AtomGroup</span>
+
+<span class="sd">        &gt;&gt;&gt; import pickle</span>
 
 <span class="sd">        &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
 <span class="sd">        &gt;&gt;&gt; g = u.atoms</span>
 
 <span class="sd">        &gt;&gt;&gt; g_pickled = pickle.loads(pickle.dumps(g))</span>
 <span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is u: &quot;, u is g_pickled.universe)</span>
-<span class="sd">        g_pickled.universe is u: False</span>
+<span class="sd">        g_pickled.universe is u:  False</span>
 
-<span class="sd">        &gt;&gt;&gt; g_pickled, u_pickled = pickle.load(pickle.dumps(g, u))</span>
+<span class="sd">        &gt;&gt;&gt; g_pickled, u_pickled = pickle.loads(pickle.dumps((g, u)))</span>
 <span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is u_pickled: &quot;,</span>
-<span class="sd">        &gt;&gt;&gt;       u_pickle is g_pickled.universe)</span>
-<span class="sd">        g_pickled.universe is u_pickled: True</span>
+<span class="sd">        ...       u_pickled is g_pickled.universe)</span>
+<span class="sd">        g_pickled.universe is u_pickled:  True</span>
 
 <span class="sd">    If multiple :class:`AtomGroup` are bound to the same</span>
 <span class="sd">    :class:`MDAnalysis.core.universe.Universe`, they will bound to the same one</span>
 <span class="sd">    after serialization:</span>
 
-<span class="sd">    .. code-block:: python</span>
+<span class="sd">    .. doctest:: AtomGroup</span>
+
+<span class="sd">        &gt;&gt;&gt; import pickle</span>
 
 <span class="sd">        &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
 <span class="sd">        &gt;&gt;&gt; g = u.atoms</span>
@@ -2635,14 +2746,14 @@
 
 <span class="sd">        &gt;&gt;&gt; g_pickled = pickle.loads(pickle.dumps(g))</span>
 <span class="sd">        &gt;&gt;&gt; h_pickled = pickle.loads(pickle.dumps(h))</span>
-<span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is h_pickled.universe : &quot;,</span>
-<span class="sd">        &gt;&gt;&gt;       g_pickled.universe is h_pickled.universe)</span>
-<span class="sd">        g_pickled.universe is h_pickled.universe: False</span>
-
-<span class="sd">        &gt;&gt;&gt; g_pickled, h_pickled = pickle.load(pickle.dumps(g, h))</span>
 <span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is h_pickled.universe: &quot;,</span>
-<span class="sd">        &gt;&gt;&gt;       g_pickle.universe is h_pickled.universe)</span>
-<span class="sd">        g_pickled.universe is h_pickled.universe: True</span>
+<span class="sd">        ...       g_pickled.universe is h_pickled.universe)</span>
+<span class="sd">        g_pickled.universe is h_pickled.universe:  False</span>
+
+<span class="sd">        &gt;&gt;&gt; g_pickled, h_pickled = pickle.loads(pickle.dumps((g, h)))</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is h_pickled.universe: &quot;,</span>
+<span class="sd">        ...       g_pickled.universe is h_pickled.universe)</span>
+<span class="sd">        g_pickled.universe is h_pickled.universe:  True</span>
 
 <span class="sd">    The aforementioned two cases are useful for implementation of parallel</span>
 <span class="sd">    analysis base classes. First, you always get an independent</span>
@@ -2817,21 +2928,23 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">           &gt;&gt;&gt; import MDAnalysis as mda</span>
-<span class="sd">           &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
-<span class="sd">           &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
-<span class="sd">           &gt;&gt;&gt; ag = u.atoms[[2, 1, 2, 2, 1, 0]]</span>
-<span class="sd">           &gt;&gt;&gt; ag</span>
-<span class="sd">           &lt;AtomGroup with 6 atoms&gt;</span>
-<span class="sd">           &gt;&gt;&gt; ag.ix</span>
-<span class="sd">           array([2, 1, 2, 2, 1, 0], dtype=int64)</span>
-<span class="sd">           &gt;&gt;&gt; ag2 = ag.unique</span>
-<span class="sd">           &gt;&gt;&gt; ag2</span>
-<span class="sd">           &lt;AtomGroup with 3 atoms&gt;</span>
-<span class="sd">           &gt;&gt;&gt; ag2.ix</span>
-<span class="sd">           array([0, 1, 2], dtype=int64)</span>
-<span class="sd">           &gt;&gt;&gt; ag2.unique is ag2</span>
-<span class="sd">           False</span>
+<span class="sd">        .. doctest:: AtomGroup.unique</span>
+
+<span class="sd">            &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">            &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">            &gt;&gt;&gt; ag = u.atoms[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">            &gt;&gt;&gt; ag</span>
+<span class="sd">            &lt;AtomGroup with 6 atoms&gt;</span>
+<span class="sd">            &gt;&gt;&gt; ag.ix</span>
+<span class="sd">            array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">            &gt;&gt;&gt; ag2 = ag.unique</span>
+<span class="sd">            &gt;&gt;&gt; ag2</span>
+<span class="sd">            &lt;AtomGroup with 3 atoms&gt;</span>
+<span class="sd">            &gt;&gt;&gt; ag2.ix</span>
+<span class="sd">            array([0, 1, 2])</span>
+<span class="sd">            &gt;&gt;&gt; ag2.unique is ag2</span>
+<span class="sd">            False</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -2875,29 +2988,30 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">           &gt;&gt;&gt; import MDAnalysis as mda</span>
-<span class="sd">           &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
-<span class="sd">           &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
-<span class="sd">           &gt;&gt;&gt; ag = u.atoms[[2, 1, 0]]</span>
-<span class="sd">           &gt;&gt;&gt; ag2 = ag.asunique(sorted=False)</span>
-<span class="sd">           &gt;&gt;&gt; ag2 is ag</span>
-<span class="sd">           True</span>
-<span class="sd">           &gt;&gt;&gt; ag2.ix</span>
-<span class="sd">           array([2, 1, 0], dtype=int64)</span>
-<span class="sd">           &gt;&gt;&gt; ag3 = ag.asunique(sorted=True)</span>
-<span class="sd">           &gt;&gt;&gt; ag3 is ag</span>
-<span class="sd">           False</span>
-<span class="sd">           &gt;&gt;&gt; ag3.ix</span>
-<span class="sd">           array([0, 1, 2], dtype=int64)</span>
-<span class="sd">           &gt;&gt;&gt; u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix</span>
-<span class="sd">           array([2, 1, 0], dtype=int64)</span>
+<span class="sd">        .. doctest:: AtomGroup.asunique</span>
+
+<span class="sd">            &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">            &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">            &gt;&gt;&gt; ag = u.atoms[[2, 1, 0]]</span>
+<span class="sd">            &gt;&gt;&gt; ag2 = ag.asunique(sorted=False)</span>
+<span class="sd">            &gt;&gt;&gt; ag2 is ag</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; ag2.ix</span>
+<span class="sd">            array([2, 1, 0])</span>
+<span class="sd">            &gt;&gt;&gt; ag3 = ag.asunique(sorted=True)</span>
+<span class="sd">            &gt;&gt;&gt; ag3 is ag</span>
+<span class="sd">            False</span>
+<span class="sd">            &gt;&gt;&gt; ag3.ix</span>
+<span class="sd">            array([0, 1, 2])</span>
+<span class="sd">            &gt;&gt;&gt; u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix</span>
+<span class="sd">            array([2, 1, 0])</span>
 
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span>
                               <span class="n">set_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
 
 
     <span class="nd">@property</span>
@@ -3075,34 +3189,69 @@
 <span class="sd">        All simple selection listed below support multiple arguments which are</span>
 <span class="sd">        implicitly combined with an or operator. For example</span>
 
-<span class="sd">           &gt;&gt;&gt; sel = universe.select_atoms(&#39;resname MET GLY&#39;)</span>
+<span class="sd">        .. testsetup:: AtomGroup.select_atoms</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            universe = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">        .. doctest:: AtomGroup.select_atoms</span>
+
+<span class="sd">            &gt;&gt;&gt; sel = universe.select_atoms(&#39;resname MET GLY&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; sel</span>
+<span class="sd">            &lt;AtomGroup with 245 atoms&gt;</span>
 
 <span class="sd">        is equivalent to</span>
 
-<span class="sd">           &gt;&gt;&gt; sel = universe.select_atoms(&#39;resname MET or resname GLY&#39;)</span>
+<span class="sd">        .. doctest:: AtomGroup.select_atoms</span>
+
+<span class="sd">            &gt;&gt;&gt; sel = universe.select_atoms(&#39;resname MET or resname GLY&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; sel</span>
+<span class="sd">            &lt;AtomGroup with 245 atoms&gt;</span>
 
 <span class="sd">        Will select all atoms with a residue name of either MET or GLY.</span>
 
 <span class="sd">        Subselections can be grouped with parentheses.</span>
 
-<span class="sd">           &gt;&gt;&gt; sel = universe.select_atoms(&quot;segid DMPC and not ( name H* O* )&quot;)</span>
-<span class="sd">           &gt;&gt;&gt; sel</span>
-<span class="sd">           &lt;AtomGroup with 3420 atoms&gt;</span>
+<span class="sd">        .. doctest:: AtomGroup.select_atoms</span>
 
+<span class="sd">            &gt;&gt;&gt; sel = universe.select_atoms(&quot;segid 4AKE and not ( name H* O* )&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; sel</span>
+<span class="sd">            &lt;AtomGroup with 1336 atoms&gt;</span>
 
 <span class="sd">        Existing :class:`AtomGroup` objects can be passed as named arguments,</span>
 <span class="sd">        which will then be available to the selection parser.</span>
 
-<span class="sd">           &gt;&gt;&gt; universe.select_atoms(&quot;around 10 group notHO&quot;, notHO=sel)</span>
-<span class="sd">           &lt;AtomGroup with 1250 atoms&gt;</span>
+<span class="sd">        .. testsetup:: AtomGroup.select_atoms.namedarguments</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            universe = mda.Universe(PSF, DCD)</span>
+<span class="sd">            sel = universe.select_atoms(&quot;segid 4AKE and not ( name H* O* )&quot;)</span>
+
+<span class="sd">        .. doctest:: AtomGroup.select_atoms, AtomGroup.select_atoms.namedarguments</span>
+
+<span class="sd">            &gt;&gt;&gt; universe.select_atoms(&quot;around 10 group notHO&quot;, notHO=sel)</span>
+<span class="sd">            &lt;AtomGroup with 2005 atoms&gt;</span>
 
 <span class="sd">        Selections can be set to update automatically on frame change, by</span>
 <span class="sd">        setting the `updating` keyword argument to `True`.  This will return</span>
 <span class="sd">        a :class:`UpdatingAtomGroup` which can represent the solvation shell</span>
 <span class="sd">        around another object.</span>
 
-<span class="sd">           &gt;&gt;&gt; universe.select_atoms(&quot;resname SOL and around 2.0 protein&quot;, updating=True)</span>
-<span class="sd">           &lt;Updating AtomGroup with 100 atoms&gt;</span>
+<span class="sd">        .. testsetup:: AtomGroup.select_atoms.updating</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import PDB, XTC</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            universe = mda.Universe(PDB, XTC)</span>
+
+<span class="sd">        .. doctest:: AtomGroup.select_atoms.updating</span>
+<span class="sd">           :options: +NORMALIZE_WHITESPACE</span>
+
+<span class="sd">            &gt;&gt;&gt; universe.select_atoms(&quot;resname SOL and around 2.0 protein&quot;,</span>
+<span class="sd">            ...       updating=True)</span>
+<span class="sd">            &lt;AtomGroup with 454 atoms, with selection</span>
+<span class="sd">            &#39;resname SOL and around 2.0 protein&#39; on the entire Universe.&gt;</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -3193,8 +3342,19 @@
 <span class="sd">                problem can be fixed by increasing the value of maxMatches.</span>
 <span class="sd">                This behavior may be updated in the future.</span>
 
-<span class="sd">                &gt;&gt;&gt; universe.select_atoms(&quot;C&quot;, smarts_kwargs={&quot;maxMatches&quot;: 100})</span>
-<span class="sd">                &lt;AtomGroup with 100 atoms&gt;</span>
+<span class="sd">                .. testsetup:: AtomGroup.select_atoms.smarts</span>
+
+<span class="sd">                    from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">                    from MDAnalysis.topology.guessers import guess_types</span>
+<span class="sd">                    import MDAnalysis as mda</span>
+<span class="sd">                    universe = mda.Universe(PSF, DCD)</span>
+<span class="sd">                    guessed_elements = guess_types(universe.atoms.names)</span>
+<span class="sd">                    universe.add_TopologyAttr(&#39;elements&#39;, guessed_elements)</span>
+<span class="sd">                    </span>
+<span class="sd">                .. doctest:: AtomGroup.select_atoms.smarts</span>
+
+<span class="sd">                    &gt;&gt;&gt; universe.select_atoms(&quot;smarts C&quot;, smarts_kwargs={&quot;maxMatches&quot;: 100})</span>
+<span class="sd">                    &lt;AtomGroup with 100 atoms&gt;</span>
 
 <span class="sd">            chiral *R | S*</span>
 <span class="sd">                select a particular stereocenter. e.g. ``name C and chirality</span>
@@ -3620,13 +3780,15 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">        &gt;&gt;&gt; ag = u.atoms</span>
-<span class="sd">        &gt;&gt;&gt; ag.write(&#39;selection.ndx&#39;)  # Write a gromacs index file</span>
-<span class="sd">        &gt;&gt;&gt; ag.write(&#39;coordinates.pdb&#39;)  # Write the current frame as PDB</span>
-<span class="sd">        &gt;&gt;&gt; # Write the trajectory in XTC format</span>
-<span class="sd">        &gt;&gt;&gt; ag.write(&#39;trajectory.xtc&#39;, frames=&#39;all&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; # Write every other frame of the trajectory in PBD format</span>
-<span class="sd">        &gt;&gt;&gt; ag.write(&#39;trajectory.pdb&#39;, frames=u.trajectory[::2])</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt;&gt; ag = u.atoms</span>
+<span class="sd">            &gt;&gt;&gt; ag.write(&#39;selection.ndx&#39;)  # Write a gromacs index file</span>
+<span class="sd">            &gt;&gt;&gt; ag.write(&#39;coordinates.pdb&#39;)  # Write the current frame as PDB</span>
+<span class="sd">            &gt;&gt;&gt; # Write the trajectory in XTC format</span>
+<span class="sd">            &gt;&gt;&gt; ag.write(&#39;trajectory.xtc&#39;, frames=&#39;all&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; # Write every other frame of the trajectory in PBD format</span>
+<span class="sd">            &gt;&gt;&gt; ag.write(&#39;trajectory.pdb&#39;, frames=u.trajectory[::2])</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -3774,17 +3936,17 @@
 <span class="sd">        Example</span>
 <span class="sd">        ----------</span>
 
-<span class="sd">        .. code-block:: python</span>
+<span class="sd">        .. doctest:: AtomGroup.sort</span>
 
 <span class="sd">            &gt;&gt;&gt; import MDAnalysis as mda</span>
 <span class="sd">            &gt;&gt;&gt; from MDAnalysisTests.datafiles import PDB_small</span>
 <span class="sd">            &gt;&gt;&gt; u = mda.Universe(PDB_small)</span>
 <span class="sd">            &gt;&gt;&gt; ag = u.atoms[[3, 2, 1, 0]]</span>
 <span class="sd">            &gt;&gt;&gt; ag.ix</span>
-<span class="sd">            array([3 2 1 0])</span>
+<span class="sd">            array([3, 2, 1, 0])</span>
 <span class="sd">            &gt;&gt;&gt; ag = ag.sort()</span>
 <span class="sd">            &gt;&gt;&gt; ag.ix</span>
-<span class="sd">            array([0 1 2 3])</span>
+<span class="sd">            array([0, 1, 2, 3])</span>
 <span class="sd">            &gt;&gt;&gt; ag.positions</span>
 <span class="sd">            array([[-11.921,  26.307,  10.41 ],</span>
 <span class="sd">                   [-11.447,  26.741,   9.595],</span>
@@ -3961,18 +4123,26 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">           &gt;&gt;&gt; rg = u.residues[[2, 1, 2, 2, 1, 0]]</span>
-<span class="sd">           &gt;&gt;&gt; rg</span>
-<span class="sd">           &lt;ResidueGroup with 6 residues&gt;</span>
-<span class="sd">           &gt;&gt;&gt; rg.ix</span>
-<span class="sd">           array([2, 1, 2, 2, 1, 0])</span>
-<span class="sd">           &gt;&gt;&gt; rg2 = rg.unique</span>
-<span class="sd">           &gt;&gt;&gt; rg2</span>
-<span class="sd">           &lt;ResidueGroup with 3 residues&gt;</span>
-<span class="sd">           &gt;&gt;&gt; rg2.ix</span>
-<span class="sd">           array([0, 1, 2])</span>
-<span class="sd">           &gt;&gt;&gt; rg2.unique is rg2</span>
-<span class="sd">           False</span>
+<span class="sd">        .. testsetup:: ResidueGroup.unique</span>
+
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            u = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">        .. doctest:: ResidueGroup.unique</span>
+
+<span class="sd">            &gt;&gt;&gt; rg = u.residues[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">            &gt;&gt;&gt; rg</span>
+<span class="sd">            &lt;ResidueGroup with 6 residues&gt;</span>
+<span class="sd">            &gt;&gt;&gt; rg.ix</span>
+<span class="sd">            array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">            &gt;&gt;&gt; rg2 = rg.unique</span>
+<span class="sd">            &gt;&gt;&gt; rg2</span>
+<span class="sd">            &lt;ResidueGroup with 3 residues&gt;</span>
+<span class="sd">            &gt;&gt;&gt; rg2.ix</span>
+<span class="sd">            array([0, 1, 2])</span>
+<span class="sd">            &gt;&gt;&gt; rg2.unique is rg2</span>
+<span class="sd">            False</span>
 
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
@@ -4011,18 +4181,26 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">           &gt;&gt;&gt; rg = u.residues[[2, 1, 2, 2, 1, 0]]</span>
-<span class="sd">           &gt;&gt;&gt; rg</span>
-<span class="sd">           &lt;ResidueGroup with 6 residues&gt;</span>
-<span class="sd">           &gt;&gt;&gt; rg.ix</span>
-<span class="sd">           array([2, 1, 2, 2, 1, 0])</span>
-<span class="sd">           &gt;&gt;&gt; rg2 = rg.asunique()</span>
-<span class="sd">           &gt;&gt;&gt; rg2</span>
-<span class="sd">           &lt;ResidueGroup with 3 residues&gt;</span>
-<span class="sd">           &gt;&gt;&gt; rg2.ix</span>
-<span class="sd">           array([0, 1, 2])</span>
-<span class="sd">           &gt;&gt;&gt; rg2.asunique() is rg2</span>
-<span class="sd">           True</span>
+<span class="sd">        .. testsetup:: ResidueGroup.asunique</span>
+
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">            u = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">        .. doctest:: ResidueGroup.asunique</span>
+
+<span class="sd">            &gt;&gt;&gt; rg = u.residues[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">            &gt;&gt;&gt; rg</span>
+<span class="sd">            &lt;ResidueGroup with 6 residues&gt;</span>
+<span class="sd">            &gt;&gt;&gt; rg.ix</span>
+<span class="sd">            array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">            &gt;&gt;&gt; rg2 = rg.asunique(sorted=True)</span>
+<span class="sd">            &gt;&gt;&gt; rg2</span>
+<span class="sd">            &lt;ResidueGroup with 3 residues&gt;</span>
+<span class="sd">            &gt;&gt;&gt; rg2.ix</span>
+<span class="sd">            array([0, 1, 2])</span>
+<span class="sd">            &gt;&gt;&gt; rg2.asunique() is rg2</span>
+<span class="sd">            True</span>
 
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
@@ -4143,18 +4321,26 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">           &gt;&gt;&gt; sg = u.segments[[2, 1, 2, 2, 1, 0]]</span>
-<span class="sd">           &gt;&gt;&gt; sg</span>
-<span class="sd">           &lt;SegmentGroup with 6 segments&gt;</span>
-<span class="sd">           &gt;&gt;&gt; sg.ix</span>
-<span class="sd">           array([2, 1, 2, 2, 1, 0])</span>
-<span class="sd">           &gt;&gt;&gt; sg2 = sg.unique</span>
-<span class="sd">           &gt;&gt;&gt; sg2</span>
-<span class="sd">           &lt;SegmentGroup with 3 segments&gt;</span>
-<span class="sd">           &gt;&gt;&gt; sg2.ix</span>
-<span class="sd">           array([0, 1, 2])</span>
-<span class="sd">           &gt;&gt;&gt; sg2.unique is sg2</span>
-<span class="sd">           False</span>
+<span class="sd">        .. testsetup:: SegmentGroup.unique</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import CONECT</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(CONECT)</span>
+
+<span class="sd">        .. doctest:: SegmentGroup.unique</span>
+
+<span class="sd">            &gt;&gt;&gt; sg = u.segments[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">            &gt;&gt;&gt; sg</span>
+<span class="sd">            &lt;SegmentGroup with 6 segments&gt;</span>
+<span class="sd">            &gt;&gt;&gt; sg.ix</span>
+<span class="sd">            array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">            &gt;&gt;&gt; sg2 = sg.unique</span>
+<span class="sd">            &gt;&gt;&gt; sg2</span>
+<span class="sd">            &lt;SegmentGroup with 3 segments&gt;</span>
+<span class="sd">            &gt;&gt;&gt; sg2.ix</span>
+<span class="sd">            array([0, 1, 2])</span>
+<span class="sd">            &gt;&gt;&gt; sg2.unique is sg2</span>
+<span class="sd">            False</span>
 
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
@@ -4193,18 +4379,26 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">           &gt;&gt;&gt; sg = u.segments[[2, 1, 2, 2, 1, 0]]</span>
-<span class="sd">           &gt;&gt;&gt; sg</span>
-<span class="sd">           &lt;SegmentGroup with 6 segments&gt;</span>
-<span class="sd">           &gt;&gt;&gt; sg.ix</span>
-<span class="sd">           array([2, 1, 2, 2, 1, 0])</span>
-<span class="sd">           &gt;&gt;&gt; sg2 = sg.asunique()</span>
-<span class="sd">           &gt;&gt;&gt; sg2</span>
-<span class="sd">           &lt;SegmentGroup with 3 segments&gt;</span>
-<span class="sd">           &gt;&gt;&gt; sg2.ix</span>
-<span class="sd">           array([0, 1, 2])</span>
-<span class="sd">           &gt;&gt;&gt; sg2.asunique() is sg2</span>
-<span class="sd">           True</span>
+<span class="sd">        .. testsetup:: SegmentGroup.asunique</span>
+
+<span class="sd">            from MDAnalysis.tests.datafiles import CONECT</span>
+<span class="sd">            import MDAnalysis as mda</span>
+<span class="sd">            u = mda.Universe(CONECT)</span>
+
+<span class="sd">        .. doctest:: SegmentGroup.asunique</span>
+
+<span class="sd">            &gt;&gt;&gt; sg = u.segments[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">            &gt;&gt;&gt; sg</span>
+<span class="sd">            &lt;SegmentGroup with 6 segments&gt;</span>
+<span class="sd">            &gt;&gt;&gt; sg.ix</span>
+<span class="sd">            array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">            &gt;&gt;&gt; sg2 = sg.asunique(sorted=True)</span>
+<span class="sd">            &gt;&gt;&gt; sg2</span>
+<span class="sd">            &lt;SegmentGroup with 3 segments&gt;</span>
+<span class="sd">            &gt;&gt;&gt; sg2.ix</span>
+<span class="sd">            array([0, 1, 2])</span>
+<span class="sd">            &gt;&gt;&gt; sg2.asunique() is sg2</span>
+<span class="sd">            True</span>
 
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
@@ -4726,8 +4920,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">basegrp</span> <span class="o">=</span> <span class="s2">&quot;another AtomGroup.&quot;</span>
         <span class="c1"># With a shorthand to conditionally append the &#39;s&#39; in &#39;selections&#39;.</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">, with selection</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> on </span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basestr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                                       <span class="s2">&quot;s&quot;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">sels</span><span class="p">,</span> <span class="n">basegrp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">, with selection</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> on </span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">basestr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;s&quot;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selection_strings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">sels</span><span class="p">,</span> <span class="n">basegrp</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -4753,21 +4947,24 @@
 <span class="sd">        -------</span>
 <span class="sd">        The static :attr:`atoms` allows comparison of groups of atoms between</span>
 <span class="sd">        frames. For example, track water molecules that move in and out of a</span>
-<span class="sd">        solvation shell of a protein::</span>
+<span class="sd">        solvation shell of a protein</span>
 
-<span class="sd">          u = mda.Universe(TPR, XTC)</span>
-<span class="sd">          water_shell = u.select_atoms(&quot;name OW and around 3.5 protein&quot;, updating=True)</span>
-<span class="sd">          water_shell_prev = water_shell.atoms</span>
+<span class="sd">        .. code-block:: python</span>
 
-<span class="sd">          for ts in u.trajectory:</span>
-<span class="sd">              exchanged = water_shell - water_shell_prev</span>
+<span class="sd">            u = mda.Universe(TPR, XTC)</span>
+<span class="sd">            water_shell = u.select_atoms(&quot;name OW and around 3.5 protein&quot;,</span>
+<span class="sd">                                         updating=True)</span>
+<span class="sd">            water_shell_prev = water_shell.atoms</span>
 
-<span class="sd">              print(ts.time, &quot;waters in shell =&quot;, water_shell.n_residues)</span>
-<span class="sd">              print(ts.time, &quot;waters that exchanged = &quot;, exchanged.n_residues)</span>
-<span class="sd">              print(ts.time, &quot;waters that remained bound = &quot;,</span>
-<span class="sd">                    water_shell.n_residues - exchanged.n_residues)</span>
+<span class="sd">            for ts in u.trajectory:</span>
+<span class="sd">                exchanged = water_shell - water_shell_prev</span>
 
-<span class="sd">              water_shell_prev = water_shell.atoms</span>
+<span class="sd">            print(ts.time, &quot;waters in shell =&quot;, water_shell.n_residues)</span>
+<span class="sd">            print(ts.time, &quot;waters that exchanged = &quot;, exchanged.n_residues)</span>
+<span class="sd">            print(ts.time, &quot;waters that remained bound = &quot;,</span>
+<span class="sd">                  water_shell.n_residues - exchanged.n_residues)</span>
+
+<span class="sd">            water_shell_prev = water_shell.atoms</span>
 
 <span class="sd">        By remembering the atoms of the current time step in</span>
 <span class="sd">        `water_shell_prev`, it becomes possible to use the :meth:`subtraction</span>

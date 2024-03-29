@@ -346,36 +346,40 @@ in <code class="docutils literal notranslate"><span class="pre">t</span></code><
 a new <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a> will be created and
 be attached by the new <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>. If the Universe is serialized
 with its <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, they will still be bound together afterwards:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is u: &quot;</span><span class="p">,</span> <span class="n">u</span> <span class="ow">is</span> <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
-<span class="go">g_pickled.universe is u: False</span>
+<span class="go">g_pickled.universe is u:  False</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span><span class="p">,</span> <span class="n">u_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">u</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span><span class="p">,</span> <span class="n">u_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">((</span><span class="n">g</span><span class="p">,</span> <span class="n">u</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is u_pickled: &quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>      <span class="n">u_pickle</span> <span class="ow">is</span> <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
-<span class="go">g_pickled.universe is u_pickled: True</span>
+<span class="gp">... </span>      <span class="n">u_pickled</span> <span class="ow">is</span> <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+<span class="go">g_pickled.universe is u_pickled:  True</span>
 </pre></div>
 </div>
 <p>If multiple <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> are bound to the same
 <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a>, they will bound to the same one
 after serialization:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is h_pickled.universe : &quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>      <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="n">h_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
-<span class="go">g_pickled.universe is h_pickled.universe: False</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span><span class="p">,</span> <span class="n">h_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is h_pickled.universe: &quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>      <span class="n">g_pickle</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="n">h_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
-<span class="go">g_pickled.universe is h_pickled.universe: True</span>
+<span class="gp">... </span>      <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="n">h_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+<span class="go">g_pickled.universe is h_pickled.universe:  False</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span><span class="p">,</span> <span class="n">h_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">((</span><span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is h_pickled.universe: &quot;</span><span class="p">,</span>
+<span class="gp">... </span>      <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="n">h_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+<span class="go">g_pickled.universe is h_pickled.universe:  True</span>
 </pre></div>
 </div>
 <p>The aforementioned two cases are useful for implementation of parallel
@@ -467,18 +471,27 @@ shape (without the first dimension).</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>To find the total charge of a given <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">)</span>
+<span class="go">-251.68500316143036</span>
 </pre></div>
 </div>
 <p>To find the total mass per residue of all CA <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="go"> &gt;&gt;&gt; sel.accumulate(&#39;masses&#39;, compound=&#39;residues&#39;)</span>
+<span class="go"> array([12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        ...</span>
 </pre></div>
 </div>
 <p>To find the maximum atomic charge per fragment of a given
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+<span class="go">array([0.20999999])</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -585,7 +598,7 @@ by index.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
@@ -593,14 +606,14 @@ by index.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="ow">is</span> <span class="n">ag</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span><span class="o">.</span><span class="n">ix</span>
-<span class="go">array([2, 1, 0], dtype=int64)</span>
+<span class="go">array([2, 1, 0])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="ow">is</span> <span class="n">ag</span>
 <span class="go">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">ix</span>
-<span class="go">array([0, 1, 2], dtype=int64)</span>
+<span class="go">array([0, 1, 2])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">ix</span>
-<span class="go">array([2, 1, 0], dtype=int64)</span>
+<span class="go">array([2, 1, 0])</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -779,13 +792,20 @@ of shape <code class="docutils literal notranslate"><span class="pre">(n,</span>
 </dl>
 <p class="rubric">Examples</p>
 <p>To find the center of charge of a given <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">charges</span><span class="p">)</span>
+<span class="go">array([-0.22925091, -0.04771193, -0.16728489])</span>
 </pre></div>
 </div>
 <p>To find the centers of mass per residue of all CA <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="go"> &gt;&gt;&gt; sel.center(sel.masses, compound=&#39;residues&#39;)</span>
+<span class="go"> array([[ 11.66462231,   8.39347267,  -8.98323059],</span>
+<span class="go">       [ 11.41483879,   5.43442154,  -6.51348448],</span>
+<span class="go">       [  8.95975494,   5.61292315,  -3.61323047],</span>
+<span class="go">       [  8.29006767,   3.07599092,  -0.79665166],</span>
+<span class="go">       [  5.01112604,   3.76389837,   1.130355  ],</span>
+<span class="go">       ...</span>
 </pre></div>
 </div>
 <div class="versionchanged">
@@ -1107,7 +1127,7 @@ the <cite>+</cite> operator.</p>
 <p class="rubric">Example</p>
 <p>The order of the original contents (including duplicates)
 are preserved when performing a concatenation.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">+</span> <span class="n">ag2</span>  <span class="c1"># or ag1.concatenate(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">names</span>
@@ -1419,24 +1439,27 @@ as keys, Groups as values.</p>
 </dl>
 <p class="rubric">Example</p>
 <p>To group atoms with the same mass together:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
-<span class="go">{12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="go"> 14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="go"> 15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
+<span class="go"> {32.06: &lt;AtomGroup with 7 atoms&gt;,</span>
+<span class="go">  1.008: &lt;AtomGroup with 1685 atoms&gt;,</span>
+<span class="go">  12.011: &lt;AtomGroup with 1040 atoms&gt;,</span>
+<span class="go">  14.007: &lt;AtomGroup with 289 atoms&gt;,</span>
+<span class="go">  15.999: &lt;AtomGroup with 320 atoms&gt;}</span>
 </pre></div>
 </div>
 <p>To group atoms with the same residue name and mass together:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])</span>
-<span class="go">{(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
-<span class="go"> (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
-<span class="go"> ...}</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; group_dict = ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])</span>
+<span class="go"> &gt;&gt;&gt; dict(sorted(group_dict.items()))</span>
+<span class="go"> {(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go">  (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="go">  ...</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])(</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">)</span>
-<span class="go"> &lt;AtomGroup with 19 atoms&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])[</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">]</span>
+<span class="go">&lt;AtomGroup with 19 atoms&gt;</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -1559,7 +1582,7 @@ duplicate elements</p>
 <p>Intersections can be used when the select atoms string would
 become too complicated.  For example to find the water atoms
 which are within 4.0A of two segments:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">common</span> <span class="o">=</span> <span class="n">shell1</span> <span class="o">&amp;</span> <span class="n">shell2</span>  <span class="c1"># or shell1.intersection(shell2)</span>
 </pre></div>
@@ -1680,7 +1703,7 @@ which are within 4.0A of two segments:</p>
 <dd><p>Boolean indicating whether all components of the group are unique,
 i.e., the group contains no duplicates.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span>
 <span class="go">&lt;AtomGroup with 6 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">isunique</span>
@@ -2221,32 +2244,38 @@ selections</strong> below.</p></li>
 <p class="rubric">Examples</p>
 <p>All simple selection listed below support multiple arguments which are
 implicitly combined with an or operator. For example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname MET GLY&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname MET GLY&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span>
+<span class="go">&lt;AtomGroup with 245 atoms&gt;</span>
 </pre></div>
 </div>
 <p>is equivalent to</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname MET or resname GLY&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname MET or resname GLY&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span>
+<span class="go">&lt;AtomGroup with 245 atoms&gt;</span>
 </pre></div>
 </div>
 <p>Will select all atoms with a residue name of either MET or GLY.</p>
 <p>Subselections can be grouped with parentheses.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and not ( name H* O* )&quot;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid 4AKE and not ( name H* O* )&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span>
-<span class="go">&lt;AtomGroup with 3420 atoms&gt;</span>
+<span class="go">&lt;AtomGroup with 1336 atoms&gt;</span>
 </pre></div>
 </div>
 <p>Existing <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> objects can be passed as named arguments,
 which will then be available to the selection parser.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;around 10 group notHO&quot;</span><span class="p">,</span> <span class="n">notHO</span><span class="o">=</span><span class="n">sel</span><span class="p">)</span>
-<span class="go">&lt;AtomGroup with 1250 atoms&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;around 10 group notHO&quot;</span><span class="p">,</span> <span class="n">notHO</span><span class="o">=</span><span class="n">sel</span><span class="p">)</span>
+<span class="go">&lt;AtomGroup with 2005 atoms&gt;</span>
 </pre></div>
 </div>
 <p>Selections can be set to update automatically on frame change, by
 setting the <cite>updating</cite> keyword argument to <cite>True</cite>.  This will return
 a <a class="reference internal" href="#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> which can represent the solvation shell
 around another object.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resname SOL and around 2.0 protein&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go">&lt;Updating AtomGroup with 100 atoms&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; universe.select_atoms(&quot;resname SOL and around 2.0 protein&quot;,</span>
+<span class="go"> ...       updating=True)</span>
+<span class="go"> &lt;AtomGroup with 454 atoms, with selection</span>
+<span class="go"> &#39;resname SOL and around 2.0 protein&#39; on the entire Universe.&gt;</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
@@ -2328,7 +2357,7 @@ exceed the default value of maxMatches, causing too few atoms
 to be returned. If this occurs, a warning will be issued. The
 problem can be fixed by increasing the value of maxMatches.
 This behavior may be updated in the future.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">smarts_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;maxMatches&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;smarts C&quot;</span><span class="p">,</span> <span class="n">smarts_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;maxMatches&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
 <span class="go">&lt;AtomGroup with 100 atoms&gt;</span>
 </pre></div>
 </div>
@@ -2588,15 +2617,15 @@ is ignored when the attribute is one dimensional.</p></li>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_small</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB_small</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span>
-<span class="go">array([3 2 1 0])</span>
+<span class="go">array([3, 2, 1, 0])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span>
-<span class="go">array([0 1 2 3])</span>
+<span class="go">array([0, 1, 2, 3])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span>
 <span class="go">array([[-11.921,  26.307,  10.41 ],</span>
 <span class="go">       [-11.447,  26.741,   9.595],</span>
@@ -2661,10 +2690,10 @@ conserves order and duplicates.</p>
 <p class="rubric">Example</p>
 <p>Unlike <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.difference" title="MDAnalysis.core.groups.AtomGroup.difference"><code class="xref py py-meth docutils literal notranslate"><span class="pre">difference()</span></code></a> this method will not sort or remove
 duplicates.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">-</span> <span class="n">ag2</span>  <span class="c1"># or ag1.subtract(ag2)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span><span class="o">.</span><span class="n">indices</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">ag2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">indices</span>
 <span class="go">array([3, 3, 1, 1])</span>
 </pre></div>
 </div>
@@ -2696,11 +2725,11 @@ both, without duplicate elements</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">^</span> <span class="n">ag2</span>  <span class="c1"># or ag1.symmetric_difference(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">indices</span>  <span class="c1"># 0 and 1 are only in ag1, 4 and 6 are only in ag2</span>
-<span class="go">[0, 1, 4, 6]</span>
+<span class="go">array([0, 1, 4, 6])</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -2880,7 +2909,7 @@ duplicate elements</p>
 <p class="rubric">Example</p>
 <p>In contrast to <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.concatenate" title="MDAnalysis.core.groups.AtomGroup.concatenate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">concatenate()</span></code></a>, any duplicates are dropped
 and the result is sorted.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">|</span> <span class="n">ag2</span>  <span class="c1"># or ag1.union(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">names</span>
@@ -2902,19 +2931,19 @@ and the result is sorted.</p>
 <dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> containing sorted and unique
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> only.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span>
 <span class="go">&lt;AtomGroup with 6 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span>
-<span class="go">array([2, 1, 2, 2, 1, 0], dtype=int64)</span>
+<span class="go">array([2, 1, 2, 2, 1, 0])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">unique</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span>
 <span class="go">&lt;AtomGroup with 3 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span><span class="o">.</span><span class="n">ix</span>
-<span class="go">array([0, 1, 2], dtype=int64)</span>
+<span class="go">array([0, 1, 2])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span><span class="o">.</span><span class="n">unique</span> <span class="ow">is</span> <span class="n">ag2</span>
 <span class="go">False</span>
 </pre></div>
@@ -3141,7 +3170,7 @@ Added optional argument <cite>inplace</cite>.</p>
 <p>The output can either be a coordinate file or a selection, depending on
 the format.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;selection.ndx&#39;</span><span class="p">)</span>  <span class="c1"># Write a gromacs index file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;coordinates.pdb&#39;</span><span class="p">)</span>  <span class="c1"># Write the current frame as PDB</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Write the trajectory in XTC format</span>
@@ -3262,18 +3291,27 @@ shape (without the first dimension).</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>To find the total charge of a given <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">)</span>
+<span class="go">-251.68500316143036</span>
 </pre></div>
 </div>
 <p>To find the total mass per residue of all CA <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="go"> &gt;&gt;&gt; sel.accumulate(&#39;masses&#39;, compound=&#39;residues&#39;)</span>
+<span class="go"> array([12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        ...</span>
 </pre></div>
 </div>
 <p>To find the maximum atomic charge per fragment of a given
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+<span class="go">array([0.20999999])</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -3365,12 +3403,12 @@ by resindex.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span>
 <span class="go">&lt;ResidueGroup with 6 residues&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span>
 <span class="go">array([2, 1, 2, 2, 1, 0])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">asunique</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span>
 <span class="go">&lt;ResidueGroup with 3 residues&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span><span class="o">.</span><span class="n">ix</span>
@@ -3531,13 +3569,20 @@ of shape <code class="docutils literal notranslate"><span class="pre">(n,</span>
 </dl>
 <p class="rubric">Examples</p>
 <p>To find the center of charge of a given <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">charges</span><span class="p">)</span>
+<span class="go">array([-0.22925091, -0.04771193, -0.16728489])</span>
 </pre></div>
 </div>
 <p>To find the centers of mass per residue of all CA <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="go"> &gt;&gt;&gt; sel.center(sel.masses, compound=&#39;residues&#39;)</span>
+<span class="go"> array([[ 11.66462231,   8.39347267,  -8.98323059],</span>
+<span class="go">       [ 11.41483879,   5.43442154,  -6.51348448],</span>
+<span class="go">       [  8.95975494,   5.61292315,  -3.61323047],</span>
+<span class="go">       [  8.29006767,   3.07599092,  -0.79665166],</span>
+<span class="go">       [  5.01112604,   3.76389837,   1.130355  ],</span>
+<span class="go">       ...</span>
 </pre></div>
 </div>
 <div class="versionchanged">
@@ -3874,7 +3919,7 @@ the <cite>+</cite> operator.</p>
 <p class="rubric">Example</p>
 <p>The order of the original contents (including duplicates)
 are preserved when performing a concatenation.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">+</span> <span class="n">ag2</span>  <span class="c1"># or ag1.concatenate(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">names</span>
@@ -4093,24 +4138,27 @@ as keys, Groups as values.</p>
 </dl>
 <p class="rubric">Example</p>
 <p>To group atoms with the same mass together:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
-<span class="go">{12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="go"> 14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="go"> 15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
+<span class="go"> {32.06: &lt;AtomGroup with 7 atoms&gt;,</span>
+<span class="go">  1.008: &lt;AtomGroup with 1685 atoms&gt;,</span>
+<span class="go">  12.011: &lt;AtomGroup with 1040 atoms&gt;,</span>
+<span class="go">  14.007: &lt;AtomGroup with 289 atoms&gt;,</span>
+<span class="go">  15.999: &lt;AtomGroup with 320 atoms&gt;}</span>
 </pre></div>
 </div>
 <p>To group atoms with the same residue name and mass together:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])</span>
-<span class="go">{(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
-<span class="go"> (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
-<span class="go"> ...}</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; group_dict = ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])</span>
+<span class="go"> &gt;&gt;&gt; dict(sorted(group_dict.items()))</span>
+<span class="go"> {(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go">  (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="go">  ...</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])(</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">)</span>
-<span class="go"> &lt;AtomGroup with 19 atoms&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])[</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">]</span>
+<span class="go">&lt;AtomGroup with 19 atoms&gt;</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -4183,7 +4231,7 @@ duplicate elements</p>
 <p>Intersections can be used when the select atoms string would
 become too complicated.  For example to find the water atoms
 which are within 4.0A of two segments:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">common</span> <span class="o">=</span> <span class="n">shell1</span> <span class="o">&amp;</span> <span class="n">shell2</span>  <span class="c1"># or shell1.intersection(shell2)</span>
 </pre></div>
@@ -4304,7 +4352,7 @@ which are within 4.0A of two segments:</p>
 <dd><p>Boolean indicating whether all components of the group are unique,
 i.e., the group contains no duplicates.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span>
 <span class="go">&lt;AtomGroup with 6 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">isunique</span>
@@ -5011,10 +5059,10 @@ conserves order and duplicates.</p>
 <p class="rubric">Example</p>
 <p>Unlike <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.difference" title="MDAnalysis.core.groups.ResidueGroup.difference"><code class="xref py py-meth docutils literal notranslate"><span class="pre">difference()</span></code></a> this method will not sort or remove
 duplicates.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">-</span> <span class="n">ag2</span>  <span class="c1"># or ag1.subtract(ag2)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span><span class="o">.</span><span class="n">indices</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">ag2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">indices</span>
 <span class="go">array([3, 3, 1, 1])</span>
 </pre></div>
 </div>
@@ -5046,11 +5094,11 @@ both, without duplicate elements</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">^</span> <span class="n">ag2</span>  <span class="c1"># or ag1.symmetric_difference(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">indices</span>  <span class="c1"># 0 and 1 are only in ag1, 4 and 6 are only in ag2</span>
-<span class="go">[0, 1, 4, 6]</span>
+<span class="go">array([0, 1, 4, 6])</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -5215,7 +5263,7 @@ duplicate elements</p>
 <p class="rubric">Example</p>
 <p>In contrast to <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.concatenate" title="MDAnalysis.core.groups.ResidueGroup.concatenate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">concatenate()</span></code></a>, any duplicates are dropped
 and the result is sorted.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">|</span> <span class="n">ag2</span>  <span class="c1"># or ag1.union(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">names</span>
@@ -5237,7 +5285,7 @@ and the result is sorted.</p>
 <dd><p>Return a <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> containing sorted and unique
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residues</span></code></a> only.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span>
 <span class="go">&lt;ResidueGroup with 6 residues&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span>
@@ -5513,18 +5561,27 @@ shape (without the first dimension).</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>To find the total charge of a given <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">)</span>
+<span class="go">-251.68500316143036</span>
 </pre></div>
 </div>
 <p>To find the total mass per residue of all CA <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="go"> &gt;&gt;&gt; sel.accumulate(&#39;masses&#39;, compound=&#39;residues&#39;)</span>
+<span class="go"> array([12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011, 12.011,</span>
+<span class="go">        ...</span>
 </pre></div>
 </div>
 <p>To find the maximum atomic charge per fragment of a given
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+<span class="go">array([0.20999999])</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -5616,12 +5673,12 @@ by segindex.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span>
 <span class="go">&lt;SegmentGroup with 6 segments&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span>
 <span class="go">array([2, 1, 2, 2, 1, 0])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">asunique</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span>
 <span class="go">&lt;SegmentGroup with 3 segments&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span><span class="o">.</span><span class="n">ix</span>
@@ -5783,13 +5840,20 @@ of shape <code class="docutils literal notranslate"><span class="pre">(n,</span>
 </dl>
 <p class="rubric">Examples</p>
 <p>To find the center of charge of a given <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;prop mass &gt; 4.0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">charges</span><span class="p">)</span>
+<span class="go">array([-0.22925091, -0.04771193, -0.16728489])</span>
 </pre></div>
 </div>
 <p>To find the centers of mass per residue of all CA <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; sel = u.select_atoms(&#39;name CA&#39;)</span>
+<span class="go"> &gt;&gt;&gt; sel.center(sel.masses, compound=&#39;residues&#39;)</span>
+<span class="go"> array([[ 11.66462231,   8.39347267,  -8.98323059],</span>
+<span class="go">       [ 11.41483879,   5.43442154,  -6.51348448],</span>
+<span class="go">       [  8.95975494,   5.61292315,  -3.61323047],</span>
+<span class="go">       [  8.29006767,   3.07599092,  -0.79665166],</span>
+<span class="go">       [  5.01112604,   3.76389837,   1.130355  ],</span>
+<span class="go">       ...</span>
 </pre></div>
 </div>
 <div class="versionchanged">
@@ -6096,7 +6160,7 @@ the <cite>+</cite> operator.</p>
 <p class="rubric">Example</p>
 <p>The order of the original contents (including duplicates)
 are preserved when performing a concatenation.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">+</span> <span class="n">ag2</span>  <span class="c1"># or ag1.concatenate(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">names</span>
@@ -6315,24 +6379,27 @@ as keys, Groups as values.</p>
 </dl>
 <p class="rubric">Example</p>
 <p>To group atoms with the same mass together:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
-<span class="go">{12.010999999999999: &lt;AtomGroup with 462 atoms&gt;,</span>
-<span class="go"> 14.007: &lt;AtomGroup with 116 atoms&gt;,</span>
-<span class="go"> 15.999000000000001: &lt;AtomGroup with 134 atoms&gt;}</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; ag.groupby(&#39;masses&#39;)</span>
+<span class="go"> {32.06: &lt;AtomGroup with 7 atoms&gt;,</span>
+<span class="go">  1.008: &lt;AtomGroup with 1685 atoms&gt;,</span>
+<span class="go">  12.011: &lt;AtomGroup with 1040 atoms&gt;,</span>
+<span class="go">  14.007: &lt;AtomGroup with 289 atoms&gt;,</span>
+<span class="go">  15.999: &lt;AtomGroup with 320 atoms&gt;}</span>
 </pre></div>
 </div>
 <p>To group atoms with the same residue name and mass together:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])</span>
-<span class="go">{(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
-<span class="go"> (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;},</span>
-<span class="go"> (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
-<span class="go"> ...}</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go"> &gt;&gt;&gt; group_dict = ag.groupby([&#39;resnames&#39;, &#39;masses&#39;])</span>
+<span class="go"> &gt;&gt;&gt; dict(sorted(group_dict.items()))</span>
+<span class="go"> {(&#39;ALA&#39;, 1.008): &lt;AtomGroup with 95 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 12.011): &lt;AtomGroup with 57 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 14.007): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go">  (&#39;ALA&#39;, 15.999): &lt;AtomGroup with 19 atoms&gt;,</span>
+<span class="go">  (&#39;ARG&#39;, 1.008): &lt;AtomGroup with 169 atoms&gt;,</span>
+<span class="go">  ...</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])(</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">)</span>
-<span class="go"> &lt;AtomGroup with 19 atoms&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">])[</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="mf">15.999</span><span class="p">]</span>
+<span class="go">&lt;AtomGroup with 19 atoms&gt;</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -6405,7 +6472,7 @@ duplicate elements</p>
 <p>Intersections can be used when the select atoms string would
 become too complicated.  For example to find the water atoms
 which are within 4.0A of two segments:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shell1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">shell2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL and around 4.0 segid 2&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">common</span> <span class="o">=</span> <span class="n">shell1</span> <span class="o">&amp;</span> <span class="n">shell2</span>  <span class="c1"># or shell1.intersection(shell2)</span>
 </pre></div>
@@ -6526,7 +6593,7 @@ which are within 4.0A of two segments:</p>
 <dd><p>Boolean indicating whether all components of the group are unique,
 i.e., the group contains no duplicates.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span>
 <span class="go">&lt;AtomGroup with 6 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">isunique</span>
@@ -7051,10 +7118,10 @@ conserves order and duplicates.</p>
 <p class="rubric">Example</p>
 <p>Unlike <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.difference" title="MDAnalysis.core.groups.SegmentGroup.difference"><code class="xref py py-meth docutils literal notranslate"><span class="pre">difference()</span></code></a> this method will not sort or remove
 duplicates.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">-</span> <span class="n">ag2</span>  <span class="c1"># or ag1.subtract(ag2)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span><span class="o">.</span><span class="n">indices</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">ag2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">indices</span>
 <span class="go">array([3, 3, 1, 1])</span>
 </pre></div>
 </div>
@@ -7086,11 +7153,11 @@ both, without duplicate elements</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">^</span> <span class="n">ag2</span>  <span class="c1"># or ag1.symmetric_difference(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">indices</span>  <span class="c1"># 0 and 1 are only in ag1, 4 and 6 are only in ag2</span>
-<span class="go">[0, 1, 4, 6]</span>
+<span class="go">array([0, 1, 4, 6])</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -7255,7 +7322,7 @@ duplicate elements</p>
 <p class="rubric">Example</p>
 <p>In contrast to <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.concatenate" title="MDAnalysis.core.groups.SegmentGroup.concatenate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">concatenate()</span></code></a>, any duplicates are dropped
 and the result is sorted.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag1</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name O&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag1</span> <span class="o">|</span> <span class="n">ag2</span>  <span class="c1"># or ag1.union(ag2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">names</span>
@@ -7277,7 +7344,7 @@ and the result is sorted.</p>
 <dd><p>Return a <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a> containing sorted and unique
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segments</span></code></a> only.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span>
 <span class="go">&lt;SegmentGroup with 6 segments&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span>
@@ -7514,20 +7581,21 @@ differently from <a class="reference internal" href="#MDAnalysis.core.groups.Ato
 <p class="rubric">Example</p>
 <p>The static <a class="reference internal" href="#MDAnalysis.core.groups.UpdatingAtomGroup.atoms" title="MDAnalysis.core.groups.UpdatingAtomGroup.atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">atoms</span></code></a> allows comparison of groups of atoms between
 frames. For example, track water molecules that move in and out of a
-solvation shell of a protein:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">water_shell</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW and around 3.5 protein&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+solvation shell of a protein</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+<span class="n">water_shell</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW and around 3.5 protein&quot;</span><span class="p">,</span>
+                             <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">water_shell_prev</span> <span class="o">=</span> <span class="n">water_shell</span><span class="o">.</span><span class="n">atoms</span>
 
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
     <span class="n">exchanged</span> <span class="o">=</span> <span class="n">water_shell</span> <span class="o">-</span> <span class="n">water_shell_prev</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="s2">&quot;waters in shell =&quot;</span><span class="p">,</span> <span class="n">water_shell</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="s2">&quot;waters that exchanged = &quot;</span><span class="p">,</span> <span class="n">exchanged</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="s2">&quot;waters that remained bound = &quot;</span><span class="p">,</span>
-          <span class="n">water_shell</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">-</span> <span class="n">exchanged</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="s2">&quot;waters in shell =&quot;</span><span class="p">,</span> <span class="n">water_shell</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="s2">&quot;waters that exchanged = &quot;</span><span class="p">,</span> <span class="n">exchanged</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="s2">&quot;waters that remained bound = &quot;</span><span class="p">,</span>
+      <span class="n">water_shell</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">-</span> <span class="n">exchanged</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
 
-    <span class="n">water_shell_prev</span> <span class="o">=</span> <span class="n">water_shell</span><span class="o">.</span><span class="n">atoms</span>
+<span class="n">water_shell_prev</span> <span class="o">=</span> <span class="n">water_shell</span><span class="o">.</span><span class="n">atoms</span>
 </pre></div>
 </div>
 <p>By remembering the atoms of the current time step in
@@ -8076,8 +8144,8 @@ If it is a <a class="reference internal" href="#MDAnalysis.core.groups.Segment" 
 <section id="levels">
 <h3><span class="section-number">11.2.2.1.3. </span>Levels<a class="headerlink" href="#levels" title="Link to this heading"></a></h3>
 <p>Each of the above classes has a <em>level</em> attribute.  This can be used to verify
-that two objects are of the same level, or to access a particular class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">()</span>
+that two objects are of the same level, or to access a particular class</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">()</span>
 
 <span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="n">at</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span>
