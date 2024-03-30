@@ -42,7 +42,7 @@ Enhancements
  * Added guess_TopologyAttrs() API to the Universe to handle attribute
    guessing (pr #3753)
  * Added the DefaultGuesser class, which is a general-purpose guesser with
-    the same functionalities as the existing guesser.py methods (PR #3753)
+   the same functionalities as the existing guesser.py methods (PR #3753)
  * Removed type guessing from RDKitParser and assigned type attribute
    to be equal to the element attribute, if type is not provided (PR #3753)
  * Added is_value_missing() to `TopologyAttrs` to check for missing
@@ -77,7 +77,7 @@ Deprecations
    (PR #4403)
  * Unknown masses are set to 0.0 for current version, this will be depracated
    in version 3.0.0 and replaced by Masse's no_value_label attribute(np.nan)
-   (pr #3753)
+   (PR #3753)
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
          richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 

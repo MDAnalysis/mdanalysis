@@ -238,17 +238,26 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    context: str or Guesser, default ``default``
+    context: str or :mod:`Guesser<MDAnalysis.guesser>`, default ``default``
         Type of the Guesser to be used in guessing TopologyAttrs
-    to_guess: list[str], (optional), default ``['types', 'masses']``
-              (in future versions types and masses will be removed)
-        TopologyAttrs to be guessed. These TopologyAttrs will be wholly guessed
-        if they don't exist in the universe. If they already exist in the Universe,
-        only empty or missing values will be guessed.
+    to_guess: list[str] (optional, default ``['types', 'masses']``)
+
+        .. warning::
+
+            In MDAnalysis 2.x, types and masses are being automatically guessed
+            if they are missing (``to_guess=('types, 'masses')``).
+            However, starting with release 3.0 **no guessing will be done
+            by default** and it will beup to the user to request guessing
+            using ``to_guess`` and ``force_guess``.
+
+        TopologyAttrs to be guessed. These TopologyAttrs will be wholly
+        guessed if they don't exist in the universe. If they already exist in
+        the Universe, only empty or missing values will be guessed.
     force_guess: list[str], (optional)
         TopologyAttrs in this list will be force guessed. If the TopologyAttr
-        does not already exist in the Universe, this has no effect. If the TopologyAttr
-        does already exist, all values will be overwritten by guessed values.
+        does not already exist in the Universe, this has no effect. If the
+        TopologyAttr does already exist, all values will be overwritten
+        by guessed values.
     fudge_factor: float, default [0.55]
         For use with *guess_bonds*. Supply the factor by which atoms must
         overlap each other to be considered a bond.
@@ -1496,17 +1505,24 @@ class Universe(object):
 
         Parameters
         ----------
-        context: str or Guesser class
+        context: str or :mod:`Guesser<MDAanalysis.guesser>` class
             For calling a matching guesser class for this specific context
-        to_guess: list[str], (optional), default ``['types', 'masses']``
-                (in future versions types and masses will be removed)
-            TopologyAttrs to be guessed. These TopologyAttrs will be wholly guessed
-            if they don't exist in the universe. If they already exist in the Universe,
-            only empty or missing values will be guessed.
+        to_guess: list[str], (optional, default ``['types', 'masses']``)
+         .. warning::
+                In MDAnalysis 2.x, types and masses are being automatically
+                guessed if they are missing (``to_guess=('types, 'masses')``).
+                However, starting with release 3.0 **no guessing will be done
+                by default** and it will beup to the user to request guessing
+                using ``to_guess`` and ``force_guess``.
+
+            TopologyAttrs to be guessed. These TopologyAttrs will be wholly
+            guessed if they don't exist in the universe. If they already exist
+            in the Universe, only empty or missing values will be guessed.
         force_guess: list[str], (optional)
-            TopologyAttrs in this list will be force guessed. If the TopologyAttr
-            does not already exist in the Universe, this has no effect. If the TopologyAttr
-            does already exist, all values will be overwritten by guessed values.
+            TopologyAttrs in this list will be force guessed. If the
+            TopologyAttr does not already exist in the Universe, this has no
+            effect. If the TopologyAttr does already exist, all values will
+            be overwritten by guessed values.
         **kwargs: extra arguments to be passed to the guesser class
 
         Examples
@@ -1555,7 +1571,7 @@ class Universe(object):
 
             for attr in total_guess:
                 if guesser.is_guessable(attr):
-                    fg = True if attr in force_guess else False
+                    fg =  attr in force_guess
                     values = guesser.guess_attr(attr, fg)
 
                     if values is not None:

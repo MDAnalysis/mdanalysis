@@ -11,7 +11,7 @@ Example uses of guessers
 ------------------------
 
 Guessing using :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` API
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 Guessing can be done through the universe's :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` as following::

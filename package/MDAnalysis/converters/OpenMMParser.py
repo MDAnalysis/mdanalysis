@@ -193,8 +193,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
                 attrs.append(Elements(np.array(validated_elements,
                                                dtype=object)))
-                attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
-                attrs.append(Masses(np.array(masses)))
 
             else:
                 wmsg = (
@@ -202,7 +200,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
                     "Elements attribute will not be populated. "
                     "Atomtype attribute will be guessed using atom "
                     "name and mass will be guessed using atomtype."
-                    "for MDAnalysis version 2.x this is done automatically, "
+                    "For MDAnalysis version 2.x this is done automatically, "
                     "but it will be removed in future versions. "
                     "These can be guessed using "
                     "universe.guess_TopologyAttrs("
@@ -212,8 +210,8 @@ class OpenMMTopologyParser(TopologyReaderBase):
                 warnings.warn(wmsg)
         else:
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
-            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
-            attrs.append(Masses(np.array(masses)))
+        attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+        attrs.append(Masses(np.array(masses)))
 
         n_atoms = len(atomids)
         n_residues = len(resids)

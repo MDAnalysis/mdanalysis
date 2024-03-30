@@ -148,7 +148,7 @@ class DefaultGuesser(GuesserBase):
         """Return the atomic mass in u for *element*.
         Masses are looked up in :data:`MDAnalysis.guesser.tables.masses`.
 
-        .. Warning:: Untill vesion 3.0.0 unknown masses are set to 0.0
+        .. Warning:: Untill version 3.0.0 unknown masses are set to 0.0
 
         """
         try:
@@ -159,7 +159,7 @@ class DefaultGuesser(GuesserBase):
             except KeyError:
                 warnings.warn(
                     "Unknown masses are set to 0.0 for current version, "
-                    "this will be depracated in version 3.0.0 and replaced by"
+                    "this will be deprecated in version 3.0.0 and replaced by"
                     " Masse's no_value_label (np.nan)",
                     PendingDeprecationWarning)
                 return 0.0
@@ -169,8 +169,8 @@ class DefaultGuesser(GuesserBase):
 
         :func:`guess_atom_element` is used to determine the kind of atom.
 
-        .. warning:: Untill vesion 3.0.0 anything not recognized is simply
-        set to 0.0; if you rely on the masses you might want to double check.
+    .. warning:: Untill version 3.0.0 anything not recognized is simply
+        set to 0.0; if you rely on the masses you might want to double-check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 

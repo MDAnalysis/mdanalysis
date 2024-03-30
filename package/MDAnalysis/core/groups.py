@@ -3285,8 +3285,6 @@ class AtomGroup(GroupBase):
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
-        context : str
-            context of the universe
         fudge_factor : float, optional
             The factor by which atoms must overlap each other to be considered
             a bond.  Larger values will increase the number of bonds found. [0.55]
