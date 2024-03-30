@@ -125,10 +125,10 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         ts.frame = 0
         ts.data["time"] = state.getTime()._value
         ts.data["potential_energy"] = (
-            state.getPotentialEnergy().in_units_of(u.kilojoule/u.mole)
+            state.getPotentialEnergy().in_units_of(u.kilojoule/u.mole)._value
         )
         ts.data["kinetic_energy"] = (
-            state.getKineticEnergy().in_units_of(u.kilojoule/u.mole)
+            state.getKineticEnergy().in_units_of(u.kilojoule/u.mole)._value
         )
         ts.triclinic_dimensions = state.getPeriodicBoxVectors(
                 asNumpy=True)._value
