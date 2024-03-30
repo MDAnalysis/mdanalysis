@@ -132,8 +132,8 @@ struct XDR
 		int (*x_getbytes) (XDR *__xdrs, char *__addr, unsigned int __len);
 		int (*x_putbytes) (XDR *__xdrs, char *__addr, unsigned int __len);
 		/* two next routines are not 64-bit IO safe - don't use! */
-		unsigned int (*x_getpostn) (XDR *__xdrs);
-		int (*x_setpostn) (XDR *__xdrs, unsigned int __pos);
+		int64_t (*x_getpostn) (XDR *__xdrs);
+		int (*x_setpostn) (XDR *__xdrs, int64_t __pos, int __whence);
 		void (*x_destroy) (XDR *__xdrs);
 	}
     *x_ops;

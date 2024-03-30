@@ -628,7 +628,7 @@ def clip_matrix(left, right, bottom, top, near, far, perspective=False):
     >>> np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0])
     array([-1., -1., -1.,  1.])
     >>> np.dot(M, [frustrum[1], frustrum[3], frustrum[5], 1.0])
-    array([ 1.,  1.,  1.,  1.])
+    array([1., 1., 1., 1.])
     >>> M = clip_matrix(perspective=True, *frustrum)
     >>> v = np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0])
     >>> v / v[3]
@@ -1031,7 +1031,7 @@ def euler_matrix(ai, aj, ak, axes='sxyz'):
     ai, aj, ak : Euler's roll, pitch and yaw angles
     axes : One of 24 axis sequences as string or encoded tuple
 
-    >>> from MDAnalysis.lib.transformations import (euler_matrix
+    >>> from MDAnalysis.lib.transformations import (euler_matrix,
     ... _AXES2TUPLE, _TUPLE2AXES)
     >>> import math
     >>> import numpy as np
@@ -1454,7 +1454,7 @@ def quaternion_slerp(quat0, quat1, fraction, spin=0, shortestpath=True):
     >>> q = quaternion_slerp(q0, q1, 0.5)
     >>> angle = math.acos(np.dot(q0, q))
     >>> np.allclose(2.0, math.acos(np.dot(q0, q1)) / angle) or \
-        np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle)
+    ... np.allclose(2.0, math.acos(-np.dot(q0, q1)) / angle)
     True
 
     """

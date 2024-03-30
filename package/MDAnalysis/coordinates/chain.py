@@ -269,8 +269,17 @@ class ChainReader(base.ReaderBase):
             kwargs['dt'] = dt
         self.readers = [core.reader(filename, convert_units=convert_units, **kwargs)
                         for filename in filenames]
-        self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn
-                                                        for fn in filenames])
+        # Iterate through all filenames, appending NoneType None for ndarrays
+        self.filenames = []
+        for fn in filenames:
+            if isinstance(fn, np.ndarray):
+                self.filenames.append(None)
+            elif isinstance(fn, tuple):
+                self.filenames.append(fn[0])
+            else:
+                self.filenames.append(fn)
+        self.filenames = np.array(self.filenames)
+
         # pointer to "active" trajectory index into self.readers
         self.__active_reader_index = 0
 
@@ -299,7 +308,8 @@ class ChainReader(base.ReaderBase):
 
         # calculate new start_frames to have a time continuous trajectory.
         if continuous:
-            check_allowed_filetypes(self.readers, ['XTC', 'TRR', "LAMMPSDUMP"])
+            check_allowed_filetypes(self.readers, ['XTC', 'TRR', 'LAMMPSDUMP',
+                                                   'TRC'])
             if np.any(np.array(n_frames) == 1):
                 raise RuntimeError("ChainReader: Need at least two frames in "
                                    "every trajectory with continuous=True")
@@ -597,11 +607,14 @@ class ChainReader(base.ReaderBase):
 
     def __repr__(self):
         if len(self.filenames) > 3:
-            fnames = "{fname} and {nfanmes} more".format(
-                    fname=os.path.basename(self.filenames[0]),
-                    nfanmes=len(self.filenames) - 1)
+            fname = (os.path.basename(self.filenames[0])
+                     if self.filenames[0] else "numpy.ndarray")
+            fnames = "{fname} and {nfnames} more".format(
+                    fname=fname,
+                    nfnames=len(self.filenames) - 1)
         else:
-            fnames = ", ".join([os.path.basename(fn) for fn in self.filenames])
+            fnames = ", ".join([os.path.basename(fn) if fn else "numpy.ndarray"
+                                for fn in self.filenames])
         return ("<{clsname} containing {fname} with {nframes} frames of {natoms} atoms>"
                 "".format(
                     clsname=self.__class__.__name__,

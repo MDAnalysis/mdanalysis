@@ -80,14 +80,14 @@ two structures, using :func:`rmsd`::
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
-mass (or geometry) first:
+mass (or geometry) first::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, center=True)
    21.892591663632704
 
 This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
-minimized RMSD between the reference and mobile structure.
+minimized RMSD between the reference and mobile structure::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, 
    ...      superposition=True)
@@ -174,6 +174,7 @@ Functions and Classes
 .. autoclass:: AlignTraj
 .. autoclass:: AverageStructure
 .. autofunction:: rotation_matrix
+.. autofunction:: iterative_average
 
 
 Helper functions
@@ -212,6 +213,8 @@ import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.lib.util import get_weights
 from MDAnalysis.lib.util import deprecate   # remove 3.0
+from MDAnalysis.lib.log import ProgressBar
+from ..due import due, Doi
 
 from .base import AnalysisBase
 
@@ -539,6 +542,125 @@ def alignto(mobile, reference, select=None, weights=None,
                                      mobile_atoms, mobile_com, ref_com,
                                      weights=weights)
     return old_rmsd, new_rmsd
+
+
+@due.dcite(
+        Doi("10.1021/acs.jpcb.7b11988"),
+        description="Iterative Calculation of Opimal Reference",
+        path="MDAnalysis.analysis.align.iterative_average"
+)
+def iterative_average(
+    mobile, reference=None, select='all', weights=None, niter=100,
+    eps=1e-6, verbose=False, **kwargs
+):
+    """Iteratively calculate an optimal reference that is also the average
+    structure after an RMSD alignment.
+
+    The optimal reference is defined as average
+    structure of a trajectory, with the optimal reference used as input.
+    This function computes the optimal reference by using a starting
+    reference for the average structure, which is used as the reference
+    to calculate the average structure again. This is repeated until the
+    reference structure has converged. :footcite:p:`Linke2018`
+
+    Parameters
+    ----------
+    mobile : mda.Universe
+        Universe containing trajectory to be fitted to reference.
+    reference : mda.Universe (optional)
+        Universe containing the initial reference structure.
+    select : str or tuple or dict (optional)
+        Atom selection for fitting a substructue. Default is set to all.
+        Can be tuple or dict to define different selection strings for
+        mobile and target.
+    weights : str, array_like (optional)
+        Weights that can be used. If `None` use equal weights, if `'mass'`
+        use masses of ref as weights or give an array of arbitrary weights.
+    niter : int (optional)
+        Maximum number of iterations.
+    eps : float (optional)
+        RMSD distance at which reference and average are assumed to be
+        equal.
+    verbose : bool (optional)
+        Verbosity.
+    **kwargs : dict (optional)
+        AverageStructure kwargs.
+
+    Returns
+    -------
+    avg_struc : AverageStructure
+        AverageStructure result from the last iteration.
+
+    Example
+    -------
+    `iterative_average` can be used to obtain a :class:`MDAnalysis.Universe`
+    with the optimal reference structure.
+
+    ::
+
+        import MDAnalysis as mda
+        from MDAnalysis.analysis import align
+        from MDAnalysisTests.datafiles import PSF, DCD
+
+        u = mda.Universe(PSF, DCD)
+        av = align.iterative_average(u, u, verbose=True)
+
+        averaged_universe = av.results.universe
+
+    References
+    ----------
+
+    .. footbibliography::
+
+    .. versionadded:: 2.8.0
+    """
+    if not reference:
+        reference = mobile
+
+    select = rms.process_selection(select)
+    ref = mda.Merge(reference.select_atoms(*select['reference']))
+    sel_mobile = select['mobile'][0]
+
+    weights = get_weights(ref.atoms, weights)
+
+    drmsd = np.inf
+    for i in ProgressBar(range(niter)):
+        # found a converged structure
+        if drmsd < eps:
+            break
+
+        avg_struc = AverageStructure(
+            mobile, reference=ref, select={
+                'mobile': sel_mobile, 'reference': 'all'
+                },
+            weights=weights, **kwargs
+        ).run()
+        drmsd = rms.rmsd(ref.atoms.positions, avg_struc.results.positions,
+                         weights=weights)
+        ref = avg_struc.results.universe
+
+        if verbose:
+            logger.debug(
+                f"iterative_average(): i = {i}, "
+                f"rmsd-change = {drmsd:.5f}, "
+                f"ave-rmsd = {avg_struc.results.rmsd:.5f}"
+            )
+
+    else:
+        errmsg = (
+            "iterative_average(): Did not converge in "
+            f"{niter} iterations to DRMSD < {eps}. "
+            f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+        )
+        logger.error(errmsg)
+        raise RuntimeError(errmsg)
+
+    logger.info(
+        f"iterative_average(): Converged to DRMSD < {eps}. "
+        f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+    )
+
+    return avg_struc
 
 
 class AlignTraj(AnalysisBase):

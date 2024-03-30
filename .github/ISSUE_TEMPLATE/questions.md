@@ -1,6 +1,6 @@
 ---
 name: Questions
-about: If you want to ask a question please use the mailing list!
+about: If you want to ask a question please use GitHub Discussions!
 
 ---
 
@@ -11,13 +11,13 @@ If you have a **QUESTION** such as
 - what output means
 - ... or similar questions related to *USING* MDAnalysis 
 
-then please *ask this question on the user mailing list*
+then please *ask this question on GitHub Discussions*
 
-   https://groups.google.com/forum/#!forum/mdnalysis-discussion
+   https://github.com/MDAnalysis/mdanalysis/discussions
 
-The issue tracker is meant for DEFECTS ("BUGS"), new FEATURES, and decisions on the API. In order to keep the volume of work on the issue tracker manageable for our volunteer developers, we will **IMMEDIATELY CLOSE ISSUES WITH QUESTIONS** as these questions are better answered on the mailing list.
+The issue tracker is meant for DEFECTS ("BUGS"), new FEATURES, and decisions on the API. In order to keep the volume of work on the issue tracker manageable for our volunteer developers, we will migrate issues with questions to [GitHub Discussions](https://github.com/MDAnalysis/mdanalysis/discussions).
 
-We really appreciate you getting in touch with us --- no matter what you want to discuss. But we need your help keeping the amount of work manageable so please use the mailing list for questions and the issue tracker for code-related issues.
+We really appreciate you getting in touch with us --- no matter what you want to discuss. But we need your help keeping the amount of work manageable so please use [GitHub Discussions](https://github.com/MDAnalysis/mdanalysis/discussions) for questions and the issue tracker for code-related issues.
 
 Thank you!
 

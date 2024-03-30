@@ -91,11 +91,13 @@ class FileIOPicklable(io.FileIO):
     -------
     ::
 
+        >>> import pickle
+        >>> from MDAnalysis.tests.datafiles import PDB
         >>> file = FileIOPicklable(PDB)
-        >>> file.readline()
+        >>> _ = file.readline()
         >>> file_pickled = pickle.loads(pickle.dumps(file))
         >>> print(file.tell(), file_pickled.tell())
-            55 55
+        55 55
 
     See Also
     ---------
@@ -272,11 +274,13 @@ class BZ2Picklable(bz2.BZ2File):
     -------
     ::
 
+        >>> import pickle
+        >>> from MDAnalysis.tests.datafiles import XYZ_bz2
         >>> file = BZ2Picklable(XYZ_bz2)
-        >>> file.readline()
+        >>> _ = file.readline()
         >>> file_pickled = pickle.loads(pickle.dumps(file))
         >>> print(file.tell(), file_pickled.tell())
-            5 5
+        5 5
 
     See Also
     ---------
@@ -339,11 +343,13 @@ class GzipPicklable(gzip.GzipFile):
     -------
     ::
 
+        >>> import pickle
+        >>> from MDAnalysis.tests.datafiles import MMTF_gz
         >>> file = GzipPicklable(MMTF_gz)
-        >>> file.readline()
+        >>> _ = file.readline()
         >>> file_pickled = pickle.loads(pickle.dumps(file))
         >>> print(file.tell(), file_pickled.tell())
-            1218 1218
+        1218 1218
 
     See Also
     ---------
