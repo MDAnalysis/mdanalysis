@@ -52,6 +52,8 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * TextIOPicklable serializes the raw class instance instead of class name.
+   (PR #3722)
  * As per SPEC0 the minimum supported Python version has been raised
    to 3.10 (PR #4502)
  * MDAnalysis.analysis.hole2 is now directly imported from the mdakit
@@ -431,8 +433,6 @@ Changes
     use `pip install ./package[extra_formats]` instead (PR #3810)
   * `Universe.empty` emmits less warnings (PR #3814)
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
-  * TextIOPicklable serializes the raw class instance instead of class name.
-    (PR #3722)
 
 Deprecations
   * Direct indexing of results in analysis.nucleicacids' NucPairDist
