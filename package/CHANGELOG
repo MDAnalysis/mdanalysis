@@ -21,6 +21,10 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix failure in double-serialization of TextIOPicklable file reader.
+   (Issue #3723, PR #3722)
+ * Fix failure to preserve modification of coordinates after serialization.
+   (Issue #3723, PR #3722)
  * Atomname methods can handle empty groups (Issue #2879, PR #4529)
  * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
@@ -261,10 +265,6 @@ Fixes
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
     (Issue #3336)
-  * Fix failure in double-serialization of TextIOPicklable file reader.
-    (Issue #3723, PR #3722)
-  * Fix failure to preserve modification of coordinates after serialization.
-    (Issue #3723, PR #3722)
 
 Enhancements
   * ARM64 (osx and linux) wheels now uploaded on release (Issue #4054)
