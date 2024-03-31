@@ -878,6 +878,9 @@ class Atomnames(AtomStringAttr):
         .. versionadded:: 1.0.0
         """
 
+        if not residues:
+            return []
+
         u = residues[0].universe
         prev = u.residues[residues.ix-1]  # obv candidates first
         rsid = residues.segids
@@ -1074,6 +1077,10 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1182,6 +1189,10 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1279,6 +1290,10 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
         keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
