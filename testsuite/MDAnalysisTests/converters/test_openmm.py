@@ -88,8 +88,9 @@ class TestOpenMMBasicSimulationReader():
         assert len(omm_sim_uni.bonds.indices) == 0
 
     def test_data(self, omm_sim_uni):
-        assert isinstance(omm_sim_uni.trajectory.ts.data["kinetic_energy"], float)
-        assert isinstance(omm_sim_uni.trajectory.ts.data["potential_energy"], float)
+        data = omm_sim_uni.trajectory.ts.data
+        assert isinstance(data["kinetic_energy"], float)
+        assert isinstance(data["potential_energy"], float)
 
 
 class TestOpenMMPDBFileReader(_SingleFrameReader):
