@@ -31,48 +31,36 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysis.topology.guessers import guess_atom_element
-from MDAnalysisTests.datafiles import (
-    GRO,
-    TRR,
-    PDB_full,
-    PDB_helix,
-    mol2_molecule,
-)
+from MDAnalysisTests.datafiles import (GRO, TRR, PDB_full, PDB_helix,
+                                       mol2_molecule)
 from MDAnalysisTests.util import import_not_available
 from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
 with suppress(ImportError):
-    from MDAnalysis.converters.RDKit import (
-        RDATTRIBUTES,
-        _add_mda_attr_to_rdkit,
-        _set_atom_property,
-        atomgroup_to_mol,
-    )
-    from MDAnalysis.converters.RDKitInferring import (
-        MDAnalysisInferer,
-        RDKitInferer,
-        TemplateInferer,
-        reorder_atoms,
-        sanitize_mol,
-    )
+    from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
+                                             _add_mda_attr_to_rdkit,
+                                             _set_atom_property,
+                                             atomgroup_to_mol)
+    from MDAnalysis.converters.RDKitInferring import (MDAnalysisInferer,
+                                                      RDKitInferer,
+                                                      TemplateInferer,
+                                                      reorder_atoms,
+                                                      sanitize_mol)
     from rdkit import Chem
     from rdkit.Chem import AllChem
 
 
-requires_rdkit = pytest.mark.skipif(
-    import_not_available("rdkit"), reason="requires RDKit"
-)
+requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
+                                    reason="requires RDKit")
 
 
-@pytest.mark.skipif(
-    not import_not_available("rdkit"), reason="only for min dependencies build"
-)
+@pytest.mark.skipif(not import_not_available("rdkit"),
+                    reason="only for min dependencies build")
 class TestRequiresRDKit(object):
     def test_converter_requires_rdkit(self):
         u = mda.Universe(PDB_full)
-        with pytest.raises(
-            ImportError, match="RDKit is required for the RDKitConverter"
-        ):
+        with pytest.raises(ImportError,
+                           match="RDKit is required for the RDKitConverter"):
             u.atoms.convert_to("RDKIT")
 
 
@@ -118,28 +106,22 @@ def product(request):
 
 
 def is_isomorphic(mol, ref, useChirality=False):
-    return mol.HasSubstructMatch(
-        ref, useChirality=useChirality
-    ) and ref.HasSubstructMatch(mol, useChirality=useChirality)
+    return (mol.HasSubstructMatch(ref, useChirality=useChirality)
+            and ref.HasSubstructMatch(mol, useChirality=useChirality))
 
 
 @requires_rdkit
 class TestRDKitReader(object):
-    @pytest.mark.parametrize(
-        "rdmol, n_frames",
-        [
-            ("mol2_mol", 1),
-            ("smiles_mol", 3),
-        ],
-        indirect=["rdmol"],
-    )
+    @pytest.mark.parametrize("rdmol, n_frames", [
+        ("mol2_mol", 1),
+        ("smiles_mol", 3),
+    ], indirect=["rdmol"])
     def test_coordinates(self, rdmol, n_frames):
         universe = mda.Universe(rdmol)
         assert universe.trajectory.n_frames == n_frames
-        expected = np.array(
-            [conf.GetPositions() for conf in rdmol.GetConformers()],
-            dtype=np.float32,
-        )
+        expected = np.array([
+            conf.GetPositions() for conf in rdmol.GetConformers()],
+            dtype=np.float32)
         assert_equal(expected, universe.trajectory.coordinate_array)
 
     def test_no_coordinates(self):
@@ -153,9 +135,8 @@ class TestRDKitReader(object):
         universe = mda.Universe(MolFactory.mol2_mol())
         mol2 = mda.Universe(mol2_molecule)
         assert universe.trajectory.n_frames == mol2.trajectory.n_frames
-        assert_equal(
-            universe.trajectory.ts.positions, mol2.trajectory.ts.positions
-        )
+        assert_equal(universe.trajectory.ts.positions,
+                     mol2.trajectory.ts.positions)
 
 
 @requires_rdkit
@@ -168,9 +149,8 @@ class TestRDKitConverter(object):
     def mol2(self):
         u = mda.Universe(mol2_molecule)
         # add elements
-        elements = np.array(
-            [guess_atom_element(x) for x in u.atoms.types], dtype=object
-        )
+        elements = np.array([guess_atom_element(x) for x in u.atoms.types],
+                            dtype=object)
         u.add_TopologyAttr("elements", elements)
         return u
 
@@ -192,35 +172,28 @@ class TestRDKitConverter(object):
 
     @pytest.mark.parametrize("smi", ["[H]", "C", "O", "[He]"])
     def test_single_atom_mol(self, smi):
-        u = mda.Universe.from_smiles(
-            smi, addHs=False, generate_coordinates=False
-        )
+        u = mda.Universe.from_smiles(smi, addHs=False,
+                                     generate_coordinates=False)
         mol = u.atoms.convert_to.rdkit(inferer=None)
         assert mol.GetNumAtoms() == 1
         assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
 
-    @pytest.mark.parametrize(
-        "resname, n_atoms, n_fragments",
-        [
-            ("PRO", 14, 1),
-            ("ILE", 38, 1),
-            ("ALA", 20, 2),
-            ("GLY", 21, 3),
-        ],
-    )
+    @pytest.mark.parametrize("resname, n_atoms, n_fragments", [
+        ("PRO", 14, 1),
+        ("ILE", 38, 1),
+        ("ALA", 20, 2),
+        ("GLY", 21, 3),
+    ])
     def test_mol_from_selection(self, peptide, resname, n_atoms, n_fragments):
         mol = peptide.select_atoms("resname %s" % resname).convert_to("RDKIT")
         assert n_atoms == mol.GetNumAtoms()
         assert n_fragments == len(Chem.GetMolFrags(mol))
 
-    @pytest.mark.parametrize(
-        "sel_str, atom_index",
-        [
-            ("resid 1", 0),
-            ("resname LYS and name NZ", 1),
-            ("resid 34 and altloc B", 2),
-        ],
-    )
+    @pytest.mark.parametrize("sel_str, atom_index", [
+        ("resid 1", 0),
+        ("resname LYS and name NZ", 1),
+        ("resid 34 and altloc B", 2),
+    ])
     def test_monomer_info(self, pdb, sel_str, atom_index):
         sel = pdb.select_atoms(sel_str)
         mda_atom = sel.atoms[atom_index]
@@ -237,9 +210,8 @@ class TestRDKitConverter(object):
         assert mda_atom.segindex == mi.GetSegmentNumber()
         assert mda_atom.tempfactor == mi.GetTempFactor()
 
-    @pytest.mark.parametrize(
-        "rdmol", ["mol2_mol", "smiles_mol"], indirect=True
-    )
+    @pytest.mark.parametrize("rdmol", ["mol2_mol", "smiles_mol"],
+                             indirect=True)
     def test_identical_topology(self, rdmol):
         u = mda.Universe(rdmol)
         umol = u.atoms.convert_to("RDKIT")
@@ -249,8 +221,10 @@ class TestRDKitConverter(object):
         assert_equal(u.atoms.elements, u2.atoms.elements)
         assert_equal(u.atoms.names, u2.atoms.names)
         assert_allclose(
-            u.atoms.positions, u2.atoms.positions, rtol=0, atol=1e-7
-        )
+            u.atoms.positions,
+            u2.atoms.positions,
+            rtol=0,
+            atol=1e-7)
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
@@ -260,15 +234,14 @@ class TestRDKitConverter(object):
 
         with pytest.raises(
             AttributeError,
-            match="`elements` attribute is required for the RDKitConverter",
+            match="`elements` attribute is required for the RDKitConverter"
         ):
             u.atoms.convert_to("RDKIT")
 
     def test_warn_guess_bonds(self):
         u = mda.Universe(PDB_helix)
-        with pytest.warns(
-            UserWarning, match="No `bonds` attribute in this AtomGroup"
-        ):
+        with pytest.warns(UserWarning,
+                          match="No `bonds` attribute in this AtomGroup"):
             u.atoms.convert_to("RDKIT")
 
     def test_bonds_outside_sel(self):
@@ -277,44 +250,39 @@ class TestRDKitConverter(object):
         ag.convert_to.rdkit(inferer=None)
 
     def test_error_no_hydrogen(self, uo2):
-        with pytest.raises(
-            AttributeError,
-            match="the converter requires all hydrogens to be " "explicit",
-        ):
+        with pytest.raises(AttributeError,
+                           match="the converter requires all hydrogens to be "
+                                 "explicit"):
             uo2.atoms.convert_to("RDKIT")
 
-    def test_error_no_hydrogen_skip_inferring(self, uo2):
+    def test_error_no_hydrogen_implicit(self, uo2):
         with warnings.catch_warnings():
             warnings.simplefilter("error")
             uo2.atoms.convert_to.rdkit(inferer=None)
 
     def test_warning_no_hydrogen_force(self, uo2):
-        with pytest.warns(
-            UserWarning, match="Forcing to continue the conversion"
-        ):
+        with pytest.warns(UserWarning,
+                          match="Forcing to continue the conversion"):
             uo2.atoms.convert_to.rdkit(force=True)
 
-    @pytest.mark.parametrize(
-        "attr, value, expected",
-        [
-            ("names", "N", " N  "),
-            ("names", "CA", " CA "),
-            ("names", "CAT", " CAT"),
-            ("names", "N1", " N1 "),
-            ("names", "CE2", " CE2"),
-            ("names", "C12", " C12"),
-            ("names", "HD12", "HD12"),
-            ("names", "C123", "C123"),
-            ("altLocs", "A", "A"),
-            ("chainIDs", "B", "B"),
-            ("icodes", "C", "C"),
-            ("occupancies", 0.5, 0.5),
-            ("resnames", "LIG", "LIG"),
-            ("resids", 123, 123),
-            ("segindices", 1, 1),
-            ("tempfactors", 0.8, 0.8),
-        ],
-    )
+    @pytest.mark.parametrize("attr, value, expected", [
+        ("names", "N",    " N  "),
+        ("names", "CA",   " CA "),
+        ("names", "CAT",  " CAT"),
+        ("names", "N1",   " N1 "),
+        ("names", "CE2",  " CE2"),
+        ("names", "C12",  " C12"),
+        ("names", "HD12", "HD12"),
+        ("names", "C123", "C123"),
+        ("altLocs", "A", "A"),
+        ("chainIDs", "B", "B"),
+        ("icodes", "C", "C"),
+        ("occupancies", 0.5, 0.5),
+        ("resnames", "LIG", "LIG"),
+        ("resids", 123, 123),
+        ("segindices", 1, 1),
+        ("tempfactors", 0.8, 0.8),
+    ])
     def test_add_mda_attr_to_rdkit(self, attr, value, expected):
         mi = Chem.AtomPDBResidueInfo()
         _add_mda_attr_to_rdkit(attr, value, mi)
@@ -330,13 +298,10 @@ class TestRDKitConverter(object):
         assert mda_atom.segid == rdatom.GetProp("_MDAnalysis_segid")
         assert mda_atom.type == rdatom.GetProp("_MDAnalysis_type")
 
-    @pytest.mark.parametrize(
-        "sel_str",
-        [
-            "resname ALA",
-            "resname PRO and segid A",
-        ],
-    )
+    @pytest.mark.parametrize("sel_str", [
+        "resname ALA",
+        "resname PRO and segid A",
+    ])
     def test_index_property(self, pdb, sel_str):
         ag = pdb.select_atoms(sel_str)
         mol = ag.convert_to.rdkit(inferer=None)
@@ -356,8 +321,7 @@ class TestRDKitConverter(object):
 
     def test_trajectory_coords(self):
         u = mda.Universe.from_smiles(
-            "CCO", numConfs=3, rdkit_kwargs=dict(randomSeed=42)
-        )
+            "CCO", numConfs=3, rdkit_kwargs=dict(randomSeed=42))
         for ts in u.trajectory:
             mol = u.atoms.convert_to("RDKIT")
             positions = mol.GetConformer().GetPositions()
@@ -435,36 +399,30 @@ class TestRDKitConverter(object):
         with pytest.warns() as record:
             u.atoms.convert_to.rdkit(inferer=None)
         assert "Could not sanitize molecule" not in "\n".join(
-            [str(r.message) for r in record]
-        )
+            [str(r.message)for r in record])
 
     def test_deprecation_max_iter(self, mol2, monkeypatch):
         mock = Mock(wraps=atomgroup_to_mol)
-        monkeypatch.setattr(
-            "MDAnalysis.converters.RDKit.atomgroup_to_mol", mock
-        )
-        with pytest.warns(
-            DeprecationWarning, match="Using `max_iter` is deprecated"
-        ):
+        monkeypatch.setattr("MDAnalysis.converters.RDKit.atomgroup_to_mol",
+                            mock)
+        with pytest.warns(DeprecationWarning,
+                          match="Using `max_iter` is deprecated"):
             mol2.atoms.convert_to.rdkit(max_iter=2)
         assert mock.call_args.kwargs["inferer"].max_iter == 2
 
     def test_deprecation_NoImplicit(self, mol2):
-        with pytest.warns(
-            DeprecationWarning, match="Using `NoImplicit` is deprecated"
-        ):
+        with pytest.warns(DeprecationWarning,
+                          match="Using `NoImplicit` is deprecated"):
             mol2.atoms.convert_to.rdkit(NoImplicit=True)
 
     def test_deprecation_atomgroup_to_mol_NoImplicit(self, mol2):
-        with pytest.warns(
-            DeprecationWarning, match="Using `NoImplicit` is deprecated"
-        ):
+        with pytest.warns(DeprecationWarning,
+                          match="Using `NoImplicit` is deprecated"):
             atomgroup_to_mol(mol2.atoms, NoImplicit=False)
 
     def test_atomgroup_to_mol_unexpected_kwargs(self, mol2):
-        with pytest.raises(
-            ValueError, match="Found unexpected arguments: {'foo': 'bar'}"
-        ):
+        with pytest.raises(ValueError,
+                           match="Found unexpected arguments: {'foo': 'bar'}"):
             atomgroup_to_mol(mol2.atoms, foo="bar")
 
     def test_custom_callable_inferer(self, mol2):
@@ -481,22 +439,15 @@ class TestRDKitConverter(object):
 class TestRDKitInferringFunctions:
     def test_sanitize_mol_warning(self):
         mol = Chem.MolFromSmiles("[NH4]", sanitize=False)
-        with pytest.warns(
-            match=(
-                "Could not sanitize molecule: failed during step "
-                "rdkit.Chem.rdmolops.SanitizeFlags.SANITIZE_PROPERTIES"
-            )
-        ):
+        with pytest.warns(match="Could not sanitize molecule: failed during "
+                          "step rdkit.Chem.rdmolops.SanitizeFlags"
+                          ".SANITIZE_PROPERTIES"):
             sanitize_mol(mol)
 
     def test_reorder_atoms_key_error(self):
         mol = Chem.MolFromSmiles("CCO")
-        with pytest.warns(
-            match=(
-                "'_MDAnalysis_index' not available on the input mol atoms, "
-                "skipping reordering of atoms"
-            )
-        ):
+        with pytest.warns(match="'_MDAnalysis_index' not available on the"
+                          " input mol atoms, skipping reordering of atoms"):
             reorder_atoms(mol)
 
 
@@ -515,17 +466,14 @@ class BaseInferer:
         return mH
 
     def assert_isomorphic_resonance_structure(self, mol, ref):
-        """Checks if 2 molecules are isomorphic using their resonance
-        structures
+        """
+        Checks if 2 molecules are isomorphic using their resonance structures
         """
         isomorphic = mol.HasSubstructMatch(ref)
         if not isomorphic:
-            isomorphic = bool(
-                Chem.ResonanceMolSupplier(mol).GetSubstructMatch(ref)
-            )
-        assert (
-            isomorphic
-        ), f"{Chem.MolToSmiles(ref)} != {Chem.MolToSmiles(mol)}"
+            isomorphic = bool(Chem.ResonanceMolSupplier(mol)
+                              .GetSubstructMatch(ref))
+        assert isomorphic, f"{Chem.MolToSmiles(ref)} != {Chem.MolToSmiles(mol)}"
 
 
 @requires_rdkit
@@ -545,27 +493,22 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
     def inferer(self):
         return MDAnalysisInferer()
 
-    @pytest.mark.parametrize(
-        "smi, out",
-        [
-            ("C(-[H])(-[H])(-[H])-[H]", "C"),
-            ("[C](-[H])(-[H])-[C](-[H])-[H]", "C=C"),
-            (
-                "[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])",
-                "c1ccccc1",
-            ),
-            ("C-[C](-[H])-[O]", "C(=O)C"),
-            ("[H]-[C](-[O])-[N](-[H])-[H]", "C(=O)N"),
-            ("[N]-[C]-[H]", "N#C"),
-            ("C-[C](-[O]-[H])-[O]", "CC(=O)O"),
-            ("[P](-[O]-[H])(-[O]-[H])(-[O]-[H])-[O]", "P(O)(O)(O)=O"),
-            ("[P](-[O]-[H])(-[O]-[H])(-[O])-[O]", "P([O-])(O)(O)=O"),
-            ("[P](-[O]-[H])(-[O])(-[O])-[O]", "P([O-])([O-])(O)=O"),
-            ("[P](-[O])(-[O])(-[O])-[O]", "P([O-])([O-])([O-])=O"),
-            ("[H]-[O]-[N]-[O]", "ON=O"),
-            ("[N]-[C]-[O]", "N#C[O-]"),
-        ],
-    )
+    @pytest.mark.parametrize("smi, out", [
+        ("C(-[H])(-[H])(-[H])-[H]", "C"),
+        ("[C](-[H])(-[H])-[C](-[H])-[H]", "C=C"),
+        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])",
+         "c1ccccc1"),
+        ("C-[C](-[H])-[O]", "C(=O)C"),
+        ("[H]-[C](-[O])-[N](-[H])-[H]", "C(=O)N"),
+        ("[N]-[C]-[H]", "N#C"),
+        ("C-[C](-[O]-[H])-[O]", "CC(=O)O"),
+        ("[P](-[O]-[H])(-[O]-[H])(-[O]-[H])-[O]", "P(O)(O)(O)=O"),
+        ("[P](-[O]-[H])(-[O]-[H])(-[O])-[O]", "P([O-])(O)(O)=O"),
+        ("[P](-[O]-[H])(-[O])(-[O])-[O]", "P([O-])([O-])(O)=O"),
+        ("[P](-[O])(-[O])(-[O])-[O]", "P([O-])([O-])([O-])=O"),
+        ("[H]-[O]-[N]-[O]", "ON=O"),
+        ("[N]-[C]-[O]", "N#C[O-]"),
+    ])
     def test_infer_bond_orders(self, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
@@ -574,19 +517,14 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
-        assert is_isomorphic(mol, molref), "{} != {}".format(
-            Chem.MolToSmiles(mol), out
-        )
+        assert is_isomorphic(mol, molref), f"{Chem.MolToSmiles(mol)} != {out}"
 
-    @pytest.mark.parametrize(
-        "smi, atom_idx, charge",
-        [
-            ("[C](-[H])(-[H])(-[H])-[O]", 4, -1),
-            ("[N]-[C]-[O]", 2, -1),
-            ("[N](-[H])(-[H])(-[H])-[H]", 0, 1),
-            ("C-[C](-[O])-[O]", 3, -1),
-        ],
-    )
+    @pytest.mark.parametrize("smi, atom_idx, charge", [
+        ("[C](-[H])(-[H])(-[H])-[O]", 4, -1),
+        ("[N]-[C]-[O]", 2, -1),
+        ("[N](-[H])(-[H])(-[H])-[H]", 0, 1),
+        ("C-[C](-[O])-[O]", 3, -1),
+    ])
     def test_infer_charges(self, smi, atom_idx, charge):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
@@ -595,62 +533,48 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
         Chem.SanitizeMol(mol)
         assert mol.GetAtomWithIdx(atom_idx).GetFormalCharge() == charge
 
-    @pytest.mark.parametrize(
-        "smi, out",
-        [
-            ("[S](-[O]-[H])(-[O]-[H])(-[O])-[O]", "S(=O)(=O)(O)O"),
-            ("[S](-[O]-[H])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])O"),
-            ("[S](-[O])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])[O-]"),
-            (
-                "C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]",
-                "CNC(N)=[N+](-[H])-[H]",
-            ),
-            ("[O]-[C](-[H])-[C](-[H])-[H]", "C([O-])=C"),
-            ("C-[N](-[O])-[O]", "C[N+](=O)[O-]"),
-            ("C(-[N](-[O])-[O])-[N](-[O])-[O]", "C([N+](=O)[O-])[N+](=O)[O-]"),
-            ("C-[N](-[O])-[O].C-[N](-[O])-[O]", "C[N+](=O)[O-].C[N+](=O)[O-]"),
-            ("[C-](=O)-C", "[C](=O)-C"),
-            ("[H]-[N-]-C", "[H]-[N]-C"),
-            (
-                "[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1",
-                "[O-]c1ccccc1",
-            ),
-            (
-                "[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]",
-                "[O-]C1=CC=CC1=O",
-            ),
-            ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
-            ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
-        ],
-    )
+    @pytest.mark.parametrize("smi, out", [
+        ("[S](-[O]-[H])(-[O]-[H])(-[O])-[O]", "S(=O)(=O)(O)O"),
+        ("[S](-[O]-[H])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])O"),
+        ("[S](-[O])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])[O-]"),
+        ("C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]",
+         "CNC(N)=[N+](-[H])-[H]"),
+        ("[O]-[C](-[H])-[C](-[H])-[H]", "C([O-])=C"),
+        ("C-[N](-[O])-[O]", "C[N+](=O)[O-]"),
+        ("C(-[N](-[O])-[O])-[N](-[O])-[O]", "C([N+](=O)[O-])[N+](=O)[O-]"),
+        ("C-[N](-[O])-[O].C-[N](-[O])-[O]", "C[N+](=O)[O-].C[N+](=O)[O-]"),
+        ("[C-](=O)-C", "[C](=O)-C"),
+        ("[H]-[N-]-C", "[H]-[N]-C"),
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1",
+         "[O-]c1ccccc1"),
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]",
+         "[O-]C1=CC=CC1=O"),
+        ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
+        ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
+    ])
     def test_standardize_patterns(self, inferer, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
         mol = inferer(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
-        assert is_isomorphic(mol, molref), "{} != {}".format(
-            Chem.MolToSmiles(mol), out
-        )
+        assert is_isomorphic(mol, molref), f"{Chem.MolToSmiles(mol)} != {out}"
 
-    @pytest.mark.parametrize(
-        "attr, value, getter",
-        [
-            ("index", 42, "GetIntProp"),
-            ("index", np.int8(42), "GetIntProp"),
-            ("index", np.int16(42), "GetIntProp"),
-            ("index", np.int32(42), "GetIntProp"),
-            ("index", np.int64(42), "GetIntProp"),
-            ("index", np.uint8(42), "GetIntProp"),
-            ("index", np.uint16(42), "GetIntProp"),
-            ("index", np.uint32(42), "GetIntProp"),
-            ("index", np.uint64(42), "GetIntProp"),
-            ("charge", 4.2, "GetDoubleProp"),
-            ("charge", np.float32(4.2), "GetDoubleProp"),
-            ("charge", np.float64(4.2), "GetDoubleProp"),
-            ("type", "C.3", "GetProp"),
-        ],
-    )
+    @pytest.mark.parametrize("attr, value, getter", [
+        ("index", 42, "GetIntProp"),
+        ("index", np.int8(42), "GetIntProp"),
+        ("index", np.int16(42), "GetIntProp"),
+        ("index", np.int32(42), "GetIntProp"),
+        ("index", np.int64(42), "GetIntProp"),
+        ("index", np.uint8(42), "GetIntProp"),
+        ("index", np.uint16(42), "GetIntProp"),
+        ("index", np.uint32(42), "GetIntProp"),
+        ("index", np.uint64(42), "GetIntProp"),
+        ("charge", 4.2, "GetDoubleProp"),
+        ("charge", np.float32(4.2), "GetDoubleProp"),
+        ("charge", np.float64(4.2), "GetDoubleProp"),
+        ("type", "C.3", "GetProp"),
+    ])
     def test_set_atom_property(self, attr, value, getter):
         atom = Chem.Atom(1)
         prop = "_MDAnalysis_%s" % attr
@@ -662,14 +586,11 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
         _set_atom_property(atom, "foo", {"bar": "baz"})
         assert "foo" not in atom.GetPropsAsDict().items()
 
-    @pytest.mark.parametrize(
-        "smi",
-        [
-            "c1ccc(cc1)-c1ccccc1-c1ccccc1",
-            "c1cc[nH]c1",
-            "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
-        ],
-    )
+    @pytest.mark.parametrize("smi", [
+        "c1ccc(cc1)-c1ccccc1-c1ccccc1",
+        "c1cc[nH]c1",
+        "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
+    ])
     def test_transfer_properties(self, inferer, smi):
         mol = Chem.MolFromSmiles(smi)
         mol = self.add_Hs_remove_bo_and_charges(mol)
@@ -683,88 +604,86 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
         new = {}
         for a in newmol.GetAtoms():
             ix = a.GetIntProp("_MDAnalysis_index")
-            new[ix] = {"_MDAnalysis_index": ix, "dummy": a.GetProp("dummy")}
+            new[ix] = {"_MDAnalysis_index": ix,
+                       "dummy": a.GetProp("dummy")}
             props = a.GetPropsAsDict().keys()
             assert "old_mapno" not in props
             assert "react_atom_idx" not in props
         assert new == old
 
-    @pytest.mark.parametrize(
-        "smi",
-        [
-            "c1ccc(cc1)-c1ccccc1-c1ccccc1",
-            "c1cc[nH]c1",
-            "c1ccc(cc1)-c1ccc(-c2ccccc2)c(-c2ccccc2)c1-c1ccccc1",
-            "c1ccc2c(c1)c1ccccc1c1ccccc1c1ccccc1c1ccccc21",
-            "c1csc(c1)-c1ccoc1-c1cc[nH]c1",
-            "C1=C2C(=NC=N1)N=CN2",
-            "CN1C=NC(=C1SC2=NC=NC3=C2NC=N3)[N+](=O)[O-]",
-            "c1c[nH]c(c1)-c1ccc(s1)-c1ccoc1-c1c[nH]cc1-c1ccccc1",
-            "C=CC=CC=CC=CC=CC=C",
-            "NCCCCC([NH3+])C(=O)[O-]",
-            "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
-            "C#CC=C",
-            # HID HIE HIP residues, see PR #2941
-            "O=C([C@H](CC1=CNC=N1)N)O",
-            "O=C([C@H](CC1=CN=CN1)N)O",
-            "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
-            # fixes from PR #3044
-            "CCOC(=O)c1cc2cc(C(=O)O)ccc2[nH]1",
-            "[O-][n+]1cccnc1",
-            "C[n+]1ccccc1",
-            "[PH4+]",
-            "c1nc[nH]n1",
-            "CC(=O)C=C(C)N",
-            "CC(C)=CC=C[O-]",
-            "O=S(C)(C)=NC",
-            "Cc1ccc2c3ncn(Cc4ccco4)c(O)c-3nc2c1",
-            "CCCC/C=C/C#CC#CCCCCCCCC(=O)O",
-            "c1c2c(=O)n3cccc(C)c3nc2n(C)c(=N)c1C(=O)NCc1cnccc1",
-            "N#Cc1c[nH]c(C(=O)NC(=O)c2cc[n+]([O-])cc2)n1",
-            "C[C@@H](Oc1cc(F)ccc1Nc1ncnc2cc(N=S3(=O)CCC3)cc(F)c12)C(=O)NCC#N",
-            "[O-][n+]1onc2ccccc21",
-            "Cc1cc[n+](CC[n+]2ccc(C)cc2)cc1",
-            "[O-]c1ccccc1",
-            "[O-]C=CC=CCC=CC=[N+](C)C",
-            "C=[N+](-[O-])-C",
-            "C-[N-]-C(=O)C",
-            # amino acids
-            "C[C@H](N)C(=O)O",  # A
-            "NCC(=O)O",  # G
-            "CC[C@H](C)[C@H](N)C(=O)O",  # I
-            "CC(C)C[C@H](N)C(=O)O",  # L
-            "O=C(O)[C@@H]1CCCN1",  # P
-            "CC(C)[C@H](N)C(=O)O",  # V
-            "N[C@@H](Cc1ccccc1)C(=O)O",  # F
-            "N[C@@H](Cc1c[nH]c2ccccc12)C(=O)O",  # W
-            "N[C@@H](Cc1ccc(O)cc1)C(=O)O",  # Y
-            "N[C@@H](CC(=O)O)C(=O)O",  # D
-            "N[C@@H](CCC(=O)O)C(=O)O",  # E
-            "N=C(N)NCCC[C@H](N)C(=O)O",  # R
-            "N[C@@H](Cc1c[nH]cn1)C(=O)O",  # H
-            "NCCCC[C@H](N)C(=O)O",  # K
-            "N[C@@H](CO)C(=O)O",  # S
-            "C[C@@H](O)[C@H](N)C(=O)O",  # T
-            "N[C@@H](CS)C(=O)O",  # C
-            "CSCC[C@H](N)C(=O)O",  # M
-            "NC(=O)C[C@H](N)C(=O)O",  # N
-            "NC(=O)CC[C@H](N)C(=O)O",  # Q
-            # nucleic acids
-            "Nc1ncnc2c1ncn2[C@H]1C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O1",  # A
-            "Cc1cn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]c1=O",  # T
-            "O=c1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # U
-            "Nc1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)n1",  # C
-            "Nc1nc2c(ncn2[C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # G
-            # RDKitConverter benchmark 2022-05-23, fixed by better sorting
-            "CC(C)NS(C)(=O)=Nc1ccc(-c2ccc(-c3nc4[nH]c(O[C@@H]5CO[C@@H]6[C@H](O)CO[C@H]56)nc4cc3Cl)cc2)cc1 CHEMBL4111464",
-            "C[n+]1c2ccccc2c(C(=O)O)c2[nH]c3ccc(Br)cc3c21 CHEMBL511591",
-            "C[n+]1ccccc1-c1ccc(NC(=O)c2ccc(C(=O)Nc3ccc(-c4cccc[n+]4C)cc3)cc2)cc1 CHEMBL3230729",
-            "Cc1ccc(/C(O)=C(/C([S-])=NCc2ccccc2)[n+]2cccc(CO)c2)cc1[N+](=O)[O-] CHEMBL1596426",
-            "CC(C)(O)c1cc2c(cc1C(C)(C)O)-c1ccccc1-2 CHEMBL1990966",
-            "[O-]/N=C1/c2ccccc2-c2nc3ccc(C(F)(F)F)cc3nc21 CHEMBL4557878",
-            "N#Cc1c[nH]c(C(=O)Nc2ccc(-c3cccc[n+]3[O-])cc2C2=CCCCC2)n1 CHEMBL1172116",
-        ],
-    )
+    @pytest.mark.parametrize("smi", [
+        "c1ccc(cc1)-c1ccccc1-c1ccccc1",
+        "c1cc[nH]c1",
+        "c1ccc(cc1)-c1ccc(-c2ccccc2)c(-c2ccccc2)c1-c1ccccc1",
+        "c1ccc2c(c1)c1ccccc1c1ccccc1c1ccccc1c1ccccc21",
+        "c1csc(c1)-c1ccoc1-c1cc[nH]c1",
+        "C1=C2C(=NC=N1)N=CN2",
+        "CN1C=NC(=C1SC2=NC=NC3=C2NC=N3)[N+](=O)[O-]",
+        "c1c[nH]c(c1)-c1ccc(s1)-c1ccoc1-c1c[nH]cc1-c1ccccc1",
+        "C=CC=CC=CC=CC=CC=C",
+        "NCCCCC([NH3+])C(=O)[O-]",
+        "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
+        "C#CC=C",
+        # HID HIE HIP residues, see PR #2941
+        "O=C([C@H](CC1=CNC=N1)N)O",
+        "O=C([C@H](CC1=CN=CN1)N)O",
+        "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
+        # fixes from PR #3044
+        "CCOC(=O)c1cc2cc(C(=O)O)ccc2[nH]1",
+        "[O-][n+]1cccnc1",
+        "C[n+]1ccccc1",
+        "[PH4+]",
+        "c1nc[nH]n1",
+        "CC(=O)C=C(C)N",
+        "CC(C)=CC=C[O-]",
+        "O=S(C)(C)=NC",
+        "Cc1ccc2c3ncn(Cc4ccco4)c(O)c-3nc2c1",
+        "CCCC/C=C/C#CC#CCCCCCCCC(=O)O",
+        "c1c2c(=O)n3cccc(C)c3nc2n(C)c(=N)c1C(=O)NCc1cnccc1",
+        "N#Cc1c[nH]c(C(=O)NC(=O)c2cc[n+]([O-])cc2)n1",
+        "C[C@@H](Oc1cc(F)ccc1Nc1ncnc2cc(N=S3(=O)CCC3)cc(F)c12)C(=O)NCC#N",
+        "[O-][n+]1onc2ccccc21",
+        "Cc1cc[n+](CC[n+]2ccc(C)cc2)cc1",
+        "[O-]c1ccccc1",
+        "[O-]C=CC=CCC=CC=[N+](C)C",
+        "C=[N+](-[O-])-C",
+        "C-[N-]-C(=O)C",
+        # amino acids
+        "C[C@H](N)C(=O)O",  # A
+        "NCC(=O)O",  # G
+        "CC[C@H](C)[C@H](N)C(=O)O",  # I
+        "CC(C)C[C@H](N)C(=O)O",  # L
+        "O=C(O)[C@@H]1CCCN1",  # P
+        "CC(C)[C@H](N)C(=O)O",  # V
+        "N[C@@H](Cc1ccccc1)C(=O)O",  # F
+        "N[C@@H](Cc1c[nH]c2ccccc12)C(=O)O",  # W
+        "N[C@@H](Cc1ccc(O)cc1)C(=O)O",  # Y
+        "N[C@@H](CC(=O)O)C(=O)O",  # D
+        "N[C@@H](CCC(=O)O)C(=O)O",  # E
+        "N=C(N)NCCC[C@H](N)C(=O)O",  # R
+        "N[C@@H](Cc1c[nH]cn1)C(=O)O",  # H
+        "NCCCC[C@H](N)C(=O)O",  # K
+        "N[C@@H](CO)C(=O)O",  # S
+        "C[C@@H](O)[C@H](N)C(=O)O",  # T
+        "N[C@@H](CS)C(=O)O",  # C
+        "CSCC[C@H](N)C(=O)O",  # M
+        "NC(=O)C[C@H](N)C(=O)O",  # N
+        "NC(=O)CC[C@H](N)C(=O)O",  # Q
+        # nucleic acids
+        "Nc1ncnc2c1ncn2[C@H]1C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O1",  # A
+        "Cc1cn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]c1=O",  # T
+        "O=c1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # U
+        "Nc1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)n1",  # C
+        "Nc1nc2c(ncn2[C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # G
+        # RDKitConverter benchmark 2022-05-23, fixed by better sorting
+        "CC(C)NS(C)(=O)=Nc1ccc(-c2ccc(-c3nc4[nH]c(O[C@@H]5CO[C@@H]6[C@H](O)CO[C@H]56)nc4cc3Cl)cc2)cc1 CHEMBL4111464",
+        "C[n+]1c2ccccc2c(C(=O)O)c2[nH]c3ccc(Br)cc3c21 CHEMBL511591",
+        "C[n+]1ccccc1-c1ccc(NC(=O)c2ccc(C(=O)Nc3ccc(-c4cccc[n+]4C)cc3)cc2)cc1 CHEMBL3230729",
+        "Cc1ccc(/C(O)=C(/C([S-])=NCc2ccccc2)[n+]2cccc(CO)c2)cc1[N+](=O)[O-] CHEMBL1596426",
+        "CC(C)(O)c1cc2c(cc1C(C)(C)O)-c1ccccc1-2 CHEMBL1990966",
+        "[O-]/N=C1/c2ccccc2-c2nc3ccc(C(F)(F)F)cc3nc21 CHEMBL4557878",
+        "N#Cc1c[nH]c(C(=O)Nc2ccc(-c3cccc[n+]3[O-])cc2C2=CCCCC2)n1 CHEMBL1172116",
+    ])
     def test_order_independant(self, inferer, smi):
         # generate mol with hydrogens but without bond orders
         ref = Chem.MolFromSmiles(smi)
@@ -776,15 +695,12 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
             self.assert_isomorphic_resonance_structure(m, ref)
 
     @pytest.mark.xfail(reason="Not currently tackled by the RDKitConverter")
-    @pytest.mark.parametrize(
-        "smi",
-        [
-            "C-[N+]#N",
-            "C-N=[N+]=[N-]",
-            "C-[O+]=C",
-            "C-[N+]#[C-]",
-        ],
-    )
+    @pytest.mark.parametrize("smi", [
+        "C-[N+]#N",
+        "C-N=[N+]=[N-]",
+        "C-[O+]=C",
+        "C-[N+]#[C-]",
+    ])
     def test_order_independant_issue_3339(self, smi):
         self.test_order_independant(smi)
 
@@ -792,56 +708,37 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
         mol = Chem.MolFromSmiles(smi)
         inferer = MDAnalysisInferer(max_iter=2)
-        with pytest.warns(
-            UserWarning, match="reasonable number of iterations"
-        ):
+        with pytest.warns(UserWarning,
+                          match="reasonable number of iterations"):
             inferer._rebuild_conjugated_bonds(mol)
 
     def test_deprecation_warning_max_iter(self):
         smi = "c1ccccc1"
         mol = Chem.MolFromSmiles(smi)
         inferer = MDAnalysisInferer()
-        with pytest.warns(
-            DeprecationWarning,
-            match="Specifying `max_iter` is deprecated and will be removed",
-        ):
+        with pytest.warns(DeprecationWarning,
+                          match="Specifying `max_iter` is deprecated and will"
+                          " be removed"):
             inferer._standardize_patterns(mol, max_iter=1)
 
-    @pytest.mark.parametrize(
-        "smi",
-        [
-            "[Li+]",
-            "[Na+]",
-            "[K+]",
-            "[Rb+]",
-            "[Ag+]",
-            "[Cs+]",
-            "[Mg+2]",
-            "[Ca+2]",
-            "[Cu+2]",
-            "[Zn+2]",
-            "[Sr+2]",
-            "[Ba+2]",
-            "[Al+3]",
-            "[Fe+2]",
-            "[Cl-]",
-            "[O-2]",
-            "[Na+].[Cl-]",
-        ],
-    )
+    @pytest.mark.parametrize("smi", [
+        "[Li+]", "[Na+]", "[K+]", "[Rb+]", "[Ag+]", "[Cs+]",
+        "[Mg+2]", "[Ca+2]", "[Cu+2]", "[Zn+2]", "[Sr+2]", "[Ba+2]",
+        "[Al+3]", "[Fe+2]",
+        "[Cl-]",
+        "[O-2]",
+        "[Na+].[Cl-]",
+    ])
     def test_ions(self, inferer, smi):
         ref = Chem.MolFromSmiles(smi)
         stripped_mol = self.add_Hs_remove_bo_and_charges(ref)
         mol = inferer(stripped_mol)
         assert is_isomorphic(mol, ref)
 
-    @pytest.mark.parametrize(
-        "smi",
-        [
-            "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
-            "O=S(C)(C)=NC",
-        ],
-    )
+    @pytest.mark.parametrize("smi", [
+        "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
+        "O=S(C)(C)=NC",
+    ])
     def test_reorder_atoms(self, smi):
         mol = Chem.MolFromSmiles(smi)
         mol = Chem.AddHs(mol)
@@ -859,19 +756,15 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
         u = mda.Universe(PDB_helix)
         mol = u.atoms.convert_to.rdkit()
         names = u.atoms.names
-        rd_names = np.array(
-            [a.GetProp("_MDAnalysis_name") for a in mol.GetAtoms()]
-        )
+        rd_names = np.array([a.GetProp("_MDAnalysis_name")
+                             for a in mol.GetAtoms()])
         assert (names == rd_names).all()
 
-    @pytest.mark.parametrize(
-        "smi",
-        [
-            r"F/C(Br)=C(Cl)/I",
-            r"F\C(Br)=C(Cl)\I",
-            "F-C(Br)=C(Cl)-I",
-        ],
-    )
+    @pytest.mark.parametrize("smi", [
+        r"F/C(Br)=C(Cl)/I",
+        r"F\C(Br)=C(Cl)\I",
+        "F-C(Br)=C(Cl)-I",
+    ])
     def test_bond_stereo_not_stereoany(self, smi):
         u = mda.Universe.from_smiles(smi)
         mol = u.atoms.convert_to.rdkit(force=True)
@@ -881,15 +774,13 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
 
     def test_atom_sorter(self):
         mol = Chem.MolFromSmiles(
-            "[H]-[C](-[H])-[C](-[H])-[C]-[C]-[H]", sanitize=False
-        )
+            "[H]-[C](-[H])-[C](-[H])-[C]-[C]-[H]", sanitize=False)
         # corresponding mol: C=C-C#C
         # atom indices:      1 3 5 6
         mol.UpdatePropertyCache()
-        sorted_atoms = sorted(
-            [atom for atom in mol.GetAtoms() if atom.GetAtomicNum() > 1],
-            key=MDAnalysisInferer._atom_sorter,
-        )
+        sorted_atoms = sorted([atom for atom in mol.GetAtoms()
+                              if atom.GetAtomicNum() > 1],
+                              key=MDAnalysisInferer._atom_sorter)
         sorted_indices = [atom.GetIdx() for atom in sorted_atoms]
         assert sorted_indices == [6, 5, 1, 3]
 

@@ -19,13 +19,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "MDAnalysis"
 dynamic = ['version', 'readme']
-license = { file = "LICENSE" }
+license = {file = "LICENSE"}
 description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
 authors = [
-    { name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org' },
+    {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
 ]
 maintainers = [
-    { name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org' },
+    {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
 ]
 requires-python = ">=3.10"
 dependencies = [
@@ -45,14 +45,8 @@ dependencies = [
     'mdahole2',
 ]
 keywords = [
-    "python",
-    "science",
-    "chemistry",
-    "biophysics",
-    "molecular-dynamics",
-    "computational-chemistry",
-    "molecular-simulation",
-    "analysis",
+    "python", "science", "chemistry", "biophysics", "molecular-dynamics",
+    "computational-chemistry", "molecular-simulation", "analysis",
     "trajectory-analysis",
 ]
 classifiers = [
@@ -124,4 +118,6 @@ zip-safe = false
 find = {}
 
 [tool.setuptools.package-data]
-MDAnalysis = ['analysis/data/*.npy']
+MDAnalysis = [
+    'analysis/data/*.npy',
+]
