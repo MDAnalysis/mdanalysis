@@ -803,10 +803,10 @@
 <span class="sd">            &gt;&gt;&gt; first_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=0, stop=25)</span>
 <span class="sd">            &gt;&gt;&gt; second_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=25, stop=50)</span>
 <span class="sd">            &gt;&gt;&gt; last_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=75)</span>
-<span class="sd">            &gt;&gt;&gt; first_interval.rmsip(second_interval, n_components=3)</span>
-<span class="sd">            0.38147609331128324</span>
-<span class="sd">            &gt;&gt;&gt; first_interval.rmsip(last_interval, n_components=3)</span>
-<span class="sd">            0.17478244043688052</span>
+<span class="sd">            &gt;&gt;&gt; round(first_interval.rmsip(second_interval, n_components=3), 6)</span>
+<span class="sd">            0.381476</span>
+<span class="sd">            &gt;&gt;&gt; round(first_interval.rmsip(last_interval, n_components=3), 6)</span>
+<span class="sd">            0.174782</span>
 
 
 <span class="sd">        See also</span>
@@ -989,14 +989,14 @@
 <span class="sd">        &gt;&gt;&gt; first_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=0, stop=25)</span>
 <span class="sd">        &gt;&gt;&gt; second_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=25, stop=50)</span>
 <span class="sd">        &gt;&gt;&gt; last_interval = pca.PCA(u, select=&quot;backbone&quot;).run(start=75)</span>
-<span class="sd">        &gt;&gt;&gt; pca.rmsip(first_interval.results.p_components.T,</span>
+<span class="sd">        &gt;&gt;&gt; round(pca.rmsip(first_interval.results.p_components.T,</span>
 <span class="sd">        ...           second_interval.results.p_components.T,</span>
-<span class="sd">        ...           n_components=3)</span>
-<span class="sd">        0.38147609331128324</span>
-<span class="sd">        &gt;&gt;&gt; pca.rmsip(first_interval.results.p_components.T,</span>
+<span class="sd">        ...           n_components=3), 6)</span>
+<span class="sd">        0.381476</span>
+<span class="sd">        &gt;&gt;&gt; round(pca.rmsip(first_interval.results.p_components.T,</span>
 <span class="sd">        ...           last_interval.results.p_components.T,</span>
-<span class="sd">        ...           n_components=3)</span>
-<span class="sd">        0.17478244043688052</span>
+<span class="sd">        ...           n_components=3), 6)</span>
+<span class="sd">        0.174782</span>
 
 
 <span class="sd">    .. versionadded:: 1.0.0</span>
