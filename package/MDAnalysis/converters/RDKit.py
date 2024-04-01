@@ -263,6 +263,9 @@ class RDKitConverter(base.ConverterBase):
         >>> mol = u.atoms.convert_to.rdkit(inferer=infer_from_template)
 
 
+    Note that all builtin inferer functions can be found in the
+    :mod:`RDKitInferring` module.
+
     Since one of the main use case of the converter is converting trajectories
     and not just a topology, creating a new molecule from scratch for every
     frame would be too slow so the converter uses a caching system. The cache
@@ -298,7 +301,7 @@ class RDKitConverter(base.ConverterBase):
         files while the original name is still available through
         ``atom.GetProp("_MDAnalysis_name")``
 
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
         Deprecated ``max_iter`` (moved to the inferer class
         :class:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer`) and
         deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``. Added
@@ -347,20 +350,20 @@ class RDKitConverter(base.ConverterBase):
             raise ImportError(
                 "RDKit is required for the RDKitConverter but "
                 "it's not installed. Try installing it with \n"
-                "conda install -c conda-forge rdkit"
-            )
+                "`conda install -c conda-forge rdkit` or `pip install rdkit`"
+            ) from None
         try:
             # make sure to use atoms (Issue 46)
             ag = obj.atoms
         except AttributeError:
             raise TypeError(
-                "No `atoms` attribute in object of type {}, "
-                "please use a valid AtomGroup or Universe".format(type(obj))
+                f"No `atoms` attribute in object of type {type(obj)!r}, "
+                "please use a valid AtomGroup or Universe"
             ) from None
 
         if (max_iter := kwargs.get("max_iter")) is not None:
             warnings.warn(
-                "Using `max_iter` is deprecated, use `MDAnalysisInferer "
+                "Using `max_iter` is deprecated, use `MDAnalysisInferer"
                 "(max_iter=...)` instead",
                 DeprecationWarning,
             )
@@ -433,6 +436,12 @@ def atomgroup_to_mol(
     inferer : Optional[Callable[[rdkit.Chem.rdchem.Mol], rdkit.Chem.rdchem.Mol]]
         A callable to infer bond orders and charges for the RDKit molecule
         created by the converter. If ``None``, inferring is skipped.
+
+
+    .. versionchanged:: 2.8.0
+        Deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``. Added
+        ``inferer`` to specify a callable that can transform the molecule (this
+        operation is cached).
     """
     try:
         elements = ag.elements
@@ -475,7 +484,7 @@ def atomgroup_to_mol(
 
     # attributes accepted in PDBResidueInfo object
     pdb_attrs = {}
-    for attr in RDATTRIBUTES.keys():
+    for attr in RDATTRIBUTES:
         if hasattr(ag, attr):
             pdb_attrs[attr] = getattr(ag, attr)
     resnames = pdb_attrs.get("resnames", None)
@@ -510,10 +519,9 @@ def atomgroup_to_mol(
             _add_mda_attr_to_rdkit(attr, values[i], mi, get_resname(i))
         rdatom.SetMonomerInfo(mi)
         # other properties
-        for attr in other_attrs.keys():
-            value = other_attrs[attr][i]
-            attr = "_MDAnalysis_%s" % _TOPOLOGY_ATTRS[attr].singular
-            _set_atom_property(rdatom, attr, value)
+        for attr, values in other_attrs.items():
+            attr = f"_MDAnalysis_{_TOPOLOGY_ATTRS[attr].singular}"
+            _set_atom_property(rdatom, attr, values[i])
         _set_atom_property(rdatom, "_MDAnalysis_index", i)
         # add atom
         index = mol.AddAtom(rdatom)
@@ -583,7 +591,7 @@ def _add_mda_attr_to_rdkit(attr, value, mi, resname=""):
 
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
-    getattr(mi, "Set%s" % rdattr)(value)
+    getattr(mi, f"Set{rdattr}")(value)
 
 
 def _set_str_prop(atom, attr, value):

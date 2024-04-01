@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         yuxuanzhuang, PythonFZ, laksh-krishna-sharma
+         yuxuanzhuang, PythonFZ, laksh-krishna-sharma, cbouy
 
  * 2.8.0
 
@@ -53,6 +53,8 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Added `TemplateInferer` and `RDKitInferer` dataclasses to the
+   `RDKitInferring` module to be used by the RDKit converter. (PR #4305)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
@@ -67,6 +69,9 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * Refactored the RDKit converter code to move the inferring code in a separate
+   `RDKitInferring` module. The bond order and charges inferer has been move to
+   an `MDAnalysisInferer` dataclass in there. (PR #4305)
  * The `fetch_mmtf` method has been removed as the REST API service
    for MMTF files has ceased to exist (Issue #4634)
  * MDAnalysis now builds against numpy 2.0 rather than the
@@ -88,6 +93,8 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
+   `implicit_hydrogens` and `inferer` parameters. (PR #4305)
  * The MMTF Reader is deprecated and will be removed in version 3.0
    as the MMTF format is no longer supported (Issue #4634)
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour

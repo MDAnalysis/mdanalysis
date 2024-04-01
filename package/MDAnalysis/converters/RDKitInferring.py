@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the GNU Lesser General Public License, v2 or higher
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -69,8 +69,8 @@ with suppress(ImportError):
 
 with suppress(ImportError):
     from rdkit.Chem.rdDetermineBonds import (
-        DetermineBondOrders,  # available since 2022.09.1
-    )
+        DetermineBondOrders,
+    )  # available since 2022.09.1
 
 
 def reorder_atoms(
@@ -124,7 +124,7 @@ class MDAnalysisInferer:
         fix challenging cases must have single reactant and product, and
         cannot add any atom.
 
-    .. versionadded:: 2.7.0
+    .. versionadded:: 2.8.0
     """
 
     MONATOMIC_CATION_CHARGES: ClassVar[Dict[int, int]] = {
@@ -624,6 +624,8 @@ class TemplateInferer:
         back. Useful to avoid adding explicit hydrogens on the template which
         can prevent RDKit from finding a match between the template and the
         molecule.
+
+    .. versionadded:: 2.8.0
     """
 
     template: "Chem.Mol"
@@ -689,6 +691,8 @@ class RDKitInferer:
     """Uses RDKit's :func:`~rdkit.Chem.rdDetermineBonds.DetermineBondOrders`
     to infer bond orders and formal charges. This is the same algorithm used
     by the :ref:`xyz2mol <https://github.com/jensengroup/xyz2mol>` package.
+
+    .. versionadded:: 2.8.0
     """
 
     charge: int = 0
