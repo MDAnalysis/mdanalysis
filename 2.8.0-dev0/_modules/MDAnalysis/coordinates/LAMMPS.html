@@ -209,22 +209,33 @@
 <span class="sd">:class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a</span>
 <span class="sd">LAMMPS DCD with &quot;*real*&quot; provide the keyword *format=&quot;LAMMPS*&quot;::</span>
 
-<span class="sd">    &gt;&gt;&gt; u = MDAnalysis.Universe(&quot;lammps.data&quot;, &quot;lammps_real.dcd&quot;, format=&quot;LAMMPS&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2</span>
+<span class="sd">    &gt;&gt;&gt; u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format=&quot;LAMMPS&quot;)</span>
 
-<span class="sd">If the trajectory uses *units nano* then use ::</span>
+<span class="sd">If the trajectory uses *units nano* then use</span>
 
-<span class="sd">    &gt;&gt;&gt; u = MDAnalysis.Universe(&quot;lammps.data&quot;, &quot;lammps_nano.dcd&quot;, format=&quot;LAMMPS&quot;,</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2</span>
+<span class="sd">    &gt;&gt;&gt; u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format=&quot;LAMMPS&quot;,</span>
 <span class="sd">    ...                          lengthunit=&quot;nm&quot;, timeunit=&quot;ns&quot;)</span>
 
 <span class="sd">To scan through a trajectory to find a desirable frame and write to a LAMMPS</span>
 <span class="sd">data file,</span>
 
-<span class="sd">&gt;&gt;&gt; for ts in u.trajectory:</span>
-<span class="sd">...     # analyze frame</span>
-<span class="sd">...     if take_this_frame == True:</span>
-<span class="sd">...         with mda.Writer(&#39;frame.data&#39;) as W:</span>
-<span class="sd">...             W.write(u.atoms)</span>
-<span class="sd">...         break</span>
+<span class="sd">   &gt;&gt;&gt; import MDAnalysis</span>
+<span class="sd">   &gt;&gt;&gt; from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2 </span>
+<span class="sd">   &gt;&gt;&gt; u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format=&quot;LAMMPS&quot;,</span>
+<span class="sd">   ...                          lengthunit=&quot;nm&quot;, timeunit=&quot;ns&quot;)</span>
+<span class="sd">   &gt;&gt;&gt; take_this_frame = False</span>
+<span class="sd">   &gt;&gt;&gt; for ts in u.trajectory:</span>
+<span class="sd">   ...     # analyze frame</span>
+<span class="sd">   ...     if ts.frame == 4:</span>
+<span class="sd">   ...         take_this_frame = True</span>
+<span class="sd">   ...     if take_this_frame == True:</span>
+<span class="sd">   ...         with MDAnalysis.Writer(&#39;frame.data&#39;) as W:</span>
+<span class="sd">   ...             W.write(u.atoms)</span>
+<span class="sd">   ...         break</span>
 
 <span class="sd">Note</span>
 <span class="sd">----</span>
