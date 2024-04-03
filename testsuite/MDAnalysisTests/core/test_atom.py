@@ -20,9 +20,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import MDAnalysis as mda
-import numpy as np
+import pickle
 import pytest
+import numpy as np
+
+import MDAnalysis as mda
 from MDAnalysis import NoDataError
 from MDAnalysisTests.datafiles import (
     PSF, DCD,
@@ -112,6 +114,12 @@ class TestAtom(object):
     def test_undefined_occupancy(self, universe):
         with pytest.raises(AttributeError):
             universe.atoms[0].occupancy
+
+    @pytest.mark.parametrize("ix", (1, -1))
+    def test_atom_pickle(self, universe, ix):
+        atm_out = universe.atoms[ix]
+        atm_in = pickle.loads(pickle.dumps(atm_out))
+        assert atm_in == atm_out
 
 
 class TestAtomNoForceNoVel(object):

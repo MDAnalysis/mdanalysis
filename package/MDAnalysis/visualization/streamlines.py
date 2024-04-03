@@ -27,7 +27,7 @@
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
 :Copyright: GNU Public License v3
-:Citation: [Chavent2014]_
+
 
 The :func:`generate_streamlines` function can generate a 2D flow field from a
 MD trajectory, for instance, lipid molecules in a flat membrane. It can make
@@ -176,7 +176,7 @@ def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_a
         list_centroids_this_frame = []
         for indices in list_indices_in_polygon:
             if not indices[0].size > 0:  # if there are no particles of interest in this particular square
-                list_centroids_this_frame.append('empty')
+                list_centroids_this_frame.append(None)
             else:
                 current_coordinate_array_in_square = relevant_particle_coordinate_array_xy[indices]
                 current_square_indices_centroid = np.average(current_coordinate_array_in_square, axis=0)
@@ -201,7 +201,7 @@ def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_a
             xy_deltas_to_write = []
             for square_1_centroid, square_2_centroid in zip(list_centroids_this_frame_using_indices_from_last_frame,
                                                             list_previous_frame_centroids):
-                if square_1_centroid == 'empty' or square_2_centroid == 'empty':
+                if square_1_centroid is None or square_2_centroid is None:
                     xy_deltas_to_write.append([0, 0])
                 else:
                     xy_deltas_to_write.append(np.subtract(square_1_centroid, square_2_centroid).tolist())
@@ -237,7 +237,7 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
     trajectory_file_path : str
             Absolute path to the trajectory file. It will normally be desirable
             to filter the trajectory with a tool such as GROMACS
-            :program:`g_filter` (see [Chavent2014]_)
+            :program:`g_filter` (see :footcite:p:`Chavent2014`)
     grid_spacing : float
             The spacing between grid lines (angstroms)
     MDA_selection : str
@@ -302,12 +302,7 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
 
     References
     ----------
-    .. [Chavent2014] Chavent, M.*, Reddy, T.*, Dahl, C.E., Goose, J., Jobard,
-       B., and Sansom, M.S.P. Methodologies for the analysis of instantaneous
-       lipid diffusion in MD simulations of large membrane systems.  *Faraday
-       Discussions* **169** (2014), 455–475. doi: `10.1039/c3fd00145h`_
-
-    .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
+    .. footbibliography::
 
 
     See Also

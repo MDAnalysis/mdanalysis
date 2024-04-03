@@ -84,6 +84,7 @@ class TestXVGReader(BaseAuxReaderTest):
     @pytest.fixture
     def ref_universe(ref):
         u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
+# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
         u.trajectory.add_auxiliary('test', ref.testdata)
         return u
 
@@ -136,6 +137,7 @@ class TestXVGFileReader(TestXVGReader):
     @pytest.fixture
     def ref_universe(ref):
         u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
+# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
         u.trajectory.add_auxiliary('test', ref.testdata)
         return u
 

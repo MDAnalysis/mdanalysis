@@ -1,0 +1,40 @@
+name: 'setup-os'
+description: 'setup OS specific details'
+inputs:
+  os-type:
+    description: 'Operating System Type'
+    required: true
+    default: 'ubuntu'
+
+runs:
+  using: "composite"
+  steps:
+    - name: setup_osx
+      if: startsWith(inputs.os-type, 'macOS')
+      shell: bash -l {0}
+      run: |
+        # Set OS specific vars and compiler flags
+        echo "OS_NAME=osx" >> $GITHUB_ENV
+        # TODO: work out why this is necessary (from CI helpers)
+        echo "MACOSX_DEPLOYMENT_TARGET=10.9" >> $GITHUB_ENV
+        ulimit -S -n 2048
+        clang -v
+        echo "CC=clang" >> $GITHUB_ENV
+        clang++ -v
+        echo "CXX=clang++" >> $GITHUB_ENV
+        gfortran-9 -v
+        echo "FC=gfortran-9" >> $GITHUB_ENV
+        echo "ENABLE_HIGH_MEM_UNIT_TESTS=true" >> $GITHUB_ENV
+
+    - name: setup_linux
+      if: startsWith(inputs.os-type, 'ubuntu')
+      shell: bash -l {0}
+      run: |
+        # Set OS specific vars and compiler flags
+        echo "OS_NAME=linux" >> $GITHUB_ENV
+        gcc -v
+        echo "CC=gcc" >> $GITHUB_ENV
+        g++ -v
+        echo "CXX=g++" >> $GITHUB_ENV
+        gfortran -v
+        echo "FC=gfortran" >> $GITHUB_ENV

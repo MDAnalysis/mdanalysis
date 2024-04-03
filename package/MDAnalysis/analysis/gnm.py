@@ -33,7 +33,8 @@ Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 :Copyright: GNU Public License v2 or later
 
 
-Analyse a trajectory using elastic network models, following the approach of [Hall2007]_.
+Analyse a trajectory using elastic network models, following the approach of
+:footcite:p:`Hall2007`.
 
 An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
 
@@ -57,13 +58,11 @@ the analysis:
 
 
 The results are found in :attr:`GNMAnalysis.results`, which can be
-used for further processing (see [Hall2007]_).
+used for further processing (see :footcite:p:`Hall2007`).
 
 .. rubric:: References
 
-.. [Hall2007]  Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and
-               Philip C. Biggin. Characterization of Protein Conformational
-               States by Normal-Mode Frequencies. *JACS* 129 (2007), 11394--11401.
+.. footbibliography::
 
 
 Analysis tasks
@@ -84,7 +83,7 @@ directly needed to perform the analysis.
 .. autofunction:: order_list
 
 .. versionchanged:: 0.16.0
-   removed un-unsed function :func:`backup_file`
+   removed unused function :func:`backup_file`
 
 """
 import itertools

@@ -1,0 +1,190 @@
+name: 'setup-deps'
+description: 'setup python dependencies for an MDAnalysis install'
+inputs:
+  full-deps:
+    description: 'install optional dependencies'
+    default: false
+  extra-conda-deps:
+    description: 'extra dependencies to install via conda'
+    default: ''
+  extra-pip-deps:
+    description: 'extra dependencies to install via pip'
+    default: ''
+  mamba:
+    description: 'use mamba instead of conda'
+    default: false
+  micromamba:
+    description: 'use micromamba instead of conda'
+    default: false
+  # conda-installed min dependencies
+  codecov:
+    default: 'codecov'
+  cython:
+    default: 'cython'
+  fasteners:
+    default: 'fasteners'
+  griddataformats:
+    default: 'griddataformats'
+  gsd:
+    default: 'gsd>3.0.0'
+  hypothesis:
+    default: 'hypothesis'
+  matplotlib:
+    default: 'matplotlib-base'
+  mdahole2:
+    default: 'mdahole2-base'
+  mda_xdrlib:
+    default: 'mda-xdrlib'
+  mmtf-python:
+    default: 'mmtf-python'
+  numpy:
+    default: 'numpy'
+  packaging:
+    default: 'packaging'
+  pathsimanalysis:
+    default: 'pathsimanalysis'
+  pip:
+    default: 'pip'
+  pytest:
+    default: 'pytest'
+  scipy:
+    default: 'scipy'
+  threadpoolctl:
+    default: 'threadpoolctl'
+  tqdm:
+    default: 'tqdm>=4.43.0'
+  waterdynamics:
+    default: 'waterdynamics'
+  # conda-installed optional dependencies
+  biopython:
+    default: 'biopython>=1.80'
+  chemfiles-python:
+    default: 'chemfiles-python>=0.9'
+  clustalw:
+    default: 'clustalw=2.1'
+  distopia:
+    default: 'distopia>=0.2.0'
+  h5py:
+    default: 'h5py>=2.10'
+  hole2:
+    default: 'hole2'
+  joblib:
+    default: 'joblib>=0.12'
+  netcdf4:
+    default: 'netcdf4'
+  networkx:
+    default: 'networkx'
+  openmm:
+    default: 'openmm'
+  pytng:
+    default: 'pytng>=0.2.3'
+  rdkit:
+    default: 'rdkit>=2020.03.1'
+  scikit-learn:
+    default: 'scikit-learn'
+  seaborn:
+    default: 'seaborn>=0.7.0'
+  tidynamics:
+    default: 'tidynamics>=1.0.0'
+  # pip-installed min dependencies
+  coverage:
+    default: 'coverage'
+  pytest-cov:
+    default: 'pytest-cov'
+  pytest-timeout:
+    default: 'pytest-timeout'
+  pytest-xdist:
+    default: 'pytest-xdist'
+  trove-classifiers:
+    default: 'trove-classifiers'
+  # pip-install optional dependencies
+  duecredit:
+    default: 'duecredit'
+  parmed:
+    default: 'parmed'
+  pyedr:
+    default: 'pyedr>=0.7.0'
+
+runs:
+  using: "composite"
+  steps:
+    - name: conda_install
+      shell: bash -l {0}
+      env:
+        CONDA_MIN_DEPS: |
+          ${{ inputs.codecov }}
+          ${{ inputs.cython }}
+          ${{ inputs.fasteners }}
+          ${{ inputs.griddataformats }}
+          ${{ inputs.hypothesis }}
+          ${{ inputs.matplotlib }}
+          ${{ inputs.mdahole2 }}
+          ${{ inputs.mda_xdrlib }}
+          ${{ inputs.mmtf-python }}
+          ${{ inputs.numpy }}
+          ${{ inputs.packaging }}
+          ${{ inputs.pathsimanalysis }}
+          ${{ inputs.pip }}
+          ${{ inputs.pytest }}
+          ${{ inputs.scipy }}
+          ${{ inputs.threadpoolctl }}
+          ${{ inputs.tqdm }}
+          ${{ inputs.waterdynamics }}
+        CONDA_OPT_DEPS: |
+          ${{ inputs.biopython }}
+          ${{ inputs.chemfiles-python }}
+          ${{ inputs.clustalw }}
+          ${{ inputs.distopia }}
+          ${{ inputs.gsd }}
+          ${{ inputs.h5py }}
+          ${{ inputs.hole2 }}
+          ${{ inputs.joblib }}
+          ${{ inputs.netcdf4 }}
+          ${{ inputs.networkx }}
+          ${{ inputs.openmm }}
+          ${{ inputs.pytng }}
+          ${{ inputs.rdkit }}
+          ${{ inputs.scikit-learn }}
+          ${{ inputs.seaborn }}
+          ${{ inputs.tidynamics }}
+
+      run: |
+        # setup full variable
+        if [ ${{ inputs.full-deps }} = "true" ]; then
+          CONDA_DEPS="${CONDA_MIN_DEPS} ${CONDA_OPT_DEPS} ${{ inputs.extra-conda-deps }}"
+        else
+          CONDA_DEPS="${CONDA_MIN_DEPS} ${{ inputs.extra-conda-deps }}"
+        fi
+
+        # do the install
+        if [ ${{ inputs.mamba }} = "true" ]; then
+          mamba install ${CONDA_DEPS}
+        elif [ ${{ inputs.micromamba }} == "true" ]; then
+          micromamba install ${CONDA_DEPS}
+        else
+          conda install ${CONDA_DEPS}
+        fi
+
+    - name: pip_install
+      shell: bash -l {0}
+      env:
+        PIP_MIN_DEPS: |
+          ${{ inputs.coverage }}
+          ${{ inputs.pytest-cov }}
+          ${{ inputs.pytest-timeout }}
+          ${{ inputs.pytest-xdist }}
+          ${{ inputs.trove-classifiers }}
+        PIP_OPT_DEPS: |
+          ${{ inputs.duecredit }}
+          ${{ inputs.parmed }}
+          ${{ inputs.pyedr }}
+      run: |
+        # setup full variable
+        if [ ${{ inputs.full-deps }} = "true" ]; then
+          PIP_DEPS="${PIP_MIN_DEPS} ${PIP_OPT_DEPS} ${{ inputs.extra-pip-deps }}"
+        else
+          PIP_DEPS="${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}"
+        fi
+
+        # do the install
+        pip install ${PIP_DEPS}

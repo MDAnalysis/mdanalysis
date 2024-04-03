@@ -31,10 +31,9 @@ Read DL Poly_ format coordinate files
 import numpy as np
 
 from . import base
-from .base import Timestep
 from . import core
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
@@ -137,6 +136,7 @@ class HistoryReader(base.ReaderBase):
     format = 'HISTORY'
     units = _DLPOLY_UNITS
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         super(HistoryReader, self).__init__(filename, **kwargs)
         self._cache = {}
@@ -144,8 +144,8 @@ class HistoryReader(base.ReaderBase):
         # "private" file handle
         self._file = util.anyopen(self.filename, 'r')
         self.title = self._file.readline().strip()
-        header = np.int64(self._file.readline().split())
-        self._levcfg, self._imcon, self.n_atoms, _, _ = header
+        header = np.int64(self._file.readline().split()[:3])
+        self._levcfg, self._imcon, self.n_atoms = header
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
 

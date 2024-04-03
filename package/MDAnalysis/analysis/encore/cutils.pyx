@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-#cython embedsignature=True
+# cython embedsignature=True
 
 """
 Mixed Cython utils for ENCORE
@@ -32,24 +32,31 @@ Mixed Cython utils for ENCORE
 
 
 import numpy as np
-cimport numpy as np
+cimport numpy as cnp
 import cython
 from libc.math cimport sqrt
+
+cnp.import_array()
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def PureRMSD(np.ndarray[np.float64_t,ndim=2] coordsi,
-             np.ndarray[np.float64_t,ndim=2] coordsj,
+def PureRMSD(cnp.ndarray[cnp.float64_t, ndim=2] coordsi,
+             cnp.ndarray[cnp.float64_t, ndim=2] coordsj,
              int atomsn,
-             np.ndarray[np.float64_t,ndim=1] masses,
+             cnp.ndarray[cnp.float64_t, ndim=1] masses,
              double summasses):
 
     cdef  int k
-    cdef double normsum, totmasses
+    cdef double normsum
 
     normsum = 0.0
 
     for k in xrange(atomsn):
-        normsum += masses[k]*((coordsi[k,0]-coordsj[k,0])**2 + (coordsi[k,1]-coordsj[k,1])**2 + (coordsi[k,2]-coordsj[k,2])**2)
+        normsum += masses[k] * (
+            (coordsi[k, 0] - coordsj[k, 0])**2 +
+            (coordsi[k, 1] - coordsj[k, 1])**2 +
+            (coordsi[k, 2] - coordsj[k, 2])**2
+        )
+
     return sqrt(normsum/summasses)

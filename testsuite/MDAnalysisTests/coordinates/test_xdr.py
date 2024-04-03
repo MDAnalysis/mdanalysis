@@ -23,13 +23,16 @@
 import pytest
 from unittest.mock import patch
 
-import errno
-import numpy as np
+import re
 import os
 import shutil
 import subprocess
+from pathlib import Path
 
-from numpy.testing import (assert_equal, assert_almost_equal)
+import numpy as np
+from numpy.testing import (assert_equal,
+                           assert_almost_equal,
+                           assert_allclose)
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
@@ -42,6 +45,17 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
+from MDAnalysisTests.util import get_userid
+
+
+@pytest.mark.parametrize("filename,kwargs,reference", [
+    ("foo.xtc", {}, ".foo.xtc_offsets.npz"),
+    ("foo.xtc", {"ending": "npz"}, ".foo.xtc_offsets.npz"),
+    ("bar.0001.trr", {"ending": "npzzzz"}, ".bar.0001.trr_offsets.npzzzz"),
+])
+def test_offsets_filename(filename, kwargs, reference):
+    fn = XDR.offsets_filename(filename, **kwargs)
+    assert fn == reference
 
 
 class _XDRReader_Sub(object):
@@ -210,6 +224,14 @@ class _GromacsReader(object):
         with pytest.raises(StopIteration):
             go_beyond_EOF()
 
+    def test_read_next_timestep_ts_no_positions(self, universe):
+        # primarily tests branching on ts.has_positions in _read_next_timestep
+        ts = universe.trajectory[0]
+        ts.has_positions=False
+        ts_passed_in = universe.trajectory._read_next_timestep(ts=ts).copy()
+        universe.trajectory.rewind()
+        ts_returned = universe.trajectory._read_next_timestep(ts=None).copy()
+        assert(ts_passed_in == ts_returned)
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
@@ -443,6 +465,38 @@ class TestTRRWriter(_GromacsWriter):
                 with pytest.raises(mda.NoDataError):
                     getattr(written_ts, 'velocities')
 
+    def test_data_preservation(self, universe, Writer, outfile):
+
+        with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
+            for ts in universe.trajectory:
+                W.write(universe)
+
+        uw = mda.Universe(GRO, outfile)
+
+        assert np.isclose(ts.data['time'], 0.0)
+        assert ts.data['step'] == 0
+        assert np.isclose(ts.data['lambda'], 0.0)
+        assert np.isclose(ts.data['dt'], 100.0)
+
+        # check that the data are identical for each time step
+        for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
+            # data lengths must be the same
+            assert len(written_ts.data) == len(orig_ts.data)
+
+            # check that the keys exist in both dictionaries
+            for k in orig_ts.data:
+                assert k in written_ts.data
+
+            err_msg = ('mismatch between '
+                       'original and written trajectory at '
+                       f'frame {orig_ts.frame} vs {written_ts.frame}')
+
+            # check that each value is the same
+            for k in orig_ts.data:
+                assert_allclose(orig_ts.data[k],
+                                written_ts.data[k],
+                                err_msg=err_msg)
+
 
 class _GromacsWriterIssue101(object):
     Writers = {
@@ -501,6 +555,7 @@ class _GromacsWriterIssue117(object):
     def universe(self):
         return mda.Universe(PRMncdf, NCDF)
 
+    @pytest.mark.filterwarnings("ignore: ATOMIC_NUMBER record not found")
     def test_write_trajectory(self, universe, tmpdir):
         """Test writing Gromacs trajectories from AMBER NCDF (Issue 117)"""
         outfile = str(tmpdir.join('xdr-writer-issue117' + self.ext))
@@ -516,10 +571,9 @@ class _GromacsWriterIssue117(object):
                 written_ts._pos,
                 orig_ts._pos,
                 self.prec,
-                err_msg="coordinate mismatch "
-                "between original and written "
-                "trajectory at frame %d (orig) vs %d "
-                "(written)" % (orig_ts.frame, written_ts.frame))
+                err_msg=("coordinate mismatch between original and written "
+                         f"trajectory at frame {orig_ts.frame:d} (orig) vs "
+                         f"{orig_ts.frame:d} (written)"))
 
 
 class TestXTCWriterIssue117(_GromacsWriterIssue117):
@@ -707,21 +761,52 @@ class _GromacsReader_offsets(object):
     def test_reload_offsets(self, traj):
         self._reader(traj, refresh_offsets=True)
 
-    def test_nonexistant_offsets_file(self, traj):
-        # assert that a nonexistant file returns False during read-in
+    def test_nonexistent_offsets_file(self, traj):
+        # assert that a nonexistent file returns False during read-in
         outfile_offsets = XDR.offsets_filename(traj)
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
-            saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
-            assert_equal(saved_offsets, False)
+            with pytest.warns(UserWarning, match=re.escape(
+                    f"Failed to load offsets file {outfile_offsets}")):
+                saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+        assert saved_offsets == False
 
-    def test_reload_offsets_if_offsets_readin_fails(self, trajectory):
+    def test_corrupted_offsets_file(self, traj):
+        # assert that a corrupted file returns False during read-in
+        # Issue #3230
+        outfile_offsets = XDR.offsets_filename(traj)
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = ValueError
+            with pytest.warns(UserWarning, match=re.escape(
+                    f"Failed to load offsets file {outfile_offsets}")):
+                saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+        assert saved_offsets == False
+
+    def test_reload_offsets_if_offsets_readin_io_fails(self, trajectory):
         # force the np.load call that is called in read_numpy_offsets
         # during _load_offsets to give an IOError
         # ensure that offsets are then read-in from the trajectory
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
-            trajectory._load_offsets()
+            with (pytest.warns(UserWarning,
+                               match="Failed to load offsets file") and
+                  pytest.warns(UserWarning,
+                               match="reading offsets from trajectory instead")):
+                trajectory._load_offsets()
+
+            assert_almost_equal(
+                trajectory._xdr.offsets,
+                self.ref_offsets,
+                err_msg="error loading frame offsets")
+
+    def test_reload_offsets_if_offsets_readin_value_fails(self, trajectory):
+        # force the np.load call that is called in read_numpy_offsets
+        # during _load_offsets to give an ValueError (Issue #3230)
+        # ensure that offsets are then read-in from the trajectory
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = ValueError
+            with pytest.warns(UserWarning, match="Failed to load offsets"):
+                trajectory._load_offsets()
             assert_almost_equal(
                 trajectory._xdr.offsets,
                 self.ref_offsets,
@@ -801,9 +886,11 @@ class _GromacsReader_offsets(object):
         np.savez(fname, **saved_offsets)
 
         # ok as long as this doesn't throw
-        reader = self._reader(traj)
+        with pytest.warns(UserWarning, match="Reload offsets from trajectory"):
+            reader = self._reader(traj)
         reader[idx_frame]
 
+    @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
 
@@ -816,8 +903,28 @@ class _GromacsReader_offsets(object):
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
         # try to write a offsets file
-        self._reader(filename)
+        with (pytest.warns(UserWarning, match="Couldn't save offsets") and
+              pytest.warns(UserWarning, match="Cannot write")):
+            self._reader(filename)
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
+        # check the lock file is not created as well.
+        assert_equal(os.path.exists(XDR.offsets_filename(filename,
+                                                    ending='.lock')), False)
+
+        # pre-teardown permission fix - leaving permission blocked dir
+        # is problematic on py3.9 + Windows it seems. See issue
+        # [4123](https://github.com/MDAnalysis/mdanalysis/issues/4123)
+        # for more details.
+        if os.name == 'nt':
+            subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
+        else:
+            os.chmod(str(tmpdir), 0o777)
+
+        shutil.rmtree(tmpdir)
+
+    def test_offset_lock_created(self):
+        assert os.path.exists(XDR.offsets_filename(self.filename,
+                                                   ending='lock'))
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
@@ -838,3 +945,14 @@ class TestTRRReader_offsets(_GromacsReader_offsets):
         9155712, 10300176
     ])
     _reader = mda.coordinates.TRR.TRRReader
+
+
+def test_pathlib():
+    # regression test for XDR path of
+    # gh-2497
+    top = Path(GRO)
+    traj = Path(XTC)
+    u = mda.Universe(top, traj)
+    # we really only care that pathlib
+    # object handling worked
+    assert u.atoms.n_atoms == 47681

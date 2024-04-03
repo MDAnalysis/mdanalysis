@@ -31,7 +31,7 @@ Note
 ----
 Support for AMBER is still somewhat *experimental* and feedback and
 contributions are highly appreciated. Use the `Issue Tracker`_ or get in touch
-on the `MDAnalysis mailinglist`_.
+on the `GitHub Discussions`_.
 
 
 .. rubric:: Units
@@ -40,28 +40,6 @@ AMBER trajectories are assumed to be in the following units:
 
 * lengths in Angstrom (Å)
 * time in ps (but see below)
-
-AMBER trajectory coordinate frames are based on a custom :class:`Timestep`
-object.
-
-.. autoclass:: Timestep
-   :members:
-
-   .. attribute:: _pos
-
-      coordinates of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`
-
-   .. attribute:: _velocities
-
-      velocities of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
-      only available if the trajectory contains velocities or if the
-      *velocities* = ``True`` keyword has been supplied.
-
-   .. attribute:: _forces
-
-      forces of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
-      only available if the trajectory contains forces or if the
-      *forces* = ``True`` keyword has been supplied.
 
 
 .. _netcdf-trajectories:
@@ -148,7 +126,7 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 .. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.xhtml
 .. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
-.. _MDAnalysis mailinglist: https://groups.google.com/group/mdnalysis-discussion
+.. _GitHub Discussions: https://github.com/MDAnalysis/mdanalysis/discussions
 
 """
 import scipy.io.netcdf
@@ -159,8 +137,10 @@ import logging
 from math import isclose
 
 import MDAnalysis
+from .timestep import Timestep
 from . import base
 from ..lib import util
+from ..lib.util import store_init_arguments
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 
@@ -169,19 +149,6 @@ try:
 except ImportError:
     netCDF4 = None
     logger.warning("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
-
-
-class Timestep(base.Timestep):
-    """AMBER trajectory Timestep.
-
-    The Timestep can be initialized with `arg` being an integer
-    (the number of atoms) and an optional keyword argument `velocities` to
-    allocate space for both coordinates and velocities;
-
-    .. versionchanged:: 0.10.0
-       Added ability to contain Forces
-    """
-    order = 'C'
 
 
 class TRJReader(base.ReaderBase):
@@ -209,6 +176,7 @@ class TRJReader(base.ReaderBase):
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, n_atoms=None, **kwargs):
         super(TRJReader, self).__init__(filename, **kwargs)
         if n_atoms is None:
@@ -419,7 +387,7 @@ class NCDFReader(base.ReaderBase):
     to memory (using the :class:`~mmap.mmap`); ``mmap=False`` may consume large
     amounts of memory because it loads the whole trajectory into memory but it
     might be faster. The default is ``mmap=None`` and then default behavior of
-    :class:`scipy.io.netcdf.netcdf_file` prevails, i.e. ``True`` when
+    :class:`scipy.io.netcdf_file` prevails, i.e. ``True`` when
     *filename* is a file name, ``False`` when *filename* is a file-like object.
 
     .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
@@ -448,7 +416,7 @@ class NCDFReader(base.ReaderBase):
        Support for reading `degrees` units for `cell_angles` has now been
        removed (Issue #2327)
     .. versionchanged:: 2.0.0
-       Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--
+       Now use a picklable :class:`scipy.io.netcdf_file`--
        :class:`NCDFPicklable`.
        Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from
        the first two frames of the trajectory.
@@ -467,6 +435,7 @@ class NCDFReader(base.ReaderBase):
 
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, n_atoms=None, mmap=None, **kwargs):
 
         self._mmap = mmap
@@ -559,7 +528,7 @@ class NCDFReader(base.ReaderBase):
             # len(dimensions['frame']) ==  10: in any case, we need to get
             # the number of frames from somewhere such as the time variable:
             if self.n_frames is None:
-                self.n_frames = self.trjfile.variables['time'].shape[0]
+                self.n_frames = self.trjfile.variables['coordinates'].shape[0]
         except KeyError:
             errmsg = (f"NCDF trajectory {self.filename} does not contain "
                       f"frame information")
@@ -575,7 +544,17 @@ class NCDFReader(base.ReaderBase):
 
         # checks for not-implemented features (other units would need to be
         # hacked into MDAnalysis.units)
-        self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
+        try:
+            self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
+            self.has_time = True
+        except KeyError:
+            self.has_time = False
+            wmsg = ("NCDF trajectory does not contain `time` information;"
+                    " `time` will be set as an increasing index")  
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
+
+
         self._verify_units(self.trjfile.variables['coordinates'].units,
                            'angstrom')
 
@@ -639,7 +618,7 @@ class NCDFReader(base.ReaderBase):
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with scipy.io.netcdf.netcdf_file(filename, mmap=None) as f:
+        with scipy.io.netcdf_file(filename, mmap=None) as f:
             n_atoms = f.dimensions['atom']
         return n_atoms
 
@@ -671,7 +650,8 @@ class NCDFReader(base.ReaderBase):
                 self.n_frames))
         # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
         ts._pos[:] = self._get_var_and_scale('coordinates', frame)
-        ts.time = self._get_var_and_scale('time', frame)
+        if self.has_time:
+            ts.time = self._get_var_and_scale('time', frame)
         if self.has_velocities:
             ts._velocities[:] = self._get_var_and_scale('velocities', frame)
         if self.has_forces:
@@ -716,7 +696,7 @@ class NCDFReader(base.ReaderBase):
         try:
             t1 = self.trjfile.variables['time'][1]
             t0 = self.trjfile.variables['time'][0]
-        except IndexError:
+        except (IndexError, KeyError):
             raise AttributeError
         return t1 - t0
 
@@ -980,9 +960,9 @@ class NCDFWriter(base.WriterBase):
             ncfile = netCDF4.Dataset(self.filename, 'w',
                                      format='NETCDF3_64BIT')
         else:
-            ncfile = scipy.io.netcdf.netcdf_file(self.filename,
-                                                 mode='w', version=2,
-                                                 maskandscale=False)
+            ncfile = scipy.io.netcdf_file(self.filename,
+                                          mode='w', version=2,
+                                          maskandscale=False)
             wmsg = ("Could not find netCDF4 module. Falling back to MUCH "
                     "slower scipy.io.netcdf implementation for writing.")
             logger.warning(wmsg)
@@ -1206,11 +1186,11 @@ class NCDFWriter(base.WriterBase):
             self.trjfile = None
 
 
-class NCDFPicklable(scipy.io.netcdf.netcdf_file):
+class NCDFPicklable(scipy.io.netcdf_file):
     """NetCDF file object (read-only) that can be pickled.
 
     This class provides a file-like object (as returned by
-    :class:`scipy.io.netcdf.netcdf_file`) that,
+    :class:`scipy.io.netcdf_file`) that,
     unlike standard Python file objects,
     can be pickled. Only read mode is supported.
 
@@ -1222,7 +1202,7 @@ class NCDFPicklable(scipy.io.netcdf.netcdf_file):
 
 
     .. note::
-        This class subclasses :class:`scipy.io.netcdf.netcdf_file`, please
+        This class subclasses :class:`scipy.io.netcdf_file`, please
         see the `scipy netcdf API documentation`_ for more information on
         the parameters and how the class behaviour.
 

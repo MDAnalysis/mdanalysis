@@ -76,7 +76,7 @@ First load all modules and test data::
 
 
 Given a universe containing trajectory data we can perform Principal Component
-Analyis by using the class :class:`PCA` and retrieving the principal
+Analysis by using the class :class:`PCA` and retrieving the principal
 components.::
 
     u = mda.Universe(PSF, DCD)
@@ -118,6 +118,7 @@ import warnings
 
 import numpy as np
 import scipy.integrate
+from tqdm.auto import tqdm
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
@@ -142,7 +143,8 @@ class PCA(AnalysisBase):
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
-    instructions.
+    instructions. When using mean selections, the first frame of the selected 
+    trajectory slice is used as a reference.
 
     Parameters
     ----------
@@ -208,14 +210,6 @@ class PCA(AnalysisBase):
                 Will be removed in MDAnalysis 3.0.0. Please use
                 :attr:`results.cumulated_variance` instead.
 
-
-    Methods
-    -------
-    transform(atomgroup, n_components=None)
-        Take an atomgroup or universe with the same number of atoms as was
-        used for the calculation in :meth:`PCA.run`, and project it onto the
-        principal components.
-
     Notes
     -----
     Computation can be sped up by supplying precalculated mean positions.
@@ -238,6 +232,12 @@ class PCA(AnalysisBase):
        ``mean`` input now accepts coordinate arrays instead of atomgroup.
        :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`
        are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.8.0
+       ``self.run()`` can now appropriately use ``frames`` parameter (bug
+       described by #4425 and fixed by #4423). Previously, behaviour was to
+       manually iterate through ``self._trajectory``, which would
+       incorrectly handle cases where the ``frame`` argument
+       was passed.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
@@ -255,7 +255,7 @@ class PCA(AnalysisBase):
 
     def _prepare(self):
         # access start index
-        self._u.trajectory[self.start]
+        self._sliced_trajectory[0]
         # reference will be start index
         self._reference = self._u.select_atoms(self._select)
         self._atoms = self._u.select_atoms(self._select)
@@ -283,7 +283,7 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+            for ts in ProgressBar(self._sliced_trajectory,
                                   verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
@@ -356,12 +356,12 @@ class PCA(AnalysisBase):
                 n = len(self._variance)
             self.results.variance = self._variance[:n]
             self.results.cumulated_variance = (np.cumsum(self._variance) /
-                                       np.sum(self._variance))[:n]
+                                               np.sum(self._variance))[:n]
             self.results.p_components = self._p_components[:, :n]
         self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
-                  step=None):
+                  step=None, verbose=False):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -383,6 +383,11 @@ class PCA(AnalysisBase):
             Include every `step` frames in the PCA transform. If set to
             ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
+        verbose : bool, optional
+            ``verbose = True`` option displays a progress bar for the
+            iterations of transform. ``verbose = False`` disables the
+            progress bar, just returns the pca_space array when the
+            calculations are finished.
 
         Returns
         -------
@@ -392,6 +397,9 @@ class PCA(AnalysisBase):
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
            otherwise a :exc:`ValueError` is raised.
+        .. versionchanged:: 2.8.0
+           Transform now has shows a tqdm progressbar, which can be toggled
+           on with ``verbose = True``, or off with ``verbose = False``
         """
         if not self._calculated:
             raise ValueError('Call run() on the PCA before using transform')
@@ -399,7 +407,7 @@ class PCA(AnalysisBase):
         if isinstance(atomgroup, Universe):
             atomgroup = atomgroup.atoms
 
-        if(self._n_atoms != atomgroup.n_atoms):
+        if self._n_atoms != atomgroup.n_atoms:
             raise ValueError('PCA has been fit for'
                              '{} atoms. Your atomgroup'
                              'has {} atoms'.format(self._n_atoms,
@@ -416,11 +424,182 @@ class PCA(AnalysisBase):
 
         dot = np.zeros((n_frames, dim))
 
-        for i, ts in enumerate(traj[start:stop:step]):
+        for i, ts in tqdm(enumerate(traj[start:stop:step]), disable=not verbose,
+                          total=len(traj[start:stop:step])
+                          ):
+
             xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
         return dot
+
+    def project_single_frame(self, components=None, group=None, anchor=None):
+        r"""Computes a function to project structures onto selected PCs
+
+        Applies Inverse-PCA transform to the PCA atomgroup.
+        Optionally, calculates one displacement vector per residue
+        to extrapolate the transform to atoms not in the PCA atomgroup.
+
+        Parameters
+        ----------
+        components : int, array, optional
+            Components to be projected onto.
+            The default ``None`` maps onto all components.
+
+        group : AtomGroup, optional
+            The AtomGroup containing atoms to be projected.
+            The projection applies to whole residues in ``group``.
+            The atoms in the PCA class are not affected by this argument.
+            The default ``None`` does not extrapolate the projection
+            to non-PCA atoms.
+
+        anchor : string, optional
+            The string to select the PCA atom whose displacement vector
+            is applied to non-PCA atoms in a residue. The ``anchor`` selection
+            is applied to ``group``.The resulting atomselection must have
+            exactly one PCA atom in each residue of ``group``.
+            The default ``None`` does not extrapolate the projection
+            to non-PCA atoms.
+
+        Returns
+        -------
+        function
+            The resulting function f(ts) takes as input a
+            :class:`~MDAnalysis.coordinates.timestep.Timestep` ts,
+            and returns ts with the projected structure
+
+            .. warning::
+               The transformation function takes a :class:`Timestep` as input
+               because this is required for :ref:`transformations`.
+               However, the inverse-PCA transformation is applied on the atoms
+               of the Universe that was used for the PCA. It is *expected*
+               that the `ts` is from the same Universe but this is
+               currently not checked.
+
+        Notes
+        -----
+        When the PCA class is run for an atomgroup, the principal components
+        are cached. The trajectory can then be projected onto one or more of
+        these principal components. Since the principal components are sorted
+        in the order of decreasing explained variance, the first few components
+        capture the essential molecular motion.
+
+        If N is the number of atoms in the PCA group, each component has the
+        length 3N. A PCA score :math:`w\_i`, along component :math:`u\_i`, is
+        calculated for a set of coordinates :math:`(r(t))` of the same atoms.
+        The PCA scores are then used to transform the structure, :math:`(r(t))`
+        at a timestep, back to the original space.
+
+        .. math::
+
+            w_{i}(t) =  ({\textbf r}(t) - \bar{{\textbf r}}) \cdot
+                        {\textbf u}_i \\
+            {\textbf r'}(t) = (w_{i}(t) \cdot {\textbf u}_i^T) +
+                              \bar{{\textbf r}}
+
+        For each residue, the projection can be extended to atoms that were
+        not part of PCA by applying the displacement vector of a PCA atom to
+        all the atoms in the residue. This could be useful to preserve the bond
+        distance between a PCA atom and other non-PCA atoms in a residue.
+
+        If there are r residues and n non-PCA atoms in total, the displacement
+        vector has the size 3r. This needs to be broadcasted to a size 3n. An
+        extrapolation trick is used to shape the array, since going over each
+        residue for each frame can be expensive. Non-PCA atoms' displacement
+        vector is calculated with fancy indexing on the anchors' displacement
+        vector. `index_extrapolate` saves which atoms belong to which anchors.
+        If there are two non-PCA atoms in the first anchor's residue and three
+        in the second anchor's residue, `index_extrapolate` is [0, 0, 1, 1, 1]
+
+        Examples
+        --------
+        Run PCA class before using this function. For backbone PCA, run::
+
+            pca = PCA(universe, select='backbone').run()
+
+        Obtain a transformation function to project the
+        backbone trajectory onto the first principal component::
+
+            project = pca.project_single_frame(components=0)
+
+        To project onto the first two components, run::
+
+            project = pca.project_single_frame(components=[0,1])
+
+        Alternatively, the transformation can be applied to PCA atoms and
+        extrapolated to other atoms according to the CA atom's translation
+        in each residue::
+
+            all = u.select_atoms('all')
+            project = pca.project_single_frame(components=0,
+                                               group=all, anchor='name CA')
+
+        Finally, apply the transformation function to a timestep::
+
+            project(u.trajectory.ts)
+
+        or apply the projection to the universe::
+
+            u.trajectory.add_transformations(project)
+
+
+        .. versionadded:: 2.2.0
+        """
+        if not self._calculated:
+            raise ValueError('Call run() on the PCA before projecting')
+
+        if group is not None:
+            if anchor is None:
+                raise ValueError("'anchor' cannot be 'None'" +
+                                 " if 'group' is not 'None'")
+
+            anchors = group.select_atoms(anchor)
+            anchors_res_ids = anchors.resindices
+            if np.unique(anchors_res_ids).size != anchors_res_ids.size:
+                raise ValueError("More than one 'anchor' found in residues")
+            if not np.isin(group.resindices, anchors_res_ids).all():
+                raise ValueError("Some residues in 'group'" +
+                                 " do not have an 'anchor'")
+            if not anchors.issubset(self._atoms):
+                raise ValueError("Some 'anchors' are not part of PCA class")
+
+            # non_pca has "all" the atoms in residues of `group`. This makes
+            # sure that extrapolation works on residues, not random atoms.
+            non_pca = group.residues.atoms - self._atoms
+            pca_res_indices, pca_res_counts = np.unique(
+                self._atoms.resindices, return_counts=True)
+
+            non_pca_atoms = np.array([], dtype=int)
+            for res in group.residues:
+                # n_common is the number of pca atoms in a residue
+                n_common = pca_res_counts[np.where(
+                            pca_res_indices == res.resindex)][0]
+                non_pca_atoms = np.append(non_pca_atoms,
+                                          res.atoms.n_atoms - n_common)
+            # index_extrapolate records the anchor number for each non-PCA atom
+            index_extrapolate = np.repeat(np.arange(anchors.atoms.n_atoms),
+                                          non_pca_atoms)
+
+        if components is None:
+            components = np.arange(self.results.p_components.shape[1])
+
+        def wrapped(ts):
+            """Projects a timestep"""
+            if group is not None:
+                anchors_coords_old = anchors.positions
+
+            xyz = self._atoms.positions.ravel() - self._xmean
+            self._atoms.positions = np.reshape(
+                (np.dot(np.dot(xyz, self._p_components[:, components]),
+                        self._p_components[:, components].T)
+                 + self._xmean), (-1, 3)
+            )
+
+            if group is not None:
+                non_pca.positions += (anchors.positions -
+                                      anchors_coords_old)[index_extrapolate]
+            return ts
+        return wrapped
 
     @due.dcite(
         Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
@@ -452,6 +631,31 @@ class PCA(AnalysisBase):
             0 indicates that they are mutually orthogonal, whereas 1 indicates
             that they are identical.
 
+        Examples
+        --------
+
+        .. testsetup::
+
+            >>> import MDAnalysis as mda
+            >>> import MDAnalysis.analysis.pca as pca
+            >>> from MDAnalysis.tests.datafiles import PSF, DCD
+            >>> u = mda.Universe(PSF, DCD)
+
+
+        You can compare the RMSIP between different intervals of the same trajectory.
+        For example, to compare similarity within the top three principal components:
+
+        .. doctest::
+
+            >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
+            >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
+            >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
+            >>> round(first_interval.rmsip(second_interval, n_components=3), 6)
+            0.381476
+            >>> round(first_interval.rmsip(last_interval, n_components=3), 6)
+            0.174782
+
+
         See also
         --------
         :func:`~MDAnalysis.analysis.pca.rmsip`
@@ -465,7 +669,7 @@ class PCA(AnalysisBase):
             raise ValueError('Call run() on the PCA before using rmsip')
 
         try:
-            b = other.p_components
+            b = other.results.p_components
         except AttributeError:
             if isinstance(other, type(self)):
                 raise ValueError(
@@ -520,7 +724,7 @@ class PCA(AnalysisBase):
                 'Call run() on the PCA before using cumulative_overlap')
 
         try:
-            b = other.p_components
+            b = other.results.p_components
         except AttributeError:
             if isinstance(other, type(self)):
                 raise ValueError(
@@ -537,7 +741,7 @@ def cosine_content(pca_space, i):
     The cosine content of pca projections can be used as an indicator if a
     simulation is converged. Values close to 1 are an indicator that the
     simulation isn't converged. For values below 0.7 no statement can be made.
-    If you use this function please cite [BerkHess1]_.
+    If you use this function please cite :footcite:p:`BerkHess2002`.
 
 
     Parameters
@@ -555,15 +759,15 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations.
-                   Phys. Rev. E 65, 031910 (2002).
+    .. footbibliography::
+
     """
 
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
-    return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
-            scipy.integrate.simps(pca_space[:, i] ** 2))
+    return ((2.0 / T) * (scipy.integrate.simpson(cos*pca_space[:, i])) ** 2 /
+            scipy.integrate.simpson(pca_space[:, i] ** 2))
 
 
 @due.dcite(
@@ -585,8 +789,12 @@ def rmsip(a, b, n_components=None):
     ----------
     a : array, shape (n_components, n_features)
         The first subspace. Must have the same number of features as ``b``.
+        If you are using the results of :class:`~MDAnalysis.analysis.pca.PCA`,
+        this is the TRANSPOSE of ``p_components`` (i.e. ``p_components.T``).
     b : array, shape (n_components, n_features)
         The second subspace. Must have the same number of features as ``a``.
+        If you are using the results of :class:`~MDAnalysis.analysis.pca.PCA`,
+        this is the TRANSPOSE of ``p_components`` (i.e. ``p_components.T``).
     n_components : int or tuple of ints, optional
         number of components to compute for the inner products.
         ``None`` computes all of them.
@@ -597,6 +805,35 @@ def rmsip(a, b, n_components=None):
         Root mean square inner product of the selected subspaces.
         0 indicates that they are mutually orthogonal, whereas 1 indicates
         that they are identical.
+
+
+    Examples
+    --------
+
+    .. testsetup::
+
+        >>> import MDAnalysis as mda
+        >>> import MDAnalysis.analysis.pca as pca
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+
+
+    You can compare the RMSIP between different intervals of the same trajectory.
+    For example, to compare similarity within the top three principal components:
+
+    .. doctest::
+
+        >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
+        >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
+        >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
+        >>> round(pca.rmsip(first_interval.results.p_components.T,
+        ...           second_interval.results.p_components.T,
+        ...           n_components=3), 6)
+        0.381476
+        >>> round(pca.rmsip(first_interval.results.p_components.T,
+        ...           last_interval.results.p_components.T,
+        ...           n_components=3), 6)
+        0.174782
 
 
     .. versionadded:: 1.0.0

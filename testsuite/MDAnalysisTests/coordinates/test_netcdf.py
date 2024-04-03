@@ -24,7 +24,7 @@ import MDAnalysis as mda
 import numpy as np
 import sys
 
-from scipy.io import netcdf
+from scipy.io import netcdf_file
 
 import pytest
 from numpy.testing import (
@@ -35,7 +35,8 @@ from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
-                                       PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG)
+                                       PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG,
+                                       CPPTRAJ_TRAJ_TOP, CPPTRAJ_TRAJ)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
@@ -299,6 +300,34 @@ class TestNCDFReader3(object):
         assert_almost_equal(self.box_refs[expected], universe.dimensions)
 
 
+class TestNCDFReader4(object):
+    """NCDF Trajectory exported by cpptaj, without `time` variable."""
+    prec = 3
+
+    @pytest.fixture(scope='class')
+    def u(self):
+        return mda.Universe(CPPTRAJ_TRAJ_TOP,
+                            [CPPTRAJ_TRAJ, CPPTRAJ_TRAJ])
+
+    def test_chain_times(self, u):
+        """Check times entries for a chain of trajectories without
+        a defined time variable"""
+        ref_times = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+        time_list = [ts.time for ts in u.trajectory]
+        assert ref_times == time_list
+
+    def test_dt(self, u):
+        ref = 1.0
+        assert u.trajectory.dt == pytest.approx(ref)
+        assert u.trajectory.ts.dt == pytest.approx(ref)
+
+    def test_warn_user_no_time_information(self, u):
+        wmsg = ("NCDF trajectory does not contain `time` information;"
+                " `time` will be set as an increasing index")  
+        with pytest.warns(UserWarning, match=wmsg):
+            u2 = mda.Universe(CPPTRAJ_TRAJ_TOP, CPPTRAJ_TRAJ)
+
+
 class _NCDFGenerator(object):
     """A class for generating abitrary ncdf files and exhaustively test
     edge cases which might not be found in the wild"""
@@ -306,8 +335,8 @@ class _NCDFGenerator(object):
     def create_ncdf(self, params):
         """A basic modular ncdf writer based on :class:`NCDFWriter`"""
         # Create under context manager
-        with netcdf.netcdf_file(params['filename'], mode='w',
-                                version=params['version_byte']) as ncdf:
+        with netcdf_file(params['filename'], mode='w',
+                         version=params['version_byte']) as ncdf:
             # Top level attributes
             if params['Conventions']:
                 setattr(ncdf, 'Conventions', params['Conventions'])
@@ -656,7 +685,7 @@ class _NCDFWriterTest(object):
         #       which should be "float32".
         #       See http://docs.scipy.org/doc/numpy-1.10.0/reference/arrays.dtypes.html
         #       and https://github.com/MDAnalysis/mdanalysis/pull/503
-        dataset = netcdf.netcdf_file(outfile, 'r')
+        dataset = netcdf_file(outfile, 'r')
         coords = dataset.variables['coordinates']
         time = dataset.variables['time']
         assert_equal(coords[:].dtype.name, np.dtype(np.float32).name,
@@ -908,7 +937,7 @@ class TestNCDFWriterScaleFactors:
         sfactors = {}
         # being overly cautious by setting mmap to False, probably would
         # be faster & ok to set it to True
-        with netcdf.netcdf_file(ncdfile, mmap=False) as f:
+        with netcdf_file(ncdfile, mmap=False) as f:
             for var in f.variables:
                 if hasattr(f.variables[var], 'scale_factor'):
                     sfactors[var] = f.variables[var].scale_factor
@@ -917,7 +946,7 @@ class TestNCDFWriterScaleFactors:
 
     def get_variable(self, ncdfile, variable, frame):
         """Return a variable array from netcdf file"""
-        with netcdf.netcdf_file(ncdfile, mmap=False) as f:
+        with netcdf_file(ncdfile, mmap=False) as f:
             return f.variables[variable][frame]
 
     def test_write_read_factors_default(self, outfile, universe):
@@ -1038,7 +1067,7 @@ class TestNCDFWriterUnits(object):
             for ts in trr.trajectory:
                 W.write(trr)
 
-        with netcdf.netcdf_file(outfile, mode='r') as ncdf:
+        with netcdf_file(outfile, mode='r') as ncdf:
             unit = ncdf.variables[var].units.decode('utf-8')
             assert_equal(unit, expected)
 

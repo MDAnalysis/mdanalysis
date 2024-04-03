@@ -64,10 +64,10 @@ import types
 import warnings
 
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
-from ..exceptions import NoDataError
 from . import base, core
 from ..lib.formats.libdcd import DCDFile
 from ..lib.mdamath import triclinic_box
+from ..lib.util import store_init_arguments
 
 
 class DCDReader(base.ReaderBase):
@@ -96,6 +96,14 @@ class DCDReader(base.ReaderBase):
     degrees then it is assumed it is a new-style CHARMM unitcell (at least
     since c36b2) in which box vectors were recorded.
 
+    .. deprecated:: 2.4.0
+        DCDReader currently makes independent timesteps
+        by copying the :class:`Timestep` associated with the reader.
+        Other readers update the :class:`Timestep` inplace meaning all
+        references to the :class:`Timestep` contain the same data. The unique
+        independent :class:`Timestep` behaviour of the DCDReader is deprecated
+        will be changed in 3.0 to be the same as other readers
+
     .. warning::
         The DCD format is not well defined. Check your unit cell
         dimensions carefully, especially when using triclinic boxes.
@@ -113,6 +121,7 @@ class DCDReader(base.ReaderBase):
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, dt=None, **kwargs):
         """
         Parameters
@@ -153,6 +162,13 @@ class DCDReader(base.ReaderBase):
         self.ts = self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
+        warnings.warn("DCDReader currently makes independent timesteps"
+                      " by copying self.ts while other readers update"
+                      " self.ts inplace. This behavior will be changed in"
+                      " 3.0 to be the same as other readers. Read more at"
+                      " https://github.com/MDAnalysis/mdanalysis/issues/3889"
+                      " to learn if this change in behavior might affect you.",
+                       category=DeprecationWarning)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
@@ -187,12 +203,11 @@ class DCDReader(base.ReaderBase):
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
         if ts is None:
-            # use a copy to avoid that ts always points to the same reference
-            # removing this breaks lammps reader
+            #TODO remove copying the ts in 3.0 
             ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1
-        ts = self._frame_to_ts(frame, ts)
+        self._frame_to_ts(frame, ts)
         self.ts = ts
         return ts
 
@@ -263,6 +278,7 @@ class DCDReader(base.ReaderBase):
 
     def timeseries(self,
                    asel=None,
+                   atomgroup=None,
                    start=None,
                    stop=None,
                    step=None,
@@ -275,6 +291,12 @@ class DCDReader(base.ReaderBase):
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to None, in which case the full set of
             coordinate data is returned.
+        
+            .. deprecated:: 2.7.0
+               asel argument will be renamed to atomgroup in 3.0.0
+
+        atomgroup: AtomGroup (optional)
+            Same as `asel`, will replace `asel` in 3.0.0
         start : int (optional)
             Begin reading the trajectory at frame index `start` (where 0 is the
             index of the first frame in the trajectory); the default ``None``
@@ -296,15 +318,26 @@ class DCDReader(base.ReaderBase):
 
         .. versionchanged:: 1.0.0
            `skip` and `format` keywords have been removed.
+        .. versionchanged:: 2.4.0
+            ValueError now raised instead of NoDataError for empty input
+            AtomGroup
         """
+        if asel is not None:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+            if atomgroup:
+                raise ValueError("Cannot provide both asel and atomgroup kwargs")
+            atomgroup = asel
 
         start, stop, step = self.check_slice_indices(start, stop, step)
 
-        if asel is not None:
-            if len(asel) == 0:
-                raise NoDataError(
+        if atomgroup is not None:
+            if len(atomgroup) == 0:
+                raise ValueError(
                     "Timeseries requires at least one atom to analyze")
-            atom_numbers = list(asel.indices)
+            atom_numbers = list(atomgroup.indices)
         else:
             atom_numbers = list(range(self.n_atoms))
 

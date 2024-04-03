@@ -52,7 +52,7 @@ class BaseAuxReference(object):
         self.description= {'dt':self.dt, 'represent_ts_as':'closest', 
                            'initial_time':self.initial_time, 'time_selector':None,
                            'data_selector':None, 'constant_dt':True, 
-                           'cutoff':-1, 'auxname':self.name}
+                           'cutoff': None, 'auxname': self.name}
 
         def reference_auxstep(i):
             # create a reference AuxStep for step i
@@ -126,6 +126,10 @@ class BaseAuxReference(object):
 
 
 class BaseAuxReaderTest(object):
+
+    def test_raise_error_no_auxdata_provided(self, ref, ref_universe):
+        with pytest.raises(ValueError, match="No input `auxdata`"):
+            ref_universe.trajectory.add_auxiliary()
 
     def test_n_steps(self, ref, reader):
         assert len(reader) == ref.n_steps, "number of steps does not match"
@@ -404,6 +408,11 @@ class BaseAuxReaderTest(object):
 
         assert reader.constant_dt == constant
 
+    def test_copy(self, reader):
+        new_reader = reader.copy()
+        assert reader == new_reader
+        assert reader is not new_reader
+
 
 def assert_auxstep_equal(A, B):
     if not isinstance(A, mda.auxiliary.base.AuxStep):
@@ -416,6 +425,11 @@ def assert_auxstep_equal(A, B):
     if A.time != B.time:
         raise AssertionError('A and B have different times: A.time = {}, '
                              'B.time = {}'.format(A.time, B.time))
-    if all(A.data != B.data):
-        raise AssertionError('A and B have different data: A.data = {}, '
-                             'B.data = {}'.format(A.data, B.data))
+    if isinstance(A.data, dict):
+        for term in A.data:
+            assert_almost_equal(A.data[term], B.data[term])
+    else:
+        if any(A.data != B.data):
+            # e.g. XVGReader
+            raise AssertionError('A and B have different data: A.data = {}, '
+                                 'B.data = {}'.format(A.data, B.data))

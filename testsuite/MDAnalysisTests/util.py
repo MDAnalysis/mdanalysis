@@ -32,6 +32,7 @@ importer = builtins.__import__
 from contextlib import contextmanager
 from functools import wraps
 import importlib
+import shutil
 from unittest import mock
 import os
 import warnings
@@ -81,11 +82,8 @@ def executable_not_found(*args):
 
     @dec.skipif(executable_not_found("binary_name"), msg="skip test because binary_name not available")
     """
-    # This must come here so that MDAnalysis isn't imported prematurely,
-    #  which spoils coverage accounting (see Issue 344).
-    import MDAnalysis.lib.util
     for name in args:
-        if MDAnalysis.lib.util.which(name) is not None:
+        if shutil.which(name) is not None:
             return False
     return True
 
@@ -251,3 +249,14 @@ def no_deprecated_call(func=None, *args, **kwargs):
         __tracebackhide__ = True
         with _NoDeprecatedCallContext():
             return func(*args, **kwargs)
+
+
+def get_userid():
+    """
+    Calls os.geteuid() where possible, or returns 1000 (usually on windows).
+    """
+    # no such thing as euid on Windows, assuming normal user 1000
+    if (os.name == 'nt' or not hasattr(os, "geteuid")):
+        return 1000
+    else:
+        return os.geteuid()

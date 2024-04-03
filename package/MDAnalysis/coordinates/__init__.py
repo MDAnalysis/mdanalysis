@@ -43,10 +43,10 @@ object-oriented interface is one of the key capabilities of MDAnalysis.
 Readers
 -------
 
-All Readers are based on a :class:`ProtoReader` class that defines a common
-:ref:`Trajectory API` and allows other code to interface with all trajectory
-formats in the same way, independent of the details of the trajectory format
-itself.
+All Readers are based on a :class:`~MDAnalysis.coordinates.base.ProtoReader`
+class that defines a common :ref:`Trajectory API` and allows other code to
+interface with all trajectory formats in the same way, independent of the
+details of the trajectory format itself.
 
 The :class:`~MDAnalysis.core.universe.Universe` contains the API entry point
 attribute :attr:`Universe.trajectory` that points to the actual
@@ -123,13 +123,13 @@ Timesteps
 ---------
 
 Both Readers and Writers use Timesteps as their working object.  A
-:class:`~MDAnalysis.coordinates.base.Timestep` represents all data for a given
+:class:`~MDAnalysis.coordinates.Timestep` represents all data for a given
 frame in a trajectory.  The data inside a
-:class:`~MDAnalysis.coordinates.base.Timestep` is often accessed indirectly
+:class:`~MDAnalysis.coordinates.Timestep` is often accessed indirectly
 through a :class:`~MDAnalysis.core.groups.AtomGroup` but it is also possible to
 manipulate Timesteps directly.
 
-The current :class:`~MDAnalysis.coordinates.base.Timestep` can be accessed
+The current :class:`~MDAnalysis.coordinates.Timestep` can be accessed
 through the :attr:`~MDAnalysis.coordinates.base.ProtoReader.ts` attribute of
 the trajectory attached to the active
 :class:`~MDAnalysis.core.universe.Universe`::
@@ -182,6 +182,12 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | Gromacs       | tng       |  r    | Variable precision tng trajectory. Coordinates,      |
+   |               |           |       | velocities and forces are processed along with any   |
+   |               |           |       | `additional tng block data`_ requested for reading.  |
+   |               |           |       | Uses the `PyTNG package`_ for tng file reading.      |  
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TNG`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | XYZ [#a]_     |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
@@ -229,6 +235,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | the first frame present will be read.                |
    | [#a]_         |           |       | Module :mod:`MDAnalysis.coordinates.GRO`             |
    +---------------+-----------+-------+------------------------------------------------------+
+   | GROMOS11      | trc       |  r    | Basic GROMOS11 trajectory format.                    |
+   |               |           |       | Can read positions, box-sizes and timesteps.         |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TRC`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | CHARMM        | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
    | CARD [#a]_    |           |       | either standard or EXTended format. Module           |
    |               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
@@ -274,6 +284,8 @@ also recognized when they are compressed with :program:`gzip` or
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`chemfiles`: https://chemfiles.org/
 .. _`list of chemfiles file formats`: https://chemfiles.org/chemfiles/latest/formats.html
+.. _`additional tng block data`: https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
+.. _`PyTNG package`: https://github.com/MDAnalysis/pytng
 
 .. _`Trajectory API`:
 
@@ -328,7 +340,7 @@ A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read.
 
 Timestep classes are derived from
-:class:`MDAnalysis.coordinates.base.Timestep`, which is the primary
+:class:`MDAnalysis.coordinates.timestep.Timestep`, which is the primary
 implementation example (and used directly for the DCDReader).
 
 The discussion on this format is detailed in `Issue 250`_
@@ -339,73 +351,73 @@ The discussion on this format is detailed in `Issue 250`_
 Methods
 .......
 
-  ``__init__(n_atoms, positions=True, velocities=False, forces=False)``
-      Define the number of atoms this Timestep will hold and whether or not
-      it will have velocity and force information
-  ``__eq__``
-      Compares a Timestep with another
-  ``__getitem__(atoms)``
-      position(s) of atoms; can be a slice or numpy array and then returns
-      coordinate array
-  ``__len__()``
-      number of coordinates (atoms) in the frame
-  ``__iter__()``
-      iterator over all coordinates
-  ``copy()``
-      deep copy of the instance
-  ``_init_unitcell``
-      hook that returns empty data structure for the unitcell representation
-      of this particular file format; called from within ``__init__()`` to
-      initialize :attr:`Timestep._unitcell`.
+``__init__(n_atoms, positions=True, velocities=False, forces=False)``
+    Define the number of atoms this Timestep will hold and whether or not
+    it will have velocity and force information
+``__eq__``
+    Compares a Timestep with another
+``__getitem__(atoms)``
+    position(s) of atoms; can be a slice or numpy array and then returns
+    coordinate array
+``__len__()``
+    number of coordinates (atoms) in the frame
+``__iter__()``
+    iterator over all coordinates
+``copy()``
+    deep copy of the instance
+``_init_unitcell``
+    hook that returns empty data structure for the unitcell representation
+    of this particular file format; called from within ``__init__()`` to
+    initialize :attr:`Timestep._unitcell`.
 
 Attributes
 ..........
 
-  ``n_atoms``
-      number of atoms in the frame
-  ``frame``
-      current frame number (0-based)
-  ``_frame``
-      The native frame number of the trajectory.  This can differ from ``frame``
-      as that will always count sequentially from 0 on iteration, whilst
-      ``_frame`` is taken directly from the trajectory.
-  ``time``
-      The current system time in ps.  This value is calculated either from a time
-      set as the Timestep attribute, or from `frame` * `dt`.  Either method allows
-      allows an offset to be applied to the time.
-  ``dt``
-      The change in system time between different frames.  This can be set as an
-      attribute, but defaults to 1.0 ps.
-  ``data``
-      A dictionary containing all miscellaneous information for the
-      current Timestep.
-  ``positions``
-      A numpy array of all positions in this Timestep, otherwise raises a
-      :class:`~MDAnalysis.exceptions.NoDataError`
-  ``velocities``
-      If present, returns a numpy array of velocities, otherwise raises a
-      :class:`~MDAnalysis.exceptions.NoDataError`
-  ``forces``
-      If present, returns a numpy array of forces, otherwise raises a
-      :class:`~MDAnalysis.exceptions.NoDataError`
-  ``has_positions``
-      Boolean of whether position data is available
-  ``has_velocities``
-      Boolean of whether velocity data is available
-  ``has_forces``
-      Boolean of whether force data is available
-  ``dimensions``
-      system box dimensions (`x, y, z, alpha, beta, gamma`)
-      Also comes with a setter that takes a MDAnalysis box so that one can do ::
+``n_atoms``
+    number of atoms in the frame
+``frame``
+    current frame number (0-based)
+``_frame``
+    The native frame number of the trajectory.  This can differ from ``frame``
+    as that will always count sequentially from 0 on iteration, whilst
+    ``_frame`` is taken directly from the trajectory.
+``time``
+    The current system time in ps.  This value is calculated either from a time
+    set as the Timestep attribute, or from `frame` * `dt`.  Either method allows
+    allows an offset to be applied to the time.
+``dt``
+    The change in system time between different frames.  This can be set as an
+    attribute, but defaults to 1.0 ps.
+``data``
+    A dictionary containing all miscellaneous information for the
+    current Timestep.
+``positions``
+    A numpy array of all positions in this Timestep, otherwise raises a
+    :class:`~MDAnalysis.exceptions.NoDataError`
+``velocities``
+    If present, returns a numpy array of velocities, otherwise raises a
+    :class:`~MDAnalysis.exceptions.NoDataError`
+``forces``
+    If present, returns a numpy array of forces, otherwise raises a
+    :class:`~MDAnalysis.exceptions.NoDataError`
+``has_positions``
+    Boolean of whether position data is available
+``has_velocities``
+    Boolean of whether velocity data is available
+``has_forces``
+    Boolean of whether force data is available
+``dimensions``
+    system box dimensions (`x, y, z, alpha, beta, gamma`)
+    Also comes with a setter that takes a MDAnalysis box so that one can do ::
 
-          Timestep.dimensions = [A, B, C, alpha, beta, gamma]
+        Timestep.dimensions = [A, B, C, alpha, beta, gamma]
 
-      which then converts automatically to the underlying representation and stores it
-      in :attr:`Timestep._unitcell`.
-  ``volume``
-      system box volume (derived as the determinant of the box vectors of ``dimensions``)
-  ``aux``
-      namespace for the representative values of any added auxiliary data.
+    which then converts automatically to the underlying representation and stores it
+    in :attr:`Timestep._unitcell`.
+``volume``
+    system box volume (derived as the determinant of the box vectors of ``dimensions``)
+``aux``
+    namespace for the representative values of any added auxiliary data.
 
 
 Private attributes
@@ -415,34 +427,48 @@ These attributes are set directly by the underlying trajectory
 readers. Normally the user should not have to directly access those,
 but instead should use the attribute above.
 
-  ``_pos``
-      raw coordinates, a :class:`numpy.float32` array; ``X = _pos[:,0], Y =
-      _pos[:,1], Z = _pos[:,2]``
+``_pos``
+    raw coordinates, a :class:`numpy.float32` array; ``X = _pos[:,0], Y =
+    _pos[:,1], Z = _pos[:,2]``
 
-  ``_velocities``
-      raw velocities, a :class:`numpy.float32` array containing velocities
-      (similar to ``_pos``)
+``_velocities``
+    raw velocities, a :class:`numpy.float32` array containing velocities
+    (similar to ``_pos``)
 
-  ``_forces``
-      forces, similar to velocities above.
+``_forces``
+    forces, similar to velocities above.
 
-  ``_unitcell``
-      native unit cell description; the format depends on the
-      underlying trajectory format. A user should use the
-      :class:`~MDAnalysis.coordinates.base.Timestep.dimensions`
-      attribute to access the data in a canonical format instead of
-      accessing :class:`Timestep._unitcell` directly.
+``_unitcell``
+    native unit cell description; the format depends on the
+    underlying trajectory format. A user should use the
+    :class:`~MDAnalysis.coordinates.Timestep.dimensions`
+    attribute to access the data in a canonical format instead of
+    accessing :class:`Timestep._unitcell` directly.
 
-      The method :meth:`Timestep._init_unitcell` is a hook to initialize
-      this attribute.
+    The method :meth:`Timestep._init_unitcell` is a hook to initialize
+    this attribute.
 
 
 
 Trajectory Reader class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.ReaderBase`.
-Typically, many methods and attributes are overriden.
+Trajectory readers are derived from
+:class:`MDAnalysis.coordinates.base.ReaderBase` (or from
+:class:`MDAnalysis.coordinates.base.ProtoReader` if they do not required
+:meth:`Reader.__del__` method). A special case are *SingleFrame readers* for
+formats that contain only a single coordinate frame. These readers are derived
+from a subclass of :class:`~MDAnalysis.coordinates.base.ProtoReader` named
+:class:`MDAnalysis.coordinates.base.SingleFrameReaderBase`.
+
+Typically, many methods and attributes are overriden but the ones listed below
+*must* be implemented.
+
+.. SeeAlso::
+
+   See the section on :ref:`ReadersBase` in :mod:`MDAnalysis.coordinates.base`
+   for implementation details.
+
 
 Methods
 .......
@@ -454,34 +480,41 @@ implementation example.
 
 The following methods must be implemented in a Reader class.
 
- ``__init__(filename, **kwargs)``
-     open *filename*; other *kwargs* are processed as needed and the
-     Reader is free to ignore them. Typically, when MDAnalysis creates
-     a Reader from :class:`MDAnalysis.Universe` it supplies as much
-     information as possible in `kwargs`; at the moment the following
-     data are supplied:
+``__init__(filename, **kwargs)``
+    open *filename*; other *kwargs* are processed as needed and the
+    Reader is free to ignore them. Typically, when MDAnalysis creates
+    a Reader from :class:`MDAnalysis.Universe` it supplies as much
+    information as possible in `kwargs`; at the moment the following
+    data are supplied:
 
-      - *n_atoms*: the number of atoms from the supplied topology.  This is
-                   not required for all readers and can be ignored if not
-                   required.
+    - *n_atoms*: the number of atoms from the supplied topology.  This is
+                not required for all readers and can be ignored if not
+                required.
 
- ``__iter__()``
-     allow iteration from beginning to end::
+``__iter__()``
+    allow iteration from beginning to end::
 
         for ts in trajectory:
             print(ts.frame)
 
- ``close()``
-     close the file and cease I/O
- ``next()``
-     advance to next time step or raise :exc:`IOError` when moving
-     past the last frame
- ``rewind()``
-     reposition to first frame
- ``__entry__()``
-     entry method of a `Context Manager`_ (returns self)
- ``__exit__()``
-     exit method of a `Context Manager`_, should call ``close()``.
+    Readers will automatically rewind the trajectory to before the initial
+    frame (often by re-opening the file) before starting the iteration. *Multi
+    frame readers* (see :ref:`ReadersBase`) will also rewind the trajectory
+    *after* the iteration so that the current trajectory frame is set to the
+    first trajectory frame. *Single frame readers* do not explicitly rewind
+    after iteration but simply remain on the one frame in the trajectory.
+
+``close()``
+    close the file and cease I/O
+``next()``
+    advance to next time step or raise :exc:`IOError` when moving
+    past the last frame
+``rewind()``
+    reposition to first frame
+``__entry__()``
+    entry method of a `Context Manager`_ (returns self)
+``__exit__()``
+    exit method of a `Context Manager`_, should call ``close()``.
 
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
 
@@ -498,123 +531,124 @@ Not all trajectory formats support the following methods, either because the
 data are not available or the methods have not been implemented. Code should
 deal with missing methods gracefully.
 
- ``__len__()``
-     number of frames in trajectory
+``__len__()``
+    number of frames in trajectory
 
- ``__getitem__(arg)``
-     advance to time step `arg` = `frame` and return :class:`Timestep`; or if `arg` is a
-     slice, then return an iterable over that part of the trajectory.
+``__getitem__(arg)``
+    advance to time step `arg` = `frame` and return :class:`Timestep`; or if `arg` is a
+    slice, then return an iterable over that part of the trajectory.
 
-     The first functionality allows one to randomly access frames in the
-     trajectory::
+    The first functionality allows one to randomly access frames in the
+    trajectory::
 
-       universe.trajectory[314]
+        universe.trajectory[314]
 
-     would load frame 314 into the current :class:`Timestep`.
+    would load frame 314 into the current :class:`Timestep`.
 
-     Using slices allows iteration over parts of a trajectory ::
+    Using slices allows iteration over parts of a trajectory ::
 
-       for ts in universe.trajectory[1000:2000]:
-           process_frame(ts)   # do some analysis on ts
+        for ts in universe.trajectory[1000:2000]:
+            process_frame(ts)   # do some analysis on ts
 
-     or skipping frames ::
+    or skipping frames ::
 
-       for ts in universe.trajectory[1000::100]:
-           process_frame(ts)   # do some analysis on ts
+        for ts in universe.trajectory[1000::100]:
+            process_frame(ts)   # do some analysis on ts
 
-     The last example starts reading the trajectory at frame 1000 and
-     reads every 100th frame until the end.
+    The last example starts reading the trajectory at frame 1000 and
+    reads every 100th frame until the end.
 
-     A sequence of indices or a mask of booleans can also be provided to index
-     a trajectory.
+    A sequence of indices or a mask of booleans can also be provided to index
+    a trajectory.
 
-     The performance of the ``__getitem__()`` method depends on the underlying
-     trajectory reader and if it can implement random access to frames. In many
-     cases this is not easily (or reliably) implementable and thus one is
-     restricted to sequential iteration.
+    The performance of the ``__getitem__()`` method depends on the underlying
+    trajectory reader and if it can implement random access to frames. All
+    readers in MDAnalysis should support random access.
 
-     If the Reader is not able to provide random access to frames then it
-     should raise :exc:`TypeError` on indexing. It is possible to partially
-     implement ``__getitem__`` (as done on
-     :class:`MDAnalysis.coordinates.base.ProtoReader.__getitem__` where slicing the
-     full trajectory is equivalent to
-     :class:`MDAnalysis.coordinates.base.ProtoReader.__iter__` (which is always
-     implemented) and other slices raise :exc:`TypeError`.
+    For external custom readers this may not be easily (or reliably)
+    implementable and thus one is restricted to sequential iteration.
+    If the Reader is not able to provide random access to frames then it
+    should raise :exc:`TypeError` on indexing. It is possible to partially
+    implement ``__getitem__`` (as done on
+    :class:`MDAnalysis.coordinates.base.ProtoReader.__getitem__` where slicing the
+    full trajectory is equivalent to
+    :class:`MDAnalysis.coordinates.base.ProtoReader.__iter__` (which is always
+    implemented) and other slices raise :exc:`TypeError`.
 
-     When indexed with a slice, a sequence of indices, or a mask of booleans,
-     the return value is an instance of :class:`FrameIteratorSliced` or
-     :class:`FrameIteratorIndices`.
+    When indexed with a slice, a sequence of indices, or a mask of booleans,
+    the return value is an instance of :class:`FrameIteratorSliced` or
+    :class:`FrameIteratorIndices`. See :ref:`FrameIterators` for more details.
 
- ``parse_n_atoms(filename, **kwargs)``
-     Provide the number of atoms in the trajectory file, allowing the Reader
-     to be used to provide an extremely minimal Topology.
-     Must be implemented as either a staticmethod or a classmethod.
+``parse_n_atoms(filename, **kwargs)``
+    Provide the number of atoms in the trajectory file, allowing the Reader
+    to be used to provide an extremely minimal Topology.
+    Must be implemented as either a staticmethod or a classmethod.
 
- ``Writer(filename, **kwargs)``
-     returns a :class:`~MDAnalysis.coordinates.base.WriterBase` which is set up with
-     the same parameters as the trajectory that is being read (e.g. time step,
-     length etc), which facilitates copying and simple on-the-fly manipulation.
+``Writer(filename, **kwargs)``
+    returns a :class:`~MDAnalysis.coordinates.base.WriterBase` which is set up with
+    the same parameters as the trajectory that is being read (e.g. time step,
+    length etc), which facilitates copying and simple on-the-fly manipulation.
 
-     If no Writer is defined then a :exc:`NotImplementedError` is raised.
+    If no Writer is defined then a :exc:`NotImplementedError` is raised.
 
-     The *kwargs* can be used to customize the Writer as they are typically
-     passed through to the init method of the Writer, with sensible defaults
-     filled in; the actual keyword arguments depend on the Writer.
+    The *kwargs* can be used to customize the Writer as they are typically
+    passed through to the init method of the Writer, with sensible defaults
+    filled in; the actual keyword arguments depend on the Writer.
 
- ``timeseries(atomGroup, [start[,stop[,skip[,format]]]])``
-     returns a subset of coordinate data
+``timeseries(atomGroup, [start[,stop[,skip[,format]]]])``
+    returns a subset of coordinate data
 
 Attributes
 ..........
 
- ``filename``
-     filename of the trajectory
- ``n_atoms``
-     number of atoms (coordinate sets) in a frame (constant)
- ``n_frames``
-     total number of frames (if known) -- ``None`` if not known
- ``ts``
-     the :class:`~base.Timestep` object; typically customized for each
-     trajectory format and derived from :class:`base.Timestep`.
- ``units``
-     dictionary with keys *time*, *length*, *speed*, *force* and the
-     appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
-     'nm' for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
-     Any field not used should be set to ``None``.
- ``format``
-     string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
-     "TRR"; this is typically the file extension in upper case.
- ``dt``
-     time between frames in ps; a managed attribute (read only) that computes
-     on the fly ``skip_timestep * delta`` and converts to the MDAnalysis base
-     unit for time (pico seconds by default)
- ``totaltime``
-     total length of the trajectory = ``n_frames * dt``
- ``time``
-     time of the current time step, in MDAnalysis time units (ps)
- ``frame``
-     frame number of the current time step (0-based)
- ``aux_list``
-     list of the names of any added auxiliary data.
- ``_auxs``
-     dictionary of the :class:`~MDAnalysis.auxiliary.base.AuxReader`
-     instances for any added auxiliary data.
+``filename``
+    filename of the trajectory
+``n_atoms``
+    number of atoms (coordinate sets) in a frame (constant)
+``n_frames``
+    total number of frames (if known) -- ``None`` if not known
+``ts``
+    the :class:`~timestep.Timestep` object; typically customized for each
+    trajectory format and derived from :class:`timestep.Timestep`.
+``units``
+    dictionary with keys *time*, *length*, *speed*, *force* and the
+    appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
+    'nm' for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
+    Any field not used should be set to ``None``.
+``format``
+    string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
+    "TRR"; this is typically the file extension in upper case.
+``dt``
+    time between frames in ps; a managed attribute (read only) that computes
+    on the fly ``skip_timestep * delta`` and converts to the MDAnalysis base
+    unit for time (pico seconds by default)
+``totaltime``
+    total length of the trajectory = ``n_frames * dt``
+``time``
+    time of the current time step, in MDAnalysis time units (ps)
+``frame``
+    frame number of the current time step (0-based)
+``aux_list``
+    list of the names of any added auxiliary data.
+``_auxs``
+    dictionary of the :class:`~MDAnalysis.auxiliary.base.AuxReader`
+    instances for any added auxiliary data.
 
 **Optional attributes**
 
- ``delta``
-     integrator time step (in native units); hence the "length"
-     of a trajctory frame is  ``skip_timestep*delta`` time units
- ``compressed``
-     string that identifies the compression (e.g. "gz" or "bz2") or ``None``.
- ``fixed``
-     bool, saying if there are fixed atoms (e.g. dcds)
- ``periodic``
-     boolean saying if contains box information for periodic boundary conditions
-     unit cell information is stored in attribute `dimensions`
- ``skip_timestep``
-     number of integrator steps between frames + 1 (i.e.
-     the stride at which the MD simulation was sampled)
+``delta``
+    integrator time step (in native units); hence the "length"
+    of a trajctory frame is  ``skip_timestep*delta`` time units
+``compressed``
+    string that identifies the compression (e.g. "gz" or "bz2") or ``None``.
+``fixed``
+    bool, saying if there are fixed atoms (e.g. dcds)
+``periodic``
+    boolean saying if contains box information for periodic boundary conditions
+    unit cell information is stored in attribute `dimensions`
+``skip_timestep``
+    number of integrator steps between frames + 1 (i.e.
+    the stride at which the MD simulation was sampled)
 
 
 Trajectory Writer class
@@ -637,48 +671,51 @@ or::
 
    w.write(AtomGroup)  # write a selection of Atoms from Universe
 
+.. SeeAlso::
+
+   See the section on :ref:`WritersBase` in :mod:`MDAnalysis.coordinates.base`
+   for implementation details.
 
 Methods
 .......
 
- ``__init__(filename, n_atoms, **kwargs)``
+``__init__(filename, n_atoms, **kwargs)``
+    Set-up the reader. This *may* open file *filename* and *may*
+    write content to it such as headers immediately but the writer is
+    allowed to delay I/O up to the first call of ``write()``.
 
-     Set-up the reader. This *may* open file *filename* and *may*
-     write content to it such as headers immediately but the writer is
-     allowed to delay I/O up to the first call of ``write()``.
+    Any ``**kwargs`` that are not processed by the writer must be
+    silently ignored.
 
-     Any ``**kwargs`` that are not processed by the writer must be
-     silently ignored.
-
- ``write(obj)``
-     write Timestep data in *obj*
- ``convert_dimensions_to_unitcell(timestep)``
-     take the dimensions from the timestep and convert to the native
-     unitcell representation of the format
- ``close()``
-     close file and finish I/O
- ``__del__()``
-     ensures that close() is called
+``write(obj)``
+    write Timestep data in *obj*
+``convert_dimensions_to_unitcell(timestep)``
+    take the dimensions from the timestep and convert to the native
+    unitcell representation of the format
+``close()``
+    close file and finish I/O
+``__del__()``
+    ensures that close() is called
 
 Attributes
 ..........
 
- ``filename``
-     name of the trajectory file
- ``units``
-     dictionary with keys *time*, *length*, *speed*, *force* and the
-     appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
-     'nm' for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
-     Any field not used should be set to ``None``.
- ``format``
-     string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
-     "TRR"
+``filename``
+    name of the trajectory file
+``units``
+    dictionary with keys *time*, *length*, *speed*, *force* and the
+    appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
+    'nm' for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
+    Any field not used should be set to ``None``.
+``format``
+    string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
+    "TRR"
 
 
 **Optional**
 
- ``ts``
-     :class:`Timestep` instance
+``ts``
+    :class:`Timestep` instance
 
 
 Single Frame Writer class
@@ -705,24 +742,25 @@ factory function can be used for all writers.
 Methods
 .......
 
- ``__init__(filename, **kwargs)``
-   opens *filename* for writing; `kwargs` are typically ignored
- ``write(obj)``
-   writes the object *obj*, containing a
-   :class:`~MDAnalysis.core.groups.AtomGroup` group of atoms (typically
-   obtained from a selection) or :class:`~MDAnalysis.core.universe.Universe`
-   to the file and closes the file
+``__init__(filename, **kwargs)``
+    opens *filename* for writing; `kwargs` are typically ignored
+``write(obj)``
+    writes the object *obj*, containing a
+    :class:`~MDAnalysis.core.groups.AtomGroup` group of atoms (typically
+    obtained from a selection) or :class:`~MDAnalysis.core.universe.Universe`
+    to the file and closes the file
 
 .. Note::
 
    Trajectory and Frame writers can be used in almost exactly the same
    manner with the one difference that Frame writers cannot deal with
-   raw :class:`~MDAnalysis.coordinates.base.Timestep` objects.
+   raw :class:`~MDAnalysis.coordinates.Timestep` objects.
 
 """
-__all__ = ['reader', 'writer']
+__all__ = ['reader', 'writer', 'timestep']
 
 from . import base
+from . import timestep
 from .core import reader, writer
 from . import chain
 from . import chemfiles
@@ -738,6 +776,7 @@ from . import MOL2
 from . import PDB
 from . import PDBQT
 from . import PQR
+from . import TRC
 from . import TRJ
 from . import TRR
 from . import H5MD
@@ -751,3 +790,4 @@ from . import GSD
 from . import null
 from . import NAMDBIN
 from . import FHIAIMS
+from . import TNG

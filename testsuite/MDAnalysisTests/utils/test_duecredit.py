@@ -29,6 +29,7 @@ import importlib
 # (if set to 'no', the tests will be SKIPPED; has to be yes, true, or 1 for duecredit
 # to work; duecredit must also be installed)
 import MDAnalysis as mda
+from MDAnalysis.coordinates.H5MD import HAS_H5PY
 from MDAnalysisTests.datafiles import MMTF, TPR_xvf, H5MD_xvf
 
 # duecredit itself is not needed in the name space but this is a
@@ -55,23 +56,14 @@ class TestDuecredit(object):
     # note: citekeys are *all lower case*
     @pytest.mark.parametrize("module,path,citekey", [
         ("MDAnalysis.analysis.psa",
-         "MDAnalysis.analysis.psa",
+         "pathsimanalysis.psa",
          "10.1371/journal.pcbi.1004568"),
-        ("MDAnalysis.analysis.hbonds.hbond_autocorrel",
-         "MDAnalysis.analysis.hbonds.hbond_autocorrel",
+        ("MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel",
+         "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel",
          "10.1063/1.4922445"),
         ("MDAnalysis.analysis.leaflet",
          "MDAnalysis.analysis.leaflet",
          "10.1002/jcc.21787"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
-         "10.1016/s0006-3495(93)81293-1"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
-         "10.1016/s0263-7855(97)00009-x"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
-         "10.1016/j.jmb.2013.10.024"),
         ("MDAnalysis.lib.qcprot",
          "MDAnalysis.lib.qcprot",
          "10.1107/s0108767305015266"),
@@ -95,6 +87,7 @@ class TestDuecredit(object):
         assert mda.due.citations[('MDAnalysis.topology.MMTFParser',
                                   '10.1371/journal.pcbi.1005575')].cites_module
 
+    @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
     def test_duecredit_h5md(self):
         # doesn't trigger on import but on use of either reader or writer
         u = mda.Universe(TPR_xvf, H5MD_xvf)

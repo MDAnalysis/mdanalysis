@@ -23,6 +23,7 @@
 import numpy as np
 import logging
 import pytest
+import copy
 
 from numpy.testing import (assert_allclose, assert_equal,
                            assert_array_almost_equal, assert_array_equal,
@@ -188,6 +189,13 @@ class TestHydrogenBondAnalysisIdeal(object):
         h.run()
         return h
 
+    def test_count_by_type(self, hydrogen_bonds):
+
+        # Only one type of hydrogen bond in this system
+        ref_count = 2
+
+        counts = hydrogen_bonds.count_by_type()
+        assert int(counts[0, 2]) == ref_count
 
     def test_no_bond_info_exception(self, universe):
 
@@ -203,6 +211,23 @@ class TestHydrogenBondAnalysisIdeal(object):
         with pytest.raises(NoDataError, match="no bond information"):
             h = HydrogenBondAnalysis(universe, **kwargs)
             h._get_dh_pairs()
+
+    def test_no_bond_donor_sel(self, universe):
+
+        kwargs = {
+            'donors_sel': "type O",
+            'hydrogens_sel': None,
+            'acceptors_sel': None,
+            'd_h_cutoff': 1.2,
+            'd_a_cutoff': 3.0,
+            'd_h_a_angle_cutoff': 120.0
+        }
+        u = universe.copy()
+        n_residues = 2
+        u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
+        u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
+        h = HydrogenBondAnalysis(u, **kwargs)
+        donors = u.select_atoms(h.guess_donors())
 
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
@@ -246,9 +271,95 @@ class TestHydrogenBondAnalysisIdeal(object):
         caplog.set_level(logging.WARNING)
         hbonds.lifetime(tau_max=2, intermittency=1)
 
-        warning = \
-            "Autocorrelation: Hydrogen bonds were computed with step > 1."
+        warning = ("Autocorrelation: Hydrogen bonds were computed with "
+                   "step > 1.")
         assert any(warning in rec.getMessage() for rec in caplog.records)
+
+
+class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
+
+    kwargs = {
+        'donors_sel': 'type O',
+#        'hydrogens_sel': 'type H H',
+        'acceptors_sel': 'type O',
+        'd_h_cutoff': 1.2,
+        'd_a_cutoff': 3.0,
+        'd_h_a_angle_cutoff': 120.0
+    }
+
+    @staticmethod
+    @pytest.fixture(scope='class', autouse=True)
+    def universe():
+        # create two water molecules
+        """
+                       H4
+                        \
+            O1-H2 .... O2-H3
+           /
+          H1
+        """
+        n_residues = 2
+        u = MDAnalysis.Universe.empty(
+            n_atoms=n_residues*3,
+            n_residues=n_residues,
+            atom_resindex=np.repeat(range(n_residues), 3),
+            residue_segindex=[0] * n_residues,
+            trajectory=True,  # necessary for adding coordinates
+            )
+
+        u.add_TopologyAttr('type', ['O', 'H', 'H'] * n_residues)
+        u.add_TopologyAttr('id', list(range(1, (n_residues * 3) + 1)))
+        u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
+        u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
+
+        # Atomic coordinates with a single hydrogen bond between O1-H2---O2
+        pos1 = np.array([[0, 0, 0],             # O1
+                        [-0.249, -0.968, 0],    # H1
+                        [1, 0, 0],              # H2
+                        [2.5, 0, 0],            # O2
+                        [3., 0, 0],             # H3
+                        [2.250, 0.968, 0]       # H4
+                        ])
+
+        # Atomic coordinates with no hydrogen bonds
+        pos2 = np.array([[0, 0, 0],             # O1
+                         [-0.249, -0.968, 0],   # H1
+                         [1, 0, 0],             # H2
+                         [4.5, 0, 0],           # O2
+                         [5., 0, 0],            # H3
+                         [4.250, 0.968, 0]      # H4
+                         ])
+
+        coordinates = np.empty((3,  # number of frames
+                                u.atoms.n_atoms,
+                                3))
+        coordinates[0] = pos1
+        coordinates[1] = pos2
+        coordinates[2] = pos1
+        u.load_new(coordinates, order='fac')
+
+        return u
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def hydrogen_bonds(universe):
+        h = HydrogenBondAnalysis(
+            universe,
+            **TestHydrogenBondAnalysisNoRes.kwargs
+        )
+        h.run()
+        return h
+
+    def test_no_hydrogen_bonds(self, universe):
+        tmp_kwargs = copy.deepcopy(self.kwargs)
+        tmp_kwargs["d_h_a_angle_cutoff"] = 50
+        hbonds = HydrogenBondAnalysis(universe, **tmp_kwargs)
+
+        with pytest.warns(UserWarning,
+                          match=("No hydrogen bonds were found given angle "
+                                 "of 50 between Donor, type O, and Acceptor,"
+                                 " type O.")):
+            hbonds.run(step=1)
 
 
 class TestHydrogenBondAnalysisBetween(object):
@@ -341,8 +452,10 @@ class TestHydrogenBondAnalysisBetween(object):
             [3, 4, 6],  # protein-water
             [6, 7, 8]   # protein-protein
         ]
+        expected_hbond_distances = [2.5, 3.0, 3.0]
         assert_array_equal(hbonds.results.hbonds[:, 1:4],
                            expected_hbond_indices)
+        assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
     def test_between_PW(self, universe):
         # Find only protein-water hydrogen bonds
@@ -357,8 +470,10 @@ class TestHydrogenBondAnalysisBetween(object):
         expected_hbond_indices = [
             [3, 4, 6]  # protein-water
         ]
+        expected_hbond_distances = [3.0]
         assert_array_equal(hbonds.results.hbonds[:, 1:4],
                            expected_hbond_indices)
+        assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
     def test_between_PW_PP(self, universe):
         # Find protein-water and protein-protein hydrogen bonds (not
@@ -378,8 +493,10 @@ class TestHydrogenBondAnalysisBetween(object):
             [3, 4, 6],  # protein-water
             [6, 7, 8]   # protein-protein
         ]
+        expected_hbond_distances = [3.0, 3.0]
         assert_array_equal(hbonds.results.hbonds[:, 1:4],
                            expected_hbond_indices)
+        assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
 
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):
@@ -552,3 +669,34 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
         counts = h.count_by_type()
         assert int(counts[0, 2]) == ref_count
+
+
+class TestHydrogenBondAnalysisEmptySelections:
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    msg = ("{} is an empty selection string - no hydrogen bonds will "
+           "be found. This may be intended, but please check your "
+           "selection."
+           )
+
+    @pytest.mark.parametrize('seltype',
+            ['donors_sel', 'hydrogens_sel', 'acceptors_sel'])
+    def test_empty_sel(self, universe, seltype):
+        sel_kwarg = {seltype: ' '}
+        with pytest.warns(UserWarning, match=self.msg.format(seltype)):
+            HydrogenBondAnalysis(universe, **sel_kwarg)
+
+    def test_hbond_analysis(self, universe):
+
+        h = HydrogenBondAnalysis(universe, donors_sel=' ', hydrogens_sel=' ',
+                                 acceptors_sel=' ')
+        h.run()
+
+        assert h.donors_sel == ''
+        assert h.hydrogens_sel == ''
+        assert h.acceptors_sel == ''
+        assert h.results.hbonds.size == 0

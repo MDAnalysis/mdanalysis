@@ -36,6 +36,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPSdata_deletedatoms,
     LAMMPSDUMP,
     LAMMPSDUMP_long,
+    LAMMPSdata_PairIJ,
 )
 
 
@@ -177,6 +178,26 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
                                [12.9834518433, 51.1562423706, 18.9713554382],
                                [12.6588821411, 51.4160842896, 20.5548400879]],
                               dtype=np.float32))
+
+
+class TestLammpsDataPairIJ(LammpsBase):
+    """Tests the reading of lammps .data topology file with a
+    PairIJ Coeffs section
+    """
+
+    expected_attrs = ['types', 'resids', 'masses',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+    ref_filename = LAMMPSdata_PairIJ
+    expected_n_atoms = 800
+    expected_n_atom_types = 2
+    expected_n_residues = 1
+    ref_n_bonds = 799
+    ref_bond = (397, 398)
+    ref_n_angles = 390
+    ref_angle = (722, 723, 724)
+    ref_n_dihedrals = 385
+    ref_dihedral = (722, 723, 724, 725)
+    ref_n_impropers = 0
 
 
 LAMMPS_NORESID = """\

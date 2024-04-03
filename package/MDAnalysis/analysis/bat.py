@@ -30,12 +30,12 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 .. versionadded:: 2.0.0
 
 This module contains classes for interconverting between Cartesian and an
-internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003]_,
-for a given set of atoms or residues. This coordinate system is designed
-to be complete, non-redundant, and minimize correlations between degrees
-of freedom. Complete and non-redundant means that for N atoms there will
-be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions, as described in [Hikiri2016]_.
+internal coordinate system, Bond-Angle-Torsion (BAT) coordinates
+:footcite:p:`Chang2003`, for a given set of atoms or residues. This coordinate
+system is designed to be complete, non-redundant, and minimize correlations
+between degrees of freedom. Complete and non-redundant means that for N atoms
+there will be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
+minimized by using improper torsions, as described in :footcite:p:`Hikiri2016`.
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -56,7 +56,7 @@ pointing from the first to second atom. It is described by the polar angle,
 :math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
 that describes the rotation of the third atom about the axis.
 
-This module was adapted from AlGDock [Minh2020]_.
+This module was adapted from AlGDock :footcite:p:`Minh2020`.
 
 
 See Also
@@ -129,7 +129,7 @@ Store data to the disk and load it again::
 
 Analysis classes
 ----------------
- .. autoclass:: BAT
+.. autoclass:: BAT
     :members:
     :inherited-members:
 
@@ -154,27 +154,14 @@ Analysis classes
 References
 ----------
 
-.. [Chang2003] Chang, Chia-En, Michael J Potter, and Michael K Gilson (2003).
-   "Calculation of Molecular Configuration Integrals". *Journal of Physical
-   Chemistry B* 107(4): 1048–55. doi:`10.1021/jp027149c
-   <https://doi.org/10.1021/jp027149c>`_
-
-.. [Hikiri2016] Hikiri, Simon, Takashi Yoshidome, and Mitsunori Ikeguchi (2016).
-   "Computational Methods for Configurational Entropy Using Internal and
-   Cartesian Coordinates." *Journal of Chemical Theory and Computation*
-   12(12): 5990–6000. doi:`10.1021/acs.jctc.6b00563
-   <https://doi.org/10.1021/acs.jctc.6b00563>`_
-
-.. [Minh2020] Minh, David D L (2020). "Alchemical Grid Dock (AlGDock): Binding
-   Free Energy Calculations between Flexible Ligands and Rigid Receptors."
-   *Journal of Computational Chemistry* 41(7): 715–30.
-   doi:`10.1002/jcc.26036 <https://doi.org/10.1002/jcc.26036>`_
+.. footbibliography::
 
 """
 import logging
 import warnings
 
 import numpy as np
+import copy
 
 import MDAnalysis as mda
 from .base import AnalysisBase
@@ -379,13 +366,13 @@ class BAT(AnalysisBase):
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
-        r01 = np.sqrt(np.sum(v01 *
-                             v01))  # Distance between first two root atoms
-        r12 = np.sqrt(np.sum(v21 *
-                             v21))  # Distance between second two root atoms
+        r01 = np.sqrt(np.einsum('i,i->',v01,v01))  
+        # Distance between first two root atoms
+        r12 = np.sqrt(np.einsum('i,i->',v21,v21))  
+        # Distance between second two root atoms
         # Angle between root atoms
-        a012 = np.arccos(max(-1.,min(1.,np.sum(v01*v21)/\
-                             np.sqrt(np.sum(v01*v01)*np.sum(v21*v21)))))
+        a012 = np.arccos(max(-1.,min(1.,np.einsum('i,i->',v01,v21)/\
+                              np.sqrt(np.einsum('i,i->',v01,v01)*np.einsum('i,i->',v21,v21)))))
         # External coordinates
         e = v01 / r01
         phi = np.arctan2(e[1], e[0])  # Polar angle
@@ -499,7 +486,7 @@ class BAT(AnalysisBase):
         n_torsions = (self._ag.n_atoms - 3)
         bonds = bat_frame[9:n_torsions + 9]
         angles = bat_frame[n_torsions + 9:2 * n_torsions + 9]
-        torsions = bat_frame[2 * n_torsions + 9:]
+        torsions = copy.deepcopy(bat_frame[2 * n_torsions + 9:])
         # When appropriate, convert improper to proper torsions
         shift = torsions[self._primary_torsion_indices]
         shift[self._unique_primary_torsion_indices] = 0.
@@ -552,12 +539,12 @@ class BAT(AnalysisBase):
             cs_tor = np.cos(torsion)
 
             v21 = p1 - p2
-            v21 /= np.sqrt(np.sum(v21 * v21))
+            v21 /= np.sqrt(np.einsum('i,i->',v21,v21))
             v32 = p2 - p3
-            v32 /= np.sqrt(np.sum(v32 * v32))
+            v32 /= np.sqrt(np.einsum('i,i->',v32,v32))
 
             vp = np.cross(v32, v21)
-            cs = np.sum(v21 * v32)
+            cs = np.einsum('i,i->',v21,v32)
 
             sn = max(np.sqrt(1.0 - cs * cs), 0.0000000001)
             vp = vp / sn

@@ -46,15 +46,14 @@ Getting involved
 ================
 
 Please report **bugs** or **enhancement requests** through the `Issue
-Tracker`_. Questions can also be asked on the `mdnalysis-discussion mailing
-list`_.
+Tracker`_. Questions can also be asked on the `GitHub Discussions`_.
 
 The MDAnalysis community subscribes to a `Code of Conduct`_ that all community
 members agree and adhere to --- please read it.
 
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
-.. _`mdnalysis-discussion mailing list`:
-   http://groups.google.com/group/mdnalysis-discussion
+.. _`GitHub Discussions`:
+   https://github.com/MDAnalysis/mdanalysis/discussions
 .. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
 
 
@@ -141,8 +140,10 @@ Source Code
 ===========
 
 **Source code** is available from
-https://github.com/MDAnalysis/mdanalysis/ under the `GNU Public
-Licence, version 2`_. Obtain the sources with `git`_.
+https://github.com/MDAnalysis/mdanalysis/ and is packaged under the
+`GNU Public Licence, version 3 or any later version`_. Individual components
+of the source code are provided under GPL compatible licenses, details can be
+found in the `MDAnalysis license file`_. Obtain the sources with `git`_.
 
 .. code-block:: bash
 
@@ -152,8 +153,10 @@ Licence, version 2`_. Obtain the sources with `git`_.
 The `User Guide`_ provides more information on how to
 `install the development version`_ of MDAnalysis.
 
-.. _GNU Public Licence, version 2:
-   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+.. _GNU Public Licence, version 3 or any later version:
+   https://www.gnu.org/licenses/gpl-3.0.en.html
+.. _MDAnalysis license file:
+   https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
 .. _git: https://git-scm.com/
 .. _`install the development version`: https://userguide.mdanalysis.org/stable/installation.html#development-versions
 
@@ -181,6 +184,7 @@ Thank you!
 
 .. toctree::
    :maxdepth: 4
+   :caption: Documentation
    :numbered:		
    :hidden:
    

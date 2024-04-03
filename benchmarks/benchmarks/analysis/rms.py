@@ -34,9 +34,9 @@ class SimpleRmsBench(object):
             self.u.trajectory[-1]
             self.B = self.u.atoms.positions.copy()[:num_atoms]
         except:
-            self.A = self.u.atoms.coordinates().copy()[:num_atoms]
+            self.A = self.u.atoms.positions.copy()[:num_atoms]
             self.u.trajectory[-1]
-            self.B = self.u.atoms.coordinates().copy()[:num_atoms]
+            self.B = self.u.atoms.positions.copy()[:num_atoms]
 
     def time_rmsd(self, num_atoms, weights, center, superposition):
         """Benchmark rmsd function using a setup similar to

@@ -10,9 +10,623 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting
   * accompany each entry with github issue/PR number (Issue #xyz)
-  * release numbers follow "Semantic Versioning" http://semver.org
+  * release numbers follow "Semantic Versioning" https://semver.org
 
-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
+         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher
+
+ * 2.8.0
+
+Fixes
+ * Fix doctest errors of analysis/pca.py related to rounding issues 
+   (Issue #3925, PR #4377)
+ * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
+ * Atomname methods can handle empty groups (Issue #2879, PR #4529)
+ * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
+ * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
+   (PR #4459)
+ * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
+   (Issue #3349, PR #4407)
+ * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
+ * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
+   over `self._sliced_trajectory`, hence supporting
+   `DistanceMatrix.run(frames=...)` (PR #4433)
+ * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
+ * Fix deploy action to use the correct version of the pypi upload action.
+ * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
+
+Enhancements
+ * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
+   (PR #4531)
+ * Improved performance of PDBWriter (Issue #2785, PR #4472)
+ * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
+ * Documented the r0 attribute in the `Contacts` class and added the 
+   `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
+ * Implement average structures with iterative algorithm from 
+   DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
+
+Changes
+ * As per SPEC0 the minimum supported Python version has been raised
+   to 3.10 (PR #4502)
+ * MDAnalysis.analysis.hole2 is now directly imported from the mdakit
+   mdahole2. This module is deprecated and will be fully removed in
+   MDAnalysis version 3.0 (PR #4464)
+ * Testsuite packaging now uses a pyproject.toml file (PR #4463)
+ * Improvement of setuptools packaging, including deduplication of
+   dependency lists (PR #4424)
+ * As per NEP29, the minimum version of numpy has been raised to 1.23.
+   We have opted to pin to 1.23.2 to ensure the same minimum numpy version
+   is used from python 3.9 to 3.11 (Issue #4401, PR #4402)
+ * updated tests that used assert_almost_equal(..., decimal={N}) with 
+   equivalent assert_allclose(...  rtol=0, atol=1.5e-{N}) (issue modernize
+   testing code #3743, PR Replaced numpy.testing.assert_almost_equal to 
+   numpy.testing.assert_allclose #4438)
+
+Deprecations
+ * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
+   of the waterdynamics MDAKit and will be removed in version 3.0.0 (PR #4404)
+ * The MDAnalysis.analysis.psa module has been deprecated in favour of
+   the PathSimAnalysis MDAKit and will be removed in version 3.0.0
+   (PR #4403)
+
+
+12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
+         richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 
+         JoStoe, jennaswa, ljwoods2
+
+ * 2.7.0
+
+Fixes
+  * Fix doctest errors of lib/transformations.py (Issue #3925, PR #4370)
+  * Fix documentation building errors due to `html_static_path` and unindented
+    block of code (Issue #4362, PR #4365)
+  * Updated cimport for numpy to maintain cimport consistency (Issue #3908)
+  * Fix `NoJump` unwrapping for jumps on the second frame in a
+    trajectory (PR #4258, Issue #4257)
+  * Deprecated np.float_ and np.NaN aliases have been replaced with
+    their original type value (np.float64 and np.nan) (PR #4272)
+  * Fixes a case where qcprot.CalcRMSDRotationalMatrix would return a
+    RMSD of None
+  * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
+  * Fix atom charge reading in PDBQT parser (Issue #4282, PR #4283)
+  * Fix doctests failing from separated blocks of imports and 
+    execution and incorrectly formatted test output (Issue #3925, PR #4366)
+
+Enhancements
+  * Added a reader for GROMOS11 TRC trajectories (PR #4292 , Issue #4291)
+  * Document the usage of NoDataError in its docstring (Issue #3901, PR #4359)
+  * Refactor c_distances backend to have a cython .pxd header and expose in
+    libmdanalysis (Issue #4315, PR #4324)
+  * Add faster nucleic acid Major and Minor pair distance calculators using
+    AnalysisBase for updated nucleicacids module (Issue #3720, PR #3735)
+  * Adds external sidebar links (Issue #4296)
+  * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
+    inputs (PR #4273, part of #3927)
+  * Added a warning about charge neutrality to the documentation of
+    `DielectricConstant` (Issue #4262, PR #4263)
+  * Add support for reading chainID info from prmtop amber topologies (PR #4007)
+  * Add support for reading chainID info from GROMACS TPR topologies 
+    (Issue #3994, PR #4281)  
+  * Add support for reading chainID info from Autodock PDBQT files (Issue #4207,
+    PR #4284)
+
+Changes
+  * Biopython is now an optional dependency (Issue #3820, PR #4332)
+  * Networkx is now an optional dependency (Issue #3822).
+  * High memory tests (enabled through the environment variable
+    `ENABLE_HIGH_MEM_UNIT_TESTS` are now only enabled if the environment variable
+    is set to "true") (PR #4295)
+  * The `mda-xdrlib` module is now a core dependency of MDAnalysis
+    replacing the now deprecated `xdrlib` core Python library
+    (PR #4271)
+  * ConverterBase class moved from coordinates/base.py to converters/base.py (Issue #3404)
+  * Results for WatsonCrickDist nucleic acids analysis are now stored in 
+    `analysis.nucleicacids.WatsonCrickDist.results.distances` (Issue #3720, PR #3735)
+
+Deprecations
+  * The `asel` argument to timeseries will be renamed to `atomgroup` in 3.0.0.
+    (Issue #3911)
+  * MDAnalysis.lib.util is deprecated and will be removed in version 3.0
+    (Issue #3649)
+  * The TRZ reader & writer are deprecated and will be removed in version 3.0
+    (PR #4335)
+  * X3DNA has been deprecated and will be removed in 3.0.0 (Issue #3788)
+  * coordinates.base.ConverterBase has been deprecated and will be removed in 3.0.0;
+    use converters.base.ConvertBase instead (Issue #3404)
+  * In `nucleicacids.WatsonCrickDist`, accepting lists of `Residue` objects was deprecated
+    in favor of using `ResidueGroup`: using `List[Residue]` will be removed in release
+    3.0.0; instead use a `ResidueGroup` (Issue #3720, PR #3735)
+  * In `nucleicacids.WatsonCrickDist` the result `results.pair_distances` was
+    deprecated and will be removed in 3.0.0; use `results.distances` (Issue #3720, 
+    PR #3735)
+
+
+08/28/23 IAlibay, hmacdope, pillose, jaclark5, tylerjereddy
+
+ * 2.6.1
+
+Fixes
+  * Fix Atom type guessing error (PR #4168, Issue #4167)
+
+Enhancements
+  * Allow `set_dimensions` transformation to handle NPT trajectories (PR #4258)
+
+Changes
+  * Reverts PR #4108, builds are now again made using the oldest
+    supported NumPy version.
+  * NumPy `in1d` replaced with `isin` in preparation for NumPy
+    `2.0` (PR #4255)
+  * Update documentation for SurvivalProbabilty to be more clear
+    (Issue #4247)
+  * Cython DEF statments have been replaced with compile time integer constants
+    as DEF is deprecated as of Cython>=3.0 (Issue #4237, PR #4246)
+
+Deprecations
+
+
+08/15/23 IAlibay, jaclark5, MohitKumar020291, orionarcher, xhgchen,
+         ztimol, orbeckst, Shubx10
+
+ * 2.6.0
+
+Fixes
+  * Fix AtomGroup.center_of_charge(..., unwrap=True) giving
+    inconsistent (but scientifically correct) results on Intel macOS
+    (Issue #4211)
+  * Fix Boltzmann typo in `units.py` (PR #4214, Issue #4213)
+  * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
+    (PR #4163, Issue #4159)
+
+Enhancements
+  * Added a `exclude_same` kwarg to InterRDF (PR #4161)
+  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
+    (Issue #3546)
+
+Changes
+  * Package builds are now made using NumPy 1.25 or higher. This provides
+    backwards runtime compatibility with older NumPy builds within the limit
+    of NEP29 (PR #4108).
+  * Removed `-ffast-math` compiler flag to avoid potentially incorrect
+    floating point results in MDAnalysis *and* other codes when
+    MDAnalysis shared libraries are loaded --- see 
+    https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html
+    (Issues #3821, #4211)
+  * Atom ID representation order updated to match that of associated
+    AtomGroup indices.
+    (PR #4191, Issue #4181)
+  * Package license has been updated to GPLv3+ to better reflect the
+    compatibility of GPLv2+ with Apache and GPLv3 licenced codes (PR #4219).
+  * All new contributions are now made under LGPLv2.1+ (PR #4219).
+  * Support for GSD is now limited to version 3.0.1 and above. Alongside this
+    change, support for schema 1.3 files has been dropped (PR #4153)
+  * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
+  * As per NEP29 the minimum supported version has been raised to 1.22. We
+    have opted to pin to a minimum of 1.22.3 to avoid known issues on some
+    platforms.
+  * GSD is no longer a core dependency of MDAnalysis. It must be installed
+    independently if you wish to read HOOMD trajectory files.
+    (PR #4174, Issue #3819)
+
+Deprecations
+  * Incorrectly spelt Boltzmann unit entry will be removed in version 2.8.0
+    (PR #4230, Issue #4229)
+  * The hole2 module is deprecated in favour of the the MDAKit:
+    https://github.com/MDAnalysis/hole2-mdakit (Issue #4179, PR #4200)
+  * MDAnalysis no longer officially supports 32 bit installations (they are
+    no longer tested in our continuous integration pipelines). Note: whilst
+    no code changes have been made to disable 32 bit, although it is known that
+    new versions of most MDAnalysis core dependencies no longer release
+    32 bit compatible versions. (Issue #3858, PR #4176)
+
+
+05/28/23 IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
+         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
+         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers,
+         cbouy, DanielJamesEvans, jvermaas, egormarin
+
+ * 2.5.0
+
+Fixes
+  * Fixed using 'rb' mode inside GSDReader to avoid FutureWarning from GSDFile (Issue #4152)
+  * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
+    (Issue #3657 #4008 PR #3906)
+  * Fix the `heavy` distance_type for water bridge analysis where distance
+    is not correctly assigned when more than one hydrogen is bonded to a
+    heavy atom (Issue #4040, PR #4066).
+  * PDB topology parser no longer fails when encountering unknown formal
+    charges and instead simply does not populate attribute (Issue #4027)
+  * Added support for Cython 3.0.0b2 (PR #4129)
+  * Ensure 'HydrogenBondAnalysis' returns the correct distances when using the
+    'between' keyword (PR #4092)
+  * Skip tests artificially checking for readonly or PermissionError cases
+    when running at root user on linux systems (Issue #4112, PR #4120)
+  * Fix chi1_selections() ignored atom names CG1 OG OG1 SG and incorrectly returned
+    None for amino acids CYS, ILE, SER, THR, VAL (Issue #4108)
+  * Fix parsing of box vector in H5MD reader (Issue #4076)
+  * Fix the misleading 'AtomGroup.guess_bonds()' docs and passed missing
+    arguments (PR #4059)
+  * Fix for NetCDF trajectories without `time` variable (Issue #4073)
+  * Allows shape_parameter and asphericity to yield per residue quantities
+    (Issue #3002, PR #3905)
+  * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
+  * Fix uninitialized `format` variable issue when calling
+    `selections.get_writer` directly (PR #4043)
+  * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
+  * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
+  * Fix test clobbering in lib/test_util.py (PR #4000)
+  * Fix MSD docs to use the correct error metric in example (Issue #3991)
+  * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
+    (Issue #3336)
+
+Enhancements
+  * ARM64 (osx and linux) wheels now uploaded on release (Issue #4054)
+  * Add simple atomic distance analysis to `analysis.atomicdistances` with
+    new class `AtomicDistances` (Issue #3654)
+  * Add kwarg `n_frames` to class method `empty()` in
+    `MDAnalysis.core.universe`, enabling creation of a `Universe` with
+    multiple frames from scratch (PR #4140)
+  * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
+    each atom *for each frame*. If an entry is missing for a given atom,
+    this will default to a `1.0` value. Note, this does not affect the
+    topology (i.e. `AtomGroup.tempfactors` is not dynamically updated.
+    (Issue #3825, PR #3988)
+  * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)
+  * Improved speed of chi1_selection (PR #4109)
+  * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
+    to modify description, position etc of tqdm progressbars.
+  * Add a nojump transformation, which unwraps trajectories so that particle
+    paths are continuous. (Issue #3703, PR #4031)
+  * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
+    PR #3905)
+  * Add support for TPR files produced by Gromacs 2023 (Issue #4047)
+  * Add distopia distance calculation library bindings as a selectable backend
+    for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
+  * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup 
+    and SegmentGroup. (PR #3953)
+
+Changes
+  * As per NEP29 the minimum supported Python version has been raised to 3.9
+    (PR #4115).
+  * einsum method for Einstein summation convention introduced to increase 
+    performance (Issue #2063, PR #4089)
+  * Add progress bars to track the progress of _conclude() functions
+    (_conclude_simple() and _conclude_fft()) in msd.py (Issue #4070, PR #4072)
+  * As per NEP29 the minimum supported NumPy version has been raised to 1.21
+    (note: in practice later versions of NumPy may be used depending on your
+     architecture, operating system, or Python version) (PR #3983)
+  * The deprecated direct indexing and `times` from the `results` attribute of
+    analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
+    removed. Please use the `results.pair_distances` and `times` attributes
+    instead (Issue #3744)
+  * RDKitConverter changes (part of Issue #3996):
+    * moved some variables (`MONATOMIC_CATION_CHARGES `and
+      `STANDARDIZATION_REACTIONS`) out of the related functions to allow users
+      fine tuning them if necessary.
+    * changed the sorting of heavy atoms when inferring bond orders and
+      charges: previously only based on the number of unpaired electrons, now
+      based on this and the number of heavy atom neighbors.
+    * use RDKit's `RunReactantInPlace` for the standardization reactions, which
+      should result in a significant speed improvement as we don't need to use
+      bespoke code to transfer atomic properties from the non-standardized mol
+      to the standardized one.
+
+
+03/29/23 richardjgowers, IAlibay
+
+ * 2.4.3
+
+Fixes
+  * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
+    for versions 2.4.0, 2.4.1 and 2.4.2
+  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
+
+
+01/04/23 IAlibay
+
+ * 2.4.2
+
+Fixes
+  * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
+    argument rather than the NumPy 1.24 removed `normed` (PR #3976)
+  * visualization.streamlines_3D and visualization.streamlines no longer
+    rely on the scalar return of an numpy array elementwise comparison which
+    is no longer supported as of NumPy 1.25 (PR #3977)
+
+
+12/17/22 IAlibay
+
+ * 2.4.1
+
+Fixes
+* Fixes pyproject.toml minimum pin for biopython
+
+
+12/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5, jfennick, lilyminium, orbeckst, Hakarishirenai
+
+ * 2.4.0
+
+Fixes
+  * Update hbond analysis doc string to use exclusive bound language 
+    (Issue #3847)
+  * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
+    detected on reading a frame instead of silently continuing
+  * Consolidate license files across MDAnalysis library packages (PR #3939)
+  * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
+    and `in_memory=True`.
+  * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
+    was changed to ValueError (see #3901). A matching ValueError was added to
+    `MemoryReader.timeseries`(PR #3890). 
+  * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
+  * LAMMPSDump Reader translates the box to the origin (#3741)
+  * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
+  * Auxiliary; determination of representative frames: Removed undefined
+    behaviour for cutoff values < -1 (PR # 3749)
+  * Fixes distances.between not always returning AtomGroup (Issue #3794)
+  * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
+    those methods were giving unexpected results for some topology attributes
+    (e.g. bonds, angles) (PR #3779).
+
+Enhancements
+  * Added dipole and quadrupole moment topology methods to AtomGroup
+    (Issue #3841, PR #3842)
+  * MDAnalysis now follows PEP621 (PR #3528)
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+    Issue #3237, partially addressing Issue #865) 
+  * Added ability for hbond analysis to use types when resnames are not 
+    present (Issue #3847)
+  * Added explanatory warnings when hbond analysis doesn't find any hbonds
+    (Issue #3847)
+  * Improve C content of libxdr Cython, add `read_direct` methods to read 
+    coordinates, velocities and forces directly into memoryviews of `Timestep`
+    attributes, make `TRR` timestep have positions, velocities and forces on
+    `__init__`. (Issue #3891 PR  #3892).
+  * Improve C content of libdcd Cython (Issue #3882, PR #3888)
+  * The timeseries method for exporting coordinates from multiple frames to a
+    NumPy array was added to ProtoReader (PR #3890)
+  * MDAnalysis now officially supports py3.11 (Issue #3878)
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (Issue #3843)
+  * LAMMPSDump Reader now imports velocities and forces (Issue #3843)
+  * Minimum NumPy version for py3.11 is now set to 1.23.2.
+  * Added decorator to check for an empty atom group, applied in topological 
+    attributes(Issue #3837)
+  * AuxReaders now have a memory_limit parameter to control when memory usage
+    warnings are issued. (PR # 3749)
+  * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
+    where unit types like length or speed are mapped to their base units in
+    MDAnalysis (i.e. "A" or "A/ps") (PR # 3749)
+  * A new AuxReader for the GROMACS EDR file format was implemented.
+    (Issue # 3629, PR # 3749)
+  * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+  * Added isolayer selection method (Issue #3845)
+
+Changes
+ * Minimum numpy version for python 3.10 and Windows has been raised to 1.22.3
+   (PR #3903)
+ * Replaced deprecated Bio.pairwise2 with Bio.align.PairwiseAligner in
+   MDAnalysis.analysis.align.sequence_alignment (Issue #3950)
+ * Increased minimal version of biopython to 1.80 (Issue #3950)
+ * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
+ * Auxiliary; determination of representative frames: The default value for
+   cutoff is now None, not -1. Negative values are now turned
+   to None. (PR #3749)
+ * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
+    multiple auxiliary data points at the same time. To this end, the API was
+    rewritten and now expects dictionaries of `desired attribute name`:
+    `name in auxiliary data file` as input. Adding all data found in the
+    auxiliary data source is possible by omitting the dictionary and explicitly
+    passing the AuxReader instance as `auxdata`. (PR #3749)
+  * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
+    use `pip install ./package[extra_formats]` instead (PR #3810)
+  * `Universe.empty` emmits less warnings (PR #3814)
+  * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
+
+Deprecations
+  * Direct indexing of results in analysis.nucleicacids' NucPairDist
+    and WatsonCrickDist classes is deprecated and will be removed in 2.5.0.
+    Please use `results.pair_distances` instead (Issue #3744)
+  * Deprecated analysis.align.sequence_alignment() for removal in 3.0 (#3950)
+  * Add deprecation warning for `timestep` copying in DCDReader
+    (Issue #3889, PR #3888)
+  * Add deprecation warning for inclusive stop indexing in
+    MemoryReader.timeseries (PR #3894)
+
+
+08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
+         yuxuanzhuang, hsadia538, lilyminium
+
+ * 2.3.0
+
+Fixes
+  * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
+  * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
+  * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
+
+Enhancements
+  * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
+  * Add the ability to read & write formal charges from PDB files (PR #3755)
+  * Change functions in `lib.distances` to accept AtomGroups as well as NumPy
+    arrays (CZI Performance track PR #3730)
+  * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
+    number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
+  * Timestep has been converted to a Cython Extension type
+    (CZI Performance track, PR #3683)
+  * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
+  * Optimize topology serialization/construction by lazy-building _RA and _SR.
+
+Changes
+  * To add additional optional packages for different file formats when
+    using `pip` use the new "extra_formats" extras_require target as in
+    `pip install ./package[extra_formats]` (Issue #3701, PR #3711)
+  * Minimum supported NumPy version is now 1.20 (1.21 for macosx-arm64)
+    as per NEP29 (PR #3737)
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
+
+Deprecations
+  * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
+    will be removed in 2.4. Use "extra_formats". (Issue #3701, PR #3711)
+  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
+    (Issue #3687)
+
+
+06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
+         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
+         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst, yuxuanzhuang,
+         rsexton2, rafaelpap, richardjgowers, orioncohen, mdpoleto
+
+ * 2.2.0
+
+Fixes
+  * Fixed issue where Reader.copy() did not preserve optional arguments
+    and kwargs passed to the original class (Issue #3664, PR #3685)
+  * Iterating a SingleFrameReaderBase trajectory now rewinds the
+    reader, resetting any modified trajectory attributes to those
+    read from file. Fixes behavior that was previously undefined (Issue #3423)
+  * Fixed Reader.copy() did not preserve convert_units=False (see PR #3642)
+  * Fix the competition when generating offsets from multiple processes by
+    using a interprocess file lock. (Issue #1988, PR #3375)
+  * Fix the error when trying to load a corrupted offset file (Issue #3230
+    PR #3375)
+  * Fixed `OpenMMTopologyParser` not working when some or none of the elements
+    are present in the openmm topology (Issue #3317, PR #3511).
+  * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
+  * Fixed Numpy deprecation warnings about elementwise comparisons.
+    (Issue #3535, PR #3619)
+  * Fixed encore.covariance.covariance_matrix not working when providing
+    an external reference (Issue #3539, PR #3621)
+  * Fixed LinearDensity not working with grouping='residues' or 'segments'
+    (Issue #3571, PR #3572)
+  * LinearDensity now uses the definition of Avogadro's number from
+    MDAnalysis.units, which has more significant digits.
+    (Issue #3571, PR #3572)
+  * MOL2 can read files without providing optional columns:
+    subst_id, subst_name and charge. (Issue #3385, PR #3598)
+  * When converting an AtomGroup to an RDKit molecule (PR #3044):
+    - the atoms are now in the same order
+    - the output of `atom.GetMonomerInfo().GetName()` now follows the
+      guidelines for PDB files while the original name is still available
+      through `atom.GetProp("_MDAnalysis_name")`
+    - using `NoImplicit=False` should no longer throw a `SanitizationError`
+  * Contacts can now accept static AtomGroups as well as selection texts.
+    (Issue #2666, PR #3565)
+  * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
+  * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
+  * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+  * Fixed BAT method Cartesian modifies input data. (Issue #3501)
+
+Enhancements
+  * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
+    (Issue #3469, PR #3470).
+  * Added DL_POLY Classic support. Now HISTORY files from DL_POLY Classic can be
+  * used. (Issue #3678)
+  * Wheels and dist now get automatically built and deployed on release
+    triggers (Issue #1300, PR #3680)
+  * Added equations for `center_of_mass` and `center_of_geometry`to
+    documentation (PR #3671)
+  * Added `center_of_charge` attribute (PR #3671)
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on
+    arbitrary list of frames (Issue #1985)
+  * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
+  * Link PMDA in documentation (PR #3652)
+  * Added MSD example where multiple replicates are combined(Issue #3578
+    PR #3633)
+  * PCA class now has an inverse-PCA function. The inverse transform can
+    also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
+  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
+  * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
+    monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
+    conjugated systems should now have correctly assigned bond orders and
+    charges.
+  * New optimized AnalysisBase derived Watson-Crick distance analysis class in
+    analysis.nucleicacids
+  * CRD extended format can now be explicitly requested with the `extended`
+    keyword (Issue #3605)
+  * Added benchmarks in lib.distances for enhancement (Issue #3205, PR #3641)
+
+Changes
+  * smarts selection's `maxMatches` now defaults to max(1000, n_atoms*10)
+    instead of the standard RDKit default of 1000 (Issue #3469, PR #3470).
+  * `fasteners` package is now a core dependency (Issues #3230, #1988, PR #3375)
+  * The minimm Python, NumPy, and SciPy versions (following NEP29) are now 3.8,
+    1.19, and 1.5.0; GSD now also has a minimum version of 1.9.3 and networkx
+    has minimum version 2.0 (Issue #3665)
+  * LinearDensity now saves the histogram bin edges for easier plotting as
+    "hist_bin_edges" for each dimension xyz in the results dictionary.
+    (Issue #2508, PR #3617)
+  * ITPParser no longer adds an angle for water molecules that have the SETTLE
+    constraint applied to them. This mirrors the way the constraint is handled
+    in AMBER. (Issue #2417, PR #3564)
+
+Deprecations
+  * The old results attributes for LinearDensity are now deprecated and will be
+    removed in version 3.0.0. (Issue #2508, PR #3617)
+    - "pos" is now "mass_density",
+    - "char" is now "charge_density"
+    - "std" entries are now "stddev"
+
+
+
+03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
+         yangtcai
+
+ * 2.1.0
+
+Fixes
+  * Use uint64_t loop counters in C level distance functions to avoid overflow
+    for large arrays (Issue #3512, PR #3513).
+  * Prevents attempts to close an already closed NamedStream (Issue #3386)
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where
+    kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
+  * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
+    with start/stop/step (Issue #3476)
+  * Allow empty strings to be passed to HydrogenBondAnalysis (Issue #3453).
+  * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
+  * Fix ITPParser charge reading (Issue #3419).
+  * TRRWriter preserves timestep data (Issue #3350).
+  * Fixed Universe creation from a custom object which only provided a topology,
+    previously raised a TypeError. (Issue #3443)
+  * Documentation fixes (Issues #3224, #2667)
+  * Fixed string attributes (e.g. resname, segid) not working on Residues and Segments
+    created using add_Residue and add_Segment (Issue #3437)
+
+Enhancements
+  * Added dielectric analysis module (PR #2118)
+  * Supports TPR files produced by Gromacs 2022 (PR #3514)
+  * Add support for millisecond and microsecond units (Issue #3473, PR #3491)
+  * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
+  * Add option for custom compiler flags for C/C++ on build and remove march
+    option from setup.cfg (Issue #3428, PR #3429).
+  * Added R/S Chirality support to RDKit parsed molecules
+  * Added MDAnalysis.lib.distances.minimize_vectors
+
+Changes
+  * `packaging` is now a core dependency for MDAnalysis
+  * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
+    raises a TypeError (Issue #3092, PR #3517)
+  * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
+    it cannot be obtained from file (Issue #3257)
+  * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
+    (NEP29)
+
+Deprecations
+  * Deprecated the 'pbc' kwarg for various Group methods, the 'wrap' kwarg
+    should be used instead. (Issue #1760)
+
+
 08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
@@ -495,7 +1109,7 @@ Deprecations
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
          wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150,
-         tylerjereddy, Marcello-Sega
+         tylerjereddy, Marcello-Sega, mimischi, mquevill, siddharthjain1611
 
   * 1.0.0
 
@@ -708,9 +1322,10 @@ Fixes
 
 
 08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
-         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
+         dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium, fenilsuchak,
+         Yibo-Zhang
 
   * 0.20.0
 
@@ -1164,7 +1779,7 @@ Changes
     they are part of the Universe topology (Issue #1092 PR #1186)
 
 
-06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal
+06/29/17 richardjgowers, rathann, jbarnoud, orbeckst, utkbansal, bsipocz
 
   * 0.16.2
 
@@ -1239,7 +1854,7 @@ Changes
 04/10/17 kain88-de, fiona-naughton, richardjgowers, tyler.je.reddy, jdetle
          euhruska, orbeckst, rbrtdlg, jbarnoud, wouterboomsma, shanmbic,
          dotsdl, manuel.nuno.melo, utkbansal, vedantrathore, shobhitagarwal1612,
-         xiki-tempula, kash1102, vedantrathore
+         xiki-tempula, kash1102, Akshay0724, bsipocz, jeiros, tbengtsen
 
   * 0.16.0
 
@@ -1409,7 +2024,7 @@ Testsuite
 
 05/15/16 jandom, abhinavgupta94, orbeckst, kain88-de, hainm, jbarnoud,
          dotsdl, richardjgowers, BartBruininks, jdetle, pedrishi,
-         fiona-naughton, jdetle
+         fiona-naughton, jdetle, Endle
 
   * 0.15.0
 
@@ -2544,7 +3159,7 @@ Testsuite
     removal in 0.8
   * uses cython instead of pyrex
 
-11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
+11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose, dspoel
   * major release 0.7.0
     (includes changes that can BREAK BACKWARDS COMPATIBILITY)
   * Removed ALL DEPRECATED code:

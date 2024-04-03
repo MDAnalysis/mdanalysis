@@ -25,7 +25,7 @@ import MDAnalysis.analysis.diffusionmap as diffusionmap
 import numpy as np
 import pytest
 from MDAnalysisTests.datafiles import PDB, XTC
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_allclose
 
 
 @pytest.fixture(scope='module')
@@ -69,6 +69,39 @@ def test_dist_weights(u):
                                 [.707, -.707, 0, 0]]), 2)
 
 
+def test_dist_weights_frames(u):
+    backbone = u.select_atoms('backbone')
+    weights_atoms = np.ones(len(backbone.atoms))
+    dist = diffusionmap.DistanceMatrix(u,
+                                       select='backbone',
+                                       weights=weights_atoms)
+    frames = np.arange(len(u.trajectory))
+    dist.run(frames=frames[::3])
+    dmap = diffusionmap.DiffusionMap(dist)
+    dmap.run()
+    assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
+    assert_array_almost_equal(dmap._eigenvectors,
+                              ([[0, 0, 1, 0],
+                                [0, 0, 0, 1],
+                                [-.707, -.707, 0, 0],
+                                [.707, -.707, 0, 0]]), 2)
+
+def test_distvalues_ag_universe(u):
+    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run()
+    ag = u.select_atoms('backbone')
+    dist_ag = diffusionmap.DistanceMatrix(ag).run()
+    assert_allclose(dist_universe.results.dist_matrix,
+                    dist_ag.results.dist_matrix)
+
+
+def test_distvalues_ag_select(u):
+    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run()
+    ag = u.select_atoms('protein')
+    dist_ag = diffusionmap.DistanceMatrix(ag, select='backbone').run()
+    assert_allclose(dist_universe.results.dist_matrix,
+                    dist_ag.results.dist_matrix)
+                    
+
 def test_different_steps(u):
     dmap = diffusionmap.DiffusionMap(u, select='backbone')
     dmap.run(step=3)
@@ -92,9 +125,16 @@ def test_long_traj(u):
         dmap.run()
 
 
-def test_not_universe_error(u):
+def test_updating_atomgroup(u):
+    with pytest.warns(UserWarning, match='U must be a static AtomGroup'):
+        resid_select = 'around 5 resname ALA'
+        ag = u.select_atoms(resid_select, updating=True)
+        dmap = diffusionmap.DiffusionMap(ag)
+        dmap.run()
+
+def test_not_universe_atomgroup_error(u):
     trj_only = u.trajectory
-    with pytest.raises(ValueError, match='U is not a Universe'):
+    with pytest.raises(ValueError, match='U is not a Universe or AtomGroup'):
         diffusionmap.DiffusionMap(trj_only)
 
 

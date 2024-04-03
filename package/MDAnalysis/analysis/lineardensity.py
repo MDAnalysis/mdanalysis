@@ -31,20 +31,54 @@ fixed volume cells (thus for simulations in canonical NVT ensemble).
 import os.path as path
 
 import numpy as np
+import warnings
 
 from MDAnalysis.analysis.base import AnalysisBase, Results
+from MDAnalysis.units import constants
+from MDAnalysis.lib.util import deprecate
+
+
+# TODO: Remove in version 3.0.0
+class Results(Results):
+    """From version 3.0.0 onwards, some entries in Results will be renamed. See
+    the docstring for LinearDensity for details. The Results class is defined
+    here to implement deprecation warnings for the user."""
+
+    _deprecation_dict = {"pos": "mass_density",
+                         "pos_std": "mass_density_stddev",
+                         "char": "charge_density",
+                         "char_std": "charge_density_stddev"}
+
+    def _deprecation_warning(self, key):
+        warnings.warn(
+            f"`{key}` is deprecated and will be removed in version 3.0.0. "
+            f"Please use `{self._deprecation_dict[key]}` instead.",
+            DeprecationWarning)
+
+    def __getitem__(self, key):
+        if key in self._deprecation_dict.keys():
+            self._deprecation_warning(key)
+            return super(Results, self).__getitem__(self._deprecation_dict[key])
+        return super(Results, self).__getitem__(key)
+
+    def __getattr__(self, attr):
+        if attr in self._deprecation_dict.keys():
+            self._deprecation_warning(attr)
+            attr = self._deprecation_dict[attr]
+        return super(Results, self).__getattr__(attr)
 
 
 class LinearDensity(AnalysisBase):
-    """Linear density profile
+    r"""Linear density profile
 
     Parameters
     ----------
     select : AtomGroup
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
-          Density profiles will be computed on the center of geometry
-          of a selected group of atoms
+          Density profiles will be computed either on the atom positions (in
+          the case of 'atoms') or on the center of mass of the specified
+          grouping unit ('residues', 'segments', or 'fragments').
     binsize : float
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
@@ -56,20 +90,49 @@ class LinearDensity(AnalysisBase):
     ----------
     results.x.dim : int
            index of the [xyz] axes
-    results.x.pos : numpy.ndarray
-           mass density in [xyz] direction
-    results.x.pos_std : numpy.ndarray
+    results.x.mass_density : numpy.ndarray
+           mass density in :math:`g \cdot cm^{-3}` in [xyz] direction
+    results.x.mass_density_stddev : numpy.ndarray
            standard deviation of the mass density in [xyz] direction
-    results.x.char : numpy.ndarray
-           charge density in [xyz] direction
-    results.x.char_std : numpy.ndarray
+    results.x.charge_density : numpy.ndarray
+           charge density in :math:`\mathrm{e} \cdot mol \cdot cm^{-3}` in
+           [xyz] direction
+    results.x.charge_density_stddev : numpy.ndarray
            standard deviation of the charge density in [xyz] direction
+    results.x.pos: numpy.ndarray
+        Alias to the :attr:`results.x.mass_density` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.mass_density` instead.
+    results.x.pos_std: numpy.ndarray
+        Alias to the :attr:`results.x.mass_density_stddev` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.mass_density_stddev` instead.
+    results.x.char: numpy.ndarray
+        Alias to the :attr:`results.x.charge_density` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.charge_density` instead.
+    results.x.char_std: numpy.ndarray
+        Alias to the :attr:`results.x.charge_density_stddev` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.charge_density_stddev` instead.
     results.x.slice_volume : float
            volume of bin in [xyz] direction
+    results.x.hist_bin_edges : numpy.ndarray
+           edges of histogram bins for mass/charge densities, useful for, e.g.,
+           plotting of histogram data.
+    Note: These density units are likely to be changed in the future.
 
     Example
     -------
-    First create a ``LinearDensity`` object by supplying a selection,
+    First create a :class:`LinearDensity` object by supplying a selection,
     then use the :meth:`run` method. Finally access the results
     stored in results, i.e. the mass density in the x direction.
 
@@ -77,7 +140,19 @@ class LinearDensity(AnalysisBase):
 
        ldens = LinearDensity(selection)
        ldens.run()
-       print(ldens.results.x.pos)
+       print(ldens.results.x.mass_density)
+
+
+    Alternatively, other types of grouping can be selected using the
+    ``grouping`` keyword. For example to calculate the density based on
+    a grouping of the :class:`~MDAnalysis.core.groups.ResidueGroup`
+    of the input :class:`~MDAnalysis.core.groups.AtomGroup`.
+
+    .. code-block:: python
+
+       ldens = LinearDensity(selection, grouping='residues', binsize=1.0)
+       ldens.run()
+
 
 
     .. versionadded:: 0.14.0
@@ -96,6 +171,26 @@ class LinearDensity(AnalysisBase):
        Results are now instances of
        :class:`~MDAnalysis.core.analysis.Results` allowing access
        via key and attribute.
+
+    .. versionchanged:: 2.2.0
+
+       *  Fixed a bug that caused LinearDensity to fail if grouping="residues"
+          or grouping="segments" were set.
+       *  Residues, segments, and fragments will be analysed based on their
+          centre of mass, not centre of geometry as previously stated.
+       *  LinearDensity now works with updating atom groups.
+       *  Added new result container :attr:`results.x.hist_bin_edges`.
+          It contains the bin edges of the histrogram bins for calculated
+          densities and can be used for easier plotting of histogram data.
+
+
+    .. deprecated:: 2.2.0
+       The `results` dictionary has been changed and the attributes
+       :attr:`results.x.pos`, :attr:`results.x.pos_std`, :attr:`results.x.char`
+       and :attr:`results.x.char_std` are now deprecated. They will be removed
+       in 3.0.0. Please use :attr:`results.x.mass_density`,
+       :attr:`results.x.mass_density_stddev`, :attr:`results.x.charge_density`,
+       and :attr:`results.x.charge_density_stddev` instead.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
@@ -115,6 +210,7 @@ class LinearDensity(AnalysisBase):
         self.results["x"] = Results(dim=0)
         self.results["y"] = Results(dim=1)
         self.results["z"] = Results(dim=2)
+
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
@@ -126,7 +222,8 @@ class LinearDensity(AnalysisBase):
         self.nbins = bins.max()
         slices_vol = self.volume / bins
 
-        self.keys = ['pos', 'pos_std', 'char', 'char_std']
+        self.keys = ['mass_density', 'mass_density_stddev',
+                     'charge_density', 'charge_density_stddev']
 
         # Initialize results array with zeros
         for dim in self.results:
@@ -135,27 +232,27 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim][key] = np.zeros(self.nbins)
 
-        # Variables later defined in _prepare() method
+        # Variables later defined in _single_frame() method
         self.masses = None
         self.charges = None
         self.totalmass = None
 
-    def _prepare(self):
-        # group must be a local variable, otherwise there will be
-        # issues with parallelization
-        group = getattr(self._ags[0], self.grouping)
-
+    def _single_frame(self):
         # Get masses and charges for the selection
-        try:  # in case it's not an atom
-            self.masses = np.array([elem.total_mass() for elem in group])
-            self.charges = np.array([elem.total_charge() for elem in group])
-        except AttributeError:  # much much faster for atoms
+        if self.grouping == "atoms":
             self.masses = self._ags[0].masses
             self.charges = self._ags[0].charges
 
+        elif self.grouping in ["residues", "segments", "fragments"]:
+            self.masses = self._ags[0].total_mass(compound=self.grouping)
+            self.charges = self._ags[0].total_charge(compound=self.grouping)
+
+        else:
+            raise AttributeError(
+                f"{self.grouping} is not a valid value for grouping.")
+
         self.totalmass = np.sum(self.masses)
 
-    def _single_frame(self):
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
 
@@ -163,14 +260,14 @@ class LinearDensity(AnalysisBase):
         if self.grouping == 'atoms':
             positions = self._ags[0].positions  # faster for atoms
         else:
-            # COM for res/frag/etc
-            positions = np.array([elem.centroid() for elem in self.group])
+            # Centre of mass for residues, segments, fragments
+            positions = self._ags[0].center_of_mass(compound=self.grouping)
 
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
 
-            key = 'pos'
-            key_std = 'pos_std'
+            key = 'mass_density'
+            key_std = 'mass_density_stddev'
             # histogram for positions weighted on masses
             hist, _ = np.histogram(positions[:, idx],
                                    weights=self.masses,
@@ -180,45 +277,58 @@ class LinearDensity(AnalysisBase):
             self.results[dim][key] += hist
             self.results[dim][key_std] += np.square(hist)
 
-            key = 'char'
-            key_std = 'char_std'
+            key = 'charge_density'
+            key_std = 'charge_density_stddev'
             # histogram for positions weighted on charges
-            hist, _ = np.histogram(positions[:, idx],
-                                   weights=self.charges,
-                                   bins=self.nbins,
-                                   range=(0.0, max(self.dimensions)))
+            hist, bin_edges = np.histogram(positions[:, idx],
+                                           weights=self.charges,
+                                           bins=self.nbins,
+                                           range=(0.0, max(self.dimensions)))
 
             self.results[dim][key] += hist
             self.results[dim][key_std] += np.square(hist)
+            self.results[dim]['hist_bin_edges'] = bin_edges
 
     def _conclude(self):
-        k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
+        avogadro = constants["N_Avogadro"]  # unit: mol^{-1}
+        volume_conversion = 1e-24  # unit: A^3/cm^3
+        # divide result values by avodagro and convert from A3 to cm3
+        k = avogadro * volume_conversion
 
         # Average results over the number of configurations
         for dim in ['x', 'y', 'z']:
-            for key in ['pos', 'pos_std', 'char', 'char_std']:
+            for key in ['mass_density', 'mass_density_stddev',
+                        'charge_density', 'charge_density_stddev']:
                 self.results[dim][key] /= self.n_frames
             # Compute standard deviation for the error
-            self.results[dim]['pos_std'] = np.sqrt(self.results[dim][
-                'pos_std'] - np.square(self.results[dim]['pos']))
-            self.results[dim]['char_std'] = np.sqrt(self.results[dim][
-                'char_std'] - np.square(self.results[dim]['char']))
+            # For certain tests in testsuite, floating point imprecision
+            # can lead to negative radicands of tiny magnitude (yielding nan).
+            # radicand_mass and radicand_charge are therefore calculated first
+            # and negative values set to 0 before the square root
+            # is calculated.
+            radicand_mass = self.results[dim]['mass_density_stddev'] - \
+                np.square(self.results[dim]['mass_density'])
+            radicand_mass[radicand_mass < 0] = 0
+            self.results[dim]['mass_density_stddev'] = np.sqrt(radicand_mass)
+
+            radicand_charge = self.results[dim]['charge_density_stddev'] - \
+                np.square(self.results[dim]['charge_density'])
+            radicand_charge[radicand_charge < 0] = 0
+            self.results[dim]['charge_density_stddev'] = \
+                np.sqrt(radicand_charge)
 
         for dim in ['x', 'y', 'z']:
+            # norming factor, units of mol^-1 cm^3
             norm = k * self.results[dim]['slice_volume']
             for key in self.keys:
                 self.results[dim][key] /= norm
 
+    # TODO: Remove in 3.0.0
+    @deprecate(release="2.2.0", remove="3.0.0",
+               message="It will be replaced by a :meth:`_reduce` "
+               "method in the future")
     def _add_other_results(self, other):
-        # For parallel analysis
-        results = self.results
+        """For parallel analysis"""
         for dim in ['x', 'y', 'z']:
-            key = 'pos'
-            key_std = 'pos_std'
-            results[dim][key] += other[dim][key]
-            results[dim][key_std] += other[dim][key_std]
-
-            key = 'char'
-            key_std = 'char_std'
-            results[dim][key] += other[dim][key]
-            results[dim][key_std] += other[dim][key_std]
+            for key in self.keys:
+                self.results[dim][key] += other.results[dim][key]

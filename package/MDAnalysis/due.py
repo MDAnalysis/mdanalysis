@@ -57,16 +57,7 @@ try:
     # https://github.com/MDAnalysis/mdanalysis/pull/1822#issuecomment-373009050
     import sys
     import os
-    if sys.version_info >= (3, 7):
-        import duecredit
-    else:
-        from unittest.mock import patch
-        if not os.name == 'nt':
-            with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
-                import duecredit
-        else:
-            # Windows doesn't have os.fork
-            import duecredit
+    import duecredit
 
     from duecredit import due, BibTeX, Doi, Url
     if 'due' in locals() and not hasattr(due, 'cite'):

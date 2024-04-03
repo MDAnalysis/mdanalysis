@@ -53,7 +53,9 @@ Currently supported formats:
    |                         |        |           | :class:`.XVGReader` is the default    |
    |                         |        |           | reader for .xvg files.                |
    +-------------------------+--------+-----------+---------------------------------------+
-
+   | :class:`.EDRReader`     | EDR    | edr       | Produced by Gromacs during simulation.|
+   |                         |        |           | Reads full file on initialisation     |
+   +-------------------------+--------+-----------+---------------------------------------+
 
 .. _Auxiliary API:
 
@@ -63,9 +65,9 @@ Auxiliary readers inherit from the base
 :class:`~MDAnalysis.auxiliary.base.AuxReader`. In stand-alone use they 
 allow iteration over each step in a set of auxiliary data::
 
-    aux = MDAnalysis.auxiliary.xvg.XVGReader('auxdata.xvg')
+    aux = MDAnalysis.auxiliary.XVG.XVGReader('auxdata.xvg')
     for auxstep in aux:
-        print auxstep
+        print(auxstep)
 
 To iterate over only certain sections of the auxiliary::
 
@@ -89,9 +91,9 @@ return an appropriate :class:`~MDAnalysis.auxiliary.base.AuxReader` class for
 a supplied format or set of auxiliary data, guessing the format from the 
 datatype/file extension::
 
-  auxreader = MDAnalysis.auxiliary.code.get_auxreader_for('auxdata.xvg')
+  auxreader = MDAnalysis.auxiliary.core.get_auxreader_for('auxdata.xvg')
   # will return the default XVGReader class
-  auxreader = MDAnalysis.auxiliary.code.get_auxreader_for(format='XVG-F')
+  auxreader = MDAnalysis.auxiliary.core.get_auxreader_for(format='XVG-F')
   # will return the XVGFileReader class
 
 To directly load an instance of the guessed auxiliary reader class given the
@@ -112,7 +114,7 @@ the auxiliary data for that timestep.
 
 'Assignment' of auxiliary steps to trajectory timesteps is determined from the time 
 of the auxiliary step, ``dt`` of the trajectory and time at the first frame of the 
-trajectory (obtained through a :class:`~MDAnalysis.coordinates.base.Timestep` 
+trajectory (obtained through a :class:`~MDAnalysis.coordinates.timestep.Timestep` 
 instance from the trajectory), as::
 
     frame = floor((time_at_step - time_at_frame_0 + dt/2)/dt)
@@ -148,7 +150,7 @@ avoid representative values set to ``np.nan``, particularly when auxiliary data
 is less frequent::
 
     u.trajectory.add_auxiliary('low_f', 'low_freq_aux_data.xvg')
-    for ts in u.iter_as_aux('low_f'):
+    for ts in u.trajectory.iter_as_aux('low_f'):
         do_something(ts.aux.low_f) # do something with 'low_f' auxiliary data without
                                    # worrying about having to deal with np.nan
 
@@ -156,20 +158,20 @@ If the auxiliary data are more frequent and the cutoff (if set) is
 sufficiently high, :meth:`~MDAnalysis.coordinates.base.ProtoReader.next_as_aux` 
 and :meth:`~MDAnalysis.coordinates.base.ProtoReader.iter_as_aux` behave the same 
 as the :class:`~MDAnalysis.coordinates.base.ProtoReader` 
-meth:`~MDAnalysis.coordinates.base.ProtoReader.next` and 
+:meth:`~MDAnalysis.coordinates.base.ProtoReader.next` and 
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.__iter__`.
 
-In order to acess auxiliary values at every individual step, including those 
+In order to access auxiliary values at every individual step, including those 
 outside the time range of the trajectory, 
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.iter_auxiliary` allows iteration
 over the auxiliary independent of the trajectory::
 
-    for auxstep in trajectory.iter_auxiliary('pullforce'):
+    for auxstep in u.trajectory.iter_auxiliary('pullforce'):
         do_something(auxstep)
 
 To iterate over only a certain section of the auxiliary::
 
-    for auxstep in trajectory.iter_auxiliary('pullforce', start=100, step=10):
+    for auxstep in u.trajectory.iter_auxiliary('pullforce', start=100, step=10):
         # every 10th step from 100
         do_something(auxstep)
 
@@ -181,17 +183,17 @@ Accessing auxiliary attributes
 To check the values of attributes of an added auxiliary, use 
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.get_aux_attribute`, e.g.::
 
-    pullf_dt = trajectory.get_aux_attribute('pullforce', 'dt')
+    pullf_dt = u.trajectory.get_aux_attribute('pullforce', 'dt')
 
 If attributes are settable, they can be changed using
 :meth:`~MDAnalysis.coordinates.base.ProtoReader.set_aux_attribute`, e.g.::
 
-    trajectory.set_aux_attribute('pullforce', 'data_selector', [1])
+    u.trajectory.set_aux_attribute('pullforce', 'data_selector', [1])
 
 The auxiliary may be renamed using ``set_aux_attribute`` with 'auxname', or more
 directly by using :meth:`~MDAnalysis.coordinates.base.ProtoReader.rename_aux`::
 
-    trajectory.rename_aux('pullforce', 'pullf')
+    u.trajectory.rename_aux('pullforce', 'pullf')
 
 
 Recreating auxiliaries
@@ -204,21 +206,21 @@ original auxiliary reader::
 
     description = aux.get_description()
     del(aux)
-    reload_aux = auxiliary.auxreader(**description)
+    reload_aux = MDAnalysis.auxiliary.auxreader(**description)
 
 The 'description' of any or all the auxiliaries added to a trajectory can be
 obtained using :meth:`~MDAnalysis.coordinates.base.ProtoReader.get_aux_descriptions`::
 
-    descriptions = trajectory.get_aux_descriptions()
+    descriptions = u.trajectory.get_aux_descriptions()
 
 Get descriptions for selected auxiliaries only::
 
-    descriptions = trajectory.get_aux_descriptions(['pullf', 'pullx'])
+    descriptions = u.trajectory.get_aux_descriptions(['pullf', 'pullx'])
 
 And to reload::
 
     for descr in descriptions:
-        new_trajectory.add_auxiliary(**descr)
+        new_u.new_trajectory.add_auxiliary(**descr)
 
 
 .. _AuxStep API:
@@ -226,7 +228,7 @@ And to reload::
 AuxStep class
 ~~~~~~~~~~~~~
 An AuxStep instance holds the auxiliary data for the current step. It is
-updated whenever the a new auxiliary step is read.
+updated whenever a new auxiliary step is read.
 
 AuxStep classes are derived from the base class 
 :class:`~MDAnalysis.auxiliary.base.AuxStep`. The appropriate AuxStep class for
@@ -250,8 +252,9 @@ The following are inherited from :class:`~MDAnalysis.auxiliary.base.AuxStep`:
       Determined from ``_data`` id data selection is enabled at a valid 
       ``data_selector`` is provided; otherwise set to ``_data``.
 
-The following are stored in AuxStep but can be accessed through the parent 
-auxiliary reader (see :ref:`AuxReader API` below). 
+The following are stored in AuxStep. The parent 
+auxiliary reader has the equivalent attributes, though non-private (no _)
+(see :ref:`AuxReader API` below). 
 
   ``_dt``
       Change in time between auxiliary steps (in ps). If not specified, will
@@ -271,7 +274,7 @@ auxiliary reader (see :ref:`AuxReader API` below).
       read with each step (``_data``) (ignored if data selection is not enabled
       by the reader). As for ``time_selector``, type depends on the auxiliary 
       format. If ``None`` (default value), ``_data`` is returned.
-  ``constant_dt``
+  ``_constant_dt``
       Boolean of whether dt is constant throughout auxiliary data. Default is 
       ``True``.
 
@@ -339,7 +342,7 @@ The following attributes are inherited from
       Method to use in calculating representative auxiliary value for a 
       timestep. Default is 'closest'.
   ``cutoff``
-      Cutoff (in ps) for ignoring auxiliary steps when calculating 
+      Cutoff (in ps) for ignoring auxiliary steps when calculating
       representative value(s) for a timestep.
   ``auxstep``
       The :class:`~MDAnalysis.auxiliary.base.AuxStep` object to store data for
@@ -348,14 +351,14 @@ The following attributes are inherited from
   ``n_steps``
       Total number of auxiliary steps.
   ``frame_data``
-      `data` from each auxiliary step assigned to the last-read trajectory 
+      `data` from each auxiliary step assigned to the last-read trajectory
       timestep.
   ``frame_rep``
-      Represenatative value(s) of auxiliary data for last-read trajectory 
+      Representative value(s) of auxiliary data for last-read trajectory
       timestep.
 
-The following are stored in ``auxstep`` but may be accessed from the auxiliary
-reader; see the :ref:`AuxStep API` above.
+The following are stored in ``auxstep`` as private attributes (with _)
+but may be accessed from the auxiliary reader; see the :ref:`AuxStep API` above.
 
   ``step``
 
@@ -436,7 +439,7 @@ The following methods are inherited from
 
   ``next_nonempty_frame(ts)``
     Return the frame number of the next trajectory frame (after the current
-    auxiliary time) for which a represenatative auxiliary value can be
+    auxiliary time) for which a representative auxiliary value can be
     calculated (i.e., there is at least one assigned auxiliary step within
     ``cutoff``).
 
@@ -453,12 +456,12 @@ The following methods are inherited from
   ``__del__()``
     Calls ``close()``.
 
-  ``get_descrtiption``
+  ``get_description``
     Get the values of the attributes required for replicating an auxiliary (as
     listed in ``required_attrs``) and return as a dictionary.
 
   ``__eq__``
-    Check for equality by checking each of the attributes requried for 
+    Check for equality by checking each of the attributes required for
     replicating an auxiliary (as listed in ``required_attrs``) are equal.
 
 Each AuxReader must subclass :class:`~MDAnalysis.auxiliary.base.AuxReader`
@@ -466,11 +469,11 @@ and addionally define:
 
   ``__init__(auxdata, **kwargs)``
     Additional processing of *kwargs* and any necessary initial processing of 
-    *auxdata*. Must :func:`super` through  
+    *auxdata*. Must :func:`super` through
     :class:`~MDAnalysis.auxiliary.base.AuxReader`.
 
   ``_read_next_step()``
-    Read the data from the next auxiliary step and update ``auxstep`` as 
+    Read the data from the next auxiliary step and update ``auxstep`` as
     appropriate. Raise `StopIteration` when attempting to read past last step.
 
   ``_go_to_step(i)``
@@ -494,15 +497,15 @@ define/overwrite the following:
 
   ``close()``
 
-For convinience, when reading auxiliary data from an open file, step at a time, 
-:class:`~MDAnalysis.auxiliary.base.AuxFileReader` 
+For convenience, when reading auxiliary data from an open file, one step at a
+time, :class:`~MDAnalysis.auxiliary.base.AuxFileReader`
 extends :class:`~MDAnalysis.auxiliary.base.AuxReader` by providing the
 following (these may be overwritten by subclasses as appropriate):
 
   ``__init__(auxfile, **kwargs)``
     Open *auxfile* and any additional processing of *kwargs*.
 
-  ``_restart()``, 
+  ``_restart()``,
     Seek to the start of ``auxfile``
 
   ``close()``
@@ -522,4 +525,5 @@ _AUXREADERS = {}
 
 from . import base
 from . import XVG
+from . import EDR
 from .core import auxreader

@@ -80,7 +80,7 @@ class fit_translation(TransformationBase):
 
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    MDAnalysis.coordinates.timestep.Timestep
 
 
     .. versionchanged:: 2.0.0
@@ -187,7 +187,7 @@ class fit_rot_trans(TransformationBase):
 
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    MDAnalysis.coordinates.timestep.Timestep
 
 
     .. versionchanged:: 2.0.0

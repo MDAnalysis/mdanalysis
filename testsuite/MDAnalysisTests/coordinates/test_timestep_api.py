@@ -40,6 +40,7 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        NCDF, TRZ_psf, TRZ)
 
 from MDAnalysisTests.coordinates.base import assert_timestep_equal, assert_timestep_almost_equal
+from MDAnalysis.coordinates.timestep import Timestep
 import pytest
 
 
@@ -52,7 +53,7 @@ class TestTimestep(object):
     comes into contact with.  Failures here are the Timesteps fault.
     """
     # define the class made in test
-    Timestep = mda.coordinates.base.Timestep
+    Timestep = Timestep
     name = "base"  # for error messages only
     size = 10  # size of arrays, 10 is enough to allow slicing etc
     # each coord is unique
@@ -118,10 +119,21 @@ class TestTimestep(object):
 
     def test_repr(self, ts):
         assert_equal(type(repr(ts)), str)
+    
+    def test_repr_with_box(self, ts):
+        assert("with unit cell dimensions" in repr(ts))
+
+    def test_repr_no_box(self, ts):
+        ts.dimensions = None
+        assert("with unit cell dimensions" not in repr(ts))
+
+    def test_default_dtype_npf32(self, ts):
+        assert_equal(ts.dtype, np.float32)
+
 
     # Dimensions has 2 possible cases
     # Timestep doesn't do dimensions,
-    # should raise NotImplementedError for .dimension and .volume
+    # returns None for  .dimension and 0 for .volume
     # Timestep does do them, should return values properly
     def test_dimensions(self, ts):
         assert_allclose(ts.dimensions, self.newbox)
@@ -145,12 +157,20 @@ class TestTimestep(object):
         ts.triclinic_dimensions = ref_vec
         assert_equal(ts.dimensions, self.newbox)
 
+    def test_set_dimensions_None(self,ts):
+        ts.dimensions = None
+        assert(not ts._unitcell.any())
+
+    def test_set_triclinic_dimensions_None(self,ts):
+        ts.triclinic_dimensions = None
+        assert(not ts._unitcell.any())
+
     def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected
         # (Issue 224) (TestTimestep)"""
-        assert_equal(ts._x, ts._pos[:, 0])
-        assert_equal(ts._y, ts._pos[:, 1])
-        assert_equal(ts._z, ts._pos[:, 2])
+        assert_equal(ts._x, ts.positions[:, 0])
+        assert_equal(ts._y, ts.positions[:, 1])
+        assert_equal(ts._z, ts.positions[:, 2])
 
     def test_coordinate_setter_shortcuts(self, ts):
         # Check that _x _y and _z are read only
@@ -162,17 +182,17 @@ class TestTimestep(object):
     # n_atoms should be a read only property
     # all Timesteps require this attribute
     def test_n_atoms(self, ts):
-        assert_equal(ts.n_atoms, ts._n_atoms)
+        assert_equal(ts.n_atoms, self.size)
 
     def test_n_atoms_readonly(self, ts):
         with pytest.raises(AttributeError):
             ts.__setattr__('n_atoms', 20)
 
     def test_n_atoms_presence(self, ts):
-        assert_equal(hasattr(ts, '_n_atoms'), True)
+        assert_equal(hasattr(ts, 'n_atoms'), True)
 
     def test_unitcell_presence(self, ts):
-        assert_equal(hasattr(ts, '_unitcell'), True)
+        assert_equal(hasattr(ts, 'dimensions'), True)
 
     def test_data_presence(self, ts):
         assert_equal(hasattr(ts, 'data'), True)
@@ -439,7 +459,7 @@ class TestTimestep(object):
     def test_copy(self, func, ts):
         if self.uni_args is None:
             return
-        u = mda.Universe(*self.uni_args)
+        u = mda.Universe(*self.uni_args)  # pylint: disable=not-an-iterable
         ts = u.trajectory.ts
         func(self, self.name, ts)
 

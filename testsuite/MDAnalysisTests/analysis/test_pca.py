@@ -27,7 +27,7 @@ from MDAnalysis.analysis.pca import (PCA, cosine_content,
                                      rmsip, cumulative_overlap)
 
 from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal)
+                           assert_array_almost_equal, assert_allclose,)
 
 from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
@@ -38,6 +38,12 @@ SELECTION = 'backbone and name CA and resid 1-10'
 
 @pytest.fixture(scope='module')
 def u():
+    return mda.Universe(PSF, DCD)
+
+
+@pytest.fixture(scope='function')
+def u_fresh():
+    # each test gets a fresh universe
     return mda.Universe(PSF, DCD)
 
 
@@ -127,6 +133,12 @@ def test_no_frames(u):
         PCA(u, select=SELECTION).run(stop=1)
 
 
+def test_can_run_frames(u):
+    atoms = u.select_atoms(SELECTION)
+    u.transfer_to_memory()
+    PCA(u, select=SELECTION, mean=None).run(frames=[0, 1])
+
+
 def test_transform(pca, u):
     ag = u.select_atoms(SELECTION)
     pca_space = pca.transform(ag, n_components=1)
@@ -143,6 +155,110 @@ def test_transform_universe():
     u2 = mda.Universe(waterPSF, waterDCD)
     pca_test = PCA(u1).run()
     pca_test.transform(u2)
+
+
+def test_project_no_pca_run(u, pca):
+    pca_class = PCA(u, select=SELECTION)
+    with pytest.raises(ValueError) as exc:
+        pca_class.project_single_frame()
+    assert 'Call run() on the PCA before projecting' in str(exc.value)
+
+
+def test_project_none_anchor(u, pca):
+    group = u.select_atoms('resnum 1')
+    with pytest.raises(ValueError) as exc:
+        func = pca.project_single_frame(0, group=group, anchor=None)
+    assert ("'anchor' cannot be 'None'" +
+            " if 'group' is not 'None'") in str(exc.value)
+
+
+def test_project_more_anchor(u, pca):
+    group = u.select_atoms('resnum 1')
+    with pytest.raises(ValueError) as exc:
+        project = pca.project_single_frame(0, group=group, anchor='backbone')
+    assert "More than one 'anchor' found in residues" in str(exc.value)
+
+
+def test_project_less_anchor(u, pca):
+    group = u.select_atoms('all')
+    with pytest.raises(ValueError) as exc:
+        project = pca.project_single_frame(0, group=group, anchor='name CB')
+    assert ("Some residues in 'group'" +
+            " do not have an 'anchor'") in str(exc.value)
+
+
+def test_project_invalid_anchor(u):
+    pca = PCA(u, select='name CA').run()
+    group = u.select_atoms('all')
+    with pytest.raises(ValueError) as exc:
+        project = pca.project_single_frame(0, group=group, anchor='name N')
+    assert "Some 'anchors' are not part of PCA class" in str(exc.value)
+
+
+def test_project_compare_projections(u_fresh):
+    # projections along different PCs should be different
+    pca = PCA(u_fresh, select=SELECTION).run()
+    project0 = pca.project_single_frame(0)
+    project1 = pca.project_single_frame(1)
+
+    u_fresh.trajectory[0]
+    coord0 = project0(u_fresh.trajectory.ts).positions.copy()
+    u_fresh.trajectory[0]
+    coord1 = project1(u_fresh.trajectory.ts).positions
+    assert not np.allclose(coord0, coord1, rtol=1e-05)
+
+
+def test_project_reconstruct_whole(u, u_fresh):
+    # structure projected along all PCs
+    # should be same as the original structure
+    pca = PCA(u_fresh, select=SELECTION).run()
+    project = pca.project_single_frame()
+
+    coord_original = u.trajectory.ts.positions
+    coord_reconstructed = project(u_fresh.trajectory.ts).positions
+    assert_allclose(coord_original, coord_reconstructed, rtol=1e-5)
+
+
+@pytest.mark.parametrize(
+    ("n1", "n2"),
+    [(0, 0), (0, [0]), ([0, 1], [0, 1]), (0, 1), (1, 0)]
+)
+def test_project_twice_projection(u_fresh, n1, n2):
+    # Two succesive projections are applied. The second projection does nothing
+    # if both projections are along the same PC(s).
+    # Single PC input as an array should be equivalent to a scalar
+    pca = PCA(u_fresh, select=SELECTION).run()
+
+    project_first = pca.project_single_frame(n1)
+    project_second = pca.project_single_frame(n2)
+
+    u_fresh.trajectory[0]
+    coord1 = project_first(u_fresh.trajectory.ts).positions.copy()
+    coord2 = project_second(u_fresh.trajectory.ts).positions
+
+    if np.array_equiv(n1, n2):
+        assert np.allclose(coord1, coord2, rtol=1e-5)
+    else:
+        assert not np.allclose(coord1, coord2, rtol=1e-05)
+
+
+def test_project_extrapolate_translation(u_fresh):
+    # when the projection is extended to non-PCA atoms,
+    # non-PCA atoms' coordinates will be conserved relative to the anchor atom
+    pca = PCA(u_fresh, select='resnum 1 and backbone').run()
+    sel = 'resnum 1 and name CA CB CG'
+    group = u_fresh.select_atoms(sel)
+    project = pca.project_single_frame(0, group=group,
+                                       anchor='name CA')
+
+    distances_original = (
+        mda.lib.distances.self_distance_array(group.positions)
+    )
+    distances_new = (
+        mda.lib.distances.self_distance_array(project(group).positions)
+    )
+
+    assert_allclose(distances_original, distances_new, rtol=1e-05)
 
 
 def test_cosine_content():

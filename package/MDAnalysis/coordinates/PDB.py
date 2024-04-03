@@ -149,9 +149,12 @@ import warnings
 import logging
 import collections
 import numpy as np
+import functools
 
 from ..lib import util
+from ..lib.util import store_init_arguments
 from . import base
+from .timestep import Timestep
 from ..topology.core import guess_atom_element
 from ..exceptions import NoDataError
 
@@ -168,13 +171,18 @@ class PDBReader(base.ReaderBase):
     The following *PDB records* are parsed (see `PDB coordinate section`_ for
     details):
 
-     - *CRYST1* for unitcell A,B,C, alpha,beta,gamma
-     - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
-     - *HEADER* (:attr:`header`), *TITLE* (:attr:`title`), *COMPND*
-       (:attr:`compound`), *REMARK* (:attr:`remarks`)
-     - all other lines are ignored
+    - *CRYST1* for unitcell A,B,C, alpha,beta,gamma
+    - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
+    - *HEADER* (:attr:`header`), *TITLE* (:attr:`title`), *COMPND*
+        (:attr:`compound`), *REMARK* (:attr:`remarks`)
+    - all other lines are ignored
 
-    Reads multi-`MODEL`_ PDB files as trajectories.
+    
+    Reads multi-`MODEL`_ PDB files as trajectories.  The `Timestep.data` dictionary
+    holds the occupancy and tempfactor (bfactor) values for each atom for a given frame.
+    These attributes are commonly appropriated to store other time varying properties
+    and so they are exposed here. Note this does not update the `AtomGroup` attributes,
+    as the topology does not change with trajectory iteration.
 
     .. _PDB-formatted:
        http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
@@ -230,6 +238,7 @@ class PDBReader(base.ReaderBase):
     :class:`PDBWriter`
     :class:`PDBReader`
 
+    
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
        * New :attr:`title` (list with all TITLE lines).
@@ -238,12 +247,16 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
     .. versionchanged:: 1.0.0
-       Raise user warning for CRYST1_ record with unitary valuse
+       Raise user warning for CRYST1_ record with unitary values
        (cubic box with sides of 1 Å) and do not set cell dimensions.
+    .. versionchanged:: 2.5.0
+       Tempfactors (aka bfactors) are now read into the ts.data dictionary each
+       frame.  Occupancies are also read into this dictionary.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         """Read coordinates from *filename*.
 
@@ -382,9 +395,14 @@ class PDBReader(base.ReaderBase):
         raised and cell dimensions are set to
         :code:`np.zeros(6)` (see Issue #2698)
 
+
         .. versionchanged:: 1.0.0
            Raise user warning for CRYST1_ record with unitary valuse
            (cubic box with sides of 1 Å) and do not set cell dimensions.
+        .. versionchanged:: 2.5.0
+           When seen, `ts.data` is populated with tempfactor information at
+           each frame read. If any atom has a non-parsable (i.e. non float)
+           value in the tempfactor field, the entry is left as `1.0`.
         """
         try:
             start = self._start_offsets[frame]
@@ -393,7 +411,9 @@ class PDBReader(base.ReaderBase):
             raise IOError from None
 
         pos = 0
-        occupancy = np.ones(self.n_atoms)
+        occupancy = np.zeros(self.n_atoms)
+        tempfactor = np.ones(self.n_atoms)
+        saw_tempfactor = False
 
         # Seek to start and read until start of next frame
         self._pdbfile.seek(start)
@@ -404,13 +424,18 @@ class PDBReader(base.ReaderBase):
             if line[:6] in ('ATOM  ', 'HETATM'):
                 # we only care about coordinates
                 tmp_buf.append([line[30:38], line[38:46], line[46:54]])
-                # TODO import bfactors - might these change?
                 try:
                     # does an implicit str -> float conversion
                     occupancy[pos] = line[54:60]
                 except ValueError:
                     # Be tolerant for ill-formated or empty occupancies
                     pass
+                try:
+                    tempfactor[pos] = line[60:66]
+                except ValueError:
+                    pass
+                else:
+                    saw_tempfactor = True
                 pos += 1
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
@@ -452,6 +477,9 @@ class PDBReader(base.ReaderBase):
                 self.convert_pos_from_native(self.ts.dimensions[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
+        if saw_tempfactor:
+            self.ts.data['tempfactor'] = tempfactor
+
         return self.ts
 
     def close(self):
@@ -537,24 +565,27 @@ class PDBWriter(base.WriterBase):
        An indexing issue meant it previously used the first charater (Issue #2224)
 
     .. versionchanged:: 2.0.0
-        Add the `redindex` argument. Setting this keyword to ``True``
-        (the default) preserves the behavior in earlier versions of MDAnalysis.
-        The PDB writer checks for a valid chainID entry instead of using the
-        last character of segid. Should a chainID not be present, or not
-        conform to the PDB standard, the default value of  'X' is used.
+       Add the `redindex` argument. Setting this keyword to ``True``
+       (the default) preserves the behavior in earlier versions of MDAnalysis.
+       The PDB writer checks for a valid chainID entry instead of using the
+       last character of segid. Should a chainID not be present, or not
+       conform to the PDB standard, the default value of  'X' is used.
 
+    .. versionchanged:: 2.3.0
+       Do not write unusable conect records when ag index
+       is larger than 100000.
     """
     fmt = {
         'ATOM': (
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"),
         'HETATM': (
             "HETATM{serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"),
         'REMARK': "REMARK     {0}\n",
         'COMPND': "COMPND    {0}\n",
         'HEADER': "HEADER    {0}\n",
@@ -848,6 +879,10 @@ class PDBWriter(base.WriterBase):
         for a1, a2 in bonds:
             if not (a1 in mapping and a2 in mapping):
                 continue
+            if mapping[a1] >= 100000 or mapping[a2] >= 100000:
+                warnings.warn("Atom with index >=100000 cannot write "
+                              "bonds to PDB CONECT records.")
+                return
             con[a2].append(a1)
             con[a1].append(a2)
 
@@ -868,13 +903,13 @@ class PDBWriter(base.WriterBase):
         * :attr:`PDBWriter.trajectory` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Reader`)
         * :attr:`PDBWriter.timestep` (the underlying trajectory
-          :class:`~MDAnalysis.coordinates.base.Timestep`)
+          :class:`~MDAnalysis.coordinates.timestep.Timestep`)
 
         Before calling :meth:`_write_next_frame` this method **must** be
         called at least once to enable extracting topology information from the
         current frame.
         """
-        if isinstance(obj, base.Timestep):
+        if isinstance(obj, Timestep):
             raise TypeError("PDBWriter cannot write Timestep objects "
                             "directly, since they lack topology information ("
                             "atom names and types) required in PDB files")
@@ -968,14 +1003,14 @@ class PDBWriter(base.WriterBase):
 
         :Keywords:
           *ts*
-             :class:`base.Timestep` object containing coordinates to be written to trajectory file;
+             :class:`timestep.Timestep` object containing coordinates to be written to trajectory file;
              if ``None`` then :attr:`PDBWriter.ts`` is tried.
           *multiframe*
              ``False``: write a single frame (default); ``True`` behave as a trajectory writer
 
         .. Note::
 
-           Before using this method with another :class:`base.Timestep` in the *ts*
+           Before using this method with another :class:`timestep.Timestep` in the *ts*
            argument, :meth:`PDBWriter._update_frame` *must* be called
            with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
@@ -994,6 +1029,7 @@ class PDBWriter(base.WriterBase):
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
+    @functools.cache
     def _deduce_PDB_atom_name(self, atomname, resname):
         """Deduce how the atom name should be aligned.
 
@@ -1019,6 +1055,47 @@ class PDBWriter(base.WriterBase):
               and Pair(resname, atomname) not in self.exclude_pairs):
             return '{:<4}'.format(atomname)
         return ' {:<3}'.format(atomname)
+
+    @staticmethod
+    def _format_PDB_charges(charges: np.ndarray) -> np.ndarray:
+        """Format formal charges to match PDB requirements.
+
+        Formal charge entry is set to empty if charge is 0, otherwise the
+        charge is set to a two character ```<charge value><charge sign>``
+        entry, e.g. ``1+`` or ``2-``.
+
+        This method also verifies that formal charges can adhere to the PDB
+        format (i.e. charge cannot be > 9 or < -9).
+
+        Parameters
+        ----------
+        charges: np.ndarray
+            NumPy array of integers representing the formal charges of
+            the atoms being written.
+
+        Returns
+        -------
+        np.ndarray
+            NumPy array of dtype object with strings representing the
+            formal charges of the atoms being written.
+        """
+        if not np.issubdtype(charges.dtype, np.integer):
+            raise ValueError("formal charges array should be of `int` type")
+
+        outcharges = charges.astype(object)
+        outcharges[outcharges == 0] = ''  # empty strings for no charge case
+        # using np.where is more efficient than looping in sparse cases
+        for i in np.where(charges < 0)[0]:
+            if charges[i] < -9:
+                errmsg = "formal charge < -9 is not supported by PDB standard"
+                raise ValueError(errmsg)
+            outcharges[i] = f"{abs(charges[i])}-"
+        for i in np.where(charges > 0)[0]:
+            if charges[i] > 9:
+                errmsg = "formal charge > 9 is not supported by PDB standard"
+                raise ValueError(errmsg)
+            outcharges[i] = f"{charges[i]}+"
+        return outcharges
 
     def _write_timestep(self, ts, multiframe=False):
         """Write a new timestep *ts* to file
@@ -1090,6 +1167,7 @@ class PDBWriter(base.WriterBase):
         atomnames = get_attr('names', 'X')
         elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
+        formal_charges = self._format_PDB_charges(get_attr('formalcharges', 0))
 
         def validate_chainids(chainids, default):
             """Validate each atom's chainID
@@ -1141,7 +1219,7 @@ class PDBWriter(base.WriterBase):
         else:
             atom_ids = np.arange(len(atoms)) + 1
 
-        for i, atom in enumerate(atoms):
+        for i in range(len(atoms)):
             vals = {}
             vals['serial'] = util.ltruncate_int(atom_ids[i], 5)  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
@@ -1155,6 +1233,7 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['chainID'] = chainids[i]
             vals['element'] = elements[i][:2].upper()
+            vals['charge'] = formal_charges[i]
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:

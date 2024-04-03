@@ -30,6 +30,12 @@ parsers.
 
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
+
+References
+----------
+
+.. footbibliography::
+
 """
 
 from collections import defaultdict
@@ -42,12 +48,18 @@ import warnings
 import textwrap
 from types import MethodType
 
-import Bio.Seq
-import Bio.SeqRecord
+try:
+    import Bio.Seq
+    import Bio.SeqRecord
+except ImportError:
+    HAS_BIOPYTHON = False
+else:
+    HAS_BIOPYTHON = True
+
 import numpy as np
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
-                        unique_int_1d)
+                        unique_int_1d, check_atomgroup_not_empty)
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
@@ -55,7 +67,7 @@ from . import selection
 from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup,
-                     check_pbc_and_unwrap)
+                     check_wrap_and_unwrap, _pbc_to_wrap)
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
@@ -85,6 +97,7 @@ def _check_length(func):
 
     _GROUP_VALUE_ERROR = ("Setting {group} {attrname} with wrong sized array. "
                           "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
+
     # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
     # supplied values: 50."
 
@@ -281,6 +294,7 @@ def deprecate_bfactor_warning(func):
         """
         warnings.warn(BFACTOR_WARNING, DeprecationWarning)
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -304,6 +318,7 @@ class _TopologyAttrMeta(type):
     :func:`MDAnalysis.core.selection.gen_selection_class`
 
     """
+
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         attrname = classdict.get('attrname')
@@ -472,6 +487,13 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         """Bool of if the source of this information is a guess"""
         return self._guessed
 
+    def _add_new(self, newval):
+        """Resize TopologyAttr to one larger, with *newval* as the new value
+
+        .. versionadded:: 2.1.0
+        """
+        self.values = np.concatenate([self.values, np.array([newval])])
+
     def get_atoms(self, ag):
         """Get atom attributes for a given AtomGroup"""
         raise NoDataError
@@ -498,6 +520,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
 
 
 # core attributes
+
 
 class Atomindices(TopologyAttr):
     """Globally unique indices for each atom in the group.
@@ -602,6 +625,7 @@ class Segindices(TopologyAttr):
 
 # atom attributes
 
+
 class AtomAttr(TopologyAttr):
     """Base class for atom attributes.
 
@@ -656,7 +680,24 @@ class Atomids(AtomAttr):
         return np.arange(1, na + 1)
 
 
-class _AtomStringAttr(AtomAttr):
+class _StringInternerMixin:
+    """String interning pattern
+
+    Used for faster matching of strings (see _ProtoStringSelection)
+
+     self.namedict (dict)
+     - maps actual string to string index (str->int)
+     self.namelookup (array dtype object)
+     - maps string index to actual string (int->str)
+     self.nmidx (array dtype int)
+     - maps atom index to string index (int->int)
+     self.values (array dtype object)
+     - the premade per-object string values
+
+    .. versionadded:: 2.1.0
+       Mashed together the different implementations to keep it DRY.
+    """
+
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
 
@@ -680,12 +721,30 @@ class _AtomStringAttr(AtomAttr):
         self.name_lookup = np.array(name_lookup, dtype=object)
         self.values = self.name_lookup[self.nmidx]
 
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
+    def _add_new(self, newval):
+        """Append new value to the TopologyAttr
 
-    @_check_length
-    def set_atoms(self, ag, values):
+        Parameters
+        ----------
+        newval : str
+          value to append
+
+        resizes this attr to size+1 and adds newval as the value of the new entry
+        for string interning this is slightly different hence the override
+
+        .. versionadded:: 2.1.0
+        """
+        try:
+            newidx = self.namedict[newval]
+        except KeyError:
+            newidx = len(self.namedict)
+            self.namedict[newval] = newidx
+            self.name_lookup = np.concatenate([self.name_lookup, [newval]])
+
+        self.nmidx = np.concatenate([self.nmidx, [newidx]])
+        self.values = np.concatenate([self.values, [newval]])
+
+    def _set_X(self, ag, values):
         newnames = []
 
         # two possibilities, either single value given, or one per Atom
@@ -713,8 +772,21 @@ class _AtomStringAttr(AtomAttr):
         self.values = self.name_lookup[self.nmidx]
 
 
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
+class AtomStringAttr(_StringInternerMixin, AtomAttr):
+
+    @_check_length
+    def set_atoms(self, ag, values):
+        return self._set_X(ag, values)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.full(na, '', dtype=object)
+
+
 # TODO: update docs to property doc
-class Atomnames(_AtomStringAttr):
+class Atomnames(AtomStringAttr):
     """Name for each atom.
     """
     attrname = 'names'
@@ -793,6 +865,9 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
 
         u = residues[0].universe
         prev = u.residues[residues.ix-1]  # obv candidates first
@@ -990,6 +1065,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1098,6 +1177,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1156,14 +1239,15 @@ class Atomnames(_AtomStringAttr):
             4-atom selection in the correct order. If no CB and/or CG is found
             then this method returns ``None``.
 
-        .. versionchanged:: 1.0.0
-            Added arguments for flexible atom names and refactored code for
-            faster atom matching with boolean arrays.
 
         .. versionadded:: 0.7.5
+        .. versionchanged:: 1.0.0
+           Added arguments for flexible atom names and refactored code for
+           faster atom matching with boolean arrays.
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
+        atnames = residue.atoms.names
+        ags = [residue.atoms[np.isin(atnames, n.split())] for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
@@ -1171,7 +1255,7 @@ class Atomnames(_AtomStringAttr):
     transplants[Residue].append(('chi1_selection', chi1_selection))
 
     def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
-                        cg_name='CG'):
+                        cg_name='CG CG1 OG OG1 SG'):
         """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
@@ -1194,15 +1278,19 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(r.atoms.names == n) == 1 for n in names)
-                for r in residues]
+        keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
+                    for n in names) for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
         atnames = residues.atoms.names
-        ags = [residues.atoms[atnames == n] for n in names]
+        ags = [residues.atoms[np.isin(atnames, n.split())] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
@@ -1210,7 +1298,7 @@ class Atomnames(_AtomStringAttr):
 
 
 # TODO: update docs to property doc
-class Atomtypes(_AtomStringAttr):
+class Atomtypes(AtomStringAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
@@ -1219,7 +1307,7 @@ class Atomtypes(_AtomStringAttr):
 
 
 # TODO: update docs to property doc
-class Elements(_AtomStringAttr):
+class Elements(AtomStringAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
@@ -1243,7 +1331,7 @@ class Radii(AtomAttr):
         return np.zeros(na)
 
 
-class RecordTypes(_AtomStringAttr):
+class RecordTypes(AtomStringAttr):
     """For PDB-like formats, indicates if ATOM or HETATM
 
     Defaults to 'ATOM'
@@ -1261,7 +1349,7 @@ class RecordTypes(_AtomStringAttr):
         return np.array(['ATOM'] * na, dtype=object)
 
 
-class ChainIDs(_AtomStringAttr):
+class ChainIDs(AtomStringAttr):
     """ChainID per atom
 
     Note
@@ -1399,11 +1487,18 @@ class Masses(AtomAttr):
         return masses
 
     @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def center_of_mass(group, pbc=False, compound='group', unwrap=False):
-        r"""Center of mass of (compounds of) the group.
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
+    def center_of_mass(group, wrap=False, unwrap=False, compound='group'):
+        r"""Center of mass of (compounds of) the group
 
-        Computes the center of mass of :class:`Atoms<Atom>` in the group.
+        .. math::
+            \boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}
+
+        where :math:`m_i` is the mass and :math:`\boldsymbol r_i` the
+        position of atom :math:`i` in the given
+        :class:`MDAnalysis.core.groups.AtomGroup`.
         Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly. If the masses of a compound sum up to zero, the
@@ -1412,14 +1507,17 @@ class Masses(AtomAttr):
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation.
-            If ``True`` and `compound` is ``'segments'`` or ``'residues'``, the
+            If ``True`` and `compound` is not ``group``, the
             centers of mass of each compound will be calculated without moving
             any atoms to keep the compounds intact. Instead, the resulting
             center-of-mass position vectors will be moved to the primary unit
             cell after calculation.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
                    optional
             If ``'group'``, the center of mass of all atoms in the group will
@@ -1429,8 +1527,6 @@ class Masses(AtomAttr):
             array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
-        unwrap : bool, optional
-            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -1444,23 +1540,30 @@ class Masses(AtomAttr):
 
         Note
         ----
-        * This method can only be accessed if the underlying topology has
-          information about atomic masses.
+        This method can only be accessed if the underlying topology has
+        information about atomic masses.
 
 
-        .. versionchanged:: 0.8 Added `pbc` parameter
-        .. versionchanged:: 0.19.0 Added `compound` parameter
-        .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
-            compounds
-        .. versionchanged:: 0.20.0 Added `unwrap` parameter
+        .. versionchanged:: 0.8
+           Added `pbc` parameter
+        .. versionchanged:: 0.19.0
+           Added `compound` parameter
+        .. versionchanged:: 0.20.0
+           Added ``'molecules'`` and ``'fragments'`` compounds;
+           added `unwrap` parameter
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atoms = group.atoms
-        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound, unwrap=unwrap)
+        return atoms.center(weights=atoms.masses, wrap=wrap, compound=compound,
+                            unwrap=unwrap)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
 
     @warn_if_not_unique
+    @check_atomgroup_not_empty
     def total_mass(group, compound='group'):
         r"""Total mass of (compounds of) the group.
 
@@ -1497,33 +1600,79 @@ class Masses(AtomAttr):
         ('total_mass', total_mass))
 
     @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def moment_of_inertia(group, pbc=False, **kwargs):
-        """Tensor moment of inertia relative to center of mass as 3x3 numpy
-        array.
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
+    def moment_of_inertia(group, wrap=False, unwrap=False, compound="group"):
+        r"""Moment of inertia tensor relative to center of mass.
 
         Parameters
         ----------
-        pbc : bool, optional
-            If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact. Instead, the resulting
+            center-of-mass position vectors will be moved to the primary unit
+            cell after calculation.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers and tensor of inertia.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            `compound` determines the behavior of `wrap`.
+            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        moment_of_inertia : numpy.ndarray
+            Moment of inertia tensor as a 3 x 3 numpy array.
+
+        Notes
+        -----
+        The moment of inertia tensor :math:`\mathsf{I}` is calculated for a group of
+        :math:`N` atoms with coordinates :math:`\mathbf{r}_i,\ 1 \le i \le N`
+        relative to its center of mass from the relative coordinates
+
+        .. math::
+           \mathbf{r}'_i = \mathbf{r}_i - \frac{1}{\sum_{i=1}^{N} m_i} \sum_{i=1}^{N} m_i \mathbf{r}_i
+
+        as
+
+        .. math::
+           \mathsf{I} = \sum_{i=1}^{N} m_i \Big[(\mathbf{r}'_i\cdot\mathbf{r}'_i) \sum_{\alpha=1}^{3}
+                 \hat{\mathbf{e}}_\alpha \otimes \hat{\mathbf{e}}_\alpha - \mathbf{r}'_i \otimes \mathbf{r}'_i\Big]
+
+        where :math:`\hat{\mathbf{e}}_\alpha` are Cartesian unit vectors, or in Cartesian coordinates
+
+        .. math::
+           I_{\alpha,\beta} = \sum_{k=1}^{N} m_k
+                 \Big(\big(\sum_{\gamma=1}^3 (x'^{(k)}_{\gamma})^2 \big)\delta_{\alpha,\beta}
+                 - x'^{(k)}_{\alpha} x'^{(k)}_{\beta} \Big).
+
+        where :math:`x'^{(k)}_{\alpha}` are the Cartesian coordinates of the
+        relative coordinates :math:`\mathbf{r}'_k`.
 
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 0.20.0 Added `unwrap` parameter
-
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 0.20.0
+           Added `unwrap` parameter
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
-        unwrap = kwargs.pop('unwrap', False)
-        compound = kwargs.pop('compound', 'group')
 
         com = atomgroup.center_of_mass(
-            pbc=pbc, unwrap=unwrap, compound=compound)
+            wrap=wrap, unwrap=unwrap, compound=compound)
         if compound != 'group':
             com = (com * group.masses[:, None]
                    ).sum(axis=0) / group.masses.sum()
 
-        if pbc:
+        if wrap:
             pos = atomgroup.pack_into_box(inplace=False) - com
         elif unwrap:
             pos = atomgroup.unwrap(compound=compound, inplace=False) - com
@@ -1560,30 +1709,35 @@ class Masses(AtomAttr):
         ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
-    def radius_of_gyration(group, pbc=False, **kwargs):
+    @_pbc_to_wrap
+    @check_atomgroup_not_empty
+    def radius_of_gyration(group, wrap=False, **kwargs):
         """Radius of gyration.
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
-
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
         masses = atomgroup.masses
 
-        com = atomgroup.center_of_mass(pbc=pbc)
-        if pbc:
+        com = atomgroup.center_of_mass(wrap=wrap)
+        if wrap:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - com
         else:
             recenteredpos = atomgroup.positions - com
 
-        rog_sq = np.sum(masses * np.sum(recenteredpos**2,
-                                        axis=1)) / atomgroup.total_mass()
+        rog_sq = np.einsum('i,i->',masses,np.einsum('ij,ij->i',
+                                     recenteredpos,recenteredpos))/atomgroup.total_mass()
 
         return np.sqrt(rog_sq)
 
@@ -1591,55 +1745,109 @@ class Masses(AtomAttr):
         ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
-    def shape_parameter(group, pbc=False, **kwargs):
+    @_pbc_to_wrap
+    @check_atomgroup_not_empty
+    def gyration_moments(group, wrap=False, unwrap=False, compound='group'):
+        r"""Moments of the gyration tensor.
+
+        The moments are defined as the eigenvalues of the gyration
+        tensor.
+
+        .. math::
+        
+            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} - 
+                \mathbf{r}_\mathrm{COM})(\mathbf{r}_\mathrm{i} - \mathbf{r}_\mathrm{COM})
+
+        Where :math:`\mathbf{r}_\mathrm{COM}` is the center of mass.
+
+        See [Dima2004a]_ for background information.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
+
+        Returns
+        -------
+        principle_moments_of_gyration : numpy.ndarray
+            Gyration vector(s) of (compounds of) the group in :math:`Å^2`.
+            If `compound` was set to ``'group'``, the output will be a single
+            vector of length 3. Otherwise, the output will be a 2D array of shape
+            ``(n,3)`` where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.5.0
+        """
+
+        def _gyration(recenteredpos, masses):
+            if len(masses.shape) > 1:
+                masses = np.squeeze(masses)
+            tensor = np.einsum( "ki,kj->ij",
+                                recenteredpos,
+                                np.einsum("ij,i->ij", recenteredpos, masses),
+                              )
+            return np.linalg.eigvalsh(tensor/np.sum(masses))
+
+        atomgroup = group.atoms
+        masses = atomgroup.masses
+
+        com = atomgroup.center_of_mass(
+            wrap=wrap, unwrap=unwrap, compound=compound)
+
+        if compound == 'group':
+             if wrap:
+                 recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
+             elif unwrap:
+                 recenteredpos = (atomgroup.unwrap(inplace=False,
+                                                   compound=compound, 
+                                                   reference=None, 
+                                                  ) - com)
+             else:
+                 recenteredpos = (atomgroup.positions - com)
+             eig_vals = _gyration(recenteredpos, masses)
+        else:
+             (atom_masks, 
+              compound_masks, 
+              n_compounds) = atomgroup._split_by_compound_indices(compound)
+
+             if unwrap:
+                 coords = atomgroup.unwrap(
+                     compound=compound, 
+                     reference=None, 
+                     inplace=False
+                 )
+             else:
+                 coords = atomgroup.positions
+
+             eig_vals = np.empty((n_compounds, 3), dtype=np.float64)
+             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                 eig_vals[compound_mask, :] = [_gyration(
+                      coords[mask] - com[compound_mask][i],
+                      masses[mask][:, None]
+                     ) for i, mask in enumerate(atom_mask)]
+
+        return eig_vals
+
+    transplants[GroupBase].append(
+        ('gyration_moments', gyration_moments))
+
+
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_atomgroup_not_empty
+    def shape_parameter(group, wrap=False, unwrap=False, compound='group'):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
 
         Parameters
         ----------
-        pbc : bool, optional
-            If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
-
-
-        .. versionadded:: 0.7.7
-        .. versionchanged:: 0.8 Added *pbc* keyword
-
-        """
-        atomgroup = group.atoms
-        masses = atomgroup.masses
-
-        com = atomgroup.center_of_mass(pbc=pbc)
-        if pbc:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
-        else:
-            recenteredpos = atomgroup.positions - com
-        tensor = np.zeros((3, 3))
-
-        for x in range(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x, :],
-                                           recenteredpos[x, :])
-        tensor /= atomgroup.total_mass()
-        eig_vals = np.linalg.eigvalsh(tensor)
-        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
-                               ) / np.power(np.sum(eig_vals), 3)
-
-        return shape
-
-    transplants[GroupBase].append(
-        ('shape_parameter', shape_parameter))
-
-    @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def asphericity(group, pbc=False, unwrap=None, compound='group'):
-        """Asphericity.
-
-        See [Dima2004b]_ for background information.
-
-        Parameters
-        ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
         unwrap : bool, optional
@@ -1649,35 +1857,68 @@ class Masses(AtomAttr):
 
 
         .. versionadded:: 0.7.7
-        .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
-
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
+           Superfluous kwargs were removed.
+        .. versionchanged:: 2.5.0
+           Added calculation for any `compound` type
         """
         atomgroup = group.atoms
-        masses = atomgroup.masses
-
-        com = atomgroup.center_of_mass(
-            pbc=pbc, unwrap=unwrap, compound=compound)
-        if compound != 'group':
-            com = (com * group.masses[:, None]
-                   ).sum(axis=0) / group.masses.sum()
-
-        if pbc:
-            recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
-        elif unwrap:
-            recenteredpos = (atomgroup.unwrap(inplace=False) - com)
+        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        if len(eig_vals.shape) > 1:
+            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals, axis=1), axis=1
+                                   ) / np.power(np.sum(eig_vals, axis=1), 3)
         else:
-            recenteredpos = (atomgroup.positions - com)
+            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
+                                   ) / np.power(np.sum(eig_vals), 3)
 
-        tensor = np.zeros((3, 3))
-        for x in range(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x],
-                                           recenteredpos[x])
+        return shape
 
-        tensor /= atomgroup.total_mass()
-        eig_vals = np.linalg.eigvalsh(tensor)
-        shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
-                               np.sum(eig_vals)**2)
+    transplants[GroupBase].append(
+        ('shape_parameter', shape_parameter))
+
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
+    def asphericity(group, wrap=False, unwrap=False, compound='group'):
+        """Asphericity.
+
+        See [Dima2004b]_ for background information.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
+
+
+        .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 0.20.0
+           Added *unwrap* and *compound* parameter
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
+        .. versionchanged:: 2.5.0
+           Added calculation for any `compound` type
+        """
+        atomgroup = group.atoms
+        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        if len(eig_vals.shape) > 1:
+            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals, axis=1))**2, axis=1) /
+                                   np.sum(eig_vals, axis=1)**2)
+        else:
+            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
+                                   np.sum(eig_vals)**2)
 
         return shape
 
@@ -1685,7 +1926,9 @@ class Masses(AtomAttr):
         ('asphericity', asphericity))
 
     @warn_if_not_unique
-    def principal_axes(group, pbc=False):
+    @_pbc_to_wrap
+    @check_atomgroup_not_empty
+    def principal_axes(group, wrap=False):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -1698,7 +1941,7 @@ class Masses(AtomAttr):
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
@@ -1709,13 +1952,16 @@ class Masses(AtomAttr):
             ``v[2]`` as third eigenvector.
 
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
         .. versionchanged:: 1.0.0
-            Always return principal axes in right-hand convention.
-
+           Always return principal axes in right-hand convention.
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
-        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
+        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(wrap=wrap))
 
         # Sort
         indices = np.argsort(e_val)[::-1]
@@ -1800,6 +2046,78 @@ class Charges(AtomAttr):
         return charges
 
     @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
+    def center_of_charge(group, wrap=False, unwrap=False, compound='group'):
+        r"""Center of (absolute) charge of (compounds of) the group
+
+        .. math::
+            \boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}
+                                 {\sum_i \vert q_i \vert}
+
+        where :math:`q_i` is the charge and :math:`\boldsymbol r_i` the
+        position of atom :math:`i` in the given
+        :class:`MDAnalysis.core.groups.AtomGroup`.
+        Centers of charge per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly. If the charges of a compound sum up to zero, the
+        center of mass coordinates of that compound will be ``nan`` (not a
+        number).
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact. Instead, the resulting
+            center-of-mass position vectors will be moved to the primary unit
+            cell after calculation.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, the center of mass of all atoms in the group will
+            be returned as a single position vector. Otherwise, the centers of
+            mass of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 2d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+
+        Returns
+        -------
+        center : numpy.ndarray
+            Position vector(s) of the center(s) of charge of the group.
+            If `compound` was set to ``'group'``, the output will be a single
+            position vector.
+            If `compound` was set to ``'segments'`` or ``'residues'``, the
+            output will be a 2d coordinate array of shape ``(n, 3)`` where
+            ``n`` is the number of compounds.
+
+        Note
+        ----
+        This method can only be accessed if the underlying topology has
+        information about atomic charges.
+
+        .. versionadded:: 2.2.0
+        """
+        atoms = group.atoms
+        return atoms.center(weights=atoms.charges.__abs__(),
+                            wrap=wrap,
+                            compound=compound,
+                            unwrap=unwrap)
+
+
+    transplants[GroupBase].append(
+        ('center_of_charge', center_of_charge))
+
+    @warn_if_not_unique
+    @check_atomgroup_not_empty
     def total_charge(group, compound='group'):
         r"""Total charge of (compounds of) the group.
 
@@ -1835,6 +2153,415 @@ class Charges(AtomAttr):
     transplants[GroupBase].append(
         ('total_charge', total_charge))
 
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def dipole_vector(group,
+                      wrap=False,
+                      unwrap=False,
+                      compound='group',
+                      center="mass"):
+        r"""Dipole vector of the group.
+
+        .. math::
+            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \mathbf{r}_{COM} )
+
+        Computes the dipole vector of :class:`Atoms<Atom>` in the group.
+        Dipole vector per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that the magnitude of the dipole moment is independent of the
+        ``center`` chosen unless the species has a net charge. In the case of
+        a charged group the dipole moment can be later adjusted  with:
+
+        .. math::
+            \boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} + 
+            q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}
+
+        Where :math:`\mathbf{r}_{COM}` is the center of mass and 
+        :math:`\mathbf{r}_{COC}` is the center of charge.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single dipole vector returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 2d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Dipole vector(s) of (compounds of) the group in :math:`eÅ`.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,3)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        compound = compound.lower()
+
+        atomgroup = group.atoms
+        charges = atomgroup.charges
+
+        if center == "mass":
+            masses = atomgroup.masses
+            ref = atomgroup.center_of_mass(wrap=wrap,
+                                           unwrap=unwrap,
+                                           compound=compound)
+        elif center == "charge":
+            ref = atomgroup.center_of_charge(wrap=wrap,
+                                             unwrap=unwrap,
+                                             compound=compound)
+        else:
+            choices = ["mass", "charge"]
+            raise ValueError(
+                f"The dipole center, {center}, is not supported. Choose"
+                " one of: {choices}")
+
+        if compound == 'group':
+            if wrap:
+                recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
+            elif unwrap:
+                recenteredpos = (atomgroup.unwrap(
+                    inplace=False,
+                    compound=compound,
+                    reference=None,
+                ) - ref)
+            else:
+                recenteredpos = (atomgroup.positions - ref)
+            dipole_vector = np.einsum('ij,ij->j',recenteredpos, 
+                                       charges[:, np.newaxis])
+        else:
+            (atom_masks, compound_masks,
+             n_compounds) = atomgroup._split_by_compound_indices(compound)
+
+            if unwrap:
+                coords = atomgroup.unwrap(compound=compound,
+                                          reference=None,
+                                          inplace=False)
+            else:
+                coords = atomgroup.positions
+            chgs = atomgroup.charges
+
+            dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
+            for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                dipole_vector[compound_mask] = np.einsum('ijk,ijk->ik',
+                                                          (coords[atom_mask]-
+                                                           ref[compound_mask][:, None, :]),
+                                                          chgs[atom_mask][:, :, None])
+
+        return dipole_vector
+
+    transplants[GroupBase].append(('dipole_vector', dipole_vector))
+
+    def dipole_moment(group, **kwargs):
+        r"""Dipole moment of the group or compounds in a group.
+
+        .. math::
+            \mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }
+
+        Where :math:`D` is the number of dimensions, in this case 3.
+
+        Computes the dipole moment of :class:`Atoms<Atom>` in the group.
+        Dipole per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that when there is a net charge, the magnitude of the dipole 
+        moment is dependent on the `center` chosen. 
+        See :meth:`~dipole_vector`.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single dipole vector returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 2d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Dipole moment(s) of (compounds of) the group in :math:`eÅ`.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        atomgroup = group.atoms
+
+        dipole_vector = atomgroup.dipole_vector(**kwargs)
+
+        if len(dipole_vector.shape) > 1:
+            dipole_moment = np.sqrt(np.einsum('ij,ij->i',dipole_vector,dipole_vector))
+        else:
+            dipole_moment = np.sqrt(np.einsum('i,i->',dipole_vector,dipole_vector))
+
+        return dipole_moment
+
+    transplants[GroupBase].append(('dipole_moment', dipole_moment))
+
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def quadrupole_tensor(group,
+                          wrap=False,
+                          unwrap=False,
+                          compound='group',
+                          center="mass"):
+        r"""Traceless quadrupole tensor of the group or compounds.
+
+        This tensor is first computed as the outer product of vectors from
+        a reference point to some atom, and multiplied by the atomic charge.
+        The tensor of each atom is then summed to produce the quadrupole
+        tensor of the group:
+
+        .. math::
+            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \mathbf{r}_{COM} ) \otimes ( \mathbf{r}_{i} - \mathbf{r}_{COM} )
+
+        The traceless quadrupole tensor, :math:`\hat{\mathsf{Q}}`, is then
+        taken from:
+
+        .. math::
+            \hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2} 
+            tr(\mathsf{Q})
+
+        Computes the quadrupole tensor of :class:`Atoms<Atom>` in the group.
+        Tensor per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that when there is an unsymmetrical plane in the molecule or 
+        group, the magnitude of the quadrupole tensor is dependent on the 
+        ``center`` (e.g., :math:`\mathbf{r}_{COM}`) chosen and cannot be translated.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single quadrupole value returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 1d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Quadrupole tensor(s) of (compounds of) the group in :math:`eÅ^2`.
+            If `compound` was set to ``'group'``, the output will be a single
+            tensor of shape ``(3,3)``. Otherwise, the output will be a 1d array 
+            of shape ``(n,3,3)`` where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        def __quadrupole_tensor(recenteredpos, charges):
+            """ Calculate the traceless quadrupole tensor
+            """
+            if len(charges.shape) > 1:
+                charges = np.squeeze(charges)
+            tensor = np.einsum(
+                "ki,kj->ij",
+                recenteredpos,
+                np.einsum("ij,i->ij", recenteredpos, charges),
+            )
+            return 3 * tensor / 2 - np.identity(3) * np.trace(tensor) / 2
+
+        compound = compound.lower()
+
+        atomgroup = group.atoms
+        charges = atomgroup.charges
+
+        if center == "mass":
+            masses = atomgroup.masses
+            ref = atomgroup.center_of_mass(wrap=wrap,
+                                           unwrap=unwrap,
+                                           compound=compound)
+        elif center == "charge":
+            ref = atomgroup.center_of_charge(wrap=wrap,
+                                             unwrap=unwrap,
+                                             compound=compound)
+        else:
+            choices = ["mass", "charge"]
+            raise ValueError(
+                f"The quadrupole center, {center}, is not supported. Choose"
+                " one of: {choices}")
+
+        if compound == 'group':
+            if wrap:
+                recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
+            elif unwrap:
+                recenteredpos = (atomgroup.unwrap(
+                    inplace=False,
+                    compound=compound,
+                    reference=None,
+                ) - ref)
+            else:
+                recenteredpos = (atomgroup.positions - ref)
+            quad_tensor = __quadrupole_tensor(recenteredpos, charges)
+        else:
+            (atom_masks, compound_masks,
+             n_compounds) = atomgroup._split_by_compound_indices(compound)
+
+            if unwrap:
+                coords = atomgroup.unwrap(compound=compound,
+                                          reference=None,
+                                          inplace=False)
+            else:
+                coords = atomgroup.positions
+            chgs = atomgroup.charges
+
+            quad_tensor = np.empty((n_compounds, 3, 3), dtype=np.float64)
+            for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                quad_tensor[compound_mask, :, :] = [
+                    __quadrupole_tensor(coords[mask] - ref[compound_mask][i],
+                                 chgs[mask][:, None])
+                    for i, mask in enumerate(atom_mask)
+                ]
+
+        return quad_tensor
+
+    transplants[GroupBase].append(('quadrupole_tensor', quadrupole_tensor))
+
+    def quadrupole_moment(group, **kwargs):
+        r"""Quadrupole moment of the group according to :footcite:p:`Gray1984`.
+         
+        .. math::
+            Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}
+
+        where the quadrupole moment is calculated from the tensor double 
+        contraction of the traceless quadropole tensor :math:`\hat{\mathsf{Q}}`
+
+        Computes the quadrupole moment of :class:`Atoms<Atom>` in the group.
+        Quadrupole per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that when there is an unsymmetrical plane in the molecule or 
+        group, the magnitude of the quadrupole moment is dependant on the 
+        ``center`` chosen and cannot be translated.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single quadrupole value returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 1d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Quadrupole moment(s) of (compounds of) the group in :math:`eÅ^2`.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        atomgroup = group.atoms
+
+        def __quadrupole_moment(tensor):
+            return np.sqrt(2 * np.tensordot(tensor, tensor) / 3)
+
+        quad_tensor = atomgroup.quadrupole_tensor(**kwargs)
+
+        if len(quad_tensor.shape) == 2:
+            quad_moment = __quadrupole_moment(quad_tensor)
+        else:
+            quad_moment = np.array([__quadrupole_moment(x) for x in quad_tensor])
+
+        return quad_moment
+
+    transplants[GroupBase].append(('quadrupole_moment', quadrupole_moment))
+
+
+class FormalCharges(AtomAttr):
+    """Formal charge on each atom"""
+    attrname = 'formalcharges'
+    singular = 'formalcharge'
+    per_object = 'atom'
+    dtype = int
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
 
 # TODO: update docs to property doc
 class Occupancies(AtomAttr):
@@ -1849,7 +2576,7 @@ class Occupancies(AtomAttr):
 
 
 # TODO: update docs to property doc
-class AltLocs(_AtomStringAttr):
+class AltLocs(AtomStringAttr):
     """AltLocs for each atom"""
     attrname = 'altLocs'
     singular = 'altLoc'
@@ -1946,7 +2673,7 @@ class Epsilon14s(AtomAttr):
 
 
 class Aromaticities(AtomAttr):
-    """Aromaticity (RDKit)"""
+    """Aromaticity"""
     attrname = "aromaticities"
     singular = "aromaticity"
     per_object = "atom"
@@ -1955,6 +2682,13 @@ class Aromaticities(AtomAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na, dtype=bool)
+
+
+class RSChirality(AtomAttr):
+    """R/S chirality"""
+    attrname = 'chiralities'
+    singular= 'chirality'
+    dtype = 'U1'
 
 
 class ResidueAttr(TopologyAttr):
@@ -1990,6 +2724,19 @@ class ResidueAttr(TopologyAttr):
         raise _wronglevel_error(self, sg)
 
 
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
+class ResidueStringAttr(_StringInternerMixin, ResidueAttr):
+
+    @_check_length
+    def set_residues(self, ag, values):
+        return self._set_X(ag, values)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.full(nr, '', dtype=object)
+
+
 # TODO: update docs to property doc
 class Resids(ResidueAttr):
     """Residue ID"""
@@ -2002,65 +2749,8 @@ class Resids(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
-class _ResidueStringAttr(ResidueAttr):
-    def __init__(self, vals, guessed=False):
-        self._guessed = guessed
-
-        self.namedict = dict()  # maps str to nmidx
-        name_lookup = []  # maps idx to str
-        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
-
-        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
-        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
-
-        for i, val in enumerate(vals):
-            try:
-                self.nmidx[i] = self.namedict[val]
-            except KeyError:
-                nextidx = len(self.namedict)
-                self.namedict[val] = nextidx
-                name_lookup.append(val)
-
-                self.nmidx[i] = nextidx
-
-        self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]
-
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(nr)], dtype=object)
-
-    @_check_length
-    def set_residues(self, rg, values):
-        newnames = []
-
-        # two possibilities, either single value given, or one per Atom
-        if isinstance(values, str):
-            try:
-                newidx = self.namedict[values]
-            except KeyError:
-                newidx = len(self.namedict)
-                self.namedict[values] = newidx
-                newnames.append(values)
-        else:
-            newidx = np.zeros_like(values, dtype=int)
-            for i, val in enumerate(values):
-                try:
-                    newidx[i] = self.namedict[val]
-                except KeyError:
-                    nextidx = len(self.namedict)
-                    self.namedict[val] = nextidx
-                    newnames.append(val)
-                    newidx[i] = nextidx
-
-        self.nmidx[rg.ix] = newidx  # newidx either single value or same size array
-        if newnames:
-            self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]
-
-
 # TODO: update docs to property doc
-class Resnames(_ResidueStringAttr):
+class Resnames(ResidueStringAttr):
     attrname = 'resnames'
     singular = 'resname'
     transplants = defaultdict(list)
@@ -2141,9 +2831,20 @@ class Resnames(_ResidueStringAttr):
 
         :exc:`TypeError` if an unknown *format* is selected.
 
+        :exc:`ImportError` is the Biopython package is not available.
+
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 2.7.0
+           Biopython is now an optional dependency
         """
+        if not HAS_BIOPYTHON:
+            errmsg = ("The `sequence_alignment` method requires an "
+                      "installation of `Biopython`. Please install "
+                      "`Biopython` to use this method: "
+                      "https://biopython.org/wiki/Download")
+            raise ImportError(errmsg)
+
         formats = ('string', 'Seq', 'SeqRecord')
 
         format = kwargs.pop("format", "SeqRecord")
@@ -2179,14 +2880,14 @@ class Resnums(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
-class ICodes(_ResidueStringAttr):
+class ICodes(ResidueStringAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
     dtype = object
 
 
-class Moltypes(_ResidueStringAttr):
+class Moltypes(ResidueStringAttr):
     """Name of the molecule type
 
     Two molecules that share a molecule type share a common template topology.
@@ -2202,6 +2903,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     dtype = np.intp
+
 
 # segment attributes
 
@@ -2238,65 +2940,21 @@ class SegmentAttr(TopologyAttr):
         self.values[sg.ix] = values
 
 
-class _SegmentStringAttr(SegmentAttr):
-    def __init__(self, vals, guessed=False):
-        self._guessed = guessed
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
+class SegmentStringAttr(_StringInternerMixin, SegmentAttr):
 
-        self.namedict = dict()  # maps str to nmidx
-        name_lookup = []  # maps idx to str
-        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
-
-        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
-        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
-
-        for i, val in enumerate(vals):
-            try:
-                self.nmidx[i] = self.namedict[val]
-            except KeyError:
-                nextidx = len(self.namedict)
-                self.namedict[val] = nextidx
-                name_lookup.append(val)
-
-                self.nmidx[i] = nextidx
-
-        self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]
+    @_check_length
+    def set_segments(self, ag, values):
+        return self._set_X(ag, values)
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(nr)], dtype=object)
-
-    @_check_length
-    def set_segments(self, sg, values):
-        newnames = []
-
-        # two possibilities, either single value given, or one per Atom
-        if isinstance(values, str):
-            try:
-                newidx = self.namedict[values]
-            except KeyError:
-                newidx = len(self.namedict)
-                self.namedict[values] = newidx
-                newnames.append(values)
-        else:
-            newidx = np.zeros_like(values, dtype=int)
-            for i, val in enumerate(values):
-                try:
-                    newidx[i] = self.namedict[val]
-                except KeyError:
-                    nextidx = len(self.namedict)
-                    self.namedict[val] = nextidx
-                    newnames.append(val)
-                    newidx[i] = nextidx
-
-        self.nmidx[sg.ix] = newidx  # newidx either single value or same size array
-        if newnames:
-            self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]
+        return np.full(ns, '', dtype=object)
 
 
 # TODO: update docs to property doc
-class Segids(_SegmentStringAttr):
+class Segids(SegmentStringAttr):
     attrname = 'segids'
     singular = 'segid'
     transplants = defaultdict(list)
@@ -2317,6 +2975,7 @@ def _check_connection_values(func):
     .. versionadded:: 1.0.0
 
     """
+
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
         if not all(len(x) == self._n_atoms
@@ -2332,6 +2991,7 @@ def _check_connection_values(func):
             clean.append(tuple(v))
 
         return func(self, clean, *args, **kwargs)
+
     return wrapper
 
 
@@ -2342,11 +3002,14 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
     This class adds an ``intra_{attrname}`` property to groups
     to return only the connections within the atoms in the group.
     """
+
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
+        super().__init__(name, bases, classdict)
+
         attrname = classdict.get('attrname')
 
         if attrname is not None:
+
             def intra_connection(self, ag):
                 """Get connections only within this AtomGroup
                 """
@@ -2355,8 +3018,6 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
             method = MethodType(intra_connection, cls)
             prop = property(method, None, None, method.__doc__)
             cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
-
-        super().__init__(name, bases, classdict)
 
 
 class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):

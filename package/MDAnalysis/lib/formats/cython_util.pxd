@@ -20,5 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-cimport numpy as np
-cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type)
+cimport numpy as cnp
+cnp.import_array()
+cdef cnp.ndarray ptr_to_ndarray(void* data_ptr, cnp.int64_t[:] dim, int data_type)

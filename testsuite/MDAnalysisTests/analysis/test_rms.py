@@ -88,11 +88,15 @@ class Testrmsd(object):
                         center=False)
         assert_almost_equal(rmsd, 1.0)
 
-    def test_superposition(self, a, b, u):
+    @pytest.mark.parametrize('dtype', [np.float32, np.float64])
+    def test_superposition(self, a, b, u, dtype):
         bb = u.atoms.select_atoms('backbone')
         a = bb.positions.copy()
         u.trajectory[-1]
         b = bb.positions.copy()
+
+        a, b = a.astype(dtype), b.astype(dtype)
+
         rmsd = rms.rmsd(a, b, superposition=True)
         assert_almost_equal(rmsd, 6.820321761927005)
 
@@ -185,6 +189,13 @@ class TestRMSD(object):
     def test_rmsd(self, universe, correct_values):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
         RMSD.run(step=49)
+        assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
+                            err_msg="error: rmsd profile should match" +
+                            "test values")
+
+    def test_rmsd_frames(self, universe, correct_values):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
+        RMSD.run(frames=[0, 49])
         assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")

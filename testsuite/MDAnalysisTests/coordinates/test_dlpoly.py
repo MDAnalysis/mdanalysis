@@ -81,13 +81,13 @@ class TestConfigMinimal(_DLPConfig):
     def test_read_unitcell(self):
         pass
 
+    # cythonised class can no longer raise AttributeError
+    # so changed to test of has_... properties
     def test_velocities(self, ts):
-        with pytest.raises(AttributeError):
-            getattr(ts, "_velocities")
+        assert(ts.has_velocities == False)
 
     def test_forces(self, ts):
-        with pytest.raises(AttributeError):
-            getattr(ts, "_forces")
+        assert(ts.has_forces == False)
 
 
 class _DLPConfig2(object):

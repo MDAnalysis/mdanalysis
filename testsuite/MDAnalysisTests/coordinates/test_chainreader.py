@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import sys
+import platform
+import warnings
 import numpy as np
 import os
 
@@ -30,7 +33,9 @@ from numpy.testing import (assert_equal, assert_almost_equal)
 import MDAnalysis as mda
 from MDAnalysis.transformations import translate
 from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
-                                       GRO, XTC, TRR, PDB_small, PDB_closed)
+                                       GRO, XTC, TRR, PDB_small, PDB_closed,
+                                       LAMMPS_chain, LAMMPSDUMP_chain1,
+                                       LAMMPSDUMP_chain2,)
 from MDAnalysisTests.util import no_warning
 
 
@@ -172,6 +177,7 @@ class TestChainReader(object):
         transformed.trajectory.rewind()
         assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
 
+
 class TestChainReaderCommonDt(object):
     common_dt = 100.0
     prec = 3
@@ -201,6 +207,18 @@ class TestChainReaderFormats(object):
                                                                    'trr')])
         assert universe.trajectory.n_frames == 21
         assert_equal(universe.trajectory.filenames, [PDB, XTC, TRR])
+
+    def test_set_all_format_lammps(self):
+        universe = mda.Universe(
+            LAMMPS_chain, [LAMMPSDUMP_chain1, LAMMPSDUMP_chain2], 
+            format="LAMMPSDUMP", continuous=True)
+        assert universe.trajectory.n_frames == 11
+
+        # Test whether the amount of time between frames is consistently = 1
+        time_values = np.array([ts.time for ts in universe.trajectory])
+        dt_array = time_values[1:]-time_values[:-1]
+        assert np.unique(dt_array) == 1
+        assert_equal(time_values, np.arange(11))
 
     def test_set_format_tuples_and_format(self):
         universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
@@ -345,7 +363,16 @@ class TestChainReaderContinuous(object):
         sequences = ([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         with no_warning(UserWarning):
-            mda.Universe(utop._topology, fnames, continuous=True)
+            with warnings.catch_warnings():
+                # for windows Python 3.10 ignore:
+                # ImportWarning('_SixMetaPathImporter.find_spec() not found
+                # TODO: remove when we no longer have a dependency
+                # that still imports six
+                if sys.version_info >= (3, 10):
+                    warnings.filterwarnings(
+                            action='ignore',
+                            category=ImportWarning)
+                mda.Universe(utop._topology, fnames, continuous=True)
 
     def test_single_frames(self, tmpdir):
         folder = str(tmpdir)
@@ -399,3 +426,51 @@ def test_multilevel_arg_sort(l, ref):
 def test_filter_times(l, ref):
     indices = mda.coordinates.chain.filter_times(l, dt=1)
     assert_equal(indices, ref)
+
+
+def test_issue_4008():
+    # test for transformation on a chainreader trajectory
+    # in issue #4008 it was observed that the transformation did not work on
+    # the frames which were "borders" of the chained trajectories
+    def shift_by_group(ag):
+        # this just shifts all atoms in the box by their center of mass,
+        # i.e. afterwards the center of mass of all atoms should be [0,0,0]
+        def wrapped(ts):
+            shift = ag.center_of_mass()
+            ts.positions[:] -= shift
+            return ts
+
+        return wrapped
+
+    u = mda.Universe(GRO, [XTC, XTC])
+
+    trafos = (shift_by_group(u.atoms),)
+    u.trajectory.add_transformations(*trafos)
+    com = np.zeros((len(u.trajectory), 3))
+
+    for i, ts in enumerate(u.trajectory):
+        com[i] = u.atoms.center_of_mass()
+
+    # see issue for details, but in general the com shouldn't be far from zero
+    # in the issue report values of ~25 were seen before the fix
+    # with the fix all values should be <1e-6
+    assert np.abs(com).max() < 1e-6
+
+
+def test_issue_3349():
+    # test for repr of a chainreader when the subreaders are memoryreaders
+    cdx = np.random.random(3341 * 3 * 10)
+    cdx = cdx.reshape(-1, 3341, 3).astype(np.float32) * 10
+    u = mda.Universe(PSF, (cdx, DCD))
+    u2 = mda.Universe(PSF, (cdx, cdx, cdx, DCD))
+    u_expected_filenames = np.array([None, str(DCD)])
+    u2_expected_filenames = np.array([None, None, None, str(DCD)])
+
+    assert_equal("<ChainReader containing numpy.ndarray, adk_dims.dcd with " +
+                 "108 frames of 3341 atoms>",
+                 u.trajectory.__repr__())
+    assert_equal(u_expected_filenames, u.trajectory.filenames)
+    assert_equal("<ChainReader containing numpy.ndarray and 3 more with " +
+                 "128 frames of 3341 atoms>",
+                 u2.trajectory.__repr__())
+    assert_equal(u2_expected_filenames, u2.trajectory.filenames)

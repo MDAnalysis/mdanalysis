@@ -21,15 +21,25 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_equal
+import pickle
+from numpy.testing import assert_equal, assert_almost_equal
 import pytest
 
 import MDAnalysis as mda
-
+from MDAnalysis.core.topologyattrs import HAS_BIOPYTHON
 from MDAnalysisTests.datafiles import PSF, DCD
 
 
-class TestSequence(object):
+@pytest.mark.skipif(HAS_BIOPYTHON, reason="biopython is installed")
+def test_sequence_import_error():
+    p = mda.Universe(PSF, DCD).select_atoms('protein')
+    errmsg = "The `sequence_alignment` method requires an installation"
+    with pytest.raises(ImportError, match=errmsg):
+        _ = p.residues.sequence(format="string")
+
+
+@pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
+class TestSequence:
     # all tests are done with the AdK system (PSF and DCD) sequence:
     # http://www.uniprot.org/uniprot/P69441.fasta
     # >sp|P69441|KAD_ECOLI Adenylate kinase OS=Escherichia coli (strain K12) GN=adk PE=1 SV=1
@@ -281,3 +291,9 @@ class TestResidueGroup(object):
         prev_resids = [r.resid if r is not None else None for r in prev_res]
         assert_equal(len(prev_res), len(unsorted_rep_res))
         assert_equal(prev_resids, resids)
+
+    @pytest.mark.parametrize("selection", ("name CA", "segid 4AKE"))
+    def test_residuegroup_pickle(self, universe, selection):
+        seg_res = universe.select_atoms(selection).residues
+        seg = pickle.loads(pickle.dumps(seg_res))
+        assert_almost_equal(seg_res.atoms.positions, seg.atoms.positions)

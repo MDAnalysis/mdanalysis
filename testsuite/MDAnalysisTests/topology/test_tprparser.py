@@ -32,12 +32,14 @@ from MDAnalysis.tests.datafiles import (
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
     TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020, TPR2020Double,
-    TPR2021, TPR2021Double,
+    TPR2021, TPR2021Double, TPR2022RC1, TPR2023, TPR2024,
     TPR2016_bonded, TPR2018_bonded, TPR2019B3_bonded,
     TPR2020B2_bonded, TPR2020_bonded, TPR2020_double_bonded,
     TPR2021_bonded, TPR2021_double_bonded, TPR334_bonded,
+    TPR2022RC1_bonded, TPR2023_bonded, TPR2024_bonded,
     TPR_EXTRA_2021, TPR_EXTRA_2020, TPR_EXTRA_2018,
-    TPR_EXTRA_2016, TPR_EXTRA_407,
+    TPR_EXTRA_2016, TPR_EXTRA_407, TPR_EXTRA_2022RC1,
+    TPR_EXTRA_2023, TPR_EXTRA_2024,
     XTC,
 )
 from MDAnalysisTests.topology.base import ParserBase
@@ -53,6 +55,12 @@ BONDED_TPRS = (
     TPR2021_double_bonded,
     TPR2020_bonded,
     TPR2020_double_bonded,
+    TPR2022RC1_bonded,
+    TPR2023_bonded,
+    TPR2024_bonded,
+    TPR_EXTRA_2024,
+    TPR_EXTRA_2023,
+    TPR_EXTRA_2022RC1,
     TPR_EXTRA_2021,
     TPR_EXTRA_2020,
     TPR_EXTRA_2018,
@@ -63,10 +71,21 @@ BONDED_TPRS = (
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names', 'elements',
-                      'resids', 'resnames',
-                      'moltypes', 'molnums', 'charges',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        "ids",
+        "names",
+        "elements",
+        "resids",
+        "resnames",
+        "chainIDs",
+        "moltypes",
+        "molnums",
+        "charges",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+    ]
 
     def test_moltypes(self, top):
         moltypes = top.moltypes.values
@@ -76,6 +95,10 @@ class TPRAttrs(ParserBase):
         molnums = top.molnums.values
         assert_equal(molnums, self.ref_molnums)
         assert molnums.dtype == np.intp
+
+    def test_chainIDs(self, top):
+        if hasattr(self, "ref_chainIDs"):
+            assert_equal(self.ref_chainIDs, getattr(top, "chainIDs").name_lookup)
 
 
 class TestTPR(TPRAttrs):
@@ -103,12 +126,14 @@ class TestTPRGromacsVersions(TPRAttrs):
     expected_n_segments = 2
     ref_moltypes = np.array(['Protein_A'] * 129 + ['SOL'] * 101, dtype=object)
     ref_molnums = np.array([0] * 129 + list(range(1, 1 + 101)))
+    ref_chainIDs = ["Protein_A", "SOL"]
 
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
                             TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016,
                             TPR2018, TPR2019B3, TPR2020, TPR2020Double,
-                            TPR2021, TPR2021Double])
+                            TPR2021, TPR2021Double, TPR2022RC1, TPR2023,
+                            TPR2024])
     def filename(self, request):
         return request.param
 
@@ -235,6 +260,7 @@ def test_all_impropers(topology, impr):
 @pytest.fixture(params=(
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, TPR450, TPR451,
     TPR452, TPR453, TPR454, TPR502, TPR504, TPR505, TPR510, TPR2016, TPR2018,
+    TPR2023, TPR2024,
 ))
 def bonds_water(request):
     parser = MDAnalysis.topology.TPRParser.TPRParser(request.param).parse()

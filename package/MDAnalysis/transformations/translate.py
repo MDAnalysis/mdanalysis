@@ -44,7 +44,7 @@ from .base import TransformationBase
 
 class translate(TransformationBase):
     """
-    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
+    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.timestep.Timestep`
     instance by a given vector.
 
     Example
@@ -60,7 +60,7 @@ class translate(TransformationBase):
 
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    :class:`~MDAnalysis.coordinates.timestep.Timestep` object
 
 
     .. versionchanged:: 2.0.0
@@ -89,7 +89,7 @@ class translate(TransformationBase):
 
 class center_in_box(TransformationBase):
     """
-    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
+    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.timestep.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
     is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.
     If a point is given, the center of the atomgroup will be translated to this point instead.
@@ -120,7 +120,7 @@ class center_in_box(TransformationBase):
 
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    :class:`~MDAnalysis.coordinates.timestep.Timestep` object
 
 
     .. versionchanged:: 2.0.0
@@ -148,10 +148,10 @@ class center_in_box(TransformationBase):
         try:
             if self.center == 'geometry':
                 self.center_method = partial(self.ag.center_of_geometry,
-                                             pbc=pbc_arg)
+                                             wrap=pbc_arg)
             elif self.center == 'mass':
                 self.center_method = partial(self.ag.center_of_mass,
-                                             pbc=pbc_arg)
+                                             wrap=pbc_arg)
             else:
                 raise ValueError(f'{self.center} is valid for center')
         except AttributeError:

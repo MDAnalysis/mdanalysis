@@ -102,6 +102,7 @@ def uncomment(lines):
             yield stripped_line
         # if comment_position == 0, then the line is empty
 
+
 class XVGStep(base.AuxStep):
     """ AuxStep class for .xvg file format.
 
@@ -124,6 +125,7 @@ class XVGStep(base.AuxStep):
     --------
     :class:`~MDAnalysis.auxiliary.base.AuxStep`
     """
+
     def __init__(self, time_selector=0, data_selector=None, **kwargs):
         super(XVGStep, self).__init__(time_selector=time_selector,
                                       data_selector=data_selector,
@@ -156,8 +158,8 @@ class XVGStep(base.AuxStep):
 class XVGReader(base.AuxReader):
     """ Auxiliary reader to read data from an .xvg file.
 
-    Detault reader for .xvg files. All data from the file will be read and stored
-    on initialisation.
+    Default reader for .xvg files. All data from the file will be read and
+    stored on initialisation.
 
     Parameters
     ----------
@@ -187,9 +189,9 @@ class XVGReader(base.AuxReader):
         # remove comments before storing
         for i, line in enumerate(uncomment(lines)):
             if line.lstrip()[0] == '&':
-                # multiple data sets not supported; stop at the end of the first
+                # multiple data sets not supported; stop at end of first set
                 break
-            auxdata_values.append([float(l) for l in line.split()])
+            auxdata_values.append([float(val) for val in line.split()])
             # check the number of columns is consistent
             if len(auxdata_values[i]) != len(auxdata_values[0]):
                 raise ValueError('Step {0} has {1} columns instead of '
@@ -198,6 +200,9 @@ class XVGReader(base.AuxReader):
         self._auxdata_values = np.array(auxdata_values)
         self._n_steps = len(self._auxdata_values)
         super(XVGReader, self).__init__(**kwargs)
+
+    def _memory_usage(self):
+        return(self._auxdata_values.nbytes)
 
     def _read_next_step(self):
         """ Read next auxiliary step and update ``auxstep``.
@@ -247,18 +252,18 @@ class XVGReader(base.AuxReader):
         return self.auxstep
 
     def read_all_times(self):
-        """ Get list of time at each step.
+        """ Get NumPy array of time at each step.
 
         Returns
         -------
-        list of float
+        NumPy array of float
             Time at each step.
         """
-        return self._auxdata_values[:,self.time_selector]
+        return self._auxdata_values[:, self.time_selector]
 
 
 class XVGFileReader(base.AuxFileReader):
-    """ Auxiliary reader to read (step at a time) from an .xvg file.
+    """ Auxiliary reader to read (one step at a time) from an .xvg file.
 
     An alternative XVG reader which reads each step from the .xvg file as
     needed (rather than reading and storing all from the start), for a lower
@@ -288,7 +293,7 @@ class XVGFileReader(base.AuxFileReader):
         super(XVGFileReader, self).__init__(filename, **kwargs)
 
     def _read_next_step(self):
-        """ Read next recorded step in xvg file and update ``austep``.
+        """ Read next recorded step in xvg file and update ``auxstep``.
 
         Returns
         -------
@@ -320,9 +325,9 @@ class XVGFileReader(base.AuxFileReader):
                     # haven't set n_cols yet; set now
                     auxstep._n_cols = len(auxstep._data)
                 if len(auxstep._data) != auxstep._n_cols:
-                    raise ValueError('Step {0} has {1} columns instead of '
-                                     '{2}'.format(self.step, len(auxstep._data),
-                                                  auxstep._n_cols))
+                    raise ValueError(f'Step {self.step} has '
+                                     f'{len(auxstep._data)} columns instead '
+                                     f'of {auxstep._n_cols}')
                 return auxstep
             # line is comment only - move to next
             line = next(self.auxfile)
@@ -357,7 +362,7 @@ class XVGFileReader(base.AuxFileReader):
 
         Returns
         -------
-        list of float
+        NumPy array of float
             Time of each step
         """
         self._restart()

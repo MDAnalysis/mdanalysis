@@ -32,8 +32,8 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 This module implements the calculation of Mean Squared Displacements (MSDs)
 by the Einstein relation. MSDs can be used to characterize the speed at
 which particles move and has its roots in the study of Brownian motion.
-For a full explanation of the theory behind MSDs and the subsequent
-calculation of self-diffusivities the reader is directed to [Maginn2019]_.
+For a full explanation of the theory behind MSDs and the subsequent calculation
+of self-diffusivities the reader is directed to :footcite:p:`Maginn2019`.
 MSDs can be computed from the following expression, known as the
 **Einstein formula**:
 
@@ -86,14 +86,14 @@ First load all modules and test data
 
     import MDAnalysis as mda
     import MDAnalysis.analysis.msd as msd
-    from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
+    from MDAnalysis.tests.datafiles import RANDOM_WALK_TOPO, RANDOM_WALK
 
 Given a universe containing trajectory data we can extract the MSD
 analysis by using the class :class:`EinsteinMSD`
 
 .. code-block:: python
 
-    u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    u = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
     MSD = msd.EinsteinMSD(u, select='all', msd_type='xyz', fft=True)
     MSD.run()
 
@@ -141,8 +141,8 @@ determine self-diffusivity. This linear segment represents the so called
 excluded along with poorly averaged data at long time-lags. We can select the
 "middle" of the MSD by indexing the MSD and the time-lags. Appropriately
 linear segments of the MSD can be confirmed with a log-log plot as is often
-reccomended [Maginn2019]_ where the "middle" segment can be identified as
-having a slope of 1.
+reccomended :footcite:p:`Maginn2019` where the "middle" segment can be identified
+as having a slope of 1.
 
 .. code-block:: python
 
@@ -175,12 +175,35 @@ is used to demonstrate selection of a MSD segment.
     linear_model = linregress(lagtimes[start_index:end_index],
     				  		  msd[start_index:end_index])
     slope = linear_model.slope
-    error = linear_model.rvalue
+    error = linear_model.stderr
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
     D = slope * 1/(2*MSD.dim_fac)
 
 We have now computed a self-diffusivity!
 
+Combining Multiple Replicates
+--------------------------------
+It is common practice to combine replicates when calculating MSDs. An example
+of this is shown below using MSD1 and MSD2.
+
+.. code-block:: python
+
+    u1 = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
+    MSD1 = msd.EinsteinMSD(u1, select='all', msd_type='xyz', fft=True)
+    MSD1.run()
+
+    u2 = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
+    MSD2 = msd.EinsteinMSD(u2, select='all', msd_type='xyz', fft=True)
+    MSD2.run()
+
+    combined_msds = np.concatenate((MSD1.results.msds_by_particle,
+                                    MSD2.results.msds_by_particle), axis=1)
+    average_msd = np.mean(combined_msds, axis=1)
+
+The same cannot be achieved by concatenating the replicas in a single run as
+the jump between the last frame of the first trajectory and frame 0 of the
+next trajectory will lead to an artificial inflation of the MSD and hence
+any subsequent diffusion coefficient calculated.
 
 Notes
 _____
@@ -190,35 +213,21 @@ processing trajectories for computation of self-diffusivities.
 These include specific instructions around simulation settings, using
 unwrapped trajectories and maintaining a relatively small elapsed time between
 saved frames. Additionally, corrections for finite size effects are sometimes
-employed along with various means of estimating errors [Yeh2004]_ [Bulow2020]_.
-The reader is directed to the following review, which describes many of the
-common pitfalls [Maginn2019]_. There are other ways to compute
-self-diffusivity, such as from a Green-Kubo integral. At this point in time,
-these methods are beyond the scope of this module.
+employed along with various means of estimating errors
+:footcite:p:`Yeh2004,Bulow2020` The reader is directed to the following review,
+which describes many of the common pitfalls :footcite:p:`Maginn2019`. There are
+other ways to compute self-diffusivity, such as from a Green-Kubo integral. At
+this point in time, these methods are beyond the scope of this module.
 
 
 Note also that computation of MSDs is highly memory intensive. If this is
-proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords to control which frames are incorporated may be required.
+proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords
+to control which frames are incorporated may be required.
 
 References
 ----------
 
-.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R.,
-                Elliott, J. R. Best Practices for Computing Transport
-                Properties 1. Self-Diffusivity and Viscosity from Equilibrium
-                Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci.
-                2019, 1 (1).
-
-.. [Yeh2004] Yeh, I. C.; Hummer, G. System-Size Dependence of Diffusion
-                Coefficients and Viscosities from Molecular Dynamics
-                Simulations with Periodic Boundary Conditions.
-                J. Phys. Chem. B 2004, 108 (40), 15873–15879.
-
-.. [Bulow2020] von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic
-                Errors in Diffusion Coefficients from Long-Time Molecular
-                Dynamics Simulations at Constant Pressure. 2020.
-                arXiv:2003.09205 [Cond-Mat, Physics:Physics].
-
+.. footbibliography::
 
 
 Classes
@@ -235,6 +244,7 @@ import logging
 from ..due import due, Doi
 from .base import AnalysisBase
 from ..core import groups
+from tqdm import tqdm
 
 logger = logging.getLogger('MDAnalysis.analysis.msd')
 
@@ -372,7 +382,7 @@ class EinsteinMSD(AnalysisBase):
         """
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
-        for lag in lagtimes:
+        for lag in tqdm(lagtimes):
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
@@ -396,7 +406,7 @@ class EinsteinMSD(AnalysisBase):
                 or set fft=False""")
 
         positions = self._position_array.astype(np.float64)
-        for n in range(self.n_particles):
+        for n in tqdm(range(self.n_particles)):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)

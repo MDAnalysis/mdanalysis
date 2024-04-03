@@ -26,7 +26,8 @@ import os
 
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal
+    assert_almost_equal,
+    assert_allclose
 )
 import numpy as np
 
@@ -34,6 +35,26 @@ from MDAnalysisTests.coordinates.reference import RefTRZ
 from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
 
 
+def test_deprecated_trz_reader():
+    wmsg = "The TRZ reader is deprecated"
+
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        _ = mda.Universe(TRZ_psf, TRZ)
+
+
+def test_deprecated_trz_writer(tmpdir):
+    u = mda.Universe(two_water_gro)
+
+    wmsg = "The TRZ writer is deprecated"
+
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        with tmpdir.as_cwd():
+            with mda.coordinates.TRZ.TRZWriter('test.trz', len(u.atoms)) as W:
+                W.write(u)
+
+
+@pytest.mark.filterwarnings("ignore:The TRZ reader is deprecated")
+@pytest.mark.filterwarnings("ignore:The TRZ writer is deprecated")
 class TestTRZReader(RefTRZ):
     prec = 3
 
@@ -146,6 +167,7 @@ class TestTRZReader(RefTRZ):
         assert u2.dimensions is None
 
 
+@pytest.mark.filterwarnings("ignore:The TRZ writer is deprecated")
 class TestTRZWriter(RefTRZ):
     prec = 3
     writer = mda.coordinates.TRZ.TRZWriter
@@ -210,6 +232,7 @@ class TestTRZWriter(RefTRZ):
                 w.write(u.atoms)
 
 
+@pytest.mark.filterwarnings("ignore:The TRZ writer is deprecated")
 class TestTRZWriter2(object):
     @pytest.fixture()
     def u(self):
@@ -233,12 +256,12 @@ class TestTRZWriter2(object):
 
         u2 = mda.Universe(two_water_gro, outfile)
 
-        wmsg = ('dt information could not be obtained, defaulting to 0 ps. '
-                'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
+        wmsg = ('Reader has no dt information, set to 1.0 ps')
         with pytest.warns(UserWarning, match=wmsg):
-            assert_almost_equal(u2.trajectory.dt, 0)
+            assert_allclose(u2.trajectory.dt, 1.0)
 
 
+@pytest.mark.filterwarnings("ignore:The TRZ writer is deprecated")
 class TestWrite_Partial_Timestep(object):
     """Test writing a partial timestep made by passing only an atomgroup to
     Writer. (Issue 163)

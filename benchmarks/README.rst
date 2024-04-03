@@ -13,7 +13,7 @@ time points in its history (for different git commit
 hashes).
 
 To build / install Airspeed Velocity it should
-suffice to clone the `git repo`_, building the master
+suffice to clone the `git repo`_, building the develop
 branch with::
 
     python setup.py install --user

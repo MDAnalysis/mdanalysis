@@ -25,11 +25,13 @@
 import cython
 import numpy as np
 from .mdamath import triclinic_vectors
-cimport numpy as np
+cimport numpy as cnp
 cimport MDAnalysis.lib._cutil
-from MDAnalysis.lib._cutil cimport _dot ,_norm, _cross
+from MDAnalysis.lib._cutil cimport _dot, _norm, _cross
 
 from libcpp.vector cimport vector
+
+cnp.import_array()
 
 
 __all__ = ['augment_coordinates', 'undo_augment']
@@ -299,7 +301,7 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def undo_augment(np.intp_t[:] results, np.intp_t[:] translation, int nreal):
+def undo_augment(cnp.intp_t[:] results, cnp.intp_t[:] translation, int nreal):
     """Translate augmented indices back to original indices.
 
     Parameters

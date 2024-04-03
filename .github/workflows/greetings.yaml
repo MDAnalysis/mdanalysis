@@ -1,0 +1,20 @@
+name: First Time Contributor Greetings
+
+on:
+  pull_request_target:
+    types: [opened]
+    branches:
+      - develop
+
+jobs:
+  greeting:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        pr-message: 'Hello there first time contributor! Welcome to the MDAnalysis community! We ask that all contributors abide by our [Code of Conduct](https://www.mdanalysis.org/pages/conduct/) and that first time contributors introduce themselves on [GitHub Discussions](https://github.com/MDAnalysis/mdanalysis/discussions) so we can get to know you. You can learn more about [participating here](https://www.mdanalysis.org/#participating). Please also add yourself to `package/AUTHORS` as part of this PR.'

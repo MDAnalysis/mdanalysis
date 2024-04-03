@@ -34,6 +34,15 @@ Guesses the following attributes:
  - Masses
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
+
+Classes
+-------
+
+.. autoclass:: ConfigParser
+
+.. autoclass:: HistoryParser
+
+
 """
 import numpy as np
 
@@ -134,7 +143,7 @@ class HistoryParser(TopologyReaderBase):
             ids = []
 
             line = inf.readline()
-            while not len(line.split()) == 5:
+            while not (len(line.split()) == 4 or len(line.split()) == 5):
                 line = inf.readline()
                 if line == '':
                     raise EOFError("End of file reached when reading HISTORY.")

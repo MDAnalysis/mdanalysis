@@ -119,9 +119,11 @@ class TestParmedParserPSF(BaseTestParmedParser):
     expected_n_dihedrals = 8921
     expected_n_impropers = 541
     expected_n_cmaps = 212
-    elems_ranges = ((0, 3342),)
+    elems_ranges = ((100, 120),)
     # No atomic numbers set by parmed == no elements
-    expected_elems = (np.array(['' for i in range(3341)], dtype=object),)
+    expected_elems = (np.array(
+        ['N', 'H', 'C', 'H', 'C', 'H', 'H', 'C', 'H', 'C', 'H', 'H', 'H', 'C',
+         'H', 'H', 'H', 'C', 'O', 'N',], dtype=object),)
 
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 4

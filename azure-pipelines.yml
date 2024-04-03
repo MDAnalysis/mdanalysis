@@ -15,77 +15,120 @@ pr:
 
 
 jobs:
-- job: Windows
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
-  pool:
-    vmImage: 'VS2017-Win2016'
+- job: Azure_Tests
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/develop'))  # skip for PR merges
   variables:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Python37-32bit-full:
-          PYTHON_VERSION: '3.7'
-          PYTHON_ARCH: 'x86'
-        Python36-64bit-full:
-          PYTHON_VERSION: '3.6'
+        Win-Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
-        Python37-64bit-full:
-          PYTHON_VERSION: '3.7'
+          BUILD_TYPE: 'normal'
+          imageName: 'windows-2019'
+        Win-Python312-64bit-full:
+          PYTHON_VERSION: '3.12'
           PYTHON_ARCH: 'x64'
-        Python38-64bit-full:
-          PYTHON_VERSION: '3.8'
+          BUILD_TYPE: 'normal'
+          imageName: 'windows-2019'
+        Win-Python312-64bit-full-wheel:
+          PYTHON_VERSION: '3.12'
           PYTHON_ARCH: 'x64'
-        Python39-64bit-full:
-          PYTHON_VERSION: '3.9'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.26.0'
+          imageName: 'windows-2019'
+        Win-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.23.2'
+          imageName: 'windows-2019'
+        Linux-Python312-64bit-full-wheel:
+          PYTHON_VERSION: '3.12'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.26.0'
+          imageName: 'ubuntu-latest'
+        Linux-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.23.2'
+          imageName: 'ubuntu-latest'
+  pool:
+    vmImage: $(imageName)
   steps:
   - task: UsePythonVersion@0
     inputs:
       versionSpec: $(PYTHON_VERSION)
       addToPath: true
       architecture: $(PYTHON_ARCH)
+  # a PEP518 compliant wheel build shoud be
+  # able to build MDAnalysis in an isolated
+  # environment *before* any deps are installed
+  # "manually"
+  - powershell: |
+      cd package
+      python -m pip -v install .
+      cd ..
+    displayName: 'Build MDAnalysis (wheel)'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=h5py
+      python -m pip install --only-binary=scipy,h5py
       cython
       hypothesis
+      h5py>=2.10
       matplotlib
       numpy
+      packaging
       pytest
       pytest-cov
+      pytest-timeout
       pytest-xdist
       scikit-learn
-      scipy
-      h5py
       tqdm
       threadpoolctl
+      fasteners
     displayName: 'Install dependencies'
-  # TODO: recent rdkit is not on PyPI
+  # for wheel install testing, we pin to an
+  # older NumPy, the oldest version we support and that
+  # supports the Python version in use
+  # to check the ABI compatibility of our wheels
+  - script: >-
+      python -m pip install numpy==$(NUMPY_MIN)
+    displayName: 'pin to older NumPy (wheel test)'
+    condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
   - script: >-
       python -m pip install
       biopython
-      chemfiles>=0.9
+      "chemfiles>=0.10,<0.10.4"
       duecredit
-      gsd==1.9.3
+      "gsd>3.0.0"
       joblib
       GridDataFormats
       mmtf-python
       networkx
       parmed
+      pytng>=0.2.3
       tidynamics>=1.0.0
+      rdkit>=2020.03.1
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
+  - script: >-
+      pip list
+    displayName: 'List of installed dependencies'
   - powershell: |
-      cd package
-      python setup.py install
-      cd ..\testsuite
-      python setup.py install
-      cd ..
+      python -m pip install ./package
+      python -m pip install ./testsuite
     displayName: 'Build MDAnalysis'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
+  - powershell: pip list
+    displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
-      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n auto --timeout=200 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash

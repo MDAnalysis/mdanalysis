@@ -45,8 +45,10 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 
 See Also
 --------
+
 rdkit: rdkit_ is an open source cheminformatics toolkit with more mol2
        functionality
+
 
 .. _rdkit: http://www.rdkit.org/docs/GettingStartedInPython.html
 
@@ -125,6 +127,7 @@ import numpy as np
 
 from . import base
 from ..lib import util
+from MDAnalysis.lib.util import store_init_arguments
 
 
 class MOL2Reader(base.ReaderBase):
@@ -139,10 +142,13 @@ class MOL2Reader(base.ReaderBase):
        Ignores status bit strings
     .. versionchanged:: 2.0.0
        Bonds attribute is not added if no bonds are present in MOL2 file
+    .. versionchanged:: 2.2.0
+       Read MOL2 files with optional columns omitted.
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         """Read coordinates from `filename`.
 
@@ -203,7 +209,7 @@ class MOL2Reader(base.ReaderBase):
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+            aid, name, x, y, z, atom_type = a.split()[:6]
 
             #x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z

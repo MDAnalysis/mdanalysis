@@ -30,9 +30,8 @@ from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.base import Timestep
+from MDAnalysis.coordinates.timestep import Timestep
 from MDAnalysis.transformations import translate
-from MDAnalysis import NoDataError
 
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -393,7 +392,6 @@ class BaseReaderTest(object):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
             assert_array_almost_equal(ts.positions, idealcoords, decimal = ref.prec)
 
-
     def test_transformations_switch_frame(self, ref, transformed):
         # This test checks if the transformations are applied and if the coordinates
         # "overtransformed" on different situations
@@ -445,6 +443,84 @@ class BaseReaderTest(object):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
+
+    def test_frame_collect_all_same(self, reader):
+        # check that the timestep resets so that the base reference is the same
+        # for all timesteps in a collection with the exception of memoryreader
+        # and DCDReader
+        if isinstance(reader, mda.coordinates.memory.MemoryReader):
+            pytest.xfail("memoryreader allows independent coordinates")
+        if isinstance(reader, mda.coordinates.DCD.DCDReader):
+            pytest.xfail("DCDReader allows independent coordinates."
+                          "This behaviour is deprecated and will be changed"
+                          "in 3.0")
+        collected_ts = []
+        for i, ts in enumerate(reader):
+            collected_ts.append(ts.positions)
+        for array  in collected_ts:
+            assert_allclose(array, collected_ts[0])
+
+    @pytest.mark.parametrize('order', ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa'))
+    def test_timeseries_shape(self, reader, order):
+        timeseries = reader.timeseries(order=order)
+        a_index = order.index('a')
+        f_index = order.index('f')
+        c_index = order.index('c')
+        assert(timeseries.shape[a_index] == reader.n_atoms)
+        assert(timeseries.shape[f_index] == len(reader))
+        assert(timeseries.shape[c_index] == 3)
+
+    @pytest.mark.parametrize('slice', ([0,2,1], [0,10,2], [0,10,3]))
+    def test_timeseries_values(self, reader, slice):
+        ts_positions = []
+        if isinstance(reader, mda.coordinates.memory.MemoryReader):
+            pytest.xfail("MemoryReader uses deprecated stop inclusive"
+                         " indexing, see Issue #3893")
+        if slice[1] > len(reader):
+            pytest.skip("too few frames in reader")
+        for i in range(slice[0], slice[1], slice[2]):
+            ts = reader[i]
+            ts_positions.append(ts.positions.copy())
+        positions = np.asarray(ts_positions)
+        timeseries = reader.timeseries(start=slice[0], stop=slice[1],
+                                       step=slice[2], order='fac')
+        assert_allclose(timeseries, positions)
+
+    @pytest.mark.parametrize('asel', ("index 1", "index 2", "index 1 to 3"))
+    def test_timeseries_asel_shape(self, reader, asel):
+        atoms = mda.Universe(reader.filename).select_atoms(asel)
+        timeseries = reader.timeseries(atoms, order='fac')
+        assert(timeseries.shape[0] == len(reader))
+        assert(timeseries.shape[1] == len(atoms))
+        assert(timeseries.shape[2] == 3)
+
+    def test_timeseries_empty_asel(self, reader):
+        with pytest.warns(UserWarning,
+                          match="Empty string to select atoms, empty group returned."):
+            atoms = mda.Universe(reader.filename).select_atoms(None)
+        with pytest.raises(ValueError, match="Timeseries requires at least"):
+            reader.timeseries(asel=atoms)
+
+    def test_timeseries_empty_atomgroup(self, reader):
+        with pytest.warns(UserWarning,
+                          match="Empty string to select atoms, empty group returned."):
+            atoms = mda.Universe(reader.filename).select_atoms(None)
+        with pytest.raises(ValueError, match="Timeseries requires at least"):
+            reader.timeseries(atomgroup=atoms)
+
+    def test_timeseries_asel_warns_deprecation(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        with pytest.warns(DeprecationWarning, match="asel argument to"):
+            timeseries = reader.timeseries(asel=atoms, order='fac')
+
+    def test_timeseries_atomgroup(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        timeseries = reader.timeseries(atomgroup=atoms, order='fac')
+
+    def test_timeseries_atomgroup_asel_mutex(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        with pytest.raises(ValueError, match="Cannot provide both"):
+            timeseries = reader.timeseries(atomgroup=atoms, asel=atoms, order='fac')
 
 
 class MultiframeReaderTest(BaseReaderTest):
@@ -511,6 +587,16 @@ class MultiframeReaderTest(BaseReaderTest):
             assert_timestep_almost_equal(ts,
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
+
+    @pytest.mark.parametrize("accessor", [
+              lambda traj: traj[[0, 1, 2]],
+              lambda traj: traj[:3],
+              lambda traj: traj],
+              ids=["indexed", "sliced", "all"])
+    def test_iter_rewinds(self, reader, accessor):
+        for ts_indices in accessor(reader):
+            pass
+        assert_equal(ts_indices.frame, 0)
 
     #  To make sure we not only save the current timestep information,
     #  but also maintain its relative position.
@@ -650,9 +736,9 @@ def assert_timestep_equal(A, B, msg=''):
 
 
 def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
-    if not isinstance(A, Timestep):
+    if not isinstance(A, mda.coordinates.timestep.Timestep):
         raise AssertionError('A is not of type Timestep')
-    if not isinstance(B, Timestep):
+    if not isinstance(B, mda.coordinates.timestep.Timestep):
         raise AssertionError('B is not of type Timestep')
 
     if A.frame != B.frame:

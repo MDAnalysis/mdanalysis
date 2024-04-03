@@ -24,7 +24,7 @@ from numpy.testing import (
     assert_equal,
 )
 import pytest
-
+import pickle
 import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import PSF, DCD
@@ -54,3 +54,8 @@ def test_index(res):
 def test_atom_order(res):
     assert_equal(res.atoms.indices,
                  sorted(res.atoms.indices))
+
+
+def test_residue_pickle(res):
+    res_in = pickle.loads(pickle.dumps(res))
+    assert res_in == res

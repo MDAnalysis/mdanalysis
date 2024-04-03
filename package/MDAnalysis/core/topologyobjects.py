@@ -52,6 +52,8 @@ class TopologyObject(object):
        via the ``is_guessed`` managed property.
     .. versionadded:: 0.11.0
        Added the `value` method to return the size of the object
+    .. versionchanged:: 2.6.0
+       Updated Atom ID representation order to match that of AtomGroup indices
     """
     __slots__ = ("_ix", "_u", "btype", "_bondtype", "_guessed", "order")
 
@@ -116,13 +118,12 @@ class TopologyObject(object):
         return hash((self._u, tuple(self.indices)))
 
     def __repr__(self):
-        indices = (self.indices if self.indices[0] < self.indices[-1]
-                   else self.indices[::-1])
+        """Return representation in same order of AtomGroup indices"""
         return "<{cname} between: {conts}>".format(
             cname=self.__class__.__name__,
             conts=", ".join([
                 "Atom {0}".format(i)
-                for i in indices]))
+                for i in self.indices]))
 
     def __contains__(self, other):
         """Check whether an atom is in this :class:`TopologyObject`"""
@@ -445,7 +446,15 @@ class TopologyDict(object):
             except KeyError:
                 self.dict[btype] = [b]
 
-        self._removeDupes()
+        # Some force field types define bonds with a type
+        # (Ex. 1: 12 or 21), while others define with a tuple of atom types
+        # (Ex. 2: ("H", "O")  or ("O", "H")). If the bond type is a tuple
+        # then the bond types in our second example are equivalent and one
+        # should be removed. If the bonds are defined as an integer then
+        # our first example would also be combined if `_removeDupes()`
+        # is run.
+        if self.dict and isinstance(list(self.dict.keys())[0], tuple):
+            self._removeDupes()
 
     def _removeDupes(self):
         """Sorts through contents and makes sure that there are
@@ -685,7 +694,7 @@ class TopologyGroup(object):
         atom_idx = ag.indices
         # Create a list of boolean arrays,
         # each representing a column of bond indices.
-        seen = [np.in1d(col, atom_idx) for col in self._bix.T]
+        seen = [np.isin(col, atom_idx) for col in self._bix.T]
 
         # Create final boolean mask by summing across rows
         mask = func(seen, axis=0)

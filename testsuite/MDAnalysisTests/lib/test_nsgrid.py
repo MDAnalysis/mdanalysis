@@ -21,6 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+import os
+
 import pytest
 
 from collections import defaultdict, Counter
@@ -65,9 +67,11 @@ def test_pbc_box(box):
         nsgrid.FastNS(4.0, coords, box=box)
 
 
-@pytest.mark.parametrize('cutoff', [-4, 100000])
-def test_nsgrid_badcutoff(universe, cutoff):
-    with pytest.raises(ValueError):
+@pytest.mark.parametrize('cutoff, match', ((-4, "Cutoff must be positive"),
+                                           (100000,
+                                            "Cutoff 100000 too large for box")))
+def test_nsgrid_badcutoff(universe, cutoff, match):
+    with pytest.raises(ValueError, match=match):
         run_grid_search(universe, 0, cutoff)
 
 
@@ -371,3 +375,35 @@ def test_issue_2670():
 
     # should return the one atom overlap
     assert len(ag2.select_atoms('around 0.0 resid 3')) == 1
+
+
+def high_mem_tests_enabled():
+    """ Returns true if ENABLE_HIGH_MEM_UNIT_TESTS is set to true."""
+    env = os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS", default="false").lower()
+    if env == 'true':
+        return True
+    return False
+
+
+reason = ("Turned off by default. The test can be enabled by setting "
+          "the ENABLE_HIGH_MEM_UNIT_TESTS "
+          "environment variable. Make sure you have at least 10GB of RAM.")
+
+
+# Tests that with a tiny cutoff to box ratio, the number of grids is capped
+# to avoid indexing overflow. Expected results copied from test_nsgrid_search
+# with no box.
+@pytest.mark.skipif(not high_mem_tests_enabled(), reason=reason)
+def test_issue_3183():
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                                size=(100, 3)) * (10.)).astype(np.float32)
+    cutoff = 2.0
+    query = np.array([1., 1., 1.], dtype=np.float32).reshape((1, 3))
+    box = np.array([10000., 10000., 10000., 90., 90., 90.])
+
+    searcher = nsgrid.FastNS(cutoff, points, box)
+    searchresults = searcher.search(query)
+    indices = searchresults.get_pairs()[:, 1]
+    want_results = [3, 13, 24]
+    assert_equal(np.sort(indices), want_results)

@@ -39,6 +39,7 @@ from MDAnalysisTests.datafiles import (
     PDB_sameresid_diffresname,
     PDB_helix,
     PDB_elements,
+    PDB_charges,
 )
 from MDAnalysis.topology.PDBParser import PDBParser
 from MDAnalysis import NoDataError
@@ -325,3 +326,48 @@ def test_nobonds_error():
 
     with pytest.raises(NoDataError, match=errmsg):
         u.atoms.bonds
+
+
+def test_PDB_charges():
+    """The test checks whether formalcharges attribute are assigned
+    properly given a PDB file with a valid formal charges record.
+    """
+    u = mda.Universe(PDB_charges)
+    formal_charges = np.array([0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0], dtype=int)
+    assert_equal(u.atoms.formalcharges, formal_charges)
+
+
+PDB_charges_nosign = """\
+REMARK Invalid charge assignment - no sign for MG2+
+HETATM    1 CU    CU A   1      03.000  00.000  00.000  1.00 00.00          CU2+
+HETATM    2 FE    FE A   2      00.000  03.000  00.000  1.00 00.00          Fe2+
+HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          MG2
+END
+"""
+
+
+PDB_charges_invertsign = """\
+REMARK Invalid charge format for MG2+
+HETATM    1 CU    CU A   1      03.000  00.000  00.000  1.00 00.00          CU2+
+HETATM    2 FE    FE A   2      00.000  03.000  00.000  1.00 00.00          Fe2+
+HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          MG+2
+END
+"""
+
+
+@pytest.mark.parametrize('infile,entry', [
+        [PDB_charges_nosign, r'2'],
+        [PDB_charges_invertsign, r'\+2']
+])
+def test_PDB_bad_charges(infile, entry):
+    """
+    Test that checks that a warning is raised and formal charges are not set:
+        * If there are missing signs for a given formal charge entry
+        * If there is an unrecognised formal charge entry
+    """
+    wmsg = f"Unknown entry {entry} encountered in formal charge field."
+    with pytest.warns(UserWarning, match=wmsg):
+        u = mda.Universe(StringIO(infile), format='PDB')
+        assert not hasattr(u, 'formalcharges')

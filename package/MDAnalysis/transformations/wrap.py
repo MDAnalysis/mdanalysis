@@ -80,7 +80,7 @@ class wrap(TransformationBase):
     
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    MDAnalysis.coordinates.timestep.Timestep
 
 
     .. versionchanged:: 2.0.0
@@ -141,7 +141,7 @@ class unwrap(TransformationBase):
     
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    MDAnalysis.coordinates.timestep.Timestep
 
 
     .. versionchanged:: 2.0.0

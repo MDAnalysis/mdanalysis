@@ -71,7 +71,9 @@ not reflect in the results.
 .. versionadded:: 0.19.0
 .. versionchanged:: 1.0.2
    Rewrote module
-
+.. versionchanged:: 2.1.0
+   Capped max grid dimension to 1290, which when cubed is the max value of
+   a 32 bit signed integer.
 
 Classes
 -------
@@ -81,16 +83,20 @@ import numpy as np
 from libcpp.vector cimport vector
 from libc cimport math
 
-DEF END = -1
+cdef int END = -1
 
-DEF XX = 0
-DEF XY = 3
-DEF YY = 4
-DEF XZ = 6
-DEF YZ = 7
-DEF ZZ = 8
+cdef int XX = 0
+cdef int XY = 3
+cdef int YY = 4
+cdef int XZ = 6
+cdef int YZ = 7
+cdef int ZZ = 8
 
-ctypedef float coordinate[3];
+# Cube root of the maximum size of a 32 bit signed integer. If the system is divided into more
+# grids than this, integer overflow will occur.
+cdef int  MAX_GRID_DIM = 1290
+
+ctypedef float coordinate[3]
 
 cdef extern from "calc_distances.h" nogil:
     void _minimum_image_ortho_lazy(double* x, float* box, float* half_box)
@@ -306,7 +312,7 @@ cdef class FastNS(object):
 
         for i in range(3):
             self.dimensions[i] = box[i]
-            self.half_dimensions[i] = 0.5 * box[i];
+            self.half_dimensions[i] = 0.5 * box[i]
             self.inverse_dimensions[i] = 1.0 / box[i]
         self.dimensions[3] = box[3]
         self.dimensions[4] = box[4]
@@ -342,9 +348,11 @@ cdef class FastNS(object):
         # add 0.001 here to avoid floating point errors
         # will make cells slightly too large as a result, ah well
         min_cellsize += 0.001
-        self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / min_cellsize)
-        self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / min_cellsize)
-        self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / min_cellsize)
+        # If the cell size is too small, indexing overflow will occur. Limit the number
+        # of cells in any dimension to the cube root of the maximum of 32 bit integer values.
+        self.ncells[0] = <int> min(math.floor(self.triclinic_dimensions[XX] / min_cellsize), MAX_GRID_DIM)
+        self.ncells[1] = <int> min(math.floor(self.triclinic_dimensions[YY] / min_cellsize), MAX_GRID_DIM)
+        self.ncells[2] = <int> min(math.floor(self.triclinic_dimensions[ZZ] / min_cellsize), MAX_GRID_DIM)
 
         self.pbc = pbc
         # If there aren't enough cells in a given dimension it's equivalent to one
@@ -525,7 +533,7 @@ cdef class FastNS(object):
         cdef int xi, yi, zi
         cdef int cellcoord[3]
         cdef float tmpcoord[3]
-        
+
         cdef NSResults results = NSResults()
         cdef double d2, cutoff2
 
@@ -588,8 +596,6 @@ cdef class FastNS(object):
         """
         cdef int cx, cy, cz, ox, oy, oz
         cdef int ci, cj, i, j, nj
-        cdef int cellindex, cellindex_probe
-        cdef int xi, yi, zi
         cdef NSResults results = NSResults()
         cdef double d2
         cdef double cutoff2 = self.cutoff * self.cutoff

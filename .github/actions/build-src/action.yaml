@@ -1,0 +1,93 @@
+name: 'build-src'
+description: 'make source builds for CI'
+inputs:
+  build-tests:
+    description: 'build MDA tests'
+    required: true
+    default: true
+  build-docs:
+    description: 'build MDA docs'
+    required: true
+    default: false
+  isolation:
+    # Details on build isolation can be found here:
+    # https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/#build-isolation
+    #
+    # A short description of how this works in pratice is provided here:
+    # * If build isolation is on, pip will create wheels for MDAnalysis in a
+    #   fully isolated temporary environment hence making sure that build
+    #   requirements are handled independently of the runtime environment
+    #   (whatever is already in your Python PATH at the time of install).
+    #   For example, with build isolation on, you could have an old version
+    #   of NumPy available in your current Python environment, but build with
+    #   a much newer one.
+    # * If build isolation is off (through the --no-build-isolation flag), the
+    #   pip build system depends on what is currently avaiable in your Python
+    #   environment. So if NumPy is necessary and you have a version already
+    #   installed, it will just use that directly. There is a massive potential
+    #   for breaking an environment if misused, so this is very much advised
+    #   only in cases where you know exactly what your enviroment does / has
+    #   (such as the tests we run here).
+    #
+    # In practice we use build isolation in MDAnalysis CI when:
+    # * We are trying to test MDAnalysis with a different / older runtime
+    #   version of a key build dependency (e.g. NumPy).
+    # We don't use build isolation when:
+    # * We know we have already installed the required dependencies earlier
+    #   and we want to make sure that we use those dependnecies for the build
+    #   (e.g. we want to check that the packages we pulled for conda-forge
+    #    work for the build, not the ones from PyPi).
+    # * We want to test the build & runtime with a sepecial version of a
+    #   build dependency that won't get picked up by the pip install. For
+    #   example, when we use nightly wheels of NumPy.
+    descriptions: 'Use build isolation for pip installs, if false `--no-build-isolation` is used. '
+    required: true
+    default: true
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: echo_inputs
+      shell: bash -l {0}
+      run: |
+        echo ${{ inputs.build-tests }}
+        echo ${{ inputs.build-docs }}
+        echo ${{ inputs.isolation }}
+
+    - name: check_setup
+      shell: bash -l {0}
+      run: |
+        # Check OS and python setup prior to builds
+        echo "OS: ${OS_NAME}"
+        which python
+        which pip
+        pip list
+        micromamba info
+        micromamba list
+
+    - name: build_mda_main
+      shell: bash -l {0}
+      run: |
+        if [ "${{ inputs.isolation }}" == "false" ]; then
+          BUILD_FLAGS="--no-build-isolation"
+        fi
+        # install instead of develop would reduce coverage (for .pyx files)
+        python -m pip install ${BUILD_FLAGS} -v -e ./package
+
+    - name: build_mda_tests
+      if: ${{ inputs.build-tests == 'true' }}
+      shell: bash -l {0}
+      run: |
+        if [ "${{ inputs.isolation }}" == "false" ]; then
+          BUILD_FLAGS="--no-build-isolation"
+        fi
+        python -m pip install ${BUILD_FLAGS} -v -e ./testsuite
+
+    - name: build_docs
+      if: ${{ inputs.build-docs == 'true' }}
+      shell: bash -l {0}
+      run: |
+        SOURCEDIR="sphinx/source"
+        BUILDDIR="html"
+        cd package/doc && sphinx-build -T -E --keep-going -b html -D language=en ${SOURCEDIR} ${BUILDDIR}

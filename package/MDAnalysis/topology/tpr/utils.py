@@ -48,7 +48,7 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 
 import numpy as np
-import xdrlib
+from mda_xdrlib import xdrlib
 import struct
 
 from . import obj
@@ -67,6 +67,7 @@ from ...core.topologyattrs import (
     Moltypes,
     Molnums,
     Segids,
+    ChainIDs,
     Bonds,
     Angles,
     Dihedrals,
@@ -308,6 +309,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
 
     atomids = []
     segids = []
+    chainIDs = []
     resids = []
     resnames = []
     atomnames = []
@@ -328,11 +330,13 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         # naming is kind of arbitrary
         molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
         segid = f"seg_{i}_{molblock}"
+        chainID = molblock[14:] if molblock[:14] == "Protein_chain_" else molblock
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
                 atomids.append(atomkind.id + atom_start_ndx)
                 segids.append(segid)
+                chainIDs.append(chainID)
                 resids.append(atomkind.resid + res_start_ndx)
                 resnames.append(atomkind.resname.decode())
                 atomnames.append(atomkind.name.decode())
@@ -353,15 +357,6 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
             atom_start_ndx += mt.number_of_atoms()
             res_start_ndx += mt.number_of_residues()
 
-    # not useful here
-
-    # data.unpack_int()                         # mtop_natoms
-    # do_atomtypes(data)
-    # mtop_ffparams_cmap_grid_ngrid        = 0
-    # mtop_ffparams_cmap_grid_grid_spacing = 0.1
-    # mtop_ffparams_cmap_grid_cmapdata     = 'NULL'
-    # do_groups(data, symtab)
-
     atomids = Atomids(np.array(atomids, dtype=np.int32))
     atomnames = Atomnames(np.array(atomnames, dtype=object))
     atomtypes = Atomtypes(np.array(atomtypes, dtype=object))
@@ -371,6 +366,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     moltypes = np.array(moltypes, dtype=object)
     molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
+    chainIDs = np.array(chainIDs, dtype=object)
     resids = np.array(resids, dtype=np.int32)
     if tpr_resid_from_one:
         resids += 1
@@ -394,15 +390,28 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
 
     segidx, perseg_segids = squash_by(perres_segids)[:2]
     segids = Segids(perseg_segids)
+    chainIDs = ChainIDs(chainIDs)
 
-    top = Topology(len(atomids), len(new_resids), len(perseg_segids),
-                   attrs=[atomids, atomnames, atomtypes,
-                          charges, masses,
-                          residueids, residuenames,
-                          residue_moltypes, residue_molnums,
-                          segids],
-                   atom_resindex=residx,
-                   residue_segindex=segidx)
+    top = Topology(
+        len(atomids),
+        len(new_resids),
+        len(perseg_segids),
+        attrs=[
+            atomids,
+            atomnames,
+            atomtypes,
+            charges,
+            masses,
+            residueids,
+            residuenames,
+            residue_moltypes,
+            residue_molnums,
+            segids,
+            chainIDs,
+        ],
+        atom_resindex=residx,
+        residue_segindex=segidx,
+    )
     top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
     top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
     top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals
@@ -553,7 +562,8 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # thole.a
             data.unpack_real()  # thole.alpha1
             data.unpack_real()  # thole.alpha2
-            data.unpack_real()  # thole.rfac
+            if fver < setting.tpxv_RemoveTholeRfac:
+                data.unpack_real()  # thole.rfac
 
         elif i in [setting.F_LJ]:
             data.unpack_real()  # lj_c6
@@ -876,300 +886,3 @@ def do_blocka(data):
     ndo_int(data, block_nr + 1)
     ndo_int(data, block_nra)
     return block_nr, block_nra
-
-
-##############UTILS FOR INFORMATION NOT INTERESTED AT THE MOMENT###############
-
-def do_grps(data):  # pragma: no cover
-    grps_nr = []
-    myngrps = ngrps = setting.egcNR  # remind of version inconsistency
-    for j in range(ngrps):
-        if j < myngrps:
-            v = data.unpack_int()
-            grps_nr.append(v)
-        ndo_int(data, v)
-    return grps_nr
-
-
-def do_groups(data, symtab):  # pragma: no cover
-    do_grps(data)
-
-    ngrpname = data.unpack_int()
-    # do_strstr, list of indices of group name: e.g. System, Protein,
-    # Protein-H, etc. use symtab[i] to check
-    ndo_int(data, ngrpname)
-
-    ngrpnr = []
-    grpnr = []
-    for i in range(setting.egcNR):
-        x = data.unpack_int()
-        ngrpnr.append(x)
-        if x == 0:
-            grpnr.append(None)
-        else:
-            l_ = []
-            for i in range(x):
-                l_.append(data.unpack_uint())
-            grpnr.append(l_)
-    # print ngrpnr
-    # print [len(i) for i in grpnr if i]
-    return
-
-
-def do_atomtypes(data):  # pragma: no cover
-    at_nr = data.unpack_int()  # at: atomtype
-    at_radius = ndo_real(data, at_nr)
-    at_vol = ndo_real(data, at_nr)
-    at_surftens = ndo_real(data, at_nr)
-    at_atomnumber = ndo_int(data, at_nr)
-    return at_radius, at_vol, at_surftens, at_atomnumber
-
-
-def do_inputrec(data):  # pragma: no cover
-    """Read through header information from TPR file *data* structure.
-
-    Note that this function does not return any useful data itself. If
-    your are interested in using the header information, use this
-    functions as a starting point for your own code.
-    """
-    data.unpack_int()  # ir_eI
-    data.unpack_int()  # ir_nsteps = idum
-    data.unpack_int()  # ir_init_step = idum =
-
-    data.unpack_int()  # simulation_part
-    # not relevant here
-    # ir_nstcalcenergy = 1
-
-    data.unpack_int()  # ir_ns_type
-    data.unpack_int()  # ir_nslist
-    data.unpack_int()  # ir_ndelta
-
-    data.unpack_real()  # ir_rtpi
-    data.unpack_int()  # ir_nstcomm
-    abs(data.unpack_int())  # ir_comm_mode
-
-    data.unpack_int()  # ir_nstcheckpoint
-    data.unpack_int()  # ir_nstcgsteep
-    data.unpack_int()  # ir_nbfgscorr
-
-    data.unpack_int()  # ir_nstlog
-    data.unpack_int()  # ir_nstxout
-    data.unpack_int()  # ir_nstvout
-    data.unpack_int()  # ir_nstfout
-    data.unpack_int()  # ir_nstenergy
-    data.unpack_int()  # ir_nstxtcout
-
-    data.unpack_real()  # ir_init_t = rdum =
-    data.unpack_real()  # ir_delta_t = rdum =
-
-    data.unpack_real()  # ir_xtcprec
-    ir_rlist = data.unpack_real()
-
-    data.unpack_int()  # ir_coulombtype
-    data.unpack_real()  # ir_rcoulomb_switch
-    ir_rcoulomb = data.unpack_real()
-
-    data.unpack_int()  # ir_rvdwtype
-    data.unpack_real()  # ir_rvdw_switch
-    ir_rvdw = data.unpack_real()
-
-    max(ir_rlist, max(ir_rvdw, ir_rcoulomb))  # ir_rlistlong
-
-    data.unpack_int()  # ir_eDispCorr
-    data.unpack_real()  # ir_epsilon_r
-    data.unpack_real()  # ir_epsilon_rf
-
-    data.unpack_real()  # ir_tabext
-
-    data.unpack_int()  # ir_gb_algorithm
-    data.unpack_int()  # ir_nstgbradii
-    data.unpack_real()  # ir_rgbradii
-    data.unpack_real()  # ir_gb_saltconc
-    data.unpack_int()  # ir_implicit_solvent
-
-    data.unpack_real()  # ir_gb_epsilon_solvent
-    data.unpack_real()  # ir_gb_obc_alpha
-    data.unpack_real()  # ir_gb_obc_beta
-    data.unpack_real()  # ir_gb_obc_gamma
-
-    # not relevant here
-    # ir_gb_dielectric_offset = 0.009
-    # ir_sa_algorithm = 0                                     # esaAPPROX
-
-    data.unpack_real()  # ir_sa_surface_tension
-
-    data.unpack_int()  # ir_nkx
-    data.unpack_int()  # ir_nky
-    data.unpack_int()  # ir_nkz
-    data.unpack_int()  # ir_pme_order
-    data.unpack_real()  # ir_ewald_rtol
-    data.unpack_int()  # ir_ewald_geometry
-
-    data.unpack_real()  # ir_epsilon_surface
-
-    data.unpack_bool()  # ir_bOptFFT
-    data.unpack_bool()  # ir_bContinuation
-    data.unpack_int()  # ir_etc
-
-    # not relevant here
-    # ir_nsttcouple = ir_nstcalcenergy
-
-    data.unpack_int()  # ir_epcpressure coupling
-    data.unpack_int()  # ir_epctepctype, e.g. isotropic
-
-    # not relevant here
-    # ir_nstpcouple = ir_nstcalcenergy
-    data.unpack_real()  # tau_p
-
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_ref_p_XX
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_ref_p_YY
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_ref_p_ZZ
-
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_compress_XX
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_compress_YY
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_compress_ZZ
-
-    data.unpack_int()  # ir_refcoord_scaling
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_posres_com
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_posres_comB
-
-    data.unpack_int()  # ir_andersen_seed
-    data.unpack_real()  # ir_shake_tol
-    data.unpack_int()  # ir_efep
-
-    data.unpack_real()  # ir_init_lambda = rdum =
-    data.unpack_real()  # ir_delta_lambda = rdum =
-
-    # Not relevant here
-    # ir_n_flambda = 0
-    # ir_flambda   = None
-
-    data.unpack_real()  # ir_sc_alpha
-    data.unpack_int()  # ir_sc_power
-    data.unpack_real()  # ir_sc_sigma
-
-    # not relevant here
-    # ir_sc_sigma_min = 0
-    # ir_nstdhdl = 1
-    # ir_separate_dhdl_file  = 0                            # epdhdlfileYES;
-    # ir_dhdl_derivatives = 0                               # dhdlderivativesYES
-    # ir_dh_hist_size    = 0
-    # ir_dh_hist_spacing = 0.1
-
-    data.unpack_int()  # ir_eDisre
-    data.unpack_int()  # ir_eDisre_weighting
-    data.unpack_bool()  # ir_bDisreMixed
-
-    data.unpack_real()  # ir_dr_fc
-    data.unpack_real()  # ir_dr_tau
-    data.unpack_int()  # ir_nstdisreout
-
-    data.unpack_real()  # ir_orires_fc
-    data.unpack_real()  # ir_orires_tau
-    data.unpack_int()  # ir_nstorireout
-
-    data.unpack_real()  # ir_dihre_fc
-
-    data.unpack_real()  # ir_em_stepsize
-    data.unpack_real()  # ir_em_tol
-
-    data.unpack_bool()  # ir_bShakeSOR
-    data.unpack_int()  # ir_niter
-
-    data.unpack_real()  # ir_fc_stepsize
-
-    data.unpack_int()  # ir_eConstrAlg
-    data.unpack_int()  # ir_nProjOrder
-    data.unpack_real()  # ir_LincsWarnAngle
-    data.unpack_int()  # ir_nLincsIter
-
-    data.unpack_real()  # ir_bd_fric
-    data.unpack_int()  # ir_ld_seed
-
-    ndo_rvec(data, setting.DIM)  # ir_deform
-
-    data.unpack_real()  # ir_cos_accel
-
-    data.unpack_int()  # ir_userint1
-    data.unpack_int()  # ir_userint2
-    data.unpack_int()  # ir_userint3
-    data.unpack_int()  # ir_userint4
-    data.unpack_real()  # ir_userreal1
-    data.unpack_real()  # ir_userreal2
-    data.unpack_real()  # ir_userreal3
-    data.unpack_real()  # ir_userreal4
-
-    # pull_stuff
-    data.unpack_int()  # ir_ePull
-
-    # grpopts stuff
-    ir_opts_ngtc = data.unpack_int()
-    # not relevant here
-    # ir_opts_nhchainlength = 1
-
-    ir_opts_ngacc = data.unpack_int()
-    ir_opts_ngfrz = data.unpack_int()
-    ir_opts_ngener = data.unpack_int()
-
-    ndo_real(data, ir_opts_ngtc)  # ir_nrdf
-    ndo_real(data, ir_opts_ngtc)  # ir_ref_t
-    ndo_real(data, ir_opts_ngtc)  # ir_tau_t
-
-    if ir_opts_ngfrz > 0:
-        ndo_ivec(data, ir_opts_ngfrz)  # ir_opts_nFreeze
-
-    if ir_opts_ngacc > 0:
-        ndo_rvec(data, ir_opts_ngacc)  # ir_opts_acc
-
-    ndo_int(data, ir_opts_ngener ** 2)  # ir_opts_egp_flags
-    ndo_int(data, ir_opts_ngtc)  # ir_opts_annealing
-    ir_opts_anneal_npoints = ndo_int(data, ir_opts_ngtc)
-
-    ir_opts_anneal_time = []
-    ir_opts_anneal_temp = []
-    for j in range(ir_opts_ngtc):
-        k = ir_opts_anneal_npoints[j]
-        ir_opts_anneal_time.append(ndo_int(data, k))
-        ir_opts_anneal_temp.append(ndo_int(data, k))
-
-    # Walls
-    data.unpack_int()  # ir_nwall
-    data.unpack_int()  # ir_nwall_type
-    data.unpack_real()  # ir_wall_r_linpot
-
-    # ir->wall_atomtype[0], ir->wall_atomtype[1]
-    ir_wall_atomtype = []
-    ir_wall_atomtype.append(data.unpack_int())
-    ir_wall_atomtype.append(data.unpack_int())
-
-    # ir->wall_density[0], ir->wall_density[1]
-    ir_wall_density = []
-    ir_wall_density.append(data.unpack_real())
-    ir_wall_density.append(data.unpack_real())
-
-    data.unpack_real()  # ir_wall_ewald_zfac
-
-    # cosine stuff for electric fields
-    ir_ex_n, ir_et_n, ir_ex_a, ir_ex_phi, ir_et_a, ir_et_phi = [], [], [], [], [], []
-    for j in range(setting.DIM):
-        x = data.unpack_int()
-        ir_ex_n.append(x)
-        y = data.unpack_int()
-        ir_et_n.append(y)
-
-        ir_ex_a.append(ndo_real(data, x))
-        ir_ex_phi.append(ndo_real(data, x))
-        ir_et_a.append(ndo_real(data, y))
-        ir_et_phi.append(ndo_real(data, y))
-
-    # QMM stuff
-    data.unpack_bool()  # ir_bQMMM
-    data.unpack_int()  # ir_bQMMMscheme
-    data.unpack_real()  # ir_scalefactor
-    data.unpack_int()  # ir_opts_ngQM
-
-    # if ir_opts_ngQM > 0:
-    # do_something
-
-    # indicating the parsing finishes properly
-    data.done()

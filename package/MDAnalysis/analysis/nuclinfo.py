@@ -29,7 +29,7 @@ Nucleic acid analysis --- :mod:`MDAnalysis.analysis.nuclinfo`
 :Year: 2011
 :Copyright: GNU Public License v3
 
-The module provides functions to analyze nuclic acid structures, in
+The module provides functions to analyze nucleic acid structures, in
 particular
 
 - backbone dihedrals,
@@ -37,7 +37,8 @@ particular
 - AS or CP phase angles,
 - Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances.
 
-For applications of this kind of analysis see [Denning2011]_ and [Denning2012]_.
+For applications of this kind of analysis see
+:footcite:p:`Denning2011,Denning2012`.
 
 All functions take a :class:`~MDAnalysis.core.universe.Universe` as an
 argument together with further parameters that specify the base or bases in
@@ -47,19 +48,7 @@ nucleic acids and atom names.
 
 .. rubric:: References
 
-.. [Denning2011] E.J. Denning, U.D. Priyakumar, L. Nilsson, and A.D. Mackerell, Jr. Impact of
-              2'-hydroxyl sampling on the conformational properties of RNA: update of the
-              CHARMM all-atom additive force field for RNA. *J. Comput. Chem.* 32 (2011),
-              1929--1943. doi: `10.1002/jcc.21777`_
-
-.. [Denning2012] E.J. Denning and A.D. MacKerell, Jr. Intrinsic Contribution of the 2'-Hydroxyl to
-              RNA Conformational Heterogeneity. *J. Am. Chem. Soc.* 134 (2012), 2800--2806.
-              doi: `10.1021/ja211328g`_
-
-
-.. _`10.1002/jcc.21777`: http://dx.doi.org/10.1002/jcc.21777
-.. _`10.1021/ja211328g`: http://dx.doi.org/10.1021/ja211328g
-
+.. footbibliography::
 
 Distances
 ---------

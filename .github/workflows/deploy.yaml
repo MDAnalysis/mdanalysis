@@ -1,0 +1,295 @@
+name: Build and upload to PyPI
+
+on:
+  pull_request:
+    branches:
+      - "package-*"
+  push:
+    branches:
+      - "package-*"
+    tags:
+      - "package-*"
+  release:
+    types:
+      - published
+  schedule:
+    # 3 am Tuesdays and Fridays
+    - cron: "0 3 * * 2,5"
+
+
+concurrency:
+  group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
+  cancel-in-progress: true
+
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+
+jobs:
+  build_wheels:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    name: Build wheels
+    runs-on: ${{ matrix.buildplat[0] }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        buildplat:
+          - [ubuntu-22.04, manylinux_x86_64, x86_64]
+          - [macos-11, macosx_*, x86_64]
+          - [windows-2019, win_amd64, AMD64]
+          - [macos-14, macosx_*, arm64]
+        python: ["cp39", "cp310", "cp311", "cp312"]
+    defaults:
+      run:
+        working-directory: ./package
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.16.5
+        with:
+          package-dir: package
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_ARCHS: ${{ matrix.buildplat[2] }}
+          CIBW_BUILD_VERBOSITY: 1
+
+      - name: upload artifacts
+        if: |
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
+          (github.event_name == 'release' && github.event.action == 'published')
+        uses: actions/upload-artifact@v3
+        with:
+          path: wheelhouse/*.whl
+          retention-days: 7
+
+  build_sdist:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    name: build package source distribution
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./package
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - name: upload artifacts
+        if: |
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
+          (github.event_name == 'release' && github.event.action == 'published')
+        uses: actions/upload-artifact@v3
+        with:
+          path: package/dist/*.tar.gz
+          retention-days: 7
+
+  build_sdist_tests:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    name: build test source distribution
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ./testsuite
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - name: upload artifacts
+        if: |
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
+          (github.event_name == 'release' && github.event.action == 'published')
+        uses: actions/upload-artifact@v3
+        with:
+          path: testsuite/dist/*.tar.gz
+          retention-days: 7
+
+  upload_testpypi_mdanalysis:
+    if: |
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
+    name: testpypi_upload_mdanalysis
+    environment:
+      name: deploy
+      url: https://test.pypi.org/p/mdanalysis
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: [build_wheels, build_sdist, build_sdist_tests]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: move_test_dist
+        run: |
+          mkdir -p testsuite/dist
+          mv dist/MDAnalysisTests-* testsuite/dist
+
+      - name: upload_source_and_wheels
+        uses: pypa/gh-action-pypi-publish@v1.8.10
+        with:
+          skip_existing: true
+          repository_url: https://test.pypi.org/legacy/
+
+  upload_testpypi_mdanalysistests:
+    if: |
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
+    name: testpypi_upload_mdanalysistests
+    environment:
+      name: deploy
+      url: https://test.pypi.org/p/mdanalysis
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: [build_wheels, build_sdist, build_sdist_tests]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: move_test_dist
+        run: |
+          mkdir -p testsuite/dist
+          mv dist/MDAnalysisTests-* testsuite/dist
+
+      - name: upload_tests
+        uses: pypa/gh-action-pypi-publish@v1.8.10
+        with:
+          packages_dir: testsuite/dist
+          skip_existing: true
+          repository_url: https://test.pypi.org/legacy/
+ 
+  upload_pypi_mdanalysis:
+    if: |
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      github.event_name == 'release' && github.event.action == 'published'
+    name: pypi_upload_mdanalysis
+    environment:
+      name: deploy
+      url: https://pypi.org/p/mdanalysis
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: [build_wheels, build_sdist, build_sdist_tests]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: move_test_dist
+        run: |
+          mkdir -p testsuite/dist
+          mv dist/MDAnalysisTests-* testsuite/dist
+
+      - name: upload_source_and_wheels
+        uses: pypa/gh-action-pypi-publish@v1.8.10
+
+  upload_pypi_mdanalysistests:
+    if: |
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      github.event_name == 'release' && github.event.action == 'published'
+    name: pypi_upload_mdanalysistests
+    environment:
+      name: deploy
+      url: https://pypi.org/p/mdanalysistests
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    needs: [build_wheels, build_sdist, build_sdist_tests]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: move_test_dist
+        run: |
+          mkdir -p testsuite/dist
+          mv dist/MDAnalysisTests-* testsuite/dist
+
+      - name: upload_tests
+        uses: pypa/gh-action-pypi-publish@v1.8.10
+        with:
+          packages_dir: testsuite/dist
+
+  check_testpypi:
+    if: |
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
+    name: testpypi check
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    needs: [upload_testpypi_mdanalysis, upload_testpypi_mdanalysistests]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+        type: ["FULL", "MIN"]
+        exclude:
+          # Multiple deps don't like windows
+          - os: windows-latest
+            type: "FULL"
+    env:
+      MPLBACKEND: agg
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup_micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-name: mda
+          create-args: >-
+            python=${{ matrix.python-version }}
+            packaging
+            pip
+          # jaime's shim to avoid pulling down the cudatoolkit
+          # bioconda for clustalw things
+          condarc: |
+            channels:
+              - jaimergp/label/unsupported-cudatoolkit-shim
+              - conda-forge
+              - bioconda
+
+      - name: install_full_deps
+        uses: ./.github/actions/setup-deps
+        if: "matrix.type == 'FULL'"
+        with:
+          micromamba: true
+          full-deps: true
+
+      - name: pip_install_mda
+        run: |
+          awk '/__version__ =/ {print $3; exit}' package/MDAnalysis/version.py | tr -d \" > version.dat
+          ver=$(python maintainer/norm_version.py --file version.dat)
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis==$ver
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests==$ver
+
+      - name: install_min_deps
+        if: "matrix.type == 'MIN'"
+        run: |
+          pip install pytest-xdist pytest-timeout
+
+      - name: run_tests
+        run: |
+          pytest --timeout=200 -n auto --pyargs MDAnalysisTests

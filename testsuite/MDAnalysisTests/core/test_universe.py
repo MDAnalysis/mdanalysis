@@ -27,6 +27,7 @@ import subprocess
 import errno
 from collections import defaultdict
 from io import StringIO
+import warnings
 
 import numpy as np
 from numpy.testing import (
@@ -55,7 +56,8 @@ from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysis.core.topologyattrs import _AtomStringAttr
+from MDAnalysis.core.topologyattrs import AtomStringAttr
+from MDAnalysisTests.util import get_userid
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -152,6 +154,8 @@ class TestUniverseCreation(object):
             else:
                 raise AssertionError
 
+    @pytest.mark.skipif(get_userid() == 0,
+                        reason="cannot permisssionerror as root")
     def test_Universe_invalidpermissionfile_IE_msg(self, tmpdir):
         # check for file with invalid permissions (eg. no read access)
         with tmpdir.as_cwd():
@@ -397,7 +401,7 @@ class TestGuessBonds(object):
      - fail properly if not
      - work again if vdwradii are passed.
     """
-    @pytest.fixture()
+    @pytest.fixture(scope='module')
     def vdw(self):
         return {'A': 1.4, 'B': 0.5}
 
@@ -423,7 +427,7 @@ class TestGuessBonds(object):
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
         with pytest.raises(ValueError):
-            mda.Universe(two_water_gro_nonames, guess_bonds = True)
+            mda.Universe(two_water_gro_nonames, guess_bonds=True)
 
     def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
@@ -439,6 +443,17 @@ class TestGuessBonds(object):
         for attr in ('bonds', 'angles', 'dihedrals'):
             assert not hasattr(u, attr)
         assert not u.kwargs['guess_bonds']
+
+    def test_universe_guess_bonds_arguments(self):
+        """Test if 'fudge_factor', and 'lower_bound' parameters
+        are being passed correctly.
+        """
+        u = mda.Universe(two_water_gro, guess_bonds=True)
+        
+        self._check_universe(u)
+        assert u.kwargs["guess_bonds"]
+        assert u.kwargs["fudge_factor"]
+        assert u.kwargs["lower_bound"]
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
@@ -457,13 +472,25 @@ class TestGuessBonds(object):
         assert_equal(len(u.atoms[4].bonds), 0)
         assert_equal(len(u.atoms[5].bonds), 0)
 
-    def test_atomgroup_guess_bonds(self):
+    @pytest.mark.parametrize(
+        'ff, lb, nbonds',
+        [
+            (0.55, 0.1, 2), (0.9, 1.6, 1),
+            (0.5, 0.2, 2), (0.1, 0.1, 0)
+        ]
+    )
+    def test_atomgroup_guess_bonds(self, ff, lb, nbonds):
         """Test an atomgroup doing guess bonds"""
         u = mda.Universe(two_water_gro)
 
         ag = u.atoms[:3]
-        ag.guess_bonds()
-        self._check_atomgroup(ag, u)
+        ag.guess_bonds(fudge_factor=ff, lower_bound=lb)
+        # Apply '_check_atomgroup()' only in case of default values for
+        # 'fudge_factor', and 'lower_bound' arguments to avoid unnecessary
+        # errors.
+        if ff == 0.55 and lb == 0.1:
+            self._check_atomgroup(ag, u)
+        assert len(ag.bonds) == nbonds
 
     def test_atomgroup_guess_bonds_no_vdwradii(self):
         u = mda.Universe(two_water_gro_nonames)
@@ -601,6 +628,14 @@ class TestInMemoryUniverse(object):
                      (3341, 78, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
+    def test_transfer_to_memory_kwargs(self):
+        u = mda.Universe(PSF, DCD)
+        u.transfer_to_memory(example_kwarg=True)
+        assert(u.trajectory._kwargs['example_kwarg'])
+
+    def test_in_memory_kwargs(self):
+        u = mda.Universe(PSF, DCD, in_memory=True, example_kwarg=True)
+        assert(u.trajectory._kwargs['example_kwarg'])
 
 class TestCustomReaders(object):
     """
@@ -780,7 +815,7 @@ class TestDelTopologyAttr(object):
             ag.resnames
 
     def test_del_func_from_universe(self, universe):
-        class RootVegetable(_AtomStringAttr):
+        class RootVegetable(AtomStringAttr):
             attrname = "tubers"
             singular = "tuber"
             transplants = defaultdict(list)
@@ -1252,14 +1287,28 @@ class TestEmpty(object):
                         1, 1, 1, 1, 1])
 
         with pytest.warns(UserWarning):
-            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1,
+            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=2,
                                    atom_resindex=res)
+
+    def test_no_trivial_warning(self):
+        """
+        Make sure that no warning is raised about atom_resindex and
+        residue_segindex when n_residues or n_segments is equal to 1.
+        """
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            u = mda.Universe.empty(n_atoms=10, n_residues=1, n_segments=1)
 
     def test_trajectory(self):
         u = mda.Universe.empty(10, trajectory=True)
 
         assert len(u.atoms) == 10
         assert u.atoms.positions.shape == (10, 3)
+
+    def test_trajectory_multiple_frames(self):
+        u = mda.Universe.empty(10, n_frames=5)
+
+        assert_equal(u.trajectory.n_frames, 5)
 
     def test_trajectory_iteration(self):
         u = mda.Universe.empty(10, trajectory=True)
@@ -1300,3 +1349,31 @@ def test_deprecate_b_tempfactors():
     with pytest.warns(DeprecationWarning, match="use the tempfactor"):
         u.add_TopologyAttr("bfactors", values)
     assert_array_equal(u.atoms.tempfactors, values)
+
+
+class Thingy:
+    def __init__(self, val):
+        self.v = val
+
+
+class ThingyParser(TopologyReaderBase):
+    format='THINGY'
+
+    @staticmethod
+    def _format_hint(thing):
+        return isinstance(thing, Thingy)
+
+    def parse(self, **kwargs):
+        return mda.core.topology.Topology(n_atoms=10)
+
+
+class TestOnlyTopology:
+    def test_only_top(self):
+        # issue 3443
+        t = Thingy(20)
+
+        with pytest.warns(UserWarning,
+                          match="No coordinate reader found for"):
+            u = mda.Universe(t)
+
+        assert len(u.atoms) == 10

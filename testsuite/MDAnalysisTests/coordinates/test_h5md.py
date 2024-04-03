@@ -1,7 +1,8 @@
 import pytest
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_almost_equal, assert_equal, assert_allclose
 import numpy as np
 import sys
+import os
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
 if HAS_H5PY:
@@ -75,6 +76,39 @@ class TestH5MDReaderBaseAPI(MultiframeReaderTest):
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, 100)
 
+    def test_copying(self, ref, reader):
+        # Issue #3664 - test not done in test_copying due to dependencies
+        original = mda.coordinates.H5MD.H5MDReader(
+                ref.trajectory, convert_units=False, dt=2,
+                time_offset=10, foo="bar")
+        copy = original.copy()
+
+        assert original.format not in ('MEMORY', 'CHAIN')
+        assert original.convert_units is False
+        assert copy.convert_units is False
+        assert original._ts_kwargs['time_offset'] == 10
+        assert copy._ts_kwargs['time_offset'] == 10
+        assert original._ts_kwargs['dt'] == 2
+        assert copy._ts_kwargs['dt'] == 2
+
+        assert original.ts.data['time_offset'] == 10
+        assert copy.ts.data['time_offset'] == 10
+
+        assert original.ts.data['dt'] == 2
+        assert copy.ts.data['dt'] == 2
+
+        assert copy._kwargs['foo'] == 'bar'
+
+        # check coordinates
+        assert original.ts.frame == copy.ts.frame
+        assert_allclose(original.ts.positions, copy.ts.positions)
+
+        original.next()
+        copy.next()
+
+        assert original.ts.frame == copy.ts.frame
+        assert_allclose(original.ts.positions, copy.ts.positions)
+
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDWriterBaseAPI(BaseWriterTest):
@@ -93,6 +127,8 @@ class TestH5MDWriterBaseAPI(BaseWriterTest):
                     w.write(universe.atoms)
             self._check_copy(outfile, ref, reader)
 
+    @pytest.mark.xfail((os.name == 'nt' and sys.maxsize <= 2**32),
+                       reason="occasional fail on 32-bit windows")
     def test_write_trajectory_universe(self, ref, reader, universe, tmpdir):
         outfile = 'write-uni-test.' + ref.ext
         with tmpdir.as_cwd():
@@ -219,13 +255,6 @@ class TestH5MDReaderWithRealTrajectory(object):
 
     @pytest.mark.parametrize("start, stop, step", ((0, 2, 1),
                                                    (1, 2, 1)))
-    def test_slice(universe, start, stop, step):
-        frames = [universe.trajectory.ts.frame
-                  for ts in universe.trajectory[start:stop:step]]
-        assert_equal(frames, np.arange(start, stop, step))
-
-    @pytest.mark.parametrize("start, stop, step", ((0, 2, 1),
-                                                   (1, 2, 1)))
     def test_slice(self, universe, start, stop, step):
         frames = [universe.trajectory.ts.frame
                   for ts in universe.trajectory[start:stop:step]]
@@ -312,6 +341,18 @@ class TestH5MDReaderWithRealTrajectory(object):
                            match="MDAnalysis only supports 3-dimensional"):
             u = mda.Universe(TPR_xvf, outfile)
 
+    def test_box_vector(self, h5md_file, outfile):
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                vector = [1, 2, 3]
+                del g['particles/trajectory/box/edges']
+                g['particles/trajectory/box/edges/value'] = [vector, vector, vector]
+        u = mda.Universe(TPR_xvf, outfile)
+        # values in vector are conveted from nm -> Angstrom
+        assert_equal(u.trajectory.ts.dimensions, [10, 20, 30, 90, 90, 90])
+
     def test_no_box(self, h5md_file, outfile):
         with h5md_file as f:
             with h5py.File(outfile, 'w') as g:
@@ -379,6 +420,42 @@ class TestH5MDReaderWithRealTrajectory(object):
     def test_open_with_driver(self):
         u = mda.Universe(TPR_xvf, H5MD_xvf, driver="core")
         assert_equal(u.trajectory._file.driver, "core")
+
+    @pytest.mark.parametrize('group1, group2', (('velocity', 'force'),
+                                                ('position', 'force'),
+                                                ('position', 'velocity')))
+    def test_parse_n_atoms(self, h5md_file, outfile, group1, group2):
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                traj_group = g['particles/trajectory']
+                del traj_group[group1]
+                del traj_group[group2]
+                for dset in ('position/value', 'velocity/value',
+                             'force/value'):
+                    try:
+                        n_atoms_in_dset = traj_group[dset].shape[1]
+                        break
+                    except KeyError:
+                        continue
+
+        u = mda.Universe(outfile)
+        assert_equal(u.atoms.n_atoms, n_atoms_in_dset)
+
+    def test_parse_n_atoms_error(self, h5md_file, outfile):
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                traj_group = g['particles/trajectory']
+                del traj_group['position']
+                del traj_group['velocity']
+                del traj_group['force']
+
+        errmsg = "Could not construct minimal topology"
+        with pytest.raises(ValueError, match=errmsg):
+            u = mda.Universe(outfile)
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
@@ -744,6 +821,8 @@ class TestH5MDWriterWithRealTrajectory(object):
         assert_equal(dset.compression, filter)
         assert_equal(dset.compression_opts, opts)
 
+    @pytest.mark.xfail(os.name == 'nt',
+                       reason="occasional PermissionError on windows")
     @pytest.mark.parametrize('driver', ('core', 'stdio'))
     def test_write_with_drivers(self, universe, outfile, Writer, driver):
         with Writer(outfile,

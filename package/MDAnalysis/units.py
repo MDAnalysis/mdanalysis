@@ -36,7 +36,7 @@ table on :ref:`table-baseunits`.
 
 .. _table-baseunits:
 
-.. Table:: Base units in MDAnalysis
+.. Table:: Base units in MDAnalysis as encoded in :data:`MDANALYSIS_BASE_UNITS`
 
    =========== ============== ===============================================
    quantity    unit            SI units
@@ -56,7 +56,7 @@ All conversions with :func:`convert` are carried out in a simple fashion: the
 conversion factor :math:`f_{b,b'}` from the base unit :math:`b` to another unit
 :math:`b'` is precomputed and stored (see :ref:`Data`). The numerical value of
 a quantity in unit :math:`b` is :math:`X/b` (e.g. for :math:`X =
-1.23\,\mathrm{ps}` the numerical value is :math:`X/\mathrm{ps} =
+1.23\,\mathrm{ps}`, the numerical value is :math:`X/\mathrm{ps} =
 1.23`). [#funits]_
 
 The new numerical value :math:`X'/b'` of the quantity (in units of :math:`b'`)
@@ -89,7 +89,7 @@ density:
      n/x = n/A**3 * densityUnit_factor[x]
 
   Example for how to calculate the conversion factor
-  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å^-3}` to
+  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å}^{-3}` to
   :math:`\mathrm{nm}^{-3}`:
 
   .. math::
@@ -104,18 +104,20 @@ concentration:
 
      factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
 
-  relative to a density rho0 in g/cm^3::
+  relative to a density rho0 in :math:`g/cm^3`::
 
     M(H2O) = 18 g/mol   Molar mass of water
 
     factor = 1/(1e-24 * N_Avogadro / M(H2O))
 
-  from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
+  from :math:`\rho/\rho_0 = n/(N_A * M^{-1}) / \rho_0`
+
+  where :math:`[n] = 1/Volume`, :math:`[\rho] = mass/Volume`
 
 
 Note
 ----
-In the future me might move towards using the Quantities_ package or
+In the future we might move towards using the Quantities_ package or
 :mod:`scipy.constants`.
 
 
@@ -132,6 +134,7 @@ Functions
 Data
 ----
 
+.. autodata:: MDANALYSIS_BASE_UNITS
 .. autodata:: constants
 .. autodata:: lengthUnit_factor
 .. autodata:: water
@@ -147,7 +150,7 @@ Data
 References and footnotes
 ------------------------
 
-.. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
+.. footbibliography::
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -164,6 +167,23 @@ References and footnotes
       X' = f_{b,b'} X
 
 """
+
+import warnings
+
+
+# Remove in 2.8.0
+class DeprecatedKeyAccessDict(dict):
+    deprecated_kB = 'Boltzman_constant'
+
+    def __getitem__(self, key):
+        if key == self.deprecated_kB:
+            wmsg = ("Please use 'Boltzmann_constant' henceforth. The key "
+                    "'Boltzman_constant' was a typo and will be removed "
+                    "in MDAnalysis 2.8.0.")
+            warnings.warn(wmsg, DeprecationWarning)
+            key = 'Boltzmann_constant'
+        return super().__getitem__(key)
+
 
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
@@ -182,11 +202,13 @@ References and footnotes
 #:    http://physics.nist.gov/Pubs/SP811/appenB8.html#C
 #:
 #: .. versionadded:: 0.9.0
-constants = {
+constants = DeprecatedKeyAccessDict({
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As
     'calorie': 4.184,                      # J
-}
+    'Boltzmann_constant': 8.314462159e-3,   # KJ (mol K)**-1
+    'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
+})
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
@@ -201,7 +223,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values at T=298K, P=1atm [Jorgensen1998]_
+#: water density values at T=298K, P=1atm :footcite:p:`Jorgensen1998`.
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -217,7 +239,7 @@ water = {
     'MolarMass': 18.016,  # in g mol**-1
 }
 
-#: The basic unit for *densities* is Angstroem**(-3), i.e.
+#: The basic unit for *densities* is Angstrom**(-3), i.e.
 #: the volume per molecule in A**3. Especially for water
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
@@ -239,6 +261,8 @@ timeUnit_factor = {
     'ps': 1.0, 'picosecond': 1.0,  # 1/1.0
     'fs': 1e3, 'femtosecond': 1e3,  # 1/1e-3,
     'ns': 1e-3, 'nanosecond': 1e-3,  # 1/1e3,
+    'ms': 1e-9, 'millisecond': 1e-9,  # 1/1e9,
+    'us': 1e-6, 'microsecond': 1e-6, '\u03BCs': 1e-6,  # 1/1e6,
     'second': 1e-12, 'sec': 1e-12, 's': 1e-12,  # 1/1e12,
     'AKMA': 1 / 4.888821e-2,
 }
@@ -253,7 +277,21 @@ speedUnit_factor = {
     'Angstrom/femtosecond': 1.0 * 1e3,
     'angstrom/femtosecond': 1.0 * 1e3,
     'angstrom/fs': 1.0 * 1e3,
+    'A/fs': 1.0 * 1e3,
+    'Angstrom/ms': 1.0 * 1e-9,
+    'Angstrom/millisecond': 1.0 * 1e-9,
+    'angstrom/millisecond': 1.0 * 1e-9,
+    'angstrom/ms': 1.0 * 1e-9,
+    'A/ms': 1.0 * 1e-9,
+    'Angstrom/us': 1.0 * 1e-6,
+    'angstrom/us': 1.0 * 1e-6,
+    'A/us': 1.0 * 1e-6,
+    'Angstrom/microsecond': 1.0 * 1e-6,
+    'angstrom/microsecond': 1.0 * 1e-6,
+    'Angstrom/\u03BCs': 1.0 * 1e-6,
+    'angstrom/\u03BCs': 1.0 * 1e-6,
     'Angstrom/AKMA': 4.888821e-2,
+    'A/AKMA': 4.888821e-2,
     'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,  # 1/10
     'nm/ns': 0.1 / 1e-3,
     'pm/ps': 1e2,
@@ -296,8 +334,8 @@ chargeUnit_factor = {
     'C': constants['elementary_charge'], 'As': constants['elementary_charge'],
 }
 
-#: :data:`conversion_factor` is used by :func:`get_conversion_factor`:
-#: Note: any observable with a unit (i.e. one with an entry in
+#: :data:`conversion_factor` is used by :func:`get_conversion_factor`
+#: NOTE: any observable with a unit (i.e. one with an entry in
 #: the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
 conversion_factor = {
     'length': lengthUnit_factor,
@@ -318,15 +356,23 @@ for utype, ufactor in conversion_factor.items():
         assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
 
+#: Lookup table for base units in MDAnalysis by unit type.
+MDANALYSIS_BASE_UNITS = {"length": "A",
+                         "time": "ps",
+                         "energy": "kJ/mol",
+                         "charge": "e",
+                         "force": "kJ/(mol*A)",
+                         "speed": "A/ps"}
+
 
 def get_conversion_factor(unit_type, u1, u2):
     """generate the conversion factor u1 -> u2 by using the base unit as an intermediate
 
     f[u1 -> u2] = factor[u2]/factor[u1]
 
-    Conversion of X (in u1) to X' (in u2):
+    Conversion of :math:`X` (in u1) to :math:`X'` (in u2):
 
-        X' = conversion_factor * X
+    :math:`X'` = conversion_factor * :math:`X`
     """
     # x is in u1: from u1 to b:  x'  = x  / factor[u1]
     #             from b  to u2: x'' = x' * factor[u2]

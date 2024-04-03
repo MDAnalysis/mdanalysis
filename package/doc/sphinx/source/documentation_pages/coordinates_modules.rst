@@ -35,6 +35,8 @@ provide the format in the keyword argument *format* to
    coordinates/PDB
    coordinates/PDBQT
    coordinates/PQR
+   coordinates/TNG
+   coordinates/TRC
    coordinates/TRJ
    coordinates/TRR
    coordinates/TRZ
@@ -56,6 +58,7 @@ functionality should first read the :ref:`Trajectory API`.
 .. toctree::
    :maxdepth: 1
 
+   coordinates/timestep
    coordinates/base
    coordinates/core
    coordinates/pickle_readers

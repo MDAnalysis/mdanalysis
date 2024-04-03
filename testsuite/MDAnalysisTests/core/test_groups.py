@@ -25,6 +25,7 @@ import numpy as np
 from numpy.testing import (
     assert_array_equal,
     assert_equal,
+    assert_almost_equal
 )
 import pytest
 import operator
@@ -214,6 +215,48 @@ class TestGroupProperties(object):
         assert unique._cache['unsorted_unique'] is sorted_unique
 
 
+class TestEmptyAtomGroup(object):
+    """ Test empty atom groups
+    """
+    u = mda.Universe(PSF, DCD)
+
+    @pytest.mark.parametrize('ag', [u.residues[:1]])
+    def test_passive_decorator(self, ag):
+        assert_almost_equal(ag.center_of_mass(), np.array([10.52567673,  9.49548312, -8.15335145]))
+        assert_almost_equal(ag.total_mass(), 133.209)
+        assert_almost_equal(ag.moment_of_inertia(), np.array([[ 657.514361 ,  104.9446833,  110.4782   ],
+                                                              [ 104.9446833,  307.4360346, -199.1794289],
+                                                              [ 110.4782   , -199.1794289,  570.2924896]]))
+        assert_almost_equal(ag.radius_of_gyration(), 2.400527938286)
+        assert_almost_equal(ag.shape_parameter(), 0.61460819)
+        assert_almost_equal(ag.asphericity(), 0.4892751412)
+        assert_almost_equal(ag.principal_axes(), np.array([[ 0.7574113, -0.113481 ,  0.643001 ],
+                                                           [ 0.5896252,  0.5419056, -0.5988993],
+                                                           [-0.2804821,  0.8327427,  0.4773566]]))
+        assert_almost_equal(ag.center_of_charge(), np.array([11.0800112,  8.8885659, -8.9886632]))
+        assert_almost_equal(ag.total_charge(), 1)
+
+    @pytest.mark.parametrize('ag', [mda.AtomGroup([],u)])
+    def test_error_empty_group(self, ag):
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.center_of_mass()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.total_mass()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.moment_of_inertia()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.radius_of_gyration()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.shape_parameter()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.asphericity()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.principal_axes()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.center_of_charge()
+        with pytest.raises(ValueError, match ="AtomGroup is empty"):
+            ag.total_charge()
+
 
 class TestGroupSlicing(object):
     """All Groups (Atom, Residue, Segment) should slice like a numpy array
@@ -326,6 +369,10 @@ class TestGroupSlicing(object):
 
         assert a.ix == ref
         assert isinstance(a, singular)
+ 
+    def test_none_getitem(self, group):
+        with pytest.raises(TypeError):
+            group[None]
 
 
 def _yield_groups(group_dict, singles, levels, groupclasses, repeat):
@@ -1524,21 +1571,43 @@ class TestInitGroup(object):
 
 
 class TestDecorator(object):
-    @groups.check_pbc_and_unwrap
-    def dummy_funtion(cls, compound="group", pbc=True, unwrap=True):
+    @groups._pbc_to_wrap
+    @groups.check_wrap_and_unwrap
+    def dummy_funtion(cls, compound="group", wrap=True, unwrap=True):
         return 0
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('unwrap', (True, False))
-    def test_decorator(self, compound, pbc, unwrap):
+    def test_wrap_and_unwrap_deprecation(self, compound, pbc, unwrap):
 
-        if compound == 'group' and pbc and unwrap:
+        if pbc and unwrap:
             with pytest.raises(ValueError):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
                 self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
-            assert_equal(self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap), 0)
+            with pytest.warns(DeprecationWarning):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
+                assert self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap) == 0
+
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('wrap', (True, False))
+    @pytest.mark.parametrize('unwrap', (True, False))
+    def test_wrap_and_unwrap(self, compound, wrap, unwrap):
+
+        if wrap and unwrap:
+            with pytest.raises(ValueError):
+                self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap)
+        else:
+            assert self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap) == 0
 
 
 @pytest.fixture()
@@ -1577,7 +1646,7 @@ class TestGetConnectionsAtoms(object):
         cxns = ag.get_connections(typename, outside=False)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert np.all(np.in1d(indices, ag.indices))
+        assert np.all(np.isin(indices, ag.indices))
 
     @pytest.mark.parametrize("typename, n_atoms", [
         ("bonds", 13),
@@ -1589,7 +1658,7 @@ class TestGetConnectionsAtoms(object):
         cxns = ag.get_connections(typename, outside=True)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert not np.all(np.in1d(indices, ag.indices))
+        assert not np.all(np.isin(indices, ag.indices))
 
     def test_invalid_connection_error(self, tpr):
         with pytest.raises(AttributeError, match="does not contain"):
@@ -1639,7 +1708,7 @@ class TestGetConnectionsResidues(object):
         cxns = ag.get_connections(typename, outside=False)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert np.all(np.in1d(indices, ag.atoms.indices))
+        assert np.all(np.isin(indices, ag.atoms.indices))
 
     @pytest.mark.parametrize("typename, n_atoms", [
         ("bonds", 158),
@@ -1651,7 +1720,7 @@ class TestGetConnectionsResidues(object):
         cxns = ag.get_connections(typename, outside=True)
         assert len(cxns) == n_atoms
         indices = np.ravel(cxns.to_indices())
-        assert not np.all(np.in1d(indices, ag.atoms.indices))
+        assert not np.all(np.isin(indices, ag.atoms.indices))
 
     def test_invalid_connection_error(self, tpr):
         with pytest.raises(AttributeError, match="does not contain"):
@@ -1677,7 +1746,7 @@ def test_topologygroup_gets_connections_inside(tpr, typename, n_inside):
     cxns = getattr(ag, typename)
     assert len(cxns) == n_inside
     indices = np.ravel(cxns.to_indices())
-    assert np.all(np.in1d(indices, ag.indices))
+    assert np.all(np.isin(indices, ag.indices))
 
 
 @pytest.mark.parametrize("typename, n_outside", [

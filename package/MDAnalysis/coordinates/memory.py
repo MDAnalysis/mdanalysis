@@ -127,7 +127,7 @@ same functionality for any supported trajectory format::
   u = mda.Universe(PDB, XTC)
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     u.atoms).run().results
+                                     u.atoms).run().results['timeseries']
   u2 = mda.Universe(PDB, coordinates, format=MemoryReader)
 
 .. _creating-in-memory-trajectory-label:
@@ -154,7 +154,7 @@ only the protein is created::
   protein = u.select_atoms("protein")
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     protein).run().results
+                                     protein).run().results['timeseries']
   u2 = mda.Merge(protein)            # create the protein-only Universe
   u2.load_new(coordinates, format=MemoryReader)
 
@@ -164,7 +164,7 @@ principle, this could have all be done in one line::
 
   u2 = mda.Merge(protein).load_new(
            AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                protein).run().results,
+                                protein).run().results['timeseries'],
            format=MemoryReader)
 
 The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used
@@ -175,9 +175,6 @@ on the sub-system.
 Classes
 =======
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
 
 .. autoclass:: MemoryReader
    :members:
@@ -188,9 +185,10 @@ import logging
 import errno
 import numpy as np
 import warnings
+import copy
 
 from . import base
-from .base import Timestep
+from .timestep import Timestep
 
 
 # These methods all pass in an existing *view* onto a larger array
@@ -302,11 +300,15 @@ class MemoryReader(base.ProtoReader):
         .. versionchanged:: 0.19.0
             The input to the MemoryReader now must be a np.ndarray
             Added optional velocities and forces
+        .. versionchanged:: 2.2.0
+            Input kwargs are now stored under the :attr:`_kwargs` attribute,
+            and are passed on class creation in :meth:`copy`.
         """
 
         super(MemoryReader, self).__init__()
         self.filename = filename
         self.stored_order = order
+        self._kwargs = kwargs
 
         # See Issue #1685. The block below checks if the coordinate array
         # passed is of shape (N, 3) and if it is, the coordiante array is
@@ -444,6 +446,7 @@ class MemoryReader(base.ProtoReader):
             forces=fors,
             dt=self.ts.dt,
             filename=self.filename,
+            **self._kwargs
         )
         new[self.ts.frame]
 
@@ -485,7 +488,7 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc'):
+    def timeseries(self, asel=None, atomgroup=None, start=0, stop=-1, step=1, order='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order. If no selection is given, it will return a view of the
         underlying array, while a copy is returned otherwise.
@@ -497,10 +500,23 @@ class MemoryReader(base.ProtoReader):
             coordinate data is returned. Note that in this case, a view
             of the underlying numpy array is returned, while a copy of the
             data is returned whenever `asel` is different from ``None``.
+
+            .. deprecated:: 2.7.0
+               asel argument will be renamed to atomgroup in 3.0.0
+
+        atomgroup: AtomGroup (optional)
+            Same as `asel`, will replace `asel` in 3.0.0
         start : int (optional)
+            the start trajectory frame
         stop : int (optional)
+            the end trajectory frame
+
+            .. deprecated:: 2.4.0
+               Note that `stop` is currently *inclusive* but will be
+               changed in favour of being *exclusive* in version 3.0.  
+
         step : int (optional)
-            range of trajectory to access, `start` and `stop` are *inclusive*
+            the number of trajectory frames to skip
         order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
@@ -511,7 +527,25 @@ class MemoryReader(base.ProtoReader):
 
         .. versionchanged:: 1.0.0
            Deprecated `format` keyword has been removed. Use `order` instead.
+        .. versionchanged:: 2.4.0
+            ValueError now raised instead of NoDataError for empty input
+            AtomGroup
         """
+        if asel is not None:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+            if atomgroup:
+                raise ValueError("Cannot provide both asel and atomgroup kwargs")
+            atomgroup = asel
+
+
+        if stop != -1:
+            warnings.warn("MemoryReader.timeseries inclusive `stop` "
+                      "indexing will be removed in 3.0 in favour of exclusive "
+                      "indexing", category=DeprecationWarning)
+
         array = self.get_array()
         if order == self.stored_order:
             pass
@@ -538,12 +572,15 @@ class MemoryReader(base.ProtoReader):
                        [slice(None)] * (2-f_index))
 
         # Return a view if either:
-        #   1) asel is None
-        #   2) asel corresponds to the selection of all atoms.
+        #   1) atomgroup is None
+        #   2) atomgroup corresponds to the selection of all atoms.
         array = array[tuple(basic_slice)]
-        if (asel is None or asel is asel.universe.atoms):
+        if (atomgroup is None or atomgroup is atomgroup.universe.atoms):
             return array
         else:
+            if len(atomgroup) == 0:
+                raise ValueError("Timeseries requires at least one atom "
+                                  "to analyze")
             # If selection is specified, return a copy
             return array.take(asel.indices, a_index)
 

@@ -80,6 +80,15 @@ class TestPQRWriter(RefAdKSmall):
 
     prec = 3
 
+    @pytest.mark.parametrize('filename',
+        ['test.pqr', 'test.pqr.bz2', 'test.pqr.gz'])
+    def test_simple_writer_roundtrip(self, universe, filename, tmpdir):
+        with tmpdir.as_cwd():
+            universe.atoms.write(filename)
+            u2 = mda.Universe(filename)
+            assert_equal(universe.atoms.positions,
+                         u2.atoms.positions)
+
     def test_writer_noChainID(self, universe, tmpdir):
         outfile = str(tmpdir.join('pqr-test.pqr'))
 

@@ -39,10 +39,16 @@ class TestPDBQT(object):
         return mda.Universe(PDBQT_input)
 
     def test_segid(self, universe):
-        sel = universe.select_atoms('segid A')
+        sel = universe.select_atoms("segid A")
         assert_equal(sel.n_atoms, 909, "failed to select segment A")
-        sel = universe.select_atoms('segid B')
+        sel = universe.select_atoms("segid B")
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
+
+    def test_chainID(self, universe):
+        sel = universe.select_atoms("chainID A")
+        assert_equal(sel.n_atoms, 909, "failed to chainID segment A")
+        sel = universe.select_atoms("chainID B")
+        assert_equal(sel.n_atoms, 896, "failed to chainID segment B")
 
     def test_protein(self, universe):
         sel = universe.select_atoms('protein')
@@ -89,13 +95,17 @@ class TestPDBQTWriter(object):
     def outfile(self, tmpdir):
         return str(tmpdir) + 'out.pdbqt'
 
-    def test_roundtrip_writing_coords(self, outfile):
-        u = mda.Universe(PDBQT_input)
-        u.atoms.write(outfile)
-        u2 = mda.Universe(outfile)
+    @pytest.mark.parametrize('filename',
+        ['test.pdbqt', 'test.pdbqt.bz2', 'test.pdbqt.gz'])
+    def test_roundtrip_writing_coords(self, filename, tmpdir):
 
-        assert_equal(u2.atoms.positions, u.atoms.positions,
-                     "Round trip does not preserve coordinates")
+        with tmpdir.as_cwd():
+            u = mda.Universe(PDBQT_input)
+            u.atoms.write(filename)
+            u2 = mda.Universe(filename)
+
+            assert_equal(u2.atoms.positions, u.atoms.positions,
+                         "Round trip does not preserve coordinates")
 
     def test_roundtrip_formatting(self, outfile):
         # Compare formatting of first line

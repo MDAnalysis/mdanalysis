@@ -72,8 +72,8 @@ Ramachandran analysis
 ~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`~MDAnalysis.analysis.dihedrals.Ramachandran` class allows for the
-quick calculation of classical Ramachandran plots [Ramachandran1963]_ in the
-backbone :math:`phi` and :math:`psi` angles. Unlike the
+quick calculation of classical Ramachandran plots :footcite:p:`Ramachandran1963` in
+the backbone :math:`phi` and :math:`psi` angles. Unlike the
 :class:`~MDanalysis.analysis.dihedrals.Dihedral` class which takes a list of
 `atomgroups`, this class only needs a list of residues or atoms from those
 residues. The previous example can repeated with::
@@ -117,8 +117,8 @@ To plot the data yourself, the angles can be accessed using
 Janin analysis
 ~~~~~~~~~~~~~~
 
-Janin plots [Janin1978]_ for side chain conformations (:math:`\chi_1` and
-:math:`chi_2` angles) can be created with the
+Janin plots :footcite:p:`Janin1978` for side chain conformations (:math:`\chi_1`
+and :math:`chi_2` angles) can be created with the
 :class:`~MDAnalysis.analysis.dihedrals.Janin` class. It works in the same way,
 only needing a list of residues; see the :ref:`Janin plot figure
 <figure-janin>` as an example.
@@ -158,12 +158,12 @@ and :meth:`Janin.plot` methods. The Ramachandran reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
 obtained from a large selection of 500 PDB files, and were analyzed using these
-classes [Mull2018]_. The allowed and marginally allowed regions of the
+classes :footcite:p:`Mull2018`. The allowed and marginally allowed regions of the
 Ramachandran reference plot have cutoffs set to include 90% and 99% of the data
 points, and the Janin reference plot has cutoffs for 90% and 98% of the data
 points. The list of PDB files used for the reference plots was taken from
-[Lovell2003]_ and information about general Janin regions was taken from
-[Janin1978]_.
+:footcite:p:`Lovell2003` and information about general Janin regions was taken from
+:footcite:p:`Janin1978`.
 
 
 
@@ -236,29 +236,7 @@ Analysis Classes
 References
 ----------
 
-.. [Ramachandran1963] G. Ramachandran, C. Ramakrishnan, and
-   V. Sasisekharan. (1963) Stereochemistry of polypeptide chain
-   configurations. *Journal of Molecular Biology*, 7(1):95 – 99. doi:
-   `10.1016/S0022-2836(63)80023-6
-   <https://doi.org/10.1016/S0022-2836(63)80023-6>`_
-
-.. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard
-   Maigret. (1978). "Conformation of amino acid side-chains in
-   proteins". *Journal of Molecular Biology* 125(3): 357-386. doi:
-   `10.1016/0022-2836(78)90408-4
-   <https://doi.org/10.1016/0022-2836(78)90408-4>`_
-
-.. [Lovell2003] Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III,
-   Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant,
-   Jane S. Richardson, and David C. Richardson (2003). "Structure validation by
-   :math:`C_{\alpha}` geometry: :math:`\phi`, :math:`\psi`, and
-   :math:`C_{\beta}` deviation". *Proteins* 50(3): 437-450. doi:
-   `10.1002/prot.10286 <https://doi.org/10.1002/prot.10286>`_
-
-.. [Mull2018] H. Mull and O. Beckstein. SPIDAL Summer REU 2018 Dihedral
-   Analysis in MDAnalysis. Technical report, Arizona State University, 8
-   2018. doi: `10.6084/m9.figshare.6957296
-   <https://doi.org/10.6084/m9.figshare.6957296>`_
+.. footbibliography::
 
 """
 import numpy as np
@@ -295,8 +273,9 @@ class Dihedral(AnalysisBase):
     def __init__(self, atomgroups, **kwargs):
         """Parameters
         ----------
-        atomgroups : list
-            a list of atomgroups for which the dihedral angles are calculated
+        atomgroups : list[AtomGroup]
+            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
+            the dihedral angles are calculated
 
         Raises
         ------
@@ -544,8 +523,8 @@ class Janin(Ramachandran):
     GLY, PRO, SER, THR, or VAL (the default of the `select_remove` keyword
     argument) then a warning will be raised and they will be removed from the
     list of residues, but the analysis will still run. Some topologies have
-    altloc attribues which can add duplicate atoms to the selection and must be
-    removed.
+    altloc attributes which can add duplicate atoms to the selection and must
+    be removed.
 
     """
 

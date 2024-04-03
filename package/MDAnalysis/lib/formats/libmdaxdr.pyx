@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
+#cython: boundscheck=False, wraparound=False
+
 """\
 Low-level Gromacs XDR trajectory reading — :mod:`MDAnalysis.lib.formats.libmdaxdr`
 ----------------------------------------------------------------------------------
@@ -60,50 +63,13 @@ own please see the source code in `lib/formats/libmdaxdr.pyx`_ for the time bein
    https://github.com/MDAnalysis/mdanalysis/blob/develop/package/MDAnalysis/lib/formats/libmdaxdr.pyx
 """
 
-cimport numpy as np
+cimport numpy as cnp
 cimport cython
 from MDAnalysis.lib.formats.cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 _whence_vals = {"SEEK_SET": SEEK_SET, "SEEK_CUR": SEEK_CUR, "SEEK_END": SEEK_END}
-
-cdef extern from 'include/xdrfile.h':
-    ctypedef struct XDRFILE:
-        pass
-
-    XDRFILE* xdrfile_open (char * path, char * mode)
-    int xdrfile_close (XDRFILE * xfp)
-    int xdr_seek(XDRFILE *xfp, int64_t pos, int whence)
-    int64_t xdr_tell(XDRFILE *xfp)
-    ctypedef float matrix[3][3]
-    ctypedef float rvec[3]
-
-
-cdef extern from 'include/xdrfile_xtc.h':
-    int read_xtc_natoms(char * fname, int * natoms)
-    int read_xtc(XDRFILE * xfp, int natoms, int * step, float * time, matrix box,
-                 rvec * x, float * prec)
-    int write_xtc(XDRFILE * xfp, int natoms, int step, float time, matrix box,
-                  rvec * x, float prec)
-
-
-
-cdef extern from 'include/xdrfile_trr.h':
-    int read_trr_natoms(char *fname, int *natoms)
-    int read_trr(XDRFILE *xfp, int natoms, int *step, float *time, float *_lambda,
-                 matrix box, rvec *x, rvec *v, rvec *f, int *has_prop)
-    int write_trr(XDRFILE *xfp, int natoms, int step, float time, float _lambda,
-                  matrix box, rvec *x, rvec *v, rvec *f)
-
-
-cdef extern from 'include/xtc_seek.h':
-    int read_xtc_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
-
-
-cdef extern from 'include/trr_seek.h':
-    int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
-
 
 cdef enum:
     EOK = 0
@@ -130,9 +96,9 @@ import numpy as np
 from os.path import exists
 from collections import namedtuple
 
-np.import_array()
+cnp.import_array()
 
-ctypedef np.float32_t DTYPE_T
+ctypedef float DTYPE_T
 DTYPE = np.float32
 cdef int DIMS = 3
 cdef int HASX = 1
@@ -162,16 +128,6 @@ cdef class _XDRFile:
     ----
     This class can't be initialized use one of the subclasses XTCFile, TRRFile
     """
-    cdef readonly int n_atoms
-    cdef int is_open
-    cdef int reached_eof
-    cdef XDRFILE *xfp
-    cdef readonly fname
-    cdef int current_frame
-    cdef str mode
-    cdef np.ndarray box
-    cdef np.ndarray _offsets
-    cdef readonly int _has_offsets
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -221,6 +177,8 @@ cdef class _XDRFile:
         self.n_atoms = 0
         self.reached_eof = False
         self.current_frame = 0
+
+        cdef int return_code
 
         if mode == 'r':
             opening_mode = b'r'
@@ -318,10 +276,9 @@ cdef class _XDRFile:
         else:       # pragma: no cover
             raise RuntimeError("Invalid frame number {} > {} -- this should"
                                "not happen.".format(current_frame,
-                                                    self.offsets.size)
-                              )
+                                                    self.offsets.size))
 
-    def seek(self, frame):
+    def seek(self, int frame):
         """Seek to Frame.
 
         Please note that this function will generate internal file offsets if
@@ -357,7 +314,7 @@ cdef class _XDRFile:
             raise IOError("XDR seek failed with system errno={}".format(ok))
         self.current_frame = frame
 
-    def _bytes_seek(self, offset, whence="SEEK_SET"):
+    def _bytes_seek(self, int64_t offset, whence="SEEK_SET"):
         """Low-level access to the stream repositioning xdr_seek call.
 
         Beware that this function will not update :attr:`current_frame`,
@@ -412,7 +369,7 @@ cdef class _XDRFile:
             self._has_offsets = True
         return self._offsets
 
-    def set_offsets(self, offsets):
+    def set_offsets(self, cnp.ndarray offsets):
         """set frame offsets"""
         self._offsets = offsets
         self._has_offsets = True
@@ -424,7 +381,6 @@ cdef class _XDRFile:
     def _bytes_tell(self):
         """Low-level call to xdr_tell to get current byte offset."""
         return xdr_tell(self.xfp)
-
 
 TRRFrame = namedtuple('TRRFrame', 'x v f box step time lmbda hasx hasv hasf')
 
@@ -454,13 +410,16 @@ cdef class TRRFile(_XDRFile):
     -----
     This class can be pickled. The pickle will store filename, mode, current
     frame and offsets
+
+
+    .. versionchanged:: 2.4.0
+       Added read_direct_xvf method to read into an existing positions array
     """
 
     def _calc_natoms(self, fname):
         cdef int n_atoms
-        return_code = read_trr_natoms(fname, &n_atoms)
+        cdef int return_code = read_trr_natoms(fname, &n_atoms)
         return return_code, n_atoms
-
 
     def calc_offsets(self):
         """read byte offsets from TRR file directly"""
@@ -469,7 +428,7 @@ cdef class TRRFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
+        cdef int ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
             raise IOError("TRR couldn't calculate offsets. "
                           "XDR error = {}".format(error_message[ok]))
@@ -477,9 +436,12 @@ cdef class TRRFile(_XDRFile):
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
         # memory leaks.
-        cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)
+        cdef cnp.npy_intp[1] dim
+        dim[0] = 1
+        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = cnp.PyArray_EMPTY(1, dim, cnp.NPY_INT64, 0)
+        dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
-        cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
+        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, cnp.NPY_INT64)
         return nd_offsets[:n_frames]
 
     def read(self):
@@ -513,12 +475,18 @@ cdef class TRRFile(_XDRFile):
         cdef float time = 0
         cdef float lmbda = 0
 
-        # Use this instead of memviews here to make sure that references are
-        # counted correctly
-        cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray velocity = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray forces = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)
+        cdef cnp.npy_intp[2] dim
+        dim[0] = self.n_atoms
+        dim[1] = DIMS
+
+        cdef cnp.npy_intp[2] unitcell_dim
+        unitcell_dim[0] = DIMS
+        unitcell_dim[1] = DIMS
+
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] velocity = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] forces = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
@@ -529,11 +497,6 @@ cdef class TRRFile(_XDRFile):
         # trr are a bit weird. Reading after the last frame always always
         # results in an integer error while reading. I tried it also with trr
         # produced by different codes (Gromacs, ...).
-        if return_code != EOK and return_code != EENDOFFILE \
-           and return_code != EINTEGER:
-            raise IOError('TRR read error = {}'.format(
-                error_message[return_code]))
-
         # In a trr the integer error seems to indicate that the file is ending.
         # There might be corrupted files where this is a legitimate error. But
         # then we just can't read it and stop there which is not too bad.
@@ -541,13 +504,93 @@ cdef class TRRFile(_XDRFile):
             self.reached_eof = True
             raise StopIteration
 
-        if return_code == EOK:
-            self.current_frame += 1
+        if return_code != EOK:
+            raise IOError('TRR read error = {}'.format(
+                error_message[return_code]))
+
+        self.current_frame += 1
 
         has_x = bool(has_prop & HASX)
         has_v = bool(has_prop & HASV)
         has_f = bool(has_prop & HASF)
         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
+                        has_x, has_v, has_f)
+
+    def read_direct_xvf(self, cnp.float32_t[:, ::1] positions,
+                        cnp.float32_t[:, ::1] velocities,
+                        cnp.float32_t[:, ::1] forces,):
+        """
+        Read next frame in the TRR file with positions read directly into
+        a pre-existing array.
+
+        Parameters
+        ----------
+        positions : np.ndarray
+            positions array to read positions into
+
+        Returns
+        -------
+        frame : libmdaxdr.TRRFrame
+            namedtuple with frame information
+
+        See Also
+        --------
+        TRRFrame
+        XTCFile
+
+        Raises
+        ------
+        IOError
+
+
+        .. versionadded:: 2.4.0
+        """
+        if self.reached_eof:
+            raise EOFError('Reached last frame in TRR, seek to 0')
+        if not self.is_open:
+            raise IOError('No file opened')
+        if self.mode != 'r':
+            raise IOError('File opened in mode: {}. Reading only allow '
+                               'in mode "r"'.format('self.mode'))
+
+        cdef int return_code = 1
+        cdef int step = 0
+        cdef int has_prop = 0
+        cdef float time = 0
+        cdef float lmbda = 0
+
+        cdef cnp.npy_intp[2] unitcell_dim
+        unitcell_dim[0] = DIMS
+        unitcell_dim[1] = DIMS
+
+
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
+
+        return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
+                                      &time, &lmbda, <matrix>box.data,
+                                      <rvec*>&positions[0,0],
+                                      <rvec*>&velocities[0,0],
+                                      <rvec*>&forces[0,0],
+                                      <int*> &has_prop)
+        # trr are a bit weird. Reading after the last frame always always
+        # results in an integer error while reading. I tried it also with trr
+        # produced by different codes (Gromacs, ...).
+        # In a trr the integer error seems to indicate that the file is ending.
+        # There might be corrupted files where this is a legitimate error. But
+        # then we just can't read it and stop there which is not too bad.
+        if return_code == EENDOFFILE or return_code == EINTEGER:
+            self.reached_eof = True
+            raise StopIteration
+
+        if return_code != EOK:
+            raise IOError('TRR read error = {}'.format(error_message[return_code]))
+
+        self.current_frame += 1
+
+        has_x = bool(has_prop & HASX)
+        has_v = bool(has_prop & HASV)
+        has_f = bool(has_prop & HASF)
+        return TRRFrame(positions, velocities, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
 
     def write(self, xyz, velocity, forces, box, int step, float time,
@@ -589,9 +632,9 @@ cdef class TRRFile(_XDRFile):
         # defined here to get a pointer to their first element. This is the only
         # way I know to have a nice pythonic API to the function that can accept
         # array-like inputs or things like None.
-        cdef np.ndarray xyz_helper
-        cdef np.ndarray velocity_helper
-        cdef np.ndarray forces_helper
+        cdef cnp.ndarray xyz_helper
+        cdef cnp.ndarray velocity_helper
+        cdef cnp.ndarray forces_helper
 
         if xyz is not None:
             xyz = np.asarray(xyz)
@@ -607,7 +650,7 @@ cdef class TRRFile(_XDRFile):
             forces_ptr = <float*>forces_helper.data
 
         box = np.asarray(box)
-        cdef np.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)
+        cdef cnp.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)
         cdef float* box_ptr = <float*>box_helper.data
 
         if self.current_frame == 0:
@@ -671,14 +714,15 @@ cdef class XTCFile(_XDRFile):
     -----
     This class can be pickled. The pickle will store filename, mode, current
     frame and offsets
+
+    .. versionchanged:: 2.4.0
+       Added read_direct_x method to read into an existing positions array
     """
-    cdef float precision
 
     def _calc_natoms(self, fname):
         cdef int n_atoms
-        return_code = read_xtc_natoms(fname, &n_atoms)
+        cdef int return_code = read_xtc_natoms(fname, &n_atoms)
         return return_code, n_atoms
-
 
     def calc_offsets(self):
         """Calculate offsets from XTC file directly"""
@@ -687,7 +731,7 @@ cdef class XTCFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
+        cdef int ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
             raise IOError("XTC couldn't calculate offsets. "
                           "XDR error = {}".format(error_message[ok]))
@@ -695,9 +739,12 @@ cdef class XTCFile(_XDRFile):
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
         # memory leaks.
-        cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)
+        cdef cnp.npy_intp[1] dim
+        dim[0] = 1
+        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = cnp.PyArray_EMPTY(1, dim, cnp.NPY_INT64, 0)
+        dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
-        cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
+        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, cnp.NPY_INT64)
         return nd_offsets[:n_frames]
 
     def read(self):
@@ -729,23 +776,90 @@ cdef class XTCFile(_XDRFile):
         cdef int step
         cdef float time, prec
 
-        cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)
+        cdef cnp.npy_intp[2] dim
+        dim[0] = self.n_atoms
+        dim[1] = DIMS
+
+        cdef cnp.npy_intp[2] unitcell_dim
+        unitcell_dim[0] = DIMS
+        unitcell_dim[1] = DIMS
+
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
                                       &time, <matrix>box.data,
                                       <rvec*>xyz.data, <float*> &prec)
-        if return_code != EOK and return_code != EENDOFFILE:
-            raise IOError('XTC read error = {}'.format(
-                error_message[return_code]))
 
         if return_code == EENDOFFILE:
             self.reached_eof = True
             raise StopIteration
 
-        if return_code == EOK:
-            self.current_frame += 1
+        if return_code != EOK:
+            raise IOError('XTC read error = {}'.format(error_message[return_code]))
+        self.current_frame += 1
+
         return XTCFrame(xyz, box, step, time, prec)
+
+    def read_direct_x(self, cnp.float32_t[:, ::1] positions):
+        """
+        Read next frame in the XTC file with positions read directly into
+        a pre-existing array.
+
+        Parameters
+        ----------
+        positions : np.ndarray
+           positions array to read positions into
+
+        Returns
+        -------
+        frame : libmdaxdr.XTCFrame
+            namedtuple with frame information
+
+        See Also
+        --------
+        XTCFrame
+        TRRFile
+
+        Raises
+        ------
+        IOError
+
+
+        .. versionadded:: 2.4.0
+        """
+        if self.reached_eof:
+            raise EOFError('Reached last frame in XTC, seek to 0')
+        if not self.is_open:
+            raise IOError('No file opened')
+        if self.mode != 'r':
+            raise IOError('File opened in mode: {}. Reading only allow '
+                               'in mode "r"'.format('self.mode'))
+
+        return_code = 1
+        cdef int step
+        cdef float time, prec
+        cdef cnp.npy_intp[2] unitcell_dim
+        unitcell_dim[0] = DIMS
+        unitcell_dim[1] = DIMS
+
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
+
+
+        return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
+                                      &time, <matrix>box.data,
+                                      <rvec*>&positions[0,0], <float*> &prec)
+
+        if return_code == EENDOFFILE:
+            self.reached_eof = True
+            raise StopIteration
+
+        if return_code != EOK:
+            raise IOError('XTC read error = {}'.format(error_message[return_code]))
+        self.current_frame += 1
+
+        return  XTCFrame(positions, box, step, time, prec)
+
 
     def write(self, xyz, box, int step, float time, float precision=1000):
         """write one frame to the XTC file
@@ -779,11 +893,11 @@ cdef class XTCFile(_XDRFile):
             raise IOError('File opened in mode: {}. Writing only allow '
                           'in mode "w"'.format('self.mode'))
 
-        xyz = np.asarray(xyz)
-        box = np.asarray(box)
+        xyz = np.asarray(xyz, dtype=np.float32)
+        box = np.asarray(box, dtype=np.float32)
 
-        cdef DTYPE_T[:, ::1] xyz_view = np.ascontiguousarray(xyz, dtype=DTYPE)
-        cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)
+        cdef DTYPE_T[:, ::1] xyz_view = cnp.PyArray_GETCONTIGUOUS(xyz)
+        cdef DTYPE_T[:, ::1] box_view = cnp.PyArray_GETCONTIGUOUS(box)
 
         if self.current_frame == 0:
             self.n_atoms = xyz.shape[0]

@@ -22,7 +22,7 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 
 from MDAnalysisTests.datafiles import PDBX
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -31,9 +31,16 @@ from MDAnalysisTests.coordinates.base import _SingleFrameReader
 
 import MDAnalysis as mda
 
-mm = pytest.importorskip("simtk.openmm")
-unit = pytest.importorskip("simtk.unit")
-app = pytest.importorskip("simtk.openmm.app")
+try:
+    import openmm as mm
+    from openmm import unit, app
+except ImportError:
+    try:
+        from simtk import openmm as mm
+        from simtk import unit
+        from simtk.openmm import app
+    except ImportError:
+        pytest.skip(allow_module_level=True)
 
 
 class TestOpenMMBasicSimulationReader():
@@ -58,18 +65,19 @@ class TestOpenMMBasicSimulationReader():
         return mda.Universe(simulation)
 
     def test_dimensions(self, omm_sim_uni):
-        assert_almost_equal(
+        assert_allclose(
             omm_sim_uni.trajectory.ts.dimensions,
             np.array([20., 20., 20., 90., 90., 90.]),
-            3,
-            "OpenMMBasicSimulationReader failed to get unitcell dimensions " +
-            "from OpenMM Simulation Object",
+            rtol=0,
+            atol=1e-3,
+            err_msg=("OpenMMBasicSimulationReader failed to get unitcell "
+                     "dimensions from OpenMM Simulation Object"),
         )
 
     def test_coordinates(self, omm_sim_uni):
         up = omm_sim_uni.atoms.positions
         reference = np.ones((5, 3))
-        assert_almost_equal(up, reference, decimal=3)
+        assert_allclose(up, reference, rtol=0, atol=1e-3)
 
     def test_basic_topology(self, omm_sim_uni):
         assert omm_sim_uni.atoms.n_atoms == 5
@@ -78,6 +86,11 @@ class TestOpenMMBasicSimulationReader():
         assert omm_sim_uni.segments.n_segments == 1
         assert omm_sim_uni.segments.segids[0] == '0'
         assert len(omm_sim_uni.bonds.indices) == 0
+
+    def test_data(self, omm_sim_uni):
+        data = omm_sim_uni.trajectory.ts.data
+        assert isinstance(data["kinetic_energy"], float)
+        assert isinstance(data["potential_energy"], float)
 
 
 class TestOpenMMPDBFileReader(_SingleFrameReader):
@@ -89,18 +102,19 @@ class TestOpenMMPDBFileReader(_SingleFrameReader):
         self.prec = 3
 
     def test_dimensions(self):
-        assert_almost_equal(
+        assert_allclose(
             self.universe.trajectory.ts.dimensions,
             self.ref.trajectory.ts.dimensions,
-            self.prec,
-            "OpenMMPDBFileReader failed to get unitcell dimensions " +
-            "from OpenMMPDBFile",
+            rtol=0,
+            atol=1e-3,
+            err_msg=("OpenMMPDBFileReader failed to get unitcell dimensions "
+                     "from OpenMMPDBFile"),
         )
 
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
-        assert_almost_equal(up, rp, decimal=3)
+        assert_allclose(up, rp, rtol=0, atol=1e-3)
 
 
 class TestOpenMMModellerReader(_SingleFrameReader):
@@ -114,18 +128,19 @@ class TestOpenMMModellerReader(_SingleFrameReader):
         self.prec = 3
 
     def test_dimensions(self):
-        assert_almost_equal(
+        assert_allclose(
             self.universe.trajectory.ts.dimensions,
             self.ref.trajectory.ts.dimensions,
-            self.prec,
-            "OpenMMModellerReader failed to get unitcell dimensions " +
-            "from OpenMMModeller",
+            rtol=0,
+            atol=1e-3,
+            err_msg=("OpenMMModellerReader failed to get unitcell dimensions "
+                     "from OpenMMModeller"),
         )
 
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
-        assert_almost_equal(up, rp, decimal=3)
+        assert_allclose(up, rp, rtol=0, atol=1e-3)
 
 
 class TestOpenMMSimulationReader(_SingleFrameReader):
@@ -147,18 +162,19 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
         self.prec = 3
 
     def test_dimensions(self):
-        assert_almost_equal(
+        assert_allclose(
             self.universe.trajectory.ts.dimensions,
             self.ref.trajectory.ts.dimensions,
-            self.prec,
-            "OpenMMSimulationReader failed to get unitcell dimensions " +
-            "from OpenMMSimulation",
+            rtol=0,
+            atol=1e-3,
+            err_msg=("OpenMMSimulationReader failed to get unitcell "
+                     "dimensions from OpenMMSimulation"),
         )
 
     def test_coordinates(self):
         up = self.universe.atoms.positions
         rp = self.ref.atoms.positions
-        assert_almost_equal(up, rp, decimal=3)
+        assert_allclose(up, rp, rtol=0, atol=1e-3)
 
     @pytest.mark.xfail(reason='OpenMM pickling not supported yet')
     def test_pickle_singleframe_reader(self):
@@ -239,4 +255,4 @@ def test_pdbx_coordinates(PDBX_U):
         ]
     )
     rp = PDBX_U.atoms.positions
-    assert_almost_equal(ref_pos, rp, decimal=3)
+    assert_allclose(ref_pos, rp, rtol=0, atol=1e-3)

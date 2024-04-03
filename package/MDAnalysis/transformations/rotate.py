@@ -107,7 +107,7 @@ class rotateby(TransformationBase):
 
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    MDAnalysis.coordinates.timestep.Timestep
 
     Warning
     -------
@@ -173,7 +173,7 @@ class rotateby(TransformationBase):
                     raise TypeError(errmsg) from None
             self.center_method = partial(self.atoms.center,
                                          self.weights,
-                                         pbc=self.wrap)
+                                         wrap=self.wrap)
         else:
             raise ValueError('A point or an AtomGroup must be specified')
 

@@ -15,16 +15,16 @@ usually follows the same structure
 
 #. Import the desired module, since analysis modules are not imported 
    by default.
-#. Initialize the module previously imported.
-#. Run the analysis, optionally for specific trajectory slices
-#. Access the analysis from the `results` attribute
+#. Initialize the analysis class instance from the previously imported module.   
+#. Run the analysis, optionally for specific trajectory slices.
+#. Access the analysis from the :attr:`results` attribute
 
 .. code-block:: python
 
    from MDAnalysis.analysis import ExampleAnalysisModule  # (e.g. RMSD)
 
-   analysis_obj = ExampleAnalysisModule(universe, ...)
-   analysis_obj.run(start_frame, stop_frame, step)
+   analysis_obj = ExampleAnalysisModule.AnalysisClass(universe, ...)
+   analysis_obj.run(start=start_frame, stop=stop_frame, step=step)
    print(analysis_obj.results)
 
 
@@ -74,6 +74,7 @@ Distances and contacts
    analysis/align
    analysis/contacts
    analysis/distances
+   analysis/atomicdistances
    analysis/rms
    analysis/psa
    analysis/encore
@@ -112,6 +113,7 @@ Nucleic acids
    :maxdepth: 1
 
    analysis/nuclinfo
+   analysis/nucleicacids
 
 Polymers
 ========
@@ -153,6 +155,7 @@ Volumetric analysis
    analysis/density
    analysis/lineardensity
    analysis/waterdynamics
+   analysis/dielectric
 
 Dimensionality Reduction
 ========================

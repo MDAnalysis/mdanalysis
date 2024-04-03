@@ -74,44 +74,47 @@ In the simplest case, we can simply calculate the C-alpha RMSD between
 two structures, using :func:`rmsd`::
 
    >>> ref = mda.Universe(PDB_small)
-   >>> mobile = mda.Universe(PSF,DCD)
+   >>> mobile = mda.Universe(PSF, DCD)
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions)
-   16.282308620224068
+   28.20178579474479
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
-mass (or geometry) first:
+mass (or geometry) first::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, center=True)
-   12.639693690256898
+   21.892591663632704
 
 This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
-minimized RMSD between the reference and mobile structure.
+minimized RMSD between the reference and mobile structure::
 
-   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions,
-   >>>      superposition=True)
-   6.8093965864717951
+   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, 
+   ...      superposition=True)
+   6.809396586471815
 
 The rotation matrix that superimposes *mobile* on *ref* while
 minimizing the CA-RMSD is obtained with the :func:`rotation_matrix`
 function ::
 
-   >>> mobile0 = mobile.select_atoms('name CA').positions - mobile.atoms.center_of_mass()
-   >>> ref0 = ref.select_atoms('name CA').positions - ref.atoms.center_of_mass()
+   >>> mobile0 = mobile.select_atoms('name CA').positions - mobile.select_atoms('name CA').center_of_mass()
+   >>> ref0 = ref.select_atoms('name CA').positions - ref.select_atoms('name CA').center_of_mass()
    >>> R, rmsd = align.rotation_matrix(mobile0, ref0)
-   >>> print rmsd
-   6.8093965864717951
-   >>> print R
-   [[ 0.14514539 -0.27259113  0.95111876]
-    [ 0.88652593  0.46267112 -0.00268642]
-    [-0.43932289  0.84358136  0.30881368]]
+   >>> rmsd
+   6.809396586471805
+   >>> R
+   array([[ 0.14514539, -0.27259113,  0.95111876],
+   ...    [ 0.88652593,  0.46267112, -0.00268642],
+   ...    [-0.43932289,  0.84358136,  0.30881368]])
 
 Putting all this together one can superimpose all of *mobile* onto *ref*::
 
    >>> mobile.atoms.translate(-mobile.select_atoms('name CA').center_of_mass())
+   <AtomGroup with 3341 atoms>
    >>> mobile.atoms.rotate(R)
+   <AtomGroup with 3341 atoms>
    >>> mobile.atoms.translate(ref.select_atoms('name CA').center_of_mass())
+   <AtomGroup with 3341 atoms>
    >>> mobile.atoms.write("mobile_on_ref.pdb")
 
 
@@ -123,6 +126,7 @@ To **fit a single structure** with :func:`alignto`::
    >>> ref = mda.Universe(PSF, PDB_small)
    >>> mobile = mda.Universe(PSF, DCD)     # we use the first frame
    >>> align.alignto(mobile, ref, select="protein and name CA", weights="mass")
+   (21.892591663632704, 6.809396586471809)
 
 This will change *all* coordinates in *mobile* so that the protein
 C-alpha atoms are optimally superimposed (translation and rotation).
@@ -134,6 +138,7 @@ To **fit a whole trajectory** to a reference structure with the
    >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
    >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
    >>> alignment.run()
+   <MDAnalysis.analysis.align.AlignTraj object at ...> 
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows
@@ -143,9 +148,9 @@ If a alignment was provided as "sequences.aln" one would first produce
 the appropriate MDAnalysis selections with the :func:`fasta2select`
 function and then feed the resulting dictionary to :class:`AlignTraj`::
 
-   >>> seldict = align.fasta2select('sequences.aln')
-   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict)
-   >>> alignment.run()
+   >>> seldict = align.fasta2select('sequences.aln') # doctest: +SKIP
+   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict) # doctest: +SKIP
+   >>> alignment.run() # doctest: +SKIP
 
 (See the documentation of the functions for this advanced usage.)
 
@@ -169,6 +174,7 @@ Functions and Classes
 .. autoclass:: AlignTraj
 .. autoclass:: AverageStructure
 .. autofunction:: rotation_matrix
+.. autofunction:: iterative_average
 
 
 Helper functions
@@ -187,13 +193,18 @@ normal users.
 import os.path
 import warnings
 import logging
+import collections
 
 import numpy as np
 
-import Bio.SeqIO
-import Bio.AlignIO
-import Bio.Align.Applications
-import Bio.pairwise2
+try:
+    import Bio.AlignIO
+    import Bio.Align
+    import Bio.Align.Applications
+except ImportError:
+    HAS_BIOPYTHON = False
+else:
+    HAS_BIOPYTHON = True
 
 import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
@@ -201,6 +212,9 @@ from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.lib.util import get_weights
+from MDAnalysis.lib.util import deprecate   # remove 3.0
+from MDAnalysis.lib.log import ProgressBar
+from ..due import due, Doi
 
 from .base import AnalysisBase
 
@@ -220,15 +234,15 @@ def rotation_matrix(a, b, weights=None):
     Parameters
     ----------
     a : array_like
-          coordinates that are to be rotated ("mobile set"); array of N atoms
-          of shape N*3 as generated by, e.g.,
-          :attr:`MDAnalysis.core.groups.AtomGroup.positions`.
+        coordinates that are to be rotated ("mobile set"); array of N atoms
+        of shape N*3 as generated by, e.g.,
+        :attr:`MDAnalysis.core.groups.AtomGroup.positions`.
     b : array_like
-          reference coordinates; array of N atoms of shape N*3 as generated by,
-          e.g., :attr:`MDAnalysis.core.groups.AtomGroup.positions`.
+        reference coordinates; array of N atoms of shape N*3 as generated by,
+        e.g., :attr:`MDAnalysis.core.groups.AtomGroup.positions`.
     weights : array_like (optional)
-          array of floats of size N for doing weighted RMSD fitting (e.g. the
-          masses of the atoms)
+        array of floats of size N for doing weighted RMSD fitting (e.g. the
+        masses of the atoms)
 
     Returns
     -------
@@ -244,10 +258,15 @@ def rotation_matrix(a, b, weights=None):
     :meth:`MDAnalysis.core.groups.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
 
-    >>> R = rotation_matrix(A.select_atoms('backbone').positions,
-    >>>                     B.select_atoms('backbone').positions)[0]
-    >>> A.atoms.rotate(R)
-    >>> A.atoms.write("rotated.pdb")
+        >>> from MDAnalysisTests.datafiles import TPR, TRR
+        >>> from MDAnalysis.analysis import align
+        >>> A = mda.Universe(TPR,TRR)
+        >>> B = A.copy()
+        >>> R = rotation_matrix(A.select_atoms('backbone').positions,
+        ...                     B.select_atoms('backbone').positions)[0]
+        >>> A.atoms.rotate(R)
+        <AtomGroup with 47681 atoms>
+        >>> A.atoms.write("rotated.pdb")
 
     Notes
     -----
@@ -260,6 +279,7 @@ def rotation_matrix(a, b, weights=None):
     alignto: A complete fit of two structures.
     AlignTraj: Fit a whole trajectory.
     """
+
 
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
@@ -522,6 +542,125 @@ def alignto(mobile, reference, select=None, weights=None,
                                      mobile_atoms, mobile_com, ref_com,
                                      weights=weights)
     return old_rmsd, new_rmsd
+
+
+@due.dcite(
+        Doi("10.1021/acs.jpcb.7b11988"),
+        description="Iterative Calculation of Opimal Reference",
+        path="MDAnalysis.analysis.align.iterative_average"
+)
+def iterative_average(
+    mobile, reference=None, select='all', weights=None, niter=100,
+    eps=1e-6, verbose=False, **kwargs
+):
+    """Iteratively calculate an optimal reference that is also the average
+    structure after an RMSD alignment.
+
+    The optimal reference is defined as average
+    structure of a trajectory, with the optimal reference used as input.
+    This function computes the optimal reference by using a starting
+    reference for the average structure, which is used as the reference
+    to calculate the average structure again. This is repeated until the
+    reference structure has converged. :footcite:p:`Linke2018`
+
+    Parameters
+    ----------
+    mobile : mda.Universe
+        Universe containing trajectory to be fitted to reference.
+    reference : mda.Universe (optional)
+        Universe containing the initial reference structure.
+    select : str or tuple or dict (optional)
+        Atom selection for fitting a substructue. Default is set to all.
+        Can be tuple or dict to define different selection strings for
+        mobile and target.
+    weights : str, array_like (optional)
+        Weights that can be used. If `None` use equal weights, if `'mass'`
+        use masses of ref as weights or give an array of arbitrary weights.
+    niter : int (optional)
+        Maximum number of iterations.
+    eps : float (optional)
+        RMSD distance at which reference and average are assumed to be
+        equal.
+    verbose : bool (optional)
+        Verbosity.
+    **kwargs : dict (optional)
+        AverageStructure kwargs.
+
+    Returns
+    -------
+    avg_struc : AverageStructure
+        AverageStructure result from the last iteration.
+
+    Example
+    -------
+    `iterative_average` can be used to obtain a :class:`MDAnalysis.Universe`
+    with the optimal reference structure.
+
+    ::
+
+        import MDAnalysis as mda
+        from MDAnalysis.analysis import align
+        from MDAnalysisTests.datafiles import PSF, DCD
+
+        u = mda.Universe(PSF, DCD)
+        av = align.iterative_average(u, u, verbose=True)
+
+        averaged_universe = av.results.universe
+
+    References
+    ----------
+
+    .. footbibliography::
+
+    .. versionadded:: 2.8.0
+    """
+    if not reference:
+        reference = mobile
+
+    select = rms.process_selection(select)
+    ref = mda.Merge(reference.select_atoms(*select['reference']))
+    sel_mobile = select['mobile'][0]
+
+    weights = get_weights(ref.atoms, weights)
+
+    drmsd = np.inf
+    for i in ProgressBar(range(niter)):
+        # found a converged structure
+        if drmsd < eps:
+            break
+
+        avg_struc = AverageStructure(
+            mobile, reference=ref, select={
+                'mobile': sel_mobile, 'reference': 'all'
+                },
+            weights=weights, **kwargs
+        ).run()
+        drmsd = rms.rmsd(ref.atoms.positions, avg_struc.results.positions,
+                         weights=weights)
+        ref = avg_struc.results.universe
+
+        if verbose:
+            logger.debug(
+                f"iterative_average(): i = {i}, "
+                f"rmsd-change = {drmsd:.5f}, "
+                f"ave-rmsd = {avg_struc.results.rmsd:.5f}"
+            )
+
+    else:
+        errmsg = (
+            "iterative_average(): Did not converge in "
+            f"{niter} iterations to DRMSD < {eps}. "
+            f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+        )
+        logger.error(errmsg)
+        raise RuntimeError(errmsg)
+
+    logger.info(
+        f"iterative_average(): Converged to DRMSD < {eps}. "
+        f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+    )
+
+    return avg_struc
 
 
 class AlignTraj(AnalysisBase):
@@ -953,7 +1092,7 @@ class AverageStructure(AnalysisBase):
     @property
     def positions(self):
         wmsg = ("The `positions` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalyssi 3.0.0. Please use "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.positions` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.positions
@@ -967,13 +1106,16 @@ class AverageStructure(AnalysisBase):
         return self.results.rmsd
 
 
+@deprecate(release="2.4.0", remove="3.0",
+           message="See the documentation under Notes on how to directly use"
+                   "Bio.Align.PairwiseAligner with ResidueGroups.")
 def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
                        gap_penalty=-2, gapextension_penalty=-0.1):
     """Generate a global sequence alignment between two residue groups.
 
     The residues in `reference` and `mobile` will be globally aligned.
     The global alignment uses the Needleman-Wunsch algorithm as
-    implemented in :mod:`Bio.pairwise2`. The parameters of the dynamic
+    implemented in :mod:`Bio.Align.PairwiseAligner`. The parameters of the dynamic
     programming algorithm can be tuned with the keywords. The defaults
     should be suitable for two similar sequences. For sequences with
     low sequence identity, more specialized tools such as clustalw,
@@ -1002,23 +1144,81 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
         Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
         begin, end)`
 
+    Raises
+    ------
+    ImportError
+      If optional dependency Biopython is not available.
+
+    Notes
+    -----
+    If you prefer to work directly with :mod:`Bio.Align` objects then you can
+    run your alignment with :class:`Bio.Alig.PairwiseAligner` as ::
+
+      import Bio.Align.PairwiseAligner
+
+      aligner = Bio.Align.PairwiseAligner(
+         mode="global",
+         match_score=match_score,
+         mismatch_score=mismatch_penalty,
+         open_gap_score=gap_penalty,
+         extend_gap_score=gapextension_penalty)
+      aln = aligner.align(reference.residues.sequence(format="Seq"),
+                          mobile.residues.sequence(format="Seq"))
+
+      # choose top alignment with highest score
+      topalignment = aln[0]
+
+    The ``topalignment`` is a :class:`Bio.Align.PairwiseAlignment` instance
+    that can be used in your bioinformatics workflows.
+
     See Also
     --------
-    BioPython documentation for `pairwise2`_. Alternatively, use
+    BioPython documentation for `PairwiseAligner`_. Alternatively, use
     :func:`fasta2select` with :program:`clustalw2` and the option
     ``is_aligned=False``.
 
-    .. _`pairwise2`: http://biopython.org/DIST/docs/api/Bio.pairwise2-module.html
+
+    .. _`PairwiseAligner`:
+       https://biopython.org/docs/latest/api/Bio.Align.html#Bio.Align.PairwiseAligner
+
 
     .. versionadded:: 0.10.0
 
+    .. versionchanged:: 2.4.0
+       Replace use of deprecated :func:`Bio.pairwise2.align.globalms` with
+       :class:`Bio.Align.PairwiseAligner`.
+
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
+
     """
-    aln = Bio.pairwise2.align.globalms(
-        reference.residues.sequence(format="string"),
-        mobile.residues.sequence(format="string"),
-        match_score, mismatch_penalty, gap_penalty, gapextension_penalty)
-    # choose top alignment
-    return aln[0]
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `sequence_alignment` method requires an installation "
+                  "of `Biopython`. Please install `Biopython` to use this "
+                  "method: https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
+    aligner = Bio.Align.PairwiseAligner(
+        mode="global",
+        match_score=match_score,
+        mismatch_score=mismatch_penalty,
+        open_gap_score=gap_penalty,
+        extend_gap_score=gapextension_penalty)
+    aln = aligner.align(reference.residues.sequence(format="Seq"),
+                        mobile.residues.sequence(format="Seq"))
+    # choose top alignment with highest score
+    topalignment = aln[0]
+
+    # reconstruct the results tuple that used to be of type Bio.pairwise2.Alignment
+    AlignmentTuple = collections.namedtuple(
+        "Alignment",
+        ["seqA", "seqB", "score", "start", "end"])
+    # start/stop are not particularly meaningful and there's no obvious way to
+    # get the old pairwise2 start/stop from the new PairwiseAligner output.
+    return AlignmentTuple(topalignment[0], topalignment[1],
+                          topalignment.score,
+                          0, max(reference.n_residues, mobile.n_residues))
+
 
 
 def fasta2select(fastafilename, is_aligned=False,
@@ -1077,7 +1277,7 @@ def fasta2select(fastafilename, is_aligned=False,
         filename of ClustalW alignment (clustal format) that is
         produced by *clustalw* when *is_aligned* = ``False``.
         default ``None`` uses the name and path of *fastafilename* and
-        subsititutes the suffix with '.aln'.
+        substitutes the suffix with '.aln'.
     treefilename: str (optional)
         filename of ClustalW guide tree (Newick format);
         if default ``None``  the the filename is generated from *alnfilename*
@@ -1099,6 +1299,12 @@ def fasta2select(fastafilename, is_aligned=False,
     :func:`sequence_alignment`, which does not require external
     programs.
 
+    
+    Raises
+    ------
+    ImportError
+      If optional dependency Biopython is not available.
+
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
@@ -1106,8 +1312,16 @@ def fasta2select(fastafilename, is_aligned=False,
     .. versionchanged:: 1.0.0
        Passing `alnfilename` or `treefilename` as `None` will create a file in
        the current working directory.
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
 
     """
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `fasta2select` method requires an installation "
+                  "of `Biopython`. Please install `Biopython` to use this "
+                  "method: https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
     if is_aligned:
         logger.info("Using provided alignment {}".format(fastafilename))
         with open(fastafilename) as fasta:
@@ -1377,7 +1591,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                 good = ag.residues.resids[match_mask]  # resid for each residue
                 resids = ag.resids                     # resid for each atom
                 # boolean array for all matching atoms
-                ix_good = np.in1d(resids, good)
+                ix_good = np.isin(resids, good)
                 return ag[ix_good]
 
             _ag1 = get_atoms_byres(ag1)

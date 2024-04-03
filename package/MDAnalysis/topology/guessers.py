@@ -202,9 +202,14 @@ def guess_atom_element(atomname):
     try:
         return tables.atomelements[atomname.upper()]
     except KeyError:
-        # strip symbols and numbers
+        # strip symbols
         no_symbols = re.sub(SYMBOLS, '', atomname)
-        name = re.sub(NUMBERS, '', no_symbols).upper()
+
+        # split name by numbers
+        no_numbers = re.split(NUMBERS, no_symbols)
+        no_numbers = list(filter(None, no_numbers)) #remove ''
+        # if no_numbers is not empty, use the first element of no_numbers
+        name = no_numbers[0].upper() if no_numbers else ''
 
         # just in case
         if name in tables.atomelements:
@@ -494,9 +499,7 @@ def guess_aromaticities(atomgroup):
     .. versionadded:: 2.0.0
     """
     mol = atomgroup.convert_to("RDKIT")
-    atoms = sorted(mol.GetAtoms(),
-                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
-    return np.array([atom.GetIsAromatic() for atom in atoms])
+    return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
 
 
 def guess_gasteiger_charges(atomgroup):
@@ -518,7 +521,6 @@ def guess_gasteiger_charges(atomgroup):
     mol = atomgroup.convert_to("RDKIT")
     from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
     ComputeGasteigerCharges(mol, throwOnParamFailure=True)
-    atoms = sorted(mol.GetAtoms(),
-                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
-    return np.array([atom.GetDoubleProp("_GasteigerCharge") for atom in atoms],
+    return np.array([atom.GetDoubleProp("_GasteigerCharge")
+                     for atom in mol.GetAtoms()],
                     dtype=np.float32)

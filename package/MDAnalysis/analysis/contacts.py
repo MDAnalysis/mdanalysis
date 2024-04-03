@@ -28,7 +28,7 @@ Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 This module contains classes to analyze native contacts *Q* over a
 trajectory. Native contacts of a conformation are contacts that exist
 in a reference structure and in the conformation. Contacts in the
-reference structure are always defined as being closer then a distance
+reference structure are always defined as being closer than a distance
 `radius`. The fraction of native contacts for a conformation can be
 calculated in different ways. This module supports 3 different metrics
 listed below, as well as custom metrics.
@@ -112,7 +112,8 @@ Two-dimensional contact analysis (q1-q2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Analyze a single DIMS transition of AdK between its closed and open
-conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
+conformation and plot the trajectory projected on q1-q2
+:footcite:p:`Franklin2007` ::
 
 
     import MDAnalysis as mda
@@ -133,7 +134,7 @@ conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
     f.show()
 
 Compare the resulting pathway to the `MinActionPath result for AdK`_
-[Franklin2007]_.
+:footcite:p:`Franklin2007`.
 
 .. _MinActionPath result for AdK:
    http://lorentz.dynstr.pasteur.fr/joel/adenylate.php
@@ -203,6 +204,9 @@ Classes
 .. autoclass:: Contacts
    :members:
 
+.. rubric:: References
+.. footbibliography::
+
 """
 import os
 import errno
@@ -218,7 +222,7 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
-from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
@@ -227,7 +231,7 @@ logger = logging.getLogger("MDAnalysis.analysis.contacts")
 def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     r"""Calculate fraction of native contacts *Q* for a soft cut off
 
-    The native contact function is defined as [Best2013]_
+    The native contact function is defined as :footcite:p:`Best2013`
 
     .. math::
 
@@ -253,14 +257,6 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     -------
     Q : float
       fraction of native contacts
-
-    References
-    ----------
-    .. [Best2013] RB Best, G Hummer, and WA Eaton, "Native contacts determine protein
-       folding mechanisms in atomistic simulations" _PNAS_ **110** (2013),
-       17874–17879. doi: `10.1073/pnas.1311599110
-       <http://doi.org/10.1073/pnas.1311599110>`_.
-
     """
     r = np.asarray(r)
     r0 = np.asarray(r0)
@@ -311,14 +307,6 @@ def radius_cut_q(r, r0, radius):
     -------
     Q : float
         fraction of contacts
-
-    References
-    ----------
-    .. [Franklin2007] Franklin, J., Koehl, P., Doniach, S., & Delarue,
-       M. (2007).  MinActionPath: Maximum likelihood trajectory for large-scale
-       structural transitions in a coarse-grained locally harmonic energy
-       landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.
-       doi: `10.1093/nar/gkm342 <http://doi.org/10.1093/nar/gkm342>`_
 
     """
     return hard_cut_q(r, radius)
@@ -386,7 +374,10 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`timeseries` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.2.0
+       :class:`Contacts` accepts both AtomGroup and string for `select`
     """
+
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
         """
@@ -394,7 +385,7 @@ class Contacts(AnalysisBase):
         ----------
         u : Universe
             trajectory
-        select : tuple(string, string)
+        select : tuple(AtomGroup, AtomGroup) | tuple(string, string)
             two contacting groups that change over time
         refgroup : tuple(AtomGroup, AtomGroup)
             two contacting atomgroups in their reference conformation. This
@@ -413,6 +404,13 @@ class Contacts(AnalysisBase):
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
+
+        Attributes
+        ----------
+        n_initial_contacts : int
+             Total number of initial contacts.
+        r0 : list[numpy.ndarray]
+             List of distance arrays between reference groups.
 
         Notes
         -----
@@ -437,8 +435,9 @@ class Contacts(AnalysisBase):
             self.fraction_contacts = method
 
         self.select = select
-        self.grA = u.select_atoms(select[0])
-        self.grB = u.select_atoms(select[1])
+
+        self.grA, self.grB = (self._get_atomgroup(u, sel) for sel in select)
+
         self.pbc = pbc
         
         # contacts formed in reference
@@ -462,6 +461,24 @@ class Contacts(AnalysisBase):
                 self.r0.append(distance_array(refA.positions, refB.positions,
                                                 box=self._get_box(refA.universe)))
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
+
+        self.n_initial_contacts = self.initial_contacts[0].sum()
+
+
+    @staticmethod
+    def _get_atomgroup(u, sel):
+        select_error_message = ("selection must be either string or a "
+                                "static AtomGroup. Updating AtomGroups "
+                                "are not supported.")
+        if isinstance(sel, str):
+            return u.select_atoms(sel)
+        elif isinstance(sel, AtomGroup):
+            if isinstance(sel, UpdatingAtomGroup):
+                raise TypeError(select_error_message)
+            else:
+                return sel
+        else:
+            raise TypeError(select_error_message)
 
     def _prepare(self):
         self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
@@ -501,7 +518,7 @@ def q1q2(u, select='all', radius=4.5):
     """Perform a q1-q2 analysis.
 
     Compares native contacts between the starting structure and final structure
-    of a trajectory [Franklin2007]_.
+    of a trajectory :footcite:p:`Franklin2007`.
 
     Parameters
     ----------

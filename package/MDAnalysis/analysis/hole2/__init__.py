@@ -20,20 +20,28 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from ...due import due, Doi
-from .hole import hole, HoleAnalysis
-from .utils import create_vmd_surface
 
-due.cite(Doi("10.1016/S0006-3495(93)81293-1"),
-         description="HOLE program",
-         path="MDAnalysis.analysis.hole2",
-         cite_module=True)
-due.cite(Doi("10.1016/S0263-7855(97)00009-X"),
-         description="HOLE program",
-         path="MDAnalysis.analysis.hole2",
-         cite_module=True)
-due.cite(Doi("10.1016/j.jmb.2013.10.024"),
-         description="HOLE trajectory analysis with orderparameters",
-         path="MDAnalysis.analysis.hole2",
-         cite_module=True)
-del Doi
+"""HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2`
+=====================================================================================
+
+:Author: Lily Wang
+:Year: 2020
+:Copyright: GNU Public License v3
+
+.. versionadded:: 1.0.0
+
+This module contains the tools to interface with HOLE_
+:footcite:p:`Smart1993,Smart1996` to analyse an ion channel pore or transporter
+pathway :footcite:p:`Stelzl2014`.
+
+"""
+import warnings
+from mdahole2.analysis.hole import hole, HoleAnalysis
+from mdahole2.analysis import utils, templates
+from mdahole2.analysis.utils import create_vmd_surface
+
+wmsg = ("Deprecated in version 2.8.0\n"
+        "MDAnalysis.analysis.hole2 is deprecated in favour of the "
+        "MDAKit madahole2 (https://www.mdanalysis.org/mdahole2/) "
+        "and will be removed in MDAnalysis version 3.0.0")
+warnings.warn(wmsg, category=DeprecationWarning)

@@ -74,6 +74,12 @@ class ExtendedPDBParser(PDBParser.PDBParser):
      - resids
      - resnames
      - segids
+     - elements
+     - bonds
+     - formalcharges
+
+    Guesses the following Attributes:
+     - masses
 
     See Also
     --------

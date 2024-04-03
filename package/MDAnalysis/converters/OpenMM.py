@@ -26,23 +26,23 @@
 
 
 Read coordinates data from a
-`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
-:class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader`
+`OpenMM <http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation>`_
+:class:`openmm.app.simulation.Simulation` with :class:`OpenMMReader`
 into a MDAnalysis Universe.
 
 Also converts other objects within the
 `OpenMM Application Layer <http://docs.openmm.org/latest/api-python/app.html>`_:
 
-    - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_
-    - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_
-    - `simtk.openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile>`_
+- `openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile>`_
+- `openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller>`_
+- `openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile>`_
 
 Example
 -------
 OpenMM can read various file formats into OpenMM objects.
 MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Universe objects.
 
-    >>> import simtk.openmm.app as app
+    >>> import openmm.app as app
     >>> import MDAnalysis as mda
     >>> from MDAnalysis.tests.datafiles import PDBX
     >>> pdbxfile = app.PDBxFile(PDBX)
@@ -85,9 +85,12 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         """Can this reader read *thing*?
         """
         try:
-            from simtk.openmm.app import Simulation
+            from openmm.app import Simulation
         except ImportError:
-            return False
+            try:  # pragma: no cover
+                from simtk.openmm.app import Simulation
+            except ImportError:
+                return False
         else:
             return isinstance(thing, Simulation)
 
@@ -108,7 +111,10 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 
     def _mda_timestep_from_omm_context(self):
         """ Construct Timestep object from OpenMM context """
-        import simtk.unit as u
+        try:
+            import openmm.unit as u
+        except ImportError:  # pragma: no cover
+            import simtk.unit as u
 
         state = self.filename.context.getState(-1, getVelocities=True,
                 getForces=True, getEnergy=True)
@@ -119,10 +125,10 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         ts.frame = 0
         ts.data["time"] = state.getTime()._value
         ts.data["potential_energy"] = (
-            state.getPotentialEnergy().in_units_of(u.kilojoule/u.mole)
+            state.getPotentialEnergy().in_units_of(u.kilojoule/u.mole)._value
         )
         ts.data["kinetic_energy"] = (
-            state.getKineticEnergy().in_units_of(u.kilojoule/u.mole)
+            state.getKineticEnergy().in_units_of(u.kilojoule/u.mole)._value
         )
         ts.triclinic_dimensions = state.getPeriodicBoxVectors(
                 asNumpy=True)._value
@@ -137,7 +143,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 class OpenMMAppReader(base.SingleFrameReaderBase):
     """Reader for OpenMM Application layer objects
 
-    See also `the object definition in the OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
+    See also `the object definition in the OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation>`_
 
     .. versionadded:: 2.0.0
     """
@@ -150,9 +156,12 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
         """Can this reader read *thing*?
         """
         try:
-            from simtk.openmm import app
+            from openmm import app
         except ImportError:
-            return False
+            try:  # pragma: no cover
+                from simtk.openmm import app
+            except ImportError:
+                return False
         else:
             return isinstance(thing, (app.PDBFile, app.Modeller,
                 app.PDBxFile))

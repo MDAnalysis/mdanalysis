@@ -1,0 +1,15 @@
+HEADER    This is maybe what a protein looks like from space
+REMARK    Contains varying occupancies and tempfactors for a single atom
+MODEL 1
+CRYST1  216.489  216.489  216.489  90.00  90.00  90.00 P 1           1
+ATOM      1  N   PRO A   1       0.401  40.138  17.790  1.00 23.44           N
+ATOM      2  N   ALA A   1       0.201  20.138  10.790                       N
+ENDMDL
+MODEL 2
+ATOM      1  N   PRO A   1       1.401  41.138  18.790  0.90 24.44           N
+ATOM      2  N   ALA A   1       0.201  20.138  10.790  0.00 23.44           N
+MODEL 3
+ATOM      1  N   PRO A   1       2.401  41.138  18.790                       N
+ATOM      2  N   ALA A   1       0.201  20.138  10.790  0.00 23.44           N
+ENDMDL
+END

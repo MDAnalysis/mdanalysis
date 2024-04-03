@@ -23,8 +23,9 @@
 from __future__ import absolute_import
 
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_allclose
 import pytest
+import copy
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
@@ -65,35 +66,38 @@ class TestBAT(object):
 
     def test_bat_coordinates(self, bat):
         test_bat = np.load(BATArray)
-        assert_almost_equal(
+        assert_allclose(
             bat,
             test_bat,
-            5,
+            rtol=0,
+            atol=1.5e-5,
             err_msg="error: BAT coordinates should match test values")
 
     def test_bat_coordinates_single_frame(self, selected_residues):
         bat = BAT(selected_residues).run(start=1, stop=2).results.bat
         test_bat = [np.load(BATArray)[1]]
-        assert_almost_equal(
+        assert_allclose(
             bat,
             test_bat,
-            5,
+            rtol=0,
+            atol=1.5e-5,
             err_msg="error: BAT coordinates should match test values")
 
     def test_bat_reconstruction(self, selected_residues, bat):
         R = BAT(selected_residues)
         XYZ = R.Cartesian(bat[0])
-        assert_almost_equal(XYZ, selected_residues.positions, 5,
+        assert_allclose(XYZ, selected_residues.positions, rtol=0, atol=1.5e-5,
             err_msg="error: Reconstructed Cartesian coordinates " + \
                     "don't match original")
 
     def test_bat_IO(self, bat_npz, selected_residues, bat):
         R2 = BAT(selected_residues, filename=bat_npz)
         test_bat = R2.results.bat
-        assert_almost_equal(
+        assert_allclose(
             bat,
             test_bat,
-            5,
+            rtol=0,
+            atol=1.5e-5,
             err_msg="error: Loaded BAT coordinates should match test values")
 
     def test_bat_nobonds(self):
@@ -127,3 +131,12 @@ class TestBAT(object):
         errmsg = 'Dimensions of array in loaded file'
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, filename=bat_npz)
+
+    def test_Cartesian_does_not_modify_input(self, selected_residues, bat):
+        R = BAT(selected_residues)
+        pre_transformation = copy.deepcopy(bat[0])
+        R.Cartesian(bat[0])
+        assert_allclose(
+            pre_transformation, bat[0], rtol=0, atol=1.5e-7,
+            err_msg="BAT.Cartesian modified input data"
+        )

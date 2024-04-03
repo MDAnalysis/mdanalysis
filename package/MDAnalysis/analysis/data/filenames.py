@@ -25,7 +25,7 @@ r"""Analysis data files
 
 :mod:`MDAnalysis.analysis.data` contains data files that are used as part of
 analysis. These can be experimental or theoretical data. Files are stored
-inside the package and made accessible via variables in
+inside the package and made accessible via variables in 
 :mod:`MDAnalysis.analysis.data.filenames`. These variables are documented
 below, including references to the literature and where they are used inside
 :mod:`MDAnalysis.analysis`.
@@ -37,9 +37,9 @@ Data files
 
    Reference Ramachandran histogram for
    :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.  The data were
-   calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
-   This is a numpy array in the :math:`\phi` and :math:`\psi` backbone dihedral
-   angles.
+   calculated on a data set of 500 PDB structures taken from
+   :footcite:p:`Lovell2003`. This is a numpy array in the :math:`\phi` and
+   :math:`\psi` backbone dihedral angles.
 
    Load and plot it with ::
 
@@ -51,14 +51,27 @@ Data files
       ax.contourf(X, Y, Z, levels=[1, 17, 15000])
 
    The given levels will draw contours that contain 90% and 99% of the data
-   points. See the :ref:`Ramachandran plot figure <figure-ramachandran>` as an
-   example.
+   points.The reference data are shown in 
+   :ref:`Ramachandran reference plot figure <figure-rama-ref-plot>`. An example
+   of analyzed data together with the reference data are shown in
+   :ref:`Ramachandran plot figure <figure-ramachandran>` as an example.
+   
+   
+.. _figure-rama-ref-plot:
+
+.. figure:: /images/rama_ref_plot.png
+   :scale: 80%
+   :alt: Ramachandran Ref Plot
+   
+   Reference Ramachandran plot, with contours that contain 90% 
+   ("allowed region") and 99% ("generously allowed region") of the data points 
+   from the reference data set.
 
 .. data:: Janin_ref
 
    Reference Janin histogram for :class:`MDAnalysis.analysis.dihedrals.Janin`.
    The data were calculated on a data set of 500 PDB structures taken from
-   [Lovell2003]_.  This is a numpy array in the :math:`\chi_1` and
+   :footcite:p:`Lovell2003`. This is a numpy array in the :math:`\chi_1` and
    :math:`\chi_2` sidechain dihedral angles.
 
    Load and plot it with ::
@@ -66,23 +79,40 @@ Data files
       import numpy as np
       import matplotlib.pyplot as plt
       from MDAnalysis.analysis.data.filenames import Janin_ref
-      X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
+      X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
       Z = np.load(Janin_ref)
       ax.contourf(X, Y, Z, levels=[1, 6, 600])
 
    The given levels will draw contours that contain 90% and 98% of the
-   data. See the :ref:`Janin plot figure <figure-janin>` as an example.
+   data. The reference data are shown in 
+   :ref:`Janin reference plot figure <figure-janin-ref-plot>`. An example of 
+   analyzed data together with the reference data are shown in
+   :ref:`Janin plot figure<figure-janin-ref-plot>` as an example.
+
+.. _figure-janin-ref-plot:
+
+.. figure:: /images/janin_ref_plot.png
+   :scale: 85 %
+   :alt: Janin Ref Plot
+
+   Janin reference plot with contours that contain 90% ("allowed region") and 
+   98% ("generously allowed region") of the data points from the reference data 
+   set.
 
 """
 
+
 __all__ = [
-    "Rama_ref", "Janin_ref", # reference plots for Ramachandran and Janin classes
+    "Rama_ref", "Janin_ref", 
+    # reference plots for Ramachandran and Janin classes
 ]
 
-from pkg_resources import resource_filename
 
-Rama_ref = resource_filename(__name__, 'rama_ref_data.npy')
-Janin_ref = resource_filename(__name__, 'janin_ref_data.npy')
+from importlib import resources
+
+_base_ref = resources.files('MDAnalysis.analysis.data')
+Rama_ref = (_base_ref / 'rama_ref_data.npy').as_posix()
+Janin_ref = (_base_ref / 'janin_ref_data.npy').as_posix()
 
 # This should be the last line: clean up namespace
-del resource_filename
+del resources

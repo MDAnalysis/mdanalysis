@@ -190,7 +190,7 @@ class AndOperation(LogicOperation):
         lsel = self.lsel.apply(group)
 
         # Mask which lsel indices appear in rsel
-        mask = np.in1d(rsel.indices, lsel.indices)
+        mask = np.isin(rsel.indices, lsel.indices)
         # and mask rsel according to that
         return rsel[mask]
 
@@ -267,7 +267,7 @@ class NotSelection(UnarySelection):
 
     def _apply(self, group):
         notsel = self.sel.apply(group)
-        return group[~np.in1d(group.indices, notsel.indices)]
+        return group[~np.isin(group.indices, notsel.indices)]
 
 
 class GlobalSelection(UnarySelection):
@@ -292,7 +292,7 @@ class ByResSelection(UnarySelection):
     def _apply(self, group):
         res = self.sel.apply(group)
         unique_res = unique_int_1d(res.resindices)
-        mask = np.in1d(group.resindices, unique_res)
+        mask = np.isin(group.resindices, unique_res)
 
         return group[mask]
 
@@ -312,7 +312,7 @@ class AroundSelection(Selection):
         indices = []
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
-        sys = group[~np.in1d(group.indices, sel.indices)]
+        sys = group[~np.isin(group.indices, sel.indices)]
 
         if not sys or not sel:
             return sys[[]]
@@ -354,6 +354,46 @@ class SphericalLayerSelection(Selection):
             indices = np.sort(pairs[:, 1])
 
         return group[np.asarray(indices, dtype=np.int64)]
+
+
+class IsoLayerSelection(Selection):
+    token = 'isolayer'
+    precedence = 1
+
+    def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+        self.periodic = parser.periodic
+        self.inRadius = float(tokens.popleft())
+        self.exRadius = float(tokens.popleft())
+        self.sel = parser.parse_expression(self.precedence)
+
+    @return_empty_on_apply
+    def _apply(self, group):
+        indices = []
+        sel = self.sel.apply(group)
+        # All atoms in group that aren't in sel
+        sys = group[~np.isin(group.indices, sel.indices)]
+
+        if not sys or not sel:
+            return sys[[]]
+
+        box = group.dimensions if self.periodic else None
+        pairs_outer = distances.capped_distance(sel.positions, sys.positions,
+                                                self.exRadius, box=box,
+                                                return_distances=False)
+        pairs_inner = distances.capped_distance(sel.positions, sys.positions,
+                                                self.inRadius, box=box,
+                                                return_distances=False)
+
+        if pairs_outer.size > 0:
+            sys_ind_outer = np.sort(np.unique(pairs_outer[:,1]))
+            if pairs_inner.size > 0:
+                sys_ind_inner = np.sort(np.unique(pairs_inner[:,1]))
+                indices = sys_ind_outer[~np.isin(sys_ind_outer, sys_ind_inner)]
+            else:
+                indices = sys_ind_outer
+
+        return sys[np.asarray(indices, dtype=np.int64)]
 
 
 class SphericalZoneSelection(Selection):
@@ -537,9 +577,9 @@ class BondedSelection(Selection):
 
         idx = []
         # left side
-        idx.append(bix[:, 0][np.in1d(bix[:, 1], grpidx)])
+        idx.append(bix[:, 0][np.isin(bix[:, 1], grpidx)])
         # right side
-        idx.append(bix[:, 1][np.in1d(bix[:, 0], grpidx)])
+        idx.append(bix[:, 1][np.isin(bix[:, 0], grpidx)])
 
         idx = np.union1d(*idx)
 
@@ -563,7 +603,29 @@ class SelgroupSelection(Selection):
             raise ValueError(errmsg) from None
 
     def _apply(self, group):
-        mask = np.in1d(group.indices, self.grp.indices)
+        mask = np.isin(group.indices, self.grp.indices)
+        return group[mask]
+
+
+class SingleCharSelection(Selection):
+    """for when an attribute is just a single character, eg RSChirality
+
+    .. versionadded:: 2.1.0
+    """
+    def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+        vals = grab_not_keywords(tokens)
+        if not vals:
+            raise ValueError("Unexpected token '{0}'".format(tokens[0]))
+
+        self.values = vals
+
+    @return_empty_on_apply
+    def _apply(self, group):
+        attr = getattr(group, self.field)
+
+        mask = np.isin(attr, self.values)
+
         return group[mask]
 
 
@@ -595,7 +657,7 @@ class _ProtoStringSelection(Selection):
         # atomname indices for members of this group
         nmidx = nmattr.nmidx[getattr(group, self.level)]
 
-        return group[np.in1d(nmidx, matches)]
+        return group[np.isin(nmidx, matches)]
 
 
 class AromaticSelection(Selection):
@@ -615,6 +677,15 @@ class SmartsSelection(Selection):
 
     Uses RDKit to run the query and converts the result to MDAnalysis.
     Supports chirality.
+
+    .. versionchanged:: 2.2.0
+       ``rdkit_wargs`` and ``smarts_kwargs`` can now be passed to control
+       the behaviour of the RDKit converter and RDKit's ``GetSubstructMatches``
+       respectively.
+       The default ``maxMatches`` value passed to ``GetSubstructMatches`` has
+       been changed from ``1000`` to ``max(1000, n_atoms * 10)`` in order to
+       limit cases where too few matches were generated. A warning is now also
+       thrown if ``maxMatches`` has been reached.
     """
     token = 'smarts'
 
@@ -643,6 +714,7 @@ class SmartsSelection(Selection):
             pattern.append(val)
         self.pattern = "".join(pattern)
         self.rdkit_kwargs = parser.rdkit_kwargs
+        self.smarts_kwargs = parser.smarts_kwargs
 
     def _apply(self, group):
         try:
@@ -656,13 +728,22 @@ class SmartsSelection(Selection):
         if not pattern:
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
-        matches = mol.GetSubstructMatches(pattern, useChirality=True)
-        # convert rdkit indices to mdanalysis'
-        indices = [
-            mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
-            for match in matches for idx in match]
+        self.smarts_kwargs.setdefault("useChirality", True)
+        self.smarts_kwargs.setdefault("maxMatches", max(1000, len(group) * 10))
+        matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
+        if len(matches) == self.smarts_kwargs["maxMatches"]:
+            warnings.warn("Your smarts-based atom selection returned the max"
+                          "number of matches. This indicates that not all"
+                          "matching atoms were selected. When calling"
+                          "atom_group.select_atoms(), the default value"
+                          "of maxMatches is max(100, len(atom_group * 10)). "
+                          "To fix this, add the following argument to "
+                          "select_atoms: \n"
+                          "smarts_kwargs={maxMatches: <higher_value>}")
+        # flatten all matches and remove duplicated indices
+        indices = np.unique([idx for match in matches for idx in match])
         # create boolean mask for atoms based on index
-        mask = np.in1d(range(group.n_atoms), np.unique(indices))
+        mask = np.isin(range(group.n_atoms), indices)
         return group[mask]
 
 
@@ -972,7 +1053,7 @@ class ProteinSelection(Selection):
         # index of each atom's resname
         nmidx = resname_attr.nmidx[group.resindices]
         # intersect atom's resname index and matches to prot_res
-        return group[np.in1d(nmidx, matches)]
+        return group[np.isin(nmidx, matches)]
 
 
 class NucleicSelection(Selection):
@@ -1008,7 +1089,7 @@ class NucleicSelection(Selection):
 
         matches = [ix for (nm, ix) in resnames.namedict.items()
                    if nm in self.nucl_res]
-        mask = np.in1d(nmidx, matches)
+        mask = np.isin(nmidx, matches)
 
         return group[mask]
 
@@ -1035,13 +1116,13 @@ class BackboneSelection(ProteinSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.bb_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.prot_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1068,13 +1149,13 @@ class NucleicBackboneSelection(NucleicSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.bb_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.nucl_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1106,13 +1187,13 @@ class BaseSelection(NucleicSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.base_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.nucl_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1136,13 +1217,13 @@ class NucleicSugarSelection(NucleicSelection):
         name_matches = [ix for (nm, ix) in atomnames.namedict.items()
                         if nm in self.sug_atoms]
         nmidx = atomnames.nmidx[group.ix]
-        group = group[np.in1d(nmidx, name_matches)]
+        group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
         resname_matches = [ix for (nm, ix) in resnames.namedict.items()
                            if nm in self.nucl_res]
         nmidx = resnames.nmidx[group.resindices]
-        group = group[np.in1d(nmidx, resname_matches)]
+        group = group[np.isin(nmidx, resname_matches)]
 
         return group.unique
 
@@ -1327,7 +1408,7 @@ class SameSelection(Selection):
             # indices are same as fragment(s) indices
             allfrags = functools.reduce(lambda x, y: x + y, res.fragments)
 
-            mask = np.in1d(group.indices, allfrags.indices)
+            mask = np.isin(group.indices, allfrags.indices)
             return group[mask]
         # [xyz] must come before self.prop_trans lookups too!
         try:
@@ -1338,7 +1419,7 @@ class SameSelection(Selection):
             # KeyError at this point is impossible!
             attrname = self.prop_trans[self.prop]
             vals = getattr(res, attrname)
-            mask = np.in1d(getattr(group, attrname), vals)
+            mask = np.isin(getattr(group, attrname), vals)
 
             return group[mask]
         else:
@@ -1388,7 +1469,7 @@ class SelectionParser(object):
                 "".format(self.tokens[0], token))
 
     def parse(self, selectstr, selgroups, periodic=None, atol=1e-08,
-              rtol=1e-05, sorted=True, rdkit_kwargs=None):
+              rtol=1e-05, sorted=True, rdkit_kwargs=None, smarts_kwargs=None):
         """Create a Selection object from a string.
 
         Parameters
@@ -1411,7 +1492,9 @@ class SelectionParser(object):
         rdkit_kwargs : dict, optional
             Arguments passed to the RDKitConverter when using selection based
             on SMARTS queries
-
+        smarts_kwargs : dict, optional
+          Arguments passed internally to RDKit's `GetSubstructMatches
+          <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
 
         Returns
         -------
@@ -1427,12 +1510,16 @@ class SelectionParser(object):
         .. versionchanged:: 2.0.0
             Added `atol` and `rtol` keywords to select float values. Added
             `rdkit_kwargs` to pass arguments to the RDKitConverter
+        .. versionchanged:: 2.2.0
+            Added ``smarts_kwargs`` argument, allowing users to pass a
+            a dictionary of arguments to RDKit's ``GetSubstructMatches``.
         """
         self.periodic = periodic
         self.atol = atol
         self.rtol = rtol
         self.sorted = sorted
         self.rdkit_kwargs = rdkit_kwargs or {}
+        self.smarts_kwargs = smarts_kwargs or {}
 
         self.selectstr = selectstr
         self.selgroups = selgroups
@@ -1550,7 +1637,9 @@ def gen_selection_class(singular, attrname, dtype, per_object):
                "__module__": _selectors.__name__}
     name = f"{singular.capitalize()}Selection"
 
-    if issubclass(dtype, bool):
+    if dtype == 'U1':  # order is important here, U1 will trip up issubclass
+        basecls = SingleCharSelection
+    elif issubclass(dtype, bool):
         basecls = BoolSelection
     elif np.issubdtype(dtype, np.integer):
         basecls = RangeSelection

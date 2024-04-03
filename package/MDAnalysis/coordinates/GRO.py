@@ -52,9 +52,6 @@ For example::
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-
 .. autoclass:: GROReader
    :members:
 
@@ -111,11 +108,10 @@ import warnings
 import numpy as np
 
 from . import base
-from .base import Timestep
 from .core import triclinic_box, triclinic_vectors
 from ..exceptions import NoDataError
 from ..lib import util
-
+from .timestep import Timestep
 
 """unitcell dimensions (A, B, C, alpha, beta, gamma)
 

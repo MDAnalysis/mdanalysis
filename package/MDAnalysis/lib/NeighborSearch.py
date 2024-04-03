@@ -31,6 +31,9 @@ This module contains classes that allow neighbor searches directly with
 import numpy as np
 from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
+from MDAnalysis.core.groups import AtomGroup, SegmentGroup, ResidueGroup
+import numpy.typing as npt
+from typing import Optional, Union, List
 
 
 class AtomNeighborSearch(object):
@@ -41,7 +44,8 @@ class AtomNeighborSearch(object):
     :class:`~MDAnalysis.lib.distances.capped_distance`.
     """
 
-    def __init__(self, atom_group, box=None):
+    def __init__(self, atom_group: AtomGroup,
+                 box: Optional[npt.ArrayLike] = None) -> None:
         """
 
         Parameters
@@ -50,7 +54,7 @@ class AtomNeighborSearch(object):
           list of atoms
         box : array-like or ``None``, optional, default ``None``
           Simulation cell dimensions in the form of
-          :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+          :attr:`MDAnalysis.trajectory.timestep.Timestep.dimensions` when
           periodic boundary conditions should be taken into account for
           the calculation of contacts.
         """
@@ -58,7 +62,10 @@ class AtomNeighborSearch(object):
         self._u = atom_group.universe
         self._box = box
 
-    def search(self, atoms, radius, level='A'):
+    def search(self, atoms: AtomGroup,
+               radius: float,
+               level: str = 'A'
+               ) -> Optional[Union[AtomGroup, ResidueGroup, SegmentGroup]]:
         """
         Return all atoms/residues/segments that are within *radius* of the
         atoms in *atoms*.
@@ -102,7 +109,10 @@ class AtomNeighborSearch(object):
             unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.intp))
         return self._index2level(unique_idx, level)
 
-    def _index2level(self, indices, level):
+    def _index2level(self,
+                     indices: List[int],
+                     level: str
+                     ) -> Union[AtomGroup, ResidueGroup, SegmentGroup]:
         """Convert list of atom_indices in a AtomGroup to either the
         Atoms or segments/residues containing these atoms.
 

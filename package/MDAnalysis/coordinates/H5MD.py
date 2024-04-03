@@ -213,6 +213,7 @@ import MDAnalysis as mda
 from . import base, core
 from ..exceptions import NoDataError
 from ..due import due, Doi
+from MDAnalysis.lib.util import store_init_arguments
 try:
     import h5py
 except ImportError:
@@ -242,11 +243,11 @@ class H5MDReader(base.ReaderBase):
 
     Additional data in the *observables* group of the H5MD file are
     loaded into the :attr:`Timestep.data
-    <MDAnalysis.coordinates.base.Timestep.data>` dictionary.
+    <MDAnalysis.coordinates.timestep.Timestep.data>` dictionary.
 
     Only 3D-periodic boxes or no periodicity are supported; for no
     periodicity, :attr:`Timestep.dimensions
-    <MDAnalysis.coordinates.base.Timestep.dimensions>` will return ``None``.
+    <MDAnalysis.coordinates.timestep.Timestep.dimensions>` will return ``None``.
 
     Although H5MD can store varying numbers of particles per time step
     as produced by, e.g., GCMC simulations, MDAnalysis can currently
@@ -327,6 +328,12 @@ class H5MDReader(base.ReaderBase):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.1.0
+       Adds :meth:`parse_n_atoms` method to obtain the number of atoms directly
+       from the trajectory by evaluating the shape of the ``position``,
+       ``velocity``, or ``force`` groups.
+    .. versionchanged:: 2.5.0
+       Add correct handling of simple cuboid boxes
 
     """
 
@@ -383,6 +390,7 @@ class H5MDReader(base.ReaderBase):
     @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
                description="Specifications of the H5MD standard",
                path=__name__, version='1.1')
+    @store_init_arguments
     def __init__(self, filename,
                  convert_units=True,
                  driver=None,
@@ -565,6 +573,19 @@ class H5MDReader(base.ReaderBase):
         # format='H5MD' is used
         return HAS_H5PY and isinstance(thing, h5py.File)
 
+    @staticmethod
+    def parse_n_atoms(filename):
+        with h5py.File(filename, 'r') as f:
+            for group in f['particles/trajectory']:
+                if group in ('position', 'velocity', 'force'):
+                    n_atoms = f[f'particles/trajectory/{group}/value'].shape[1]
+                    return n_atoms
+
+            raise NoDataError("Could not construct minimal topology from the "
+                              "H5MD trajectory file, as it did not contain a "
+                              "'position', 'velocity', or 'force' group. "
+                              "You must include a topology file.")
+
     def open_trajectory(self):
         """opens the trajectory file using h5py library"""
         self._frame = -1
@@ -621,8 +642,17 @@ class H5MDReader(base.ReaderBase):
 
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
-        if 'edges' in particle_group['box']:
-            ts.dimensions = core.triclinic_box(*particle_group['box/edges/value'][frame, :])
+        if "edges" in particle_group["box"]:
+            edges = particle_group["box/edges/value"][frame, :]
+            # A D-dimensional vector or a D × D matrix, depending on the
+            # geometry of the box, of Float or Integer type. If edges is a
+            # vector, it specifies the space diagonal of a cuboid-shaped box.
+            # If edges is a matrix, the box is of triclinic shape with the edge
+            # vectors given by the rows of the matrix.
+            if edges.shape == (3,):
+                ts.dimensions = [*edges, 90, 90, 90]
+            else:
+                ts.dimensions = core.triclinic_box(*edges)
         else:
             ts.dimensions = None
 
@@ -807,7 +837,7 @@ class H5MDWriter(base.WriterBase):
     H5MD trajectories are automatically recognised by the
     file extension ".h5md".
 
-    All data from the input :class:`~MDAnalysis.coordinates.base.Timestep` is
+    All data from the input :class:`~MDAnalysis.coordinates.timestep.Timestep` is
     written by default. For detailed information on how :class:`H5MDWriter`
     handles units, compression, and chunking, see the Notes section below.
 
@@ -915,7 +945,7 @@ class H5MDWriter(base.WriterBase):
 
     By default, the writer will write all available data (positions,
     velocities, and forces) if detected in the input
-    :class:`~MDAnalysis.coordinates.base.Timestep`. In addition, the settings
+    :class:`~MDAnalysis.coordinates.timestep.Timestep`. In addition, the settings
     for `compression` and `compression_opts` will be read from
     the first available group of positions, velocities, or forces and used as
     the default value. To write a file without any one of these datsets,
@@ -960,7 +990,7 @@ class H5MDWriter(base.WriterBase):
     isn't explicity defined by the user, H5PY automatically selects a chunk
     shape via an algorithm that attempts to make mostly square chunks between
     1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
-    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)``so
+    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)`` so
     as to mimic the typical access pattern of a trajectory by MDAnalysis. In
     our tests ([Jakupovic2021]_), this chunk shape led to a speedup on the
     order of 10x versus H5PY's auto-chunked shape. Users can set a custom

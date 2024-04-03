@@ -197,6 +197,25 @@ class TestMemoryReader(MultiframeReaderTest):
         reader[0]
         assert_almost_equal(reader.ts.positions, new_positions)
 
+    def test_timeseries_warns_deprecation(self, reader):
+        with pytest.warns(DeprecationWarning, match="MemoryReader.timeseries "
+                          "inclusive"):
+            reader.timeseries(start=0, stop=3, step=1)
+
+    def test_timeseries_asel_warns_deprecation(self, ref, reader):
+        selection = ref.universe.atoms
+        with pytest.warns(DeprecationWarning, match="asel argument to"):
+            reader.timeseries(asel=selection)
+    
+    def test_timeseries_atomgroup(self, ref, reader):
+        selection = ref.universe.atoms
+        reader.timeseries(atomgroup=selection)
+    
+    def test_timeseries_atomgroup_asel_mutex(self, ref, reader):
+        selection = ref.universe.atoms
+        with pytest.raises(ValueError, match="Cannot provide both"):
+            reader.timeseries(atomgroup=selection, asel=selection)
+
 
 class TestMemoryReaderVelsForces(object):
     @staticmethod

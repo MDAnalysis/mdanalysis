@@ -48,6 +48,7 @@ import os.path
 
 from .. import _SELECTION_WRITERS
 
+from . import base
 from . import vmd
 from . import pymol
 from . import gromacs
@@ -55,7 +56,7 @@ from . import charmm
 from . import jmol
 
 
-def get_writer(filename, defaultformat):
+def get_writer(filename: str, defaultformat: str) -> base.SelectionWriterBase:
     """Return a SelectionWriter for `filename` or a `defaultformat`.
 
     Parameters
@@ -67,7 +68,7 @@ def get_writer(filename, defaultformat):
 
     Returns
     -------
-    SelectionWriter : `type`
+    SelectionWriterBase : `type`
         the writer *class* for the detected format
 
     Raises
@@ -75,7 +76,7 @@ def get_writer(filename, defaultformat):
     :exc:`NotImplementedError`
         for any format that is not defined
     """
-
+    format = None
     if filename:
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!
     format = format or defaultformat  # use default if no fmt from fn

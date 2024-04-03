@@ -37,6 +37,8 @@ from ._augment import augment_coordinates, undo_augment
 from .util import unique_rows
 
 from MDAnalysis.lib.distances import apply_PBC
+import numpy.typing as npt
+from typing import Optional, ClassVar
 
 __all__ = [
     'PeriodicKDTree'
@@ -61,14 +63,15 @@ class PeriodicKDTree(object):
     :func:`MDAnalysis.lib.distances.undo_augment` function.
 
     """
-    def __init__(self, box=None, leafsize=10):
+
+    def __init__(self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10) -> None:
         """
 
         Parameters
         ----------
         box : array-like or ``None``, optional, default ``None``
           Simulation cell dimensions in the form of
-          :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+          :attr:`MDAnalysis.trajectory.timestep.Timestep.dimensions` when
           periodic boundary conditions should be taken into account for
           the calculation of contacts.
         leafsize : int (optional)
@@ -82,7 +85,7 @@ class PeriodicKDTree(object):
         self.dim = 3  # 3D systems
         self.box = box
         self._built = False
-        self.cutoff = None
+        self.cutoff: Optional[float] = None
 
     @property
     def pbc(self):
@@ -95,7 +98,7 @@ class PeriodicKDTree(object):
         """
         return self.box is not None
 
-    def set_coords(self, coords, cutoff=None):
+    def set_coords(self, coords: npt.ArrayLike, cutoff: Optional[float] = None) -> None:
         """Constructs KDTree from the coordinates
 
         Wrapping of coordinates to the primary unit cell is enforced
@@ -126,23 +129,24 @@ class PeriodicKDTree(object):
         MDAnalysis.lib.distances.augment_coordinates
 
         """
-        # If no cutoff distance is provided but PBC aware
-        if self.pbc and (cutoff is None):
-            raise RuntimeError('Provide a cutoff distance'
-                               ' with tree.set_coords(...)')
 
         # set coords dtype to float32
         # augment coordinates will work only with float32
         coords = np.asarray(coords, dtype=np.float32)
 
+        # If no cutoff distance is provided but PBC aware
         if self.pbc:
             self.cutoff = cutoff
+            if cutoff is None:
+                raise RuntimeError('Provide a cutoff distance'
+                                   ' with tree.set_coords(...)')
+
             # Bring the coordinates in the central cell
             self.coords = apply_PBC(coords, self.box)
             # generate duplicate images
             self.aug, self.mapping = augment_coordinates(self.coords,
                                                          self.box,
-                                                         self.cutoff)
+                                                         cutoff)
             # Images + coords
             self.all_coords = np.concatenate([self.coords, self.aug])
             self.ckdt = cKDTree(self.all_coords, leafsize=self.leafsize)
@@ -155,7 +159,7 @@ class PeriodicKDTree(object):
             self.ckdt = cKDTree(self.coords, self.leafsize)
         self._built = True
 
-    def search(self, centers, radius):
+    def search(self, centers: npt.ArrayLike, radius: float) -> npt.NDArray:
         """Search all points within radius from centers and their periodic images.
 
         All the centers coordinates are wrapped around the central cell
@@ -179,6 +183,9 @@ class PeriodicKDTree(object):
 
         # Sanity check
         if self.pbc:
+            if self.cutoff is None:
+                raise ValueError(
+                    "Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
             # Bring all query points to the central cell
@@ -202,17 +209,17 @@ class PeriodicKDTree(object):
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
-    def get_indices(self):
+    def get_indices(self) -> npt.NDArray:
         """Return the neighbors from the last query.
 
         Returns
         ------
-        indices : list
+        indices : NDArray
           neighbors for the last query points and search radius
         """
         return self._indices
 
-    def search_pairs(self, radius):
+    def search_pairs(self, radius: float) -> npt.NDArray:
         """Search all the pairs within a specified radius
 
         Parameters
@@ -229,6 +236,9 @@ class PeriodicKDTree(object):
             raise RuntimeError(' Unbuilt Tree. Run tree.set_coords(...)')
 
         if self.pbc:
+            if self.cutoff is None:
+                raise ValueError(
+                    "Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
 
@@ -245,7 +255,7 @@ class PeriodicKDTree(object):
             pairs = unique_rows(pairs)
         return pairs
 
-    def search_tree(self, centers, radius):
+    def search_tree(self, centers: npt.ArrayLike, radius: float) -> np.ndarray:
         """
         Searches all the pairs within `radius` between `centers`
         and ``coords``
@@ -285,6 +295,9 @@ class PeriodicKDTree(object):
 
         # Sanity check
         if self.pbc:
+            if self.cutoff is None:
+                raise ValueError(
+                    "Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
             # Bring all query points to the central cell
