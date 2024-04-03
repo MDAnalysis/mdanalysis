@@ -500,7 +500,6 @@ class TNGReader(base.ReaderBase):
         # reconstruct file iterator
         self._file_iterator = pytng.TNGFileIterator(self.filename, "r")
 
-        
         # unlike self._read_frame(self._frame),
         # the following lines update the state of the C-level file iterator
         # without updating the ts object.

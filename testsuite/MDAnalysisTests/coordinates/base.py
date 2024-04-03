@@ -132,7 +132,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         reader.ts.positions[0] = np.array([1, 2, 3])
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(reader.ts, reader_p.ts,
-                     "Modification of coords is not preserved after serialization")
+                     "Modification of ts not preserved after serialization")
 
 
 class BaseReference(object):
@@ -458,7 +458,7 @@ class BaseReaderTest(object):
         reader.ts.positions[0] = np.array([1, 2, 3])
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(reader.ts, reader_p.ts,
-                     "Modification of coords is not preserved after serialization")
+                     "Modification of ts not preserved after serialization")
 
     def test_frame_collect_all_same(self, reader):
         # check that the timestep resets so that the base reference is the same
