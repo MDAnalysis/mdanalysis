@@ -372,8 +372,16 @@ class ChainReader(base.ProtoReader):
 
         .. versionadded:: 1.0.0
         """
+        has_zarr = False
+        try:
+            import zarr
+            has_zarr = True
+        except ImportError:
+            pass
+
         return (not isinstance(thing, np.ndarray) and
                 util.iterable(thing) and
+                (not has_zarr or not isinstance(thing, zarr.Group)) and
                 not util.isstream(thing))
 
     def _get_local_frame(self, k):
