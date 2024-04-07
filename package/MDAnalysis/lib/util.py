@@ -2555,7 +2555,7 @@ def store_init_arguments(func):
 
 
 def no_copy_shim():
-    if np.__version__[0] == "2":
+    if np.lib.NumpyVersion >= "2.0.0rc1":
         copy = None
     else:
         copy = False
