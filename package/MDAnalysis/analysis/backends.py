@@ -137,6 +137,7 @@ class BackendSerial(BackendBase):
         Is ignored in this class, and if ``n_workers`` > 1, a warning will be
         given.
 
+
     .. versionadded:: 2.8.0
     """
 

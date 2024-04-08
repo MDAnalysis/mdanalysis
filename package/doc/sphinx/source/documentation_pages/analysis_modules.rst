@@ -33,7 +33,7 @@ and also read and cite the reference papers associated with these algorithms.
 
 .. rubric:: Using parallelization for built-in analysis runs
 
-Starting v.2.8.0, MDAnalysis ``AnalysisBase`` subclasses can run on a backend
+Starting from v2.8.0, MDAnalysis ``AnalysisBase`` subclasses can run on a backend
 that supports parallelization (see :mod:`MDAnalysis.analysis.backends`). All analysis
 runs, however, use ``backend='serial'`` by default, which is identical to the previous
 behavior.
@@ -69,7 +69,7 @@ for maximum available on your machine):
 
 For now, you have to be verbal and specify both ``backend`` and ``n_workers``,
 since the feature is new and there are no good defaults for it. For example,
-if you specify too big `n_workers`, and your trajectory frames are big,
+if you specify a too big `n_workers`, and your trajectory frames are big,
 you might get and out-of-memory error when executing your run.
 
 You can also implement your own backends -- see :mod:`MDAnalysis.analysis.backends`.

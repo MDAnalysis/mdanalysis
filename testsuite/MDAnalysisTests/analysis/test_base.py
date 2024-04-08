@@ -20,6 +20,15 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from collections import UserDict
+import pickle
+
+import pytest
+
+import numpy as np
+
+from numpy.testing import assert_equal, assert_allclose
+
 import MDAnalysis as mda
 import numpy as np
 import pytest
@@ -195,7 +204,7 @@ def test_start_stop_step(u, run_kwargs, frames):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames+1, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 @pytest.mark.parametrize('run_kwargs, frames', [
@@ -279,7 +288,7 @@ def test_frames_times(client_FrameAnalysis):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_almost_equal(an.times, frames*100, decimal=4, err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames*100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):
@@ -424,6 +433,7 @@ def test_AnalysisFromFunction_args_content(u, client_AnalysisFromFunction):
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
     result = np.sum(ans.run(**client_AnalysisFromFunction).results.timeseries)
+    assert_allclose(result, -317054.67757345125, rtol=0, atol=1.5e-6)
     assert_almost_equal(result, -317054.67757345125, decimal=6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
