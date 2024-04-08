@@ -609,7 +609,6 @@ class AnalysisBase(object):
             for b in self.get_supported_backends()
         ]
 
-        print(f'{backend=}, {backend_class=}, {supported_backend_classes=}')
         # check for serial-only classes
         if not self._is_parallelizable() and backend_class is not BackendSerial:
             raise ValueError(f"Can not parallelize class {self.__class__}")
@@ -632,7 +631,7 @@ class AnalysisBase(object):
         # conclude mapping from string to backend class if it's a builtin backend
         if isinstance(backend, str):
             return backend_class(n_workers=n_workers)
-        
+
         # make sure we haven't specified n_workers twice
         if (
             isinstance(backend, BackendBase)
@@ -730,7 +729,14 @@ class AnalysisBase(object):
         if (progressbar_kwargs or verbose) and backend != "serial":
             raise ValueError("Can not display progressbar with non-serial backend")
 
-        n_workers = 1 if n_workers is None else n_workers
+        # if number of workers not specified, try getting the number from
+        # the backend instance if possible, or set to 1
+        if n_workers is None:
+            n_workers = (
+                backend.n_workers
+                if isinstance(backend, BackendBase) and hasattr(backend, "n_workers")
+                else 1
+            )
 
         # set n_parts and check that is has a reasonable value
         n_parts = n_workers if n_parts is None else n_parts
