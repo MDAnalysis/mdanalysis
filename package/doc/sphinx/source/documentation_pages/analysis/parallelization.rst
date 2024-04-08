@@ -29,7 +29,7 @@ backends are available, and then just enable them by providing
 
     my_run.run(backend='multiprocessing', n_workers=12)
 
-For some classes, such as :class:`MDAnalysis.analysis.rms.RMSF`,
+For some classes, such as :class:`MDAnalysis.analysis.rms.RMSF` (in its current implementation),
 split-apply-combine parallelization isn't possible, and running them will be
 impossible with any but ``serial`` backend.
 
