@@ -29,7 +29,7 @@ authors = [
 maintainers = [
     {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     'numpy>=1.23.2',
     'GridDataFormats>=0.4.0',
@@ -60,7 +60,6 @@ classifiers = [
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',

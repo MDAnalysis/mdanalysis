@@ -86,6 +86,11 @@ def u():
     return mda.Universe(PSF, DCD)
 
 
+@pytest.fixture(scope='module')
+def u_xtc():
+    return mda.Universe(TPR, XTC)  # dt = 100
+
+
 FRAMES_ERR = 'AnalysisBase.frames is incorrect'
 TIMES_ERR = 'AnalysisBase.times is incorrect'
 
@@ -215,9 +220,8 @@ def test_start_stop_step(u, run_kwargs, frames):
     ({'frames': [True, True, False, True, False, True, True, False, True,
                  False]}, (0, 1, 3, 5, 6, 8)),
 ])
-def test_frame_slice(run_kwargs, frames):
-    u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
+def test_frame_slice(u_xtc, run_kwargs, frames):
+    an = FrameAnalysis(u_xtc.trajectory).run(**run_kwargs)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
@@ -315,23 +319,24 @@ def test_not_parallelizable(classname, is_parallelizable):
 
 
 def test_verbose_progressbar(u, capsys):
-    an = FrameAnalysis(u.trajectory).run()
-    out, err = capsys.readouterr()
+    FrameAnalysis(u.trajectory).run()
+    _, err = capsys.readouterr()
     expected = ''
     actual = err.strip().split('\r')[-1]
     assert actual == expected
 
 
 def test_verbose_progressbar_run(u, capsys):
-    an = FrameAnalysis(u.trajectory).run(verbose=True)
-    out, err = capsys.readouterr()
+    FrameAnalysis(u.trajectory).run(verbose=True)
+    _, err = capsys.readouterr()
     expected = u'100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
     actual = err.strip().split('\r')[-1]
     assert actual[:24] == expected[:24]
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
-    an = FrameAnalysis(u.trajectory).run(verbose=True, progressbar_kwargs={'desc':'custom'})
-    out, err = capsys.readouterr()
+    FrameAnalysis(u.trajectory).run(
+        verbose=True, progressbar_kwargs={'desc': 'custom'})
+    _, err = capsys.readouterr()
     expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
     actual = err.strip().split('\r')[-1]
     assert actual[:30] == expected[:30]
