@@ -15,11 +15,17 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder
+         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher
 
  * 2.8.0
 
 Fixes
+ * Fix doctest errors of analysis/pca.py related to rounding issues 
+   (Issue #3925, PR #4377)
+ * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
+ * Atomname methods can handle empty groups (Issue #2879, PR #4529)
+ * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
    (PR #4459)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
@@ -30,13 +36,18 @@ Fixes
    `DistanceMatrix.run(frames=...)` (PR #4433)
  * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
  * Fix deploy action to use the correct version of the pypi upload action.
+ * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
+ * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
+   (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
  * Documented the r0 attribute in the `Contacts` class and added the 
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
+ * Implement average structures with iterative algorithm from 
+   DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
  * As per SPEC0 the minimum supported Python version has been raised

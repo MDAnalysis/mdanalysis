@@ -38,7 +38,7 @@ The currently read file format versions are defined in
 """
 
 #: Gromacs TPR file format versions that can be read by the TPRParser.
-SUPPORTED_VERSIONS = (58, 73, 83, 100, 103, 110, 112, 116, 119, 122, 127, 129)
+SUPPORTED_VERSIONS = (58, 73, 83, 100, 103, 110, 112, 116, 119, 122, 127, 129, 133)
 
 # Some constants
 STRLEN = 4096
