@@ -130,8 +130,9 @@ Analysis classes
        helix 'H' and sheet 'E', consequently.
 """
 
+from typing import Union
 import numpy as np
-from MDAnalysis import Universe
+from MDAnalysis import Universe, AtomGroup
 
 from ..base import AnalysisBase
 from ...due import due, Doi
@@ -216,8 +217,10 @@ class DSSP(AnalysisBase):
 
     Parameters
     ----------
-    u : Universe
-        input universe
+    atoms : Union[Universe, AtomGroup]
+        input Universe or AtomGroup. In both cases, only protein residues will
+        be chosen. Heavy atoms of the protein are then selected by name
+        ("N", "CA", "C", "O O1 OT1"), and hydrogens are selected by name "H".
     guess_hydrogens : bool, optional
         whether you want to guess hydrogens positions, by default ``True``.
         Guessing is made assuming perfect 120 degrees for all bonds that N
@@ -249,8 +252,9 @@ class DSSP(AnalysisBase):
     (n_frames, n_residues, 3) shape ndarray with one-hot encoding of
     loop, helix and sheet, respectively:
 
-    >>> from MDAnalysis.analysis.dssp import translate
-    >>> u = mda.Universe(...)
+    >>> from MDAnalysis.analysis.dssp import translate, DSSP
+    >>> from MDAnalysisTests.datafiles import PDB
+    >>> u = mda.Universe(PDB)
     >>> long_run = DSSP(u).run()
     >>> mean_secondary_structure = translate(
     >>>     long_run.results.dssp_ndarray.mean(axis=0)
@@ -261,19 +265,23 @@ class DSSP(AnalysisBase):
     .. versionadded:: 2.8.0
     """
 
-    def __init__(self, u: Universe, guess_hydrogens: bool = True):
-        super().__init__(u.trajectory)
+    def __init__(self, atoms: Union[Universe, AtomGroup], guess_hydrogens: bool = True):
         self._guess_hydrogens = guess_hydrogens
 
+        ag: AtomGroup = (
+            atoms.select_atoms("protein") if isinstance(atoms, Universe) else atoms
+        )
+        super().__init__(ag.universe.trajectory)
+
         # define necessary selections
-        # O1 is for C-terminal residue
-        heavyatom_names = ("N", "CA", "C", "O O1")
+        # O1/OT1 is for C-terminal residue
+        heavyatom_names = ("N", "CA", "C", "O O1 OT1")
         self._heavy_atoms: dict[str, "AtomGroup"] = {
-            t: u.select_atoms(f"protein and name {t}") for t in heavyatom_names
+            t: ag.select_atoms(f"protein and name {t}") for t in heavyatom_names
         }
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms("name H")
-            for res in u.select_atoms("protein").residues
+            for res in ag.select_atoms("protein").residues
         ]
         # can't do it the other way because I need missing values to exist
         # so that I could fill them in later
@@ -298,7 +306,7 @@ class DSSP(AnalysisBase):
             raise ValueError(
                 (
                     "Universe contains not equal number of (N,CA,C,O) atoms ('name' field)."
-                    " Please select appropriate sub-universe manually."
+                    " Please select appropriate AtomGroup manually."
                 )
             )
 
@@ -344,4 +352,4 @@ class DSSP(AnalysisBase):
     def _conclude(self):
         self.results.dssp = translate(np.array(self.results.dssp_ndarray))
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
-        self.results.resids = np.array([at.resid for at in self._heavy_atoms["CA"]])
+        self.results.resids = self._heavy_atoms["CA"].resids
