@@ -11,12 +11,13 @@ Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.anal
 The module contains code to build hydrogend bond contact map,
 and use it to assign protein secondary structure (:class:`DSSP`).
 
-This module uses the python version of the original algorithm [Kabsch1983],
+This module uses the python version of the original algorithm :footcite:p:`Kabsch1983`,
 re-implemented by @ShintaroMinami and available under MIT license from
-[ShintaroMinami/PyDSSP](https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp)
+`ShintaroMinami/PyDSSP <https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp>`_.
+
 Note that this implementation does not discriminate different types of
 beta-sheets, as well as different types of helices, meaning you will get
-3_<sub>10</sub> helices and π-helices labelled as "helix" too.
+:math:`3_{10}` helices and π-helices labelled as "helix" too.
 
 
 Using original `pydssp`
@@ -45,7 +46,7 @@ structure.
     from MDAnalysis.tests.datafiles import PDB
     from MDAnalysis.analysis.dssp import DSSP
     u = mda.Universe(PDB)
-    s = ''.join(DSSP(u).run().results.dssp)
+    s = ''.join(DSSP(u).run().results.dssp[0])
     print(s)
 
 
@@ -189,6 +190,7 @@ def translate(onehot: np.ndarray) -> np.ndarray:
     -------
     np.ndarray
         array of '-', 'H' and 'E' symbols with secondary structure
+
 
     .. versionadded:: 2.8.0
     """
