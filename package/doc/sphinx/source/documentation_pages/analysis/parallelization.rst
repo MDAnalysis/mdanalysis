@@ -176,7 +176,7 @@ enabled by default. Although we expect the parallelization to be useful in most
 cases, there are some known caveats from the inital benchmarks.
 
 Fast ``_single_frame`` compared to reading from disk
---------------------------------------------------
+----------------------------------------------------
 
 In all cases, parallelization will not be useful only when frames are being
 processed faster than being read from the disk, otherwise reading is the
