@@ -1,7 +1,7 @@
 """
-A re-implementation of DSSP algorithm [Kabsch1983]_, taken from `pydssp` v.0.9.0
-(https://github.com/ShintaroMinami/PyDSSP) by Shintaro Minami, distributed under
-MIT license.
+A re-implementation of DSSP algorithm :footcite:p:`Kabsch1983`, taken from
+`pydssp` v.0.9.0 (https://github.com/ShintaroMinami/PyDSSP) by Shintaro Minami,
+distributed under MIT license.
 
 Current implementation doesn't use `einops` as a dependency, instead directly
 using `numpy` operations for axis rearrangement. However, this implementation
@@ -70,7 +70,7 @@ def _unfold(a: np.ndarray, window: int, axis: int):  # pragma: no cover
     return np.moveaxis(unfolded, axis - 1, -1)
 
 
-def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:  # pragma: no cover
+def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
     """Fills in hydrogen atoms positions if they are abscent, under the
     assumption that C-N-H and H-N-CA angles are perfect 120 degrees,
     and N-H bond length is 1.01 A.
@@ -118,7 +118,7 @@ def get_hbond_map(
     cutoff: float = DEFAULT_CUTOFF,
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
-) -> np.ndarray:  # pragma: no cover
+) -> np.ndarray:
     """Returns hydrogen bond map
 
     Parameters
@@ -153,7 +153,7 @@ def get_hbond_map(
     elif n_atom_types == 5:
         h_1 = coord[1:, 4]
         coord = coord[:, :4]
-    else:
+    else:  # pragma: no cover
         raise ValueError("Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)")
     # after this:
     # h.shape == (n_atoms, 3)
@@ -180,7 +180,7 @@ def get_hbond_map(
         [[1, 0], [0, 1]],
     )
 
-    if return_e:
+    if return_e:  # pragma: no cover
         return e
 
     # mask for local pairs (i,i), (i,i+1), (i,i+2)
@@ -195,7 +195,7 @@ def get_hbond_map(
     return hbond_map
 
 
-def assign(coord: np.ndarray) -> np.ndarray:  # pragma: no cover
+def assign(coord: np.ndarray) -> np.ndarray:
     """Assigns secondary structure for a given coordinate array,
     either with or without assigned hydrogens
 
@@ -212,11 +212,6 @@ def assign(coord: np.ndarray) -> np.ndarray:  # pragma: no cover
     np.ndarray
         output (n,) array with one-hot labels in C3 notation ('-', 'H', 'E'),
         representing loop, helix and sheet, respectively.
-
-    Raises
-    ------
-
-        if module `einops` is not present
 
 
     .. versionadded:: 2.8.0

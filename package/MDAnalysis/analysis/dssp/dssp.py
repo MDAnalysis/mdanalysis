@@ -30,7 +30,7 @@ current environment with `python -m pip install pydssp`. Please note that the
 way MDAnalysis uses pydssp does not support pydssp's capability for batch
 processing or its use of the pytorch library.
 
-When using this module in published work please cite [Kabsch1983].
+When using this module in published work please cite :footcite:p:`Kabsch1983`.
 
 Example applications
 --------------------
@@ -63,9 +63,7 @@ trajectory got assigned the 'X' label.
     from MDAnalysisTests.datafiles import TPR, XTC
     u = mda.Universe(TPR, XTC)
     long_run = DSSP(u).run()
-    mean_secondary_structure = translate(
-        long_run.results.dssp_ndarray.mean(axis=0)
-        )
+    mean_secondary_structure = translate(long_run.results.dssp_ndarray.mean(axis=0))
     print(''.join(mean_secondary_structure)[:20])
 
 Running this code produces ::
@@ -167,8 +165,8 @@ class DSSP(AnalysisBase):
     """Assign secondary structure using DSSP algorithm.
 
     Analyze a selection containing a protein and assign secondary structure
-    using the Kabsch-Sander algorithm [Kabsch1983]. Only a subset of secondary
-    structure categories are implemented:
+    using the Kabsch-Sander algorithm :footcite:p:`Kabsch1983`. Only a subset
+    of secondary structure categories are implemented:
 
     - 'H' represents a generic helix (α-helix, π-helix or 3-<sub>10</sub> helix)
     - 'E' represents 'extended strand', participating in beta-ladder (parallel
@@ -208,7 +206,7 @@ class DSSP(AnalysisBase):
     >>> u = mda.Universe(PDB)
     >>> run = DSSP(u).run()
     >>> print("".join(run.results.dssp[0][:20]))
-    '--EEEEE-----HHHHHHHH'
+    --EEEEE-----HHHHHHHH
 
     Also, per-frame dssp assignment allows you to build average
     secondary structure -- ``DSSP.results.dssp_ndarray`` holds
@@ -216,14 +214,12 @@ class DSSP(AnalysisBase):
     loop, helix and sheet, respectively:
 
     >>> from MDAnalysis.analysis.dssp import translate, DSSP
-    >>> from MDAnalysisTests.datafiles import PDB
-    >>> u = mda.Universe(PDB)
+    >>> from MDAnalysisTests.datafiles import TPR, XTC
+    >>> u = mda.Universe(TPR, XTC)
     >>> long_run = DSSP(u).run()
-    >>> mean_secondary_structure = translate(
-    >>>     long_run.results.dssp_ndarray.mean(axis=0)
-    >>>     )
+    >>> mean_secondary_structure = translate(long_run.results.dssp_ndarray.mean(axis=0))
     >>> print(''.join(mean_secondary_structure)[:20])
-    '---HHHHHHHH---------'
+    -EEEEEE------HHHHHHH
 
     .. versionadded:: 2.8.0
     """
@@ -320,8 +316,8 @@ class DSSP(AnalysisBase):
 
 def translate(onehot: np.ndarray) -> np.ndarray:
     """Translate a one-hot encoding summary into char-based secondary structure
-    assignment. 
-    
+    assignment.
+
     One-hot encoding corresponds to C3 notation:
     '-', 'H', 'E' are loop, helix and sheet, respectively. Input array must
     have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3)
@@ -329,15 +325,20 @@ def translate(onehot: np.ndarray) -> np.ndarray:
     Examples
     --------
 
-    >>> from MDAnalysis.analysis.dssp import translate
-    >>> import numpy as np
-    >>> # encoding 'HE-'
-    >>> onehot = np.array([
-        [False, True, False],  # 'H'
-        [False, False, True],  # 'E'
-        [True, False, False]]) # '-'
-    >>> ''.join(translate(onehot))
-    'HE-'
+    .. code-block:: python
+
+        from MDAnalysis.analysis.dssp import translate
+        import numpy as np
+        # encoding 'HE-'
+        onehot = np.array([[False, True, False],  # 'H'
+                           [False, False, True],  # 'E'
+                           [True, False, False]]) # '-'
+        ''.join(translate(onehot))
+        print(''.join(translate(onehot)))
+
+    Running this code produces ::
+
+        HE-
 
     Parameters
     ----------
