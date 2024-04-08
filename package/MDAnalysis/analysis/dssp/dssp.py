@@ -163,43 +163,6 @@ except ModuleNotFoundError:
     )
 
 
-def translate(onehot: np.ndarray) -> np.ndarray:
-    """Translate a one-hot encoding summary into char-based secondary
-    structure assignment. One-hot encoding corresponds to C3 notation:
-    '-', 'H', 'E' are loop, helix and sheet, respectively. Input array must
-    have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3)
-
-    Examples
-    --------
-
-    >>> from MDAnalysis.analysis.dssp import translate
-    >>> import numpy as np
-    >>> # encoding 'HE-'
-    >>> onehot = np.array([
-        [False, True, False],  # 'H'
-        [False, False, True],  # 'E'
-        [True, False, False]]) # '-'
-    >>> ''.join(translate(onehot))
-    'HE-'
-
-    Parameters
-    ----------
-    onehot : np.ndarray
-        input array of one-hot encoding in ('-', 'H', 'E') order
-
-    Returns
-    -------
-    np.ndarray
-        array of '-', 'H' and 'E' symbols with secondary structure
-
-
-    .. versionadded:: 2.8.0
-    """
-    C3_ALPHABET = np.array(["-", "H", "E"])
-    index = np.argmax(onehot, axis=-1)
-    return C3_ALPHABET[index]
-
-
 class DSSP(AnalysisBase):
     """Assign secondary structure using DSSP algorithm.
 
@@ -353,3 +316,40 @@ class DSSP(AnalysisBase):
         self.results.dssp = translate(np.array(self.results.dssp_ndarray))
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
         self.results.resids = self._heavy_atoms["CA"].resids
+
+
+def translate(onehot: np.ndarray) -> np.ndarray:
+    """Translate a one-hot encoding summary into char-based secondary
+    structure assignment. One-hot encoding corresponds to C3 notation:
+    '-', 'H', 'E' are loop, helix and sheet, respectively. Input array must
+    have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3)
+
+    Examples
+    --------
+
+    >>> from MDAnalysis.analysis.dssp import translate
+    >>> import numpy as np
+    >>> # encoding 'HE-'
+    >>> onehot = np.array([
+        [False, True, False],  # 'H'
+        [False, False, True],  # 'E'
+        [True, False, False]]) # '-'
+    >>> ''.join(translate(onehot))
+    'HE-'
+
+    Parameters
+    ----------
+    onehot : np.ndarray
+        input array of one-hot encoding in ('-', 'H', 'E') order
+
+    Returns
+    -------
+    np.ndarray
+        array of '-', 'H' and 'E' symbols with secondary structure
+
+
+    .. versionadded:: 2.8.0
+    """
+    C3_ALPHABET = np.array(["-", "H", "E"])
+    index = np.argmax(onehot, axis=-1)
+    return C3_ALPHABET[index]
