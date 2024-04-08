@@ -319,8 +319,10 @@ class DSSP(AnalysisBase):
 
 
 def translate(onehot: np.ndarray) -> np.ndarray:
-    """Translate a one-hot encoding summary into char-based secondary
-    structure assignment. One-hot encoding corresponds to C3 notation:
+    """Translate a one-hot encoding summary into char-based secondary structure
+    assignment. 
+    
+    One-hot encoding corresponds to C3 notation:
     '-', 'H', 'E' are loop, helix and sheet, respectively. Input array must
     have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3)
 
