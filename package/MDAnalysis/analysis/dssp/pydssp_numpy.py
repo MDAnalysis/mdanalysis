@@ -139,11 +139,6 @@ def get_hbond_map(
     np.ndarray
         output hbond map or energy depending on return_e param
 
-    Raises
-    ------
-
-    ImportError
-        if module `einops` is not present
 
     .. versionadded:: 2.8.0
     """
@@ -208,7 +203,9 @@ def assign(coord: np.ndarray) -> np.ndarray:  # pragma: no cover
     ----------
     coord : np.ndarray
         input coordinates in either (n, 4, 3) or (n, 5, 3) shape,
-        without or with hydrogens, respectively
+        without or with hydrogens, respectively. Second dimension `k` represents
+        (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
+        (when k=5).
 
     Returns
     -------
@@ -220,6 +217,7 @@ def assign(coord: np.ndarray) -> np.ndarray:  # pragma: no cover
     ------
 
         if module `einops` is not present
+
 
     .. versionadded:: 2.8.0
     """
