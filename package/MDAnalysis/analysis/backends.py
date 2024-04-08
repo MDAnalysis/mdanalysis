@@ -30,6 +30,7 @@ class BackendBase:
     .. code-block:: python
     
         from MDAnalysis.analysis.backends import BackendBase
+
         class ThreadsBackend(BackendBase):
             def apply(self, func, computations):
                 from multiprocessing.dummy import Pool
@@ -37,12 +38,24 @@ class BackendBase:
                 with Pool(processes=self.n_workers) as pool:
                     results = pool.map(func, computations)
                 return results
+
+        import MDAnalysis as mda
+        from MDAnalysis.tests.datafiles import PSF, DCD
         from MDAnalysis.analysis.rms import RMSD
-        R = RMSD(...) # setup the run
+
+        u = mda.Universe(PSF, DCD)
+        ref = mda.Universe(PSF, DCD)
+
+        R = RMSD(u, ref)
+
         n_workers = 2
         backend = ThreadsBackend(n_workers=n_workers)
         R.run(backend=backend, unsupported_backend=True)
 
+    .. warning::
+        Using `ThreadsBackend` above will lead to erroneous results, since it
+        is an educational example. Do not use it for real analysis.
+        
     .. versionadded:: 2.8.0
     """
 
