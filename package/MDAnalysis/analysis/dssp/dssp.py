@@ -104,12 +104,6 @@ Running this code produces ::
     '--EEEE----------HHHH'
 
 
-Functions
----------
-
-.. autofunction:: assign
-.. autofunction:: translate
-
 Analysis classes
 ----------------
 
@@ -131,6 +125,13 @@ Analysis classes
        ``[frame, residue, encoding]``, where ``encoding`` is a (3,) shape
        :class:`numpy.ndarray` of booleans with axes representing loop '-',
        helix 'H' and sheet 'E', consequently.
+
+
+Functions
+---------
+
+.. autofunction:: assign
+.. autofunction:: translate
 """
 
 from typing import Union
