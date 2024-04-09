@@ -32,6 +32,11 @@ processing or its use of the pytorch library.
 
 When using this module in published work please cite :footcite:p:`Kabsch1983`.
 
+.. rubric:: References
+
+.. footbibliography::
+
+
 Example applications
 --------------------
 
