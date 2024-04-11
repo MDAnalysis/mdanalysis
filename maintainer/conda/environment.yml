@@ -20,7 +20,7 @@ dependencies:
   - networkx
   - numpy>=1.23.2
   - pytest
-  - python==3.9
+  - python==3.10
   - pytng>=0.2.3
   - scikit-learn
   - scipy
@@ -29,7 +29,11 @@ dependencies:
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
+  - mdaencore
+  - waterdynamics
   - pip:
+      - mdahole2
+      - pathsimanalysis
       - duecredit
       - parmed
       - sphinx-sitemap

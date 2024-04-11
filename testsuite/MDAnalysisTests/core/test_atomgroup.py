@@ -748,6 +748,10 @@ class TestDihedralSelections(object):
         assert_equal(phisel.residues.resids, [9, 10])
         assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
 
+    def test_phi_selections_empty(self, GRO):
+        rgsel = GRO.segments[0].residues[[]].phi_selections()
+        assert len(rgsel) == 0
+
     def test_phi_selections(self, resgroup):
         rgsel = resgroup.phi_selections()
         rssel = [r.phi_selection() for r in resgroup]
@@ -788,6 +792,10 @@ class TestDihedralSelections(object):
         assert_equal(psisel.residues.resids, [10, 11])
         assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
 
+    def test_psi_selections_empty(self, GRO):
+        rgsel = GRO.segments[0].residues[[]].psi_selections()
+        assert len(rgsel) == 0
+
     def test_psi_selections(self, resgroup):
         rgsel = resgroup.psi_selections()
         rssel = [r.psi_selection() for r in resgroup]
@@ -819,6 +827,10 @@ class TestDihedralSelections(object):
         assert_equal(osel.names, names)
         assert_equal(osel.residues.resids, [8, 9])
         assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
+
+    def test_omega_selections_empty(self, GRO):
+        rgsel = GRO.segments[0].residues[[]].omega_selections()
+        assert len(rgsel) == 0
 
     def test_omega_selections_single(self, GRO):
         rgsel = GRO.segments[0].residues[[7]].omega_selections()
@@ -868,6 +880,10 @@ class TestDihedralSelections(object):
         assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
         assert_equal(sel.residues.resids, [13])
         assert_equal(sel.residues.resnames, ['LYS'])
+
+    def test_chi1_selections_empty(self, GRO):
+        rgsel = GRO.segments[0].residues[[]].chi1_selections()
+        assert len(rgsel) == 0
 
     def test_chi1_selections(self, resgroup):
         rgsel = resgroup.chi1_selections()
