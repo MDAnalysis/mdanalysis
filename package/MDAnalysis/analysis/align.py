@@ -819,7 +819,7 @@ class AlignTraj(AnalysisBase):
         # with self.filename == None (in_memory), the NullWriter is chosen
         # (which just ignores input) and so only the in_memory trajectory is
         # retained
-        self._writer = mda.Writer(self.filename, natoms)
+        self._writer = mda.Writer(self.filename, natoms, **kwargs)
 
         self._weights = get_weights(self.ref_atoms, weights)
 

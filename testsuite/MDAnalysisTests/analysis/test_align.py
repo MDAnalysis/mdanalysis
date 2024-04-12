@@ -682,3 +682,14 @@ def test_alignto_reorder_atomgroups():
     ref = u.atoms[[3, 2, 1, 0]]
     rmsd = align.alignto(mobile, ref, select='bynum 1-4')
     assert_allclose(rmsd, (0.0, 0.0))
+
+def test_aligntraj_writer_kwargs():
+    # Issue 4564
+    u = mda.Universe(PSF, DCD)
+    aligner = align.AlignTraj(u, ref,
+                              select='protein and name CA',
+                              filename='aligned_traj.xtc',
+                              precision=2,
+                              in_memory=False).run()
+    assert_equal(aligner._writer.precision, 2)
+    
