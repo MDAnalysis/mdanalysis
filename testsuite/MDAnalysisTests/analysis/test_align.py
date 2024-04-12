@@ -692,5 +692,3 @@ def test_alignto_reorder_atomgroups():
     ref = u.atoms[[3, 2, 1, 0]]
     rmsd = align.alignto(mobile, ref, select='bynum 1-4')
     assert_allclose(rmsd, (0.0, 0.0))
-
-    

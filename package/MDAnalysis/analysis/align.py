@@ -756,6 +756,7 @@ class AlignTraj(AnalysisBase):
           for the remainder of the Python session. If ``mobile.trajectory`` is
           already a :class:`MemoryReader` then it is *always* treated as if
           ``in_memory`` had been set to ``True``.
+        - Writer ``**kwargs`` will be passed to the constructed `mda.Writer`.
 
         .. versionchanged:: 1.0.0
            Default ``filename`` has now been changed to the current directory.

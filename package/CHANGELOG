@@ -37,6 +37,8 @@ Fixes
  * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
  * Fix deploy action to use the correct version of the pypi upload action.
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
+ * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
+   (Issue #4564, PR #4565)
 
 Enhancements
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
