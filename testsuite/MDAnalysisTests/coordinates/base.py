@@ -25,6 +25,7 @@ import pickle
 
 import numpy as np
 import pytest
+from pathlib import Path
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
@@ -125,6 +126,12 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Single-frame timestep is changed after pickling")
+
+    def test_pathlib_input_single(self):
+        path = Path(self.filename)
+        u_str = mda.Universe(self.filename)
+        u_path = mda.Universe(path)
+        assert u_str.atoms.n_atoms == u_path.atoms.n_atoms
 
 
 class BaseReference(object):
