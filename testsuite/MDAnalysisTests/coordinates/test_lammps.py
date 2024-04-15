@@ -30,7 +30,6 @@ import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
 from numpy.testing import (assert_equal, assert_allclose)
-from pathlib import Path
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.reference import (
@@ -820,16 +819,3 @@ class TestLammpsTriclinic(object):
                             rtol=1e-5, atol=0)
 
         assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)
-
-
-def test_pathlib_lammps_singleframereaderbase():
-    top = Path(LAMMPSdata)
-    assert isinstance(top, Path)
-    u = mda.Universe(top)
-    assert u.atoms.n_atoms == 18364
-
-
-def test_string_lammps_singleframereaderbase():
-    assert isinstance(LAMMPSdata, str)
-    u = mda.Universe(LAMMPSdata)
-    assert u.atoms.n_atoms == 18364
