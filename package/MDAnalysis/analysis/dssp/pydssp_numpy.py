@@ -1,6 +1,6 @@
 """
 A re-implementation of DSSP algorithm :footcite:p:`Kabsch1983`, taken from
-`pydssp` v.0.9.0 (https://github.com/ShintaroMinami/PyDSSP) by Shintaro Minami,
+*pydssp* v.0.9.0 (https://github.com/ShintaroMinami/PyDSSP) by Shintaro Minami,
 distributed under MIT license.
 
 Current implementation doesn't use `einops` as a dependency, instead directly
@@ -17,7 +17,7 @@ DEFAULT_CUTOFF = -0.5
 DEFAULT_MARGIN = 1.0
 
 
-def _upsample(a: np.ndarray, window: int) -> np.ndarray:  # pragma: no cover
+def _upsample(a: np.ndarray, window: int) -> np.ndarray:
     """Performs array upsampling with given window along given axis.
 
     Example
@@ -63,7 +63,7 @@ def _upsample(a: np.ndarray, window: int) -> np.ndarray:  # pragma: no cover
     return _unfold(_unfold(a, window, -2), window, -2)
 
 
-def _unfold(a: np.ndarray, window: int, axis: int):  # pragma: no cover
+def _unfold(a: np.ndarray, window: int, axis: int):
     "Helper function for 2D array upsampling"
     idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
