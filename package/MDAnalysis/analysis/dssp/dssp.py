@@ -15,18 +15,20 @@ This module uses the python version of the original algorithm :footcite:p:`Kabsc
 re-implemented by @ShintaroMinami and available under MIT license from
 `ShintaroMinami/PyDSSP <https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp>`_.
 
-Note that this implementation does not discriminate different types of
-beta-sheets, as well as different types of helices, meaning you will get
-:math:`3_{10}` helices and π-helices labelled as "helix" too.
+
+.. Note::
+    This implementation does not discriminate different types of
+    beta-sheets, as well as different types of helices, meaning you will get
+    :math:`3_{10}` helices and π-helices labelled as "helix" too.
 
 
 Using original `pydssp`
------------------------
-
-The default implementation uses the original `pydssp` (v.0.9.0) code, rewritten
-without usage of `einops` library and hence having no dependencies. If you want
-to explicitly use `pydssp` (or its particular version), install it to your
-current environment with `python -m pip install pydssp`. Please note that the
+The default implementation uses the original *pydssp* (v.0.9.0) code, rewritten
+without usage of the *einops* library and hence having no dependencies. If you want
+to explicitly use *pydssp* (or its particular version), install it to your
+current environment with ``python -m pip install pydssp``. Please note that the
+way MDAnalysis uses *pydssp* does not support *pydssp* 's capability for batch
+processing or its use of the *pytorch* library.
 way MDAnalysis uses pydssp does not support pydssp's capability for batch
 processing or its use of the pytorch library.
 
@@ -69,17 +71,17 @@ trajectory got assigned the 'X' label.
     u = mda.Universe(TPR, XTC)
     long_run = DSSP(u).run()
     mean_secondary_structure = translate(long_run.results.dssp_ndarray.mean(axis=0))
-    print(''.join(mean_secondary_structure)[:20])
+    print(''.join(mean_secondary_structure))
 
 Running this code produces ::
 
-   '-EEEEEE------HHHHHHH'
+   '--EEEE----------HHHHHHH----EE----HHHHH------HHHHHHHHHH------HHHHHHHHHHH---------EEEE-----HHHHHHHHH------EEEEEE--HHHHHH----EE--------EE---E----------------------HHHHHHHHHHHHHHHHHHHHHHHHHHHH----EEEEE------HHHHHHHHH--'
 
 Find parts of the protein that maintain their secondary structure during simulation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 In this example, we will find residue groups that maintain their secondary structure
 along the simulation, and have some meaningful ('E' or 'H') secondary structure
-during more than set `threshold` share of frames. We will call these residues
+during more than set `threshold` fraction of frames. We will call these residues
 "persistent", for clarity, and label them according to the structure
 that they maintain during the run:
 
@@ -168,13 +170,13 @@ except ModuleNotFoundError:
 
 
 class DSSP(AnalysisBase):
-    """Assign secondary structure using DSSP algorithm.
+    """Assign secondary structure using the DSSP algorithm.
 
     Analyze a selection containing a protein and assign secondary structure
     using the Kabsch-Sander algorithm :footcite:p:`Kabsch1983`. Only a subset
     of secondary structure categories are implemented:
 
-    - 'H' represents a generic helix (α-helix, π-helix or 3-<sub>10</sub> helix)
+    - 'H' represents a generic helix (α-helix, π-helix or :math:`3_{10}` helix)
     - 'E' represents 'extended strand', participating in beta-ladder (parallel
       or antiparallel)
     - '-' represents unordered part
@@ -182,11 +184,21 @@ class DSSP(AnalysisBase):
     The implementation was taken from the pydssp package (v. 0.9.0)
     https://github.com/ShintaroMinami/PyDSSP by Shintaro Minami.
 
+    .. Warning::
+        For the DSSP to work properly, your atoms (either as ``Universe``
+        or ``AtomGroup``) must have only one atom named "H" per residue,
+        that corresponds to N-bound hydrogen in a peptide bond (or zero,
+        if the residue is proline). It is the default case for most of
+        the modern syntaxes, but if you encounter an error or unusual results
+        during your run, please report an issue on MDAnalysis
+        [github](https://github.com/MDAnalysis/mdanalysis/issues).
+
     Parameters
     ----------
     atoms : Union[Universe, AtomGroup]
         input Universe or AtomGroup. In both cases, only protein residues will
-        be chosen. Heavy atoms of the protein are then selected by name
+        be chosen prior to the analysis via `select_atoms('protein')`.
+        Heavy atoms of the protein are then selected by name
         ("N", "CA", "C", "O O1 OT1"), and hydrogens are selected by name "H".
     guess_hydrogens : bool, optional
         whether you want to guess hydrogens positions, by default ``True``.
@@ -195,6 +207,14 @@ class DSSP(AnalysisBase):
         If ``guess_hydrogens`` is False, hydrogen atom positions on N atoms
         will be parsed from the trajectory, except for the "hydrogen" atom
         positions on PRO residues, and an N-terminal residue.
+    heavyatom_names : tuple[str], default ("N", "CA", "C", "O O1 OT1")
+        selection names that will be used to select "N", "CA", "C" and "O"
+        atom coordinates for the secondary structure determination. The last
+        string contains multiple values for "O" to account for C-term residues.
+    hydrogen_name : str, default "H HN"
+        selection string that will be used to select N-bound hydrogen in every
+        residue. Default string contains both "H" and "HN" simultaneously, since
+        they aren't used together in topologies.
 
     Raises
     ------
@@ -211,8 +231,11 @@ class DSSP(AnalysisBase):
     >>> import MDAnalysis as mda
     >>> u = mda.Universe(PDB)
     >>> run = DSSP(u).run()
-    >>> print("".join(run.results.dssp[0][:20]))
     --EEEEE-----HHHHHHHH
+
+    (Note that for displaying purposes we only print the first 20 residues
+    of frame 0 with ``run.results.dssp[0][:20]`` but one would typically look
+    at all residues ```run.results.dssp[0]``.)
 
     Also, per-frame dssp assignment allows you to build average
     secondary structure -- ``DSSP.results.dssp_ndarray`` holds
@@ -230,27 +253,35 @@ class DSSP(AnalysisBase):
     .. versionadded:: 2.8.0
     """
 
-    def __init__(self, atoms: Union[Universe, AtomGroup], guess_hydrogens: bool = True):
+    def __init__(
+        self,
+        atoms: Union[Universe, AtomGroup],
+        guess_hydrogens: bool = True,
+        *,
+        heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
+        hydrogen_name: str = "H HN",
+    ):
         self._guess_hydrogens = guess_hydrogens
 
-        ag: AtomGroup = (
-            atoms.select_atoms("protein") if isinstance(atoms, Universe) else atoms
-        )
+        ag: AtomGroup = atoms.select_atoms("protein")
         super().__init__(ag.universe.trajectory)
 
         # define necessary selections
         # O1/OT1 is for C-terminal residue
-        heavyatom_names = ("N", "CA", "C", "O O1 OT1")
         self._heavy_atoms: dict[str, "AtomGroup"] = {
-            t: ag.select_atoms(f"protein and name {t}") for t in heavyatom_names
+            t: ag.atoms[
+                np.isin(
+                    ag.names, t.split()
+                )  # need split() since `np.isin` takes an iterable as second argument
+                # and "N".split() -> ["N"]
+            ]
+            for t in heavyatom_names
         }
         self._hydrogens: list["AtomGroup"] = [
-            res.atoms.select_atoms("name H")
-            for res in ag.select_atoms("protein").residues
+            res.atoms.select_atoms(f"name {hydrogen_name}") for res in ag.residues
         ]
         # can't do it the other way because I need missing values to exist
         # so that I could fill them in later
-
         if not self._guess_hydrogens:
             for calpha, hydrogen in zip(
                 self._heavy_atoms["CA"][1:], self._hydrogens[1:]
@@ -263,17 +294,17 @@ class DSSP(AnalysisBase):
                         )
                     )
 
-    def _prepare(self):
-        self.results.dssp_ndarray = []
-
         positions = [group.positions for group in self._heavy_atoms.values()]
         if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
             raise ValueError(
                 (
-                    "Universe contains not equal number of (N,CA,C,O) atoms ('name' field)."
+                    "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
                     " Please select appropriate AtomGroup manually."
                 )
             )
+
+    def _prepare(self):
+        self.results.dssp_ndarray = []
 
     def _get_coords(self) -> np.ndarray:
         """Returns coordinates of (N,CA,C,O,H) atoms, as required by
@@ -289,8 +320,9 @@ class DSSP(AnalysisBase):
         ValueError
             if input Universe contains different number of (N,CA,C,O) atoms
 
-        .. versionadded:: 2.8.0
         """
+        # NOTE: here we explicitly rely on the fact that `self._heavy_atoms`
+        # dictionary maintains order of the keys since python 3.7
         positions = [group.positions for group in self._heavy_atoms.values()]
         coords = np.array(positions)
 
