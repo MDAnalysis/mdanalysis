@@ -359,7 +359,7 @@ class RMSD(AnalysisBase):
        :attr:`rmsd` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     .. versionchanged:: 2.8.0
-       introduced a :attr:`supported_backends` allowing for execution on with
+       introduced a :meth:`get_supported_backends` allowing for execution on with
        ``multiprocessing`` and ``dask`` backends.
     """
 
