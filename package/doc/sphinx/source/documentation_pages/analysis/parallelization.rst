@@ -269,7 +269,11 @@ In order to write your custom backend (e.g. using ``dask.distributed``), inherit
 the :class:`MDAnalysis.analysis.backends.BackendBase` and (re)-implement
 ``__init__`` and ``apply`` methods. Optionally, you can implement methods for
 validation of correct backend initialization -- ``_get_checks`` and
-``get_warnings``:
+``get_warnings``, that would raise an exception or give a warning, respectively,
+when a new class instance is created:
+
+#. :meth:`MDAnalysis.analysis.backends._get_checks`
+#. :meth:`MDAnalysis.analysis.backends._get_warnings`
 
 .. code-block:: python
 

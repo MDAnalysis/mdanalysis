@@ -185,7 +185,7 @@ class BackendMultiprocessing(BackendBase):
     ----------
     n_workers : int
         number of processes in ``multiprocessing.Pool`` to distribute the
-        workload between. Should be a positive integer.
+        workload between. Must be a positive integer.
 
     Examples
     --------
@@ -231,7 +231,7 @@ class BackendDask(BackendBase):
     Parameters
     ----------
     n_workers : int
-        number of processes in to distribute the workload between. Should be a
+        number of processes in to distribute the workload between. Must be a
         positive integer. Workers are actually ``multiprocessing.Pool`` processes,
         but they use different and more flexible serialization protocol (see
         https://docs.dask.org/en/stable/phases-of-computation.html#graph-serialization).
@@ -288,7 +288,7 @@ class BackendDask(BackendBase):
         base_checks = super()._get_checks()
         checks = {
             is_installed("dask"):
-            ("module 'dask' should be installed: "
+            ("module 'dask' is missing. Please install: "
              "https://docs.dask.org/en/stable/install.html")
         }
         return base_checks | checks
