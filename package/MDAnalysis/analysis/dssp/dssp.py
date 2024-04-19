@@ -236,6 +236,7 @@ class DSSP(AnalysisBase):
     >>> import MDAnalysis as mda
     >>> u = mda.Universe(PDB)
     >>> run = DSSP(u).run()
+    >>> print("".join(run.results.dssp[0][:20]))
     --EEEEE-----HHHHHHHH
 
     (Note that for displaying purposes we only print the first 20 residues
