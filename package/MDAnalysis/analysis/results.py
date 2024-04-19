@@ -201,16 +201,16 @@ class ResultsGroup:
         """
         if len(objects) == 1:
             merged_results = objects[0]
-        else:
-            merged_results = Results()
-            for key in objects[0].keys():
-                agg_function = self._lookup.get(key, None)
-                if agg_function is not None:
-                    results_of_t = [obj[key] for obj in objects]
-                    merged_results[key] = agg_function(results_of_t)
-                else:
-                    if require_all_aggregators:
-                        raise ValueError(f"No aggregation function for {key=}")
+            return merged_results
+        
+        merged_results = Results()
+        for key in objects[0].keys():
+            agg_function = self._lookup.get(key, None)
+            if agg_function is not None:
+                results_of_t = [obj[key] for obj in objects]
+                merged_results[key] = agg_function(results_of_t)
+            elif require_all_aggregators:
+                raise ValueError(f"No aggregation function for {key=}")
         return merged_results
 
     @staticmethod

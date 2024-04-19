@@ -3,11 +3,12 @@
 
 Provides :class:`BackendBase` base class to implement custom
 backends for :meth:`MDAnalysis.analysis.base.AnalysisBase.run()` and its
-subclasses. Two built-in backend classes classes are provided:
-:class:`BackendMultiprocessing` that supports parallelization via standard
-python ``multiprocessing`` module, and :class:`BackendDask`, that uses the same
-process-based parallelization as :class:`BackendMultiprocessing`, but different
-serialization algorithm (see https://distributed.dask.org/en/latest/serialization.html
+subclasses. Three built-in backend classes classes are provided:
+:class:`BackendSerial`, that is equal to using no parallelization and
+is default, :class:`BackendMultiprocessing` that supports parallelization
+via standard Python ``multiprocessing`` module, and :class:`BackendDask`,
+that uses the same process-based parallelization as :class:`BackendMultiprocessing`,
+but different serialization algorithm (see https://distributed.dask.org/en/latest/serialization.html
 for explanation of ``dask`` serialization algorithms; ``multiprocessing`` uses
 default ``pickle`` serialization).
 """
@@ -18,7 +19,7 @@ from MDAnalysis.lib.util import is_installed
 
 class BackendBase:
     """Base class for backend implementation. Initializes an instance and performs
-    checks for its validity, such as n_workers and possibly other ones.
+    checks for its validity, such as ``n_workers`` and possibly other ones.
 
     Parameters
     ----------
