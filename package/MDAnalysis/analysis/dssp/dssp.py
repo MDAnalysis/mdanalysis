@@ -191,7 +191,7 @@ class DSSP(AnalysisBase):
         if the residue is proline). It is the default case for most of
         the modern syntaxes, but if you encounter an error or unusual results
         during your run, please report an issue on MDAnalysis
-        [github](https://github.com/MDAnalysis/mdanalysis/issues).
+        `github <https://github.com/MDAnalysis/mdanalysis/issues>`_.
 
     Parameters
     ----------
@@ -211,7 +211,7 @@ class DSSP(AnalysisBase):
         selection names that will be used to select "N", "CA", "C" and "O"
         atom coordinates for the secondary structure determination. The last
         string contains multiple values for "O" to account for C-term residues.
-    hydrogen_name : str, default "H HN"
+    hydrogen_name : str, default "H HN HT1 HT2 HT3"
         selection string that will be used to select N-bound hydrogen in every
         residue. Default string contains both "H" and "HN" simultaneously, since
         they aren't used together in topologies.
@@ -259,7 +259,7 @@ class DSSP(AnalysisBase):
         guess_hydrogens: bool = True,
         *,
         heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
-        hydrogen_name: str = "H HN",
+        hydrogen_name: str = "H HN HT1 HT2 HT3",
     ):
         self._guess_hydrogens = guess_hydrogens
 
@@ -290,7 +290,8 @@ class DSSP(AnalysisBase):
                     raise ValueError(
                         (
                             "Universe is missing non-PRO hydrogen "
-                            f"on residue {calpha.residue}"
+                            f"on residue {calpha.residue}, "
+                            f"present atoms: {' - '.join(map(str,calpha.residue.atoms))}"
                         )
                     )
 

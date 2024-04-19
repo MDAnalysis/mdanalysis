@@ -7,6 +7,8 @@ from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
 
 
+# Files that match glob pattern '????.pdb.gz' and matching '????.pdb.dssp' files,
+# containing the secondary structure assignment string, will be tested automatically.
 @pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/?????.pdb.gz"))
 def test_file_guess_hydrogens(pdb_filename):
     u = mda.Universe(pdb_filename)
@@ -19,31 +21,35 @@ def test_file_guess_hydrogens(pdb_filename):
 
 
 def test_trajectory():
-    u = mda.Universe(TPR, XTC).select_atoms('protein').universe
+    u = mda.Universe(TPR, XTC).select_atoms("protein").universe
     run = DSSP(u).run(stop=10)
-    first_frame = ''.join(run.results.dssp[0])
-    last_frame = ''.join(run.results.dssp[-1])
-    avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
+    first_frame = "".join(run.results.dssp[0])
+    last_frame = "".join(run.results.dssp[-1])
+    avg_frame = "".join(translate(run.results.dssp_ndarray.mean(axis=0)))
 
-    assert first_frame[:10] != last_frame[:10] == avg_frame[:10] == '-EEEEEE---'
+    assert first_frame[:10] != last_frame[:10] == avg_frame[:10] == "-EEEEEE---"
+    protein = mda.Universe(TPR, XTC).select_atoms("protein")
+    run = DSSP(protein).run(stop=10)
+
 
 def test_atomgroup():
-    u = mda.Universe(TPR, XTC).select_atoms('protein')
-    run = DSSP(u).run(stop=10)
-    first_frame = ''.join(run.results.dssp[0])
-    last_frame = ''.join(run.results.dssp[-1])
-    avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
+    protein = mda.Universe(TPR, XTC).select_atoms("protein")
+    run = DSSP(protein).run(stop=10)
+    first_frame = "".join(run.results.dssp[0])
+    last_frame = "".join(run.results.dssp[-1])
+    avg_frame = "".join(translate(run.results.dssp_ndarray.mean(axis=0)))
 
-    assert first_frame[:10] != last_frame[:10] == avg_frame[:10] == '-EEEEEE---'
+    assert first_frame[:10] != last_frame[:10] == avg_frame[:10] == "-EEEEEE---"
+
 
 def test_trajectory_with_hydrogens():
-    u = mda.Universe(TPR, XTC).select_atoms('protein').universe
+    u = mda.Universe(TPR, XTC).select_atoms("protein").universe
     run = DSSP(u, guess_hydrogens=False).run(stop=10)
-    first_frame = ''.join(run.results.dssp[0])
-    last_frame = ''.join(run.results.dssp[-1])
-    avg_frame = ''.join(translate(run.results.dssp_ndarray.mean(axis=0)))
+    first_frame = "".join(run.results.dssp[0])
+    last_frame = "".join(run.results.dssp[-1])
+    avg_frame = "".join(translate(run.results.dssp_ndarray.mean(axis=0)))
 
-    assert first_frame[:10] == last_frame[:10] == avg_frame[:10] == '-EEEEEE---'
+    assert first_frame[:10] == last_frame[:10] == avg_frame[:10] == "-EEEEEE---"
 
 
 @pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/2xdgA.pdb.gz"))
@@ -53,7 +59,9 @@ def test_trajectory_without_hydrogen_fails(pdb_filename):
         DSSP(u, guess_hydrogens=False).run()
 
 
-@pytest.mark.parametrize("pdb_filename", glob.glob(f"{DSSP_FOLDER}/1mr1D_failing.pdb.gz"))
+@pytest.mark.parametrize(
+    "pdb_filename", glob.glob(f"{DSSP_FOLDER}/1mr1D_failing.pdb.gz")
+)
 def test_trajectory_with_uneven_number_of_atoms_fails(pdb_filename):
     u = mda.Universe(pdb_filename)
     with pytest.raises(ValueError):
