@@ -212,9 +212,14 @@ class DSSP(AnalysisBase):
         atom coordinates for the secondary structure determination. The last
         string contains multiple values for "O" to account for C-term residues.
     hydrogen_name : str, default "H HN HT1 HT2 HT3"
-        selection string that will be used to select N-bound hydrogen in every
-        residue. Default string contains both "H" and "HN" simultaneously, since
-        they aren't used together in topologies.
+        This selection should only select a single hydrogen atom in each residue
+        (except proline), namely the one bound to the backbone nitrogen.
+
+    .. Note::
+       To work with different hydrogen-naming conventions by default, the default
+       selection is broad but if hydrogens are incorrectly selected (e.g., a
+       :exc:`ValueError` is raised) you must customize ``hydrogen_name`` for your
+       specific case.
 
     Raises
     ------
