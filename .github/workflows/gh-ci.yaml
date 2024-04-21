@@ -265,7 +265,7 @@ jobs:
 
     - name: check_testsuite_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/mdanalysisTests-*.tar.gz | head -n1)
+        DISTRIBUTION=$(ls -t1 dist/mdanalysistests-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysisTests-*.tar.gz found"; exit 1; }
         twine check $DISTRIBUTION
 
