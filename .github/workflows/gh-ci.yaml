@@ -274,7 +274,7 @@ jobs:
       run: |
         ls -a .
         python -m pip install mdanalysis-*.tar.gz
-        python -m pip install mdanalysisTests-*.tar.gz
+        python -m pip install mdanalysistests-*.tar.gz
 
     - name: run tests
       working-directory: ./dist
