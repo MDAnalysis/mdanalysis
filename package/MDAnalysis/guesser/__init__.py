@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -22,7 +22,7 @@
 #
 
 """
-context-specific guessers --- :mod:`MDAnalysis.guesser`
+Context-specific guessers --- :mod:`MDAnalysis.guesser`
 ========================================================
 
 You can use guesser classes either directly by initiating an instance of it and use its guessing methods or through
@@ -34,7 +34,7 @@ the attributes they can guess.
 .. table:: Table of Supported Guessers
 
    ============================================== ========== ===================== ===================================================
-   Name                                           context    attributes            remarks
+   Name                                           Context    Attributes            Remarks
    ============================================== ========== ===================== ===================================================
    :ref:`DefaultGuesser <DefaultGuesser>`         default    types, elements,      general purpose guesser                                                                                       
                                                              masses, bonds,

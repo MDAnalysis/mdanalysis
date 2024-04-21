@@ -73,8 +73,8 @@ class CRDParser(TopologyReaderBase):
      - Segids
 
     .. versionchanged:: 2.8.0
-       Removed type and mass guessing (attributes guessing takes place now
-       through universe.guess_TopologyAttrs() API).
+       Type and mass are not longer guessed here. Until 3.0 these will still be
+       set by default through through universe.guess_TopologyAttrs() API.
     """
     format = 'CRD'
 

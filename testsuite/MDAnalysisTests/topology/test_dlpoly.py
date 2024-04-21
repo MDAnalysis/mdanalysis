@@ -62,7 +62,7 @@ class DLPBase2(DLPUniverse):
         assert_allclose(u.atoms.masses[0], 39.102)
         assert_allclose(u.atoms.masses[4], 35.45)
 
-    def test__guessed_types(self, filename):
+    def test_guessed_types(self, filename):
         u = mda.Universe(filename, topology_format=self.format)
         assert u.atoms.types[0] == 'K'
         assert u.atoms.types[4] == 'CL'

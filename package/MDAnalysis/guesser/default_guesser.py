@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -25,9 +25,9 @@ Default Guesser
 ================
 .. _DefaultGuesser:
 
-DefaultGuesser is a generic guesser class that have basic guessing methods.
+DefaultGuesser is a generic guesser class that has basic guessing methods.
 This class is a general purpose guesser that can be used with most topologies,
-but being generic make it the less accurate among all guessers.
+but being generic makes it the less accurate among all guessers.
 
 
 
@@ -55,7 +55,7 @@ from . import tables
 class DefaultGuesser(GuesserBase):
     """
     This guesser holds generic methods (not directed to specific contexts) for
-    guessing different topology attribute. It has the same methods that was
+    guessing different topology attribute. It has the same methods which where
     originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
     * masses
@@ -99,9 +99,9 @@ class DefaultGuesser(GuesserBase):
 
     def guess_masses(self, atom_types=None, indices_to_guess=None):
         """Guess the mass of many atoms based upon their type.
-        For guessing masses through Univese.guess_TopologyAttrs():
-        First it try to guess masses from atom elements, if not available,
-        try to guess masses from types and if not availaible, try to guess
+        For guessing masses through Universe.guess_TopologyAttrs():
+        First try to guess masses from atom elements, if not available,
+        try to guess masses from types and if not available, try to guess
         types.
 
         Parameters
@@ -117,8 +117,8 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError` if there is no atom types
-         or elements to guess mass from.
+        :exc:`ValueError`
+            If there are no atom types or elements to guess mass from.
 
         """
         if atom_types is None:
@@ -148,7 +148,7 @@ class DefaultGuesser(GuesserBase):
         """Return the atomic mass in u for *element*.
         Masses are looked up in :data:`MDAnalysis.guesser.tables.masses`.
 
-        .. Warning:: Untill version 3.0.0 unknown masses are set to 0.0
+        .. Warning:: Until version 3.0.0 unknown masses are set to 0.0
 
         """
         try:
@@ -169,19 +169,20 @@ class DefaultGuesser(GuesserBase):
 
         :func:`guess_atom_element` is used to determine the kind of atom.
 
-    .. warning:: Untill version 3.0.0 anything not recognized is simply
-        set to 0.0; if you rely on the masses you might want to double-check.
+        .. warning:: Until version 3.0.0 anything not recognized is simply
+           set to 0.0; if you rely on the masses you might want to double-check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
     def guess_types(self, atom_types=None, masses=None, indices_to_guess=None):
         """Guess the atom type of many atoms based on atom name
+
         Parameters
         ----------
         atom_types (optional)
           atoms names if types guessing is desired to be from names
         masses (optional)
-           atoms masses if types guessing is desired to be from masses
+          atoms masses if types guessing is desired to be from masses
         indices_to_guess (optional)
           Mask array for partially guess types for certain atoms
 

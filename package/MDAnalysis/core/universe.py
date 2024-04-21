@@ -238,7 +238,7 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    context: str or :mod:`Guesser<MDAnalysis.guesser>`, default ``default``
+    context: str or :mod:`Guesser<MDAnalysis.guesser>`, default ``'default'``
         Type of the Guesser to be used in guessing TopologyAttrs
     to_guess: list[str] (optional, default ``['types', 'masses']``)
 
@@ -247,11 +247,11 @@ class Universe(object):
             In MDAnalysis 2.x, types and masses are being automatically guessed
             if they are missing (``to_guess=('types, 'masses')``).
             However, starting with release 3.0 **no guessing will be done
-            by default** and it will beup to the user to request guessing
+            by default** and it will be up to the user to request guessing
             using ``to_guess`` and ``force_guess``.
 
         TopologyAttrs to be guessed. These TopologyAttrs will be wholly
-        guessed if they don't exist in the universe. If they already exist in
+        guessed if they don't exist in the Universe. If they already exist in
         the Universe, only empty or missing values will be guessed.
     force_guess: list[str], (optional)
         TopologyAttrs in this list will be force guessed. If the TopologyAttr
@@ -1508,6 +1508,7 @@ class Universe(object):
         context: str or :mod:`Guesser<MDAanalysis.guesser>` class
             For calling a matching guesser class for this specific context
         to_guess: list[str], (optional, default ``['types', 'masses']``)
+
          .. warning::
                 In MDAnalysis 2.x, types and masses are being automatically
                 guessed if they are missing (``to_guess=('types, 'masses')``).
@@ -1516,7 +1517,7 @@ class Universe(object):
                 using ``to_guess`` and ``force_guess``.
 
             TopologyAttrs to be guessed. These TopologyAttrs will be wholly
-            guessed if they don't exist in the universe. If they already exist
+            guessed if they don't exist in the Universe. If they already exist
             in the Universe, only empty or missing values will be guessed.
         force_guess: list[str], (optional)
             TopologyAttrs in this list will be force guessed. If the
@@ -1527,7 +1528,7 @@ class Universe(object):
 
         Examples
         --------
-        guess ``masses`` and ``types`` attribute::
+        To guess ``masses`` and ``types`` attributes::
 
             u.guess_TopologyAttrs(context='default', to_guess=['masses', 'types'])
 

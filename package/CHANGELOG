@@ -85,9 +85,10 @@ Deprecations
  * The MDAnalysis.analysis.psa module has been deprecated in favour of
    the PathSimAnalysis MDAKit and will be removed in version 3.0.0
    (PR #4403)
- * Unknown masses are set to 0.0 for current version, this will be depracated
+ * Unknown masses are set to 0.0 for current version, this will be deprecated
    in version 3.0.0 and replaced by Masse's no_value_label attribute(np.nan)
    (PR #3753)
+
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
          richardjgowers, lilyminium, ALescoulie, hmacdope, HeetVekariya, 

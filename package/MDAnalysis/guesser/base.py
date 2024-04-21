@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -73,12 +73,13 @@ class GuesserBase(metaclass=_GuesserMeta):
     Parameters
     ----------
     universe : Universe, optional
-        Supply a Universe to the Guesser. This then become the source of atom
+        Supply a Universe to the Guesser. This then becomes the source of atom
         attributes to be used in guessing processes. (this is relevant to how
         the universe's guess_TopologyAttrs API works.
         See :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`).
     **kwargs: to pass additional data to the guesser that can be used with
-              different methos.
+              different methods.
+
 
     .. versionadded:: 2.8.0
 
@@ -105,11 +106,11 @@ class GuesserBase(metaclass=_GuesserMeta):
         Parameters
         ----------
         guess: str
-            Atrribute to be guessed then added to the universe
+            Attribute to be guessed then added to the Universe
 
         Returns
         -------
-        Boolean value
+        bool
         """
         if attr_to_guess.lower() in self._guesser_methods:
             return True
@@ -160,7 +161,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
 def get_guesser(context, u=None, **kwargs):
     """get an appropiate guesser to the universe and pass
-       the atomGroup of the universe to the guesser
+       the AtomGroup of the Universe to the guesser
 
     Parameters
     ----------

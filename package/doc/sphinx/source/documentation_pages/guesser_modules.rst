@@ -1,11 +1,11 @@
 .. Contains the formatted docstrings from the guesser modules located in 'mdanalysis/package/MDAnalysis/guesser'
 
 **************************
-guesser modules
+Guesser modules
 **************************
 This module contains the context-aware guessers, which are used by the :meth:`~MDAnalysis.core.Universe.Universe.guess_TopologyAttrs` API. Context-aware guessers' main purpose
 is to be tailored guesser classes that target specific file format or force field (eg. PDB file format, or Martini forcefield).
-Having such guessers makes attribute guessing more accurate and reliable than having generic guessing methods that doesn't  fit all topologies.
+Having such guessers makes attribute guessing more accurate and reliable than having generic guessing methods that doesn't fit all topologies.
 
 Example uses of guessers
 ------------------------
@@ -14,7 +14,7 @@ Guessing using :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` AP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Guessing can be done through the universe's :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` as following::
+Guessing can be done through the Universe's :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` as following::
 
   import MDAnalysis as mda
   from MDAnalysisTests.datafiles import PDB
