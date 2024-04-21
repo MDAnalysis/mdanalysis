@@ -32,7 +32,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=a9b57af3"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -231,7 +231,7 @@ and trajectory files to <a class="reference internal" href="../core/universe.htm
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>It is also possible to pass an open <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a> file stream
+<p>It is also possible to pass an open <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a> file stream
 into the reader:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -423,7 +423,7 @@ the information about the MPI communicator would be lost; instead
 it rewinds the trajectory back to the first timestep.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.0.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.1.0: </span>Adds <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms" title="MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse_n_atoms()</span></code></a> method to obtain the number of atoms directly
@@ -436,7 +436,7 @@ from the trajectory by evaluating the shape of the <code class="docutils literal
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (str or <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) – trajectory filename or open h5py file</p></li>
+<li><p><strong>filename</strong> (str or <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) – trajectory filename or open h5py file</p></li>
 <li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert units to MDAnalysis units</p></li>
 <li><p><strong>driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – H5PY file driver used to open H5MD file</p></li>
 <li><p><strong>comm</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MPI.Comm</span></code> (optional)) – MPI communicator used to open H5MD file
@@ -506,7 +506,7 @@ the following:</p>
 <p><a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDWriter" title="MDAnalysis.coordinates.H5MD.H5MDWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDWriter</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.0.0.</span></p>
 </div>
 </dd></dl>
 
@@ -686,7 +686,7 @@ creating a <a class="reference external" href="https://docs.python.org/3/library
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
 </div>
 </div>
 </dd></dl>
@@ -710,7 +710,7 @@ In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
 </div>
 </dd></dl>
 
@@ -840,7 +840,7 @@ In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
 </div>
 </dd></dl>
 
@@ -863,7 +863,7 @@ In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
 </div>
 </dd></dl>
 
@@ -1155,7 +1155,7 @@ coordinates)</p></li>
 <p><a class="reference internal" href="memory.html#module-MDAnalysis.coordinates.memory" title="MDAnalysis.coordinates.memory"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.4.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1215,7 +1215,7 @@ violates the rules of the step dataset in the H5MD standard.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (str or <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) – trajectory filename or open h5py file</p></li>
+<li><p><strong>filename</strong> (str or <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) – trajectory filename or open h5py file</p></li>
 <li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms in trajectory</p></li>
 <li><p><strong>n_frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of frames to be written in trajectory</p></li>
 <li><p><strong>driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – H5PY file driver used to open H5MD file. See <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#file-drivers">H5PY drivers</a> for
@@ -1322,7 +1322,7 @@ however this must be accompanied by setting <cite>n_frames</cite> equal to the
 number of frames being written, as HDF5 must know how much space to
 allocate on disk when creating the dataset.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.0.0.</span></p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.H5MD.H5MDWriter.H5MD_VERSION">
@@ -1362,7 +1362,7 @@ is not appropriate then this method has to be overriden.</p>
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
 </div>
 </div>
 </dd></dl>
@@ -1386,7 +1386,7 @@ In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
 </div>
 </dd></dl>
 
@@ -1516,7 +1516,7 @@ In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
 </div>
 </dd></dl>
 
@@ -1539,7 +1539,7 @@ In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
 </div>
 </dd></dl>
 
@@ -1623,11 +1623,11 @@ removed. Use AtomGroup or Universe as an input instead.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.H5MD.</span></span><span class="sig-name descname"><span class="pre">H5PYPicklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">libver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userblock_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swmr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdcc_nslots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdcc_nbytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdcc_w0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_persist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_page_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_buf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_meta_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_raw_keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_block_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5PYPicklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5PYPicklable" title="Link to this definition"></a></dt>
 <dd><p>H5PY file object (read-only) that can be pickled.</p>
 <p>This class provides a file-like object (as returned by
-<a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) that,
+<a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) that,
 unlike standard Python file objects,
 can be pickled. Only read mode is supported.</p>
 <p>When the file is pickled, filename, mode, driver, and comm of
-<a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a> in the file are saved. On unpickling, the file
+<a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a> in the file are saved. On unpickling, the file
 is opened by filename, mode, driver. This means that for a successful
 unpickle, the original file still has to be accessible with its filename.</p>
 <dl class="field-list simple">
@@ -1659,7 +1659,7 @@ communicator is currently not supported</p>
 <p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.TextIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.GzipPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BZ2Picklable</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.0.0.</span></p>
 </div>
 <p>Create a new file object.</p>
 <p>See the h5py user guide for a detailed explanation of the options.</p>
@@ -1760,7 +1760,7 @@ this parameter.</p>
 <p>Only available with HDF5 &gt;= 1.12.1 or 1.10.x &gt;= 1.10.7.</p>
 </dd>
 <dt>alignment_threshold</dt><dd><p>Together with <code class="docutils literal notranslate"><span class="pre">alignment_interval</span></code>, this property ensures that
-any file object greater than or equal in size to the alignement
+any file object greater than or equal in size to the alignment
 threshold (in bytes) will be aligned on an address which is a
 multiple of alignment interval.</p>
 </dd>

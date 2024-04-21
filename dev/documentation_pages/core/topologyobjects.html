@@ -32,7 +32,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=a9b57af3"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -165,7 +165,7 @@
 <dd><p>An angle between three <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> instances.
 Atom 2 is the apex of the angle</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.8.</span></p>
+<p><span class="versionmodified added">Added in version 0.8.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject" title="MDAnalysis.core.topologyobjects.TopologyObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a>; now uses
@@ -176,7 +176,7 @@ Atom 2 is the apex of the angle</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
-<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
+<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>)</p></li>
 <li><p><strong>type</strong> (<em>optional</em>) – Type of the bond</p></li>
 <li><p><strong>guessed</strong> (<em>optional</em>) – If the Bond is guessed</p></li>
 </ul>
@@ -198,7 +198,7 @@ Atom 2 is the apex of the angle</p>
 <p>The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.17.0: </span>Fixed angles close to 180 giving NaN</p>
@@ -225,7 +225,7 @@ Atom 2 is the apex of the angle</p>
 <p>The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.17.0: </span>Fixed angles close to 180 giving NaN</p>
@@ -261,7 +261,7 @@ bond was guessed.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
-<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
+<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>)</p></li>
 <li><p><strong>type</strong> (<em>optional</em>) – Type of the bond</p></li>
 <li><p><strong>guessed</strong> (<em>optional</em>) – If the Bond is guessed</p></li>
 </ul>
@@ -313,14 +313,14 @@ bond was guessed.</p>
 <dd><p>Coupled-torsion correction map term between five
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> instances.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 1.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 1.0.0.</span></p>
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
-<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
+<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>)</p></li>
 <li><p><strong>type</strong> (<em>optional</em>) – Type of the bond</p></li>
 <li><p><strong>guessed</strong> (<em>optional</em>) – If the Bond is guessed</p></li>
 </ul>
@@ -336,7 +336,7 @@ bond was guessed.</p>
 <p>The dihedral is defined as the angle between the planes formed by
 Atoms (1, 2, 3) and (2, 3, 4).</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.8.</span></p>
+<p><span class="versionmodified added">Added in version 0.8.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject" title="MDAnalysis.core.topologyobjects.TopologyObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a>; now uses <code class="xref py py-attr docutils literal notranslate"><span class="pre">__slots__</span></code>
@@ -350,7 +350,7 @@ and stores atoms in <code class="xref py py-attr docutils literal notranslate"><
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
-<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
+<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>)</p></li>
 <li><p><strong>type</strong> (<em>optional</em>) – Type of the bond</p></li>
 <li><p><strong>guessed</strong> (<em>optional</em>) – If the Bond is guessed</p></li>
 </ul>
@@ -374,7 +374,7 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <p>The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.19.0: </span>Added pbc keyword, default True</p>
@@ -400,7 +400,7 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <p>The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.19.0: </span>Added pbc keyword, default True</p>
@@ -424,7 +424,7 @@ can change. Check the definitions here against
 your software.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Renamed to ImproperDihedral (was Improper_Torsion)</p>
@@ -434,7 +434,7 @@ your software.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
-<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
+<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>)</p></li>
 <li><p><strong>type</strong> (<em>optional</em>) – Type of the bond</p></li>
 <li><p><strong>guessed</strong> (<em>optional</em>) – If the Bond is guessed</p></li>
 </ul>
@@ -499,7 +499,7 @@ addition and it will not create any duplicate bonds in the process.</p>
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.8.</span></p>
+<p><span class="versionmodified added">Added in version 0.8.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.9.0: </span>Changed initialisation to use a list of <a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject" title="MDAnalysis.core.topologyobjects.TopologyObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a>
@@ -545,7 +545,7 @@ a “shortcut” to the Cython distance calculation functions in
 <p>TopologyGroups can be combined with TopologyGroups of the same bond
 type (ie can combine two angle containing TopologyGroups).</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.8.</span></p>
+<p><span class="versionmodified added">Added in version 0.8.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.9.0: </span>Overhauled completely: (1) Added internal <a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyDict" title="MDAnalysis.core.topologyobjects.TopologyDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyDict</span></code></a>
@@ -633,7 +633,7 @@ AtomGroup. [<code class="docutils literal notranslate"><span class="pre">False</
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 </dd></dl>
 
@@ -791,7 +791,7 @@ note that this will be overwritten</p>
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.11.0.</span></p>
 </div>
 </dd></dl>
 
@@ -804,14 +804,14 @@ note that this will be overwritten</p>
 <p>Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should
 behave.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.10.0: </span>All TopologyObject now keep track of if they were guessed or not
 via the <code class="docutils literal notranslate"><span class="pre">is_guessed</span></code> managed property.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0: </span>Added the <cite>value</cite> method to return the size of the object</p>
+<p><span class="versionmodified added">Added in version 0.11.0: </span>Added the <cite>value</cite> method to return the size of the object</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.6.0: </span>Updated Atom ID representation order to match that of AtomGroup indices</p>
@@ -821,7 +821,7 @@ via the <code class="docutils literal notranslate"><span class="pre">is_guessed<
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
-<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
+<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>)</p></li>
 <li><p><strong>type</strong> (<em>optional</em>) – Type of the bond</p></li>
 <li><p><strong>guessed</strong> (<em>optional</em>) – If the Bond is guessed</p></li>
 </ul>
@@ -838,7 +838,7 @@ via the <code class="docutils literal notranslate"><span class="pre">is_guessed<
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#MDAnalysis.core.topologyobjects.TopologyObject.indices" title="Link to this definition"></a></dt>
 <dd><p>Tuple of indices describing this object</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.10.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.10.0.</span></p>
 </div>
 </dd></dl>
 
@@ -866,14 +866,14 @@ Two <a class="reference internal" href="#MDAnalysis.core.topologyobjects.UreyBra
 <code class="docutils literal notranslate"><span class="pre">!=</span></code> operators. A UreyBradley angle is equal to another if the same atom
 numbers are involved.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 1.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 1.0.0.</span></p>
 </div>
 <p>Create a topology object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ix</strong> (<em>numpy array</em>) – indices of the Atoms</p></li>
-<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – </p></li>
+<li><p><strong>universe</strong> (<em>MDAnalysis.Universe</em>)</p></li>
 <li><p><strong>type</strong> (<em>optional</em>) – Type of the bond</p></li>
 <li><p><strong>guessed</strong> (<em>optional</em>) – If the Bond is guessed</p></li>
 </ul>

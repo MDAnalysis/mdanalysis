@@ -32,7 +32,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=a9b57af3"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -189,7 +189,7 @@ have to be from the same <a class="reference internal" href="../core/universe.ht
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>group</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Find members of <cite>group</cite> that are between <cite>A</cite> and <cite>B</cite></p></li>
-<li><p><strong>A</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – </p></li>
+<li><p><strong>A</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>)</p></li>
 <li><p><strong>B</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – <cite>A</cite> and <cite>B</cite> are the groups of atoms between which atoms in
 <cite>group</cite> are searched for.  The function works is more
 efficient if <cite>group</cite> is bigger than either <cite>A</cite> or <cite>B</cite>.</p></li>
@@ -223,7 +223,7 @@ are applied.</p>
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em><em>, </em><em>default 15</em>) – Particles within <cite>cutoff</cite> are considered to form a contact.</p></li>
 <li><p><strong>returntype</strong> (<em>string</em><em>, </em><em>optional</em><em>, </em><em>default &quot;numpy&quot;</em>) – Select how the contact matrix is returned.
 * <code class="docutils literal notranslate"><span class="pre">&quot;numpy&quot;</span></code>: return as an <code class="docutils literal notranslate"><span class="pre">(N.</span> <span class="pre">N)</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
-* <code class="docutils literal notranslate"><span class="pre">&quot;sparse&quot;</span></code>: return as a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html#scipy.sparse.lil_matrix" title="(in SciPy v1.12.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.lil_matrix</span></code></a></p></li>
+* <code class="docutils literal notranslate"><span class="pre">&quot;sparse&quot;</span></code>: return as a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html#scipy.sparse.lil_matrix" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.lil_matrix</span></code></a></p></li>
 <li><p><strong>box</strong> (array-like or <code class="docutils literal notranslate"><span class="pre">None</span></code>, optional, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Simulation cell dimensions in the form of
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.trajectory.timestep.Timestep.dimensions</span></code> when
 periodic boundary conditions should be taken into account for

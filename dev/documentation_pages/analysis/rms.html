@@ -32,7 +32,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=a9b57af3"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -187,7 +187,7 @@
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Added <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF" title="MDAnalysis.analysis.rms.RMSF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RMSF</span></code></a> analysis.</p>
@@ -228,7 +228,7 @@ using backbone atoms</p></li>
 <li><p>calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)</p></li>
 </ul>
 <p>The trajectory is included with the test data files. The data in
-<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.results.rmsd</span></code></a> is plotted with <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.8.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a> (see Figure <a class="reference internal" href="#figure-rmsd"><span class="std std-ref">RMSD plot figure</span></a>):</p>
+<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.results.rmsd</span></code></a> is plotted with <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.8.4)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a> (see Figure <a class="reference internal" href="#figure-rmsd"><span class="std std-ref">RMSD plot figure</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span><span class="n">CRD</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
@@ -468,7 +468,7 @@ correct for comparison). If masses should not be checked, just set
 <p><a class="reference internal" href="#MDAnalysis.analysis.rms.rmsd" title="MDAnalysis.analysis.rms.rmsd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rmsd</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.8: </span><cite>groupselections</cite> added</p>
@@ -493,7 +493,7 @@ are <em>not</em> rotationally superimposed any more.</p>
 <dd><p>Contains the time series of the RMSD as an N×3 <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 array with content <code class="docutils literal notranslate"><span class="pre">[[frame,</span> <span class="pre">time</span> <span class="pre">(ps),</span> <span class="pre">RMSD</span> <span class="pre">(A)],</span> <span class="pre">[...],</span> <span class="pre">...]</span></code>.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.0.0.</span></p>
 </div>
 </dd></dl>
 
@@ -522,7 +522,7 @@ only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cit
 <em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
 non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.2.0.</span></p>
 </div>
 </p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
@@ -656,7 +656,7 @@ the RMSF:</p>
 </aside>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.11.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.16.0: </span>refactored to fit with AnalysisBase API</p>
@@ -677,7 +677,7 @@ removed. These should instead be passed to <a class="reference internal" href="#
 <dd><p>Results are stored in this N-length <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array,
 giving RMSFs for each of the given atoms.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.0.0.</span></p>
 </div>
 </dd></dl>
 
@@ -706,7 +706,7 @@ only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cit
 <em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
 non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.2.0.</span></p>
 </div>
 </p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>

@@ -32,7 +32,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=a9b57af3"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -227,7 +227,7 @@ they have a file-like interface.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>datasource</strong> (<em>a file</em><em> or </em><em>a stream</em>) – </p></li>
+<li><p><strong>datasource</strong> (<em>a file</em><em> or </em><em>a stream</em>)</p></li>
 <li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'}</em><em> (</em><em>optional</em><em>)</em>) – open in r(ead) or w(rite) mode</p></li>
 <li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
 </ul>
@@ -327,7 +327,7 @@ all extensions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.which">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">which</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">program</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#which"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.which" title="Link to this definition"></a></dt>
-<dd><p>Determine full path of executable <cite>program</cite> on <span class="target" id="index-0"></span><a class="reference external" href="https://matplotlib.org/stable/users/installing/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v3.8.3)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
+<dd><p>Determine full path of executable <cite>program</cite> on <span class="target" id="index-0"></span><a class="reference external" href="https://matplotlib.org/stable/users/installing/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v3.8.4)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -360,7 +360,7 @@ Please use shutil.which instead.</p>
 <dd><p>Return the lower-cased extension of <cite>filename</cite> without a leading dot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -406,7 +406,7 @@ Please use shutil.which instead.</p>
 <dd><p>Guess file format from the file extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>format</strong></p>
@@ -442,7 +442,7 @@ at for a hint to the format</p>
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0: </span>Moved into lib.util</p>
+<p><span class="versionmodified added">Added in version 0.11.0: </span>Moved into lib.util</p>
 </div>
 </dd></dl>
 
@@ -558,7 +558,7 @@ the stream</strong></p></li>
 <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> (see there) unless the <cite>close</cite> keyword is set to
 <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.close">
@@ -702,7 +702,7 @@ is supplied). The current file position is not changed.</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>stream</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>obj</strong> (<em>stream</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>obj</cite> is a stream, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise</p>
@@ -716,7 +716,7 @@ is supplied). The current file position is not changed.</p>
 <p><a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 </dd></dl>
 
@@ -774,7 +774,7 @@ with a single element.</p>
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.19.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
 </div>
 </dd></dl>
 
@@ -862,7 +862,7 @@ be zero, resulting in an empty view!</p>
 <p>Uses strides and therefore requires that the array is C contiguous.</p>
 <p>Returns a view, so editing this modifies the original array.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.12.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.12.0.</span></p>
 </div>
 </dd></dl>
 
@@ -873,7 +873,7 @@ be zero, resulting in an empty view!</p>
 sequences.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>arr</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – </p>
+<dd class="field-odd"><p><strong>arr</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -954,7 +954,7 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 <p>Values are converted to Python types according to the format specifier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – </p>
+<dd class="field-odd"><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of entries with appropriate types</p>
@@ -1087,7 +1087,7 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 <dd><p>Flatten a nested dict <cite>d</cite> into a shallow dict with tuples as keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – </p>
+<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
@@ -1098,7 +1098,7 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 <p>Based on <a class="reference external" href="https://stackoverflow.com/a/6027615/">https://stackoverflow.com/a/6027615/</a>
 by user <a class="reference external" href="https://stackoverflow.com/users/1897/imran">https://stackoverflow.com/users/1897/imran</a></p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.18.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.18.0.</span></p>
 </div>
 </div>
 </dd></dl>
@@ -1207,7 +1207,7 @@ decorator:</p>
 </pre></div>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1226,7 +1226,7 @@ dictionary. If no <code class="docutils literal notranslate"><span class="pre">a
 stored in the dictionary.</p></li>
 </ul>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.2.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1258,7 +1258,7 @@ and initial values to the decorator.</p>
 by <a class="reference external" href="https://stackoverflow.com/users/15055/claudiu">Claudiu</a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.19.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1278,7 +1278,7 @@ potentially multiple warnings concerning the uniqueness of groups is shown.</p>
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.19.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1396,7 +1396,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </pre></div>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.19.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.3.0: </span>Can now accept an <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> as input, and added option
@@ -1416,7 +1416,7 @@ allow_atomgroup with default False to retain old behaviour</p>
 </dd>
 </dl>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.4.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1492,7 +1492,7 @@ Just pass.
 the decorator so it is not recommended to use the <cite>new_func</cite>
 keyword argument with the decorator.)</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.19.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1506,7 +1506,7 @@ keyword argument with the decorator.)</p>
 <p><a class="reference internal" href="#MDAnalysis.lib.util.deprecate" title="MDAnalysis.lib.util.deprecate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deprecate</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.19.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
 </div>
 </dd></dl>
 
@@ -1531,7 +1531,7 @@ line</p>
 <p><a class="reference external" href="https://docs.python.org/3/library/textwrap.html#textwrap.dedent" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">textwrap.dedent</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.19.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
 </div>
 </dd></dl>
 
