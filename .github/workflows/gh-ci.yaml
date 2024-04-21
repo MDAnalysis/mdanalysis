@@ -127,7 +127,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage.xml
-        fail_ci_if_error: True
+        fail_ci_if_error: False
         verbose: True
 
 
