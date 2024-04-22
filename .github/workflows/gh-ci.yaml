@@ -259,13 +259,13 @@ jobs:
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n1)
+        DISTRIBUTION=$(ls -t1 dist/mdanalysis-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
         twine check $DISTRIBUTION
 
     - name: check_testsuite_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/MDAnalysisTests-*.tar.gz | head -n1)
+        DISTRIBUTION=$(ls -t1 dist/mdanalysistests-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysisTests-*.tar.gz found"; exit 1; }
         twine check $DISTRIBUTION
 
@@ -273,8 +273,8 @@ jobs:
       working-directory: ./dist
       run: |
         ls -a .
-        python -m pip install MDAnalysis-*.tar.gz
-        python -m pip install MDAnalysisTests-*.tar.gz
+        python -m pip install mdanalysis-*.tar.gz
+        python -m pip install mdanalysistests-*.tar.gz
 
     - name: run tests
       working-directory: ./dist
