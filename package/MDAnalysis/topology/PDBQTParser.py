@@ -98,12 +98,12 @@ class PDBQTParser(TopologyReaderBase):
 
     .. versionchanged:: 0.18.0
        Added parsing of Record types
+    .. versionchanged:: 2.7.0
+       Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,
+       are now ignored. See Autodock's `reference`_.
     .. versionchanged:: 2.8.0
         Removed mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
-
-       Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,
-       are now ignored. See Autodock's `reference`_.
 
        .. _reference: 
           https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf

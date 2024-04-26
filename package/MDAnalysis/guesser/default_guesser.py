@@ -192,8 +192,8 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError` if there is no names
-         or masses to guess types from.
+        :exc:`ValueError`
+           If there is no names or masses to guess types from.
 
         """
         if atom_types is None and masses is None:
@@ -341,8 +341,8 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError` if inputs are malformed or `vdwradii` data
-        is missing.
+        :exc:`ValueError` 
+           If inputs are malformed or `vdwradii` data is missing.
 
 
         .. _`same algorithm that VMD uses`:

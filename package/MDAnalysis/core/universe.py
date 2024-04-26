@@ -242,6 +242,7 @@ class Universe(object):
         Type of the Guesser to be used in guessing TopologyAttrs
     to_guess: list[str] (optional, default ``['types', 'masses']``)
 
+
         .. warning::
 
             In MDAnalysis 2.x, types and masses are being automatically guessed
