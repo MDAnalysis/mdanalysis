@@ -47,8 +47,8 @@ jobs:
     # minimally install nightly wheels
     - name: nightly_wheels
       run: |
-        # Also throw in networkx and matplotlib too since we can
-        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib
+        # Add in networkx and matplotlib because we can
+        pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib
 
     # install any additional deps we might need
     - name: extra_deps
