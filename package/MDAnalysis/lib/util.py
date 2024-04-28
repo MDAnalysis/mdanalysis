@@ -2555,6 +2555,14 @@ def store_init_arguments(func):
     return wrapper
 
 
+def no_copy_shim():
+    if np.lib.NumpyVersion >= "2.0.0rc1":
+        copy = None
+    else:
+        copy = False
+    return copy
+  
+  
 def is_installed(modulename: str):
     """Checks if module is installed
 
