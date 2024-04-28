@@ -54,20 +54,20 @@ jobs:
             networkx        \
             matplotlib      \
         # Base deps
-        python -m pip install \
-            cython          \
-            packaging       \
-            setuptools      \
-            wheel           \
-            griddataformats \
-            mmtf-python     \
-            joblib          \
-            tqdm            \
-            threadpoolctl   \
-            fasteners       \
-            mda-xdrlib      \
-            pytest          \
-            pytest-xdist    \
+        python -m pip install        \
+            "cython>=0.28"           \
+            packaging                \
+            "setuptools>69.4"        \
+            wheel                    \
+            "griddataformats>=0.4.0" \
+            "mmtf-pythona>=1.0"      \
+            "joblib>=0.12"           \
+            "tqdm>=4.43.0"           \
+            threadpoolctl            \
+            fasteners                \
+            mda-xdrlib               \
+            pytest                   \
+            pytest-xdist             \
             pytest-timeout
         # deps that depend on MDA
         python -m pip install --no-deps \
@@ -75,12 +75,15 @@ jobs:
             pathsimanalysis \
             mdahole2
 
+    - name: pre_install_list_deps
+      run: python -m pip list
+
     - name: build_srcs
       run: |
         python -m pip install --no-build-isolation -v -e ./package
         python -m pip install --no-build-isolation -v -e ./testsuite
 
-    - name: list_deps
+    - name: post_install_list_deps
       run: python -m pip list
 
     - name: run_tests
