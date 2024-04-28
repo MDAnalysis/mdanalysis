@@ -60,7 +60,7 @@ jobs:
             "setuptools>69.4"        \
             wheel                    \
             "griddataformats>=0.4.0" \
-            "mmtf-pythona>=1.0"      \
+            "mmtf-python>=1.0"      \
             "joblib>=0.12"           \
             "tqdm>=4.43.0"           \
             threadpoolctl            \
