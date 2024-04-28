@@ -53,7 +53,7 @@ jobs:
     # install any additional deps we might need
     - name: extra_deps
       run: |
-        pip install pytest-xdist pytest-timeout
+        pip install cython packaging setuptools wheel pytest-xdist pytest-timeout
 
     - name: list_deps
       run: |
