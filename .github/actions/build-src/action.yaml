@@ -66,6 +66,15 @@ runs:
         micromamba info
         micromamba list
 
+    - name: mda_deps
+      shell: bash -l {0}
+      run: |
+        # Install mdakit deps that depend on MDA
+        python -m pip install --no-deps \
+            waterdynamics   \
+            pathsimanalysis \
+            mdahole2
+
     - name: build_mda_main
       shell: bash -l {0}
       run: |
