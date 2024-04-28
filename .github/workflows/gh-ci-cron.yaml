@@ -4,6 +4,11 @@ on:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
   workflow_dispatch:
+  # Uncomment when you need to test on a PR
+  pull_request:
+    branches:
+      - develop
+
 
 concurrency:
   # Probably overly cautious group naming.
@@ -209,6 +214,9 @@ jobs:
     - name: install_pip_extras
       run: |
         pip install pytest-xdist pytest-timeout
+
+    - name: check env
+      run: pip list
 
     - name: run_tests
       run: |
