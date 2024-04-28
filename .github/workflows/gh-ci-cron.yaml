@@ -44,20 +44,35 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    # minimally install nightly wheels
+    # minimally install nightly wheels & core deps
     - name: nightly_wheels
       run: |
         # Add in networkx and matplotlib because we can
-        pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib
-
-    # install any additional deps we might need
-    - name: extra_deps
-      run: |
-        pip install cython packaging setuptools wheel pytest-xdist pytest-timeout
+        pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple \
+            scipy           \
+            numpy           \
+            networkx        \
+            matplotlib      \
+            cython          \
+            packaging       \
+            setuptools      \
+            wheel           \
+            griddataformats \
+            mmtf-python     \
+            joblib          \
+            tqdm            \
+            threadpoolctl   \
+            fasteners       \
+            mda-xdrlib      \
+            waterdynamics   \
+            pathsimanalysis \
+            mdahole2        \
+            pytest          \
+            pytest-xdist    \
+            pytest-timeout
 
     - name: list_deps
       run: |
-        micromamba list
         pip list
 
     - name: build_srcs
