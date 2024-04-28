@@ -47,12 +47,14 @@ jobs:
     # minimally install nightly wheels & core deps
     - name: nightly_wheels
       run: |
-        # Add in networkx and matplotlib because we can
-        pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple \
+        # Nightlies: add in networkx and matplotlib because we can
+        python -m pip install --pre -U --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple \
             scipy           \
             numpy           \
             networkx        \
             matplotlib      \
+        # Base deps
+        python -m pip install \
             cython          \
             packaging       \
             setuptools      \
@@ -64,25 +66,22 @@ jobs:
             threadpoolctl   \
             fasteners       \
             mda-xdrlib      \
-            waterdynamics   \
-            pathsimanalysis \
-            mdahole2        \
             pytest          \
             pytest-xdist    \
             pytest-timeout
-
-    - name: list_deps
-      run: |
-        pip list
+        # deps that depend on MDA
+        python -m pip install --no-deps \
+            waterdynamics   \
+            pathsimanalysis \
+            mdahole2
 
     - name: build_srcs
-      uses: ./.github/actions/build-src
-      with:
-        build-tests: true
-        build-docs: false
-        # We don't use build isolation because we want to ensure that we
-        # test building with brand new versions of NumPy here.
-        isolation: false
+      run: |
+        python -m pip install --no-build-isolation -v -e ./package
+        python -m pip install --no-build-isolation -v -e ./testsuite
+
+    - name: list_deps
+      run: python -m pip list
 
     - name: run_tests
       run: |
