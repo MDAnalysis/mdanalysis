@@ -26,6 +26,7 @@ env:
   MPLBACKEND: agg
 
 jobs:
+  # a pip only, minimal deps install w/ scipy & numpy nightly upstream wheels
   numpy_and_scipy_dev:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
@@ -39,37 +40,26 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+    - uses: actions/setup-python@v4
       with:
-        environment-name: mda
-        create-args: >-
-          python=3.11
-          pip
-        # using jaime's shim to avoid pulling down the cudatoolkit
-        condarc: |
-          channels:
-            - jaimergp/label/unsupported-cudatoolkit-shim
-            - conda-forge
-            - bioconda
+        python-version: ${{ matrix.python-version }}
 
-    - name: install_deps
-      uses: ./.github/actions/setup-deps
-      with:
-        micromamba: true
-        full-deps: true
-
-      # overwrite installs by picking up nightly wheels
+    # minimally install nightly wheels
     - name: nightly_wheels
       run: |
-        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib pandas
+        # Also throw in networkx and matplotlib too since we can
+        pip install --pre -U -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy numpy networkx matplotlib
+
+    # install any additional deps we might need
+    - name: extra_deps
+      run: |
+        pip install pytest-xdist pytest-timeout
 
     - name: list_deps
       run: |
         micromamba list
         pip list
 
-      # Intentionally going with setup.py builds so we can build with latest
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
@@ -141,7 +131,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-11]
+        os: [ubuntu-20.04, macos-12]
 
     steps:
     - uses: actions/checkout@v4
@@ -156,7 +146,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=3.9
+          python=3.10
           pip
         condarc: |
           channels:
@@ -226,12 +216,14 @@ jobs:
   conda-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu, macos]
+          # Stick to macos-13 because some of our
+          # optional depss don't support arm64 (i.e. macos-14)
+          os: [ubuntu-latest, macos-13]
           python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
     - uses: actions/checkout@v4
