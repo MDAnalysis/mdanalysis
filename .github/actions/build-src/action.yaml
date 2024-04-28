@@ -63,11 +63,8 @@ runs:
         which python
         which pip
         pip list
-        # optionally call micromamba things
-        if command -v micromamba; then
-            micromamba info
-            micromamba list
-        fi
+        micromamba info
+        micromamba list
 
     - name: build_mda_main
       shell: bash -l {0}
@@ -91,10 +88,7 @@ runs:
       shell: bash -l {0}
       run: |
         pip list
-        # optionally list micromamba
-        if command -v micromamba; then
-            micromamba list
-        fi
+        micromamba list
 
     - name: build_docs
       if: ${{ inputs.build-docs == 'true' }}
