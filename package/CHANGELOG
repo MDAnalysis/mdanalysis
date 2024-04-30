@@ -16,11 +16,14 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
-         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
+         yuxuanzhuang
 
  * 2.8.0
 
 Fixes
+ * Fix PSFParser error when encoutering string-like resids
+ * (Issue #2053, Issue #4189 PR #)
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.

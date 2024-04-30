@@ -2564,7 +2564,7 @@ def no_copy_shim():
 
 
 def atoi(s: str) -> int:
-    """Convert the trailing number part of a string to an integer.
+    """Convert the leading number part of a string to an integer.
 
     Parameters
     ----------
@@ -2586,7 +2586,7 @@ def atoi(s: str) -> int:
     0
     
 
-    .. versionadded:: 3.0.0
+    .. versionadded:: 2.8.0
     """
     try:
         return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
