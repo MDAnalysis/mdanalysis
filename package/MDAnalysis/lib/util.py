@@ -2584,7 +2584,7 @@ def atoi(s: str) -> int:
     34
     >>> atoi('foo')
     0
-    
+ 
 
     .. versionadded:: 2.8.0
     """
