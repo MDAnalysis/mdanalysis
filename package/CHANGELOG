@@ -21,6 +21,8 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Raise an error in analysis if `parallelizable=True` is passed to the `NoJump`
+   transformation (Issue #4259)
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
@@ -39,6 +41,8 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
+   (Issue #4158, PR #4304)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
    (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)

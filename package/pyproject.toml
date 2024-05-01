@@ -96,6 +96,9 @@ doc = [
     "pybtex",
     "pybtex-docutils",
 ]
+parallel = [
+    "dask",
+]
 
 [project.urls]
 Homepage = "https://www.mdanalysis.org"
