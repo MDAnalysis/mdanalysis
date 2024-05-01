@@ -108,13 +108,15 @@ jobs:
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
       run: |
-        NUMPY_FLAGS="OPENBLAS_NUM_THREADS=1 GOTO_NUM_THREADS=1 OMP_NUM_THREADS=1"
+        export OPENBLAS_NUM_THREADS=1
+        export GOTO_NUM_THREADS=1
+        export OMP_NUM_THREADS=1
         PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
         if [ ${{ matrix.codecov }} = "true" ]; then
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        $NUMPY_FLAGS pytest -n auto --timeout=200 testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n auto --timeout=200 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
