@@ -105,6 +105,12 @@ jobs:
         micromamba list
         pip list
 
+    - name: Limit NumPy threads
+      run: |
+        echo "OPENBLAS_NUM_THREADS=1" >> $GITHUB_ENV
+        echo "GOTO_NUM_THREADS=1" >> $GITHUB_ENV
+        echo "OMP_NUM_THREADS=1" >> $GITHUB_ENV
+
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
       run: |
