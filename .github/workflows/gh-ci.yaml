@@ -111,6 +111,10 @@ jobs:
         export OPENBLAS_NUM_THREADS=1
         export GOTO_NUM_THREADS=1
         export OMP_NUM_THREADS=1
+        export MKL_NUM_THREADS=1
+        # limit to 2 workers to avoid overloading the CI
+        export PYTEST_XDIST_AUTO_NUM_WORKERS=2
+
         PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
         if [ ${{ matrix.codecov }} = "true" ]; then
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
