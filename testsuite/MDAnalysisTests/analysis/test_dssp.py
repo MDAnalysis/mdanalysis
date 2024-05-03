@@ -42,7 +42,6 @@ def test_atomgroup():
     assert first_frame[:10] != last_frame[:10] == avg_frame[:10] == "-EEEEEE---"
 
 
-
 def test_trajectory_with_hydrogens():
     u = mda.Universe(TPR, XTC).select_atoms("protein").universe
     run = DSSP(u, guess_hydrogens=False).run(stop=10)
