@@ -97,11 +97,21 @@ In order to write new analysis tools, derive a class from :class:`AnalysisBase`
 and define at least the :meth:`_single_frame` method, as described in
 :class:`AnalysisBase`.
 
+.. SeeAlso::
+
+   The chapter `Writing your own trajectory analysis`_ in the *User Guide*
+   contains a step-by-step example for writing analysis tools with
+   :class:`AnalysisBase`.
+
+.. _`Writing your own trajectory analysis`:
+   https://userguide.mdanalysis.org/stable/examples/analysis/custom_trajectory_analysis.html
+
+
 If your analysis is operating independently on each frame, you might consider
-making it parallelizable via adding ``get_supported_backends()`` method,
+making it **parallelizable** via adding a :meth:`get_supported_backends` method,
 and appropriate aggregation function for each of its results. For example, if
-you have your ``_single_frame()`` method storing important values under
-``self.results.timeseries``, you will write:
+you have your :meth:`_single_frame` method storing important values under
+:attr:`self.results.timeseries`, you will write:
 
 .. code-block:: python
 
@@ -117,18 +127,12 @@ you have your ``_single_frame()`` method storing important values under
         def _get_aggregator(self):
           return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
 
-See :mod:`MDAnalysis.analysis.results` for aggregation reference.
-
+See :mod:`MDAnalysis.analysis.results` for more on aggregating results.
 
 .. SeeAlso::
 
-   The chapter `Writing your own trajectory analysis`_ in the *User Guide*
-   contains a step-by-step example for writing analysis tools with
-   :class:`AnalysisBase`.
+   :ref:`parallel-analysis`
 
-
-.. _`Writing your own trajectory analysis`:
-   https://userguide.mdanalysis.org/stable/examples/analysis/custom_trajectory_analysis.html
 
 
 Classes
@@ -279,6 +283,9 @@ class AnalysisBase(object):
         -------
         tuple
             names of built-in backends that can be used in :meth:`run(backend=...)`
+
+
+        .. versionadded:: 2.8.0
         """
         return ("serial",)
 
@@ -295,6 +302,9 @@ class AnalysisBase(object):
         bool
             if a given ``AnalysisBase`` subclass is parallelizable with
             split-apply-combine, or not
+
+
+        .. versionadded:: 2.8.0
         """
         return False
 
@@ -319,7 +329,7 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame, by default None
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; cannot be 
+            array of integers or booleans to slice trajectory; cannot be
             combined with ``start``, ``stop``, ``step``; by default None
 
         Returns
@@ -331,8 +341,9 @@ class AnalysisBase(object):
         Raises
         ------
         ValueError
-            if *both* `frames` and at least one of ``start``, ``stop``, or ``step`` 
+            if *both* `frames` and at least one of ``start``, ``stop``, or ``step``
             is provided (i.e. set to not ``None`` value).
+
 
         .. versionadded:: 2.8.0
         """
@@ -356,6 +367,7 @@ class AnalysisBase(object):
         ----------
         slicer : Union[slice, np.ndarray]
             appropriate slicer for the trajectory
+
 
         .. versionadded:: 2.8.0
         """
@@ -402,7 +414,7 @@ class AnalysisBase(object):
             Split function into two: :meth:`_define_run_frames` and
             :meth:`_prepare_sliced_trajectory`: first one defines the limits
             for the whole run and is executed once during :meth:`run` in
-            :metn:`_setup_frames`, second one prepares sliced trajectory for
+            :meth:`_setup_frames`, second one prepares sliced trajectory for
             each of the workers and gets executed twice: one time in
             :meth:`_setup_frames` for the whole trajectory, second time in
             :meth:`_compute` for each of the computation groups.
@@ -467,6 +479,7 @@ class AnalysisBase(object):
             position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
             for full list.
 
+
         .. versionadded:: 2.8.0
         """
         logger.info("Choosing frames to analyze")
@@ -529,6 +542,7 @@ class AnalysisBase(object):
         computation_groups : list[np.ndarray]
             list of (n, 2) shaped np.ndarrays with frame indices and numbers
 
+
         .. versionadded:: 2.8.0
         """
         if frames is None:
@@ -562,16 +576,16 @@ class AnalysisBase(object):
         ----------
         backend : Union[str, BackendBase]
             backend to be used:
-               - ``str`` is matched to a builtin backend (one of ``serial``,
-               ``multiprocessing`` and ``dask``)
+               - ``str`` is matched to a builtin backend (one of "serial",
+                 "multiprocessing" and "dask")
                - ``BackendBase`` subclass is checked for the presence of
-               ``apply`` method
+                 an :meth:`apply` method
         n_workers : int
             positive integer with number of workers (processes, in case of
             built-in backends) to split the work between
         unsupported_backend : bool, optional
             if you want to run your custom backend on a parallelizable class
-            that has not been tested by developers, by default False
+            that has not been tested by developers, by default ``False``
 
         Returns
         -------
@@ -594,6 +608,7 @@ class AnalysisBase(object):
             ``__init__`` of a custom backend
         ValueError
             if your backend object instance doesn't have an ``apply`` method
+
 
         .. versionadded:: 2.8.0
         """
@@ -683,11 +698,11 @@ class AnalysisBase(object):
             *both* ``frames`` and at least one of ``start``, ``stop``, ``step``
             to a non-default value will raise a :exc:`ValueError`.
 
-        .. versionadded:: 2.2.0
+            .. versionadded:: 2.2.0
         verbose : bool, optional
             Turn on verbosity
 
-        .. versionadded:: 2.5.0
+            .. versionadded:: 2.5.0
         progressbar_kwargs : dict, optional
             ProgressBar keywords with custom parameters regarding progress bar
             position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
@@ -695,19 +710,26 @@ class AnalysisBase(object):
         backend : Union[str, BackendBase], optional
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend: ``str`` is matched to a
-            builtin backend (one of ``serial``, ``multiprocessing`` and 
+            builtin backend (one of ``serial``, ``multiprocessing`` and
             ``dask``), or a :class:`MDAnalysis.analysis.results.BackendBase`
             subclass.
 
         n_workers : int
             positive integer with number of workers (processes, in case of
             built-in backends) to split the work between
+
+            .. versionadded:: 2.8.0
         n_parts : int, optional
             number of parts to split computations across. Can be more than
             number of workers.
+
+            .. versionadded:: 2.8.0
         unsupported_backend : bool, optional
             if you want to run your custom backend on a parallelizable class
             that has not been tested by developers, by default False
+
+            .. versionadded:: 2.8.0
+
 
         .. versionchanged:: 2.2.0
             Added ability to analyze arbitrary frames by passing a list of
@@ -717,7 +739,7 @@ class AnalysisBase(object):
             Add `progressbar_kwargs` parameter,
             allowing to modify description, position etc of tqdm progressbars
 
-        .. versionadded:: 2.8.0
+        .. versionchanged:: 2.8.0
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
@@ -790,6 +812,7 @@ class AnalysisBase(object):
         -------
         ResultsGroup
             aggregating object
+
 
         .. versionadded:: 2.8.0
         """
