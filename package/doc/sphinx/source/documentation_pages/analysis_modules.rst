@@ -1,5 +1,7 @@
 .. Contains the formatted docstrings from the analysis modules located in 'mdanalysis/MDAnalysis/analysis', although in some cases the documentation imports functions and docstrings from other files which are also curated to reStructuredText markup.
 
+.. module:: MDAnalysis.analysis
+
 ****************
 Analysis modules
 ****************
@@ -31,8 +33,10 @@ usually follows the same pattern:
 #. Import the desired module, since analysis modules are not imported 
    by default.
 #. Initialize the analysis class instance from the previously imported module.   
-#. Run the analysis, optionally for specific trajectory slices.
-#. Access the analysis from the :attr:`results` attribute
+#. Run the analysis with the :meth:`~MDAnalysis.analysis.base.AnalysisBase.run`
+   method, optionally for specific trajectory slices.
+#. Access the analysis from the
+   :attr:`~MDAnalysis.analysis.base.AnalysisBase.results` attribute
 
 .. code-block:: python
 
@@ -65,7 +69,7 @@ Without any dependencies, only one backend is supported -- built-in
 .. Note::
 
    For now, parallelization has only been added to
-   :class:`MDAnalysis.analysis.RMS.RMSD`, but by release 3.0 version it will be
+   :class:`MDAnalysis.analysis.rms.RMSD`, but by release 3.0 version it will be
    introduced to all subclasses that can support it.
 
 In order to use that feature, simply add ``backend='multiprocessing'`` to your
@@ -107,7 +111,7 @@ packages to enable full functionality. For example,
 :mod:`MDAnalysis.analysis.encore` provides more options if `scikit-learn`_ is
 installed. If you installed MDAnalysis with :program:`pip` (see
 :ref:`installation-instructions`) these packages are *not automatically
-installed*.  Although, one can add the ``[analysis]`` tag to the :program:`pip`
+installed* although one can add the ``[analysis]`` tag to the :program:`pip`
 command to force their installation. If you installed MDAnalysis with
 :program:`conda` then a *full set of dependencies* is automatically installed.
 
