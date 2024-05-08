@@ -24,6 +24,8 @@ under the Apache v2.0 license.)
    `mdahole2 <https://www.mdanalysis.org/mdahole2/>`_ and
    will be removed in MDAnalysis 3.0.0.
 
+.. _HOLE: http://www.holeprogram.org/
+
 
 See Also
 --------

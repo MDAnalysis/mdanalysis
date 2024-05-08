@@ -172,7 +172,7 @@
 <a class="reference external" href="https://en.wikipedia.org/wiki/Pair_distribution_function">pair distribution functions</a> (<a class="reference external" href="https://en.wikipedia.org/wiki/Radial_distribution_function">radial distribution functions</a> or “RDF”).
 The RDF <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span> between types of particles <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is</p>
 <div class="math notranslate nohighlight" id="equation-gab">
-\[g_{ab}(r) = (N_{a} N_{b})^{-1} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
+\[g_{ab}(r) = \frac{1}{N_{a}} \frac{1}{N_{b}/V} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
             \langle \delta(|\mathbf{r}_i - \mathbf{r}_j| - r) \rangle\]</div>
 <p>which is normalized so that the RDF becomes 1 for large separations in a
 homogenous system. The RDF effectively counts the average number of <span class="math notranslate nohighlight">\(b\)</span>
