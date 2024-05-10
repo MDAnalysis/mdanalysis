@@ -21,6 +21,8 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
+   (Issue #4564, PR #4565)
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
@@ -37,8 +39,6 @@ Fixes
  * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
  * Fix deploy action to use the correct version of the pypi upload action.
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
- * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
-   (Issue #4564, PR #4565)
 
 Enhancements
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`

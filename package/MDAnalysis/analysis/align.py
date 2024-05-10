@@ -681,6 +681,7 @@ class AlignTraj(AnalysisBase):
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
+                 writer_kwargs=None,
                  **kwargs):
         """Parameters
         ----------
@@ -720,6 +721,8 @@ class AlignTraj(AnalysisBase):
         verbose : bool (optional)
              Set logger to show more information and show detailed progress of
              the calculation if set to ``True``; the default is ``False``.
+        writer_kwargs : dict (optional)
+            kwarg dict to be passed to the constructed writer
 
 
         Attributes
@@ -756,7 +759,6 @@ class AlignTraj(AnalysisBase):
           for the remainder of the Python session. If ``mobile.trajectory`` is
           already a :class:`MemoryReader` then it is *always* treated as if
           ``in_memory`` had been set to ``True``.
-        - Writer ``**kwargs`` will be passed to the constructed `mda.Writer`.
 
         .. versionchanged:: 1.0.0
            Default ``filename`` has now been changed to the current directory.
@@ -817,10 +819,12 @@ class AlignTraj(AnalysisBase):
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
             strict=strict, match_atoms=match_atoms)
 
+        if writer_kwargs is None:
+            writer_kwargs = {}
         # with self.filename == None (in_memory), the NullWriter is chosen
         # (which just ignores input) and so only the in_memory trajectory is
         # retained
-        self._writer = mda.Writer(self.filename, natoms, **kwargs)
+        self._writer = mda.Writer(self.filename, natoms, **writer_kwargs)
 
         self._weights = get_weights(self.ref_atoms, weights)
 
