@@ -212,13 +212,13 @@ from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.lib.util import get_weights
-from MDAnalysis.lib.util import deprecate   # remove 3.0
+from MDAnalysis.lib.util import deprecate  # remove 3.0
 from MDAnalysis.lib.log import ProgressBar
 from ..due import due, Doi
 
 from .base import AnalysisBase
 
-logger = logging.getLogger('MDAnalysis.analysis.align')
+logger = logging.getLogger("MDAnalysis.analysis.align")
 
 
 def rotation_matrix(a, b, weights=None):
@@ -280,7 +280,6 @@ def rotation_matrix(a, b, weights=None):
     AlignTraj: Fit a whole trajectory.
     """
 
-
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
 
@@ -307,8 +306,9 @@ def rotation_matrix(a, b, weights=None):
     return rot.reshape(3, 3), rmsd
 
 
-def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
-            mobile_com, ref_com, weights=None):
+def _fit_to(
+    mobile_coordinates, ref_coordinates, mobile_atoms, mobile_com, ref_com, weights=None
+):
     r"""Perform an rmsd-fitting to determine rotation matrix and align atoms
 
     Parameters
@@ -356,8 +356,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
        where :math:`\bar{X}` is the center.
 
     """
-    R, min_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates,
-                                  weights=weights)
+    R, min_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
 
     mobile_atoms.translate(-mobile_com)
     mobile_atoms.rotate(R)
@@ -366,9 +365,16 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
     return mobile_atoms, min_rmsd
 
 
-def alignto(mobile, reference, select=None, weights=None,
-            subselection=None, tol_mass=0.1, strict=False,
-            match_atoms=True):
+def alignto(
+    mobile,
+    reference,
+    select=None,
+    weights=None,
+    subselection=None,
+    tol_mass=0.1,
+    strict=False,
+    match_atoms=True,
+):
     """Perform a spatial superposition by minimizing the RMSD.
 
     Spatially align the group of atoms `mobile` to `reference` by
@@ -494,7 +500,7 @@ def alignto(mobile, reference, select=None, weights=None,
     .. versionchanged:: 0.17.0
        Deprecated keyword `mass_weighted` was removed.
     """
-    if select in ('all', None):
+    if select in ("all", None):
         # keep the EXACT order in the input AtomGroups; select_atoms('all')
         # orders them by index, which can lead to wrong results if the user
         # has crafted mobile and reference to match atom by atom
@@ -502,14 +508,16 @@ def alignto(mobile, reference, select=None, weights=None,
         ref_atoms = reference.atoms
     else:
         select = rms.process_selection(select)
-        mobile_atoms = mobile.select_atoms(*select['mobile'])
-        ref_atoms = reference.select_atoms(*select['reference'])
+        mobile_atoms = mobile.select_atoms(*select["mobile"])
+        ref_atoms = reference.select_atoms(*select["reference"])
 
-
-    ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
-                                                tol_mass=tol_mass,
-                                                strict=strict,
-                                                match_atoms=match_atoms)
+    ref_atoms, mobile_atoms = get_matching_atoms(
+        ref_atoms,
+        mobile_atoms,
+        tol_mass=tol_mass,
+        strict=strict,
+        match_atoms=match_atoms,
+    )
 
     weights = get_weights(ref_atoms, weights)
 
@@ -532,26 +540,38 @@ def alignto(mobile, reference, select=None, weights=None,
             # treat subselection as AtomGroup
             mobile_atoms = subselection.atoms
         except AttributeError:
-            err = ("subselection must be a selection string, an"
-                   " AtomGroup or Universe or None")
+            err = (
+                "subselection must be a selection string, an"
+                " AtomGroup or Universe or None"
+            )
             raise TypeError(err) from None
 
-
     # _fit_to DOES subtract center of mass, will provide proper min_rmsd
-    mobile_atoms, new_rmsd = _fit_to(mobile_coordinates, ref_coordinates,
-                                     mobile_atoms, mobile_com, ref_com,
-                                     weights=weights)
+    mobile_atoms, new_rmsd = _fit_to(
+        mobile_coordinates,
+        ref_coordinates,
+        mobile_atoms,
+        mobile_com,
+        ref_com,
+        weights=weights,
+    )
     return old_rmsd, new_rmsd
 
 
 @due.dcite(
-        Doi("10.1021/acs.jpcb.7b11988"),
-        description="Iterative Calculation of Opimal Reference",
-        path="MDAnalysis.analysis.align.iterative_average"
+    Doi("10.1021/acs.jpcb.7b11988"),
+    description="Iterative Calculation of Opimal Reference",
+    path="MDAnalysis.analysis.align.iterative_average",
 )
 def iterative_average(
-    mobile, reference=None, select='all', weights=None, niter=100,
-    eps=1e-6, verbose=False, **kwargs
+    mobile,
+    reference=None,
+    select="all",
+    weights=None,
+    niter=100,
+    eps=1e-6,
+    verbose=False,
+    **kwargs,
 ):
     """Iteratively calculate an optimal reference that is also the average
     structure after an RMSD alignment.
@@ -618,8 +638,8 @@ def iterative_average(
         reference = mobile
 
     select = rms.process_selection(select)
-    ref = mda.Merge(reference.select_atoms(*select['reference']))
-    sel_mobile = select['mobile'][0]
+    ref = mda.Merge(reference.select_atoms(*select["reference"]))
+    sel_mobile = select["mobile"][0]
 
     weights = get_weights(ref.atoms, weights)
 
@@ -630,13 +650,15 @@ def iterative_average(
             break
 
         avg_struc = AverageStructure(
-            mobile, reference=ref, select={
-                'mobile': sel_mobile, 'reference': 'all'
-                },
-            weights=weights, **kwargs
+            mobile,
+            reference=ref,
+            select={"mobile": sel_mobile, "reference": "all"},
+            weights=weights,
+            **kwargs,
         ).run()
-        drmsd = rms.rmsd(ref.atoms.positions, avg_struc.results.positions,
-                         weights=weights)
+        drmsd = rms.rmsd(
+            ref.atoms.positions, avg_struc.results.positions, weights=weights
+        )
         ref = avg_struc.results.universe
 
         if verbose:
@@ -678,11 +700,22 @@ class AlignTraj(AnalysisBase):
 
     """
 
-    def __init__(self, mobile, reference, select='all', filename=None,
-                 prefix='rmsfit_', weights=None,
-                 tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
-                 writer_kwargs=None,
-                 **kwargs):
+    def __init__(
+        self,
+        mobile,
+        reference,
+        select="all",
+        filename=None,
+        prefix="rmsfit_",
+        weights=None,
+        tol_mass=0.1,
+        match_atoms=True,
+        strict=False,
+        force=True,
+        in_memory=False,
+        writer_kwargs=None,
+        **kwargs,
+    ):
         """Parameters
         ----------
         mobile : Universe
@@ -783,10 +816,13 @@ class AlignTraj(AnalysisBase):
            :attr:`rmsd` results are now stored in a
            :class:`MDAnalysis.analysis.base.Results` instance.
 
+        .. versionchanged:: 2.8.0
+           Added ``writer_kwargs`` kwarg dict to pass to the writer
+
         """
         select = rms.process_selection(select)
-        self.ref_atoms = reference.select_atoms(*select['reference'])
-        self.mobile_atoms = mobile.select_atoms(*select['mobile'])
+        self.ref_atoms = reference.select_atoms(*select["reference"])
+        self.mobile_atoms = mobile.select_atoms(*select["mobile"])
         if in_memory or isinstance(mobile.trajectory, MemoryReader):
             mobile.transfer_to_memory()
             filename = None
@@ -795,13 +831,15 @@ class AlignTraj(AnalysisBase):
             if filename is None:
                 fn = os.path.split(mobile.trajectory.filename)[1]
                 filename = prefix + fn
-                logger.info('filename of rms_align with no filename given'
-                            ': {0}'.format(filename))
+                logger.info(
+                    "filename of rms_align with no filename given"
+                    ": {0}".format(filename)
+                )
 
             if os.path.exists(filename) and not force:
                 raise IOError(
-                    'Filename already exists in path and force is not set'
-                    ' to True')
+                    "Filename already exists in path and force is not set" " to True"
+                )
 
         # do this after setting the memory reader to have a reference to the
         # right reader.
@@ -816,8 +854,12 @@ class AlignTraj(AnalysisBase):
 
         natoms = self.mobile.n_atoms
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
-            self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
-            strict=strict, match_atoms=match_atoms)
+            self.ref_atoms,
+            self.mobile_atoms,
+            tol_mass=tol_mass,
+            strict=strict,
+            match_atoms=match_atoms,
+        )
 
         if writer_kwargs is None:
             writer_kwargs = {}
@@ -842,11 +884,13 @@ class AlignTraj(AnalysisBase):
         mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
         mobile_atoms, self.results.rmsd[index] = _fit_to(
-                mobile_coordinates,
-                self._ref_coordinates,
-                self.mobile,
-                mobile_com,
-                self._ref_com, self._weights)
+            mobile_coordinates,
+            self._ref_coordinates,
+            self.mobile,
+            mobile_com,
+            self._ref_com,
+            self._weights,
+        )
         # write whole aligned input trajectory system
         self._writer.write(mobile_atoms)
 
@@ -857,9 +901,11 @@ class AlignTraj(AnalysisBase):
 
     @property
     def rmsd(self):
-        wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
-                "will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rmsd` instead.")
+        wmsg = (
+            "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
+            "will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rmsd` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
@@ -893,10 +939,21 @@ class AverageStructure(AnalysisBase):
 
     """
 
-    def __init__(self, mobile, reference=None, select='all', filename=None,
-                weights=None,
-                 tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
-                 ref_frame=0, **kwargs):
+    def __init__(
+        self,
+        mobile,
+        reference=None,
+        select="all",
+        filename=None,
+        weights=None,
+        tol_mass=0.1,
+        match_atoms=True,
+        strict=False,
+        force=True,
+        in_memory=False,
+        ref_frame=0,
+        **kwargs,
+    ):
         """Parameters
         ----------
         mobile : Universe
@@ -1014,18 +1071,20 @@ class AverageStructure(AnalysisBase):
         self.reference = reference if reference is not None else mobile
 
         select = rms.process_selection(select)
-        self.ref_atoms = self.reference.select_atoms(*select['reference'])
-        self.mobile_atoms = mobile.select_atoms(*select['mobile'])
+        self.ref_atoms = self.reference.select_atoms(*select["reference"])
+        self.mobile_atoms = mobile.select_atoms(*select["mobile"])
 
         if len(self.ref_atoms) != len(self.mobile_atoms):
-            err = ("Reference and trajectory atom selections do "
-                   "not contain the same number of atoms: "
-                   "N_ref={0:d}, N_traj={1:d}".format(self.ref_atoms.n_atoms,
-                                                      self.mobile_atoms.n_atoms))
+            err = (
+                "Reference and trajectory atom selections do "
+                "not contain the same number of atoms: "
+                "N_ref={0:d}, N_traj={1:d}".format(
+                    self.ref_atoms.n_atoms, self.mobile_atoms.n_atoms
+                )
+            )
             logger.exception(err)
             raise SelectionError(err)
-        logger.info("RMS calculation "
-                    "for {0:d} atoms.".format(len(self.ref_atoms)))
+        logger.info("RMS calculation " "for {0:d} atoms.".format(len(self.ref_atoms)))
 
         # store reference to mobile atoms
         self.mobile = mobile.atoms
@@ -1036,8 +1095,12 @@ class AverageStructure(AnalysisBase):
 
         natoms = len(self.results.universe.atoms)
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
-            self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
-            strict=strict, match_atoms=match_atoms)
+            self.ref_atoms,
+            self.mobile_atoms,
+            tol_mass=tol_mass,
+            strict=strict,
+            match_atoms=match_atoms,
+        )
 
         # with self.filename == None (in_memory), the NullWriter is chosen
         # (which just ignores input) and so only the in_memory trajectory is
@@ -1069,18 +1132,20 @@ class AverageStructure(AnalysisBase):
     def _single_frame(self):
         mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
-        self.results.rmsd += _fit_to(mobile_coordinates,
-                                     self._ref_coordinates,
-                                     self.mobile,
-                                     mobile_com,
-                                     self._ref_com, self._weights)[1]
+        self.results.rmsd += _fit_to(
+            mobile_coordinates,
+            self._ref_coordinates,
+            self.mobile,
+            mobile_com,
+            self._ref_com,
+            self._weights,
+        )[1]
         self.results.positions += self.mobile_atoms.positions
 
     def _conclude(self):
         self.results.positions /= self.n_frames
         self.results.rmsd /= self.n_frames
-        self.results.universe.load_new(
-                self.results.positions.reshape((1, -1, 3)))
+        self.results.universe.load_new(self.results.positions.reshape((1, -1, 3)))
         self._writer.write(self.results.universe.atoms)
         self._writer.close()
         if not self._verbose:
@@ -1088,34 +1153,49 @@ class AverageStructure(AnalysisBase):
 
     @property
     def universe(self):
-        wmsg = ("The `universe` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.universe` instead.")
+        wmsg = (
+            "The `universe` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.universe` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.universe
 
     @property
     def positions(self):
-        wmsg = ("The `positions` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.positions` instead.")
+        wmsg = (
+            "The `positions` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.positions` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.positions
 
     @property
     def rmsd(self):
-        wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rmsd` instead.")
+        wmsg = (
+            "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rmsd` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
 
-@deprecate(release="2.4.0", remove="3.0",
-           message="See the documentation under Notes on how to directly use"
-                   "Bio.Align.PairwiseAligner with ResidueGroups.")
-def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
-                       gap_penalty=-2, gapextension_penalty=-0.1):
+@deprecate(
+    release="2.4.0",
+    remove="3.0",
+    message="See the documentation under Notes on how to directly use"
+    "Bio.Align.PairwiseAligner with ResidueGroups.",
+)
+def sequence_alignment(
+    mobile,
+    reference,
+    match_score=2,
+    mismatch_penalty=-1,
+    gap_penalty=-2,
+    gapextension_penalty=-0.1,
+):
     """Generate a global sequence alignment between two residue groups.
 
     The residues in `reference` and `mobile` will be globally aligned.
@@ -1198,9 +1278,11 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
 
     """
     if not HAS_BIOPYTHON:
-        errmsg = ("The `sequence_alignment` method requires an installation "
-                  "of `Biopython`. Please install `Biopython` to use this "
-                  "method: https://biopython.org/wiki/Download")
+        errmsg = (
+            "The `sequence_alignment` method requires an installation "
+            "of `Biopython`. Please install `Biopython` to use this "
+            "method: https://biopython.org/wiki/Download"
+        )
         raise ImportError(errmsg)
 
     aligner = Bio.Align.PairwiseAligner(
@@ -1208,28 +1290,42 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
         match_score=match_score,
         mismatch_score=mismatch_penalty,
         open_gap_score=gap_penalty,
-        extend_gap_score=gapextension_penalty)
-    aln = aligner.align(reference.residues.sequence(format="Seq"),
-                        mobile.residues.sequence(format="Seq"))
+        extend_gap_score=gapextension_penalty,
+    )
+    aln = aligner.align(
+        reference.residues.sequence(format="Seq"),
+        mobile.residues.sequence(format="Seq"),
+    )
     # choose top alignment with highest score
     topalignment = aln[0]
 
     # reconstruct the results tuple that used to be of type Bio.pairwise2.Alignment
     AlignmentTuple = collections.namedtuple(
-        "Alignment",
-        ["seqA", "seqB", "score", "start", "end"])
+        "Alignment", ["seqA", "seqB", "score", "start", "end"]
+    )
     # start/stop are not particularly meaningful and there's no obvious way to
     # get the old pairwise2 start/stop from the new PairwiseAligner output.
-    return AlignmentTuple(topalignment[0], topalignment[1],
-                          topalignment.score,
-                          0, max(reference.n_residues, mobile.n_residues))
+    return AlignmentTuple(
+        topalignment[0],
+        topalignment[1],
+        topalignment.score,
+        0,
+        max(reference.n_residues, mobile.n_residues),
+    )
 
 
-
-def fasta2select(fastafilename, is_aligned=False,
-                 ref_resids=None, target_resids=None,
-                 ref_offset=0, target_offset=0, verbosity=3,
-                 alnfilename=None, treefilename=None, clustalw="clustalw2"):
+def fasta2select(
+    fastafilename,
+    is_aligned=False,
+    ref_resids=None,
+    target_resids=None,
+    ref_offset=0,
+    target_offset=0,
+    verbosity=3,
+    alnfilename=None,
+    treefilename=None,
+    clustalw="clustalw2",
+):
     """Return selection strings that will select equivalent residues.
 
     The function aligns two sequences provided in a FASTA file and
@@ -1304,7 +1400,7 @@ def fasta2select(fastafilename, is_aligned=False,
     :func:`sequence_alignment`, which does not require external
     programs.
 
-    
+
     Raises
     ------
     ImportError
@@ -1322,53 +1418,52 @@ def fasta2select(fastafilename, is_aligned=False,
 
     """
     if not HAS_BIOPYTHON:
-        errmsg = ("The `fasta2select` method requires an installation "
-                  "of `Biopython`. Please install `Biopython` to use this "
-                  "method: https://biopython.org/wiki/Download")
+        errmsg = (
+            "The `fasta2select` method requires an installation "
+            "of `Biopython`. Please install `Biopython` to use this "
+            "method: https://biopython.org/wiki/Download"
+        )
         raise ImportError(errmsg)
 
     if is_aligned:
         logger.info("Using provided alignment {}".format(fastafilename))
         with open(fastafilename) as fasta:
-            alignment = Bio.AlignIO.read(
-                fasta, "fasta")
+            alignment = Bio.AlignIO.read(fasta, "fasta")
     else:
         if alnfilename is None:
             filepath, ext = os.path.splitext(fastafilename)
-            alnfilename = os.path.basename(filepath) + '.aln'
+            alnfilename = os.path.basename(filepath) + ".aln"
         if treefilename is None:
             filepath, ext = os.path.splitext(alnfilename)
-            treefilename = os.path.basename(filepath) + '.dnd'
+            treefilename = os.path.basename(filepath) + ".dnd"
         run_clustalw = Bio.Align.Applications.ClustalwCommandline(
             clustalw,
             infile=fastafilename,
             type="protein",
             align=True,
             outfile=alnfilename,
-            newtree=treefilename)
+            newtree=treefilename,
+        )
         logger.debug(
-            "Aligning sequences in %(fastafilename)r with %(clustalw)r.",
-            vars())
+            "Aligning sequences in %(fastafilename)r with %(clustalw)r.", vars()
+        )
         logger.debug("ClustalW commandline: %r", str(run_clustalw))
         try:
             stdout, stderr = run_clustalw()
         except:
             logger.exception("ClustalW %(clustalw)r failed", vars())
-            logger.info(
-                "(You can get clustalw2 from http://www.clustal.org/clustal2/)")
+            logger.info("(You can get clustalw2 from http://www.clustal.org/clustal2/)")
             raise
         with open(alnfilename) as aln:
-            alignment = Bio.AlignIO.read(
-                aln, "clustal")
+            alignment = Bio.AlignIO.read(aln, "clustal")
+        logger.info("Using clustalw sequence alignment {0!r}".format(alnfilename))
         logger.info(
-            "Using clustalw sequence alignment {0!r}".format(alnfilename))
-        logger.info(
-            "ClustalW Newick guide tree was also produced: {0!r}".format(treefilename))
+            "ClustalW Newick guide tree was also produced: {0!r}".format(treefilename)
+        )
 
     nseq = len(alignment)
     if nseq != 2:
-        raise ValueError(
-            "Only two sequences in the alignment can be processed.")
+        raise ValueError("Only two sequences in the alignment can be processed.")
 
     # implict assertion that we only have two sequences in the alignment
     orig_resids = [ref_resids, target_resids]
@@ -1384,8 +1479,7 @@ def fasta2select(fastafilename, is_aligned=False,
         else:
             orig_resids[iseq] = np.asarray(orig_resids[iseq])
     # add offsets to the sequence <--> resid translation table
-    seq2resids = [resids + offset for resids, offset in zip(
-        orig_resids, offsets)]
+    seq2resids = [resids + offset for resids, offset in zip(orig_resids, offsets)]
     del orig_resids
     del offsets
 
@@ -1421,8 +1515,9 @@ def fasta2select(fastafilename, is_aligned=False,
         t = np.zeros((nseq, alignment.get_alignment_length()), dtype=int)
         for iseq, a in enumerate(alignment):
             GAP = "-"
-            t[iseq, :] = seq2resids[iseq][np.cumsum(np.where(
-                np.array(list(a.seq)) == GAP, 0, 1)) - 1]
+            t[iseq, :] = seq2resids[iseq][
+                np.cumsum(np.where(np.array(list(a.seq)) == GAP, 0, 1)) - 1
+            ]
             # -1 because seq2resid is index-1 based (resids start at 1)
 
         def resid(nseq, ipos, t=t):
@@ -1441,7 +1536,7 @@ def fasta2select(fastafilename, is_aligned=False,
         if GAP in aligned:
             continue  # skip residue
         template = "resid %i"
-        if 'G' not in aligned:
+        if "G" not in aligned:
             # can use CB
             template += " and ( backbone or name CB )"
         else:
@@ -1454,7 +1549,7 @@ def fasta2select(fastafilename, is_aligned=False,
 
     ref_selection = " or ".join(sel[0])
     target_selection = " or ".join(sel[1])
-    return {'reference': ref_selection, 'mobile': target_selection}
+    return {"reference": ref_selection, "mobile": target_selection}
 
 
 def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
@@ -1532,34 +1627,39 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
 
     if ag1.n_atoms != ag2.n_atoms:
         if not match_atoms:
-            errmsg = ("Mobile and reference atom selections do not "
-                      "contain the same number of atoms and atom "
-                      "matching is turned off. To match atoms based "
-                      "on residue and mass, try match_atoms=True")
+            errmsg = (
+                "Mobile and reference atom selections do not "
+                "contain the same number of atoms and atom "
+                "matching is turned off. To match atoms based "
+                "on residue and mass, try match_atoms=True"
+            )
             logger.error(errmsg)
             raise SelectionError(errmsg)
         if ag1.n_residues != ag2.n_residues:
-            errmsg = ("Reference and trajectory atom selections do not contain "
-                    "the same number of atoms: \n"
-                    "atoms:    N_ref={0}, N_traj={1}\n"
-                    "and also not the same number of residues:\n"
-                    "residues: N_ref={2}, N_traj={3}").format(
-                        ag1.n_atoms, ag2.n_atoms,
-                        ag1.n_residues, ag2.n_residues)
+            errmsg = (
+                "Reference and trajectory atom selections do not contain "
+                "the same number of atoms: \n"
+                "atoms:    N_ref={0}, N_traj={1}\n"
+                "and also not the same number of residues:\n"
+                "residues: N_ref={2}, N_traj={3}"
+            ).format(ag1.n_atoms, ag2.n_atoms, ag1.n_residues, ag2.n_residues)
             logger.error(errmsg)
             raise SelectionError(errmsg)
         else:
-            msg = ("Reference and trajectory atom selections do not contain "
-                   "the same number of atoms: \n"
-                   "atoms:    N_ref={0}, N_traj={1}").format(
-                       ag1.n_atoms, ag2.n_atoms)
+            msg = (
+                "Reference and trajectory atom selections do not contain "
+                "the same number of atoms: \n"
+                "atoms:    N_ref={0}, N_traj={1}"
+            ).format(ag1.n_atoms, ag2.n_atoms)
             if strict:
                 logger.error(msg)
                 raise SelectionError(msg)
 
             # continue with trying to create a valid selection
-            msg += ("\nbut we attempt to create a valid selection " +
-                    "(use strict=True to disable this heuristic).")
+            msg += (
+                "\nbut we attempt to create a valid selection "
+                + "(use strict=True to disable this heuristic)."
+            )
             logger.info(msg)
             warnings.warn(msg, category=SelectionWarning)
 
@@ -1587,14 +1687,15 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         rsize1 = np.array([r.atoms.n_atoms for r in ag1.residues])
         rsize2 = np.array([r.atoms.n_atoms for r in ag2.residues])
         rsize_mismatches = np.absolute(rsize1 - rsize2)
-        mismatch_mask = (rsize_mismatches > 0)
+        mismatch_mask = rsize_mismatches > 0
         if np.any(mismatch_mask):
+
             def get_atoms_byres(g, match_mask=np.logical_not(mismatch_mask)):
                 # not pretty... but need to do things on a per-atom basis in
                 # order to preserve original selection
                 ag = g.atoms
                 good = ag.residues.resids[match_mask]  # resid for each residue
-                resids = ag.resids                     # resid for each atom
+                resids = ag.resids  # resid for each atom
                 # boolean array for all matching atoms
                 ix_good = np.isin(resids, good)
                 return ag[ix_good]
@@ -1606,12 +1707,21 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
 
             # diagnostics
             mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
-            logger.warning("Removed {0} residues with non-matching numbers of atoms"
-                           .format(mismatch_mask.sum()))
-            logger.debug("Removed residue ids: group 1: {0}"
-                         .format(ag1.residues.resids[mismatch_resindex]))
-            logger.debug("Removed residue ids: group 2: {0}"
-                         .format(ag2.residues.resids[mismatch_resindex]))
+            logger.warning(
+                "Removed {0} residues with non-matching numbers of atoms".format(
+                    mismatch_mask.sum()
+                )
+            )
+            logger.debug(
+                "Removed residue ids: group 1: {0}".format(
+                    ag1.residues.resids[mismatch_resindex]
+                )
+            )
+            logger.debug(
+                "Removed residue ids: group 2: {0}".format(
+                    ag2.residues.resids[mismatch_resindex]
+                )
+            )
             # replace after logging (still need old ag1 and ag2 for
             # diagnostics)
             ag1 = _ag1
@@ -1620,8 +1730,10 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
 
             # stop if we created empty selections (by removing ALL residues...)
             if ag1.n_atoms == 0 or ag2.n_atoms == 0:
-                errmsg = ("Failed to automatically find matching atoms: created empty selections. "
-                          "Try to improve your selections for mobile and reference.")
+                errmsg = (
+                    "Failed to automatically find matching atoms: created empty selections. "
+                    "Try to improve your selections for mobile and reference."
+                )
                 logger.error(errmsg)
                 raise SelectionError(errmsg)
 
@@ -1630,17 +1742,18 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         # good and can easily be misled (e.g., when one of the selections
         # had fewer atoms but the residues in mobile and reference have
         # each the same number)
-        if (not hasattr(ag1, 'masses') or not hasattr(ag2, 'masses')):
+        if not hasattr(ag1, "masses") or not hasattr(ag2, "masses"):
             msg = "Atoms could not be matched since they don't contain masses."
             logger.info(msg)
             warnings.warn(msg, category=SelectionWarning)
         else:
             try:
-                mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
+                mass_mismatches = np.absolute(ag1.masses - ag2.masses) > tol_mass
             except ValueError:
-                errmsg = ("Failed to find matching atoms: len(reference) = {}, len(mobile) = {} "
-                          "Try to improve your selections for mobile and reference.").format(
-                            ag1.n_atoms, ag2.n_atoms)
+                errmsg = (
+                    "Failed to find matching atoms: len(reference) = {}, len(mobile) = {} "
+                    "Try to improve your selections for mobile and reference."
+                ).format(ag1.n_atoms, ag2.n_atoms)
                 logger.error(errmsg)
                 raise SelectionError(errmsg) from None
 
@@ -1660,9 +1773,13 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                             at.resid,
                             at.resname,
                             at.name,
-                            at.mass))
-                errmsg = ("Inconsistent selections, masses differ by more than {0}; "
-                           "mis-matching atoms are shown above.").format(tol_mass)
+                            at.mass,
+                        )
+                    )
+                errmsg = (
+                    "Inconsistent selections, masses differ by more than {0}; "
+                    "mis-matching atoms are shown above."
+                ).format(tol_mass)
                 logger.error(errmsg)
                 raise SelectionError(errmsg)
 
