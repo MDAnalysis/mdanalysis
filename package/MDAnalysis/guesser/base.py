@@ -33,6 +33,8 @@ Classes
    :members:
    :inherited-members:
 
+.. autofunction:: get_guesser
+
 """
 from .. import _GUESSERS
 import numpy as np
@@ -124,7 +126,7 @@ class GuesserBase(metaclass=_GuesserMeta):
         ----------
         attr_to_guess: str
             an atrribute to be guessed then to be added to the universe
-        force_guess: boolean
+        force_guess: bool
             To indicate wether to only partialy guess the empty values of the
             attribute or to overwrite all existing values by guessed one
 
@@ -160,8 +162,8 @@ class GuesserBase(metaclass=_GuesserMeta):
 
 
 def get_guesser(context, u=None, **kwargs):
-    """get an appropiate guesser to the universe and pass
-       the AtomGroup of the Universe to the guesser
+    """get an appropiate guesser to the Universe and pass
+       the Universe to the guesser
 
     Parameters
     ----------

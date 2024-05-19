@@ -98,7 +98,6 @@ class TXYZParser(TopologyReaderBase):
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=object)
             bonds = []
-            validated_elements = []
 
             # Find first atom line, maybe there's box information
             fline = inf.readline()
@@ -124,12 +123,6 @@ class TXYZParser(TopologyReaderBase):
                     other_atom = int(other_atom) - 1
                     if i < other_atom:
                         bonds.append((i, other_atom))
-
-        for n in names:
-            if n.capitalize() in SYMB2Z:
-                validated_elements.append(n.capitalize())
-            else:
-                validated_elements.append('')
 
         attrs = [Atomnames(names),
                  Atomids(atomids),

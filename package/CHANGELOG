@@ -22,6 +22,7 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
@@ -49,8 +50,6 @@ Enhancements
    to be equal to the element attribute, if type is not provided (PR #3753)
  * Added is_value_missing() to `TopologyAttrs` to check for missing
    values (PR #3753)
- * Added the `Element` attribute if all names are valid element symbols for
-   TXYZParser (PR #3753)
  * Added guessed `Element` attribute to the ITPParser to preserve old mass
    partial guessing behavior from being broken (PR #3753)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`

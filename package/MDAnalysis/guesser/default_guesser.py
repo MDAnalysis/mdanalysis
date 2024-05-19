@@ -268,7 +268,7 @@ class DefaultGuesser(GuesserBase):
             # if it's numbers
             return no_symbols
 
-    def guess_element_from_mass(self, mass):
+    def guess_element_from_mass(self, atom_mass):
         """Guess the element of the atom from the mass.
 
         Compare mass to the known element masses with
@@ -283,14 +283,14 @@ class DefaultGuesser(GuesserBase):
         :func:`guess_atom_type`
         :mod:`MDAnalysis.guesser.tables`
         """
-        for e, m in tables.masses.items():
-            if math.isclose(m, mass, rel_tol=1e-5):
+        for element, mass in tables.masses.items():
+            if math.isclose(mass, atom_mass, rel_tol=1e-5):
                 # skipping masses that represent more than one element
                 # neglect it better that guessing wrong type
-                if mass == 247 or mass == 262:
+                if atom_mass == 247 or atom_mass == 262:
                     return ''
                 else:
-                    return e.upper()
+                    return element.upper()
         return ''
 
     def guess_bonds(self, atoms=None, coords=None):
