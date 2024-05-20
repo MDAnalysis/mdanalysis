@@ -28,12 +28,12 @@ A working installation of NumPy <http://numpy.scipy.org> is required.
 
 For a basic installation just type the command::
 
-  python setup.py install
+  pip install .
 
 For more in-depth instructions, see the installation section at the
-MDAnalysis Wiki:
+MDAnalysis User Guide:
 
-  https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
+  https://userguide.mdanalysis.org/stable/installation.html
 
 Also free to ask on GitHub Discussions for help:
 
@@ -53,13 +53,6 @@ import shutil
 import tempfile
 import warnings
 import platform
-
-# Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 9):
-    print('MDAnalysis requires Python 3.9+. Python {0:d}.{1:d} detected'.format(*
-          sys.version_info[:2]))
-    print('Please upgrade your version of Python.')
-    sys.exit(-1)
 
 import configparser
 from subprocess import getoutput
@@ -567,115 +560,20 @@ if __name__ == '__main__':
         # (LONG_DESCRIPTION is not really needed)
         LONG_DESCRIPTION = "MDAnalysis -- https://www.mdanalysis.org/"
 
-    CLASSIFIERS = [
-        'Development Status :: 6 - Mature',
-        'Environment :: Console',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-        'Operating System :: POSIX',
-        'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows ',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
-        'Programming Language :: C',
-        'Topic :: Scientific/Engineering',
-        'Topic :: Scientific/Engineering :: Bio-Informatics',
-        'Topic :: Scientific/Engineering :: Chemistry',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-    ]
     config = Config()
     exts, cythonfiles = extensions(config)
 
-    install_requires = [
-          'numpy>=1.23.2',
-          'GridDataFormats>=0.4.0',
-          'mmtf-python>=1.0.0',
-          'joblib>=0.12',
-          'scipy>=1.5.0',
-          'matplotlib>=1.5.1',
-          'tqdm>=4.43.0',
-          'threadpoolctl',
-          'packaging',
-          'fasteners',
-          'mda-xdrlib',
-          'waterdynamics',
-          'pathsimanalysis',
-    ]
-
     setup(name='MDAnalysis',
           version=RELEASE,
-          description='An object-oriented toolkit to analyze molecular dynamics trajectories.',
           long_description=LONG_DESCRIPTION,
           long_description_content_type='text/x-rst',
-          author='MDAnalysis Development Team',
-          author_email='mdanalysis@numfocus.org',
-          maintainer='MDAnalysis Core Developers',
-          maintainer_email='mdanalysis@numfocus.org',
-          url='https://www.mdanalysis.org',
-          download_url='https://github.com/MDAnalysis/mdanalysis/releases',
-          project_urls={'Documentation': 'https://docs.mdanalysis.org/',
-                        'User Guide': 'https://userguide.mdanalysis.org/',
-                        'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
-                        'User Group': 'https://groups.google.com/g/mdnalysis-discussion/',
-                        'Discord': 'https://discord.com/channels/807348386012987462/',
-                        'Blog': 'https://www.mdanalysis.org/blog/',
-                        'Twitter': 'https://twitter.com/mdanalysis',
-                        'Source': 'https://github.com/mdanalysis/mdanalysis',
-                        },
-          license='GPL-3.0-or-later',
-          classifiers=CLASSIFIERS,
+          # currently unused & may become obsolte see setuptools #1569
           provides=['MDAnalysis'],
-          packages=find_packages(),
-          package_data={'MDAnalysis':
-                        ['analysis/data/*.npy',
-                        ],
-          },
           ext_modules=exts,
-          python_requires='>=3.9',
-          # all standard requirements are available through PyPi and
-          # typically can be installed without difficulties through setuptools
-          setup_requires=[
-              'numpy>=1.23.2',
-              'packaging',
-          ],
-          install_requires=install_requires,
-          # extras can be difficult to install through setuptools and/or
-          # you might prefer to use the version available through your
-          # packaging system
-          extras_require={
-              'extra_formats': [   # additional file formats
-                  'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
-                  'h5py>=2.10',    # H5MD
-                  'pytng>=0.2.3',  # TNG
-                  'chemfiles>=0.10',  # multiple formats supported by chemfiles
-                  'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
-                  'gsd>3.0.0', # GSD
-                  'rdkit>=2020.03.1', # RDKit converter
-                  'parmed', # ParmEd converter
-                  ],
-              'analysis': [
-                  'biopython>=1.80',  # sequence generation & alignment
-                  'seaborn',  # for annotated heat map and nearest neighbor
-                              # plotting in PSA
-                  'scikit-learn',  # For clustering and dimensionality
-                                   # reduction functionality in encore
-                  'tidynamics>=1.0.0', # For MSD analysis method
-                  'networkx>=2.0',  # For LeafletFinder
-              ],
-              'parallel': [
-                'dask',  # for parallelised execution using `dask` as a backend
-              ]
-          },
           test_suite="MDAnalysisTests",
           tests_require=[
               'MDAnalysisTests=={0!s}'.format(RELEASE),  # same as this release!
           ],
-          zip_safe=False,  # as a zipped egg the *.so files are not found (at
-                           # least in Ubuntu/Linux)
     )
 
     # Releases keep their cythonized stuff for shipping.

@@ -1,0 +1,151 @@
+[build-system]
+requires = [
+  "setuptools >= 40.9.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "MDAnalysisTests"
+description = "MDAnalysis testsuite"
+license = {file = "LICENSE" }
+authors = [
+    {name = "MDAnalysis", email = "mdanalysis@numfocus.org"},
+]
+maintainers = [
+    {name = "MDAnalysis", email = "mdanalysis@numfocus.org"},
+]
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows ",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+readme = {file = "README", content-type = "text/x-rst"}
+requires-python = ">=3.10"
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+Homepage = "https://www.mdanalysis.org"
+Download = "https://github.com/MDAnalysis/mdanalysis/releases"
+Documentation = "https://docs.mdanalysis.org/"
+"User Guide" = "https://userguide.mdanalysis.org/"
+"Issue Tracker" = "https://github.com/mdanalysis/mdanalysis/issues"
+"Github Discussions" = "https://github.com/MDAnalysis/mdanalysis/discussions"
+Discord = "https://discord.com/channels/807348386012987462/"
+Blog = "https://www.mdanalysis.org/blog/"
+Source = "https://github.com/mdanalysis/mdanalysis"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+[tool.setuptools.package-data]
+MDAnalysisTests = [
+    "data/*.psf",
+    "data/*.dcd",
+    "data/*.pdb",
+    "data/tprs/*.tpr",
+    "data/tprs/all_bonded/*.gro",
+    "data/tprs/all_bonded/*.top",
+    "data/tprs/all_bonded/*.mdp",
+    "data/tprs/virtual_sites/*.mdp",
+    "data/tprs/virtual_sites/*.top",
+    "data/tprs/virtual_sites/*.gro",
+    "data/*.tpr",
+    "data/tprs/*/*.tpr",
+    "data/*.gro",
+    "data/*.xtc",
+    "data/*.trr",
+    "data/*npy",
+    "data/*.crd",
+    "data/*.xyz",
+    "data/Amber/*.bz2",
+    "data/Amber/*.prmtop",
+    "data/Amber/*.top",
+    "data/Amber/*.parm7",
+    "data/Amber/*.rst7",
+    "data/Amber/*.trj",
+    "data/Amber/*.mdcrd",
+    "data/Amber/*.ncdf",
+    "data/Amber/*.nc",
+    "data/Amber/*.inpcrd",
+    "data/gromos11/*.gz",
+    "data/gromos11/*.trc",
+    "data/*.pqr",
+    "data/*.pdbqt",
+    "data/*.bz2",
+    "data/*.gz",
+    "data/*.ent",
+    "data/*.fasta",
+    "data/*.dat",
+    "data/*.dms",
+    "data/merge/2zmm/*.pdb",
+    "data/*.trz",
+    "data/mol2/*.mol2",
+    "data/contacts/*.gro.bz2",
+    "data/contacts/*.dat",
+    "data/capping/*.gro",
+    "data/capping/*.pdb",
+    "data/lammps/*",
+    "data/gms/*.xyz",
+    "data/gms/*.gms",
+    "data/gms/*.gms.gz",
+    "data/*.inpcrd",
+    "data/dlpoly/CONFIG*",
+    "data/dlpoly/HISTORY*",
+    "data/*.xml",
+    "data/coordinates/*",
+    "data/*xvg",
+    "data/*.mmtf",
+    "data/*.mmtf.gz",
+    "data/analysis/*",
+    "data/*.gsd",
+    "data/windows/*",
+    "data/*.itp",
+    "data/gromacs/gromos54a7_edited.ff/*",
+    "data/*.coor",
+    "data/*.h5md",
+    "data/*.in",
+    "data/*.top",
+    "data/*.sdf",
+    "data/*.edr",
+    "data/*.tng",
+    "data/*.pdbx",
+    "data/*.txt",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "always",
+    "error:`np.*` is a deprecated alias for the builtin:DeprecationWarning",
+    # don't enforce for third party packages though:
+    "ignore:`np.*` is a deprecated alias for the builtin:DeprecationWarning:networkx.*:",
+    "error:Creating an ndarray from ragged nested sequences",
+    "error:invalid escape sequence \\\\:DeprecationWarning",
+    # Ignore frequent errors popping up in our tests
+    # Elements
+    "ignore:Element information:UserWarning",
+    # Mass
+    "ignore:Failed to guess the mass:UserWarning",
+    # Coordinates
+    "ignore:No coordinate reader found:UserWarning",
+    "ignore:Reader has no dt information, set to 1.0 ps",
+    # NamedStream warnings
+    "ignore:Constructed NamedStream:RuntimeWarning",
+]

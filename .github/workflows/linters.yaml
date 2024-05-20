@@ -33,7 +33,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
+        python-version: "3.10"
 
     - name: darker-main-code
       id: darker-main-code
@@ -106,7 +106,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
+        python-version: "3.10"
 
     - name: install
       run: |
@@ -131,7 +131,7 @@ jobs:
         with:
           environment-name: mda
           create-args: >-
-            python=3.9
+            python=3.10
             pip
           # using jaime's shim to avoid pulling down the cudatoolkit
           condarc: |
@@ -146,6 +146,7 @@ jobs:
           micromamba: true
           full-deps: true
           numpy: numpy=1.23.2
+          rdkit: rdkit=2023.09.3
 
       - name: install
         run: |

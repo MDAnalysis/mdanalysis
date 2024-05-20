@@ -350,4 +350,6 @@ intersphinx_mapping = {
     'rdkit': ('https://rdkit.org/docs/', None),
     'waterdynamics': ('https://www.mdanalysis.org/waterdynamics/', None),
     'pathsimanalysis': ('https://www.mdanalysis.org/PathSimAnalysis/', None),
+    'mdahole2': ('https://www.mdanalysis.org/mdahole2/', None),
+    'dask': ('https://docs.dask.org/en/stable/', None),
 }

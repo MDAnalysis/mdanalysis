@@ -1,5 +1,5 @@
 """Analysis results and their aggregation --- :mod:`MDAnalysis.analysis.results`
-==============================================================
+================================================================================
 
 Module introduces two classes, :class:`Results` and :class:`ResultsGroup`,
 used for storing and aggregating data in
@@ -14,6 +14,7 @@ type, that holds all assigned attributes in :attr:`self.data` and
 allows for access either via dict-like syntax, or via class-like syntax:
 
 .. code-block:: python
+
     from MDAnalysis.analysis.results import Results
     r = Results()
     r.array = [1, 2, 3, 4]
@@ -26,6 +27,7 @@ that uses :meth:`ResultsGroup.merge()` method to aggregate results from
 multiple workers, initialized during a parallel run:
 
 .. code-block:: python
+
     from MDAnalysis.analysis.results import Results, ResultsGroup
     r1, r2 = Results(), Results()
     r1.masses = [1, 2, 3, 4, 5]
@@ -91,7 +93,7 @@ class Results(UserDict):
     .. versionadded:: 2.0.0
 
     .. versionchanged:: 2.8.0
-        Moved :class:`Results` to `MDAnalysis.analysis.results`
+        Moved :class:`Results` to :mod:`MDAnalysis.analysis.results`
     """
 
     def _validate_key(self, key):
@@ -154,19 +156,23 @@ class ResultsGroup:
 
     Examples
     --------
-    >>> from MDAnalysis.analysis.results import ResultsGroup, Results
-    >>> group = ResultsGroup(lookup={'mass': ResultsGroup.float_mean})
-    >>> obj1 = Results(mass=1)
-    >>> obj2 = Results(mass=3)
-    >>> group.merge([obj1, obj2])
-    {'mass': 2.0}
 
-    >>> # you can also set `None` for those attributes that you want to skip
-    >>> lookup = {'mass': ResultsGroup.float_mean, 'trajectory': None}
-    >>> group = ResultsGroup(lookup)
-    >>> objects = [Results(mass=1, skip=None), Results(mass=3, skip=object)]
-    >>> group.merge(objects, require_all_aggregators=False)
-    {'mass': 2.0}
+    .. code-block:: python
+
+        from MDAnalysis.analysis.results import ResultsGroup, Results
+        group = ResultsGroup(lookup={'mass': ResultsGroup.float_mean})
+        obj1 = Results(mass=1)
+        obj2 = Results(mass=3)
+        assert {'mass': 2.0} == group.merge([obj1, obj2])
+    
+
+    .. code-block:: python
+
+        # you can also set `None` for those attributes that you want to skip
+        lookup = {'mass': ResultsGroup.float_mean, 'trajectory': None}
+        group = ResultsGroup(lookup)
+        objects = [Results(mass=1, skip=None), Results(mass=3, skip=object)]
+        assert group.merge(objects, require_all_aggregators=False) == {'mass': 2.0}
 
     .. versionadded:: 2.8.0
     """
@@ -191,22 +197,20 @@ class ResultsGroup:
         Raises
         ------
         ValueError
-            if no aggregation function for a key is found and `require_all_aggregators=True`
-
-        .. versionadded:: 2.8.0
+            if no aggregation function for a key is found and ``require_all_aggregators=True``
         """
         if len(objects) == 1:
             merged_results = objects[0]
-        else:
-            merged_results = Results()
-            for key in objects[0].keys():
-                agg_function = self._lookup.get(key, None)
-                if agg_function is not None:
-                    results_of_t = [obj[key] for obj in objects]
-                    merged_results[key] = agg_function(results_of_t)
-                else:
-                    if require_all_aggregators:
-                        raise ValueError(f"No aggregation function for {key=}")
+            return merged_results
+        
+        merged_results = Results()
+        for key in objects[0].keys():
+            agg_function = self._lookup.get(key, None)
+            if agg_function is not None:
+                results_of_t = [obj[key] for obj in objects]
+                merged_results[key] = agg_function(results_of_t)
+            elif require_all_aggregators:
+                raise ValueError(f"No aggregation function for {key=}")
         return merged_results
 
     @staticmethod
@@ -222,13 +226,12 @@ class ResultsGroup:
         -------
         list
             flattened list
-        .. versionadded:: 2.8.0
         """
         return [item for sublist in arrs for item in sublist]
 
     @staticmethod
     def ndarray_sum(arrs: list[np.ndarray]):
-        """sums an ndarray along `axis=0`
+        """sums an ndarray along ``axis=0``
 
         Parameters
         ----------
@@ -239,14 +242,12 @@ class ResultsGroup:
         -------
         np.ndarray
             sum of input arrays
-
-        .. versionadded:: 2.8.0
         """
         return np.array(arrs).sum(axis=0)
 
     @staticmethod
     def ndarray_mean(arrs: list[np.ndarray]):
-        """calculates mean of input ndarrays along `axis=0`
+        """calculates mean of input ndarrays along ``axis=0``
 
         Parameters
         ----------
@@ -257,8 +258,6 @@ class ResultsGroup:
         -------
         np.ndarray
             mean of input arrays
-
-        .. versionadded:: 2.8.0
         """
         return np.array(arrs).mean(axis=0)
 
@@ -275,8 +274,6 @@ class ResultsGroup:
         -------
         float
             mean value
-
-        .. versionadded:: 2.8.0
         """
         return np.array(floats).mean()
 
@@ -293,8 +290,6 @@ class ResultsGroup:
         -------
         np.ndarray
             result of stacking
-
-        .. versionadded:: 2.8.0
         """
         return np.hstack(arrs)
 
@@ -311,7 +306,5 @@ class ResultsGroup:
         -------
         np.ndarray
             result of stacking
-
-        .. versionadded:: 2.8.0
         """
         return np.vstack(arrs)

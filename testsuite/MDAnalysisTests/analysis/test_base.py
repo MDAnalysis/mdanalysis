@@ -20,6 +20,15 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from collections import UserDict
+import pickle
+
+import pytest
+
+import numpy as np
+
+from numpy.testing import assert_equal, assert_allclose
+
 import MDAnalysis as mda
 import numpy as np
 import pytest
@@ -75,6 +84,11 @@ class OldAPIAnalysis(base.AnalysisBase):
 @pytest.fixture(scope='module')
 def u():
     return mda.Universe(PSF, DCD)
+
+
+@pytest.fixture(scope='module')
+def u_xtc():
+    return mda.Universe(TPR, XTC)  # dt = 100
 
 
 FRAMES_ERR = 'AnalysisBase.frames is incorrect'
@@ -176,12 +190,26 @@ def test_fails_for_unparallelizable(u, run_class, backend, n_workers):
     ({'stop': 30}, np.arange(30)),
     ({'step': 10}, np.arange(0, 98, 10))
 ])
-def test_start_stop_step(u, run_kwargs, frames, client_FrameAnalysis):
+def test_start_stop_step_parallel(u, run_kwargs, frames, client_FrameAnalysis):
     an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
     assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
+
+
+@pytest.mark.parametrize('run_kwargs,frames', [
+    ({}, np.arange(98)),
+    ({'start': 20}, np.arange(20, 98)),
+    ({'stop': 30}, np.arange(30)),
+    ({'step': 10}, np.arange(0, 98, 10))
+])
+def test_start_stop_step(u, run_kwargs, frames):
+    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
+    assert an.n_frames == len(frames)
+    assert_equal(an.found_frames, frames)
+    assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
+    assert_allclose(an.times, frames+1, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 @pytest.mark.parametrize('run_kwargs, frames', [
@@ -192,7 +220,22 @@ def test_start_stop_step(u, run_kwargs, frames, client_FrameAnalysis):
     ({'frames': [True, True, False, True, False, True, True, False, True,
                  False]}, (0, 1, 3, 5, 6, 8)),
 ])
-def test_frame_slice(run_kwargs, frames, client_FrameAnalysis):
+def test_frame_slice(u_xtc, run_kwargs, frames):
+    an = FrameAnalysis(u_xtc.trajectory).run(**run_kwargs)
+    assert an.n_frames == len(frames)
+    assert_equal(an.found_frames, frames)
+    assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
+
+
+@pytest.mark.parametrize('run_kwargs, frames', [
+    ({'frames': [4, 5, 6, 7, 8, 9]}, np.arange(4, 10)),
+    ({'frames': [0, 2, 4, 6, 8]}, np.arange(0, 10, 2)),
+    ({'frames': [4, 6, 8]}, np.arange(4, 10, 2)),
+    ({'frames': [0, 3, 4, 3, 5]}, [0, 3, 4, 3, 5]),
+    ({'frames': [True, True, False, True, False, True, True, False, True,
+                 False]}, (0, 1, 3, 5, 6, 8)),
+])
+def test_frame_slice_parallel(run_kwargs, frames, client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)
@@ -249,7 +292,7 @@ def test_frames_times(client_FrameAnalysis):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_almost_equal(an.times, frames*100, decimal=4, err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames*100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):
@@ -276,23 +319,24 @@ def test_not_parallelizable(classname, is_parallelizable):
 
 
 def test_verbose_progressbar(u, capsys):
-    an = FrameAnalysis(u.trajectory).run()
-    out, err = capsys.readouterr()
+    FrameAnalysis(u.trajectory).run()
+    _, err = capsys.readouterr()
     expected = ''
     actual = err.strip().split('\r')[-1]
     assert actual == expected
 
 
 def test_verbose_progressbar_run(u, capsys):
-    an = FrameAnalysis(u.trajectory).run(verbose=True)
-    out, err = capsys.readouterr()
+    FrameAnalysis(u.trajectory).run(verbose=True)
+    _, err = capsys.readouterr()
     expected = u'100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
     actual = err.strip().split('\r')[-1]
     assert actual[:24] == expected[:24]
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
-    an = FrameAnalysis(u.trajectory).run(verbose=True, progressbar_kwargs={'desc':'custom'})
-    out, err = capsys.readouterr()
+    FrameAnalysis(u.trajectory).run(
+        verbose=True, progressbar_kwargs={'desc': 'custom'})
+    _, err = capsys.readouterr()
     expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
     actual = err.strip().split('\r')[-1]
     assert actual[:30] == expected[:30]
@@ -394,6 +438,7 @@ def test_AnalysisFromFunction_args_content(u, client_AnalysisFromFunction):
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
     result = np.sum(ans.run(**client_AnalysisFromFunction).results.timeseries)
+    assert_allclose(result, -317054.67757345125, rtol=0, atol=1.5e-6)
     assert_almost_equal(result, -317054.67757345125, decimal=6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory

@@ -15,11 +15,21 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
-         ljwoods2
+         ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher
 
  * 2.8.0
 
 Fixes
+ * Raise an error in analysis if `parallelizable=True` is passed to the `NoJump`
+   transformation (Issue #4259)
+ * Fix doctest errors of analysis/pca.py related to rounding issues 
+   (Issue #3925, PR #4377)
+ * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
+ * Atomname methods can handle empty groups (Issue #2879, PR #4529)
+ * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
+ * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
+   (PR #4459)
  * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
    (Issue #3349, PR #4407)
  * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
@@ -28,16 +38,36 @@ Fixes
    `DistanceMatrix.run(frames=...)` (PR #4433)
  * Fix doctest errors of lib/picklable_file_io.py (Issue #3925, PR #4371)
  * Fix deploy action to use the correct version of the pypi upload action.
+ * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
+   (Issue #4158, PR #4304)
+ * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
+   (PR #4531)
+ * Improved performance of PDBWriter (Issue #2785, PR #4472)
+ * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
  * Documented the r0 attribute in the `Contacts` class and added the 
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
- * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
+ * Implement average structures with iterative algorithm from 
+   DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * As per SPEC0 the minimum supported Python version has been raised
+   to 3.10 (PR #4502)
+ * MDAnalysis.analysis.hole2 is now directly imported from the mdakit
+   mdahole2. This module is deprecated and will be fully removed in
+   MDAnalysis version 3.0 (PR #4464)
+ * Testsuite packaging now uses a pyproject.toml file (PR #4463)
+ * Improvement of setuptools packaging, including deduplication of
+   dependency lists (PR #4424)
  * As per NEP29, the minimum version of numpy has been raised to 1.23.
    We have opted to pin to 1.23.2 to ensure the same minimum numpy version
    is used from python 3.9 to 3.11 (Issue #4401, PR #4402)
+ * updated tests that used assert_almost_equal(..., decimal={N}) with 
+   equivalent assert_allclose(...  rtol=0, atol=1.5e-{N}) (issue modernize
+   testing code #3743, PR Replaced numpy.testing.assert_almost_equal to 
+   numpy.testing.assert_allclose #4438)
 
 Deprecations
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
