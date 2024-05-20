@@ -310,7 +310,7 @@ class BackendDask(BackendBase):
         results = dask.compute(computations,
                                scheduler="processes",
                                chunksize=1,
-                               n_workers=self.n_workers)[0]
+                               num_workers=self.n_workers)[0]
         return results
 
     def _get_checks(self):

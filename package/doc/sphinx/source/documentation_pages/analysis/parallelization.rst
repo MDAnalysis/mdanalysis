@@ -268,7 +268,7 @@ parallelization to the :class:`MDAnalysis.analysis.rms.RMSD`:
             return ('serial', 'multiprocessing', 'dask',)
 
         @classmethod
-        def is_parallelizable(self):
+        def _is_parallelizable(self):
             return True
         
         def _get_aggregator(self):
@@ -278,7 +278,7 @@ parallelization to the :class:`MDAnalysis.analysis.rms.RMSD`:
 That's it! The first two methods are boilerplate --
 :meth:`get_supported_backends` returns a tuple with built-in backends that will
 work for your class (if there are no serialization issues, it should be all
-three), and ``is_parallelizable`` is ``True`` (which is set to ``False`` in
+three), and ``_is_parallelizable`` is ``True`` (which is set to ``False`` in
 ``AnalysisBase``, hence we have to re-define it), and :meth:`_get_aggregator`
 will be used as described earlier. Note that :mod:`MDAnalysis.analysis.results`
 also provides a few convenient functions (defined as class methods of
