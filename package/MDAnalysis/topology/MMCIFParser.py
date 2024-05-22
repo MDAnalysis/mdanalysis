@@ -73,7 +73,7 @@ class MMCIFParser(TopologyReaderBase):
                             # atom properties -- no squashing!
                             # --
                             at.altloc,  # altlocs
-                            at.element.name,  # atomtypes
+                            at.name,  # atomtypes
                             at.element.name,  # elements
                             at.charge,  # formalcharges
                             at.name,  # names
@@ -82,7 +82,7 @@ class MMCIFParser(TopologyReaderBase):
                             at.occ,  # occupancies
                             at.element.weight,  # weights
                             # --
-                            # residue properties -- some squashing...
+                            # residue properties
                             # --
                             res.seqid.icode,  # icodes
                             res.het_flag,  # record_types
@@ -90,7 +90,7 @@ class MMCIFParser(TopologyReaderBase):
                             res.name,  # resnames
                             res.segment,  # segids
                             # --
-                            # chain properties -- lots of squashing...
+                            # chain properties
                             # --
                             chain.name,  # chainids
                         )
@@ -112,6 +112,7 @@ class MMCIFParser(TopologyReaderBase):
         )
         # squash chain-based attributes
         _, (chain_chainids,) = change_squash((chainids,), (chainids,))
+        _, (seg_segids,) = change_squash((res_segids,), (res_segids,))
 
         attrs = [
             # per atom
@@ -125,18 +126,19 @@ class MMCIFParser(TopologyReaderBase):
             Occupancies(occupancies),
             Masses(weights),
             # per residue
-            # ICodes(res_icodes),
-            # RecordTypes(res_record_types),
-            Resids(res_resids),
-            Resnames(res_resnames),
-            Segids(res_segids),
+            ICodes(res_icodes),  # for each atom
+            RecordTypes(record_types),  # for atom too?
+            Resids(res_resids),  # for residue
+            Resnames(res_resnames),  # for residue
+            #
+            Segids(seg_segids),  # for segment (currently for residue)
             # per chain
-            ChainIDs(chainids),
+            ChainIDs(chainids),  # actually for atom
         ]
 
         n_atoms = len(names)
         n_residues = len(res_resids)
-        n_segments = len(res_segids)
+        n_segments = len(seg_segids)
         top = Topology(n_atoms, n_residues, n_segments, attrs=attrs)
 
         return top
