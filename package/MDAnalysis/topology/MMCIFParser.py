@@ -39,7 +39,8 @@ Classes
 
 """
 
-from .base import TopologyReaderBase
+import numpy as np
+from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -48,13 +49,13 @@ from ..core.topologyattrs import (
     ChainIDs,
     Atomtypes,
     Elements,
-    # ICodes,
+    ICodes,
     Masses,
     Occupancies,
     RecordTypes,
     Resids,
     Resnames,
-    # Segids,
+    Segids,
     Tempfactors,
     FormalCharges,
 )
@@ -85,72 +86,103 @@ class MMCIFParser(TopologyReaderBase):
         structure = gemmi.read_structure(self.filename)
 
         # here we freaking go
-
         (
-            names,
-            atomtypes,
-            record_types,
-            serials,
+            # atom properties -- no squashing!
+            # --
             altlocs,
-            chainids,
-            # icodes,
-            tempfactors,
-            occupancies,
-            resids,
-            resnames,
-            # segids,
+            atomtypes,
             elements,
             formalcharges,
+            names,
+            serials,
+            tempfactors,
+            occupancies,
             weights,
-        ) = list(
-            zip(
-                *[
-                    (
-                        at.name,  # names
-                        at.element.name,  # atomtypes
-                        res.het_flag,  # record_types
-                        at.serial,  # serials
-                        at.altloc,  # altlocs
-                        chain.name,  # chainids
-                        # res.seqid.icode,  # icodes
-                        at.b_iso,  # tempfactores
-                        at.occ,  # occupancies
-                        res.seqid.num,  # resids
-                        res.name,  # resnames
-                        # res.segment,  # segids
-                        at.element.name,  # elements
-                        at.charge,  # formalcharges
-                        at.element.weight,  # weights
-                    )
-                    for model in structure
-                    for chain in model
-                    for res in chain
-                    for at in res
-                ]
-            )
+            # --
+            # residue properties -- some squashing...
+            # --
+            icodes,
+            record_types,
+            resids,
+            resnames,
+            segids,
+            # --
+            # chain properties -- lots of squashing...
+            # --
+            chainids,
+        ) = map(
+            np.array,
+            list(
+                zip(
+                    *[
+                        (
+                            # atom properties -- no squashing!
+                            # --
+                            at.altloc,  # altlocs
+                            at.element.name,  # atomtypes
+                            at.element.name,  # elements
+                            at.charge,  # formalcharges
+                            at.name,  # names
+                            at.serial,  # serials
+                            at.b_iso,  # tempfactores
+                            at.occ,  # occupancies
+                            at.element.weight,  # weights
+                            # --
+                            # residue properties -- some squashing...
+                            # --
+                            res.seqid.icode,  # icodes
+                            res.het_flag,  # record_types
+                            res.seqid.num,  # resids
+                            res.name,  # resnames
+                            res.segment,  # segids
+                            # --
+                            # chain properties -- lots of squashing...
+                            # --
+                            chain.name,  # chainids
+                        )
+                        for model in structure
+                        for chain in model
+                        for res in chain
+                        for at in res
+                    ]
+                )
+            ),
         )
 
+        # squash residue-based attributes
+        _, (res_icodes, res_record_types, res_resids, res_resnames, res_segids) = (
+            change_squash(
+                (resids, resnames),
+                (icodes, record_types, resids, resnames, segids),
+            )
+        )
+        # squash chain-based attributes
+        _, (chain_chainids,) = change_squash((chainids,), (chainids,))
+
         attrs = [
-            Atomnames(names),
-            Atomtypes(atomtypes),
-            RecordTypes(record_types),
-            Atomids(serials),
+            # per atom
             AltLocs(altlocs),
-            ChainIDs(chainids),
-            # ICodes(icodes),
-            Tempfactors(tempfactors),
-            Occupancies(occupancies),
-            Resids(resids),
-            Resnames(resnames),
-            # Segids(segids),
+            Atomtypes(atomtypes),
             Elements(elements),
             FormalCharges(formalcharges),
+            Atomnames(names),
+            Atomids(serials),
+            Tempfactors(tempfactors),
+            Occupancies(occupancies),
             Masses(weights),
+            # per residue
+            # ICodes(res_icodes),
+            # RecordTypes(res_record_types),
+            Resids(res_resids),
+            Resnames(res_resnames),
+            Segids(res_segids),
+            # per chain
+            ChainIDs(chainids),
         ]
 
         n_atoms = len(names)
-        n_residues = len(resids)
-        n_segments = 1
+        n_residues = len(res_resids)
+        n_segments = len(res_segids)
         top = Topology(n_atoms, n_residues, n_segments, attrs=attrs)
 
         return top
