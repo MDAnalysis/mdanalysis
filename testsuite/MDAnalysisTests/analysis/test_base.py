@@ -260,7 +260,7 @@ def test_parallelizable_transformations():
     # for parallelizable attribute
     from MDAnalysis.transformations import NoJump 
     u = mda.Universe(XTC)
-    u.trajectory.add_transformations(NoJump(parallelizable=False))
+    u.trajectory.add_transformations(NoJump())
 
     # test that serial works
     FrameAnalysis(u.trajectory).run()
