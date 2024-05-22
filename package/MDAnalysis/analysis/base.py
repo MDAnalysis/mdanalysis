@@ -120,10 +120,8 @@ you have your :meth:`_single_frame` method storing important values under
         def get_supported_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
-        @classmethod
-        def is_parallelizable(self):
-          return True
-
+        _analysis_algorithm_is_parallelizable = True
+        
         def _get_aggregator(self):
           return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
 
@@ -289,24 +287,33 @@ class AnalysisBase(object):
         """
         return ("serial",)
 
-    @classmethod
-    def _is_parallelizable(cls):
+    _analysis_algorithm_is_parallelizable = False
+
+    @property
+    def parallelizable(self):
         """Boolean mark showing that a given class can be parallelizable with
         split-apply-combine procedure. Namely, if we can safely distribute
         :meth:`_single_frame` to multiple workers and then combine them with a
         proper :meth:`_conclude` call. If set to ``False``, no backends except
         for ``serial`` are supported.
+        
+        .. note::   If you want to check parallezability of the whole class, without
+                    explicitly starting its instance, see
+                    ::attr::`_analysis_algorithm_is_parallelizable`. Note that you
+                    setting it to other value will break things if the algorithm
+                    behind the analysis is not trivially parallelizable.
+        
 
         Returns
         -------
         bool
-            if a given ``AnalysisBase`` subclass is parallelizable with
-            split-apply-combine, or not
+            if a given ``AnalysisBase`` subclass instance
+            is parallelizable with split-apply-combine, or not
 
 
         .. versionadded:: 2.8.0
         """
-        return False
+        return self._analysis_algorithm_is_parallelizable
 
     def __init__(self, trajectory, verbose=False, **kwargs):
         self._trajectory = trajectory
@@ -569,7 +576,7 @@ class AnalysisBase(object):
             unsupported_backend: bool = False
             ) -> BackendBase:
         """Matches a passed backend string value with class attributes
-        :meth:`_is_parallelizable()` and :meth:`get_supported_backends()`
+        :meth:`parallelizable` and :meth:`get_supported_backends()`
         to check if downstream calculations can be performed.
 
         Parameters
@@ -595,10 +602,10 @@ class AnalysisBase(object):
         Raises
         ------
         ValueError
-            if :meth:`_is_parallelizable()` is set to ``False`` but backend is
+            if :meth:`parallelizable` is set to ``False`` but backend is
             not ``serial``
         ValueError
-            if ``_is_parallelizable()`` and you're using custom backend instance
+            if ``parallelizable`` and you're using custom backend instance
             without specifying ``unsupported_backend=True``
         ValueError
             if your trajectory has associated parallelizable transformations
@@ -625,11 +632,11 @@ class AnalysisBase(object):
         ]
 
         # check for serial-only classes
-        if not self._is_parallelizable() and backend_class is not BackendSerial:
+        if not self.parallelizable and backend_class is not BackendSerial:
             raise ValueError(f"Can not parallelize class {self.__class__}")
 
         # make sure user enabled 'unsupported_backend=True' for custom classes
-        if (not unsupported_backend and self._is_parallelizable()
+        if (not unsupported_backend and self.parallelizable
                 and backend_class not in supported_backend_classes):
             raise ValueError((
                 f"Must specify 'unsupported_backend=True'"
@@ -638,7 +645,8 @@ class AnalysisBase(object):
 
         # check for the presence of parallelizable transformations
         if backend_class is not BackendSerial and any(
-                t.parallelizable for t in self._trajectory.transformations):
+                not t.parallelizable
+                for t in self._trajectory.transformations):
             raise ValueError((
                 "Trajectory should not have "
                 "associated parallelizable transformations"))
@@ -878,9 +886,7 @@ class AnalysisFromFunction(AnalysisBase):
     def get_supported_backends(cls):
         return ("serial", "multiprocessing", "dask")
 
-    @classmethod
-    def _is_parallelizable(cls):
-        return True
+    _analysis_algorithm_is_parallelizable = True
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
         if (trajectory is not None) and (not isinstance(

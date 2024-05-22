@@ -367,9 +367,7 @@ class RMSD(AnalysisBase):
     def get_supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask',)
 
-    @classmethod
-    def _is_parallelizable(cls):
-        return True
+    _analysis_algorithm_is_parallelizable = True
 
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, weights=None, weights_groupselections=False,

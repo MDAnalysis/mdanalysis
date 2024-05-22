@@ -435,7 +435,7 @@ class TestRMSF(object):
     ]
 )
 def test_not_parallelizable(classname, is_parallelizable):
-    assert classname._is_parallelizable() == is_parallelizable
+    assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
 
 
 @pytest.mark.parametrize(

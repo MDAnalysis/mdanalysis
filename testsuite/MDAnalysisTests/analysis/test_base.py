@@ -44,8 +44,7 @@ class FrameAnalysis(base.AnalysisBase):
     @classmethod
     def get_supported_backends(cls): return ('serial', 'dask', 'multiprocessing')
 
-    @classmethod
-    def _is_parallelizable(cls): return True
+    _analysis_algorithm_is_parallelizable = True
 
     def __init__(self, reader, **kwargs):
         super(FrameAnalysis, self).__init__(reader, **kwargs)
@@ -95,8 +94,7 @@ FRAMES_ERR = 'AnalysisBase.frames is incorrect'
 TIMES_ERR = 'AnalysisBase.times is incorrect'
 
 class Parallelizable(base.AnalysisBase):
-    @classmethod
-    def _is_parallelizable(cls): return True
+    _analysis_algorithm_is_parallelizable = True
     @classmethod
     def get_supported_backends(cls): return ('multiprocessing', 'dask')
     def _single_frame(self): pass
@@ -105,8 +103,7 @@ class SerialOnly(base.AnalysisBase):
     def _single_frame(self): pass
 
 class ParallelizableWithDaskOnly(base.AnalysisBase):
-    @classmethod
-    def _is_parallelizable(cls): return True
+    _analysis_algorithm_is_parallelizable = True
     @classmethod
     def get_supported_backends(cls): return ('dask',)
     def _single_frame(self): pass
@@ -259,9 +256,11 @@ def test_frame_fail(u, run_kwargs, client_FrameAnalysis):
         an.run(**client_FrameAnalysis, **run_kwargs)
 
 def test_parallelizable_transformations():
-    from MDAnalysis.transformations import NoJump
+    # pick any transformation that would allow 
+    # for parallelizable attribute
+    from MDAnalysis.transformations import NoJump 
     u = mda.Universe(XTC)
-    u.trajectory.add_transformations(NoJump(parallelizable=True))
+    u.trajectory.add_transformations(NoJump(parallelizable=False))
 
     # test that serial works
     FrameAnalysis(u.trajectory).run()
@@ -314,8 +313,8 @@ def test_warn_nparts_nworkers(u):
         (FrameAnalysis, True)
     ]
 )
-def test_not_parallelizable(classname, is_parallelizable):
-    assert classname._is_parallelizable() == is_parallelizable
+def test_not_parallelizable(u, classname, is_parallelizable):
+    assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
 
 
 def test_verbose_progressbar(u, capsys):

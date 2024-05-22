@@ -267,9 +267,7 @@ parallelization to the :class:`MDAnalysis.analysis.rms.RMSD`:
         def get_supported_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
-        @classmethod
-        def _is_parallelizable(self):
-            return True
+        _analysis_algorithm_is_parallelizable = True
         
         def _get_aggregator(self):
             return ResultsGroup(lookup={'rmsd': ResultsGroup.ndarray_vstack})
