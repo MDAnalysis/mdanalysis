@@ -332,3 +332,4 @@ from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
 from . import FHIAIMSParser
+from . import MMCIFParser
