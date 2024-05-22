@@ -48,13 +48,13 @@ from ..core.topologyattrs import (
     ChainIDs,
     Atomtypes,
     Elements,
-    ICodes,
+    # ICodes,
     Masses,
     Occupancies,
     RecordTypes,
     Resids,
     Resnames,
-    Segids,
+    # Segids,
     Tempfactors,
     FormalCharges,
 )
@@ -84,6 +84,8 @@ class MMCIFParser(TopologyReaderBase):
 
         structure = gemmi.read_structure(self.filename)
 
+        # here we freaking go
+
         (
             names,
             atomtypes,
@@ -91,40 +93,42 @@ class MMCIFParser(TopologyReaderBase):
             serials,
             altlocs,
             chainids,
-            icodes,
+            # icodes,
             tempfactors,
             occupancies,
             resids,
             resnames,
-            segids,
+            # segids,
             elements,
             formalcharges,
             weights,
-        ) = list(zip(*[
-            (
-                at.name,
-                at.element.name,
-                res.het_flag,
-                at.serial,
-                at.altloc,
-                chain.name,
-                res.seqid.icode,
-                at.b_iso,
-                at.occ,
-                res.label_seq,
-                res.name,
-                res.segment,
-                at.element.name,
-                at.charge,
-                at.element.weight,
+        ) = list(
+            zip(
+                *[
+                    (
+                        at.name,  # names
+                        at.element.name,  # atomtypes
+                        res.het_flag,  # record_types
+                        at.serial,  # serials
+                        at.altloc,  # altlocs
+                        chain.name,  # chainids
+                        # res.seqid.icode,  # icodes
+                        at.b_iso,  # tempfactores
+                        at.occ,  # occupancies
+                        res.seqid.num,  # resids
+                        res.name,  # resnames
+                        # res.segment,  # segids
+                        at.element.name,  # elements
+                        at.charge,  # formalcharges
+                        at.element.weight,  # weights
+                    )
+                    for model in structure
+                    for chain in model
+                    for res in chain
+                    for at in res
+                ]
             )
-            for model in structure
-            for chain in model
-            for res in chain
-            for at in res
-        ]))
-
-        print(resids)
+        )
 
         attrs = [
             Atomnames(names),
@@ -133,18 +137,20 @@ class MMCIFParser(TopologyReaderBase):
             Atomids(serials),
             AltLocs(altlocs),
             ChainIDs(chainids),
-            ICodes(icodes),
+            # ICodes(icodes),
             Tempfactors(tempfactors),
             Occupancies(occupancies),
             Resids(resids),
             Resnames(resnames),
-            Segids(segids),
+            # Segids(segids),
             Elements(elements),
             FormalCharges(formalcharges),
             Masses(weights),
         ]
 
-        n_atoms = n_residues = n_segments = 1
+        n_atoms = len(names)
+        n_residues = len(resids)
+        n_segments = 1
         top = Topology(n_atoms, n_residues, n_segments, attrs=attrs)
 
         return top
