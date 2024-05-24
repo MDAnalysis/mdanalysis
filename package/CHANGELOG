@@ -21,6 +21,7 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix #4259 via removing argument `parallelizable` of `NoJump` transformation.
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
