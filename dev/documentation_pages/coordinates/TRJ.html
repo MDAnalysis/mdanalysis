@@ -234,13 +234,13 @@ the trajectory, then <code class="xref py py-attr docutils literal notranslate">
 <ul class="simple">
 <li><p>only trajectories with time in ps and lengths in Angstroem are processed</p></li>
 </ul>
-<p>The NCDF reader uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and therefore <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.13.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> must
+<p>The NCDF reader uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and therefore <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.13.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
 <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> is memory efficient and directly maps the trajectory on disk
 to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a>); <code class="docutils literal notranslate"><span class="pre">mmap=False</span></code> may consume large
 amounts of memory because it loads the whole trajectory into memory but it
 might be faster. The default is <code class="docutils literal notranslate"><span class="pre">mmap=None</span></code> and then default behavior of
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a> prevails, i.e. <code class="docutils literal notranslate"><span class="pre">True</span></code> when
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a> prevails, i.e. <code class="docutils literal notranslate"><span class="pre">True</span></code> when
 <em>filename</em> is a file name, <code class="docutils literal notranslate"><span class="pre">False</span></code> when <em>filename</em> is a file-like object.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -269,7 +269,7 @@ time units instead (Issue #2323).</p>
 removed (Issue #2327)</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Now use a picklable <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a>–
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Now use a picklable <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a>–
 <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFPicklable</span></code></a>.
 Reading of <cite>dt</cite> now defaults to 1.0 ps if <cite>dt</cite> cannot be extracted from
 the first two frames of the trajectory.
@@ -488,7 +488,7 @@ be written to trajectory file</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">NCDFPicklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskandscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFPicklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="Link to this definition"></a></dt>
 <dd><p>NetCDF file object (read-only) that can be pickled.</p>
 <p>This class provides a file-like object (as returned by
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a>) that,
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a>) that,
 unlike standard Python file objects,
 can be pickled. Only read mode is supported.</p>
 <p>When the file is pickled, filename and mmap of the open file handle in
@@ -498,7 +498,7 @@ This means that for a successful unpickle, the original file still has to
 be accessible with its filename.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This class subclasses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a>, please
+<p>This class subclasses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.13.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf_file</span></code></a>, please
 see the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html">scipy netcdf API documentation</a> for more information on
 the parameters and how the class behaviour.</p>
 </div>

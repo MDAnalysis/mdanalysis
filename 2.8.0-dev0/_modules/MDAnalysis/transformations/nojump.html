@@ -244,11 +244,10 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">check_continuity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">max_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="c1"># NoJump transforms are inherently unparallelizable, since</span>
         <span class="c1"># it depends on the previous frame&#39;s unwrapped coordinates</span>
-        <span class="n">parallelizable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_threads</span><span class="o">=</span><span class="n">max_threads</span><span class="p">,</span> <span class="n">parallelizable</span><span class="o">=</span><span class="n">parallelizable</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_threads</span><span class="o">=</span><span class="n">max_threads</span><span class="p">,</span> <span class="n">parallelizable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">old_frame</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">older_frame</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>

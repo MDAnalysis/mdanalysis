@@ -878,7 +878,7 @@ that the spline will generate values that would not normally
 appear in the data. For example, a density is non-negative but
 a cubic spline interpolation can generate negative values,
 especially at the boundary between 0 and high values.</p>
-<p>Internally, the function uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.map_coordinates.html#scipy.ndimage.map_coordinates" title="(in SciPy v1.13.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.map_coordinates()</span></code></a>
+<p>Internally, the function uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.map_coordinates.html#scipy.ndimage.map_coordinates" title="(in SciPy v1.13.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.map_coordinates()</span></code></a>
 with <code class="docutils literal notranslate"><span class="pre">mode=&quot;constant&quot;</span></code> whereby interpolated values outside
 the interpolated grid are determined by filling all values beyond
 the edge with the same constant value, defined by the
@@ -898,7 +898,7 @@ extruded volumes when interpolating beyond the grid.</p>
 <dd><p>Order of the B-spline interpolation of the data.</p>
 <p>3 = cubic; 4 &amp; 5 are also supported</p>
 <p>Only choose values that are acceptable to
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.spline_filter.html#scipy.ndimage.spline_filter" title="(in SciPy v1.13.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code></a>!</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.spline_filter.html#scipy.ndimage.spline_filter" title="(in SciPy v1.13.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code></a>!</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.density.Density.interpolated" title="MDAnalysis.analysis.density.Density.interpolated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolated</span></code></a></p>
