@@ -353,6 +353,17 @@ class TestAlign(object):
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
         self._assert_rmsd(reference, universe, -1, 0.0)
 
+    def test_AlignTraj_writer_kwargs(self, universe, reference, tmpdir):
+        # Issue 4564
+        writer_kwargs = dict(precision=2)
+        with tmpdir.as_cwd():
+            aligner = align.AlignTraj(universe, reference,
+                                      select='protein and name CA',
+                                      filename='aligned_traj.xtc',
+                                      writer_kwargs=writer_kwargs,
+                                      in_memory=False).run()
+            assert_equal(aligner._writer.precision, 2)
+
     def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(reference.atoms.positions, fitted.atoms.positions,
