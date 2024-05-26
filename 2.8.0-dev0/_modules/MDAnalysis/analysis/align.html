@@ -838,6 +838,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;rmsfit_&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">writer_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
@@ -877,6 +878,8 @@
 <span class="sd">        verbose : bool (optional)</span>
 <span class="sd">             Set logger to show more information and show detailed progress of</span>
 <span class="sd">             the calculation if set to ``True``; the default is ``False``.</span>
+<span class="sd">        writer_kwargs : dict (optional)</span>
+<span class="sd">            kwarg dict to be passed to the constructed writer</span>
 
 
 <span class="sd">        Attributes</span>
@@ -937,6 +940,9 @@
 <span class="sd">           :attr:`rmsd` results are now stored in a</span>
 <span class="sd">           :class:`MDAnalysis.analysis.base.Results` instance.</span>
 
+<span class="sd">        .. versionchanged:: 2.8.0</span>
+<span class="sd">           Added ``writer_kwargs`` kwarg dict to pass to the writer</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
@@ -973,10 +979,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
             <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">writer_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">writer_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># with self.filename == None (in_memory), the NullWriter is chosen</span>
         <span class="c1"># (which just ignores input) and so only the in_memory trajectory is</span>
         <span class="c1"># retained</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">natoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">natoms</span><span class="p">,</span> <span class="o">**</span><span class="n">writer_kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span> <span class="o">=</span> <span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
 
