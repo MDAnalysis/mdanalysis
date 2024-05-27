@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         talagayev
+         talagayev, hmacdope
          
  * 2.8.0
 
@@ -40,7 +40,7 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
- * Implementation of tests for str and pathlib handling of SingleFrameReaderBase (Issue #3937)
+ * Handling of Pathlib.Path in SingleFrameReaderBase, Topology and Universe (Issue #3937)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
    (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)

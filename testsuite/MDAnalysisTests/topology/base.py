@@ -100,3 +100,11 @@ class ParserBase(object):
         """Check that Universe works with this Parser"""
         u = mda.Universe(filename)
         assert isinstance(u, mda.Universe)
+
+    def test_pathlib_input(self, filename):
+        """Check that pathlib.Path objects are accepted"""
+        import pathlib
+        path = pathlib.Path(filename)
+        u_str = mda.Universe(filename)
+        u_path = mda.Universe(path)
+        assert u_str.atoms.n_atoms == u_path.atoms.n_atoms
