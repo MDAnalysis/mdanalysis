@@ -531,13 +531,10 @@ class BaseReaderTest(object):
             timeseries = reader.timeseries(atomgroup=atoms, asel=atoms, order='fac')
           
     def test_pathlib_input_base(self, reader):     
-        skip_formats = ["DCD", "TNG", "XTC", "TRR"]
-        if isinstance(reader, MemoryReader) or reader.format in skip_formats:
+        if isinstance(reader, MemoryReader):
             if isinstance(reader, MemoryReader):
                 skip_reason = "MemoryReader"
-            else:
-                skip_reason = f"{reader.format} file format"
-            pytest.skip(f"Skipping test for {skip_reason}")
+            pytest.skip(f"Skipping test for Pathlib input with reason: {skip_reason}")
         path = Path(reader.filename)
         u_str = mda.Universe(reader.filename)
         u_path = mda.Universe(path)

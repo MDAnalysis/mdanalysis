@@ -60,6 +60,7 @@ import copy
 import warnings
 import contextlib
 import collections
+import pathlib
 
 import MDAnalysis
 import sys
@@ -99,6 +100,9 @@ def _check_file_like(topology):
         else:
             _name = None
         return NamedStream(topology, _name)
+
+    elif isinstance(topology, pathlib.Path):
+        return str(topology)
     return topology
 
 def _topology_from_file_like(topology_file, topology_format=None,
