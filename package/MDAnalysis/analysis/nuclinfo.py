@@ -262,7 +262,10 @@ def phase_as(universe, seg, i):
     q2_norm = sqrt(pow(q2[0], 2) + pow(q2[1], 2) + pow(q2[2], 2))
     q3_norm = sqrt(pow(q3[0], 2) + pow(q3[1], 2) + pow(q3[2], 2))
 
-    phase_ang = (atan2(q3_norm.item(), q2_norm.item())) * 180. / pi
+    B = q3_norm.item()
+    A = q2_norm.item()
+
+    phase_ang = (atan2(B, A)) * 180. / pi
 
     return phase_ang % 360
 
