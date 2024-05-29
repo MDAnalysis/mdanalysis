@@ -99,37 +99,7 @@ from MDAnalysis.lib import mdamath
 
 
 def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
-    """Watson-Crick basepair distance for residue `i` with residue `bp`.
-
-    The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
-    computed.
-
-    Parameters
-    ----------
-    universe : Universe
-         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-    i : int
-        resid of the first base
-    bp : int
-        resid of the second base
-    seg1 : str (optional)
-        segment id for first base ["SYSTEM"]
-    seg2 : str (optional)
-        segment id for second base ["SYSTEM"]
-
-    Returns
-    -------
-    float
-        Watson-Crick base pair distance
-
-
-    Notes
-    -----
-    If failure occurs be sure to check the segment identification.
-
-
-    .. versionadded:: 0.7.6
-    """
+    # Watson-Crick basepair distance for residue `i` with residue `bp`.
     if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
         a1, a2 = "N3", "N1"
     if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
@@ -142,36 +112,7 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
 
 def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
-    """Minor-Groove basepair distance for residue `i` with residue `bp`.
-
-    The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen
-    bond is computed.
-
-    Parameters
-    ----------
-    universe : Universe
-         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-    i : int
-        resid of the first base
-    bp : int
-        resid of the second base
-    seg1 : str (optional)
-        segment id for first base ["SYSTEM"]
-    seg2 : str (optional)
-        segment id for second base ["SYSTEM"]
-
-    Returns
-    -------
-    float
-        Minor groove base pair distance
-
-    Notes
-    -----
-    If failure occurs be sure to check the segment identification.
-
-
-    .. versionadded:: 0.7.6
-    """
+    # Minor-Groove basepair distance for residue `i` with residue `bp`.
     if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
         a1, a2 = "O2", "C2"
     if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
@@ -184,37 +125,7 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
 
 def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
-    """Major-Groove basepair distance for residue `i` with residue `bp`.
-
-    The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen
-    bond is computed.
-
-
-    Parameters
-    ----------
-    universe : Universe
-         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
-    i : int
-        resid of the first base
-    bp : int
-        resid of the second base
-    seg1 : str (optional)
-        segment id for first base ["SYSTEM"]
-    seg2 : str (optional)
-        segment id for second base ["SYSTEM"]
-
-    Returns
-    -------
-    float
-        Major groove base pair distance
-
-    Notes
-    -----
-    If failure occurs be sure to check the segment identification.
-
-
-    .. versionadded:: 0.7.6
-    """
+    # Major-Groove basepair distance for residue `i` with residue `bp`.
     if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "DG", "C", "G", "CYT", "GUA"]:
         if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "C", "CYT"]:
             a1, a2 = "N4", "O6"
@@ -236,7 +147,6 @@ def phase_cp(universe, seg, i):
     """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.
 
     The angle is computed by the positions of atoms in the ribose ring.
-
 
     Parameters
     ----------
@@ -299,14 +209,14 @@ def phase_cp(universe, seg, i):
          + (r3_d * cos(4 * pi * 2.0 / 5.0)) + (r4_d * cos(4 * pi * 3.0 / 5.0))
          + (r5_d * cos(4 * pi * 4.0 / 5.0))) * sqrt(2.0 / 5.0)
 
-    phase_ang = (atan2(D, C) + (pi / 2.)) * 180. / pi
+    phase_ang = (atan2(D.item(), C.item()) + (pi / 2.)) * 180. / pi
     return phase_ang % 360
 
 
 def phase_as(universe, seg, i):
-    """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the AS method
+    """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the Altona & Sundaralingam (AS) method.
 
-    The angle is computed by the position vector of atoms in the ribose ring.
+    The angle is computed by the positions of atoms in the ribose ring.
 
     Parameters
     ----------
@@ -325,50 +235,35 @@ def phase_as(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    angle1 = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C2\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C3\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C4\' ".format(seg, i))
+    atom1 = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i))
+    atom2 = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i))
+    atom3 = universe.select_atoms(" atom {0!s} {1!s} C2\' ".format(seg, i))
+    atom4 = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i))
+    atom5 = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i))
 
-    angle2 = universe.select_atoms(" atom {0!s} {1!s} C2\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C3\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C4\' ".format(seg, i),
-                                   " atom {0!s} {1!s} O4\' ".format(seg, i))
+    data1 = atom1.positions
+    data2 = atom2.positions
+    data3 = atom3.positions
+    data4 = atom4.positions
+    data5 = atom5.positions
 
-    angle3 = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C4\' ".format(seg, i),
-                                   " atom {0!s} {1!s} O4\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C1\' ".format(seg, i))
+    r0 = (data1 + data2 + data3 + data4 + data5) * (1.0 / 5.0)
+    r1 = data1 - r0
+    r2 = data2 - r0
+    r3 = data3 - r0
+    r4 = data4 - r0
+    r5 = data5 - r0
 
-    angle4 = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i),
-                                   " atom {0!s} {1!s} O4\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C2\' ".format(seg, i))
+    q2 = r1 + r2 * cos(2 * pi * 1 / 5) + r3 * cos(2 * pi * 2 / 5) + \
+        r4 * cos(2 * pi * 3 / 5) + r5 * cos(2 * pi * 4 / 5)
+    q3 = r2 * sin(2 * pi * 1 / 5) + r3 * sin(2 * pi * 2 / 5) + \
+        r4 * sin(2 * pi * 3 / 5) + r5 * sin(2 * pi * 4 / 5)
 
-    angle5 = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C2\' ".format(seg, i),
-                                   " atom {0!s} {1!s} C3\' ".format(seg, i))
+    q2_norm = sqrt(pow(q2[0], 2) + pow(q2[1], 2) + pow(q2[2], 2))
+    q3_norm = sqrt(pow(q3[0], 2) + pow(q3[1], 2) + pow(q3[2], 2))
 
-    data1 = angle1.dihedral.value()
-    data2 = angle2.dihedral.value()
-    data3 = angle3.dihedral.value()
-    data4 = angle4.dihedral.value()
-    data5 = angle5.dihedral.value()
+    phase_ang = (atan2(q3_norm.item(), q2_norm.item())) * 180. / pi
 
-    B = ((data1 * sin(2 * 2 * pi * (1 - 1.) / 5.))
-         + (data2 * sin(2 * 2 * pi * (2 - 1.) / 5.))
-         + (data3 * sin(2 * 2 * pi * (3 - 1.) / 5.))
-         + (data4 * sin(2 * 2 * pi * (4 - 1.) / 5.))
-         + (data5 * sin(2 * 2 * pi * (5 - 1.) / 5.))) * -2. / 5.
-
-    A = ((data1 * cos(2 * 2 * pi * (1 - 1.) / 5.))
-         + (data2 * cos(2 * 2 * pi * (2 - 1.) / 5.))
-         + (data3 * cos(2 * 2 * pi * (3 - 1.) / 5.))
-         + (data4 * cos(2 * 2 * pi * (4 - 1.) / 5.))
-         + (data5 * cos(2 * 2 * pi * (5 - 1.) / 5.))) * 2. / 5.
-
-    phase_ang = atan2(B, A) * 180. / pi
     return phase_ang % 360
 
 
