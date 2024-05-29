@@ -186,11 +186,12 @@ class DSSP(AnalysisBase):
 
     .. Warning::
         For the DSSP to work properly, your atoms (either as ``Universe``
-        or ``AtomGroup``) must have only one atom named "H" per residue,
-        that corresponds to N-bound hydrogen in a peptide bond (or zero,
-        if the residue is proline). It is the default case for most of
-        the modern syntaxes, but if you encounter an error or unusual results
-        during your run, please report an issue on MDAnalysis
+        or ``AtomGroup``) must have only one hydrogen atom "H" per residue,
+        that corresponds to N-bound hydrogen in a peptide bond (or zero hydrogen
+        atoms, if the residue is proline). It is selected using `hydrogen_atom`
+        parameter. It is designed to hande most of the modern syntaxes,
+        but if you encounter an error or unusual results
+        during your run, please report an issue on MDAnalysi
         `github <https://github.com/MDAnalysis/mdanalysis/issues>`_.
 
     Parameters
@@ -199,7 +200,8 @@ class DSSP(AnalysisBase):
         input Universe or AtomGroup. In both cases, only protein residues will
         be chosen prior to the analysis via `select_atoms('protein')`.
         Heavy atoms of the protein are then selected by name
-        ("N", "CA", "C", "O O1 OT1"), and hydrogens are selected by name "H".
+        `heavyatom_names`, and hydrogens are selected by name
+        `hydrogen_name`.
     guess_hydrogens : bool, optional
         whether you want to guess hydrogens positions, by default ``True``.
         Guessing is made assuming perfect 120 degrees for all bonds that N
@@ -273,7 +275,6 @@ class DSSP(AnalysisBase):
         super().__init__(ag.universe.trajectory)
 
         # define necessary selections
-        # O1/OT1 is for C-terminal residue
         self._heavy_atoms: dict[str, "AtomGroup"] = {
             t: ag.atoms[
                 np.isin(
