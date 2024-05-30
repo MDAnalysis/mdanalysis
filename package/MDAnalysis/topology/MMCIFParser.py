@@ -39,10 +39,8 @@ class MMCIFParser(TopologyReaderBase):
 
         structure = gemmi.read_structure(self.filename)
 
-        # here we freaking go
+        # atom properties
         (
-            # atom properties -- no squashing!
-            # --
             altlocs,
             atomtypes,
             elements,
@@ -52,26 +50,12 @@ class MMCIFParser(TopologyReaderBase):
             tempfactors,
             occupancies,
             weights,
-            # --
-            # residue properties -- some squashing...
-            # --
-            icodes,
-            record_types,
-            resids,
-            resnames,
-            segids,
-            # --
-            # chain properties -- lots of squashing...
-            # --
-            chainids,
         ) = map(
             np.array,
             list(
                 zip(
                     *[
                         (
-                            # atom properties -- no squashing!
-                            # --
                             at.altloc,  # altlocs
                             at.name,  # atomtypes
                             at.element.name,  # elements
@@ -81,18 +65,6 @@ class MMCIFParser(TopologyReaderBase):
                             at.b_iso,  # tempfactores
                             at.occ,  # occupancies
                             at.element.weight,  # weights
-                            # --
-                            # residue properties
-                            # --
-                            res.seqid.icode,  # icodes
-                            res.het_flag,  # record_types
-                            res.seqid.num,  # resids
-                            res.name,  # resnames
-                            res.segment,  # segids
-                            # --
-                            # chain properties
-                            # --
-                            chain.name,  # chainids
                         )
                         for model in structure
                         for chain in model
@@ -102,17 +74,32 @@ class MMCIFParser(TopologyReaderBase):
                 )
             ),
         )
-
-        # squash residue-based attributes
-        _, (res_icodes, res_record_types, res_resids, res_resnames, res_segids) = (
-            change_squash(
-                (resids, resnames),
-                (icodes, record_types, resids, resnames, segids),
-            )
+        # per-residue properties
+        (
+            icodes,
+            record_types,
+            resids,
+            resnames,
+            segids,
+        ) = map(
+            np.array,
+            list(
+                zip(
+                    *[
+                        (
+                            res.seqid.icode,  # icodes
+                            res.het_flag,  # record_types
+                            res.seqid.num,  # resids
+                            res.name,  # resnames
+                            res.segment,  # segids
+                        )
+                        for model in structure
+                        for chain in model
+                        for res in chain
+                    ]
+                )
+            ),
         )
-        # squash chain-based attributes
-        _, (chain_chainids,) = change_squash((chainids,), (chainids,))
-        _, (seg_segids,) = change_squash((res_segids,), (res_segids,))
 
         attrs = [
             # per atom
@@ -126,19 +113,19 @@ class MMCIFParser(TopologyReaderBase):
             Occupancies(occupancies),
             Masses(weights),
             # per residue
-            ICodes(res_icodes),  # for each atom
+            ICodes(icodes),  # for each atom
             RecordTypes(record_types),  # for atom too?
-            Resids(res_resids),  # for residue
-            Resnames(res_resnames),  # for residue
+            Resids(resids),  # for residue
+            Resnames(resnames),  # for residue
             #
-            Segids(seg_segids),  # for segment (currently for residue)
+            # Segids(segids),  # for segment (currently for residue)
             # per chain
-            ChainIDs(chainids),  # actually for atom
+            # ChainIDs(chainids),  # actually for atom
         ]
 
         n_atoms = len(names)
-        n_residues = len(res_resids)
-        n_segments = len(seg_segids)
+        n_residues = len(resids)
+        n_segments = len(segids)
         top = Topology(n_atoms, n_residues, n_segments, attrs=attrs)
 
         return top
