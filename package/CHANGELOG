@@ -24,6 +24,9 @@ The rules for this file:
 Fixes
  * Fix PSFParser error when encoutering string-like resids
  * (Issue #2053, Issue #4189 PR #4582)
+ * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
+   (Issue #4564, PR #4565)
+ * Fix #4259 via removing argument `parallelizable` of `NoJump` transformation.
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
