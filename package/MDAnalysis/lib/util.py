@@ -205,6 +205,7 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import itertools
 
 import mmtf
 import numpy as np
@@ -2560,3 +2561,34 @@ def no_copy_shim():
     else:
         copy = False
     return copy
+
+
+def atoi(s: str) -> int:
+    """Convert the leading number part of a string to an integer.
+
+    Parameters
+    ----------
+    s : str
+        The string to convert to an integer.
+
+    Returns
+    -------
+    number : int
+        The first numeric part of the string converted to an integer.
+        If the string does not start with a number, 0 is returned.
+
+    Examples
+    --------
+    >>> from MDAnalysis.lib.util import atoi
+    >>> atoi('34f4')
+    34
+    >>> atoi('foo')
+    0
+ 
+
+    .. versionadded:: 2.8.0
+    """
+    try:
+        return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
+    except ValueError:
+        return 0
