@@ -168,6 +168,8 @@ import warnings
 import math
 import numpy as np
 
+from MDAnalysis.lib.util import no_copy_shim
+
 def identity_matrix():
     """Return 4x4 identity/unit matrix.
 
