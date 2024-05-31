@@ -348,6 +348,7 @@
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">import</span> <span class="nn">textwrap</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">mmtf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -2856,6 +2857,37 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="n">copy</span>
+
+
+<span class="k">def</span> <span class="nf">atoi</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the leading number part of a string to an integer.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : str</span>
+<span class="sd">        The string to convert to an integer.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    number : int</span>
+<span class="sd">        The first numeric part of the string converted to an integer.</span>
+<span class="sd">        If the string does not start with a number, 0 is returned.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.util import atoi</span>
+<span class="sd">    &gt;&gt;&gt; atoi(&#39;34f4&#39;)</span>
+<span class="sd">    34</span>
+<span class="sd">    &gt;&gt;&gt; atoi(&#39;foo&#39;)</span>
+<span class="sd">    0</span>
+<span class="sd"> </span>
+
+<span class="sd">    .. versionadded:: 2.8.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">takewhile</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">isdigit</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">())))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
 </pre></div>
 
            </div>
