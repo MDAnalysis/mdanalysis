@@ -32,7 +32,7 @@ The RDF :math:`g_{ab}(r)` between types of particles :math:`a` and :math:`b` is
 
 .. math::
 
-   g_{ab}(r) = (N_{a} N_{b})^{-1} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
+   g_{ab}(r) = \frac{1}{N_{a}} \frac{1}{N_{b}/V} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
                \langle \delta(|\mathbf{r}_i - \mathbf{r}_j| - r) \rangle
 
 which is normalized so that the RDF becomes 1 for large separations in a
