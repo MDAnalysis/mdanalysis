@@ -130,7 +130,8 @@ from collections import OrderedDict
 import numpy as np
 import matplotlib.pyplot as plt
 
-from MDAnalysis.lib.util import which, deprecate
+from MDAnalysis import ApplicationError # pylint: disable=unused-import # module will be removed in 3.0.0
+from MDAnalysis.lib.util import which, realpath, asiterable, deprecate # pylint: disable=unused-import
 
 import logging
 
