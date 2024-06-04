@@ -61,7 +61,8 @@ from pathsimanalysis import ( # pylint: disable=unused-import # will be removed 
     Path,
     PSAPair,
     PSAnalysis,
-) 
+)
+
 
 wmsg = ('Deprecation in version 2.8.0:\n'
         'MDAnalysis.analysis.psa is deprecated in favour of the MDAKit '

@@ -22,6 +22,9 @@
 #
 import warnings
 
+# required for backward compability
+from ..converters.ParmEdParser import ParmEdParser, squash_identical # pylint: disable=unused-import
+
 warnings.warn(
     "This module is deprecated as of MDAnalysis version 2.0.0."
     "It will be removed in MDAnalysis version 3.0.0."

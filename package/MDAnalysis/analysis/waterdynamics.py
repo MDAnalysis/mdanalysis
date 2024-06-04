@@ -46,7 +46,8 @@ from waterdynamics.waterdynamics import ( # pylint: disable=unused-import #will 
     AngularDistribution,
     MeanSquareDisplacement,
     SurvivalProbability,
-) 
+)
+
 
 wmsg = ("Deprecation in version 2.8.0\n"
         "MDAnalysis.analysis.waterdynamics is deprecated in favour of the "

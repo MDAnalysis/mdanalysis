@@ -186,6 +186,7 @@ import numpy as np
 import warnings
 
 from . import base
+from .timestep import Timestep # pylint: disable=unused-import # for backward compability v2.x
 
 
 # These methods all pass in an existing *view* onto a larger array

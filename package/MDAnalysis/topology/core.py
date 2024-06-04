@@ -34,5 +34,7 @@ See Also
 
 """
 
+# Local imports
+from . import tables # pylint: disable=unused-import # for compability with API v2.x
 
 #tumbleweed
