@@ -16,11 +16,14 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
-         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
+         yuxuanzhuang
 
  * 2.8.0
 
 Fixes
+ * Fix PSFParser error when encoutering string-like resids
+ * (Issue #2053, Issue #4189 PR #4582)
  * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
    (Issue #4564, PR #4565)
  * Fix #4259 via removing argument `parallelizable` of `NoJump` transformation.

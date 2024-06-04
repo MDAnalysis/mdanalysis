@@ -47,6 +47,7 @@ __all__ = [
     "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps,  #1819
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PSF_cmap",  # ala3 PSF from ParmEd test files with cmap
+    "PSF_inscode",  # PSF file with insertion codes
     "PDB_small",  # PDB
     "PDB_closed",
     "PDB_multiframe",
@@ -312,6 +313,8 @@ DCD_NAMD_GBIS = (_data_ref / 'adk_gbis_tmd-fast1_NAMD.dcd').as_posix()
 PSF_nosegid = (_data_ref / 'nosegid.psf').as_posix()
 
 PSF_cmap = (_data_ref / 'parmed_ala3.psf').as_posix()
+
+PSF_inscode = (_data_ref / '1a2c_ins_code.psf').as_posix()
 
 PDB_varying = (_data_ref / 'varying_occ_tmp.pdb').as_posix()
 PDB_small = (_data_ref / 'adk_open.pdb').as_posix()
