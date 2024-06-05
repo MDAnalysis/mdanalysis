@@ -31,6 +31,7 @@ from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import base
+from MDAnalysis.analysis.rdf import InterRDF
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
@@ -147,6 +148,68 @@ class Test_Results:
         assert new_results.data is not results.data
 
 
+class TestAnalysisCollection:
+    @pytest.fixture
+    def universe(self):
+        return mda.Universe(TPR, XTC)
+
+    def test_run(self, universe):
+        ag_O = universe.select_atoms("name O")
+        ag_H = universe.select_atoms("name H")
+
+        rdf_OO = InterRDF(ag_O, ag_O)
+        rdf_OH = InterRDF(ag_O, ag_H)
+
+        collection = base.AnalysisCollection(rdf_OO, rdf_OH)
+        collection.run(start=0, stop=100, step=10)
+
+        assert rdf_OO.results is not None
+        assert rdf_OH.results is not None
+
+    def test_trajectory_manipulation(self, universe):
+        """Test that the timestep is the same for each analysis class."""
+        class CustomAnalysis(base.AnalysisBase):
+            """Custom class that is shifting positions in every step by 10."""
+
+            def __init__(self, trajectory):
+                self._trajectory = trajectory
+
+            def _prepare(self):
+                pass
+
+            def _single_frame(self):
+                self._ts.positions += 10
+                self.ref_pos = self._ts.positions.copy()[0, 0]
+
+        ana_1 = CustomAnalysis(universe.trajectory)
+        ana_2 = CustomAnalysis(universe.trajectory)
+
+        collection = base.AnalysisCollection(ana_1, ana_2)
+        collection.run(frames=[0])
+
+        assert ana_2.ref_pos == ana_1.ref_pos
+
+    def test_inconsistent_trajectory(self, universe):
+        v = mda.Universe(TPR, XTC)
+
+        match = "`analysis_instances` do not have the same trajectory."
+        with pytest.raises(ValueError, match=match):
+            base.AnalysisCollection(
+                InterRDF(
+                    universe.atoms, universe.atoms), InterRDF(v.atoms, v.atoms)
+            )
+
+    def test_no_base_child(self, universe):
+        class CustomAnalysis:
+            def __init__(self, trajectory):
+                self._trajectory = trajectory
+
+        match = "not a child of `AnalysisBase`"
+        # collection for common trajectory loop with inconsistent trajectory
+        with pytest.raises(AttributeError, match=match):
+            base.AnalysisCollection(CustomAnalysis(universe.trajectory))
+
+
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
 
@@ -252,7 +315,8 @@ def test_frames_times(u_xtc):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames*100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
+    assert_allclose(
+        an.times, frames * 100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):

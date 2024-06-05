@@ -45,6 +45,8 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Add an `AnalaysisCollection` class to perform multiple analysis on the same
+   trajectory (#3569, PR #4017).
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
    (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
