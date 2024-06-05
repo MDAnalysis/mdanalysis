@@ -42,7 +42,7 @@ The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
 reduction.
 
 More details about diffusion maps are in
-:cite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.
+:footcite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.
 
 .. _Diffusion-Map-tutorial:
 
@@ -63,7 +63,7 @@ First load all modules and test data
    from MDAnalysis.tests.datafiles import PSF, DCD
 
 Given a universe or atom group, we can create and eigenvalue decompose
-the Diffusion Matrix from that trajectory using :class:`DiffusionMap`:: and get
+the Diffusion Matrix from that trajectory using :class:`DiffusionMap` and get
 the corresponding eigenvalues and eigenvectors.
 
 .. code-block:: python
@@ -71,7 +71,7 @@ the corresponding eigenvalues and eigenvectors.
    u = mda.Universe(PSF,DCD)
 
 We leave determination of the appropriate scale parameter epsilon to the user,
-:cite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors
+:footcite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors
 of a trajectory frame, whereas others simple use a trial-and-error approach
 with a constant epsilon. Currently, the constant epsilon method is implemented
 by MDAnalysis.
@@ -124,24 +124,16 @@ References
 ----------
 
 If you use this Dimension Reduction method in a publication, please
-cite :cite:p:`Coifman-Lafon`.
+cite :footcite:p:`Coifman-Lafon`.
 
 If you choose the default metric, this module uses the fast QCP algorithm
-:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD)
+:footcite:p:`Theobald2005` to calculate the root mean square distance (RMSD)
 between two coordinate sets (as implemented in
 :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this
-module in published work please :cite:p:`Theobald2005`.
+module in published work please :footcite:p:`Theobald2005`.
 
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Coifman-Lafon
-    deLaPorte2008
-    Clementi2011
-    Ferguson2011
-    Theobald2005
+.. footbibliography::
 """
 import logging
 import warnings
@@ -239,6 +231,9 @@ class DistanceMatrix(AnalysisBase):
          :class:`MDAnalysis.analysis.base.Results` instance.
     .. versionchanged:: 2.2.0
          :class:`DistanceMatrix` now also accepts `AtomGroup`.
+    .. versionchanged:: 2.8.0
+         :class:`DistanceMatrix` is now correctly works with `frames=...`
+         parameter (#4432) by iterating over `self._sliced_trajectory`
     """
     def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
@@ -262,12 +257,12 @@ class DistanceMatrix(AnalysisBase):
         self.results.dist_matrix = np.zeros((self.n_frames, self.n_frames))
 
     def _single_frame(self):
-        iframe = self._ts.frame
+        iframe = self._frame_index
         i_ref = self.atoms.positions
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._trajectory[iframe:self.stop:self.step]):
+        for j, ts in enumerate(self._sliced_trajectory[iframe:]):
             self._ts = ts
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
@@ -278,7 +273,7 @@ class DistanceMatrix(AnalysisBase):
                                      self._frame_index] = (
                                 self.results.dist_matrix[self._frame_index,
                                                          j+self._frame_index])
-        self._ts = self._trajectory[iframe]
+        self._ts = self._sliced_trajectory[iframe]
 
     @property
     def dist_matrix(self):
@@ -329,7 +324,7 @@ class DiffusionMap(object):
         epsilon : Float
             Specifies the method used for the choice of scale parameter in the
             diffusion map. More information in
-            :cite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.
+            :footcite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.
         **kwargs
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
@@ -395,7 +390,7 @@ class DiffusionMap(object):
         Return
         ------
         diffusion_space : array (n_frames, n_eigenvectors)
-            The diffusion map embedding as defined by :cite:p:`Ferguson2011`.
+            The diffusion map embedding as defined by :footcite:p:`Ferguson2011`.
         """
         return (self._eigenvectors[1:n_eigenvectors+1,].T *
                 (self.eigenvalues[1:n_eigenvectors+1]**time))

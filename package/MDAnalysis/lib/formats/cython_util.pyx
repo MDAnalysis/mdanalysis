@@ -21,12 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-cimport numpy as np
+cimport numpy as cnp
 
 from libc.stdlib cimport free
 from cpython cimport PyObject, Py_INCREF
 
-np.import_array()
+from MDAnalysis.lib.util import no_copy_shim
+
+cnp.import_array()
 
 
 cdef class ArrayWrapper:
@@ -71,11 +73,11 @@ cdef class ArrayWrapper:
         self.data_type = data_type
         self.ndim = ndim
 
-    def __array__(self):
+    def __array__(self, dtype=None, copy=None):
         """ Here we use the __array__ method, that is called when numpy
             tries to get an array from the object."""
-        ndarray = np.PyArray_SimpleNewFromData(self.ndim,
-                                               <np.npy_intp*> self.dim,
+        ndarray = cnp.PyArray_SimpleNewFromData(self.ndim,
+                                               <cnp.npy_intp*> self.dim,
                                                self.data_type,
                                                self.data_ptr)
         return ndarray
@@ -87,7 +89,7 @@ cdef class ArrayWrapper:
         # free(<int*>self.dim)
 
 
-cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type):
+cdef cnp.ndarray ptr_to_ndarray(void* data_ptr, cnp.int64_t[:] dim, int data_type):
     """convert a pointer to an arbitrary C-pointer to a ndarray. The ndarray is
     constructed so that the array it's holding will be freed when the array is
     destroyed.
@@ -110,9 +112,9 @@ cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type)
     array_wrapper = ArrayWrapper()
     array_wrapper.set_data(<void*> data_ptr, <int*> &dim[0], dim.size, data_type)
 
-    cdef np.ndarray ndarray = np.array(array_wrapper, copy=False)
+    cdef cnp.ndarray ndarray = np.array(array_wrapper, copy=no_copy_shim)
     # Assign our object to the 'base' of the ndarray object
-    ndarray.base = <PyObject*> array_wrapper
+    ndarray[:] = array_wrapper.__array__()
     # Increment the reference count, as the above assignement was done in
     # C, and Python does not know that there is this additional reference
     Py_INCREF(array_wrapper)

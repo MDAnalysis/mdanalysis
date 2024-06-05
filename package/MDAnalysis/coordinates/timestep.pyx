@@ -729,7 +729,7 @@ cdef class Timestep:
         """
         if isinstance(atoms, numbers.Integral):
             return self._pos[atoms]
-        elif isinstance(atoms, (slice, np.ndarray)):
+        elif isinstance(atoms, (slice, cnp.ndarray)):
             return self._pos[atoms]
         else:
             raise TypeError
@@ -750,7 +750,7 @@ cdef class Timestep:
 
         ``for x in ts``
 
-            iterate of the coordinates, atom by atom
+        iterate of the coordinates, atom by atom
         """
         for i in range(self.n_atoms):
             yield self[i]

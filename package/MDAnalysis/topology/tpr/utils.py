@@ -48,7 +48,7 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 
 import numpy as np
-import xdrlib
+from mda_xdrlib import xdrlib
 import struct
 
 from . import obj
@@ -67,6 +67,7 @@ from ...core.topologyattrs import (
     Moltypes,
     Molnums,
     Segids,
+    ChainIDs,
     Bonds,
     Angles,
     Dihedrals,
@@ -308,6 +309,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
 
     atomids = []
     segids = []
+    chainIDs = []
     resids = []
     resnames = []
     atomnames = []
@@ -328,11 +330,13 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         # naming is kind of arbitrary
         molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
         segid = f"seg_{i}_{molblock}"
+        chainID = molblock[14:] if molblock[:14] == "Protein_chain_" else molblock
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
                 atomids.append(atomkind.id + atom_start_ndx)
                 segids.append(segid)
+                chainIDs.append(chainID)
                 resids.append(atomkind.resid + res_start_ndx)
                 resnames.append(atomkind.resname.decode())
                 atomnames.append(atomkind.name.decode())
@@ -362,6 +366,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     moltypes = np.array(moltypes, dtype=object)
     molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
+    chainIDs = np.array(chainIDs, dtype=object)
     resids = np.array(resids, dtype=np.int32)
     if tpr_resid_from_one:
         resids += 1
@@ -385,15 +390,28 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
 
     segidx, perseg_segids = squash_by(perres_segids)[:2]
     segids = Segids(perseg_segids)
+    chainIDs = ChainIDs(chainIDs)
 
-    top = Topology(len(atomids), len(new_resids), len(perseg_segids),
-                   attrs=[atomids, atomnames, atomtypes,
-                          charges, masses,
-                          residueids, residuenames,
-                          residue_moltypes, residue_molnums,
-                          segids],
-                   atom_resindex=residx,
-                   residue_segindex=segidx)
+    top = Topology(
+        len(atomids),
+        len(new_resids),
+        len(perseg_segids),
+        attrs=[
+            atomids,
+            atomnames,
+            atomtypes,
+            charges,
+            masses,
+            residueids,
+            residuenames,
+            residue_moltypes,
+            residue_molnums,
+            segids,
+            chainIDs,
+        ],
+        atom_resindex=residx,
+        residue_segindex=segidx,
+    )
     top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
     top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
     top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals

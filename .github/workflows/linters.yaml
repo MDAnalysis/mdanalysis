@@ -1,34 +1,15 @@
 name: "linters"
 on:
-  push:
-    branches:
-      - develop
-  pull_request_target:
+  pull_request:
     branches:
       - develop
 
 concurrency:
   # Probably overly cautious group naming.
-  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # Commits to develop will cancel each other, but PRs will only cancel
   # commits within the same PR
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
-
-permissions:
-  # try to lock things down as much as possible
-  actions: read
-  checks: read
-  contents: read
-  deployments: read
-  discussions: read
-  id-token: none
-  issues: read
-  packages: read
-  pages: read
-  pull-requests: read
-  repository-projects: read
-  security-events: read
-  statuses: read
 
 defaults:
   run:
@@ -36,10 +17,9 @@ defaults:
 
 jobs:
   darker_lint:
-    if: |
-      github.repository == 'MDAnalysis/mdanalysis' &&
-      github.event_name == 'pull_request_target'
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pull-requests: write
     defaults:
@@ -47,24 +27,20 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
-
-    - name: setup_dependencies
-      run: |
-        pip install PyGithub
+        python-version: "3.10"
 
     - name: darker-main-code
       id: darker-main-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.6.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
         revision: "HEAD^"
@@ -72,35 +48,65 @@ jobs:
 
     - name: darker-test-code
       id: darker-test-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.6.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
         lint: "flake8"
 
-    - name: write-errors
+    - name: get-pr-info
+      uses: actions/github-script@v6
+      with:
+        script:
+            const prNumber = context.payload.number;
+            core.exportVariable('PULL_NUMBER', prNumber);
+
+    - name: save-status
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        MAIN: ${{ steps.darker-main-code.outcome }}
+        TEST: ${{ steps.darker-test-code.outcome }}
+      shell: python
       run: |
-        echo ${{ steps.darker-main-code.outcome }}
-        echo ${{ steps.darker-test-code.outcome }}
-        python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.outcome }} \
-                                                 --test_stat ${{ steps.darker-test-code.outcome }}
+        import os
+        import json
+        from pathlib import Path
+
+        Path('./darker_results/').mkdir(exist_ok=True)
+
+        d = {
+            'main_stat': os.environ['MAIN'],
+            'test_stat': os.environ['TEST'],
+            'PR_NUM': os.environ['PULL_NUMBER'],
+            'RUN_ID': os.environ['GITHUB_RUN_ID'],
+        }
+
+        with open('darker_results/status.json', 'w') as f:
+            json.dump(d, f)
+
+    - name: check-json
+      run: cat darker_results/status.json
+
+    - name: upload-status
+      uses: actions/upload-artifact@v3
+      with:
+        name: darkerlint
+        path: darker_results/
+        retention-days: 1
 
 
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-
+    timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: "3.10"
 
     - name: install
       run: |
@@ -116,27 +122,31 @@ jobs:
   mypy :
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: setup_miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: setup_micromamba
+        uses: mamba-org/setup-micromamba@v1
         with:
-          python-version: 3.8
-          auto-update-conda: true
-          channel-priority: flexible
-          channels: conda-forge, bioconda
-          add-pip-as-python-dependency: true
-          use-mamba: true
-          miniforge-variant: Mambaforge
-          architecture: x64
+          environment-name: mda
+          create-args: >-
+            python=3.10
+            pip
+          # using jaime's shim to avoid pulling down the cudatoolkit
+          condarc: |
+            channels:
+              - jaimergp/label/unsupported-cudatoolkit-shim
+              - conda-forge
+              - bioconda
 
       - name: install_deps
         uses: ./.github/actions/setup-deps
         with:
-          mamba: true
+          micromamba: true
           full-deps: true
-          numpy: numpy=1.21.0
+          numpy: numpy=1.23.2
+          rdkit: rdkit=2023.09.3
 
       - name: install
         run: |

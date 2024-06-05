@@ -8,6 +8,7 @@ on:
 jobs:
   triage-on-file-paths:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - uses: actions/labeler@v3
       with:

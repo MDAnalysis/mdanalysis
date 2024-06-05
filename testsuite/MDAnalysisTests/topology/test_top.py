@@ -30,6 +30,7 @@ from numpy.testing import assert_equal
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PRM,  # ache.prmtop
+    PRM_chainid_bz2,  # multi_anche.prmtop.bz2
     PRM12,  # anti.top
     PRM7,  # tz2.truncoct.parm7.bz2
     PRMpbc,
@@ -38,6 +39,8 @@ from MDAnalysisTests.datafiles import (
     PRMErr1,
     PRMErr2,
     PRMErr3,
+    PRMErr4,
+    PRMErr5,
     PRM_UreyBradley,
     PRM19SBOPC,
 )
@@ -199,6 +202,196 @@ class TestPRMParser(TOPBase):
     atom_i_improper_values = ((74, 79, 77, 78), (77, 80, 79, 83),
                               (79, 81, 80, 82), (79, 84, 83, 85))
     expected_elems = None
+
+
+class TestPRMChainidParser(TOPBase):
+    ref_filename = PRM_chainid_bz2
+    # Checks the reading of %FLAG RESIDUE_CHAINID. See PR #4007
+    expected_attrs = [
+        "names",
+        "types",
+        "type_indices",
+        "charges",
+        "masses",
+        "resnames",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+        "elements",
+        "chainIDs",
+    ]
+    expected_n_atoms = 677
+    expected_n_residues = 38
+    expected_n_segments = 3
+    expected_n_bonds = 695
+    expected_n_angles = 1220
+    expected_n_dihedrals = 1797
+    expected_n_impropers = 189
+    atom_i = 79
+    expected_n_zero_bonds = 4
+    expected_n_i_bonds = 3
+    expected_n_zero_angles = 9
+    expected_n_i_angles = 9
+    expected_n_zero_dihedrals = 14
+    expected_n_i_dihedrals = 15
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 4
+    atom_zero_bond_values = ((0, 4), (0, 1), (0, 2), (0, 3))
+    atom_i_bond_values = ((79, 80), (79, 83), (77, 79))
+    atom_zero_angle_values = (
+        (0, 4, 6),
+        (0, 4, 10),
+        (3, 0, 4),
+        (2, 0, 3),
+        (2, 0, 4),
+        (1, 0, 2),
+        (1, 0, 3),
+        (1, 0, 4),
+        (0, 4, 5),
+    )
+    atom_i_angle_values = (
+        (80, 79, 83),
+        (77, 79, 80),
+        (77, 79, 83),
+        (74, 77, 79),
+        (79, 80, 81),
+        (79, 80, 82),
+        (79, 83, 84),
+        (79, 83, 85),
+        (78, 77, 79),
+    )
+    atom_zero_dihedral_values = (
+        (0, 4, 10, 11),
+        (0, 4, 10, 12),
+        (3, 0, 4, 5),
+        (3, 0, 4, 6),
+        (3, 0, 4, 10),
+        (2, 0, 4, 5),
+        (2, 0, 4, 6),
+        (2, 0, 4, 10),
+        (1, 0, 4, 5),
+        (1, 0, 4, 6),
+        (1, 0, 4, 10),
+        (0, 4, 6, 7),
+        (0, 4, 6, 8),
+        (0, 4, 6, 9),
+    )
+    atom_i_dihedral_values = (
+        (71, 74, 77, 79),
+        (74, 77, 79, 80),
+        (74, 77, 79, 83),
+        (75, 74, 77, 79),
+        (76, 74, 77, 79),
+        (77, 79, 80, 81),
+        (77, 79, 80, 82),
+        (77, 79, 83, 84),
+        (77, 79, 83, 85),
+        (78, 77, 79, 80),
+        (78, 77, 79, 83),
+        (80, 79, 83, 84),
+        (80, 79, 83, 85),
+        (81, 80, 79, 83),
+        (82, 80, 79, 83),
+    )
+    atom_zero_improper_values = ()
+    atom_i_improper_values = (
+        (74, 79, 77, 78),
+        (77, 80, 79, 83),
+        (79, 81, 80, 82),
+        (79, 84, 83, 85),
+    )
+    elems_ranges = [[0, 9], [250, 257], [500, 508]]
+
+    expected_elems = [
+        np.array(
+            [
+                "N",
+                "H",
+                "H",
+                "H",
+                "C",
+                "H",
+                "C",
+                "H",
+                "H",
+            ],
+            dtype=object,
+        ),
+        np.array(
+            [
+                "O",
+                "O",
+                "N",
+                "H",
+                "H",
+                "H",
+                "C",
+            ],
+            dtype=object,
+        ),
+        np.array(["H", "C", "O", "O", "N", "H", "H", "H"], dtype=object),
+    ]
+
+    expected_chainIDs = np.array(
+        [
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+            "C",
+        ]
+    )
+
+    def test_chainIDs(self, filename):
+        """Tests chainIDs attribute.
+
+        If RESIDUE_CHAINID present, residue chainIDs are compared against a
+        provided list of expected values.
+        Otherwise, checks that elements are not in the topology attributes.
+        """
+
+        u = mda.Universe(filename)
+        if hasattr(self, "expected_chainIDs"):
+            reschainIDs = [atomchainIDs[0] for atomchainIDs in u.residues.chainIDs]
+            assert_equal(
+                reschainIDs, self.expected_chainIDs, "unexpected element match"
+            )
+        else:
+            assert not hasattr(u.atoms, "chainIDs"), "Unexpected chainIDs attr"
 
 
 class TestPRM12Parser(TOPBase):
@@ -465,17 +658,28 @@ class TestPRMEP(TOPBase):
 
 class TestErrorsAndWarnings(object):
 
-    ATOMIC_NUMBER_MSG = ("ATOMIC_NUMBER record not found, elements attribute "
-                         "will not be populated")
-    MISSING_ELEM_MSG = ("Unknown ATOMIC_NUMBER value found for some atoms, "
-                        "these have been given an empty element record")
-    COORDINATE_READER_MSG = ("No coordinate reader found")
+    ATOMIC_NUMBER_MSG = (
+        "ATOMIC_NUMBER record not found, elements attribute will not be populated"
+    )
+    MISSING_ELEM_MSG = (
+        "Unknown ATOMIC_NUMBER value found for some atoms, "
+        "these have been given an empty element record"
+    )
+    COORDINATE_READER_MSG = "No coordinate reader found"
+    RESIDUE_CHAINID_MSG = (
+        "Number of residues (38) does not match number of "
+        "%RESIDUE_CHAINID (37). Skipping section."
+    )
 
-    @pytest.mark.parametrize("parm,errmatch", (
-        [PRMErr1, "%VE Missing in header"],
-        [PRMErr2, "'TITLE' missing in header"],
-        [PRM_UreyBradley, "Chamber-style TOP file"]
-    ))
+    @pytest.mark.parametrize(
+        "parm,errmatch",
+        (
+            [PRMErr1, "%VE Missing in header"],
+            [PRMErr2, "'TITLE' missing in header"],
+            [PRMErr4, "Invalid header line."],
+            [PRM_UreyBradley, "Chamber-style TOP file"],
+        ),
+    )
     def test_value_errors(self, parm, errmatch):
         with pytest.raises(ValueError, match=errmatch):
             u = mda.Universe(parm)
@@ -484,13 +688,17 @@ class TestErrorsAndWarnings(object):
         with pytest.raises(IndexError, match="%FLAG section not found"):
             u = mda.Universe(PRMErr3)
 
-    @pytest.mark.parametrize("parm, errmsgs", (
-        [PRM, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
-        [PRM7, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
-        [PRMpbc, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
-        [PRMNEGATIVE, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
-        [PRM19SBOPC, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]]
-    ))
+    @pytest.mark.parametrize(
+        "parm, errmsgs",
+        (
+            [PRM, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+            [PRM7, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+            [PRMpbc, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+            [PRMNEGATIVE, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
+            [PRM19SBOPC, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
+            [PRMErr5, [RESIDUE_CHAINID_MSG, COORDINATE_READER_MSG]],
+        ),
+    )
     def test_warning(self, parm, errmsgs):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(parm)

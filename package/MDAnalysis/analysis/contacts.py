@@ -113,7 +113,7 @@ Two-dimensional contact analysis (q1-q2)
 
 Analyze a single DIMS transition of AdK between its closed and open
 conformation and plot the trajectory projected on q1-q2
-:cite:p:`Franklin2007` ::
+:footcite:p:`Franklin2007` ::
 
 
     import MDAnalysis as mda
@@ -134,7 +134,7 @@ conformation and plot the trajectory projected on q1-q2
     f.show()
 
 Compare the resulting pathway to the `MinActionPath result for AdK`_
-:cite:p:`Franklin2007`.
+:footcite:p:`Franklin2007`.
 
 .. _MinActionPath result for AdK:
    http://lorentz.dynstr.pasteur.fr/joel/adenylate.php
@@ -204,6 +204,9 @@ Classes
 .. autoclass:: Contacts
    :members:
 
+.. rubric:: References
+.. footbibliography::
+
 """
 import os
 import errno
@@ -228,7 +231,7 @@ logger = logging.getLogger("MDAnalysis.analysis.contacts")
 def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     r"""Calculate fraction of native contacts *Q* for a soft cut off
 
-    The native contact function is defined as :cite:p:`Best2013`
+    The native contact function is defined as :footcite:p:`Best2013`
 
     .. math::
 
@@ -254,14 +257,6 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     -------
     Q : float
       fraction of native contacts
-
-    References
-    ----------
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        Best2013
     """
     r = np.asarray(r)
     r0 = np.asarray(r0)
@@ -312,14 +307,6 @@ def radius_cut_q(r, r0, radius):
     -------
     Q : float
         fraction of contacts
-
-    References
-    ----------
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        Franklin2007
 
     """
     return hard_cut_q(r, radius)
@@ -418,6 +405,13 @@ class Contacts(AnalysisBase):
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
 
+        Attributes
+        ----------
+        n_initial_contacts : int
+             Total number of initial contacts.
+        r0 : list[numpy.ndarray]
+             List of distance arrays between reference groups.
+
         Notes
         -----
 
@@ -467,6 +461,9 @@ class Contacts(AnalysisBase):
                 self.r0.append(distance_array(refA.positions, refB.positions,
                                                 box=self._get_box(refA.universe)))
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
+
+        self.n_initial_contacts = self.initial_contacts[0].sum()
+
 
     @staticmethod
     def _get_atomgroup(u, sel):
@@ -521,7 +518,7 @@ def q1q2(u, select='all', radius=4.5):
     """Perform a q1-q2 analysis.
 
     Compares native contacts between the starting structure and final structure
-    of a trajectory :cite:p:`Franklin2007`.
+    of a trajectory :footcite:p:`Franklin2007`.
 
     Parameters
     ----------

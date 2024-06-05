@@ -205,6 +205,7 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import itertools
 
 import mmtf
 import numpy as np
@@ -338,9 +339,10 @@ def anyopen(datasource, mode='rt', reset=True):
         a file (from :class:`file` or :func:`open`) or a stream (e.g. from
         :func:`urllib2.urlopen` or :class:`io.StringIO`)
     mode: {'r', 'w', 'a'} (optional)
-        Open in r(ead), w(rite) or a(ppen) mode. More complicated
-        modes ('r+', 'w+', ...) are not supported; only the first letter of
-        `mode` is used and thus any additional modifiers are silently ignored.
+        Open in r(ead), w(rite) or a(ppend) mode. This string is directly
+        passed to the file opening handler (either Python's openfe, bz2, or
+        gzip). More complex modes are supported if the file opening handler
+        supports it.
     reset: bool (optional)
         try to read (`mode` 'r') the stream from the start
 
@@ -474,6 +476,8 @@ def greedy_splitext(p):
 
     Example
     -------
+
+    >>> from MDAnalysis.lib.util import greedy_splitext
     >>> greedy_splitext("/home/joe/protein.pdb.bz2")
     ('/home/joe/protein', '.pdb.bz2')
 
@@ -552,7 +556,16 @@ def which(program):
     path : str or None
        absolute path to the executable if it can be found, else ``None``
 
+
+    .. deprecated:: 2.7.0
+       This method is deprecated and will be removed in version 3.0.0.
+       Please use shutil.which instead.
     """
+    # Can't use decorator because it's declared after this method
+    wmsg = ("This method is deprecated as of MDAnalysis version 2.7.0 "
+            "and will be removed in version 3.0.0. Please use shutil.which "
+            "instead.")
+    warnings.warn(wmsg, DeprecationWarning)
 
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
@@ -1312,9 +1325,9 @@ def fixedwidth_bins(delta, xmin, xmax):
     """
     if not np.all(xmin < xmax):
         raise ValueError('Boundaries are not sane: should be xmin < xmax.')
-    _delta = np.asarray(delta, dtype=np.float_)
-    _xmin = np.asarray(xmin, dtype=np.float_)
-    _xmax = np.asarray(xmax, dtype=np.float_)
+    _delta = np.asarray(delta, dtype=np.float64)
+    _xmin = np.asarray(xmin, dtype=np.float64)
+    _xmax = np.asarray(xmax, dtype=np.float64)
     _length = _xmax - _xmin
     N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
@@ -1620,10 +1633,14 @@ def unique_rows(arr, return_index=False):
     --------
     Remove dupicate rows from an array:
 
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import unique_rows
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
-    array([[0, 1], [1, 2], [2, 3]])
+    array([[0, 1],
+           [1, 2],
+           [2, 3]])
 
     See Also
     --------
@@ -1680,6 +1697,8 @@ def blocks_of(a, n, m):
 
     Examples
     --------
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import blocks_of
     >>> arr = np.arange(16).reshape(4, 4)
     >>> view = blocks_of(arr, 2, 2)
     >>> view[:] = 100
@@ -1737,6 +1756,7 @@ def group_same_or_consecutive_integers(arr):
     list of :class:`numpy.ndarray`
 
     Examples
+    >>> import numpy as np
     >>> arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])
     >>> group_same_or_consecutive_integers(arr)
     [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
@@ -1791,6 +1811,7 @@ def ltruncate_int(value, ndigits):
 
     Examples
     --------
+    >>> from MDAnalysis.lib.util import ltruncate_int
     >>> ltruncate_int(123, 2)
     23
     >>> ltruncate_int(1234, 5)
@@ -1840,6 +1861,7 @@ def static_variables(**kwargs):
     Example
     -------
 
+    >>> from MDAnalysis.lib.util import static_variables
     >>> @static_variables(msg='foo calls', calls=0)
     ... def foo():
     ...     foo.calls += 1
@@ -2011,6 +2033,10 @@ def check_coords(*coord_names, **options):
     Example
     -------
 
+    >>> import numpy as np
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    >>> from MDAnalysis.lib.util import check_coords
     >>> @check_coords('coords1', 'coords2', allow_atomgroup=True)
     ... def coordsum(coords1, coords2):
     ...     assert coords1.dtype == np.float32
@@ -2027,12 +2053,18 @@ def check_coords(*coord_names, **options):
     >>>
     >>> # automatic handling of AtomGroups
     >>> u = mda.Universe(PSF, DCD)
-    >>> coordsum(u.atoms, u.select_atoms("index 1 to 10"))
-    ...
+    >>> try:
+    ...     coordsum(u.atoms, u.select_atoms("index 1 to 10"))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].')
     >>>
     >>> # automatic shape checking:
-    >>> coordsum(np.zeros(3), np.ones(6))
-    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
+    >>> try:
+    ...     coordsum(np.zeros(3), np.ones(6))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords2.shape must be (3,) or (n, 3), got (6,)')
 
 
     .. versionadded:: 0.19.0
@@ -2521,3 +2553,42 @@ def store_init_arguments(func):
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
     return wrapper
+
+
+def no_copy_shim():
+    if np.lib.NumpyVersion >= "2.0.0rc1":
+        copy = None
+    else:
+        copy = False
+    return copy
+
+
+def atoi(s: str) -> int:
+    """Convert the leading number part of a string to an integer.
+
+    Parameters
+    ----------
+    s : str
+        The string to convert to an integer.
+
+    Returns
+    -------
+    number : int
+        The first numeric part of the string converted to an integer.
+        If the string does not start with a number, 0 is returned.
+
+    Examples
+    --------
+    >>> from MDAnalysis.lib.util import atoi
+    >>> atoi('34f4')
+    34
+    >>> atoi('foo')
+    0
+ 
+
+    .. versionadded:: 2.8.0
+    """
+    try:
+        return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
+    except ValueError:
+        return 0

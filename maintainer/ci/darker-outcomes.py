@@ -35,16 +35,9 @@ parser = argparse.ArgumentParser(
 
 
 parser.add_argument(
-    "--main_stat",
+    "--json",
     type=str,
-    help="Status of main code linting",
-)
-
-
-parser.add_argument(
-    "--test_stat",
-    type=str,
-    help="Status of test code linting",
+    help="Input JSON file with status results",
 )
 
 
@@ -216,13 +209,15 @@ if __name__ == "__main__":
     git = Github(os.environ['GITHUB_TOKEN'])
     repo = git.get_repo("MDAnalysis/mdanalysis")
 
-    run_id = os.environ['GITHUB_RUN_ID']
-    job_id = os.environ['GITHUB_RUN_NUMBER']
+    with open(args.json, 'r') as f:
+        status = json.load(f)
+
+    run_id = status['RUN_ID']
+    print(f"debug run_id: {run_id}")
 
     # Get Pull Request
-    gh_ref = os.environ['GITHUB_REF']
-    ## gh_ref for a PR is pull/prNumber/merge
-    pr_num = int(gh_ref.split('/')[2])
+    pr_num = int(status['PR_NUM'])
+    print(f"debug pr_num: {pr_num}")
     pr = get_pull_request(repo, pr_num)
 
     # Get the url to the github action job being pointed to
@@ -231,7 +226,13 @@ if __name__ == "__main__":
                                 job_name='darker_lint')
 
     # Get the message you want to post to users
-    message = gen_message(pr, args.main_stat, args.test_stat, action_url)
+    with open(args.json, 'r') as f:
+        results_dict = json.load(f)
+
+    message = gen_message(pr,
+                          status['main_stat'],
+                          status['test_stat'],
+                          action_url)
 
     # Post your comment
     post_comment(pr, message, match_string='Linter Bot Results:')

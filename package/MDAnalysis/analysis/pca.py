@@ -118,6 +118,7 @@ import warnings
 
 import numpy as np
 import scipy.integrate
+from tqdm.auto import tqdm
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
@@ -142,7 +143,8 @@ class PCA(AnalysisBase):
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
-    instructions.
+    instructions. When using mean selections, the first frame of the selected 
+    trajectory slice is used as a reference.
 
     Parameters
     ----------
@@ -230,6 +232,12 @@ class PCA(AnalysisBase):
        ``mean`` input now accepts coordinate arrays instead of atomgroup.
        :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`
        are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.8.0
+       ``self.run()`` can now appropriately use ``frames`` parameter (bug
+       described by #4425 and fixed by #4423). Previously, behaviour was to
+       manually iterate through ``self._trajectory``, which would
+       incorrectly handle cases where the ``frame`` argument
+       was passed.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
@@ -247,7 +255,7 @@ class PCA(AnalysisBase):
 
     def _prepare(self):
         # access start index
-        self._u.trajectory[self.start]
+        self._sliced_trajectory[0]
         # reference will be start index
         self._reference = self._u.select_atoms(self._select)
         self._atoms = self._u.select_atoms(self._select)
@@ -275,7 +283,7 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+            for ts in ProgressBar(self._sliced_trajectory,
                                   verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
@@ -348,12 +356,12 @@ class PCA(AnalysisBase):
                 n = len(self._variance)
             self.results.variance = self._variance[:n]
             self.results.cumulated_variance = (np.cumsum(self._variance) /
-                                       np.sum(self._variance))[:n]
+                                               np.sum(self._variance))[:n]
             self.results.p_components = self._p_components[:, :n]
         self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
-                  step=None):
+                  step=None, verbose=False):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -375,6 +383,11 @@ class PCA(AnalysisBase):
             Include every `step` frames in the PCA transform. If set to
             ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
+        verbose : bool, optional
+            ``verbose = True`` option displays a progress bar for the
+            iterations of transform. ``verbose = False`` disables the
+            progress bar, just returns the pca_space array when the
+            calculations are finished.
 
         Returns
         -------
@@ -384,6 +397,9 @@ class PCA(AnalysisBase):
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
            otherwise a :exc:`ValueError` is raised.
+        .. versionchanged:: 2.8.0
+           Transform now has shows a tqdm progressbar, which can be toggled
+           on with ``verbose = True``, or off with ``verbose = False``
         """
         if not self._calculated:
             raise ValueError('Call run() on the PCA before using transform')
@@ -391,7 +407,7 @@ class PCA(AnalysisBase):
         if isinstance(atomgroup, Universe):
             atomgroup = atomgroup.atoms
 
-        if(self._n_atoms != atomgroup.n_atoms):
+        if self._n_atoms != atomgroup.n_atoms:
             raise ValueError('PCA has been fit for'
                              '{} atoms. Your atomgroup'
                              'has {} atoms'.format(self._n_atoms,
@@ -408,7 +424,10 @@ class PCA(AnalysisBase):
 
         dot = np.zeros((n_frames, dim))
 
-        for i, ts in enumerate(traj[start:stop:step]):
+        for i, ts in tqdm(enumerate(traj[start:stop:step]), disable=not verbose,
+                          total=len(traj[start:stop:step])
+                          ):
+
             xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
@@ -450,8 +469,8 @@ class PCA(AnalysisBase):
             and returns ts with the projected structure
 
             .. warning::
-               The transformation function takes a :class:``Timestep`` as input
-               because this is required for :ref:``transformations``.
+               The transformation function takes a :class:`Timestep` as input
+               because this is required for :ref:`transformations`.
                However, the inverse-PCA transformation is applied on the atoms
                of the Universe that was used for the PCA. It is *expected*
                that the `ts` is from the same Universe but this is
@@ -554,7 +573,7 @@ class PCA(AnalysisBase):
             for res in group.residues:
                 # n_common is the number of pca atoms in a residue
                 n_common = pca_res_counts[np.where(
-                           pca_res_indices == res.resindex)][0]
+                            pca_res_indices == res.resindex)][0]
                 non_pca_atoms = np.append(non_pca_atoms,
                                           res.atoms.n_atoms - n_common)
             # index_extrapolate records the anchor number for each non-PCA atom
@@ -631,10 +650,10 @@ class PCA(AnalysisBase):
             >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
             >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
             >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-            >>> first_interval.rmsip(second_interval, n_components=3)
-            0.38147609331128324
-            >>> first_interval.rmsip(last_interval, n_components=3)
-            0.17478244043688052
+            >>> round(first_interval.rmsip(second_interval, n_components=3), 6)
+            0.381476
+            >>> round(first_interval.rmsip(last_interval, n_components=3), 6)
+            0.174782
 
 
         See also
@@ -722,7 +741,7 @@ def cosine_content(pca_space, i):
     The cosine content of pca projections can be used as an indicator if a
     simulation is converged. Values close to 1 are an indicator that the
     simulation isn't converged. For values below 0.7 no statement can be made.
-    If you use this function please cite :cite:p:`BerkHess2002`.
+    If you use this function please cite :footcite:p:`BerkHess2002`.
 
 
     Parameters
@@ -740,19 +759,15 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. bibliography::
-        :filter: False
-        :style: MDA
-
-        BerkHess2002
+    .. footbibliography::
 
     """
 
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
-    return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
-            scipy.integrate.simps(pca_space[:, i] ** 2))
+    return ((2.0 / T) * (scipy.integrate.simpson(cos*pca_space[:, i])) ** 2 /
+            scipy.integrate.simpson(pca_space[:, i] ** 2))
 
 
 @due.dcite(
@@ -811,14 +826,14 @@ def rmsip(a, b, n_components=None):
         >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
         >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
         >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-        >>> pca.rmsip(first_interval.results.p_components.T,
+        >>> round(pca.rmsip(first_interval.results.p_components.T,
         ...           second_interval.results.p_components.T,
-        ...           n_components=3)
-        0.38147609331128324
-        >>> pca.rmsip(first_interval.results.p_components.T,
+        ...           n_components=3), 6)
+        0.381476
+        >>> round(pca.rmsip(first_interval.results.p_components.T,
         ...           last_interval.results.p_components.T,
-        ...           n_components=3)
-        0.17478244043688052
+        ...           n_components=3), 6)
+        0.174782
 
 
     .. versionadded:: 1.0.0

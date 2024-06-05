@@ -26,11 +26,20 @@ from numpy.testing import assert_equal, assert_almost_equal
 import pytest
 
 import MDAnalysis as mda
-
+from MDAnalysis.core.topologyattrs import HAS_BIOPYTHON
 from MDAnalysisTests.datafiles import PSF, DCD
 
 
-class TestSequence(object):
+@pytest.mark.skipif(HAS_BIOPYTHON, reason="biopython is installed")
+def test_sequence_import_error():
+    p = mda.Universe(PSF, DCD).select_atoms('protein')
+    errmsg = "The `sequence_alignment` method requires an installation"
+    with pytest.raises(ImportError, match=errmsg):
+        _ = p.residues.sequence(format="string")
+
+
+@pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
+class TestSequence:
     # all tests are done with the AdK system (PSF and DCD) sequence:
     # http://www.uniprot.org/uniprot/P69441.fasta
     # >sp|P69441|KAD_ECOLI Adenylate kinase OS=Escherichia coli (strain K12) GN=adk PE=1 SV=1

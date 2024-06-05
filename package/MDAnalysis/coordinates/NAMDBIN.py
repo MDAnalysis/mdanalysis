@@ -94,7 +94,12 @@ class NAMDBINReader(base.SingleFrameReaderBase):
 class NAMDBINWriter(base.WriterBase):
     """Writer for NAMD binary coordinate files.
     
-    
+
+    Note
+    ----
+    * Does not handle writing to bz2 or gz compressed file types.
+
+
     .. versionadded:: 1.0.0
     """
     format = ['COOR', 'NAMDBIN']

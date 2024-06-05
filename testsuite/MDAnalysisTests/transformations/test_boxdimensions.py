@@ -37,6 +37,17 @@ def boxdimensions_universe():
     return new_u
 
 
+@pytest.fixture()
+def variable_boxdimensions_universe():
+    # create Universe objects for tests
+    n_atoms = 1
+    n_frames = 3
+    u = mdanalysis.Universe.empty(n_atoms, trajectory=True)
+    coordinates = np.zeros((n_frames, u.atoms.n_atoms, 3))
+    u.load_new(coordinates, order="fac")
+    return u
+
+
 def test_boxdimensions_dims(boxdimensions_universe):
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
     set_dimensions(new_dims)(boxdimensions_universe.trajectory.ts)
@@ -72,7 +83,6 @@ def test_dimensions_vector_asarray(boxdimensions_universe,
     with pytest.raises(ValueError, match='cannot be converted'):
         set_dimensions(dim_vector_forms_dtypes)(ts)
 
-
 def test_dimensions_transformations_api(boxdimensions_universe):
     # test if transformation works with on-the-fly transformations API
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
@@ -81,3 +91,39 @@ def test_dimensions_transformations_api(boxdimensions_universe):
     for ts in boxdimensions_universe.trajectory:
         assert_array_almost_equal(boxdimensions_universe.dimensions,
                                   new_dims, decimal=6)
+
+
+def test_varying_dimensions_transformations_api(
+    variable_boxdimensions_universe,
+):
+    """
+    Test if transformation works with on-the-fly transformations API
+    when we have varying dimensions.
+    """
+    new_dims = np.float32([
+        [2, 2, 2, 90, 90, 90],
+        [4, 4, 4, 90, 90, 90],
+        [8, 8, 8, 90, 90, 90],
+    ])
+    transform = set_dimensions(new_dims)
+    variable_boxdimensions_universe.trajectory.add_transformations(transform)
+    for ts in variable_boxdimensions_universe.trajectory:
+        assert_array_almost_equal(variable_boxdimensions_universe.dimensions,
+                                  new_dims[ts.frame], decimal=6)
+
+
+def test_varying_dimensions_no_data(
+    variable_boxdimensions_universe,
+):
+    """
+    Check error is raised when dimensions are missing for a frame
+    in a trajectory.
+    """
+    # trjactory has three frames
+    new_dims = np.float32([
+        [2, 2, 2, 90, 90, 90],
+        [4, 4, 4, 90, 90, 90],
+    ])
+    transform = set_dimensions(new_dims)
+    with pytest.raises(ValueError, match="Dimensions array has no data for frame 2"):
+        variable_boxdimensions_universe.trajectory.add_transformations(transform)

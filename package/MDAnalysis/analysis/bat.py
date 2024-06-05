@@ -31,11 +31,11 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 
 This module contains classes for interconverting between Cartesian and an
 internal coordinate system, Bond-Angle-Torsion (BAT) coordinates
-:cite:p:`Chang2003`, for a given set of atoms or residues. This coordinate
+:footcite:p:`Chang2003`, for a given set of atoms or residues. This coordinate
 system is designed to be complete, non-redundant, and minimize correlations
 between degrees of freedom. Complete and non-redundant means that for N atoms
 there will be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions, as described in :cite:p:`Hikiri2016`.
+minimized by using improper torsions, as described in :footcite:p:`Hikiri2016`.
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -56,7 +56,7 @@ pointing from the first to second atom. It is described by the polar angle,
 :math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
 that describes the rotation of the third atom about the axis.
 
-This module was adapted from AlGDock :cite:p:`Minh2020`.
+This module was adapted from AlGDock :footcite:p:`Minh2020`.
 
 
 See Also
@@ -129,7 +129,7 @@ Store data to the disk and load it again::
 
 Analysis classes
 ----------------
- .. autoclass:: BAT
+.. autoclass:: BAT
     :members:
     :inherited-members:
 
@@ -154,13 +154,7 @@ Analysis classes
 References
 ----------
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Chang2003
-    Hikiri2016
-    Minh2020
+.. footbibliography::
 
 """
 import logging
@@ -372,13 +366,13 @@ class BAT(AnalysisBase):
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
-        r01 = np.sqrt(np.sum(v01 *
-                             v01))  # Distance between first two root atoms
-        r12 = np.sqrt(np.sum(v21 *
-                             v21))  # Distance between second two root atoms
+        r01 = np.sqrt(np.einsum('i,i->',v01,v01))  
+        # Distance between first two root atoms
+        r12 = np.sqrt(np.einsum('i,i->',v21,v21))  
+        # Distance between second two root atoms
         # Angle between root atoms
-        a012 = np.arccos(max(-1.,min(1.,np.sum(v01*v21)/\
-                             np.sqrt(np.sum(v01*v01)*np.sum(v21*v21)))))
+        a012 = np.arccos(max(-1.,min(1.,np.einsum('i,i->',v01,v21)/\
+                              np.sqrt(np.einsum('i,i->',v01,v01)*np.einsum('i,i->',v21,v21)))))
         # External coordinates
         e = v01 / r01
         phi = np.arctan2(e[1], e[0])  # Polar angle
@@ -545,12 +539,12 @@ class BAT(AnalysisBase):
             cs_tor = np.cos(torsion)
 
             v21 = p1 - p2
-            v21 /= np.sqrt(np.sum(v21 * v21))
+            v21 /= np.sqrt(np.einsum('i,i->',v21,v21))
             v32 = p2 - p3
-            v32 /= np.sqrt(np.sum(v32 * v32))
+            v32 /= np.sqrt(np.einsum('i,i->',v32,v32))
 
             vp = np.cross(v32, v21)
-            cs = np.sum(v21 * v32)
+            cs = np.einsum('i,i->',v21,v32)
 
             sn = max(np.sqrt(1.0 - cs * cs), 0.0000000001)
             vp = vp / sn

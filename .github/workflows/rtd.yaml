@@ -10,9 +10,10 @@ jobs:
   rtdpreview:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       pull-requests: write
     steps:
     - uses: readthedocs/actions/preview@v1
       with:
-        project-slug: "readthedocs-preview"
+        project-slug: "mdanalysis"

@@ -24,7 +24,6 @@ runs:
         echo "CXX=clang++" >> $GITHUB_ENV
         gfortran-9 -v
         echo "FC=gfortran-9" >> $GITHUB_ENV
-        echo "numprocs=3" >> $GITHUB_ENV
         echo "ENABLE_HIGH_MEM_UNIT_TESTS=true" >> $GITHUB_ENV
 
     - name: setup_linux
@@ -39,4 +38,3 @@ runs:
         echo "CXX=g++" >> $GITHUB_ENV
         gfortran -v
         echo "FC=gfortran" >> $GITHUB_ENV
-        echo "numprocs=2" >> $GITHUB_ENV

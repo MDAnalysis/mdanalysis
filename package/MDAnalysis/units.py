@@ -150,11 +150,7 @@ Data
 References and footnotes
 ------------------------
 
-.. bibliography::
-   :filter: False
-   :style: MDA
-
-   Jorgensen1998
+.. footbibliography::
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -171,6 +167,23 @@ References and footnotes
       X' = f_{b,b'} X
 
 """
+
+import warnings
+
+
+# Remove in 2.8.0
+class DeprecatedKeyAccessDict(dict):
+    deprecated_kB = 'Boltzman_constant'
+
+    def __getitem__(self, key):
+        if key == self.deprecated_kB:
+            wmsg = ("Please use 'Boltzmann_constant' henceforth. The key "
+                    "'Boltzman_constant' was a typo and will be removed "
+                    "in MDAnalysis 2.8.0.")
+            warnings.warn(wmsg, DeprecationWarning)
+            key = 'Boltzmann_constant'
+        return super().__getitem__(key)
+
 
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
@@ -189,13 +202,13 @@ References and footnotes
 #:    http://physics.nist.gov/Pubs/SP811/appenB8.html#C
 #:
 #: .. versionadded:: 0.9.0
-constants = {
+constants = DeprecatedKeyAccessDict({
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As
     'calorie': 4.184,                      # J
-    'Boltzman_constant': 8.314462159e-3,   # KJ (mol K)**-1
+    'Boltzmann_constant': 8.314462159e-3,   # KJ (mol K)**-1
     'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
-}
+})
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
@@ -210,7 +223,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values at T=298K, P=1atm :cite:p:`Jorgensen1998`.
+#: water density values at T=298K, P=1atm :footcite:p:`Jorgensen1998`.
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -359,7 +372,7 @@ def get_conversion_factor(unit_type, u1, u2):
 
     Conversion of :math:`X` (in u1) to :math:`X'` (in u2):
 
-       :math:`X'` = conversion_factor * :math:`X`
+    :math:`X'` = conversion_factor * :math:`X`
     """
     # x is in u1: from u1 to b:  x'  = x  / factor[u1]
     #             from b  to u2: x'' = x' * factor[u2]

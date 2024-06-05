@@ -61,13 +61,12 @@ e.g. -CO\ :sub:`2`\ :sup:`-`:···H−O:···H−O:···HN-
 The following keyword arguments are important to control the behaviour of the
 water bridge analysis:
 
- - *water_selection* (``resname SOL``): the selection string for the bridging
-   water
- - *order* the maximum number of water bridging both ends
- - donor-acceptor *distance* (Å): 3.0
- - Angle *cutoff* (degrees): 120.0
- - *forcefield* to switch between default values for different force fields
- - *donors* and *acceptors* atom types (to add additional atom names)
+- *water_selection* (``resname SOL``): the selection string for the bridging water
+- *order* the maximum number of water bridging both ends
+- donor-acceptor *distance* (Å): 3.0
+- Angle *cutoff* (degrees): 120.0
+- *forcefield* to switch between default values for different force fields
+- *donors* and *acceptors* atom types (to add additional atom names)
 
 Theory
 ------
@@ -215,7 +214,7 @@ within a cut-off distance of 1.2 Å.
    HSE         NE2             ND1
    HSP         ND1, NE2
    LYS         NZ
-   MET                         SD          see e.g. :cite:p:`Gregoret1991`
+   MET                         SD          see e.g. :footcite:p:`Gregoret1991`
    SER         OG              OG
    THR         OG1             OG1
    TRP         NE1
@@ -263,11 +262,7 @@ heavy atom names to MDAnalysis.
 
 .. rubric:: References
 
-.. bibliography::
-    :filter: False
-    :style: MDA
-
-    Gregoret1991
+.. footbibliography::
 
 
 How to perform ``WaterBridgeAnalysis``
@@ -276,18 +271,16 @@ How to perform ``WaterBridgeAnalysis``
 All water bridges between arginine and aspartic acid can be analysed with ::
 
   import MDAnalysis
-  import MDAnalysis.analysis.hbonds
+  from MDAnalysis.analysis.hydrogenbonds import WaterBridgeAnalysis
 
   u = MDAnalysis.Universe('topology', 'trajectory')
-  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-                                                     'resname ASP')
+  w = WaterBridgeAnalysis(u, 'resname ARG', 'resname ASP')
   w.run()
 
 The maximum number of bridging waters detected can be changed using the order
 keyword. ::
 
-  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-                                                     'resname ASP', order=3)
+  w = WaterBridgeAnalysis(u, 'resname ARG', 'resname ASP', order=3)
 
 Thus, a maximum of three bridging waters will be detected.
 
@@ -722,7 +715,6 @@ from ..base import AnalysisBase
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
-from MDAnalysis.lib import distances
 
 logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 
@@ -769,7 +761,7 @@ class WaterBridgeAnalysis(AnalysisBase):
     #: N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
     #: covalently bound at a maximum distance of 1.5 Å.
     r_cov = defaultdict(lambda: 1.5,  # default value
-                        N=1.31, O=1.31, P=1.58, S=1.55)
+                        N=1.31, O=1.31, P=1.58, S=1.55)  # noqa: E741
 
     def __init__(self, universe, selection1='protein',
                  selection2='not resname SOL', water_selection='resname SOL',
@@ -866,8 +858,9 @@ class WaterBridgeAnalysis(AnalysisBase):
             :attr:`~DEFAULT_ACCEPTORS` values.
             ["CHARMM27"]
         donors : sequence (optional)
-            Extra H donor atom types (in addition to those in
-            :attr:`~DEFAULT_DONORS`), must be a sequence.
+            Extra H donor atom types (in addition to those in :attr:`~DEFAULT_DONORS`).
+            This shall be the name of the heavy atom that is bonded to the hydrogen.
+            For example, the oxygen ('O') in the hydroxyl group. Must be a sequence.
         acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~DEFAULT_ACCEPTORS`), must be a
@@ -925,6 +918,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.selection1 = selection1
         self.selection2 = selection2
         self.selection1_type = selection1_type
+        if "selection2_type" in kwargs:
+            raise ValueError("`selection2_type` is not a keyword argument.")
 
         # if the selection 1 and selection 2 are the same
         if selection1 == selection2:
@@ -933,7 +928,9 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.update_selection = update_selection
         self.filter_first = filter_first
         self.distance = distance
-        self.distance_type = distance_type  # note: everything except 'heavy'
+        if distance_type not in {"hydrogen", "heavy"}:
+            raise ValueError(f"Only 'hydrogen' and 'heavy' are allowed for option `distance_type' ({distance_type}).")
+        self.distance_type = distance_type
         # will give the default behavior
         self.angle = angle
         self.pbc = pbc and all(self.u.dimensions[:3])
@@ -1209,19 +1206,25 @@ class WaterBridgeAnalysis(AnalysisBase):
                                            max_cutoff=self.distance,
                                            box=self.box,
                                            return_distances=True)
-        if self.distance_type != 'heavy':
+        if self.distance_type == 'hydrogen':
+            tmp_distances = distances
             tmp_donors = [h_donors[donors_idx[idx]] for idx in pairs[:, 0]]
             tmp_hydrogens = [donors_idx[idx] for idx in pairs[:, 0]]
             tmp_acceptors = [acceptor[idx] for idx in pairs[:, 1]]
         else:
+            # To make sure that for the same index i, the donor (tmp_donors[i]),
+            # hydrogen (tmp_hydrogens[i]), acceptor (tmp_acceptors[i]) matches the
+            # distance (tmp_distances[i]).
             tmp_donors = []
             tmp_hydrogens = []
             tmp_acceptors = []
-            for idx in range(len(pairs[:, 0])):
+            tmp_distances = []
+            for idx, distance in enumerate(distances):
                 for h in donors[donors_idx[pairs[idx, 0]]]:
                     tmp_donors.append(donors_idx[pairs[idx, 0]])
                     tmp_hydrogens.append(h)
                     tmp_acceptors.append(acceptor[pairs[idx, 1]])
+                    tmp_distances.append(distance)
 
         angles = np.rad2deg(
             calc_angles(
@@ -1238,7 +1241,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             a = tmp_acceptors[index]
             result.append((h, d, a, self._expand_index(h),
                            self._expand_index(a),
-                           distances[index], angles[index]))
+                           tmp_distances[index], angles[index]))
         return result
 
     def _single_frame(self):
@@ -1761,7 +1764,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         Returns
         -------
-        table : numpy.recarray
+        table : numpy.rec.recarray
             A "tidy" table with one hydrogen bond per row, labeled according to
             `output_format` and containing information of atom_1, atom_2,
             distance, and angle.
@@ -1822,7 +1825,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 cursor += 1
         assert cursor == num_records, \
             "Internal Error: Not all wb records stored"
-        table = out.view(np.recarray)
+        table = out.view(np.rec.recarray)
         logger.debug(
             "WBridge: Stored results as table with %(num_records)d entries.",
             vars())

@@ -16,50 +16,44 @@ pr:
 
 jobs:
 - job: Azure_Tests
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/develop'))  # skip for PR merges
   variables:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python38-32bit-full:
-          PYTHON_VERSION: '3.8'
-          PYTHON_ARCH: 'x86'
-          BUILD_TYPE: 'normal'
-          NUMPY_MIN: '1.21.0'
-          imageName: 'windows-2019'
-        Win-Python38-64bit-full:
-          PYTHON_VERSION: '3.8'
+        Win-Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python311-64bit-full:
-          PYTHON_VERSION: '3.11'
+        Win-Python312-64bit-full:
+          PYTHON_VERSION: '3.12'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python311-64bit-full-wheel:
-          PYTHON_VERSION: '3.11'
+        Win-Python312-64bit-full-wheel:
+          PYTHON_VERSION: '3.12'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.26.0'
+          imageName: 'windows-2019'
+        Win-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.23.2'
           imageName: 'windows-2019'
-        Win-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Linux-Python312-64bit-full-wheel:
+          PYTHON_VERSION: '3.12'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.21.0'
-          imageName: 'windows-2019'
-        Linux-Python311-64bit-full-wheel:
-          PYTHON_VERSION: '3.11'
-          PYTHON_ARCH: 'x64'
-          BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.23.2'
+          NUMPY_MIN: '1.26.0'
           imageName: 'ubuntu-latest'
-        Linux-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Linux-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.21.0'
+          NUMPY_MIN: '1.23.2'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)
@@ -82,17 +76,18 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=h5py,scipy
+      python -m pip install --only-binary=scipy,h5py
       cython
       hypothesis
+      h5py>=2.10
       matplotlib
       numpy
       packaging
       pytest
       pytest-cov
+      pytest-timeout
       pytest-xdist
       scikit-learn
-      h5py>=2.10
       tqdm
       threadpoolctl
       fasteners
@@ -103,14 +98,14 @@ jobs:
   # to check the ABI compatibility of our wheels
   - script: >-
       python -m pip install numpy==$(NUMPY_MIN)
-    displayName: 'pin to older NumPy (wheel test and 32bit)'
+    displayName: 'pin to older NumPy (wheel test)'
     condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
   - script: >-
       python -m pip install
       biopython
-      chemfiles>=0.10
+      "chemfiles>=0.10,<0.10.4"
       duecredit
-      gsd
+      "gsd>3.0.0"
       joblib
       GridDataFormats
       mmtf-python
@@ -125,17 +120,15 @@ jobs:
       pip list
     displayName: 'List of installed dependencies'
   - powershell: |
-      cd package
-      python setup.py install
-      cd ..
-      cd testsuite
-      python setup.py install
-      cd ..
+      python -m pip install ./package
+      python -m pip install ./testsuite
     displayName: 'Build MDAnalysis'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
+  - powershell: pip list
+    displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
-      pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n auto --timeout=200 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash

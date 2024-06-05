@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import os
 from pathlib import Path
 import numpy as np
 
@@ -230,12 +231,6 @@ def test_timeseries_atomindices(indices, universe_dcd):
         assert_array_almost_equal(xyz, allframes[indices])
 
 
-def test_timeseries_empty_selection(universe_dcd):
-    with pytest.raises(ValueError):
-        asel = universe_dcd.select_atoms('name FOO')
-        universe_dcd.trajectory.timeseries(asel=asel)
-
-
 def test_reader_set_dt():
     dt = 100
     frame = 3
@@ -436,3 +431,38 @@ def test_pathlib():
     # we really only care that pathlib
     # object handling worked
     assert u.atoms.n_atoms == 3341
+
+
+@pytest.fixture
+def large_dcdfile(tmpdir):
+    # creates a >2Gb DCD file
+    fsize = 3.8  # mb
+    nreps_reqs = int(2100 // fsize)  # times to duplicate traj to hit 2.1Gb
+
+    newf = str(tmpdir / "jabba.dcd")
+
+    u = mda.Universe(PSF, DCD)
+
+    with mda.Writer(newf, n_atoms=len(u.atoms)) as w:
+        for _ in range(nreps_reqs):
+            for ts in u.trajectory:
+                w.write(u.atoms)
+
+    yield newf, nreps_reqs
+
+
+@pytest.mark.skipif(
+    not os.environ.get("LARGEDCD", False), reason="Skipping large file test"
+)
+def test_large_dcdfile(large_dcdfile):
+    DCD_large, nreps = large_dcdfile
+
+    u_small = mda.Universe(PSF, DCD)
+    u = mda.Universe(PSF, DCD_large)
+
+    assert len(u.trajectory) == len(u_small.trajectory) * nreps
+
+    u_small.trajectory[-1]
+    u.trajectory[-1]
+
+    assert_array_almost_equal(u.atoms.positions, u_small.atoms.positions)

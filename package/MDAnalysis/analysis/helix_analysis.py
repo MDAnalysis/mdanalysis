@@ -79,6 +79,23 @@ equivalent::
 
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
 
+    
+Classes
+-------
+
+.. autoclass:: HELANAL
+
+
+Functions
+---------
+
+.. autofunction:: helix_analysis
+
+.. autofunction:: vector_of_best_fit
+
+.. autofunction:: local_screw_angles
+
+
 """
 
 import warnings
@@ -104,7 +121,7 @@ def vector_of_best_fit(coordinates):
     """
     centered = coordinates - coordinates.mean(axis=0)
     Mt_M = np.matmul(centered.T, centered)
-    u, s, vh = np.linalg.linalg.svd(Mt_M)
+    u, s, vh = np.linalg.svd(Mt_M)
     vector = vh[0]
 
     # does vector face first local helix origin?

@@ -332,6 +332,8 @@ class H5MDReader(base.ReaderBase):
        Adds :meth:`parse_n_atoms` method to obtain the number of atoms directly
        from the trajectory by evaluating the shape of the ``position``,
        ``velocity``, or ``force`` groups.
+    .. versionchanged:: 2.5.0
+       Add correct handling of simple cuboid boxes
 
     """
 
@@ -640,8 +642,17 @@ class H5MDReader(base.ReaderBase):
 
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
-        if 'edges' in particle_group['box']:
-            ts.dimensions = core.triclinic_box(*particle_group['box/edges/value'][frame, :])
+        if "edges" in particle_group["box"]:
+            edges = particle_group["box/edges/value"][frame, :]
+            # A D-dimensional vector or a D × D matrix, depending on the
+            # geometry of the box, of Float or Integer type. If edges is a
+            # vector, it specifies the space diagonal of a cuboid-shaped box.
+            # If edges is a matrix, the box is of triclinic shape with the edge
+            # vectors given by the rows of the matrix.
+            if edges.shape == (3,):
+                ts.dimensions = [*edges, 90, 90, 90]
+            else:
+                ts.dimensions = core.triclinic_box(*edges)
         else:
             ts.dimensions = None
 
@@ -979,7 +990,7 @@ class H5MDWriter(base.WriterBase):
     isn't explicity defined by the user, H5PY automatically selects a chunk
     shape via an algorithm that attempts to make mostly square chunks between
     1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
-    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)``so
+    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)`` so
     as to mimic the typical access pattern of a trajectory by MDAnalysis. In
     our tests ([Jakupovic2021]_), this chunk shape led to a speedup on the
     order of 10x versus H5PY's auto-chunked shape. Users can set a custom

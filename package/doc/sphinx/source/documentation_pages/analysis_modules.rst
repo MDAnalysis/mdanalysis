@@ -74,6 +74,7 @@ Distances and contacts
    analysis/align
    analysis/contacts
    analysis/distances
+   analysis/atomicdistances
    analysis/rms
    analysis/psa
    analysis/encore

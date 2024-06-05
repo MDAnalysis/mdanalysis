@@ -554,7 +554,7 @@ class AnalysisBase(AnalysisCollection):
         pass  # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None):
+            verbose=None, *, progressbar_kwargs=None):
         """Perform the calculation
 
         Parameters
@@ -576,15 +576,46 @@ class AnalysisBase(AnalysisCollection):
         verbose : bool, optional
             Turn on verbosity
 
+        progressbar_kwargs : dict, optional
+            ProgressBar keywords with custom parameters regarding progress bar
+            position, etc; see :class:`MDAnalysis.lib.log.ProgressBar` for full
+            list.
+
 
         .. versionchanged:: 2.2.0
             Added ability to analyze arbitrary frames by passing a list of
             frame indices in the `frames` keyword argument.
 
+        .. versionchanged:: 2.5.0
+            Add `progressbar_kwargs` parameter,
+            allowing to modify description, position etc of tqdm progressbars
         """
-        return super().run(
-            start=start, stop=stop, step=step, frames=frames, verbose=verbose
-        )
+        logger.info("Choosing frames to analyze")
+        # if verbose unchanged, use class default
+        verbose = getattr(self, '_verbose',
+                          False) if verbose is None else verbose
+
+        self._setup_frames(self._trajectory, start=start, stop=stop,
+                           step=step, frames=frames)
+        logger.info("Starting preparation")
+        self._prepare()
+        logger.info("Starting analysis loop over %d trajectory frames",
+                    self.n_frames)
+        if progressbar_kwargs is None:
+            progressbar_kwargs = {}
+
+        for i, ts in enumerate(ProgressBar(
+                self._sliced_trajectory,
+                verbose=verbose,
+                **progressbar_kwargs)):
+            self._frame_index = i
+            self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
+            self._single_frame()
+        logger.info("Finishing up")
+        self._conclude()
+        return self
 
 
 class AnalysisFromFunction(AnalysisBase):

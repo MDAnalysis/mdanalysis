@@ -488,7 +488,7 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc'):
+    def timeseries(self, asel=None, atomgroup=None, start=0, stop=-1, step=1, order='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order. If no selection is given, it will return a view of the
         underlying array, while a copy is returned otherwise.
@@ -500,6 +500,12 @@ class MemoryReader(base.ProtoReader):
             coordinate data is returned. Note that in this case, a view
             of the underlying numpy array is returned, while a copy of the
             data is returned whenever `asel` is different from ``None``.
+
+            .. deprecated:: 2.7.0
+               asel argument will be renamed to atomgroup in 3.0.0
+
+        atomgroup: AtomGroup (optional)
+            Same as `asel`, will replace `asel` in 3.0.0
         start : int (optional)
             the start trajectory frame
         stop : int (optional)
@@ -525,6 +531,16 @@ class MemoryReader(base.ProtoReader):
             ValueError now raised instead of NoDataError for empty input
             AtomGroup
         """
+        if asel is not None:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+            if atomgroup:
+                raise ValueError("Cannot provide both asel and atomgroup kwargs")
+            atomgroup = asel
+
+
         if stop != -1:
             warnings.warn("MemoryReader.timeseries inclusive `stop` "
                       "indexing will be removed in 3.0 in favour of exclusive "
@@ -556,13 +572,13 @@ class MemoryReader(base.ProtoReader):
                        [slice(None)] * (2-f_index))
 
         # Return a view if either:
-        #   1) asel is None
-        #   2) asel corresponds to the selection of all atoms.
+        #   1) atomgroup is None
+        #   2) atomgroup corresponds to the selection of all atoms.
         array = array[tuple(basic_slice)]
-        if (asel is None or asel is asel.universe.atoms):
+        if (atomgroup is None or atomgroup is atomgroup.universe.atoms):
             return array
         else:
-            if len(asel) == 0:
+            if len(atomgroup) == 0:
                 raise ValueError("Timeseries requires at least one atom "
                                   "to analyze")
             # If selection is specified, return a copy

@@ -29,16 +29,18 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_allclose, assert_allclose)
+from numpy.testing import (assert_equal, assert_allclose)
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.reference import (
     RefLAMMPSData, RefLAMMPSDataMini, RefLAMMPSDataDCD,
+    RefLAMMPSDataAdditionalColumns
 )
 from MDAnalysisTests.datafiles import (
     LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSdata_triclinic,
     LAMMPSDUMP, LAMMPSDUMP_allcoords, LAMMPSDUMP_nocoords, LAMMPSDUMP_triclinic,
-    LAMMPSDUMP_image_vf, LAMMPS_image_vf
+    LAMMPSDUMP_image_vf, LAMMPS_image_vf, LAMMPSdata_additional_columns,
+    LAMMPSDUMP_additional_columns
 )
 
 
@@ -104,6 +106,32 @@ class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
 def LAMMPSDATAWriter(request, tmpdir_factory):
     filename = request.param
     u = mda.Universe(filename)
+    fn = os.path.split(filename)[1]
+    outfile = str(tmpdir_factory.mktemp('data').join(fn))
+
+    with mda.Writer(outfile, n_atoms=u.atoms.n_atoms) as w:
+        w.write(u.atoms)
+
+    u_new = mda.Universe(outfile)
+
+    return u, u_new
+
+
+@pytest.fixture(params=[
+    [LAMMPSdata, True],
+    [LAMMPSdata_mini, True],
+    [LAMMPScnt, True],
+    [LAMMPShyd, True],
+    [LAMMPSdata, False]
+], scope='module')
+def LAMMPSDATAWriter_molecule_tag(request, tmpdir_factory):
+    filename, charges = request.param
+    u = mda.Universe(filename)
+    if not charges:
+        u.del_TopologyAttr('charges')
+
+    u.trajectory.ts.data['molecule_tag'] = u.atoms.resids
+
     fn = os.path.split(filename)[1]
     outfile = str(tmpdir_factory.mktemp('data').join(fn))
 
@@ -187,8 +215,20 @@ class TestLAMMPSDATAWriter(object):
                                 atol=1e-6)
 
 
-def test_datawriter_universe(tmpdir):
-    fn = str(tmpdir.join('out.data'))
+class TestLAMMPSDATAWriter_molecule_tag(object):
+    def test_molecule_tag(self, LAMMPSDATAWriter_molecule_tag):
+        u_ref, u_new = LAMMPSDATAWriter_molecule_tag
+        assert_equal(u_ref.atoms.resids, u_new.atoms.resids,
+                     err_msg="resids different after writing",)
+
+
+@pytest.mark.parametrize('filename', ['out.data', 'out.data.bz2', 'out.data.gz'])
+def test_datawriter_universe(filename, tmpdir):
+    """
+    Test roundtrip on datawriter, and also checks compressed files
+    can be written (see #4159).
+    """
+    fn = str(tmpdir.join(filename))
 
     u = mda.Universe(LAMMPSdata_mini)
 
@@ -474,6 +514,46 @@ class TestLammpsDumpReader(object):
                            lammps_coordinate_convention="auto")
 
     @pytest.fixture()
+    def u_additional_columns_true(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns=True)
+
+    @pytest.fixture()
+    def u_additional_columns_single(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns=['q'])
+
+    @pytest.fixture()
+    def u_additional_columns_multiple(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns=['q', 'p'])
+
+    @pytest.fixture()
+    def u_additional_columns_wrong_format(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns='q')
+
+    @pytest.fixture()
+    def u_additional_columns_not_present(self):
+        f = LAMMPSDUMP_additional_columns
+        top = LAMMPSdata_additional_columns
+        return mda.Universe(top, f, format='LAMMPSDUMP',
+                            lammps_coordinate_convention="auto",
+                            additional_columns=['q', 'w'])
+
+    @pytest.fixture()
     def reference_positions(self):
         # manually copied from traj file
         data = {}
@@ -554,6 +634,32 @@ class TestLammpsDumpReader(object):
             assert_allclose(atom1.position, atom1_pos-bmin, atol=1e-5)
             assert_allclose(atom13.position, atom13_pos-bmin, atol=1e-5)
 
+    @pytest.mark.parametrize("system, fields", [
+        ('u_additional_columns_true', ['q', 'p']),
+        ('u_additional_columns_single', ['q']),
+        ('u_additional_columns_multiple', ['q', 'p']),
+    ])
+    def test_additional_columns(self, system, fields, request):
+        u = request.getfixturevalue(system)
+        for field in fields:
+            data = u.trajectory[0].data[field]
+            assert_allclose(data,
+                            getattr(RefLAMMPSDataAdditionalColumns, field))
+
+    @pytest.mark.parametrize("system", [
+        ('u_additional_columns_wrong_format'),
+    ])
+    def test_wrong_format_additional_colums(self, system, request):
+        with pytest.raises(ValueError,
+                           match="Please provide an iterable containing"):
+            request.getfixturevalue(system)
+
+    @pytest.mark.parametrize("system", [
+        ('u_additional_columns_not_present'),
+    ])
+    def test_warning(self, system, request):
+        with pytest.warns(match="Some of the additional"):
+            request.getfixturevalue(system)
 
 @pytest.mark.parametrize("convention",
                          ["unscaled", "unwrapped", "scaled_unwrapped"])

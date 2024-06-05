@@ -72,11 +72,9 @@ class GeoSelectionBench(object):
                                   dynamic_selection,
                                   periodic_selection):
 
-        # set core flags for PBC accounting
-        MDAnalysis.core.flags['use_periodic_selections'] = periodic_selection[0]
-        MDAnalysis.core.flags['use_KDTree_routines'] = periodic_selection[1]
-
-        if hasattr(MDAnalysis.Universe, 'select_atoms'):
-            self.u.select_atoms(selection_string, updating=dynamic_selection)
-        else:
-            self.u.selectAtoms(selection_string, updating=dynamic_selection)
+        # TODO: Do we need a kwarg similar to old `use_KDTree_routines`
+        # flag? We used to benchmark that.
+        self.u.select_atoms(selection_string,
+                            updating=dynamic_selection,
+                            periodic=periodic_selection[0],
+                            )

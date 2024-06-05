@@ -33,9 +33,9 @@ into a MDAnalysis Universe.
 Also converts other objects within the
 `OpenMM Application Layer <http://docs.openmm.org/latest/api-python/app.html>`_:
 
-    - `openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile>`_
-    - `openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller>`_
-    - `openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile>`_
+- `openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile>`_
+- `openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller>`_
+- `openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile>`_
 
 Example
 -------
@@ -125,10 +125,10 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         ts.frame = 0
         ts.data["time"] = state.getTime()._value
         ts.data["potential_energy"] = (
-            state.getPotentialEnergy().in_units_of(u.kilojoule/u.mole)
+            state.getPotentialEnergy().in_units_of(u.kilojoule/u.mole)._value
         )
         ts.data["kinetic_energy"] = (
-            state.getKineticEnergy().in_units_of(u.kilojoule/u.mole)
+            state.getKineticEnergy().in_units_of(u.kilojoule/u.mole)._value
         )
         ts.triclinic_dimensions = state.getPeriodicBoxVectors(
                 asNumpy=True)._value

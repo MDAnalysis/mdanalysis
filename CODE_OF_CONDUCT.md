@@ -3,15 +3,15 @@ every member in the MDAnalysis community so that everyone can
 experience a welcoming, supportive, and productive environment that is
 free from harassment.
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
 **Table of Contents**
 
 - [MDAnalysis Code of Conduct and Community Guidelines](#mdanalysis-code-of-conduct-and-community-guidelines)
+- [Diversity, Equity, and Inclusion Statement](#diversity-equity-and-inclusion-statement)
 - [Reporting](#reporting)
+   * [Reporting at MDAnalysis Events and Meetups](#reporting-at-mdanalysis-events-and-meetups)
 - [Enforcement](#enforcement)
 - [Acknowledgment](#acknowledgment)
 
-<!-- markdown-toc end -->
 ## MDAnalysis Code of Conduct and Community Guidelines
 
 MDAnalysis is an engaged and respectful community made up of people from all
@@ -36,14 +36,12 @@ a misunderstanding and de-escalate things.
 However, sometimes these informal processes may be inadequate: they fail to
 work, there is urgency or risk to someone, nobody is intervening publicly and
 you don't feel comfortable speaking in public, etc. For these or other reasons,
-structured follow-up may be necessary and here we provide the means for that: we
-welcome reports by
-emailing [*Conduct-email*][conduct-mail] or
-in anonymous by filling out [*this form*][conduct-form].
+structured follow-up may be necessary and here we provide the means for that: [we
+welcome reports](#reporting) by filling out [*this form*][conduct-form].
 
 This code applies equally to founders, developers, mentors and new
 community members, in all spaces managed by MDAnalysis. This
-includes the mailing lists, our GitHub organizations, our chat rooms,
+includes GitHub Discussions, our GitHub organizations, our chat rooms,
 in-person events, and any other forums created by the project team. In
 addition, violations of this code outside these spaces may affect a
 person's ability to participate within them.
@@ -51,7 +49,7 @@ person's ability to participate within them.
 By embracing the following principles, guidelines and actions to follow or
 avoid, you will help us make MDAnalysis a welcoming and productive community. If
 that doesn't answer your questions, feel free to contact us
-at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
+via [GitHub Discussions](https://github.com/MDAnalysis/mdanalysis/discussions).
 
 
 1. **Be friendly and patient**.
@@ -109,28 +107,48 @@ at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
    and telling someone that you are sorry is act of empathy that doesn’t
    automatically imply an admission of guilt.
 
+## Diversity, Equity, and Inclusion Statement
+
+MDAnalysis strives to ensure a welcoming, inclusive space for all. As a [*NumFOCUS*](https://numfocus.org/) sponsored project, we fully support their [*Diversity & Inclusion in Scientific Computing*](https://numfocus.org/programs/diversity-inclusion) (DISC) mission and abide by their Diversity Statement:
+
+> *"NumFOCUS welcomes and encourages participation in our community by people of all backgrounds and identities. We are committed to promoting and sustaining a culture that values mutual respect, tolerance, and learning, and we work together as a community to help each other live out these values."*
+
 ## Reporting
 
 If someone makes you or any other contributor feel unsafe or unwelcome, please
-report this in a timely manner. Code of conduct violations reduce the value of
+report this in a timely manner. Code of conduct (CoC) violations reduce the value of
 the community for everyone and we take them seriously. All complaints will be
 reviewed and investigated and will result in a response that is deemed necessary
 and appropriate to the circumstances.
 
-You can file a report by emailing
-the [*Conduct-mail*][conduct-mail] or by
-filing out [this form][conduct-form]. The project team is obligated to maintain
+You can file a report by filling out [this form][conduct-form]. The CoC Committee is obligated to maintain
 confidentiality with regard to the reporter of an incident.
 
 The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
 report, we will take appropriate action.
 
+You may also follow [NumFOCUS’s Code of Conduct violation reporting][NF-conduct] 
+guidelines if you would like to contact a third-party outside of the MDAnalysis 
+community.
+
+### Reporting at MDAnalysis Events and Meetups
+If you are attending an MDAnalysis event or meetup and wish to [make a report](#reporting), you may contact the ombudspersons (who will identify themselves at the event) or other event staff/meetup organizers so that they can take any appropriate immediate response. If you would prefer not to do that, please [submit a report][conduct-form] to MDAnalysis. 
+
+Ombudspeople and event staff/meetup organizers will be happy to help participants contact venue security or local law enforcement, provide escorts, or otherwise assist those experiencing harassment to feel safe for the duration of the event/meetup.
+
 ## Enforcement
 
-When a report is sent to us we will reply as soon as possible to confirm receipt;
-we strive to answer in less than 24 hours. We will review the incident and
-determine, to the best of our ability
+All reports of breaches of the code of conduct will be investigated and handled by the **MDAnalysis Code of Conduct Committee**. The current MDAnalysis Code of Conduct Committee consists of:
+- Jenna Swarthout Goddard (@jennaswa)
+- Micaela Matta (@micaela-matta)
+- Richard Gowers (@richardjgowers)
+
+In the event of any conflict of interest, the affected committee member will immediately notify the rest of the committee and recuse themselves.
+
+When a report is filed, the CoC Committee will reply as soon as possible to confirm receipt;
+we strive to answer in less than 24 hours. The CoC Committee will review the incident and
+determine, to the best of its ability
 
 - what happened
 - whether this event constitutes a code of conduct violation
@@ -139,26 +157,26 @@ determine, to the best of our ability
 
 This information will be collected in writing. We strive to reach a resolution
 within a week of confirmation. Once a resolution has been agreed upon, but before it is
-enacted, we will contact the original reporter and any other affected parties
+enacted, the CoC Committee will contact the original reporter and any other affected parties
 and explain the proposed resolution. We will ask if this resolution is
 acceptable and note feedback for the record. We are, however, not required to act
 on this feedback.
 
-
 ## Acknowledgment
 
-Original text courtesy of
-the
+Original text courtesy of [*NumFOCUS*](https://numfocus.org/code-of-conduct) and the
 [*Speak Up!*](http://web.archive.org/web/20141109123859/http://speakup.io/coc.html),
 [*Django*](https://www.djangoproject.com/conduct),
 [*Contributor Covenant*](http://contributor-covenant.org/),
 and
-[*Jupyter*](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md) projects,
+[*Jupyter*](https://github.com/jupyter/governance/blob/main/conduct/code_of_conduct.md) projects,
 modified by MDAnalysis. We are grateful to those projects for contributing these
 materials under open licensing terms for us to easily reuse.
 
 All content on this page is licensed under a [*Creative Commons
 Attribution*](http://creativecommons.org/licenses/by/3.0/) license. 
 
-[conduct-mail]: mailto:mdnalysis-conduct@googlegroups.com
-[conduct-form]: https://goo.gl/forms/w2IwBKkY3oT0aVEB3
+[conduct-form]: https://forms.gle/r2SMU4XcwM814CpJ9
+
+[NF-conduct]: https://numfocus.org/code-of-conduct
+

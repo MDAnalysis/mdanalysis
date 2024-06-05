@@ -351,7 +351,7 @@ class TestDensityAnalysis(DensityParameters):
         with pytest.raises(ValueError, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
-                delta=self.delta, xdim=np.NaN, ydim=10.0, zdim=10.0,
+                delta=self.delta, xdim=np.nan, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
 
     def test_warn_noatomgroup(self, universe):

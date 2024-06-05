@@ -29,6 +29,7 @@ import textwrap
 from unittest.mock import Mock, patch
 import sys
 import copy
+import shutil
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -312,7 +313,8 @@ class TestMatrixOperations(object):
             ref[1, 1] = y * sin_c
             ref[2, 0] = z * cos_b
             ref[2, 1] = z * (cos_a - cos_b * cos_c) / sin_c
-            ref[2, 2] = np.sqrt(z * z - ref[2, 0] ** 2 - ref[2, 1] ** 2)
+            with np.errstate(invalid="ignore"):
+                ref[2, 2] = np.sqrt(z * z - ref[2, 0] ** 2 - ref[2, 1] ** 2)
             ref = ref.astype(np.float32)
         return ref
 
@@ -2221,3 +2223,12 @@ class TestStoreInitArguments:
 
         store2 = store.copy()
         assert store2.__dict__ == store.__dict__
+
+
+@pytest.mark.xfail(os.name == 'nt',
+                   reason="util.which does not get right binary on Windows")
+def test_which():
+    wmsg = "This method is deprecated"
+
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert util.which('python') == shutil.which('python')

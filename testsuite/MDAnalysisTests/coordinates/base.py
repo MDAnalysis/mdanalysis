@@ -443,13 +443,13 @@ class BaseReaderTest(object):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
-    
+
     def test_frame_collect_all_same(self, reader):
-        # check that the timestep resets so that the base reference is the same 
+        # check that the timestep resets so that the base reference is the same
         # for all timesteps in a collection with the exception of memoryreader
         # and DCDReader
         if isinstance(reader, mda.coordinates.memory.MemoryReader):
-            pytest.xfail("memoryreader allows independent coordinates") 
+            pytest.xfail("memoryreader allows independent coordinates")
         if isinstance(reader, mda.coordinates.DCD.DCDReader):
             pytest.xfail("DCDReader allows independent coordinates."
                           "This behaviour is deprecated and will be changed"
@@ -493,11 +493,35 @@ class BaseReaderTest(object):
         assert(timeseries.shape[0] == len(reader))
         assert(timeseries.shape[1] == len(atoms))
         assert(timeseries.shape[2] == 3)
-    
+
     def test_timeseries_empty_asel(self, reader):
-        atoms = mda.Universe(reader.filename).select_atoms(None)
+        with pytest.warns(UserWarning,
+                          match="Empty string to select atoms, empty group returned."):
+            atoms = mda.Universe(reader.filename).select_atoms(None)
         with pytest.raises(ValueError, match="Timeseries requires at least"):
-            reader.timeseries(atoms)
+            reader.timeseries(asel=atoms)
+
+    def test_timeseries_empty_atomgroup(self, reader):
+        with pytest.warns(UserWarning,
+                          match="Empty string to select atoms, empty group returned."):
+            atoms = mda.Universe(reader.filename).select_atoms(None)
+        with pytest.raises(ValueError, match="Timeseries requires at least"):
+            reader.timeseries(atomgroup=atoms)
+
+    def test_timeseries_asel_warns_deprecation(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        with pytest.warns(DeprecationWarning, match="asel argument to"):
+            timeseries = reader.timeseries(asel=atoms, order='fac')
+
+    def test_timeseries_atomgroup(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        timeseries = reader.timeseries(atomgroup=atoms, order='fac')
+
+    def test_timeseries_atomgroup_asel_mutex(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        with pytest.raises(ValueError, match="Cannot provide both"):
+            timeseries = reader.timeseries(atomgroup=atoms, asel=atoms, order='fac')
+
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):

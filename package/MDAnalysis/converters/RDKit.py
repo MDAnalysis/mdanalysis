@@ -81,18 +81,18 @@ Classes
 .. _`RDKitConverter benchmark`: https://github.com/MDAnalysis/RDKitConverter-benchmark
 """
 
-import warnings
 import copy
+import warnings
 from functools import lru_cache
 from io import StringIO
 
 import numpy as np
 
-from ..exceptions import NoDataError
-from ..core.topologyattrs import _TOPOLOGY_ATTRS
+from . import base
 from ..coordinates import memory
-from ..coordinates import base
 from ..coordinates.PDB import PDBWriter
+from ..core.topologyattrs import _TOPOLOGY_ATTRS
+from ..exceptions import NoDataError
 
 try:
     from rdkit import Chem
@@ -123,6 +123,28 @@ else:
     PERIODIC_TABLE = Chem.GetPeriodicTable()
 
 
+# charges that should be assigned to monatomic cations
+# structure --> atomic number : formal charge
+# anion charges are directly handled by the code using the typical valence
+# of the atom
+MONATOMIC_CATION_CHARGES = {
+    3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
+    12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
+    26: 2,  # Fe could also be +3
+    13: 3,
+}
+# reactions uses by _standardize_patterns to fix challenging cases
+# must have single reactant and product, and cannot add any atom
+STANDARDIZATION_REACTIONS = [
+    "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]",  # Cterm
+    "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]",  # Nterm
+    "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]",  # keto-enolate
+    "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]",  # ARG
+    "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
+    ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]",  # HIP
+    "[S;D4;!v6:1]-[*-:2]>>[S;v6:1]=[*+0:2]",  # sulfone
+    "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]",  # charged-N
+]
 _deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 
 
@@ -563,9 +585,22 @@ _atom_property_dispatcher = {
     np.uint64: _set_np_int_prop,
 }
 
+
 def _set_atom_property(atom, attr, value):
     """Saves any attribute and value into an RDKit atom property"""
     _atom_property_dispatcher.get(type(value), _ignore_prop)(atom, attr, value)
+
+
+def _atom_sorter(atom):
+    """Sorts atoms in the molecule in a way that makes it easy for the bond
+    order and charge infering code to get the correct state on the first
+    try. Currently sorts by number of unpaired electrons, then by number of
+    heavy atom neighbors (i.e. atoms at the edge first)."""
+    num_heavy_neighbors = len([
+        neighbor for neighbor in atom.GetNeighbors()
+        if neighbor.GetAtomicNum() > 1]
+    )
+    return (-_get_nb_unpaired_electrons(atom)[0], num_heavy_neighbors)
 
 
 def _infer_bo_and_charges(mol):
@@ -592,21 +627,11 @@ def _infer_bo_and_charges(mol):
     R-C(-O)-O the first oxygen read will receive a double bond and the other
     one will be charged. It will also affect more complex conjugated systems.
     """
-    # sort atoms according to their NUE
-    atoms = sorted([a for a in mol.GetAtoms() if a.GetAtomicNum() > 1],
-                   reverse=True,
-                   key=lambda a: _get_nb_unpaired_electrons(a)[0])
-
-    # charges that should be assigned to monatomic cations
-    # structure --> atomic number : formal charge
-    # anion charges are directly handled by the code using the typical valence
-    # of the atom
-    MONATOMIC_CATION_CHARGES = {
-        3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
-        12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
-        26: 2,  # Fe could also be +3
-        13: 3,
-    }
+    # heavy atoms sorted by number of heavy atom neighbors (lower first) then
+    # NUE (higher first)
+    atoms = sorted([atom for atom in mol.GetAtoms()
+                    if atom.GetAtomicNum() > 1],
+                   key=_atom_sorter)
 
     for atom in atoms:
         # monatomic ions
@@ -737,80 +762,43 @@ def _standardize_patterns(mol, max_iter=200):
 
     # list of sanitized reactions
     reactions = []
-    for rxn in [
-        "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]",  # Cterm
-        "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]",  # Nterm
-        "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]",  # keto-enolate
-        "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]",  # ARG
-        "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
-        ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]",  # HIP
-        "[S;D4;!v6:1]-[*-:2]>>[S;v6:1]=[*+0:2]",  # sulfone
-        "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]",  # charged-N
-    ]:
+    for rxn in STANDARDIZATION_REACTIONS:
         reaction = AllChem.ReactionFromSmarts(rxn)
         reactions.append(reaction)
 
-    fragments = []
-    for reactant in Chem.GetMolFrags(mol, asMols=True):
-        for reaction in reactions:
-            reactant = _run_reaction(reaction, reactant)
-        fragments.append(reactant)
+    # fragment mol (reactions must have single reactant and product)
+    fragments = list(Chem.GetMolFrags(mol, asMols=True))
+    for reactant in fragments:
+        _apply_reactions(reactions, reactant)
 
     # recombine fragments
     newmol = fragments.pop(0)
     for fragment in fragments:
         newmol = Chem.CombineMols(newmol, fragment)
 
-    # reassign all properties
-    _transfer_properties(mol, newmol)
-
     return newmol
 
 
-def _run_reaction(reaction, reactant):
-    """Runs a reaction until all reactants are transformed
-
-    If a pattern is matched N times in the molecule, the reaction will return N
-    products as an array of shape (N, 1). Only the first product will be kept
-    and the same reaction will be reapplied to the product N times in total.
+def _apply_reactions(reactions, reactant):
+    """Applies a series of unimolecular reactions to a molecule. The reactions
+    must not add any atom to the product. The molecule is modified inplace.
 
     Parameters
     ----------
-    reaction : rdkit.Chem.rdChemReactions.ChemicalReaction
-        Reaction from SMARTS
+    reactions : List[rdkit.Chem.rdChemReactions.ChemicalReaction]
+        Reactions from SMARTS. Each reaction is applied until no more
+        transformations can be made.
     reactant : rdkit.Chem.rdchem.Mol
-        The molecule to transform
+        The molecule to transform inplace
 
-    Returns
-    -------
-    product : rdkit.Chem.rdchem.Mol
-        The final product of the reaction
     """
-    # repeat the reaction until all matching moeities have been transformed
-    # note: this loop is meant to be ended by a `break` statement
-    # but let's avoid using `while` loops just in case
-    for n in range(reactant.GetNumAtoms()):
-        reactant.UpdatePropertyCache(strict=False)
-        Chem.Kekulize(reactant)
-        products = reaction.RunReactants((reactant,))
-        if products:
-            # structure: tuple[tuple[mol]]
-            # length of 1st tuple: number of matches in reactant
-            # length of 2nd tuple: number of products yielded by the reaction
-            # if there's no match in reactant, returns an empty tuple
-            # here we have at least one match, and the reaction used yield
-            # a single product hence `products[0][0]`
-            product = products[0][0]
-            # map back atom properties from the reactant to the product
-            _reassign_index_after_reaction(reactant, product)
-            # apply the next reaction to the product
-            reactant = product
-        # exit the loop if there was nothing to transform
-        else:
-            break
     reactant.UpdatePropertyCache(strict=False)
     Chem.Kekulize(reactant)
-    return reactant
+    for reaction in reactions:
+        while reaction.RunReactantInPlace(reactant):
+            reactant.UpdatePropertyCache(strict=False)
+        reactant.UpdatePropertyCache(strict=False)
+        Chem.Kekulize(reactant)
 
 
 def _rebuild_conjugated_bonds(mol, max_iter=200):
@@ -989,35 +977,3 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     # reached max_iter
     warnings.warn("The standardization could not be completed within a "
                   "reasonable number of iterations")
-
-
-def _reassign_index_after_reaction(reactant, product):
-    """Maps back MDAnalysis index from the reactant to the product.
-    The product molecule is modified inplace.
-    """
-    prop = "_MDAnalysis_index"
-    if reactant.GetAtoms()[0].HasProp(prop):
-        for atom in product.GetAtoms():
-            idx = atom.GetUnsignedProp("react_atom_idx")
-            old_atom = reactant.GetAtomWithIdx(idx)
-            value = old_atom.GetIntProp(prop)
-            _set_atom_property(atom, prop, value)
-
-
-def _transfer_properties(mol, newmol):
-    """Transfer properties between two RDKit molecules. Requires the
-    `_MDAnalysis_index` property to be present. Modifies `newmol` inplace.
-    """
-    atoms = mol.GetAtoms()
-    if atoms[0].HasProp("_MDAnalysis_index"):
-        props = {}
-        for atom in atoms:
-            ix = atom.GetIntProp("_MDAnalysis_index")
-            props[ix] = atom.GetPropsAsDict()
-        for atom in newmol.GetAtoms():
-            ix = atom.GetIntProp("_MDAnalysis_index")
-            for attr, value in props[ix].items():
-                _set_atom_property(atom, attr, value)
-            # remove properties assigned during reactions
-            atom.ClearProp("old_mapno")
-            atom.ClearProp("react_atom_idx")

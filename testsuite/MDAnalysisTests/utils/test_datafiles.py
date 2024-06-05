@@ -49,7 +49,7 @@ def test_all_exports():
     import MDAnalysisTests.datafiles
     missing = [name for name in dir(MDAnalysisTests.datafiles)
                if
-               not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__ and name != 'absolute_import']
+               not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__ and name != 'MDAnalysisTests']
     assert_equal(missing, [], err_msg="Variables need to be added to __all__.")
 
 

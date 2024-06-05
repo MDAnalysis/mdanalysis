@@ -32,7 +32,7 @@ The RDF :math:`g_{ab}(r)` between types of particles :math:`a` and :math:`b` is
 
 .. math::
 
-   g_{ab}(r) = (N_{a} N_{b})^{-1} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
+   g_{ab}(r) = \frac{1}{N_{a}} \frac{1}{N_{b}/V} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
                \langle \delta(|\mathbf{r}_i - \mathbf{r}_j| - r) \rangle
 
 which is normalized so that the RDF becomes 1 for large separations in a
@@ -125,6 +125,10 @@ class InterRDF(AnalysisBase):
 
     exclusion_block : tuple
         A tuple representing the tile to exclude from the distance array.
+    exclude_same : str
+        Will exclude pairs of atoms that share the same "residue", "segment", or "chain".
+        Those are the only valid values. This is intended to remove atoms that are
+        spatially correlated due to direct bonded connections.
     verbose : bool
         Show detailed progress of the calculation if set to `True`
 
@@ -220,6 +224,7 @@ class InterRDF(AnalysisBase):
                  range=(0.0, 15.0),
                  norm="rdf",
                  exclusion_block=None,
+                 exclude_same=None,
                  **kwargs):
         super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
@@ -229,6 +234,17 @@ class InterRDF(AnalysisBase):
         self.rdf_settings = {'bins': nbins,
                              'range': range}
         self._exclusion_block = exclusion_block
+        if exclude_same is not None and exclude_same not in ['residue', 'segment', 'chain']:
+            raise ValueError(
+                "The exclude_same argument to InterRDF must be None, 'residue', 'segment' "
+                "or 'chain'."
+            )
+        if exclude_same is not None and exclusion_block is not None:
+            raise ValueError(
+                "The exclude_same argument to InterRDF cannot be used with exclusion_block."
+            )
+        name_to_attr = {'residue': 'resindices', 'segment': 'segindices', 'chain': 'chainIDs'}
+        self.exclude_same = name_to_attr.get(exclude_same)
 
         if self.norm not in ['rdf', 'density', 'none']:
             raise ValueError(f"'{self.norm}' is an invalid norm. "
@@ -259,6 +275,13 @@ class InterRDF(AnalysisBase):
             idxA = pairs[:, 0]//self._exclusion_block[0]
             idxB = pairs[:, 1]//self._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
+            dist = dist[mask]
+
+        if self.exclude_same is not None:
+            # Ignore distances between atoms in the same attribute
+            attr_ix_a = getattr(self.g1, self.exclude_same)[pairs[:, 0]]
+            attr_ix_b = getattr(self.g2, self.exclude_same)[pairs[:, 1]]
+            mask = np.where(attr_ix_a != attr_ix_b)[0]
             dist = dist[mask]
 
         count, _ = np.histogram(dist, **self.rdf_settings)
