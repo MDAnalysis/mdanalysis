@@ -584,7 +584,7 @@ class AnalysisCollection:
                 != analysis_object._trajectory
             ):
                 raise ValueError("`analysis_instances` do not have the same "
-                                "trajectory.")
+                                 "trajectory.")
             if not isinstance(analysis_object, AnalysisBase):
                 raise AttributeError(f"Analysis object {analysis_object} is "
                                      "not a child of `AnalysisBase`.")
