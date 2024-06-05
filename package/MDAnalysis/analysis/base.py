@@ -125,7 +125,7 @@ simple wrappers that make it even easier to create fully-featured analysis
 tools if only the single-frame analysis function needs to be written.
 
 """
-from typing import Optional, Self, Tuple
+from typing import Optional, Tuple
 from collections import UserDict
 import inspect
 import logging
@@ -466,7 +466,7 @@ class AnalysisBase:
             step: Optional[int] = None,
             frames: Optional[int] = None,
             verbose: Optional[bool] = None,
-            progressbar_kwargs: Optional[dict] = None) -> Self:
+            progressbar_kwargs: Optional[dict] = None) -> "AnalysisBase":
         """Perform the calculation
 
         Parameters
