@@ -192,9 +192,11 @@ class TestAnalysisCollection:
     def test_inconsistent_trajectory(self, universe):
         v = mda.Universe(TPR, XTC)
 
-        with pytest.raises(ValueError, match="`analysis_instances` do not have the"):
+        match="`analysis_instances` do not have the same trajectory."
+        with pytest.raises(ValueError, match=match):
             base.AnalysisCollection(
-                InterRDF(universe.atoms, universe.atoms), InterRDF(v.atoms, v.atoms)
+                InterRDF(
+                    universe.atoms, universe.atoms), InterRDF(v.atoms, v.atoms)
             )
 
     def test_no_base_child(self, universe):
@@ -202,8 +204,9 @@ class TestAnalysisCollection:
             def __init__(self, trajectory):
                 self._trajectory = trajectory
 
-        # Create collection for common trajectory loop with inconsistent trajectory
-        with pytest.raises(AttributeError, match="not a child of `AnalysisBase`"):
+        match="not a child of `AnalysisBase`"
+        # collection for common trajectory loop with inconsistent trajectory
+        with pytest.raises(AttributeError, match=match):
             base.AnalysisCollection(CustomAnalysis(universe.trajectory))
 
 
@@ -312,7 +315,8 @@ def test_frames_times(u_xtc):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames*100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
+    assert_allclose(
+        an.times, frames * 100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):
