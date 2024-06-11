@@ -297,9 +297,9 @@ class AnalysisBase(object):
         proper :meth:`_conclude` call. If set to ``False``, no backends except
         for ``serial`` are supported.
         
-        .. note::   If you want to check parallezability of the whole class, without
-                    explicitly starting its instance, see
-                    ::attr::`_analysis_algorithm_is_parallelizable`. Note that you
+        .. note::   If you want to check parallelizability of the whole class, without
+                    explicitly creating an instance of the class, see
+                    :attr:`_analysis_algorithm_is_parallelizable`. Note that you
                     setting it to other value will break things if the algorithm
                     behind the analysis is not trivially parallelizable.
         
@@ -576,7 +576,7 @@ class AnalysisBase(object):
             unsupported_backend: bool = False
             ) -> BackendBase:
         """Matches a passed backend string value with class attributes
-        :meth:`parallelizable` and :meth:`get_supported_backends()`
+        :attr:`parallelizable` and :meth:`get_supported_backends()`
         to check if downstream calculations can be performed.
 
         Parameters
@@ -602,10 +602,10 @@ class AnalysisBase(object):
         Raises
         ------
         ValueError
-            if :meth:`parallelizable` is set to ``False`` but backend is
+            if :attr:`parallelizable` is set to ``False`` but backend is
             not ``serial``
         ValueError
-            if ``parallelizable`` and you're using custom backend instance
+            if :attr:`parallelizable` is ``True`` and custom backend instance is used
             without specifying ``unsupported_backend=True``
         ValueError
             if your trajectory has associated parallelizable transformations
