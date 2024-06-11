@@ -287,6 +287,10 @@ class AnalysisBase(object):
         """
         return ("serial",)
 
+    # class authors: override _analysis_algorithm_is_parallelizable 
+    # in derived classes and only set to True if you have confirmed 
+    # that your algorithm works reliably when parallelized with 
+    # the split-apply-combine approach (see docs)   
     _analysis_algorithm_is_parallelizable = False
 
     @property
