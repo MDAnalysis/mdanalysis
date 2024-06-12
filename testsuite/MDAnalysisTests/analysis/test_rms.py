@@ -187,6 +187,11 @@ class TestRMSD(object):
                 [49, 50, 4.6997, 1.9154, 2.7139]]
 
     def test_rmsd(self, universe, correct_values, client_RMSD):
+        # client_RMSD is defined in testsuite/analysis/conftest.py
+        # among with other testing fixtures. During testing, it will
+        # collect all possible backends and reasonable number of workers
+        # for a given AnalysisBase subclass, and extend the tests
+        # to run with all of them.
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
         RMSD.run(step=49, **client_RMSD)
         assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
