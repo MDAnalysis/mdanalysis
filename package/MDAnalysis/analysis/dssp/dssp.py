@@ -185,14 +185,16 @@ class DSSP(AnalysisBase):
     https://github.com/ShintaroMinami/PyDSSP by Shintaro Minami.
 
     .. Warning::
-        For the DSSP to work properly, your atoms (either as ``Universe``
-        or ``AtomGroup``) must have only one hydrogen atom "H" per residue,
-        that corresponds to N-bound hydrogen in a peptide bond (or zero hydrogen
-        atoms, if the residue is proline). It is selected using `hydrogen_atom`
-        parameter. It is designed to hande most of the modern syntaxes,
-        but if you encounter an error or unusual results
-        during your run, please report an issue on MDAnalysi
-        `github <https://github.com/MDAnalysis/mdanalysis/issues>`_.
+       For DSSP to work properly, your atoms must represent a protein. The
+       hydrogen atom bound to the backbone nitrogen atom is matched by name
+       as given by the keyword argument `hydrogen_atom`. There may only be 
+       a single backbone nitrogen hydrogen atom per residue; the one exception
+       is proline, for which there should not exist any such hydrogens.
+       The default value of `hydrogen_atom` should to handle the common naming
+       conventions in the PDB and in force fields but if you encounter an error
+       or unusual results during your run, try to figure out how to select the
+       correct hydrogen atoms and report an issue in the MDAnalysis
+       `issue tracker <https://github.com/MDAnalysis/mdanalysis/issues>`_.
 
     Parameters
     ----------
@@ -220,7 +222,7 @@ class DSSP(AnalysisBase):
     .. Note::
        To work with different hydrogen-naming conventions by default, the default
        selection is broad but if hydrogens are incorrectly selected (e.g., a
-       :exc:`ValueError` is raised) you must customize ``hydrogen_name`` for your
+       :exc:`ValueError` is raised) you must customize `hydrogen_name` for your
        specific case.
 
     Raises
