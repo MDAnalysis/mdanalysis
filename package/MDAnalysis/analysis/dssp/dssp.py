@@ -293,21 +293,14 @@ class DSSP(AnalysisBase):
             for calpha, hydrogen in zip(
                 self._heavy_atoms["CA"][1:], self._hydrogens[1:]
             ):
-                if not hydrogen and calpha.resname != "PRO":
+                if (calpha.resname != "PRO" and len(hydrogen) != 1) or (
+                    calpha.resname == "PRO" and hydrogen
+                ):
                     raise ValueError(
                         (
-                            "Universe is missing non-PRO hydrogen "
-                            f"on residue {calpha.residue}, "
-                            f"present atoms: {' - '.join(map(str,calpha.residue.atoms))}"
-                        )
-                    )
-                if len(hydrogen) != 1:
-                    raise ValueError(
-                        (
-                            f"Found {len(hydrogen)} hydrogens "
-                            f"on residue {calpha.residue} "
-                            "while only 1 is expected. Try changing "
-                            "'hydrogen_name' argument to adjust the selection"
+                            "Residue {calpha.residue} contains wrong number of hydrogens: "
+                            "exactly 1 hydrogen is expected for non-PRO residues, and "
+                            "zero hydrogens for PRO residues."
                         )
                     )
 
