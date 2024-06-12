@@ -301,6 +301,15 @@ class DSSP(AnalysisBase):
                             f"present atoms: {' - '.join(map(str,calpha.residue.atoms))}"
                         )
                     )
+                if len(hydrogen) != 1:
+                    raise ValueError(
+                        (
+                            f"Found {len(hydrogen)} hydrogens "
+                            f"on residue {calpha.residue} "
+                            "while only 1 is expected. Try changing "
+                            "'hydrogen_name' argument to adjust the selection"
+                        )
+                    )
 
         positions = [group.positions for group in self._heavy_atoms.values()]
         if len(set(map(lambda arr: arr.shape[0], positions))) != 1:
