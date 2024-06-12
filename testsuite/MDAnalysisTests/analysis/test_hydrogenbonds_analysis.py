@@ -227,7 +227,7 @@ class TestHydrogenBondAnalysisIdeal(object):
         u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
         u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
         h = HydrogenBondAnalysis(u, **kwargs)
-        donors = u.select_atoms(h.guess_donors())
+        donors = h.guess_donors()
 
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
@@ -554,7 +554,8 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
 
         ref_donors = "(resname TIP3 and name OH2)"
         donors = h.guess_donors(select='all', max_charge=-0.5)
-        assert donors == ref_donors
+        donors_sel = h._group_categories(donors)
+        assert donors_sel == ref_donors
 
 
 class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
@@ -586,7 +587,8 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
 
         ref_hydrogens = "(resname TIP3 and name H1) or (resname TIP3 and name H2)"
         hydrogens = h.guess_hydrogens(select='all')
-        assert hydrogens == ref_hydrogens
+        hydrogens_sel = h._group_categories(hydrogens)
+        assert hydrogens_sel == ref_hydrogens
 
     pytest.mark.parametrize(
         "min_mass, max_mass, min_charge",
@@ -599,7 +601,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
     def test_guess_hydrogens_empty_selection(self, h):
 
         hydrogens = h.guess_hydrogens(select='all', min_charge=1.0)
-        assert hydrogens == ""
+        assert len(hydrogens) == 0
 
     def test_guess_hydrogens_min_max_mass(self, h):
 
