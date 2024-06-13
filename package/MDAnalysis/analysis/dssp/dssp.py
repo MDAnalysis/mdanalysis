@@ -112,6 +112,7 @@ Analysis classes
    :inherited-members:
 
    .. attribute:: results.dssp
+   
       Contains the time series of the DSSP assignment as a 
       :class:`numpy.ndarray` array of shape ``(n_frames, n_residues)`` where each row
       contains the assigned secondary structure character for each residue (whose 
@@ -119,6 +120,7 @@ Analysis classes
       are ['H', 'E', '-'] and representi alpha-helix, sheet and loop, respectively.
 
    .. attribute:: results.dssp_ndarray
+   
       Contains the one-hot encoding of the time series of the DSSP assignment
       as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)`` 
       where for each residue the encoding is stored as ``(3,)`` shape
@@ -130,6 +132,7 @@ Analysis classes
       
 
    .. attribute:: results.resids
+   
       A :class:`numpy.ndarray` of length ``n_residues`` that contains the residue IDs
       (resids) for the protein residues that were assigned a secondary structure.
 
