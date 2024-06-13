@@ -22,15 +22,13 @@ re-implemented by @ShintaroMinami and available under MIT license from
     :math:`3_{10}` helices and π-helices labelled as "helix" too.
 
 
-Using original `pydssp`
+.. rubric:: Using original `pydssp`
 The default implementation uses the original *pydssp* (v.0.9.0) code, rewritten
 without usage of the *einops* library and hence having no dependencies. If you want
 to explicitly use *pydssp* (or its particular version), install it to your
 current environment with ``python -m pip install pydssp``. Please note that the
 way MDAnalysis uses *pydssp* does not support *pydssp* 's capability for batch
 processing or its use of the *pytorch* library.
-way MDAnalysis uses pydssp does not support pydssp's capability for batch
-processing or its use of the pytorch library.
 
 When using this module in published work please cite :footcite:p:`Kabsch1983`.
 
