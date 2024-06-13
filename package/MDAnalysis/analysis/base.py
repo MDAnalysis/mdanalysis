@@ -254,7 +254,7 @@ class AnalysisBase(object):
     .. versionchanged:: 2.0.0
         Added :attr:`results`
 
-    .. versionadded:: 2.8.0
+    .. versionchanged:: 2.8.0
         Added ability to run analysis in parallel using either a
         built-in backend (`multiprocessing` or `dask`) or a custom
         `backends.BackendBase` instance with an implemented `apply` method
@@ -402,7 +402,7 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
 
-        .. versionadded:: 2.2.0
+            .. versionadded:: 2.2.0
         frames : array_like, optional
             array of integers or booleans to slice trajectory; cannot be
             combined with ``start``, ``stop``, ``step``
@@ -417,10 +417,11 @@ class AnalysisBase(object):
 
         .. versionchanged:: 1.0.0
             Added .frames and .times arrays as attributes
-
+            
         .. versionchanged:: 2.2.0
             Added ability to iterate through trajectory by passing a list of
             frame indices in the `frames` keyword argument
+            
         .. versionchanged:: 2.8.0
             Split function into two: :meth:`_define_run_frames` and
             :meth:`_prepare_sliced_trajectory`: first one defines the limits
