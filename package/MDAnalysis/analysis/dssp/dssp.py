@@ -112,19 +112,26 @@ Analysis classes
    :inherited-members:
 
    .. attribute:: results.dssp
-
-       Contains the time series of the DSSP assignment
-       as chars N×m :class:`numpy.ndarray` array with content
-       ``[frame, residue]``, where `structure_type` is one of three characters:
-       ['H', 'E', '-'], representing alpha-helix, sheet and loop, respectively.
+      Contains the time series of the DSSP assignment as a 
+      :class:`numpy.ndarray` array of shape ``(n_frames, n_residues)`` where each row
+      contains the assigned secondary structure character for each residue (whose 
+      corresponding resid is stored in :attr:`results.resids`). The three characters
+      are ['H', 'E', '-'] and representi alpha-helix, sheet and loop, respectively.
 
    .. attribute:: results.dssp_ndarray
+      Contains the one-hot encoding of the time series of the DSSP assignment
+      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)`` 
+      where for each residue the encoding is stored as ``(3,)`` shape
+      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop 
+      ('-'), ``True`` at index 1 represents helix ('H'), and ``True`` at index 2 
+      represents sheet 'E'.
 
-       Contains the one-hot encoding of the time series of the DSSP assignment
-       as chars N×mx3 :class:`numpy.ndarray` array with content
-       ``[frame, residue, encoding]``, where ``encoding`` is a (3,) shape
-       :class:`numpy.ndarray` of booleans with axes representing loop '-',
-       helix 'H' and sheet 'E', consequently.
+      .. SeeAlso:: :func:`translate`
+      
+
+   .. attribute:: results.resids
+      A :class:`numpy.ndarray` of length ``n_residues`` that contains the residue IDs
+      (resids) for the protein residues that were assigned a secondary structure.
 
 
 Functions
@@ -177,10 +184,11 @@ class DSSP(AnalysisBase):
     - 'H' represents a generic helix (α-helix, π-helix or :math:`3_{10}` helix)
     - 'E' represents 'extended strand', participating in beta-ladder (parallel
       or antiparallel)
-    - '-' represents unordered part
+    - '-' represents unordered part ("loop")
 
     The implementation was taken from the pydssp package (v. 0.9.0)
-    https://github.com/ShintaroMinami/PyDSSP by Shintaro Minami.
+    https://github.com/ShintaroMinami/PyDSSP by Shintaro Minami under the
+    MIT license.
 
     .. Warning::
        For DSSP to work properly, your atoms must represent a protein. The
@@ -217,11 +225,12 @@ class DSSP(AnalysisBase):
         This selection should only select a single hydrogen atom in each residue
         (except proline), namely the one bound to the backbone nitrogen.
 
-    .. Note::
-       To work with different hydrogen-naming conventions by default, the default
-       selection is broad but if hydrogens are incorrectly selected (e.g., a
-       :exc:`ValueError` is raised) you must customize `hydrogen_name` for your
-       specific case.
+        .. Note::
+           To work with different hydrogen-naming conventions by default, the 
+           default selection is broad but if hydrogens are incorrectly selected 
+           (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
+           for your specific case.
+
 
     Raises
     ------
@@ -238,25 +247,30 @@ class DSSP(AnalysisBase):
     >>> import MDAnalysis as mda
     >>> u = mda.Universe(PDB)
     >>> run = DSSP(u).run()
-    >>> print("".join(run.results.dssp[0][:20]))
+    >>> print("".join(run.results.dssp[0, :20]))
     --EEEEE-----HHHHHHHH
 
-    (Note that for displaying purposes we only print the first 20 residues
-    of frame 0 with ``run.results.dssp[0][:20]`` but one would typically look
-    at all residues ```run.results.dssp[0]``.)
+    The :attr:`results.dssp` holds the time series of assigned secondary
+    structure, with one character for each residue.
 
-    Also, per-frame dssp assignment allows you to build average
-    secondary structure -- ``DSSP.results.dssp_ndarray`` holds
-    (n_frames, n_residues, 3) shape ndarray with one-hot encoding of
-    loop, helix and sheet, respectively:
+    (Note that for displaying purposes we only print the first 20 residues
+    of frame 0 with ``run.results.dssp[0, :20]`` but one would typically look
+    at all residues ``run.results.dssp[0]``.)
+
+    The :attr:`results.dssp_ndarray` attribute holds a
+    ``(n_frames, n_residues, 3)`` shape ndarray with a *one-hot encoding*
+    of *loop* '-' (index 0), *helix* 'H' (index 1), and *sheet* 'E'
+    (index 2), respectively for each frame of the trajectory. It can be 
+    used to compute, for instance, the **average secondary structure**:
 
     >>> from MDAnalysis.analysis.dssp import translate, DSSP
     >>> from MDAnalysisTests.datafiles import TPR, XTC
     >>> u = mda.Universe(TPR, XTC)
-    >>> long_run = DSSP(u).run()
-    >>> mean_secondary_structure = translate(long_run.results.dssp_ndarray.mean(axis=0))
+    >>> run = DSSP(u).run()
+    >>> mean_secondary_structure = translate(run.results.dssp_ndarray.mean(axis=0))
     >>> print(''.join(mean_secondary_structure)[:20])
     -EEEEEE------HHHHHHH
+
 
     .. versionadded:: 2.8.0
     """
@@ -290,6 +304,10 @@ class DSSP(AnalysisBase):
         # can't do it the other way because I need missing values to exist
         # so that I could fill them in later
         if not self._guess_hydrogens:
+            # zip() assumes that _heavy_atoms and _hydrogens is ordered in the
+            # same way. This is true as long as the original AtomGroup ag is
+            # sorted. With the hard-coded protein selection for ag this is always 
+            # true but if the code on L277 ever changes, make sure to sort first!
             for calpha, hydrogen in zip(
                 self._heavy_atoms["CA"][1:], self._hydrogens[1:]
             ):
@@ -368,7 +386,7 @@ def translate(onehot: np.ndarray) -> np.ndarray:
 
     One-hot encoding corresponds to C3 notation:
     '-', 'H', 'E' are loop, helix and sheet, respectively. Input array must
-    have its last axis of shape 3: (n_residues, 3) or (n_frames, n_residues, 3)
+    have its last axis of shape 3: ``(n_residues, 3)`` or ``(n_frames, n_residues, 3)``
 
     Examples
     --------
