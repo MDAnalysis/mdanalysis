@@ -188,7 +188,7 @@ class DSSP(AnalysisBase):
        as given by the keyword argument `hydrogen_atom`. There may only be 
        a single backbone nitrogen hydrogen atom per residue; the one exception
        is proline, for which there should not exist any such hydrogens.
-       The default value of `hydrogen_atom` should to handle the common naming
+       The default value of `hydrogen_atom` should handle the common naming
        conventions in the PDB and in force fields but if you encounter an error
        or unusual results during your run, try to figure out how to select the
        correct hydrogen atoms and report an issue in the MDAnalysis
