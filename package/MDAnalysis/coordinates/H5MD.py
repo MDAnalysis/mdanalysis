@@ -207,6 +207,7 @@ Classes
    :members:
 
 """
+import logging
 
 import numpy as np
 import MDAnalysis as mda
@@ -229,6 +230,8 @@ except ImportError:
 
 else:
     HAS_H5PY = True
+
+logger = logging.getLogger(__name__)
 
 
 class H5MDReader(base.ReaderBase):
@@ -675,8 +678,12 @@ class H5MDReader(base.ReaderBase):
 
         if 'observables' in self._file:
             for key in self._file['observables'].keys():
-                self.ts.data[key] = self._file['observables'][key][
-                    'value'][self._frame]
+                try:
+                    self.ts.data[key] = self._file['observables'][key][
+                        'value'][self._frame]
+                except KeyError:
+                    logger.warning(f"Unable to read '{key}' from 'observables'")
+                    
 
         # pulls 'time' and 'step' out of first available parent group
         for name, value in self._has.items():
