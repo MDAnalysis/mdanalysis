@@ -676,13 +676,16 @@ class H5MDReader(base.ReaderBase):
     def _copy_to_data(self):
         """assigns values to keys in data dictionary"""
 
-        if 'observables' in self._file:
-            for key in self._file['observables'].keys():
+        if "observables" in self._file:
+            for key in self._file["observables"].keys():
                 try:
-                    self.ts.data[key] = self._file['observables'][key][
-                        'value'][self._frame]
+                    self.ts.data[key] = self._file["observables"][key][
+                        "value"
+                    ][self._frame]
                 except KeyError:
-                    logger.warning(f"Unable to read '{key}' from 'observables'")
+                    logger.warning(
+                        f"Unable to read '{key}' from 'observables'"
+                    )
                     
 
         # pulls 'time' and 'step' out of first available parent group
