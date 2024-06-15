@@ -7,11 +7,12 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
 if HAS_H5PY:
     import h5py
+    from MDAnalysis.coordinates.H5MD import H5MDReader
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (H5MD_xvf, TPR_xvf, TRR_xvf,
                                        COORDINATES_TOPOLOGY,
-                                       COORDINATES_H5MD)
+                                       COORDINATES_H5MD, H5MD_energy)
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference, BaseWriterTest,
                                               assert_timestep_almost_equal)
@@ -894,3 +895,19 @@ class TestH5PYNotInstalled(object):
                         u.atoms.n_atoms) as W:
                 for ts in u.trajectory:
                     W.write(universe)
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+class TestH5MDReaderWithObservables(object):
+    """Read H5MD file with 'observables/atoms/energy'."""
+
+    prec = 3
+    ext = 'h5md'
+
+    @pytest.fixture(scope='class')
+    def universe(self):
+        u = mda.Universe.empty(n_atoms=108, trajectory=True)
+        reader = H5MDReader(H5MD_energy, convert_units=True)
+        u.trajectory = reader
+
+    def test_n_frames(self, universe):
+        assert len(universe.trajectory) == 20
