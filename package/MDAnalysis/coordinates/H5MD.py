@@ -686,7 +686,7 @@ class H5MDReader(base.ReaderBase):
                     logger.warning(
                         f"Unable to read '{key}' from 'observables'"
                     )
-                    
+
 
         # pulls 'time' and 'step' out of first available parent group
         for name, value in self._has.items():
