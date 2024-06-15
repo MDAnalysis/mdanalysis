@@ -908,6 +908,7 @@ class TestH5MDReaderWithObservables(object):
         u = mda.Universe.empty(n_atoms=108, trajectory=True)
         reader = H5MDReader(H5MD_energy, convert_units=True)
         u.trajectory = reader
+        return u
 
     def test_n_frames(self, universe):
         assert len(universe.trajectory) == 20
