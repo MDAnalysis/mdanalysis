@@ -904,11 +904,13 @@ class TestH5MDReaderWithObservables(object):
     ext = 'h5md'
 
     @pytest.fixture(scope='class')
-    def universe(self):
+
+    def test_via_create_universe(self):
+        """Create a Universe from an H5MD file with observables.
+        
+        The reader will ignore the 'observables/atoms/energy'.
+        """
         u = mda.Universe.empty(n_atoms=108, trajectory=True)
         reader = H5MDReader(H5MD_energy, convert_units=True)
         u.trajectory = reader
-        return u
-
-    def test_n_frames(self, universe):
-        assert len(universe.trajectory) == 20
+        assert len(u.trajectory) == 20
