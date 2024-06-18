@@ -232,7 +232,6 @@ else:
     HAS_H5PY = True
 
 
-
 class H5MDReader(base.ReaderBase):
     r"""Reader for the H5MD format.
 
