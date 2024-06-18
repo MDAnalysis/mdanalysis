@@ -251,6 +251,7 @@ __all__ = [
     "PDB_charges",  # PDB file with formal charges
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
+    "DSSP",  # DSSP test suite
 ]
 
 from importlib import resources
@@ -662,6 +663,9 @@ PDBX = (_data_ref / "4x8u.pdbx").as_posix()
 
 SURFACE_PDB = (_data_ref / 'surface.pdb.bz2').as_posix()
 SURFACE_TRR = (_data_ref / 'surface.trr').as_posix()
+
+# DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
+DSSP = (_data_ref / 'dssp').as_posix()
 
 # This should be the last line: clean up namespace
 del resources

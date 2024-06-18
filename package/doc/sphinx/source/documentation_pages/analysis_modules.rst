@@ -211,6 +211,7 @@ Macromolecules
    analysis/gnm
    analysis/helix_analysis
    analysis/dihedrals
+   analysis/dssp
 
 Liquids
 -------
