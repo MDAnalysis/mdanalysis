@@ -909,7 +909,9 @@ class TestH5MDReaderWithObservables(object):
         
         The reader will ignore the 'observables/atoms/energy'.
         """
-        try:
-            _ = H5MDReader(H5MD_energy, convert_units=True)
-        except KeyError:
-            pytest.fail("Could not read H5MD file with observables.")
+
+        u = mda.Universe.empty(n_atoms=108, trajectory=True)
+        reader = H5MDReader(H5MD_energy)
+        u.trajectory = reader
+        for ts in u.trajectory:
+            assert "atoms/energy" in ts.data
