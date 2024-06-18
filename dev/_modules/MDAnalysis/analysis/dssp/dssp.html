@@ -1,0 +1,630 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../../_static/logo/mda_favicon.ico">
+</head>
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.analysis.dssp.dssp &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/site.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=a9b57af3"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/js/versions.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.8.0-dev0 documentation"
+          href="../../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../../../index.html">
+  
+    <img src="../../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.8.0-dev0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.analysis.dssp.dssp</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.analysis.dssp.dssp</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Secondary structure assignment (helix, sheet and loop) --- :mod:`MDAnalysis.analysis.dssp`</span>
+<span class="sd">==========================================================================================</span>
+
+<span class="sd">:Author: Egor Marin</span>
+<span class="sd">:Year: 2024</span>
+<span class="sd">:Copyright: LGPL v2.1+</span>
+
+<span class="sd">.. versionadded:: 2.8.0</span>
+
+<span class="sd">The module contains code to build hydrogend bond contact map,</span>
+<span class="sd">and use it to assign protein secondary structure (:class:`DSSP`).</span>
+
+<span class="sd">This module uses the python version of the original algorithm :footcite:p:`Kabsch1983`,</span>
+<span class="sd">re-implemented by @ShintaroMinami and available under MIT license from</span>
+<span class="sd">`ShintaroMinami/PyDSSP &lt;https://github.com/ShintaroMinami/PyDSSP/tree/master#differences-from-the-original-dssp&gt;`_.</span>
+
+
+<span class="sd">.. Note::</span>
+<span class="sd">    This implementation does not discriminate different types of</span>
+<span class="sd">    beta-sheets, as well as different types of helices, meaning you will get</span>
+<span class="sd">    :math:`3_{10}` helices and π-helices labelled as &quot;helix&quot; too.</span>
+
+
+<span class="sd">.. rubric:: Using original `pydssp`</span>
+<span class="sd">The default implementation uses the original *pydssp* (v.0.9.0) code, rewritten</span>
+<span class="sd">without usage of the *einops* library and hence having no dependencies. If you want</span>
+<span class="sd">to explicitly use *pydssp* (or its particular version), install it to your</span>
+<span class="sd">current environment with ``python -m pip install pydssp``. Please note that the</span>
+<span class="sd">way MDAnalysis uses *pydssp* does not support *pydssp* &#39;s capability for batch</span>
+<span class="sd">processing or its use of the *pytorch* library.</span>
+
+<span class="sd">When using this module in published work please cite :footcite:p:`Kabsch1983`.</span>
+
+<span class="sd">.. rubric:: References</span>
+
+<span class="sd">.. footbibliography::</span>
+
+
+<span class="sd">Example applications</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">Assigning secondary structure of a PDB file</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">In this example we will simply print a string representing a protein&#39;s secondary</span>
+<span class="sd">structure.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    from MDAnalysis.tests.datafiles import PDB</span>
+<span class="sd">    from MDAnalysis.analysis.dssp import DSSP</span>
+<span class="sd">    u = mda.Universe(PDB)</span>
+<span class="sd">    s = &#39;&#39;.join(DSSP(u).run().results.dssp[0])</span>
+<span class="sd">    print(s)</span>
+
+
+<span class="sd">Calculating average secondary structure of a trajectory</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Here we take a trajectory and calculate its average secondary structure, i.e.</span>
+<span class="sd">assign a secondary structure label &#39;X&#39; to a residue if most of the frames in the</span>
+<span class="sd">trajectory got assigned the &#39;X&#39; label.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    from MDAnalysis.analysis.dssp import DSSP, translate</span>
+<span class="sd">    from MDAnalysisTests.datafiles import TPR, XTC</span>
+<span class="sd">    u = mda.Universe(TPR, XTC)</span>
+<span class="sd">    long_run = DSSP(u).run()</span>
+<span class="sd">    mean_secondary_structure = translate(long_run.results.dssp_ndarray.mean(axis=0))</span>
+<span class="sd">    print(&#39;&#39;.join(mean_secondary_structure))</span>
+
+<span class="sd">Running this code produces ::</span>
+
+<span class="sd">   &#39;--EEEE----------HHHHHHH----EE----HHHHH------HHHHHHHHHH------HHHHHHHHHHH---------EEEE-----HHHHHHHHH------EEEEEE--HHHHHH----EE--------EE---E----------------------HHHHHHHHHHHHHHHHHHHHHHHHHHHH----EEEEE------HHHHHHHHH--&#39;</span>
+
+<span class="sd">Find parts of the protein that maintain their secondary structure during simulation</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="sd">In this example, we will find residue groups that maintain their secondary structure</span>
+<span class="sd">along the simulation, and have some meaningful (&#39;E&#39; or &#39;H&#39;) secondary structure</span>
+<span class="sd">during more than set `threshold` fraction of frames. We will call these residues</span>
+<span class="sd">&quot;persistent&quot;, for clarity, and label them according to the structure</span>
+<span class="sd">that they maintain during the run:</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    from MDAnalysis.analysis.dssp import DSSP, translate</span>
+<span class="sd">    from MDAnalysisTests.datafiles import TPR, XTC</span>
+<span class="sd">    u = mda.Universe(TPR, XTC)</span>
+<span class="sd">    threshold = 0.8</span>
+
+<span class="sd">    long_run = DSSP(u).run()</span>
+<span class="sd">    persistent_residues = translate(</span>
+<span class="sd">        long_run</span>
+<span class="sd">        .results</span>
+<span class="sd">        .dssp_ndarray</span>
+<span class="sd">        .mean(axis=0) &gt; threshold</span>
+<span class="sd">    )</span>
+<span class="sd">    print(&#39;&#39;.join(persistent_residues)[:20])</span>
+
+<span class="sd">Running this code produces ::</span>
+
+<span class="sd">    &#39;--EEEE----------HHHH&#39;</span>
+
+
+<span class="sd">Analysis classes</span>
+<span class="sd">----------------</span>
+
+<span class="sd">.. autoclass:: DSSP</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">   .. attribute:: results.dssp</span>
+<span class="sd">   </span>
+<span class="sd">      Contains the time series of the DSSP assignment as a </span>
+<span class="sd">      :class:`numpy.ndarray` array of shape ``(n_frames, n_residues)`` where each row</span>
+<span class="sd">      contains the assigned secondary structure character for each residue (whose </span>
+<span class="sd">      corresponding resid is stored in :attr:`results.resids`). The three characters</span>
+<span class="sd">      are [&#39;H&#39;, &#39;E&#39;, &#39;-&#39;] and representi alpha-helix, sheet and loop, respectively.</span>
+
+<span class="sd">   .. attribute:: results.dssp_ndarray</span>
+<span class="sd">   </span>
+<span class="sd">      Contains the one-hot encoding of the time series of the DSSP assignment</span>
+<span class="sd">      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)`` </span>
+<span class="sd">      where for each residue the encoding is stored as ``(3,)`` shape</span>
+<span class="sd">      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop </span>
+<span class="sd">      (&#39;-&#39;), ``True`` at index 1 represents helix (&#39;H&#39;), and ``True`` at index 2 </span>
+<span class="sd">      represents sheet &#39;E&#39;.</span>
+
+<span class="sd">      .. SeeAlso:: :func:`translate`</span>
+<span class="sd">      </span>
+
+<span class="sd">   .. attribute:: results.resids</span>
+<span class="sd">   </span>
+<span class="sd">      A :class:`numpy.ndarray` of length ``n_residues`` that contains the residue IDs</span>
+<span class="sd">      (resids) for the protein residues that were assigned a secondary structure.</span>
+
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+
+<span class="sd">.. autofunction:: assign</span>
+<span class="sd">.. autofunction:: translate</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span><span class="p">,</span> <span class="n">AtomGroup</span>
+
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">...due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/bip.360221211&quot;</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;DSSP algorithm description&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.dssp&quot;</span><span class="p">,</span>
+    <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">del</span> <span class="n">Doi</span>
+
+
+<span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">pydssp.pydssp_numpy</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">assign</span><span class="p">,</span>
+        <span class="n">_get_hydrogen_atom_position</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">HAS_PYDSSP</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="n">HAS_PYDSSP</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="kn">from</span> <span class="nn">.pydssp_numpy</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">assign</span><span class="p">,</span>
+        <span class="n">_get_hydrogen_atom_position</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="DSSP">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/dssp.html#MDAnalysis.analysis.dssp.dssp.DSSP">[docs]</a>
+<span class="k">class</span> <span class="nc">DSSP</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign secondary structure using the DSSP algorithm.</span>
+
+<span class="sd">    Analyze a selection containing a protein and assign secondary structure</span>
+<span class="sd">    using the Kabsch-Sander algorithm :footcite:p:`Kabsch1983`. Only a subset</span>
+<span class="sd">    of secondary structure categories are implemented:</span>
+
+<span class="sd">    - &#39;H&#39; represents a generic helix (α-helix, π-helix or :math:`3_{10}` helix)</span>
+<span class="sd">    - &#39;E&#39; represents &#39;extended strand&#39;, participating in beta-ladder (parallel</span>
+<span class="sd">      or antiparallel)</span>
+<span class="sd">    - &#39;-&#39; represents unordered part (&quot;loop&quot;)</span>
+
+<span class="sd">    The implementation was taken from the pydssp package (v. 0.9.0)</span>
+<span class="sd">    https://github.com/ShintaroMinami/PyDSSP by Shintaro Minami under the</span>
+<span class="sd">    MIT license.</span>
+
+<span class="sd">    .. Warning::</span>
+<span class="sd">       For DSSP to work properly, your atoms must represent a protein. The</span>
+<span class="sd">       hydrogen atom bound to the backbone nitrogen atom is matched by name</span>
+<span class="sd">       as given by the keyword argument `hydrogen_atom`. There may only be </span>
+<span class="sd">       a single backbone nitrogen hydrogen atom per residue; the one exception</span>
+<span class="sd">       is proline, for which there should not exist any such hydrogens.</span>
+<span class="sd">       The default value of `hydrogen_atom` should handle the common naming</span>
+<span class="sd">       conventions in the PDB and in force fields but if you encounter an error</span>
+<span class="sd">       or unusual results during your run, try to figure out how to select the</span>
+<span class="sd">       correct hydrogen atoms and report an issue in the MDAnalysis</span>
+<span class="sd">       `issue tracker &lt;https://github.com/MDAnalysis/mdanalysis/issues&gt;`_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atoms : Union[Universe, AtomGroup]</span>
+<span class="sd">        input Universe or AtomGroup. In both cases, only protein residues will</span>
+<span class="sd">        be chosen prior to the analysis via `select_atoms(&#39;protein&#39;)`.</span>
+<span class="sd">        Heavy atoms of the protein are then selected by name</span>
+<span class="sd">        `heavyatom_names`, and hydrogens are selected by name</span>
+<span class="sd">        `hydrogen_name`.</span>
+<span class="sd">    guess_hydrogens : bool, optional</span>
+<span class="sd">        whether you want to guess hydrogens positions, by default ``True``.</span>
+<span class="sd">        Guessing is made assuming perfect 120 degrees for all bonds that N</span>
+<span class="sd">        atom makes, and a N-H bond length of 1.01 A.</span>
+<span class="sd">        If ``guess_hydrogens`` is False, hydrogen atom positions on N atoms</span>
+<span class="sd">        will be parsed from the trajectory, except for the &quot;hydrogen&quot; atom</span>
+<span class="sd">        positions on PRO residues, and an N-terminal residue.</span>
+<span class="sd">    heavyatom_names : tuple[str], default (&quot;N&quot;, &quot;CA&quot;, &quot;C&quot;, &quot;O O1 OT1&quot;)</span>
+<span class="sd">        selection names that will be used to select &quot;N&quot;, &quot;CA&quot;, &quot;C&quot; and &quot;O&quot;</span>
+<span class="sd">        atom coordinates for the secondary structure determination. The last</span>
+<span class="sd">        string contains multiple values for &quot;O&quot; to account for C-term residues.</span>
+<span class="sd">    hydrogen_name : str, default &quot;H HN HT1 HT2 HT3&quot;</span>
+<span class="sd">        This selection should only select a single hydrogen atom in each residue</span>
+<span class="sd">        (except proline), namely the one bound to the backbone nitrogen.</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">           To work with different hydrogen-naming conventions by default, the </span>
+<span class="sd">           default selection is broad but if hydrogens are incorrectly selected </span>
+<span class="sd">           (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`</span>
+<span class="sd">           for your specific case.</span>
+
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if ``guess_hydrogens`` is True but some non-PRO hydrogens are missing.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    For example, you can assign secondary structure for a single PDB file:</span>
+
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.analysis.dssp import DSSP</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysisTests.datafiles import PDB</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">    &gt;&gt;&gt; u = mda.Universe(PDB)</span>
+<span class="sd">    &gt;&gt;&gt; run = DSSP(u).run()</span>
+<span class="sd">    &gt;&gt;&gt; print(&quot;&quot;.join(run.results.dssp[0, :20]))</span>
+<span class="sd">    --EEEEE-----HHHHHHHH</span>
+
+<span class="sd">    The :attr:`results.dssp` holds the time series of assigned secondary</span>
+<span class="sd">    structure, with one character for each residue.</span>
+
+<span class="sd">    (Note that for displaying purposes we only print the first 20 residues</span>
+<span class="sd">    of frame 0 with ``run.results.dssp[0, :20]`` but one would typically look</span>
+<span class="sd">    at all residues ``run.results.dssp[0]``.)</span>
+
+<span class="sd">    The :attr:`results.dssp_ndarray` attribute holds a</span>
+<span class="sd">    ``(n_frames, n_residues, 3)`` shape ndarray with a *one-hot encoding*</span>
+<span class="sd">    of *loop* &#39;-&#39; (index 0), *helix* &#39;H&#39; (index 1), and *sheet* &#39;E&#39;</span>
+<span class="sd">    (index 2), respectively for each frame of the trajectory. It can be </span>
+<span class="sd">    used to compute, for instance, the **average secondary structure**:</span>
+
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.analysis.dssp import translate, DSSP</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysisTests.datafiles import TPR, XTC</span>
+<span class="sd">    &gt;&gt;&gt; u = mda.Universe(TPR, XTC)</span>
+<span class="sd">    &gt;&gt;&gt; run = DSSP(u).run()</span>
+<span class="sd">    &gt;&gt;&gt; mean_secondary_structure = translate(run.results.dssp_ndarray.mean(axis=0))</span>
+<span class="sd">    &gt;&gt;&gt; print(&#39;&#39;.join(mean_secondary_structure)[:20])</span>
+<span class="sd">    -EEEEEE------HHHHHHH</span>
+
+
+<span class="sd">    .. versionadded:: 2.8.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Universe</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">],</span>
+        <span class="n">guess_hydrogens</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">heavyatom_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;O O1 OT1&quot;</span><span class="p">),</span>
+        <span class="n">hydrogen_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;H HN HT1 HT2 HT3&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_guess_hydrogens</span> <span class="o">=</span> <span class="n">guess_hydrogens</span>
+
+        <span class="n">ag</span><span class="p">:</span> <span class="n">AtomGroup</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+
+        <span class="c1"># define necessary selections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">ag</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+                    <span class="n">ag</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="p">)</span>  <span class="c1"># need split() since `np.isin` takes an iterable as second argument</span>
+                <span class="c1"># and &quot;N&quot;.split() -&gt; [&quot;N&quot;]</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">heavyatom_names</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;AtomGroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="n">hydrogen_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span>
+        <span class="p">]</span>
+        <span class="c1"># can&#39;t do it the other way because I need missing values to exist</span>
+        <span class="c1"># so that I could fill them in later</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guess_hydrogens</span><span class="p">:</span>
+            <span class="c1"># zip() assumes that _heavy_atoms and _hydrogens is ordered in the</span>
+            <span class="c1"># same way. This is true as long as the original AtomGroup ag is</span>
+            <span class="c1"># sorted. With the hard-coded protein selection for ag this is always </span>
+            <span class="c1"># true but if the code on L277 ever changes, make sure to sort first!</span>
+            <span class="k">for</span> <span class="n">calpha</span><span class="p">,</span> <span class="n">hydrogen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">calpha</span><span class="o">.</span><span class="n">resname</span> <span class="o">!=</span> <span class="s2">&quot;PRO&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hydrogen</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">calpha</span><span class="o">.</span><span class="n">resname</span> <span class="o">==</span> <span class="s2">&quot;PRO&quot;</span> <span class="ow">and</span> <span class="n">hydrogen</span>
+                <span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="s2">&quot;Residue </span><span class="si">{calpha.residue}</span><span class="s2"> contains wrong number of hydrogens: &quot;</span>
+                            <span class="s2">&quot;exactly 1 hydrogen is expected for non-PRO residues, and &quot;</span>
+                            <span class="s2">&quot;zero hydrogens for PRO residues.&quot;</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">positions</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">arr</span><span class="p">:</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">positions</span><span class="p">)))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;Universe contains unequal numbers of (N,CA,C,O) atoms (&#39;name&#39; field).&quot;</span>
+                    <span class="s2">&quot; Please select appropriate AtomGroup manually.&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_get_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns coordinates of (N,CA,C,O,H) atoms, as required by</span>
+<span class="sd">        :func:`get_hbond_map` and :func:`assign` functions.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            coordinates of (N,CA,C,O,H) atoms</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            if input Universe contains different number of (N,CA,C,O) atoms</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># NOTE: here we explicitly rely on the fact that `self._heavy_atoms`</span>
+        <span class="c1"># dictionary maintains order of the keys since python 3.7</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">positions</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guess_hydrogens</span><span class="p">:</span>
+            <span class="n">guessed_h_coords</span> <span class="o">=</span> <span class="n">_get_hydrogen_atom_position</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="n">h_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">group</span> <span class="k">else</span> <span class="n">guessed_h_coords</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">h_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">h_coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">coords</span><span class="p">,</span> <span class="n">h_coords</span><span class="p">])</span>
+
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">coords</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_coords</span><span class="p">()</span>
+        <span class="n">dssp</span> <span class="o">=</span> <span class="n">assign</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dssp</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">resids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">resids</span></div>
+
+
+
+<div class="viewcode-block" id="translate">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/dssp.html#MDAnalysis.analysis.dssp.dssp.translate">[docs]</a>
+<span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="n">onehot</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Translate a one-hot encoding summary into char-based secondary structure</span>
+<span class="sd">    assignment.</span>
+
+<span class="sd">    One-hot encoding corresponds to C3 notation:</span>
+<span class="sd">    &#39;-&#39;, &#39;H&#39;, &#39;E&#39; are loop, helix and sheet, respectively. Input array must</span>
+<span class="sd">    have its last axis of shape 3: ``(n_residues, 3)`` or ``(n_frames, n_residues, 3)``</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from MDAnalysis.analysis.dssp import translate</span>
+<span class="sd">        import numpy as np</span>
+<span class="sd">        # encoding &#39;HE-&#39;</span>
+<span class="sd">        onehot = np.array([[False, True, False],  # &#39;H&#39;</span>
+<span class="sd">                           [False, False, True],  # &#39;E&#39;</span>
+<span class="sd">                           [True, False, False]]) # &#39;-&#39;</span>
+<span class="sd">        &#39;&#39;.join(translate(onehot))</span>
+<span class="sd">        print(&#39;&#39;.join(translate(onehot)))</span>
+
+<span class="sd">    Running this code produces ::</span>
+
+<span class="sd">        HE-</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    onehot : np.ndarray</span>
+<span class="sd">        input array of one-hot encoding in (&#39;-&#39;, &#39;H&#39;, &#39;E&#39;) order</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        array of &#39;-&#39;, &#39;H&#39; and &#39;E&#39; symbols with secondary structure</span>
+
+
+<span class="sd">    .. versionadded:: 2.8.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">C3_ALPHABET</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">])</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">onehot</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">C3_ALPHABET</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2024, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.8.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

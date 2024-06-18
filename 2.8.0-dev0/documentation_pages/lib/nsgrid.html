@@ -239,11 +239,11 @@ to the function.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Desired cutoff distance</p></li>
-<li><p><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for <code class="docutils literal notranslate"><span class="pre">N</span></code> atoms.
+<li><p><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a>) – atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for <code class="docutils literal notranslate"><span class="pre">N</span></code> atoms.
 <code class="docutils literal notranslate"><span class="pre">dtype=numpy.float32</span></code>. For Non-PBC calculations,
 all the coords must be within the bounding box specified
 by <code class="docutils literal notranslate"><span class="pre">box</span></code></p></li>
-<li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – Box dimension of shape (6, ). The dimensions must be
+<li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a>) – Box dimension of shape (6, ). The dimensions must be
 provided in the same format as returned
 by <code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. For non-PBC
@@ -291,7 +291,7 @@ neighbors.</p>
 the instantiation of :class:FastNS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>search_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – Query coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> where
+<dd class="field-odd"><p><strong>search_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a>) – Query coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> where
 <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of queries</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -355,7 +355,7 @@ obtained from <code class="docutils literal notranslate"><span class="pre">get_p
 atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">N</span></code></p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -380,7 +380,7 @@ atoms used to search against  the query atoms.</p>
 and initial atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">2)</span></code></p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>

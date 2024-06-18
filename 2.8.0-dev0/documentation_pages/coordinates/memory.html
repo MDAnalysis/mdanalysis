@@ -351,7 +351,7 @@ specifying the order of columns through the <cite>order</cite> keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>coordinate_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – The underlying array of coordinates. The MemoryReader now
+<li><p><strong>coordinate_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a>) – The underlying array of coordinates. The MemoryReader now
 necessarily requires a np.ndarray</p></li>
 <li><p><strong>order</strong> (<em>{&quot;afc&quot;</em><em>, </em><em>&quot;acf&quot;</em><em>, </em><em>&quot;caf&quot;</em><em>, </em><em>&quot;fac&quot;</em><em>, </em><em>&quot;fca&quot;</em><em>, </em><em>&quot;cfa&quot;}</em><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
@@ -366,9 +366,9 @@ which must then be shape (nframes, 6)</p></li>
 is set, then <cite>dt</cite> will be ignored.</p></li>
 <li><p><strong>filename</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – The name of the file from which this instance is created. Set to <code class="docutils literal notranslate"><span class="pre">None</span></code>
 when created from an array</p></li>
-<li><p><strong>velocities</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a><em> (</em><em>optional</em><em>)</em>) – Atom velocities.  Must match shape of coordinate_array.  Will share order
+<li><p><strong>velocities</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a><em> (</em><em>optional</em><em>)</em>) – Atom velocities.  Must match shape of coordinate_array.  Will share order
 with coordinates.</p></li>
-<li><p><strong>forces</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a><em> (</em><em>optional</em><em>)</em>) – Atom forces.  Must match shape of coordinate_array  Will share order
+<li><p><strong>forces</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a><em> (</em><em>optional</em><em>)</em>) – Atom forces.  Must match shape of coordinate_array  Will share order
 with coordinates</p></li>
 </ul>
 </dd>
@@ -899,7 +899,7 @@ steps are more frequent, this will work the same as calling
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – data which will be used later in MemoryReader</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a>) – data which will be used later in MemoryReader</p></li>
 <li><p><strong>order</strong> (<em>{&quot;afc&quot;</em><em>, </em><em>&quot;acf&quot;</em><em>, </em><em>&quot;caf&quot;</em><em>, </em><em>&quot;fac&quot;</em><em>, </em><em>&quot;fca&quot;</em><em>, </em><em>&quot;cfa&quot;}</em><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
@@ -960,7 +960,7 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>coordinate_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> object) – The underlying array of coordinates</p></li>
+<li><p><strong>coordinate_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> object) – The underlying array of coordinates</p></li>
 <li><p><strong>order</strong> (<em>{&quot;afc&quot;</em><em>, </em><em>&quot;acf&quot;</em><em>, </em><em>&quot;caf&quot;</em><em>, </em><em>&quot;fac&quot;</em><em>, </em><em>&quot;fca&quot;</em><em>, </em><em>&quot;cfa&quot;}</em><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array

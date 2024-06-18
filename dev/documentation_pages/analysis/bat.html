@@ -316,7 +316,7 @@ instead of being recalculated using the run() method.</p></li>
 <dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.results.bat">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">bat</span></span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.results.bat" title="Link to this definition"></a></dt>
 <dd><p>Contains the time series of the Bond-Angle-Torsion coordinates as a
-(nframes, 3N) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array. Each row corresponds to
+(nframes, 3N) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array. Each row corresponds to
 a frame in the trajectory. In each column, the first six elements
 describe external degrees of freedom. The first three are the center
 of mass of the initial atom. The next three specify the  external angles
@@ -339,7 +339,7 @@ all the other bond angles, and then all the other torsion angles.</p>
 Cartesian coordinates after modifying a specific torsion angle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bat_frame</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – an array with dimensions (3N,) with external then internal
+<dd class="field-odd"><p><strong>bat_frame</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><em>numpy.ndarray</em></a>) – an array with dimensions (3N,) with external then internal
 degrees of freedom based on the root atoms, followed by the bond,
 angle, and (proper and improper) torsion coordinates.</p>
 </dd>
@@ -350,7 +350,7 @@ the class. The molecule will be whole opposed to wrapped around a
 periodic boundary.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>

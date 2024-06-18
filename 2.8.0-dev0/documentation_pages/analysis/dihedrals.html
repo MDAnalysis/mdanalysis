@@ -42,7 +42,7 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf" href="rdf.html" />
+    <link rel="next" title="4.7.1.4. Secondary structure assignment (helix, sheet and loop) — MDAnalysis.analysis.dssp" href="dssp.html" />
     <link rel="prev" title="4.7.1.2. HELANAL — analysis of protein helices" href="helix_analysis.html" /> 
 </head>
 
@@ -115,6 +115,7 @@
 <li class="toctree-l4"><a class="reference internal" href="gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="helix_analysis.html">4.7.1.2. HELANAL — analysis of protein helices</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">4.7.1.3. Dihedral angles analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="dssp.html">4.7.1.4. Secondary structure assignment (helix, sheet and loop) — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dssp</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../analysis_modules.html#liquids">4.7.2. Liquids</a></li>
@@ -335,7 +336,7 @@ the dihedral angles are calculated</p>
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral.results.angles">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="Link to this definition"></a></dt>
 <dd><p>Contains the time steps of the angles for each atomgroup in the list as
-an <code class="docutils literal notranslate"><span class="pre">n_frames×len(atomgroups)</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with content
+an <code class="docutils literal notranslate"><span class="pre">n_frames×len(atomgroups)</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with content
 <code class="docutils literal notranslate"><span class="pre">[[angle</span> <span class="pre">1,</span> <span class="pre">angle</span> <span class="pre">2,</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>
@@ -453,7 +454,7 @@ selection cannot be made, that residue will be removed from the analysis.</p>
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="Link to this definition"></a></dt>
 <dd><p>Contains the time steps of the <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> angles for
-each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
 content <code class="docutils literal notranslate"><span class="pre">[[[phi,</span> <span class="pre">psi],</span> <span class="pre">[residue</span> <span class="pre">2],</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>
@@ -584,7 +585,7 @@ them</p></li>
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin.results.angles">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="Link to this definition"></a></dt>
 <dd><p>Contains the time steps of the <span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> angles
-for each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+for each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 with content <code class="docutils literal notranslate"><span class="pre">[[[chi1,</span> <span class="pre">chi2],</span> <span class="pre">[residue</span> <span class="pre">2],</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>
@@ -693,7 +694,7 @@ allowing to modify description, position etc of tqdm progressbars</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="helix_analysis.html" class="btn btn-neutral float-left" title="4.7.1.2. HELANAL — analysis of protein helices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="rdf.html" class="btn btn-neutral float-right" title="4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dssp.html" class="btn btn-neutral float-right" title="4.7.1.4. Secondary structure assignment (helix, sheet and loop) — MDAnalysis.analysis.dssp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

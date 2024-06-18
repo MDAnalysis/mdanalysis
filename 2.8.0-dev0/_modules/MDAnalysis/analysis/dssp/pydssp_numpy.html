@@ -1,0 +1,469 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../../_static/logo/mda_favicon.ico">
+</head>
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.analysis.dssp.pydssp_numpy &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/site.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=a9b57af3"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/js/versions.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.8.0-dev0 documentation"
+          href="../../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../../../index.html">
+  
+    <img src="../../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.8.0-dev0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.analysis.dssp.pydssp_numpy</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.analysis.dssp.pydssp_numpy</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A re-implementation of DSSP algorithm :footcite:p:`Kabsch1983`, taken from</span>
+<span class="sd">*pydssp* v.0.9.0 (https://github.com/ShintaroMinami/PyDSSP) by Shintaro Minami,</span>
+<span class="sd">distributed under MIT license.</span>
+
+<span class="sd">Current implementation doesn&#39;t use `einops` as a dependency, instead directly</span>
+<span class="sd">using `numpy` operations for axis rearrangement. However, this implementation</span>
+<span class="sd">does not allow for batch computation, in contrast with `pydssp`, since it&#39;s</span>
+<span class="sd">designed to be used in per-frame manner in protein trajectories.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">CONST_Q1Q2</span> <span class="o">=</span> <span class="mf">0.084</span>
+<span class="n">CONST_F</span> <span class="o">=</span> <span class="mi">332</span>
+<span class="n">DEFAULT_CUTOFF</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span>
+<span class="n">DEFAULT_MARGIN</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+
+<span class="k">def</span> <span class="nf">_upsample</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs array upsampling with given window along given axis.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        hbmap = np.arange(4*4).reshape(4,4)</span>
+<span class="sd">        print(hbmap)</span>
+<span class="sd">        # [[ 0  1  2  3]</span>
+<span class="sd">        #  [ 4  5  6  7]</span>
+<span class="sd">        #  [ 8  9 10 11]</span>
+<span class="sd">        #  [12 13 14 15]]</span>
+
+<span class="sd">        print(_upsample(hbmap))</span>
+<span class="sd">        # [[[[ 0  1  2]</span>
+<span class="sd">        #    [ 4  5  6]</span>
+<span class="sd">        #    [ 8  9 10]]</span>
+
+<span class="sd">        #   [[ 1  2  3]</span>
+<span class="sd">        #    [ 5  6  7]</span>
+<span class="sd">        #    [ 9 10 11]]]</span>
+
+
+<span class="sd">        #  [[[ 4  5  6]</span>
+<span class="sd">        #    [ 8  9 10]</span>
+<span class="sd">        #    [12 13 14]]</span>
+
+<span class="sd">        #   [[ 5  6  7]</span>
+<span class="sd">        #    [ 9 10 11]</span>
+<span class="sd">        #    [13 14 15]]]]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : np.ndarray</span>
+<span class="sd">        input array</span>
+<span class="sd">    window : int</span>
+<span class="sd">        upsample window</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        unfolded array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_unfold</span><span class="p">(</span><span class="n">_unfold</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">window</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_unfold</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="s2">&quot;Helper function for 2D array upsampling&quot;</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="n">window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">unfolded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">unfolded</span><span class="p">,</span> <span class="n">axis</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_hydrogen_atom_position</span><span class="p">(</span><span class="n">coord</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fills in hydrogen atoms positions if they are abscent, under the</span>
+<span class="sd">    assumption that C-N-H and H-N-CA angles are perfect 120 degrees,</span>
+<span class="sd">    and N-H bond length is 1.01 A.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coord : np.ndarray</span>
+<span class="sd">        input coordinates in Angstrom, shape (n_atoms, 4, 3),</span>
+<span class="sd">        where second axes corresponds to (N, CA, C, O) atom coordinates</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        coordinates of additional hydrogens, shape (n_atoms-1, 3)</span>
+
+<span class="sd">    .. versionadded:: 2.8.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># C_i, N_i, H_i and CA_{i+1} are all in the peptide bond plane</span>
+    <span class="c1"># we wanna get C_{i+1} - N_{i} vectors and normalize them</span>
+    <span class="c1"># ---------</span>
+    <span class="c1"># v1 = vec(C_i, N_i)</span>
+    <span class="c1"># v2 = vec(CA_{i+1}, N_i)</span>
+    <span class="c1"># v3 = vec(N_i, H_i) = ?</span>
+    <span class="c1"># we use the assumption that all the angles are 120 degrees,</span>
+    <span class="c1"># and |v3| = 1.01, hence</span>
+    <span class="c1"># we can derive v3 = (v1/|v1| + v2/|v2|)*|v3|</span>
+
+    <span class="c1"># get v1 = vec(C_i, N_i)</span>
+    <span class="n">vec_cn</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">vec_cn</span> <span class="o">=</span> <span class="n">vec_cn</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec_cn</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># get v2 = vec(CA_{i+1}, N_{i})</span>
+    <span class="n">vec_can</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">vec_can</span> <span class="o">=</span> <span class="n">vec_can</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec_can</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">vec_nh</span> <span class="o">=</span> <span class="n">vec_cn</span> <span class="o">+</span> <span class="n">vec_can</span>
+    <span class="n">vec_nh</span> <span class="o">=</span> <span class="n">vec_nh</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec_nh</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># vec_(0, H) = vec(0, N) + vec_nh</span>
+    <span class="k">return</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1.01</span> <span class="o">*</span> <span class="n">vec_nh</span>
+
+
+<span class="k">def</span> <span class="nf">get_hbond_map</span><span class="p">(</span>
+    <span class="n">coord</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_CUTOFF</span><span class="p">,</span>
+    <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_MARGIN</span><span class="p">,</span>
+    <span class="n">return_e</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns hydrogen bond map</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coord : np.ndarray</span>
+<span class="sd">        input coordinates in either (n, 4, 3) or (n, 5, 3) shape</span>
+<span class="sd">        (without or with hydrogens). If hydrogens are not present, then</span>
+<span class="sd">        ideal positions (see :func:_get_hydrogen_atom_positions) are used.</span>
+<span class="sd">    cutoff : float, optional</span>
+<span class="sd">        cutoff, by default DEFAULT_CUTOFF</span>
+<span class="sd">    margin : float, optional</span>
+<span class="sd">        margin, by default DEFAULT_MARGIN</span>
+<span class="sd">    return_e : bool, optional</span>
+<span class="sd">        if to return energy instead of hbond map, by default False</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        output hbond map or energy depending on return_e param</span>
+
+
+<span class="sd">    .. versionadded:: 2.8.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_atom_types</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="n">n_atom_types</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="mi">4</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">,</span>
+    <span class="p">),</span> <span class="s2">&quot;Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)&quot;</span>
+
+    <span class="k">if</span> <span class="n">n_atom_types</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">h_1</span> <span class="o">=</span> <span class="n">_get_hydrogen_atom_position</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">n_atom_types</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">h_1</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">4</span><span class="p">]</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)&quot;</span><span class="p">)</span>
+    <span class="c1"># after this:</span>
+    <span class="c1"># h.shape == (n_atoms, 3)</span>
+    <span class="c1"># coord.shape == (n_atoms, 4, 3)</span>
+
+    <span class="c1"># distance matrix</span>
+    <span class="n">n_1</span><span class="p">,</span> <span class="n">c_0</span><span class="p">,</span> <span class="n">o_0</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n_atoms</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">c_0</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">omap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">o_0</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">nmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">n_1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">hmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">h_1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">d_on</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">omap</span> <span class="o">-</span> <span class="n">nmap</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">d_ch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">cmap</span> <span class="o">-</span> <span class="n">hmap</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">d_oh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">omap</span> <span class="o">-</span> <span class="n">hmap</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">d_cn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">cmap</span> <span class="o">-</span> <span class="n">nmap</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># electrostatic interaction energy</span>
+    <span class="c1"># e[i, j] = e(CO_i) - e(NH_j)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span>
+        <span class="n">CONST_Q1Q2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_on</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_ch</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_oh</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_cn</span><span class="p">)</span> <span class="o">*</span> <span class="n">CONST_F</span><span class="p">,</span>
+        <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">return</span> <span class="n">e</span>
+
+    <span class="c1"># mask for local pairs (i,i), (i,i+1), (i,i+2)</span>
+    <span class="n">local_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">local_mask</span> <span class="o">*=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">),</span> <span class="n">k</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">local_mask</span> <span class="o">*=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">),</span> <span class="n">k</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># hydrogen bond map (continuous value extension of original definition)</span>
+    <span class="n">hbond_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">cutoff</span> <span class="o">-</span> <span class="n">margin</span> <span class="o">-</span> <span class="n">e</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=-</span><span class="n">margin</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="n">margin</span><span class="p">)</span>
+    <span class="n">hbond_map</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">hbond_map</span> <span class="o">/</span> <span class="n">margin</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">hbond_map</span> <span class="o">=</span> <span class="n">hbond_map</span> <span class="o">*</span> <span class="n">local_mask</span>
+
+    <span class="k">return</span> <span class="n">hbond_map</span>
+
+
+<div class="viewcode-block" id="assign">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/dssp.html#MDAnalysis.analysis.dssp.dssp.assign">[docs]</a>
+<span class="k">def</span> <span class="nf">assign</span><span class="p">(</span><span class="n">coord</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assigns secondary structure for a given coordinate array,</span>
+<span class="sd">    either with or without assigned hydrogens</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coord : np.ndarray</span>
+<span class="sd">        input coordinates in either (n, 4, 3) or (n, 5, 3) shape,</span>
+<span class="sd">        without or with hydrogens, respectively. Second dimension `k` represents</span>
+<span class="sd">        (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates</span>
+<span class="sd">        (when k=5).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        output (n,) array with one-hot labels in C3 notation (&#39;-&#39;, &#39;H&#39;, &#39;E&#39;),</span>
+<span class="sd">        representing loop, helix and sheet, respectively.</span>
+
+
+<span class="sd">    .. versionadded:: 2.8.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get hydrogen bond map</span>
+    <span class="n">hbmap</span> <span class="o">=</span> <span class="n">get_hbond_map</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+    <span class="n">hbmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">hbmap</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># convert into &quot;i:C=O, j:N-H&quot; form</span>
+
+    <span class="c1"># identify turn 3, 4, 5</span>
+    <span class="n">turn3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">hbmap</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+    <span class="n">turn4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">hbmap</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+    <span class="n">turn5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">hbmap</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+
+    <span class="c1"># assignment of helical secondary structures</span>
+    <span class="n">h3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">turn3</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">turn3</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+    <span class="n">h4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">turn4</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">turn4</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+    <span class="n">h5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">turn5</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">turn5</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+
+    <span class="c1"># helix4 first, as alpha helix</span>
+    <span class="n">helix4</span> <span class="o">=</span> <span class="n">h4</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">h3</span> <span class="o">=</span> <span class="n">h3</span> <span class="o">*</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">helix4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="o">~</span><span class="n">helix4</span>  <span class="c1"># helix4 is higher prioritized</span>
+    <span class="n">h5</span> <span class="o">=</span> <span class="n">h5</span> <span class="o">*</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">helix4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="o">~</span><span class="n">helix4</span>  <span class="c1"># helix4 is higher prioritized</span>
+    <span class="n">helix3</span> <span class="o">=</span> <span class="n">h3</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">helix5</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">h5</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">h5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># identify bridge</span>
+    <span class="n">unfoldmap</span> <span class="o">=</span> <span class="n">_upsample</span><span class="p">(</span><span class="n">hbmap</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+    <span class="n">unfoldmap_rev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">unfoldmap</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">p_bridge</span> <span class="o">=</span> <span class="p">(</span><span class="n">unfoldmap</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">unfoldmap_rev</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span>
+        <span class="n">unfoldmap_rev</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">unfoldmap</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">p_bridge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">p_bridge</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+    <span class="n">a_bridge</span> <span class="o">=</span> <span class="p">(</span><span class="n">unfoldmap</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">unfoldmap_rev</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span>
+        <span class="n">unfoldmap</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">unfoldmap_rev</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">a_bridge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">a_bridge</span><span class="p">,</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+    <span class="c1"># ladder</span>
+    <span class="n">ladder</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_bridge</span> <span class="o">+</span> <span class="n">a_bridge</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+
+    <span class="c1"># H, E, L of C3</span>
+    <span class="n">helix</span> <span class="o">=</span> <span class="p">(</span><span class="n">helix3</span> <span class="o">+</span> <span class="n">helix4</span> <span class="o">+</span> <span class="n">helix5</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+    <span class="n">strand</span> <span class="o">=</span> <span class="n">ladder</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="o">~</span><span class="n">helix</span> <span class="o">*</span> <span class="o">~</span><span class="n">strand</span>
+
+    <span class="n">onehot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">loop</span><span class="p">,</span> <span class="n">helix</span><span class="p">,</span> <span class="n">strand</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">onehot</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2024, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.8.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

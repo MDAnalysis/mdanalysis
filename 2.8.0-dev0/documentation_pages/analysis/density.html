@@ -528,7 +528,7 @@ instance, which is derived from a <a class="reference external" href="https://ww
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p></li>
+<li><p><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p></li>
 <li><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – list of arrays, the lower and upper bin edges along the axes</p></li>
 <li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – <p>dictionary of class parameters; saved with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.save()</span></code></a>. The following keys are meaningful to
@@ -573,7 +573,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.edges">
 <span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.edges" title="Link to this definition"></a></dt>
 <dd><p>The boundaries of each cell in <cite>grid</cite> along all axes (equivalent
-to what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
+to what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of 1d-arrays</p>
@@ -634,7 +634,7 @@ ensure that the DX file is written in a format suitable for <a class="reference 
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.make_density()</span></code></a> method converts the grid to a physical density. For
 a probability density, divide it by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.grid.sum()</span></code> or use <code class="docutils literal notranslate"><span class="pre">density=True</span></code>
-right away in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">histogramdd()</span></code></a>.</p>
+right away in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">histogramdd()</span></code></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <code class="docutils literal notranslate"><span class="pre">isDensity=True</span></code> because there is no reliable way to detect if
