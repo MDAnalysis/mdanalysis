@@ -224,6 +224,9 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.lib</span> <span class="kn">import</span> <span class="n">NumpyVersion</span>
+
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..coordinates.base</span> <span class="kn">import</span> <span class="n">SingleFrameReaderBase</span>
 <span class="kn">from</span> <span class="nn">..topology.tables</span> <span class="kn">import</span> <span class="n">SYMB2Z</span>
@@ -318,11 +321,20 @@
 <span class="sd">        obj : AtomGroup or Universe or :class:`Timestep`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
+            <span class="c1"># TODO: remove this guard when parmed has a release</span>
+            <span class="c1"># that supports NumPy 2</span>
+            <span class="k">if</span> <span class="n">NumpyVersion</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="s2">&quot;2.0.0&quot;</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;ParmEd is required for ParmEdConverter but &#39;</span>
-                              <span class="s1">&#39;is not installed. Try installing it with </span><span class="se">\n</span><span class="s1">&#39;</span>
-                              <span class="s1">&#39;pip install parmed&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">NumpyVersion</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="s2">&quot;2.0.0&quot;</span><span class="p">:</span>
+                <span class="n">ermsg</span> <span class="o">=</span> <span class="s2">&quot;ParmEd is not compatible with NumPy 2.0+&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ermsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ParmEd is required for ParmEdConverter but is not &quot;</span>
+                         <span class="s2">&quot;installed. Try installing it with </span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="s2">&quot;pip install parmed&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># make sure to use atoms (Issue 46)</span>
             <span class="n">ag_or_ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
