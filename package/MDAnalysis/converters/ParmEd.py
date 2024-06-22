@@ -81,6 +81,8 @@ import functools
 import itertools
 import warnings
 
+from numpy.lib import NumpyVersion
+
 from . import base
 from ..coordinates.base import SingleFrameReaderBase
 from ..topology.tables import SYMB2Z
@@ -168,11 +170,20 @@ class ParmEdConverter(base.ConverterBase):
         obj : AtomGroup or Universe or :class:`Timestep`
         """
         try:
-            import parmed as pmd
+            # TODO: remove this guard when parmed has a release
+            # that supports NumPy 2
+            if NumpyVersion(np.__version__) < "2.0.0":
+                import parmed as pmd
+            else:
+                raise ImportError
         except ImportError:
-            raise ImportError('ParmEd is required for ParmEdConverter but '
-                              'is not installed. Try installing it with \n'
-                              'pip install parmed')
+            if NumpyVersion(np.__version__) >= "2.0.0":
+                ermsg = "ParmEd is not compatible with NumPy 2.0+"
+            else:
+                ermsg = ("ParmEd is required for ParmEdConverter but is not "
+                         "installed. Try installing it with \n"
+                         "pip install parmed")
+            raise ImportError(errmsg)
         try:
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms
