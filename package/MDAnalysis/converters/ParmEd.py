@@ -81,6 +81,7 @@ import functools
 import itertools
 import warnings
 
+import numpy as np
 from numpy.lib import NumpyVersion
 
 from . import base
