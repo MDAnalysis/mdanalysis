@@ -903,6 +903,7 @@ class TestH5PYNotInstalled(object):
                 for ts in u.trajectory:
                     W.write(universe)
 
+
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDReaderWithObservables(object):
     """Read H5MD file with 'observables/atoms/energy'."""
@@ -910,10 +911,9 @@ class TestH5MDReaderWithObservables(object):
     prec = 3
     ext = 'h5md'
 
-
     def test_read_h5md_issue4598(self):
         """Read a H5MD file with observables.
-        
+
         The reader will ignore the 'observables/atoms/energy'.
         """
 
