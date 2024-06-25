@@ -685,14 +685,14 @@ class H5MDReader(base.ReaderBase):
                     # if value is not a subkey, read dict of subkeys
                     else:
                         for subkey in self._file["observables"][key].keys():
-                            self.ts.data[key + "/" + subkey] = self._file["observables"][key][
-                                subkey
-                            ]["value"][self._frame]
+                            self.ts.data[key + "/" + subkey] = self._file[
+                                "observables"
+                            ][key][subkey]["value"][self._frame]
                 except KeyError:
                     warnings.warn(
                         f"Could not read {key} from observables group. "
                         "Possibly not a legal H5MD observable specification."
-                        )
+                    )
 
         # pulls 'time' and 'step' out of first available parent group
         for name, value in self._has.items():
