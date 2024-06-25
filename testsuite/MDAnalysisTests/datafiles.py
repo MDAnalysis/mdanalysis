@@ -373,7 +373,7 @@ PDB_xvf = (_data_ref / 'cobrotoxin.pdb').as_posix()
 TPR_xvf = (_data_ref / 'cobrotoxin.tpr').as_posix()
 TRR_xvf = (_data_ref / 'cobrotoxin.trr').as_posix()
 H5MD_xvf = (_data_ref / 'cobrotoxin.h5md').as_posix()
-H5MD_energy = (_data_ref / 'cu.h5').as_posix()
+H5MD_energy = (_data_ref / 'cu.h5md').as_posix()
 XVG_BZ2 = (_data_ref / 'cobrotoxin_protein_forces.xvg.bz2').as_posix()
 
 XPDB_small = (_data_ref / '5digitResid.pdb').as_posix()
