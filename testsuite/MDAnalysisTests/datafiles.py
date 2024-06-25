@@ -77,7 +77,7 @@ __all__ = [
     "GRO_sameresid_diffresname",  # Case where two residues share the same resid
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
-    "H5MD_energy", # H5MD trajectory with observables/atoms/energy
+    "H5MD_energy",  # H5MD trajectory with observables/atoms/energy
     "XVG_BZ2",  # Compressed xvg file about cobrotoxin
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",

@@ -5,17 +5,24 @@ import sys
 import os
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
+
 if HAS_H5PY:
     import h5py
     from MDAnalysis.coordinates.H5MD import H5MDReader
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import (H5MD_xvf, TPR_xvf, TRR_xvf,
-                                       COORDINATES_TOPOLOGY,
-                                       COORDINATES_H5MD, H5MD_energy)
-from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
-                                              BaseReference, BaseWriterTest,
-                                              assert_timestep_almost_equal)
+from MDAnalysisTests.datafiles import (
+    H5MD_xvf,
+    TPR_xvf,
+    TRR_xvf,
+    COORDINATES_TOPOLOGY,
+    COORDINATES_H5MD,
+    H5MD_energy,
+)
+from MDAnalysisTests.coordinates.base import (
+    MultiframeReaderTest,
+    BaseReference,
+    BaseWriterTest,
+)
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
