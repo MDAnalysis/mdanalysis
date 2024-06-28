@@ -48,8 +48,14 @@ import warnings
 import textwrap
 from types import MethodType
 
-import Bio.Seq
-import Bio.SeqRecord
+try:
+    import Bio.Seq
+    import Bio.SeqRecord
+except ImportError:
+    HAS_BIOPYTHON = False
+else:
+    HAS_BIOPYTHON = True
+
 import numpy as np
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
@@ -860,6 +866,9 @@ class Atomnames(AtomStringAttr):
         .. versionadded:: 1.0.0
         """
 
+        if not residues:
+            return []
+
         u = residues[0].universe
         prev = u.residues[residues.ix-1]  # obv candidates first
         rsid = residues.segids
@@ -1056,6 +1065,10 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1164,6 +1177,10 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues), dtype=object)
         nxtres = residues._get_next_residues_by_resid()
         rix = np.where(nxtres)[0]
@@ -1261,6 +1278,10 @@ class Atomnames(AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
+
+        if not residues:
+            return []
+
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
         keep = [all(sum(np.isin(r.atoms.names, n.split())) == 1
@@ -2810,9 +2831,20 @@ class Resnames(ResidueStringAttr):
 
         :exc:`TypeError` if an unknown *format* is selected.
 
+        :exc:`ImportError` is the Biopython package is not available.
+
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 2.7.0
+           Biopython is now an optional dependency
         """
+        if not HAS_BIOPYTHON:
+            errmsg = ("The `sequence_alignment` method requires an "
+                      "installation of `Biopython`. Please install "
+                      "`Biopython` to use this method: "
+                      "https://biopython.org/wiki/Download")
+            raise ImportError(errmsg)
+
         formats = ('string', 'Seq', 'SeqRecord')
 
         format = kwargs.pop("format", "SeqRecord")

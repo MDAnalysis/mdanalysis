@@ -98,11 +98,16 @@ class PDBQTParser(TopologyReaderBase):
      - charges
 
     Guesses the following:
-     - elements
      - masses
 
     .. versionchanged:: 0.18.0
        Added parsing of Record types
+    .. versionchanged:: 2.7.0
+       Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,
+       are now ignored. See Autodock's `reference`_.
+
+       .. _reference: 
+          https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
     """
     format = 'PDBQT'
 
@@ -141,7 +146,7 @@ class PDBQTParser(TopologyReaderBase):
                 icodes.append(line[26:27].strip())
                 occupancies.append(float(line[54:60]))
                 tempfactors.append(float(line[60:66]))
-                charges.append(float(line[66:76]))
+                charges.append(float(line[70:76]))
                 atomtypes.append(line[77:80].strip())
 
         n_atoms = len(serials)

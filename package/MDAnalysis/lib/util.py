@@ -205,6 +205,7 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import itertools
 
 import mmtf
 import numpy as np
@@ -555,7 +556,16 @@ def which(program):
     path : str or None
        absolute path to the executable if it can be found, else ``None``
 
+
+    .. deprecated:: 2.7.0
+       This method is deprecated and will be removed in version 3.0.0.
+       Please use shutil.which instead.
     """
+    # Can't use decorator because it's declared after this method
+    wmsg = ("This method is deprecated as of MDAnalysis version 2.7.0 "
+            "and will be removed in version 3.0.0. Please use shutil.which "
+            "instead.")
+    warnings.warn(wmsg, DeprecationWarning)
 
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
@@ -2543,3 +2553,42 @@ def store_init_arguments(func):
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
     return wrapper
+
+
+def no_copy_shim():
+    if np.lib.NumpyVersion >= "2.0.0rc1":
+        copy = None
+    else:
+        copy = False
+    return copy
+
+
+def atoi(s: str) -> int:
+    """Convert the leading number part of a string to an integer.
+
+    Parameters
+    ----------
+    s : str
+        The string to convert to an integer.
+
+    Returns
+    -------
+    number : int
+        The first numeric part of the string converted to an integer.
+        If the string does not start with a number, 0 is returned.
+
+    Examples
+    --------
+    >>> from MDAnalysis.lib.util import atoi
+    >>> atoi('34f4')
+    34
+    >>> atoi('foo')
+    0
+ 
+
+    .. versionadded:: 2.8.0
+    """
+    try:
+        return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
+    except ValueError:
+        return 0

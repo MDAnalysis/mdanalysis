@@ -24,6 +24,7 @@ from contextlib import contextmanager
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
+from MDAnalysis.analysis.align import HAS_BIOPYTHON
 import MDAnalysis.analysis.rms as rms
 import os
 import numpy as np
@@ -33,10 +34,8 @@ from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
                                        ALIGN_UNBOUND, PDB_helix)
 from numpy.testing import (
-    assert_almost_equal,
     assert_equal,
     assert_array_equal,
-    assert_array_almost_equal,
     assert_allclose,
 )
 
@@ -166,7 +165,7 @@ class TestGetMatchingAtoms(object):
 
         with expectation:
             rmsd = align.alignto(universe, reference, subselection=subselection)
-            assert_almost_equal(rmsd[1], 0.0, decimal=9)
+            assert_allclose(rmsd[1], 0.0, rtol=0, atol=1.5e-9)
 
     def test_no_atom_masses(self, universe):
         #if no masses are present
@@ -198,17 +197,17 @@ class TestAlign(object):
         first_frame = bb.positions
         universe.trajectory[-1]
         last_frame = bb.positions
-        assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
-                            err_msg="error: rmsd(X,X) should be 0")
+        assert_allclose(rms.rmsd(first_frame, first_frame), 0.0, rtol=0, atol=1.5e-5,
+                        err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
         # 9th decimal have been observed (see Issue 57 comment #1) so we relax
         # the test to 6 decimals.
         rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
-        assert_almost_equal(
-            rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 6,
+        assert_allclose(
+            rms.rmsd(last_frame, first_frame, superposition=True), rmsd, rtol=0, atol=1.5e-6,
             err_msg="error: rmsd() is not symmetric")
-        assert_almost_equal(rmsd, 6.820321761927005, 5,
-                            err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
+        assert_allclose(rmsd, 6.820321761927005, rtol=0, atol=1.5e-5,
+                        err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")     
         # test masses as weights
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
@@ -216,7 +215,7 @@ class TestAlign(object):
         rmsd = align.alignto(universe, reference, weights='mass')
         rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
                                    superposition=True)
-        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
+        assert_allclose(rmsd[1], rmsd_sup_weight, rtol=0, atol=1.5e-6)
 
     def test_rmsd_custom_mass_weights(self, universe, reference):
         last_atoms_weight = universe.atoms.masses
@@ -226,7 +225,7 @@ class TestAlign(object):
                              weights=reference.atoms.masses)
         rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
                                    superposition=True)
-        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
+        assert_allclose(rmsd[1], rmsd_sup_weight, rtol=0, atol=1.5e-6)
 
     def test_rmsd_custom_weights(self, universe, reference):
         weights = np.zeros(universe.atoms.n_atoms)
@@ -234,7 +233,7 @@ class TestAlign(object):
         weights[ca.indices] = 1
         rmsd = align.alignto(universe, reference, select='name CA')
         rmsd_weights = align.alignto(universe, reference, weights=weights)
-        assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
+        assert_allclose(rmsd[1], rmsd_weights[1], rtol=0, atol=1.5e-6)
 
     def test_AlignTraj_outfile_default(self, universe, reference, tmpdir):
         with tmpdir.as_cwd():
@@ -284,8 +283,8 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference, filename=outfile).run()
         fitted = mda.Universe(PSF, outfile)
 
-        assert_almost_equal(x.results.rmsd[0], 6.9290, decimal=3)
-        assert_almost_equal(x.results.rmsd[-1], 5.2797e-07, decimal=3)
+        assert_allclose(x.results.rmsd[0], 6.9290, rtol=0, atol=1.5e-3)
+        assert_allclose(x.results.rmsd[-1], 5.2797e-07, rtol=0, atol=1.5e-3)
 
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
@@ -298,8 +297,8 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference,
                             filename=outfile, weights='mass').run()
         fitted = mda.Universe(PSF, outfile)
-        assert_almost_equal(x.results.rmsd[0], 0, decimal=3)
-        assert_almost_equal(x.results.rmsd[-1], 6.9033, decimal=3)
+        assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
+        assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
 
         self._assert_rmsd(reference, fitted, 0, 0.0,
                           weights=universe.atoms.masses)
@@ -318,7 +317,7 @@ class TestAlign(object):
         x_weights = align.AlignTraj(universe, reference,
                                     filename=outfile, weights=weights).run()
 
-        assert_array_almost_equal(x.results.rmsd, x_weights.results.rmsd)
+        assert_allclose(x.results.rmsd, x_weights.results.rmsd, rtol=0, atol=1.5e-7)
 
     def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
@@ -326,8 +325,8 @@ class TestAlign(object):
                             filename=outfile,
                             weights=reference.atoms.masses).run()
         fitted = mda.Universe(PSF, outfile)
-        assert_almost_equal(x.results.rmsd[0], 0, decimal=3)
-        assert_almost_equal(x.results.rmsd[-1], 6.9033, decimal=3)
+        assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
+        assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
 
         self._assert_rmsd(reference, fitted, 0, 0.0,
                           weights=universe.atoms.masses)
@@ -347,18 +346,29 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference, filename=outfile,
                             in_memory=True).run()
         assert x.filename is None
-        assert_almost_equal(x.results.rmsd[0], 6.9290, decimal=3)
-        assert_almost_equal(x.results.rmsd[-1], 5.2797e-07, decimal=3)
+        assert_allclose(x.results.rmsd[0], 6.9290, rtol=0, atol=1.5e-3)
+        assert_allclose(x.results.rmsd[-1], 5.2797e-07, rtol=0, atol=1.5e-3)
 
         # check in memory trajectory
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
         self._assert_rmsd(reference, universe, -1, 0.0)
 
+    def test_AlignTraj_writer_kwargs(self, universe, reference, tmpdir):
+        # Issue 4564
+        writer_kwargs = dict(precision=2)
+        with tmpdir.as_cwd():
+            aligner = align.AlignTraj(universe, reference,
+                                      select='protein and name CA',
+                                      filename='aligned_traj.xtc',
+                                      writer_kwargs=writer_kwargs,
+                                      in_memory=False).run()
+            assert_equal(aligner._writer.precision, 2)
+
     def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(reference.atoms.positions, fitted.atoms.positions,
                         superposition=True)
-        assert_almost_equal(rmsd, desired, decimal=5,
+        assert_allclose(rmsd, desired, rtol = 0, atol=1.5e-5,
                             err_msg="frame {0:d} of fit does not have "
                                     "expected RMSD".format(frame))
 
@@ -393,8 +403,8 @@ class TestAlign(object):
         segB_free.translate(segB_bound.centroid() - segB_free.centroid())
 
         align.alignto(u_free, u_bound, select=selection)
-        assert_array_almost_equal(segB_bound.positions, segB_free.positions,
-                                  decimal=3)
+        assert_allclose(segB_bound.positions, segB_free.positions,
+                                  rtol=0, atol=1.5e-3)
 
 
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
@@ -437,31 +447,30 @@ class TestAverageStructure(object):
     def test_average_structure(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
         avg = align.AverageStructure(universe, reference).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4)
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_mass_weighted(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
         avg = align.AverageStructure(universe, reference, weights='mass').run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref,
+                            rtol=0, atol=1.5e-4)
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_select(self, universe, reference):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
         avg = align.AverageStructure(universe, reference, select=select).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref,
+                            rtol=0, atol=1.5e-4)
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_no_ref(self, universe):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
         avg = align.AverageStructure(universe).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref,
+                        rtol=0, atol=1.5e-4)
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_no_msf(self, universe):
         avg = align.AverageStructure(universe).run()
@@ -484,22 +493,29 @@ class TestAverageStructure(object):
         universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        assert_allclose(avg.results.universe.atoms.positions, ref,
+                        rtol=0, atol=1.5e-4)
+        assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_in_memory(self, universe):
         avg = align.AverageStructure(universe, in_memory=True).run()
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
-        assert_almost_equal(avg.results.universe.atoms.positions,
-                            reference_coordinates, decimal=4)
+        assert_allclose(avg.results.universe.atoms.positions,
+                        reference_coordinates, rtol=0, atol=1.5e-4)
         assert avg.filename is None
 
 
-class TestAlignmentProcessing(object):
+class TestAlignmentProcessing:
     seq = FASTA
     error_msg = "selection string has unexpected length"
 
+    @pytest.mark.skipif(HAS_BIOPYTHON, reason='biopython is installed')
+    def test_importerror_biopython(self):
+        errmsg = "The `fasta2select` method requires an installation"
+        with pytest.raises(ImportError, match=errmsg):
+            _ = align.fasta2select(self.seq, is_aligned=True)
+
+    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
@@ -507,8 +523,9 @@ class TestAlignmentProcessing(object):
         assert len(sel['reference']) == 30623, self.error_msg
         assert len(sel['mobile']) == 30623, self.error_msg
 
-    @pytest.mark.skipif(executable_not_found("clustalw2"),
-                        reason="Test skipped because clustalw2 executable not found")
+    @pytest.mark.skipif(
+        executable_not_found("clustalw2") or not HAS_BIOPYTHON,
+        reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_file(self, tmpdir):
         """test align.fasta2select() on a non-aligned FASTA with default
         filenames"""
@@ -518,8 +535,9 @@ class TestAlignmentProcessing(object):
             assert len(sel['reference']) == 23080, self.error_msg
             assert len(sel['mobile']) == 23090, self.error_msg
 
-    @pytest.mark.skipif(executable_not_found("clustalw2"),
-                        reason="Test skipped because clustalw2 executable not found")
+    @pytest.mark.skipif(
+        executable_not_found("clustalw2") or not HAS_BIOPYTHON,
+        reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
         """MDAnalysis.analysis.align: test fasta2select() with ClustalW
         (Issue 113)"""
@@ -533,6 +551,7 @@ class TestAlignmentProcessing(object):
         assert len(sel['reference']) == 23080, self.error_msg
         assert len(sel['mobile']) == 23090, self.error_msg
 
+    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
     def test_fasta2select_resids(self, tmpdir):
         """test align.fasta2select() when resids provided (Issue #3124)"""
         resids = [x for x in range(705)]
@@ -554,6 +573,14 @@ class TestSequenceAlignmentFunction:
         mobile = universe.select_atoms("resid 122-159")
         return reference, mobile
 
+    @pytest.mark.skipif(HAS_BIOPYTHON, reason='biopython installed')
+    def test_biopython_import_error(self, atomgroups):
+        ref, mob = atomgroups
+        errmsg = "The `sequence_alignment` method requires an installation of"
+        with pytest.raises(ImportError, match=errmsg):
+            align.sequence_alignment(mob, ref)
+
+    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
     @pytest.mark.filterwarnings("ignore:`sequence_alignment` is deprecated!")
     def test_sequence_alignment(self, atomgroups):
         reference, mobile = atomgroups
@@ -569,12 +596,94 @@ class TestSequenceAlignmentFunction:
         assert score  == pytest.approx(54.6)
         assert_array_equal([begin, end], [0, reference.n_residues])
 
+    @pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
     def test_sequence_alignment_deprecation(self, atomgroups):
         reference, mobile = atomgroups
         wmsg = ("`sequence_alignment` is deprecated!\n"
                 "`sequence_alignment` will be removed in release 3.0.")
         with pytest.warns(DeprecationWarning, match=wmsg):
             align.sequence_alignment(mobile, reference)
+
+
+class TestIterativeAverage(object):
+    @pytest.fixture()
+    def mobile(self):
+        u = mda.Universe(PSF, DCD)
+        return u
+
+    @pytest.fixture()
+    def reference(self):
+        u = mda.Universe(PSF, DCD)
+        return u
+
+    def test_iterative_average_default(self, mobile):
+        res = align.iterative_average(mobile, select="bynum 1:10")
+        assert_allclose(
+            res.results.positions,
+            [
+                [11.93075595, 8.6729893, -10.49887605],
+                [12.60587898, 7.91673117, -10.73327464],
+                [12.45662411, 9.51900517, -10.35551193],
+                [11.27452274, 8.83003843, -11.2619057],
+                [11.25808119, 8.26794477, -9.23340715],
+                [12.02767222, 7.95332228, -8.57249317],
+                [10.54679871, 9.49505306, -8.61215292],
+                [9.99500556, 9.16624224, -7.75231192],
+                [9.83897407, 9.93134598, -9.29541129],
+                [11.45760169, 10.5857071, -8.13037669]
+            ],
+            atol=1e-5,
+        )
+
+    def test_iterative_average_eps_high(self, mobile):
+        res = align.iterative_average(mobile, select="bynum 1:10",
+                                      eps=1e-5)
+        assert_allclose(
+            res.results.positions,
+            [
+                [11.93075595, 8.6729893, -10.49887605],
+                [12.60587898, 7.91673117, -10.73327464],
+                [12.45662411, 9.51900517, -10.35551193],
+                [11.27452274, 8.83003843, -11.2619057],
+                [11.25808119, 8.26794477, -9.23340715],
+                [12.02767222, 7.95332228, -8.57249317],
+                [10.54679871, 9.49505306, -8.61215292],
+                [9.99500556, 9.16624224, -7.75231192],
+                [9.83897407, 9.93134598, -9.29541129],
+                [11.45760169, 10.5857071, -8.13037669]
+            ],
+            atol=1e-5,
+        )
+
+    def test_iterative_average_weights_mass(self, mobile, reference):
+        res = align.iterative_average(mobile, reference,
+                                      select="bynum 1:10",
+                                      niter=10, weights="mass")
+        assert_allclose(
+            res.results.positions,
+            [
+                [11.96438784, 8.85426235, -10.24735737],
+                [12.75920431, 8.27294545, -10.54295766],
+                [12.3285704, 9.72083717, -9.9419435],
+                [11.33941507, 9.03249423, -11.01306158],
+                [11.30988499, 8.14958885, -9.1205501],
+                [12.09108655, 7.85155906, -8.46681943],
+                [10.37499697, 9.13535837, -8.3732586],
+                [9.83883314, 8.57939098, -7.6195549],
+                [9.64405257, 9.55924307, -9.04315991],
+                [11.0678934, 10.27798773, -7.64881842]
+            ],
+            atol=1e-5,
+        )
+
+    def test_iterative_average_convergence_failure(self, mobile, reference):
+        with pytest.raises(RuntimeError):
+            _ = align.iterative_average(mobile, reference,
+                                        niter=1, eps=0)
+
+    def test_iterative_average_convergence_verbose(self, mobile, reference):
+        _ = align.iterative_average(mobile, select="bynum 1:10",
+                                    verbose=True)
 
 
 def test_alignto_reorder_atomgroups():

@@ -24,7 +24,7 @@
 
 import cython
 import numpy as np
-cimport numpy as np
+cimport numpy as cnp
 from libc.math cimport sqrt, fabs
 
 from MDAnalysis import NoDataError
@@ -35,7 +35,7 @@ from libcpp.vector cimport vector
 from libcpp.utility cimport pair
 from cython.operator cimport dereference as deref
 
-np.import_array()
+cnp.import_array()
 
 __all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
            '_sarrus_det_single', '_sarrus_det_multiple']
@@ -51,7 +51,7 @@ ctypedef cmap[int, intset] intmap
 
 @cython.boundscheck(False)  # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
-def unique_int_1d(np.intp_t[:] values):
+def unique_int_1d(cnp.intp_t[:] values):
     """Find the unique elements of a 1D array of integers.
 
     This function is optimal on sorted arrays.
@@ -73,7 +73,7 @@ def unique_int_1d(np.intp_t[:] values):
     cdef int i = 0
     cdef int j = 0
     cdef int n_values = values.shape[0]
-    cdef np.intp_t[:] result = np.empty(n_values, dtype=np.intp)
+    cdef cnp.intp_t[:] result = np.empty(n_values, dtype=np.intp)
 
     if n_values == 0:
         return np.array(result)
@@ -93,7 +93,7 @@ def unique_int_1d(np.intp_t[:] values):
 
 
 @cython.boundscheck(False)
-def _in2d(np.intp_t[:, :] arr1, np.intp_t[:, :] arr2):
+def _in2d(cnp.intp_t[:, :] arr1, cnp.intp_t[:, :] arr2):
     """Similar to np.in1d except works on 2d arrays
 
     Parameters
@@ -110,8 +110,8 @@ def _in2d(np.intp_t[:, :] arr1, np.intp_t[:, :] arr2):
     """
     cdef object out
     cdef ssize_t i
-    cdef cset[pair[np.intp_t, np.intp_t]] hits
-    cdef pair[np.intp_t, np.intp_t] p
+    cdef cset[pair[cnp.intp_t, cnp.intp_t]] hits
+    cdef pair[cnp.intp_t, cnp.intp_t] p
 
     """
     Construct a set from arr2 called hits
@@ -130,13 +130,13 @@ def _in2d(np.intp_t[:, :] arr1, np.intp_t[:, :] arr2):
         raise ValueError("Both arrays must be (n, 2) arrays")
 
     for i in range(arr2.shape[0]):
-        p = pair[np.intp_t, np.intp_t](arr2[i, 0], arr2[i, 1])
+        p = pair[cnp.intp_t, cnp.intp_t](arr2[i, 0], arr2[i, 1])
         hits.insert(p)
 
     out = np.empty(arr1.shape[0], dtype=np.uint8)
     cdef unsigned char[::1] results = out
     for i in range(arr1.shape[0]):
-        p = pair[np.intp_t, np.intp_t](arr1[i, 0], arr1[i, 1])
+        p = pair[cnp.intp_t, cnp.intp_t](arr1[i, 0], arr1[i, 1])
 
         if hits.count(p):
             results[i] = True
@@ -243,7 +243,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         are returned as a numpy array.
     """
     cdef intset refpoints, todo, done
-    cdef np.intp_t i, j, nloops, ref, atom, other, natoms
+    cdef cnp.intp_t i, j, nloops, ref, atom, other, natoms
     cdef cmap[int, int] ix_to_rel
     cdef intmap bonding
     cdef int[:, :] bonds
@@ -334,7 +334,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         newpos[ref, i] = oldpos[ref, i]
 
     nloops = 0
-    while <np.intp_t> refpoints.size() < natoms and nloops < natoms:
+    while <cnp.intp_t> refpoints.size() < natoms and nloops < natoms:
         # count iterations to prevent infinite loop here
         nloops += 1
 
@@ -362,7 +362,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
                 refpoints.insert(other)
             done.insert(atom)
 
-    if <np.intp_t> refpoints.size() < natoms:
+    if <cnp.intp_t> refpoints.size() < natoms:
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
     if inplace:
         atomgroup.positions = newpos
@@ -411,9 +411,9 @@ cdef float _norm(float * a):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
+cpdef cnp.float64_t _sarrus_det_single(cnp.float64_t[:, ::1] m):
     """Computes the determinant of a 3x3 matrix."""
-    cdef np.float64_t det
+    cdef cnp.float64_t det
     det = m[0, 0] * m[1, 1] * m[2, 2]
     det -= m[0, 0] * m[1, 2] * m[2, 1]
     det += m[0, 1] * m[1, 2] * m[2, 0]
@@ -425,11 +425,11 @@ cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
+cpdef cnp.ndarray _sarrus_det_multiple(cnp.float64_t[:, :, ::1] m):
     """Computes all determinants of an array of 3x3 matrices."""
-    cdef np.intp_t n
-    cdef np.intp_t i
-    cdef np.float64_t[:] det
+    cdef cnp.intp_t n
+    cdef cnp.intp_t i
+    cdef cnp.float64_t[:] det
     n = m.shape[0]
     det = np.empty(n, dtype=np.float64)
     for i in range(n):
@@ -470,8 +470,8 @@ def find_fragments(atoms, bondlist):
     cdef intset todo, frag_todo, frag_done
     cdef vector[int] this_frag
     cdef int i, a, b
-    cdef np.int64_t[:] atoms_view
-    cdef np.int32_t[:, :] bonds_view
+    cdef cnp.int64_t[:] atoms_view
+    cdef cnp.int32_t[:, :] bonds_view
 
     atoms_view = np.asarray(atoms, dtype=np.int64)
     bonds_view = np.asarray(bondlist, dtype=np.int32)

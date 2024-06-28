@@ -32,12 +32,15 @@ importer = builtins.__import__
 from contextlib import contextmanager
 from functools import wraps
 import importlib
+import shutil
 from unittest import mock
 import os
 import warnings
 import pytest
 
 from numpy.testing import assert_warns
+import numpy as np
+from numpy.lib import NumpyVersion
 
 
 def block_import(package):
@@ -81,11 +84,8 @@ def executable_not_found(*args):
 
     @dec.skipif(executable_not_found("binary_name"), msg="skip test because binary_name not available")
     """
-    # This must come here so that MDAnalysis isn't imported prematurely,
-    #  which spoils coverage accounting (see Issue 344).
-    import MDAnalysis.lib.util
     for name in args:
-        if MDAnalysis.lib.util.which(name) is not None:
+        if shutil.which(name) is not None:
             return False
     return True
 
@@ -114,6 +114,11 @@ def import_not_available(module_name):
                         msg="skip test as module_name could not be imported")
 
     """
+    # TODO: remove once these packages have a release
+    # with NumPy 2 support
+    if NumpyVersion(np.__version__) >= "2.0.0":
+        if module_name in {"rdkit", "parmed"}:
+            return True
     try:
         test = importlib.import_module(module_name)
     except ImportError:

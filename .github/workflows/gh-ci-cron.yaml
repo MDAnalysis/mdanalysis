@@ -3,6 +3,7 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
+  workflow_dispatch:
 
 concurrency:
   # Probably overly cautious group naming.
@@ -26,7 +27,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -85,7 +86,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -138,7 +139,7 @@ jobs:
         os: [ubuntu-20.04, macos-11]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -184,16 +185,16 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          python-version: ["3.10", "3.11"]
+          python-version: ["3.10", "3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
       with:
         os-type: "ubuntu"
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -223,9 +224,9 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu, macos]
-          python-version: ["3.9", "3.10", "3.11"]
+          python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -263,17 +264,20 @@ jobs:
   pypi-latest-release:
     # A set of runner to check that the latest conda release works as expected
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu, macos, windows]
-          python-version: ["3.9", "3.10", "3.11"]
+          os: [ubuntu-latest, macos-latest, macos-14, windows-latest]
+          python-version: ["3.9", "3.10", "3.11", "3.12"]
           wheels: ['true', 'false']
+          exclude:
+          - os: "macos-14"
+            python-version: "3.9"
     steps:
       # Checkout to have access to local actions (i.e. setup-os)
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
       # We need this here in order to make sure we assign the correct compiler (i.e. clang for macos)
     - name: setup_os
@@ -281,7 +285,7 @@ jobs:
       with:
         os-type: ${{ matrix.os }}
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 

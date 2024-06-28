@@ -27,17 +27,17 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: "3.10"
 
     - name: darker-main-code
       id: darker-main-code
-      uses: akaihola/darker@1.6.1
+      uses: akaihola/darker@v2.1.1
       continue-on-error: true
       with:
         version: "~=1.6.1"
@@ -48,7 +48,7 @@ jobs:
 
     - name: darker-test-code
       id: darker-test-code
-      uses: akaihola/darker@1.6.1
+      uses: akaihola/darker@v2.1.1
       continue-on-error: true
       with:
         version: "~=1.6.1"
@@ -58,7 +58,7 @@ jobs:
         lint: "flake8"
 
     - name: get-pr-info
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         script:
             const prNumber = context.payload.number;
@@ -90,7 +90,7 @@ jobs:
       run: cat darker_results/status.json
 
     - name: upload-status
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: darkerlint
         path: darker_results/
@@ -102,11 +102,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: "3.10"
 
     - name: install
       run: |
@@ -124,14 +124,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: setup_micromamba
         uses: mamba-org/setup-micromamba@v1
         with:
           environment-name: mda
           create-args: >-
-            python=3.9
+            python=3.10
             pip
           # using jaime's shim to avoid pulling down the cudatoolkit
           condarc: |
@@ -145,7 +145,8 @@ jobs:
         with:
           micromamba: true
           full-deps: true
-          numpy: numpy=1.22.3
+          numpy: numpy=1.23.2
+          rdkit: rdkit=2023.09.3
 
       - name: install
         run: |

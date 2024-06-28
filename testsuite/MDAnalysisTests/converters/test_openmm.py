@@ -87,6 +87,11 @@ class TestOpenMMBasicSimulationReader():
         assert omm_sim_uni.segments.segids[0] == '0'
         assert len(omm_sim_uni.bonds.indices) == 0
 
+    def test_data(self, omm_sim_uni):
+        data = omm_sim_uni.trajectory.ts.data
+        assert isinstance(data["kinetic_energy"], float)
+        assert isinstance(data["potential_energy"], float)
+
 
 class TestOpenMMPDBFileReader(_SingleFrameReader):
     __test__ = True

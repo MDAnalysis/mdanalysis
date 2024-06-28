@@ -80,14 +80,14 @@ two structures, using :func:`rmsd`::
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
-mass (or geometry) first:
+mass (or geometry) first::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, center=True)
    21.892591663632704
 
 This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
-minimized RMSD between the reference and mobile structure.
+minimized RMSD between the reference and mobile structure::
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, 
    ...      superposition=True)
@@ -174,6 +174,7 @@ Functions and Classes
 .. autoclass:: AlignTraj
 .. autoclass:: AverageStructure
 .. autofunction:: rotation_matrix
+.. autofunction:: iterative_average
 
 
 Helper functions
@@ -196,10 +197,14 @@ import collections
 
 import numpy as np
 
-import Bio.SeqIO
-import Bio.AlignIO
-import Bio.Align
-import Bio.Align.Applications
+try:
+    import Bio.AlignIO
+    import Bio.Align
+    import Bio.Align.Applications
+except ImportError:
+    HAS_BIOPYTHON = False
+else:
+    HAS_BIOPYTHON = True
 
 import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
@@ -208,6 +213,8 @@ import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.lib.util import get_weights
 from MDAnalysis.lib.util import deprecate   # remove 3.0
+from MDAnalysis.lib.log import ProgressBar
+from ..due import due, Doi
 
 from .base import AnalysisBase
 
@@ -537,6 +544,125 @@ def alignto(mobile, reference, select=None, weights=None,
     return old_rmsd, new_rmsd
 
 
+@due.dcite(
+        Doi("10.1021/acs.jpcb.7b11988"),
+        description="Iterative Calculation of Opimal Reference",
+        path="MDAnalysis.analysis.align.iterative_average"
+)
+def iterative_average(
+    mobile, reference=None, select='all', weights=None, niter=100,
+    eps=1e-6, verbose=False, **kwargs
+):
+    """Iteratively calculate an optimal reference that is also the average
+    structure after an RMSD alignment.
+
+    The optimal reference is defined as average
+    structure of a trajectory, with the optimal reference used as input.
+    This function computes the optimal reference by using a starting
+    reference for the average structure, which is used as the reference
+    to calculate the average structure again. This is repeated until the
+    reference structure has converged. :footcite:p:`Linke2018`
+
+    Parameters
+    ----------
+    mobile : mda.Universe
+        Universe containing trajectory to be fitted to reference.
+    reference : mda.Universe (optional)
+        Universe containing the initial reference structure.
+    select : str or tuple or dict (optional)
+        Atom selection for fitting a substructue. Default is set to all.
+        Can be tuple or dict to define different selection strings for
+        mobile and target.
+    weights : str, array_like (optional)
+        Weights that can be used. If `None` use equal weights, if `'mass'`
+        use masses of ref as weights or give an array of arbitrary weights.
+    niter : int (optional)
+        Maximum number of iterations.
+    eps : float (optional)
+        RMSD distance at which reference and average are assumed to be
+        equal.
+    verbose : bool (optional)
+        Verbosity.
+    **kwargs : dict (optional)
+        AverageStructure kwargs.
+
+    Returns
+    -------
+    avg_struc : AverageStructure
+        AverageStructure result from the last iteration.
+
+    Example
+    -------
+    `iterative_average` can be used to obtain a :class:`MDAnalysis.Universe`
+    with the optimal reference structure.
+
+    ::
+
+        import MDAnalysis as mda
+        from MDAnalysis.analysis import align
+        from MDAnalysisTests.datafiles import PSF, DCD
+
+        u = mda.Universe(PSF, DCD)
+        av = align.iterative_average(u, u, verbose=True)
+
+        averaged_universe = av.results.universe
+
+    References
+    ----------
+
+    .. footbibliography::
+
+    .. versionadded:: 2.8.0
+    """
+    if not reference:
+        reference = mobile
+
+    select = rms.process_selection(select)
+    ref = mda.Merge(reference.select_atoms(*select['reference']))
+    sel_mobile = select['mobile'][0]
+
+    weights = get_weights(ref.atoms, weights)
+
+    drmsd = np.inf
+    for i in ProgressBar(range(niter)):
+        # found a converged structure
+        if drmsd < eps:
+            break
+
+        avg_struc = AverageStructure(
+            mobile, reference=ref, select={
+                'mobile': sel_mobile, 'reference': 'all'
+                },
+            weights=weights, **kwargs
+        ).run()
+        drmsd = rms.rmsd(ref.atoms.positions, avg_struc.results.positions,
+                         weights=weights)
+        ref = avg_struc.results.universe
+
+        if verbose:
+            logger.debug(
+                f"iterative_average(): i = {i}, "
+                f"rmsd-change = {drmsd:.5f}, "
+                f"ave-rmsd = {avg_struc.results.rmsd:.5f}"
+            )
+
+    else:
+        errmsg = (
+            "iterative_average(): Did not converge in "
+            f"{niter} iterations to DRMSD < {eps}. "
+            f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+        )
+        logger.error(errmsg)
+        raise RuntimeError(errmsg)
+
+    logger.info(
+        f"iterative_average(): Converged to DRMSD < {eps}. "
+        f"Final average RMSD = {avg_struc.results.rmsd:.5f}"
+    )
+
+    return avg_struc
+
+
 class AlignTraj(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection.
 
@@ -555,6 +681,7 @@ class AlignTraj(AnalysisBase):
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
+                 writer_kwargs=None,
                  **kwargs):
         """Parameters
         ----------
@@ -594,6 +721,8 @@ class AlignTraj(AnalysisBase):
         verbose : bool (optional)
              Set logger to show more information and show detailed progress of
              the calculation if set to ``True``; the default is ``False``.
+        writer_kwargs : dict (optional)
+            kwarg dict to be passed to the constructed writer
 
 
         Attributes
@@ -654,6 +783,9 @@ class AlignTraj(AnalysisBase):
            :attr:`rmsd` results are now stored in a
            :class:`MDAnalysis.analysis.base.Results` instance.
 
+        .. versionchanged:: 2.8.0
+           Added ``writer_kwargs`` kwarg dict to pass to the writer
+
         """
         select = rms.process_selection(select)
         self.ref_atoms = reference.select_atoms(*select['reference'])
@@ -690,10 +822,12 @@ class AlignTraj(AnalysisBase):
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
             strict=strict, match_atoms=match_atoms)
 
+        if writer_kwargs is None:
+            writer_kwargs = {}
         # with self.filename == None (in_memory), the NullWriter is chosen
         # (which just ignores input) and so only the in_memory trajectory is
         # retained
-        self._writer = mda.Writer(self.filename, natoms)
+        self._writer = mda.Writer(self.filename, natoms, **writer_kwargs)
 
         self._weights = get_weights(self.ref_atoms, weights)
 
@@ -1018,6 +1152,11 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
         Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
         begin, end)`
 
+    Raises
+    ------
+    ImportError
+      If optional dependency Biopython is not available.
+
     Notes
     -----
     If you prefer to work directly with :mod:`Bio.Align` objects then you can
@@ -1057,7 +1196,16 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
        Replace use of deprecated :func:`Bio.pairwise2.align.globalms` with
        :class:`Bio.Align.PairwiseAligner`.
 
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
+
     """
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `sequence_alignment` method requires an installation "
+                  "of `Biopython`. Please install `Biopython` to use this "
+                  "method: https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
     aligner = Bio.Align.PairwiseAligner(
         mode="global",
         match_score=match_score,
@@ -1159,6 +1307,12 @@ def fasta2select(fastafilename, is_aligned=False,
     :func:`sequence_alignment`, which does not require external
     programs.
 
+    
+    Raises
+    ------
+    ImportError
+      If optional dependency Biopython is not available.
+
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
@@ -1166,8 +1320,16 @@ def fasta2select(fastafilename, is_aligned=False,
     .. versionchanged:: 1.0.0
        Passing `alnfilename` or `treefilename` as `None` will create a file in
        the current working directory.
+    .. versionchanged:: 2.7.0
+       Biopython is now an optional dependency which this method requires.
 
     """
+    if not HAS_BIOPYTHON:
+        errmsg = ("The `fasta2select` method requires an installation "
+                  "of `Biopython`. Please install `Biopython` to use this "
+                  "method: https://biopython.org/wiki/Download")
+        raise ImportError(errmsg)
+
     if is_aligned:
         logger.info("Using provided alignment {}".format(fastafilename))
         with open(fastafilename) as fasta:

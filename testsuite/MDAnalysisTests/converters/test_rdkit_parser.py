@@ -24,14 +24,21 @@
 import warnings
 import pytest
 import numpy as np
+from numpy.lib import NumpyVersion
 from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_helix, SDF_molecule
 
-Chem = pytest.importorskip('rdkit.Chem')
-AllChem = pytest.importorskip('rdkit.Chem.AllChem')
+# TODO: remove these shims when RDKit
+# has a release supporting NumPy 2
+if NumpyVersion(np.__version__) < "2.0.0":
+    Chem = pytest.importorskip('rdkit.Chem')
+    AllChem = pytest.importorskip('rdkit.Chem.AllChem')
+else:
+    Chem = pytest.importorskip("RDKit_does_not_support_NumPy_2")
+    AllChem = pytest.importorskip("RDKit_does_not_support_NumPy_2")
 
 class RDKitParserBase(ParserBase):
     parser = mda.converters.RDKitParser.RDKitParser

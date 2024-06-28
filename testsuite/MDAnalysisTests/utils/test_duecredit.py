@@ -56,7 +56,7 @@ class TestDuecredit(object):
     # note: citekeys are *all lower case*
     @pytest.mark.parametrize("module,path,citekey", [
         ("MDAnalysis.analysis.psa",
-         "MDAnalysis.analysis.psa",
+         "pathsimanalysis.psa",
          "10.1371/journal.pcbi.1004568"),
         ("MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel",
          "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel",
@@ -64,15 +64,6 @@ class TestDuecredit(object):
         ("MDAnalysis.analysis.leaflet",
          "MDAnalysis.analysis.leaflet",
          "10.1002/jcc.21787"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
-         "10.1016/s0006-3495(93)81293-1"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
-         "10.1016/s0263-7855(97)00009-x"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
-         "10.1016/j.jmb.2013.10.024"),
         ("MDAnalysis.lib.qcprot",
          "MDAnalysis.lib.qcprot",
          "10.1107/s0108767305015266"),
@@ -81,7 +72,10 @@ class TestDuecredit(object):
          "qcprot2"),
         ("MDAnalysis.analysis.encore",
          "MDAnalysis.analysis.encore",
-         "10.1371/journal.pcbi.1004415")
+         "10.1371/journal.pcbi.1004415"),
+        ("MDAnalysis.analysis.dssp",
+         "MDAnalysis.analysis.dssp",
+         "10.1002/bip.360221211")
         ])
     def test_duecredit_collector_analysis_modules(self, module, path, citekey):
         importlib.import_module(module)
