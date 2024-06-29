@@ -38,6 +38,8 @@ import os
 import warnings
 
 from numpy.testing import assert_warns
+import numpy as np
+from numpy.lib import NumpyVersion
 
 
 def block_import(package):
@@ -111,6 +113,11 @@ def import_not_available(module_name):
                         msg="skip test as module_name could not be imported")
 
     """
+    # TODO: remove once these packages have a release
+    # with NumPy 2 support
+    if NumpyVersion(np.__version__) >= "2.0.0":
+        if module_name in {"rdkit", "parmed"}:
+            return True
     try:
         test = importlib.import_module(module_name)
     except ImportError:

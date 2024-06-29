@@ -30,6 +30,7 @@ from io import StringIO
 import warnings
 
 import numpy as np
+from numpy.lib import NumpyVersion
 from numpy.testing import (
     assert_allclose,
     assert_almost_equal,
@@ -223,7 +224,10 @@ class TestUniverseCreation(object):
 
 class TestUniverseFromSmiles(object):
     def setup_class(self):
-        pytest.importorskip("rdkit.Chem")
+        if NumpyVersion(np.__version__) < "2.0.0":
+            pytest.importorskip("rdkit.Chem")
+        else:
+            pytest.importorskip("RDKit_does_not_support_NumPy_2")
 
     def test_default(self):
         smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"

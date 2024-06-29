@@ -38,7 +38,13 @@ from MDAnalysisTests.datafiles import (
     PRM_UreyBradley,
 )
 
-pmd = pytest.importorskip('parmed')
+# TODO: remove this guard when parmed has a release
+# that support NumPy 2
+if NumpyVersion(np.__version__) < "2.0.0":
+    pmd = pytest.importorskip('parmed')
+else:
+    pmd = pytest.importorskip('parmed_skip_with_numpy2')
+
 
 
 class TestParmEdReaderGRO:
