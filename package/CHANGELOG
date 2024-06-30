@@ -16,7 +16,8 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
-         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher, yuxuanzhuang
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
+         yuxuanzhuang
 
  * 2.8.0
 
@@ -25,6 +26,11 @@ Fixes
    (Issue #3723, PR #3722)
  * Fix failure to preserve modification of coordinates after serialization.
    (Issue #3723, PR #3722)
+ * Fix PSFParser error when encoutering string-like resids
+ * (Issue #2053, Issue #4189 PR #4582)
+ * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
+   (Issue #4564, PR #4565)
+ * Fix #4259 via removing argument `parallelizable` of `NoJump` transformation.
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
@@ -43,8 +49,7 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
- * Improve performance in Universe serialization by no explicit redirection to
-   the timestep. (Issue #3721, PR #3722)
+ * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
    (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
@@ -55,8 +60,8 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
- * TextIOPicklable serializes the raw class instance instead of class name.
-   (PR #3722)
+ * MDAnalysis now builds against numpy 2.0 rather than the
+   minimum supported numpy version (PR #4620)
  * As per SPEC0 the minimum supported Python version has been raised
    to 3.10 (PR #4502)
  * MDAnalysis.analysis.hole2 is now directly imported from the mdakit

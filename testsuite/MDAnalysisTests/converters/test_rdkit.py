@@ -27,6 +27,7 @@ from io import StringIO
 
 import MDAnalysis as mda
 import numpy as np
+from numpy.lib import NumpyVersion
 import pytest
 from MDAnalysis.topology.guessers import guess_atom_element
 from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
@@ -55,6 +56,8 @@ requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
                     reason="only for min dependencies build")
 class TestRequiresRDKit(object):
     def test_converter_requires_rdkit(self):
+        if NumpyVersion(np.__version__) >= "2.0.0":
+            pytest.skip("RDKit not compatible with NumPy 2")
         u = mda.Universe(PDB_full)
         with pytest.raises(ImportError,
                            match="RDKit is required for the RDKitConverter"):
