@@ -22,6 +22,11 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fix failure in double-serialization of TextIOPicklable file reader.
+   (Issue #3723, PR #3722)
+ * Fix failure to preserve modification of coordinates after serialization,
+   e.g. with transformations
+   (Issue #4633, PR #3722)
  * Fix PSFParser error when encoutering string-like resids
  * (Issue #2053, Issue #4189 PR #4582)
  * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
