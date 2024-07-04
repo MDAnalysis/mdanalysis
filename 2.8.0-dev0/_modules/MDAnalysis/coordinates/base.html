@@ -846,6 +846,9 @@
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       Now supports (un)pickle. Upon unpickling,</span>
 <span class="sd">       the current timestep is retained by reconstrunction.</span>
+<span class="sd">    .. versionchanged:: 2.8.0</span>
+<span class="sd">       the modification of coordinates was preserved</span>
+<span class="sd">       after serialization.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: The appropriate Timestep class, e.g.</span>
@@ -1678,11 +1681,7 @@
         <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ts</span>
-
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
-        <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">ts</span></div>
 
 
 

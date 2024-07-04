@@ -650,9 +650,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
         <span class="c1"># reconstruct file iterator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span> <span class="o">=</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-        <span class="c1"># make sure we re-read the current frame to update C level objects in</span>
-        <span class="c1"># the file iterator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+
+        <span class="c1"># unlike self._read_frame(self._frame),</span>
+        <span class="c1"># the following lines update the state of the C-level file iterator</span>
+        <span class="c1"># without updating the ts object.</span>
+        <span class="c1"># This is necessary to preserve the modification,</span>
+        <span class="c1"># e.g. changing coordinates, in the ts object.</span>
+        <span class="c1"># see PR #3722 for more details.</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">read_step</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TNGReader.Writer">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/TNG.html#MDAnalysis.coordinates.TNG.TNGReader.Writer">[docs]</a>

@@ -259,11 +259,12 @@
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
+
 
     <span class="k">def</span> <span class="nf">__reduce_ex__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">!=</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
@@ -313,7 +314,7 @@
         <span class="n">raw_class</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;raw_class&quot;</span><span class="p">]</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
         <span class="n">raw</span> <span class="o">=</span> <span class="n">raw_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__reduce_ex__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">):</span>
@@ -326,6 +327,7 @@
                  <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()})</span></div>
 
 
+
 <div class="viewcode-block" id="TextIOPicklable">
 <a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable">[docs]</a>
 <span class="k">class</span> <span class="nc">TextIOPicklable</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">):</span>
@@ -333,12 +335,6 @@
 
 <span class="sd">    This class provides a file-like :class:`io.TextIOWrapper` object that can</span>
 <span class="sd">    be pickled. Note that this only works in read mode.</span>
-
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    After pickling, the current position is reset. `universe.trajectory[i]` has</span>
-<span class="sd">    to be used to return to its original frame.</span>
-
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -358,21 +354,34 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    .. versionchanged:: 2.8.0</span>
+<span class="sd">       The raw class instance instead of the class name</span>
+<span class="sd">       that is wrapped inside will be serialized.</span>
+<span class="sd">       After deserialization, the current position is no longer reset</span>
+<span class="sd">       so `universe.trajectory[i]` is not needed to seek to the</span>
+<span class="sd">       original position.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="vm">__class__</span>
 
-
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">raw_class</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;raw_class&quot;</span><span class="p">]</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
+        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">]</span>
         <span class="c1"># raw_class is used for further expansion this functionality to</span>
         <span class="c1"># Gzip files, which also requires a text wrapper.</span>
         <span class="n">raw</span> <span class="o">=</span> <span class="n">raw_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">tell</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__reduce_ex__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">curr_loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="c1"># some readers (e.g. GMS) disable tell() due to using next()</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="n">curr_loc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -381,7 +390,8 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="fm">__new__</span><span class="p">,</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,),</span>
                 <span class="p">{</span><span class="s2">&quot;raw_class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span>
-                 <span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span></div>
+                 <span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                 <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="n">curr_loc</span><span class="p">})</span></div>
 
 
 
@@ -447,9 +457,11 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;name_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()}</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">])</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
+        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">tell</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span></div>
 
@@ -518,9 +530,11 @@
                 <span class="s2">&quot;tell_val&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()}</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">])</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;name_val&quot;</span><span class="p">]</span>
+        <span class="n">tell</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;tell_val&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">tell</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span></div>
 

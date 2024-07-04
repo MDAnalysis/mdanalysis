@@ -250,11 +250,6 @@ Note that this only works in read mode.</p>
 <dd><p>Character and line based picklable file-like object.</p>
 <p>This class provides a file-like <a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOWrapper" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.TextIOWrapper</span></code></a> object that can
 be pickled. Note that this only works in read mode.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>After pickling, the current position is reset. <cite>universe.trajectory[i]</cite> has
-to be used to return to its original frame.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>raw</strong> (<em>FileIO object</em>)</p>
@@ -271,6 +266,13 @@ to be used to return to its original frame.</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>The raw class instance instead of the class name
+that is wrapped inside will be serialized.
+After deserialization, the current position is no longer reset
+so <cite>universe.trajectory[i]</cite> is not needed to seek to the
+original position.</p>
 </div>
 </dd></dl>
 
