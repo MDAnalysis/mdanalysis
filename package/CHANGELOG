@@ -61,6 +61,7 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * Enabled pylint warning 'unused-imports' (issue #1295, PR #4518)
  * MDAnalysis now builds against numpy 2.0 rather than the
    minimum supported numpy version (PR #4620)
  * As per SPEC0 the minimum supported Python version has been raised

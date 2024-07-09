@@ -181,14 +181,12 @@ Classes
    :inherited-members:
 
 """
-import logging
 import errno
 import numpy as np
 import warnings
-import copy
 
 from . import base
-from .timestep import Timestep
+from .timestep import Timestep # pylint: disable=unused-import # for backward compability v2.x
 
 
 # These methods all pass in an existing *view* onto a larger array

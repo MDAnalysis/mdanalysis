@@ -36,7 +36,6 @@ import shutil
 from unittest import mock
 import os
 import warnings
-import pytest
 
 from numpy.testing import assert_warns
 import numpy as np

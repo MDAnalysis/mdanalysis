@@ -33,7 +33,7 @@ import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysisTests import make_Universe, no_deprecated_call
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import PSF, DCD, TPR
 from MDAnalysis.core import groups
 

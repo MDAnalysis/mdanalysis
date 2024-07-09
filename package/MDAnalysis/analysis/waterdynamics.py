@@ -41,7 +41,7 @@ See Also
 """
 import warnings
 
-from waterdynamics.waterdynamics import (
+from waterdynamics.waterdynamics import ( # pylint: disable=unused-import #will be removed in version 3.0.0
     WaterOrientationalRelaxation,
     AngularDistribution,
     MeanSquareDisplacement,

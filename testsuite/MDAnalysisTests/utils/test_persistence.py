@@ -24,12 +24,9 @@ import pytest
 import pickle
 
 import MDAnalysis as mda
-from numpy.testing import (
-    TestCase,
-    assert_equal
-)
+from numpy.testing import assert_equal
 
-import gc
+
 
 from MDAnalysisTests.datafiles import PDB_small
 

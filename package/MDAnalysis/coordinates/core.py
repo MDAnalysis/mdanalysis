@@ -38,8 +38,6 @@ Helper functions:
 
 """
 
-from ..lib import util
-from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 from ..core._get_readers import get_reader_for, get_writer_for
 
 

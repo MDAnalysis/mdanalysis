@@ -127,7 +127,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
-from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
 from ._distopia import HAS_DISTOPIA
@@ -167,7 +166,7 @@ def _run(funcname: str, args: Optional[tuple] = None,
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from .c_distances import (_UINT64_MAX,
+from .c_distances import (_UINT64_MAX, # pylint: disable=unused-import
                           calc_distance_array,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
@@ -185,9 +184,10 @@ from .c_distances import (_UINT64_MAX,
                           calc_dihedral_ortho,
                           calc_dihedral_triclinic,
                           ortho_pbc,
-                          triclinic_pbc)
+                          triclinic_pbc
+                          )
 
-from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
+from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP # pylint: disable=unused-import
 
 
 def _check_result_array(result: Optional[npt.NDArray],

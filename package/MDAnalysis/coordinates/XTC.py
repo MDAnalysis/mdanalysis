@@ -33,7 +33,6 @@ MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
 
 import errno
-from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
 from ..lib.mdamath import triclinic_vectors, triclinic_box

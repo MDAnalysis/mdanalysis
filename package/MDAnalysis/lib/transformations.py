@@ -167,9 +167,7 @@ import os
 import warnings
 import math
 import numpy as np
-from numpy.linalg import norm
 
-from .mdamath import angle as vecangle
 from MDAnalysis.lib.util import no_copy_shim
 
 def identity_matrix():

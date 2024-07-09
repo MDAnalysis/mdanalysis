@@ -255,7 +255,6 @@ __all__ = [
 ]
 
 from importlib import resources
-import MDAnalysisTests.data
 
 _data_ref = resources.files('MDAnalysisTests.data')
 

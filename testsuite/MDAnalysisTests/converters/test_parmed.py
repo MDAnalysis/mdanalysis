@@ -23,9 +23,7 @@
 import pytest
 import MDAnalysis as mda
 
-import numpy as np
-from numpy.testing import (assert_allclose, assert_equal)
-from numpy.lib import NumpyVersion
+from numpy.testing import assert_allclose
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -33,13 +31,10 @@ from MDAnalysis.converters.ParmEd import ParmEdConverter
 
 from MDAnalysisTests.datafiles import (
     GRO,
-    PDB,
-    PSF,
     PSF_NAMD,
     PSF_cmap,
     PDB_small,
     PRM,
-    PRM12,
     PRM_UreyBradley,
 )
 
@@ -315,4 +310,4 @@ def test_incorrect_object_passed_typeerror():
 def test_old_import_warning():
     wmsg = "Please import the ParmEd classes from MDAnalysis.converters"
     with pytest.warns(DeprecationWarning, match=wmsg):
-        from MDAnalysis.coordinates.ParmEd import ParmEdConverter
+        import MDAnalysis.coordinates.ParmEd

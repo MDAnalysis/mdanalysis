@@ -207,7 +207,6 @@ import textwrap
 import weakref
 import itertools
 
-import mmtf
 import numpy as np
 
 from numpy.testing import assert_equal
@@ -218,7 +217,7 @@ from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
 from ..exceptions import StreamWarning, DuplicateWarning
 
 try:
-    from ._cutil import unique_int_1d
+    from ._cutil import unique_int_1d # pylint: disable=unused-import
 except ImportError:
     raise ImportError("MDAnalysis not installed properly. "
                       "This can happen if your C extensions "

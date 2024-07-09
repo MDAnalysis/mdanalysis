@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import sys
-import platform
 import warnings
 import numpy as np
 import os
@@ -33,7 +32,7 @@ from numpy.testing import (assert_equal, assert_almost_equal)
 import MDAnalysis as mda
 from MDAnalysis.transformations import translate
 from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
-                                       GRO, XTC, TRR, PDB_small, PDB_closed,
+                                       GRO, XTC, TRR, PDB_small,
                                        LAMMPS_chain, LAMMPSDUMP_chain1,
                                        LAMMPSDUMP_chain2,)
 from MDAnalysisTests.util import no_warning

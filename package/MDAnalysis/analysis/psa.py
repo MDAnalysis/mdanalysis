@@ -46,7 +46,7 @@ See Also
 
 import warnings
 
-from pathsimanalysis import (
+from pathsimanalysis import ( # pylint: disable=unused-import # will be removed completely in version 3.0.0
     get_path_metric_func,
     sqnorm,
     get_msd_matrix,

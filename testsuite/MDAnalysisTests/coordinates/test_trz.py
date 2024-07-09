@@ -29,7 +29,6 @@ from numpy.testing import (
     assert_almost_equal,
     assert_allclose
 )
-import numpy as np
 
 from MDAnalysisTests.coordinates.reference import RefTRZ
 from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)

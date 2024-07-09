@@ -29,8 +29,6 @@ from numpy.testing import (assert_allclose, assert_equal, assert_almost_equal,
 
 from MDAnalysis.lib import transformations as t
 
-from unittest import TestCase
-
 
 """
 Testing transformations is weird because there are 2 versions of many of

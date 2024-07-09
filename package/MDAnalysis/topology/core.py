@@ -34,19 +34,7 @@ See Also
 
 """
 
-# Global imports
-import os.path
-import numpy as np
-from collections import defaultdict
-
 # Local imports
-from . import tables
-from .guessers import (
-    guess_atom_element, guess_atom_type,
-    get_atom_mass, guess_atom_mass, guess_atom_charge,
-    guess_bonds, guess_angles, guess_dihedrals, guess_improper_dihedrals,
-)
-from ..core._get_readers import get_parser_for
-from ..lib.util import cached
+from . import tables # pylint: disable=unused-import # for compability with API v2.x
 
 #tumbleweed

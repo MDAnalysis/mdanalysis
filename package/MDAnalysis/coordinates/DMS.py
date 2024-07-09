@@ -36,7 +36,7 @@ import numpy as np
 import sqlite3
 
 from . import base
-from .core import triclinic_box
+from ..lib.mdamath import triclinic_box
 
 
 class DMSReader(base.SingleFrameReaderBase):

@@ -32,7 +32,6 @@ import numbers
 import numpy as np
 import functools
 
-from ..lib import mdamath
 from ..lib.util import cached
 from ..lib import util
 from ..lib import distances

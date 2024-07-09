@@ -33,7 +33,7 @@ from MDAnalysisTests.datafiles import LAMMPSdata_many_bonds
 from MDAnalysis.core.topologyobjects import (
     TopologyGroup, TopologyObject, TopologyDict,
     # TODO: the following items are not used
-    Bond, Angle, Dihedral, ImproperDihedral,
+    # Bond, Angle, Dihedral, ImproperDihedral,
 )
 
 
