@@ -59,6 +59,8 @@ Enhancements
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
  * Implement average structures with iterative algorithm from 
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
+ * Add calculation for the accessible surface area, and relative accessible
+   surface area using Shrake-Rupley algorithm (PR #2439)
 
 Changes
  * MDAnalysis now builds against numpy 2.0 rather than the
