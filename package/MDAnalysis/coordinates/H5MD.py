@@ -844,7 +844,6 @@ class H5MDReader(base.ReaderBase):
         self.__dict__ = state
         self._particle_group = self._file['particles'][
                                list(self._file['particles'])[0]]
-        self[self.ts.frame]
 
 
 class H5MDWriter(base.WriterBase):

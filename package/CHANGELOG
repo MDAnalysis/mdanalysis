@@ -24,6 +24,11 @@ The rules for this file:
 Fixes
  * Do not raise an Error reading H5MD files with datasets like
    `observables/<particle>/<property>` (part of Issue #4598, PR #4615)
+ * Fix failure in double-serialization of TextIOPicklable file reader.
+   (Issue #3723, PR #3722)
+ * Fix failure to preserve modification of coordinates after serialization,
+   e.g. with transformations
+   (Issue #4633, PR #3722)
  * Fix PSFParser error when encoutering string-like resids
  * (Issue #2053, Issue #4189 PR #4582)
  * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
