@@ -556,14 +556,18 @@ class RSASA(AnalysisBase):
             result[atom.resid] += area[i]
 
         # Calculate surface of each isolated "tripeptide"
-        for resid in self.ag.residues.resids:
+        for resindex in self.ag.residues.resindices:
             tripep = self.ag.select_atoms(
-                f"(byres (bonded resid {resid})) and ({self._subsele})")
+                f"(byres (bonded resindex {resindex})) and ({self._subsele})")
+            if len(tripep) == 0:
+                continue
             tripep_area = self._get_sasa(tripep)
-            exposed_area = sum(
-                [a for a, id in zip(tripep_area, tripep.resids)if id == resid])
+            exposed_area = sum([
+                a for a, id in zip(tripep_area, tripep.resindices)
+                if id == resindex
+            ])
             if exposed_area != 0.0:
-                result[resid] /= exposed_area
+                result[resindex] /= exposed_area
 
         # Update the result and account for residues that
         # might have empty selection
