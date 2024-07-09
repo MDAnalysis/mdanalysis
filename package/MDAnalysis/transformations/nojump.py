@@ -99,11 +99,10 @@ class NoJump(TransformationBase):
         self,
         check_continuity=True,
         max_threads=None,
+    ):
         # NoJump transforms are inherently unparallelizable, since
         # it depends on the previous frame's unwrapped coordinates
-        parallelizable=False,
-    ):
-        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
+        super().__init__(max_threads=max_threads, parallelizable=False)
         self.prev = None
         self.old_frame = 0
         self.older_frame = "A"

@@ -47,6 +47,7 @@ __all__ = [
     "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps,  #1819
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PSF_cmap",  # ala3 PSF from ParmEd test files with cmap
+    "PSF_inscode",  # PSF file with insertion codes
     "PDB_small",  # PDB
     "PDB_closed",
     "PDB_multiframe",
@@ -82,14 +83,14 @@ __all__ = [
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
     "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020", "TPR2020Double",
-    "TPR2021", "TPR2021Double", "TPR2022RC1", "TPR2023",
+    "TPR2021", "TPR2021Double", "TPR2022RC1", "TPR2023", "TPR2024",
     "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
     "TPR2020B2_bonded", "TPR2020_bonded", "TPR2020_double_bonded",
     "TPR2021_bonded", "TPR2021_double_bonded", "TPR2022RC1_bonded",
-    "TPR334_bonded", "TPR2023_bonded",
+    "TPR334_bonded", "TPR2023_bonded", "TPR2024_bonded",
     "TPR_EXTRA_2021", "TPR_EXTRA_2020", "TPR_EXTRA_2018",
     "TPR_EXTRA_2016", "TPR_EXTRA_407", "TPR_EXTRA_2022RC1",
-    "TPR_EXTRA_2023",
+    "TPR_EXTRA_2023", "TPR_EXTRA_2024",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -156,6 +157,7 @@ __all__ = [
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSdata_triclinic",  # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSdata_PairIJ",  # lammps datafile with a PairIJ Coeffs section
+    "LAMMPSdata_additional_columns",  # structure for the additional column lammpstrj
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
@@ -166,6 +168,7 @@ __all__ = [
     "LAMMPSDUMP_chain1", # Lammps dump file with chain reader
     "LAMMPSDUMP_chain2", # Lammps dump file with chain reader
     "LAMMPS_chain", # Lammps data file with chain reader
+    "LAMMPSDUMP_additional_columns",  # lammpsdump file with additional data (an additional charge column)
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -248,6 +251,7 @@ __all__ = [
     "PDB_charges",  # PDB file with formal charges
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
+    "DSSP",  # DSSP test suite
 ]
 
 from importlib import resources
@@ -311,6 +315,8 @@ DCD_NAMD_GBIS = (_data_ref / 'adk_gbis_tmd-fast1_NAMD.dcd').as_posix()
 PSF_nosegid = (_data_ref / 'nosegid.psf').as_posix()
 
 PSF_cmap = (_data_ref / 'parmed_ala3.psf').as_posix()
+
+PSF_inscode = (_data_ref / '1a2c_ins_code.psf').as_posix()
 
 PDB_varying = (_data_ref / 'varying_occ_tmp.pdb').as_posix()
 PDB_small = (_data_ref / 'adk_open.pdb').as_posix()
@@ -396,6 +402,7 @@ TPR2020 = (_data_ref / 'tprs/2lyz_gmx_2020.tpr').as_posix()
 TPR2021 = (_data_ref / 'tprs/2lyz_gmx_2021.tpr').as_posix()
 TPR2022RC1 = (_data_ref / 'tprs/2lyz_gmx_2022-rc1.tpr').as_posix()
 TPR2023 = (_data_ref / 'tprs/2lyz_gmx_2023.tpr').as_posix()
+TPR2024 = (_data_ref / 'tprs/2lyz_gmx_2024.tpr').as_posix()
 # double precision
 TPR455Double = (_data_ref / 'tprs/drew_gmx_4.5.5.double.tpr').as_posix()
 TPR460 = (_data_ref / 'tprs/ab42_gmx_4.6.tpr').as_posix()
@@ -415,7 +422,9 @@ TPR2021_bonded = (_data_ref / 'tprs/all_bonded/dummy_2021.tpr').as_posix()
 TPR2021_double_bonded = (_data_ref / 'tprs/all_bonded/dummy_2021_double.tpr').as_posix()
 TPR2022RC1_bonded = (_data_ref / 'tprs/all_bonded/dummy_2022-rc1.tpr').as_posix()
 TPR2023_bonded = (_data_ref / 'tprs/all_bonded/dummy_2023.tpr').as_posix()
+TPR2024_bonded = (_data_ref / 'tprs/all_bonded/dummy_2024.tpr').as_posix()
 # all interactions
+TPR_EXTRA_2024 = (_data_ref / 'tprs/virtual_sites/extra-interactions-2024.tpr').as_posix()
 TPR_EXTRA_2023 = (_data_ref / 'tprs/virtual_sites/extra-interactions-2023.tpr').as_posix()
 TPR_EXTRA_2022RC1 = (_data_ref / 'tprs/virtual_sites/extra-interactions-2022-rc1.tpr').as_posix()
 TPR_EXTRA_2021 = (_data_ref / 'tprs/virtual_sites/extra-interactions-2021.tpr').as_posix()
@@ -552,6 +561,8 @@ LAMMPSDUMP_chain1 = (_data_ref / "lammps/chain_dump_1.lammpstrj").as_posix()
 LAMMPSDUMP_chain2 = (_data_ref / "lammps/chain_dump_2.lammpstrj").as_posix()
 LAMMPS_chain = (_data_ref / "lammps/chain_initial.data").as_posix()
 LAMMPSdata_many_bonds = (_data_ref / "lammps/a_lot_of_bond_types.data").as_posix()
+LAMMPSdata_additional_columns = (_data_ref / "lammps/additional_columns.data").as_posix()
+LAMMPSDUMP_additional_columns = (_data_ref / "lammps/additional_columns.lammpstrj").as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
 
@@ -652,6 +663,9 @@ PDBX = (_data_ref / "4x8u.pdbx").as_posix()
 
 SURFACE_PDB = (_data_ref / 'surface.pdb.bz2').as_posix()
 SURFACE_TRR = (_data_ref / 'surface.trr').as_posix()
+
+# DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
+DSSP = (_data_ref / 'dssp').as_posix()
 
 # This should be the last line: clean up namespace
 del resources

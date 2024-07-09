@@ -3,18 +3,18 @@
 requires = [
     "Cython>=0.28",
     "packaging",
-    # lowest NumPy we can use for a given Python,
-    # In part adapted from: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
-    # As per NEP29, we set the minimum version to 1.23.2 for Python <=3.11
-    # and 1.26.0 (first to support) for Python 3.12
-    "numpy==1.23.2; python_version<='3.11' and platform_python_implementation != 'PyPy'",
-    "numpy==1.26.0; python_version=='3.12' and platform_python_implementation != 'PyPy'",
-    # For unreleased versions of Python there is currently no known supported
-    # NumPy version. In that case we just let it be a bare NumPy install
-    "numpy<2.0; python_version>='3.13'",
-    "setuptools",
+    # numpy requirement for wheel builds for distribution on PyPI - building
+    # against 2.x yields wheels that are also compatible with numpy 1.x at
+    # runtime.
+    # Note that building against numpy 1.x works fine too - users and
+    # redistributors can do this by installing the numpy version they like and
+    # disabling build isolation.
+    "numpy>=2.0.0",
+    # Set to minimum version of setuptools that allows pyproject.toml
+    "setuptools >= 40.9.0",
     "wheel",
 ]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "MDAnalysis"
@@ -27,7 +27,7 @@ authors = [
 maintainers = [
     {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     'numpy>=1.23.2',
     'GridDataFormats>=0.4.0',
@@ -42,6 +42,7 @@ dependencies = [
     'mda-xdrlib',
     'waterdynamics',
     'pathsimanalysis',
+    'mdahole2',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
@@ -57,7 +58,6 @@ classifiers = [
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
@@ -95,13 +95,26 @@ doc = [
     "pybtex-docutils",
 ]
 
-
 [project.urls]
-Documentation = 'https://docs.mdanalysis.org/'
-"User Guide" = 'https://userguide.mdanalysis.org/'
-"Issue Tracker" = 'https://github.com/mdanalysis/mdanalysis/issues'
-"User Group" = 'https://groups.google.com/g/mdnalysis-discussion/'
-Discord = 'https://discord.com/channels/807348386012987462/'
-Blog = 'https://www.mdanalysis.org/blog/'
-Twitter = 'https://twitter.com/mdanalysis'
+Homepage = "https://www.mdanalysis.org"
+Download = "https://github.com/MDAnalysis/mdanalysis/releases"
+Documentation = "https://docs.mdanalysis.org/"
+"User Guide" = "https://userguide.mdanalysis.org/"
+"Issue Tracker" = "https://github.com/mdanalysis/mdanalysis/issues"
+"Github Discussions" = "https://github.com/MDAnalysis/mdanalysis/discussions"
+Discord = "https://discord.com/channels/807348386012987462/"
+Blog = "https://www.mdanalysis.org/blog/"
 Source = 'https://github.com/mdanalysis/mdanalysis'
+
+[tool.setuptools]
+# as a zipped egg the *.so files are not found (at
+# least in Ubuntu/Linux)
+zip-safe = false
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools.package-data]
+MDAnalysis = [
+    'analysis/data/*.npy',
+]

@@ -28,24 +28,29 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: ["3.9", "3.10", "3.11", "3.12"]
+          python-version: ["3.10", "3.11", "3.12"]
           full-deps: [true, ]
           codecov: [true, ]
           include:
             - name: macOS_monterey_py311
               os: macOS-12
-              python-version: "3.11"
+              python-version: "3.12"
               full-deps: true
+              codecov: true
+            - name: macOS_14_arm64_py312
+              os: macOS-14
+              python-version: "3.12"
+              full-deps: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
-              python-version: 3.9
+              python-version: "3.10"
               full-deps: false
               codecov: true
               numpy: numpy=1.23.2
             - name: asv_check
               os: ubuntu-latest
-              python-version: 3.9
+              python-version: "3.10"
               full-deps: true
               codecov: false
               extra-pip-deps: asv
@@ -118,11 +123,11 @@ jobs:
 
     - name: codecov
       if: matrix.codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage.xml
-        fail_ci_if_error: True
+        fail_ci_if_error: False
         verbose: True
 
 
@@ -142,7 +147,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=3.9
+          python=3.10
           pip
         # using jaime's shim to avoid pulling down the cudatoolkit
         condarc: |
@@ -235,7 +240,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.11
 
@@ -254,13 +259,13 @@ jobs:
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n1)
+        DISTRIBUTION=$(ls -t1 dist/mdanalysis-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
         twine check $DISTRIBUTION
 
     - name: check_testsuite_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/MDAnalysisTests-*.tar.gz | head -n1)
+        DISTRIBUTION=$(ls -t1 dist/mdanalysistests-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysisTests-*.tar.gz found"; exit 1; }
         twine check $DISTRIBUTION
 
@@ -268,8 +273,8 @@ jobs:
       working-directory: ./dist
       run: |
         ls -a .
-        python -m pip install MDAnalysis-*.tar.gz
-        python -m pip install MDAnalysisTests-*.tar.gz
+        python -m pip install mdanalysis-*.tar.gz
+        python -m pip install mdanalysistests-*.tar.gz
 
     - name: run tests
       working-directory: ./dist
