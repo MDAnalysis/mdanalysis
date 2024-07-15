@@ -688,8 +688,10 @@ class H5MDReader(base.ReaderBase):
                             self.ts.data[key + "/" + subkey] = self._file[
                                 "observables"
                             ][key][subkey]["value"][self._frame]
-                except KeyError:
-                    warnings.warn(
+                except (AttributeError, KeyError):
+                    # KeyError: subkey is a dataset, but does not have 'value'
+                    # AttributeError: key is a group, not a dataset
+                    raise ValueError(
                         f"Could not read {key} from observables group. "
                         "Possibly not a legal H5MD observable specification."
                     )

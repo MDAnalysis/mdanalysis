@@ -17,6 +17,7 @@ from MDAnalysisTests.datafiles import (
     COORDINATES_TOPOLOGY,
     COORDINATES_H5MD,
     H5MD_energy,
+    H5MD_malformed,
 )
 from MDAnalysisTests.coordinates.base import (
     MultiframeReaderTest,
@@ -922,3 +923,9 @@ class TestH5MDReaderWithObservables(object):
         u.trajectory = reader
         for ts in u.trajectory:
             assert "atoms/energy" in ts.data
+    
+    def test_read_h5md_malformed(self):
+        """Try reading an H5MD file with malformed observables."""
+
+        with pytest.raises(ValueError):
+            H5MDReader(H5MD_malformed)
