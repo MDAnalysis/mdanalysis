@@ -17,11 +17,13 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         yuxuanzhuang
+         yuxuanzhuang, PythonFZ
 
  * 2.8.0
 
 Fixes
+ * Do not raise an Error reading H5MD files with datasets like
+   `observables/<particle>/<property>` (part of Issue #4598, PR #4615)
  * Fix failure in double-serialization of TextIOPicklable file reader.
    (Issue #3723, PR #3722)
  * Fix failure to preserve modification of coordinates after serialization,
