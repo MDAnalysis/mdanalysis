@@ -319,7 +319,7 @@ class DSSP(AnalysisBase):
                 ):
                     raise ValueError(
                         (
-                            "Residue {calpha.residue} contains wrong number of hydrogens: "
+                            f"Residue {calpha.residue} contains wrong number of hydrogens: "
                             "exactly 1 hydrogen is expected for non-PRO residues, and "
                             "zero hydrogens for PRO residues."
                         )
