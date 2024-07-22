@@ -45,6 +45,7 @@ import mmtf
 
 from . import base
 from ..core.universe import Universe
+from ..lib.util import cached, store_init_arguments
 from ..due import due, Doi
 
 
@@ -72,7 +73,10 @@ class MMTFReader(base.SingleFrameReaderBase):
                 "MDAnalysis version 3.0.0")
         warnings.warn(wmsg, DeprecationWarning)
 
-        super(MMTFReader, self).__init__(**kwargs)
+        super(MMTFReader, self).__init__(
+            filename, convert_units, n_atoms,
+            **kwargs
+        )
 
     @staticmethod
     def _format_hint(thing):
