@@ -223,6 +223,9 @@ class TestUniverseCreation(object):
 
 
 class TestUniverseFromSmiles(object):
+    def setup_class(self):
+        pytest.importorskip("rdkit.Chem")
+
     def test_default(self):
         smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
         u = mda.Universe.from_smiles(smi, format='RDKIT')
