@@ -280,21 +280,19 @@ class TestUniverseFromSmiles(object):
 
 
     def test_coordinates(self):
+        # manually create the molecule to compare
+        from rdkit import Chem
+        from rdkit.Chem import AllChem
+        mol = Chem.MolFromSmiles('C', sanitize=True)
+        mol = Chem.AddHs(mol)
+        AllChem.EmbedMultipleConfs(mol, numConfs=2, randomSeed=42)
+        expected = [c.GetPositions() for c in mol.GetConformers()]
+
+        # now the mda way
         u = mda.Universe.from_smiles("C", numConfs=2, 
                                      rdkit_kwargs=dict(randomSeed=42))
         assert u.trajectory.n_frames == 2
-        expected = np.array([
-        [[-0.02209686,  0.00321505,  0.01651974],
-         [-0.6664637 ,  0.8884155 , -0.10135844],
-         [-0.37778795, -0.8577519 , -0.58829606],
-         [ 0.09642092, -0.3151253 ,  1.0637809 ],
-         [ 0.96992755,  0.2812466 , -0.39064613]],
-        [[-0.0077073 ,  0.00435363,  0.01834692],
-         [-0.61228824, -0.83705765, -0.38619974],
-         [-0.41925883,  0.9689095 , -0.3415968 ],
-         [ 0.03148226, -0.03256683,  1.1267245 ],
-         [ 1.0077721 , -0.10363862, -0.41727486]]], dtype=np.float32)
-        assert_allclose(u.trajectory.coordinate_array, expected, rtol=1e-5)
+        assert_allclose(u.trajectory.coordinate_array, expected, rtol=1e-7)
 
 
 class TestUniverse(object):
