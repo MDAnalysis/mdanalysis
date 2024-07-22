@@ -63,6 +63,8 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * The `fetch_mmtf` method has been removed as the REST API service
+   for MMTF files has ceased to exist (Issue #4634)
  * MDAnalysis now builds against numpy 2.0 rather than the
    minimum supported numpy version (PR #4620)
  * As per SPEC0 the minimum supported Python version has been raised
@@ -82,6 +84,8 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * The MMTF Reader is deprecated and will be removed in version 3.0
+   as the MMTF format is no longer supported (Issue #4634)
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
    of the waterdynamics MDAKit and will be removed in version 3.0.0 (PR #4404)
  * The MDAnalysis.analysis.psa module has been deprecated in favour of
