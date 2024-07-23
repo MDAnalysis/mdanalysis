@@ -835,9 +835,9 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
             [
                 "box yyy -5 10 -7 7 -2 6 resid 1",
                 SelectionError,
-                "Must be combination of",
+                "Must be one of",
             ],
-            ["box a 10 -5 resid 1", SelectionError, "Must be combination of"],
+            ["box a 10 -5 resid 1", SelectionError, "Must be one of"],
         ),
     )
     def test_box_error(self, u, selection, error, expected):
