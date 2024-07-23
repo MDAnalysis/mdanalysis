@@ -280,7 +280,10 @@ class TestUniverseFromSmiles(object):
 
 
     def test_coordinates(self):
-        # manually create the molecule to compare
+        # We manually create the molecule to compare coordinates
+        # coordinate generation is pseudo random across different machines
+        # even with the same seed, so we create a molecule to compare
+        # coordinates against. See PR #4640
         from rdkit import Chem
         from rdkit.Chem import AllChem
         mol = Chem.MolFromSmiles('C', sanitize=True)
