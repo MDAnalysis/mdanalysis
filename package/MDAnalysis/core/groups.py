@@ -1874,9 +1874,13 @@ class GroupBase(_MutableBase):
         """
         atoms = self.atoms
         # bail out early if no bonds in topology:
-        if not hasattr(atoms, 'bonds'):
-            raise NoDataError("{}.unwrap() not available; this requires Bonds"
-                              "".format(self.__class__.__name__))
+        if not hasattr(atoms, 'bonds'): 
+            raise NoDataError(
+                f"{self.__class__.__name__}.unwrap() not available; this AtomGroup lacks defined bonds. "
+                "To resolve this, you can either:\n"
+                "1. Guess the bonds at universe creation using `guess_bonds = True`, or\n"
+                "2. Create a universe using a topology format where bonds are pre-defined."
+            )
         unique_atoms = atoms.unsorted_unique
 
         # Parameter sanity checking
