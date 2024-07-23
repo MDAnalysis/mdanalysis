@@ -353,6 +353,17 @@ class TestAlign(object):
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
         self._assert_rmsd(reference, universe, -1, 0.0)
 
+    def test_AlignTraj_writer_kwargs(self, universe, reference, tmpdir):
+        # Issue 4564
+        writer_kwargs = dict(precision=2)
+        with tmpdir.as_cwd():
+            aligner = align.AlignTraj(universe, reference,
+                                      select='protein and name CA',
+                                      filename='aligned_traj.xtc',
+                                      writer_kwargs=writer_kwargs,
+                                      in_memory=False).run()
+            assert_equal(aligner._writer.precision, 2)
+
     def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(reference.atoms.positions, fitted.atoms.positions,
@@ -592,6 +603,87 @@ class TestSequenceAlignmentFunction:
                 "`sequence_alignment` will be removed in release 3.0.")
         with pytest.warns(DeprecationWarning, match=wmsg):
             align.sequence_alignment(mobile, reference)
+
+
+class TestIterativeAverage(object):
+    @pytest.fixture()
+    def mobile(self):
+        u = mda.Universe(PSF, DCD)
+        return u
+
+    @pytest.fixture()
+    def reference(self):
+        u = mda.Universe(PSF, DCD)
+        return u
+
+    def test_iterative_average_default(self, mobile):
+        res = align.iterative_average(mobile, select="bynum 1:10")
+        assert_allclose(
+            res.results.positions,
+            [
+                [11.93075595, 8.6729893, -10.49887605],
+                [12.60587898, 7.91673117, -10.73327464],
+                [12.45662411, 9.51900517, -10.35551193],
+                [11.27452274, 8.83003843, -11.2619057],
+                [11.25808119, 8.26794477, -9.23340715],
+                [12.02767222, 7.95332228, -8.57249317],
+                [10.54679871, 9.49505306, -8.61215292],
+                [9.99500556, 9.16624224, -7.75231192],
+                [9.83897407, 9.93134598, -9.29541129],
+                [11.45760169, 10.5857071, -8.13037669]
+            ],
+            atol=1e-5,
+        )
+
+    def test_iterative_average_eps_high(self, mobile):
+        res = align.iterative_average(mobile, select="bynum 1:10",
+                                      eps=1e-5)
+        assert_allclose(
+            res.results.positions,
+            [
+                [11.93075595, 8.6729893, -10.49887605],
+                [12.60587898, 7.91673117, -10.73327464],
+                [12.45662411, 9.51900517, -10.35551193],
+                [11.27452274, 8.83003843, -11.2619057],
+                [11.25808119, 8.26794477, -9.23340715],
+                [12.02767222, 7.95332228, -8.57249317],
+                [10.54679871, 9.49505306, -8.61215292],
+                [9.99500556, 9.16624224, -7.75231192],
+                [9.83897407, 9.93134598, -9.29541129],
+                [11.45760169, 10.5857071, -8.13037669]
+            ],
+            atol=1e-5,
+        )
+
+    def test_iterative_average_weights_mass(self, mobile, reference):
+        res = align.iterative_average(mobile, reference,
+                                      select="bynum 1:10",
+                                      niter=10, weights="mass")
+        assert_allclose(
+            res.results.positions,
+            [
+                [11.96438784, 8.85426235, -10.24735737],
+                [12.75920431, 8.27294545, -10.54295766],
+                [12.3285704, 9.72083717, -9.9419435],
+                [11.33941507, 9.03249423, -11.01306158],
+                [11.30988499, 8.14958885, -9.1205501],
+                [12.09108655, 7.85155906, -8.46681943],
+                [10.37499697, 9.13535837, -8.3732586],
+                [9.83883314, 8.57939098, -7.6195549],
+                [9.64405257, 9.55924307, -9.04315991],
+                [11.0678934, 10.27798773, -7.64881842]
+            ],
+            atol=1e-5,
+        )
+
+    def test_iterative_average_convergence_failure(self, mobile, reference):
+        with pytest.raises(RuntimeError):
+            _ = align.iterative_average(mobile, reference,
+                                        niter=1, eps=0)
+
+    def test_iterative_average_convergence_verbose(self, mobile, reference):
+        _ = align.iterative_average(mobile, select="bynum 1:10",
+                                    verbose=True)
 
 
 def test_alignto_reorder_atomgroups():

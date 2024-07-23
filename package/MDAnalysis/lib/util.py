@@ -205,6 +205,7 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import itertools
 
 import mmtf
 import numpy as np
@@ -2552,3 +2553,42 @@ def store_init_arguments(func):
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
     return wrapper
+
+
+def no_copy_shim():
+    if np.lib.NumpyVersion >= "2.0.0rc1":
+        copy = None
+    else:
+        copy = False
+    return copy
+
+
+def atoi(s: str) -> int:
+    """Convert the leading number part of a string to an integer.
+
+    Parameters
+    ----------
+    s : str
+        The string to convert to an integer.
+
+    Returns
+    -------
+    number : int
+        The first numeric part of the string converted to an integer.
+        If the string does not start with a number, 0 is returned.
+
+    Examples
+    --------
+    >>> from MDAnalysis.lib.util import atoi
+    >>> atoi('34f4')
+    34
+    >>> atoi('foo')
+    0
+ 
+
+    .. versionadded:: 2.8.0
+    """
+    try:
+        return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
+    except ValueError:
+        return 0
