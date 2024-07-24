@@ -200,32 +200,10 @@
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.MMTF.MMTFReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.MMTF.</span></span><span class="sig-name descname"><span class="pre">MMTFReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MMTF.html#MMTFReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.MMTF.MMTFReader" title="Link to this definition"></a></dt>
 <dd><p>Coordinate reader for the Macromolecular Transmission Format format (<a class="reference external" href="https://mmtf.rcsb.org/">MMTF</a>).</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.MMTF.fetch_mmtf">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.MMTF.</span></span><span class="sig-name descname"><span class="pre">fetch_mmtf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdb_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MMTF.html#fetch_mmtf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.MMTF.fetch_mmtf" title="Link to this definition"></a></dt>
-<dd><p>Create a Universe from the RCSB Protein Data Bank using mmtf format</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>pdb_id</strong> (<em>string</em>) – PDB code of the desired data, eg ‘4UCP’</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>MDAnalysis Universe of the corresponding PDB system</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe">Universe</a></p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">mmtf.fetch</span></code></dt><dd><p>Function for fetching raw mmtf data</p>
-</dd>
-</dl>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.16.0.</span></p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.8.0: </span>The MMTF format is no longer supported / serviced by the
+Protein Data Bank. The Reader will be removed in version 3.0.
+Users are encouraged to instead use alternative PDB formats.</p>
 </div>
 </dd></dl>
 

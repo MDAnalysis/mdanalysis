@@ -179,15 +179,16 @@
 
 <span class="sd">.. autoclass:: MMTFReader</span>
 <span class="sd">   :members:</span>
-<span class="sd">.. autofunction:: fetch_mmtf</span>
 
 <span class="sd">.. _MMTF: https://mmtf.rcsb.org/</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">mmtf</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">store_init_arguments</span>
 <span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 
@@ -201,8 +202,26 @@
 <div class="viewcode-block" id="MMTFReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.MMTFReader">[docs]</a>
 <span class="k">class</span> <span class="nc">MMTFReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for the Macromolecular Transmission Format format (MMTF_).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for the Macromolecular Transmission Format format (MMTF_).</span>
+
+
+<span class="sd">    .. deprecated:: 2.8.0</span>
+<span class="sd">       The MMTF format is no longer supported / serviced by the</span>
+<span class="sd">       Protein Data Bank. The Reader will be removed in version 3.0.</span>
+<span class="sd">       Users are encouraged to instead use alternative PDB formats.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MMTF&#39;</span>
+
+    <span class="nd">@store_init_arguments</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The MMTF Reader is deprecated and will be removed in &quot;</span>
+                <span class="s2">&quot;MDAnalysis version 3.0.0&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">MMTFReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
@@ -235,34 +254,6 @@
             <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">unit_cell</span>
 
         <span class="k">return</span> <span class="n">ts</span></div>
-
-
-
-<div class="viewcode-block" id="fetch_mmtf">
-<a class="viewcode-back" href="../../../documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.fetch_mmtf">[docs]</a>
-<span class="k">def</span> <span class="nf">fetch_mmtf</span><span class="p">(</span><span class="n">pdb_id</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Universe from the RCSB Protein Data Bank using mmtf format</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    pdb_id : string</span>
-<span class="sd">        PDB code of the desired data, eg &#39;4UCP&#39;</span>
-
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    Universe</span>
-<span class="sd">        MDAnalysis Universe of the corresponding PDB system</span>
-
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    mmtf.fetch : Function for fetching raw mmtf data</span>
-
-
-<span class="sd">    .. versionadded:: 0.16.0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Universe</span><span class="p">(</span><span class="n">mmtf</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">pdb_id</span><span class="p">))</span></div>
 
 </pre></div>
 
