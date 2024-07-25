@@ -90,10 +90,10 @@ def test_iopickle_text(f_text):
     assert_equal(f_text.readlines(), f_text_pickled.readlines())
 
 
-def test_offset_text_to_0(f_text):
+def test_offset_text_same(f_text):
     f_text.readline()
     f_text_pickled = pickle.loads(pickle.dumps(f_text))
-    assert_equal(f_text_pickled.tell(), 0)
+    assert_equal(f_text_pickled.tell(), f_text.tell())
 
 
 @pytest.fixture(params=[
