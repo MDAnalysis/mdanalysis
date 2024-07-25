@@ -908,12 +908,12 @@ class TestTriclinicSelections(object):
         empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
         assert len(empty) == 0
 
-    def test_box(self, u):
-        ag = u.select_atoms("box z -2.5 2.5 resid 1")
+    def test_zone(self, u):
+        ag = u.select_atoms("zone z -2.5 2.5 resid 1")
         assert len(ag) == 4237
 
-    def test_empty_box(self, u):
-        ag = u.select_atoms("box z -2.5 2.5 name NOT_A_NAME")
+    def test_empty_zone(self, u):
+        ag = u.select_atoms("zone z -2.5 2.5 name NOT_A_NAME")
         assert len(ag) == 0
 
     def test_point_1(self, u):
