@@ -1480,12 +1480,6 @@ class TestAttributeGetting(object):
             universe.atoms.jabberwocky
         assert 'has no attribute' in str(exc.value)
 
-    # def test_unwrap_without_bonds(self, universe):
-    #     with pytest.raises(NoDataError) as exc:
-    #         universe.atoms.unwrap()
-    #     err = ('AtomGroup.unwrap() not available; '
-    #            'this requires Bonds')
-    #     assert str(exc.value) == err
     def test_unwrap_without_bonds(universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.unwrap()
