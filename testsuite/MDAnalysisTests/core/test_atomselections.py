@@ -837,6 +837,21 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
                 SelectionError, 
                 "Must be one of"
             ],
+            [
+                "zone x 10 -5 resid 1", 
+                SelectionError, 
+                "xmin must be less than or equal to xmax"
+            ],
+            [
+                "zone y 7 -7 resid 1", 
+                SelectionError, 
+                "ymin must be less than or equal to ymax"
+            ],
+            [
+                "zone z 6 -2 resid 1", 
+                SelectionError, 
+                "zmin must be less than or equal to zmax"
+            ],
         ),
     )
     def test_zone_error(self, u, selection, error, expected):
