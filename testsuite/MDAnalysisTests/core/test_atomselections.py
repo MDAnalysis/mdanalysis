@@ -247,6 +247,22 @@ class TestSelectionsCHARMM(object):
 
         assert_equal(set(ag.indices), set(idx))
 
+    @pytest.mark.parametrize(
+        "selstr, expected_value",
+        [
+            ("zone x -2.0 2.0 index 1281", 418),
+            ("zone yz -2.0 2.0 -2.0 2.0 index 1280", 58),
+            ("zone xyz -2.0 2.0 -2.0 2.0 -2.0 2.0 index 1279", 10),
+        ],
+    )
+    def test_zone(self, universe, selstr, expected_value):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), expected_value)
+
+    def test_empty_zone(self, universe):
+        empty = universe.select_atoms("zone y -10 10 name NOT_A_NAME")
+        assert_equal(len(empty), 0)
+
     def test_prop(self, universe):
         sel = universe.select_atoms('prop y <= 16')
         sel2 = universe.select_atoms('prop abs z < 8')
@@ -802,6 +818,48 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
         assert len(sel) == expected
 
+    @pytest.mark.parametrize("periodic,expected", ([True, 29], [False, 17]))
+    def test_zone(self, u, periodic, expected):
+        sel = u.select_atoms("zone xyz 2 5 -5 10 -2 6 resid 1", periodic=periodic)
+
+        assert len(sel) == expected
+
+    @pytest.mark.parametrize(
+        "selection,error,expected",
+        (
+            [
+                "zone yyy -5 10 -7 7 -2 6 resid 1",
+                SelectionError,
+                "Must be one of",
+            ],
+            [
+                "zone a -10 5 resid 1", 
+                SelectionError, 
+                "Must be one of"
+            ],
+            [
+                "zone x 10 -5 resid 1", 
+                SelectionError, 
+                "xmin must be less than or equal to xmax"
+            ],
+            [
+                "zone y 7 -7 resid 1", 
+                SelectionError, 
+                "ymin must be less than or equal to ymax"
+            ],
+            [
+                "zone z 6 -2 resid 1", 
+                SelectionError, 
+                "zmin must be less than or equal to zmax"
+            ],
+        ),
+    )
+    def test_zone_error(self, u, selection, error, expected):
+        with pytest.raises(error) as excinfo:
+            u.select_atoms(selection)
+        exec_msg = str(excinfo.value)
+        assert expected in exec_msg
+
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
     @pytest.fixture()
@@ -864,6 +922,14 @@ class TestTriclinicSelections(object):
     def test_empty_sphzone(self, u):
         empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
         assert len(empty) == 0
+
+    def test_zone(self, u):
+        ag = u.select_atoms("zone z -2.5 2.5 resid 1")
+        assert len(ag) == 4237
+
+    def test_empty_zone(self, u):
+        ag = u.select_atoms("zone z -2.5 2.5 name NOT_A_NAME")
+        assert len(ag) == 0
 
     def test_point_1(self, u):
         # The example selection
@@ -1274,6 +1340,7 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
 
     assert len(sel.atoms) == n_atoms
 
+
 @pytest.mark.parametrize('selection', [
     'all', 'protein', 'backbone', 'nucleic', 'nucleicbackbone',
     'name O', 'name N*', 'resname stuff', 'resname ALA', 'type O',
@@ -1283,6 +1350,7 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
     'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
     'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
     'byres index 0', 'same resid as index 0',
+    'zone xz 2 3 -5 4 index 0',
 ])
 def test_selections_on_empty_group(u_pdb_icodes, selection):
     ag = u_pdb_icodes.atoms[[]].select_atoms(selection)

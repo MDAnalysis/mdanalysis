@@ -14,6 +14,7 @@
 import sys
 import os
 import datetime
+
 import MDAnalysis as mda
 # Custom MDA Formating
 from pybtex.style.formatting.unsrt import Style as UnsrtStyle

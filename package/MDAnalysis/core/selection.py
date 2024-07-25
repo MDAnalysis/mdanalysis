@@ -537,6 +537,78 @@ class PointSelection(Selection):
         return group[np.asarray(indices, dtype=np.int64)]
 
 
+class ZoneSelection(Selection):
+    from MDAnalysis.lib.mdamath import triclinic_vectors
+
+    token = 'zone'
+    precedence = 1
+    axis_map = ["x", "y", "z"]
+    axis_set = {"x", "y", "z", "xy", "xz", "yz", "xyz"}
+
+    def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+        self.periodic = parser.periodic
+        self.direction = tokens.popleft()
+        self.xmin, self.xmax = None, None
+        self.ymin, self.ymax = None, None
+        self.zmin, self.zmax = None, None
+
+        if self.direction in self.axis_set:
+            for d in self.direction:
+                if d == "x":
+                    self.xmin = float(tokens.popleft())
+                    self.xmax = float(tokens.popleft())
+                    if self.xmin > self.xmax:
+                        raise ValueError("xmin must be less than or equal to xmax")
+                elif d == "y":
+                    self.ymin = float(tokens.popleft())
+                    self.ymax = float(tokens.popleft())
+                    if self.ymin > self.ymax:
+                        raise ValueError("ymin must be less than or equal to ymax")
+                elif d == "z":
+                    self.zmin = float(tokens.popleft())
+                    self.zmax = float(tokens.popleft())
+                    if self.zmin > self.zmax:
+                        raise ValueError("zmin must be less than or equal to zmax")
+        else:
+            raise ValueError(
+                "The direction '{}' is not valid. "
+                "Must be one of {}"
+                "".format(self.direction, ", ".join(self.axis_set))
+            )
+
+        self.sel = parser.parse_expression(self.precedence)
+
+    @return_empty_on_apply
+    def _apply(self, group):
+        sel = self.sel.apply(group)
+        if len(sel) == 0:
+            return group[[]]
+        # Calculate vectors between point of interest and our group
+        vecs = group.positions - sel.center_of_geometry()
+        range_map = {
+            0: (self.xmin, self.xmax),
+            1: (self.ymin, self.ymax),
+            2: (self.zmin, self.zmax),
+        }
+
+        if self.periodic and group.dimensions is not None:
+            # TODO: a more general judgement
+            vecs = distances.minimize_vectors(vecs, group.dimensions)
+
+        # Deal with each dimension criteria
+        mask = None
+        for idx, limits in range_map.items():
+            if limits[0] is None or limits[1] is None:
+                continue
+            if mask is None:
+                mask = (vecs[:, idx] > limits[0]) & (vecs[:, idx] < limits[1])
+            else:
+                mask &= (vecs[:, idx] > limits[0]) & (vecs[:, idx] < limits[1])
+
+        return group[mask]
+
+
 class AtomSelection(Selection):
     token = 'atom'
 
