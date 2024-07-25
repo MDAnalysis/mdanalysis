@@ -3271,24 +3271,24 @@ class AtomGroup(GroupBase):
                 radius 5, external radius 10 centered on the COG. In z, the
                 cylinder extends from 10 above the COG to 8 below. Positive
                 values for *zMin*, or negative ones for *zMax*, are allowed.
-            box *dimensions* *dN_min* *dN_max* [*dN_min* *dN_max*] [*dN_min* *dN_max*] *selection*
-                Select all atoms within a box region centered
+            zone *dimensions* *dN_min* *dN_max* [*dN_min* *dN_max*] [*dN_min* *dN_max*] *selection*
+                Select all atoms within a zone in shape of an orthognol box centered
                 on the center of geometry (COG) of a given selection.
                 *dimensions* Specifies which dimension(s) to apply
-                the box selection on. Can be ``x``, ``y``, ``z``, ``xy``, 
+                the zone selection on. Can be ``x``, ``y``, ``z``, ``xy``, 
                 ``yz``, ``xz``, or ``xyz`. *dN_min*, *dN_max* are the minimum 
                 and maximum bounds along each specified dimension.
                 Positive values are above/right/front of the COG,
                 negatives are below/left/behind, and should be specified
                 for each dimension. *selection* specifies the selection
-                to center the box on. e.g. ``box x -5 10 protein``
-                selects a 15 Angstrom box along x centered
+                to center the zone on. e.g. ``zone x -5 10 protein``
+                selects a 15 Angstrom zone along x centered
                 on the COG of protein, extending 5 Angstroms
-                below to 10 Angstroms above. ``box yz -8 10 -10 6 protein``
-                selects a box with y extending 8 below to 10 above the COG,
+                below to 10 Angstroms above. ``zone yz -8 10 -10 6 protein``
+                selects a zone with y extending 8 below to 10 above the COG,
                 and z extending 10 below to 6 above.
-                ``box xyz -5 10 -8 6 -7 9 protein`` selects
-                a 3D box with x -5 to 10, y -8 to 6, and z -7 to 9 relative
+                ``zone xyz -5 10 -8 6 -7 9 protein`` selects
+                a 3D zone with x -5 to 10, y -8 to 6, and z -7 to 9 relative
                 to the protein COG.
 
         **Connectivity**

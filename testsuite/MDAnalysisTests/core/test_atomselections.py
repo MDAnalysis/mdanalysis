@@ -250,17 +250,17 @@ class TestSelectionsCHARMM(object):
     @pytest.mark.parametrize(
         "selstr, expected_value",
         [
-            ("box x -2.0 2.0 index 1281", 418),
-            ("box yz -2.0 2.0 -2.0 2.0 index 1280", 58),
-            ("box xyz -2.0 2.0 -2.0 2.0 -2.0 2.0 index 1279", 10),
+            ("zone x -2.0 2.0 index 1281", 418),
+            ("zone yz -2.0 2.0 -2.0 2.0 index 1280", 58),
+            ("zone xyz -2.0 2.0 -2.0 2.0 -2.0 2.0 index 1279", 10),
         ],
     )
-    def test_box(self, universe, selstr, expected_value):
+    def test_zone(self, universe, selstr, expected_value):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), expected_value)
 
-    def test_empty_box(self, universe):
-        empty = universe.select_atoms("box y 10 -10 name NOT_A_NAME")
+    def test_empty_zone(self, universe):
+        empty = universe.select_atoms("zone y -10 10 name NOT_A_NAME")
         assert_equal(len(empty), 0)
 
     def test_prop(self, universe):
@@ -819,8 +819,8 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
         assert len(sel) == expected
 
     @pytest.mark.parametrize("periodic,expected", ([True, 29], [False, 17]))
-    def test_box(self, u, periodic, expected):
-        sel = u.select_atoms("box xyz 2 5 -5 10 -2 6 resid 1", periodic=periodic)
+    def test_zone(self, u, periodic, expected):
+        sel = u.select_atoms("zone xyz 2 5 -5 10 -2 6 resid 1", periodic=periodic)
 
         assert len(sel) == expected
 
@@ -828,19 +828,18 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
         "selection,error,expected",
         (
             [
-                "box xyz -5 10 -90 90 -2 6 resid 1",
-                NotImplementedError,
-                "The total length of the box selection in y",
-            ],
-            [
-                "box yyy -5 10 -7 7 -2 6 resid 1",
+                "zone yyy -5 10 -7 7 -2 6 resid 1",
                 SelectionError,
                 "Must be one of",
             ],
-            ["box a 10 -5 resid 1", SelectionError, "Must be one of"],
+            [
+                "zone a -10 5 resid 1", 
+                SelectionError, 
+                "Must be one of"
+            ],
         ),
     )
-    def test_box_error(self, u, selection, error, expected):
+    def test_zone_error(self, u, selection, error, expected):
         with pytest.raises(error) as excinfo:
             u.select_atoms(selection)
         exec_msg = str(excinfo.value)
@@ -1336,7 +1335,7 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
     'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
     'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
     'byres index 0', 'same resid as index 0',
-    'box xz 3 2 4 -5 index 0',
+    'zone xz 2 3 -5 4 index 0',
 ])
 def test_selections_on_empty_group(u_pdb_icodes, selection):
     ag = u_pdb_icodes.atoms[[]].select_atoms(selection)

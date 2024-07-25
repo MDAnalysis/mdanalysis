@@ -537,8 +537,10 @@ class PointSelection(Selection):
         return group[np.asarray(indices, dtype=np.int64)]
 
 
-class BoxSelection(Selection):
-    token = "box"
+class ZoneSelection(Selection):
+    from MDAnalysis.lib.mdamath import triclinic_vectors
+
+    token = 'zone'
     precedence = 1
     axis_map = ["x", "y", "z"]
     axis_set = {"x", "y", "z", "xy", "xz", "yz", "xyz"}
@@ -591,27 +593,7 @@ class BoxSelection(Selection):
         }
 
         if self.periodic and group.dimensions is not None:
-            box = group.dimensions[:3]
-
-            for idx, limits in range_map.items():
-                axis_index = idx
-                axis_min, axis_max = limits[0], limits[1]
-                if axis_min is None or axis_max is None:
-                    continue
-                axis_height = axis_max - axis_min
-                if axis_height > box[axis_index]:
-                    raise NotImplementedError(
-                        "The total length of the box selection in {} ({:.3f}) "
-                        "is larger than the unit cell's {} dimension ({:.3f}). "
-                        "Can only do selections where it is smaller or equal."
-                        "".format(
-                            self.axis_map[axis_index],
-                            axis_height,
-                            self.axis_map[axis_index],
-                            box[axis_index],
-                        )
-                    )
-
+            # TODO: a more general judgement
             vecs = distances.minimize_vectors(vecs, group.dimensions)
 
         # Deal with each dimension criteria
