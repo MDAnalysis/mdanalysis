@@ -1434,53 +1434,59 @@ class TestAttributeSetting(object):
             setattr(comp, attr, 24)
 
 class TestAttributeGetting(object):
-    
+
     @staticmethod
     @pytest.fixture()
     def universe():
         return make_Universe(extras=('masses', 'altLocs'))
 
+    @staticmethod
+    @pytest.fixture()
+    def atoms():
+        u = make_Universe(extras=("masses",), size=(3, 1, 1))
+        return u.atoms
+
     @pytest.mark.parametrize('attr', ['masses', 'altLocs'])
     def test_get_present_topattr_group(self, universe, attr):
         values = getattr(universe.atoms, attr)
         assert values is not None
-    
+
     @pytest.mark.parametrize('attr', ['mass', 'altLoc'])
     def test_get_present_topattr_component(self, universe, attr):
         value = getattr(universe.atoms[0], attr)
         assert value is not None
 
     @pytest.mark.parametrize('attr,singular', [
-        ('masses', 'mass'), 
+        ('masses', 'mass'),
         ('altLocs', 'altLoc')])
     def test_get_plural_topattr_from_component(self, universe, attr, singular):
         with pytest.raises(AttributeError) as exc:
             getattr(universe.atoms[0], attr)
         assert ('Do you mean ' + singular) in str(exc.value)
-    
+
     @pytest.mark.parametrize('attr,singular', [
-        ('masses', 'mass'), 
+        ('masses', 'mass'),
         ('altLocs', 'altLoc')])
     def test_get_sing_topattr_from_group(self, universe, attr, singular):
         with pytest.raises(AttributeError) as exc:
             getattr(universe.atoms, singular)
-        assert ('Do you mean '+attr) in str(exc.value)
-    
+        assert ('Do you mean ' + attr) in str(exc.value)
+
     @pytest.mark.parametrize('attr,singular', [
-        ('elements', 'element'), 
+        ('elements', 'element'),
         ('tempfactors', 'tempfactor'),
         ('bonds', 'bonds')])
     def test_get_absent_topattr_group(self, universe, attr, singular):
         with pytest.raises(NoDataError) as exc:
             getattr(universe.atoms, attr)
-        assert 'does not contain '+singular in str(exc.value)
+        assert 'does not contain ' + singular in str(exc.value)
 
     def test_get_non_topattr(self, universe):
         with pytest.raises(AttributeError) as exc:
             universe.atoms.jabberwocky
         assert 'has no attribute' in str(exc.value)
 
-    def test_unwrap_without_bonds(universe):
+    def test_unwrap_without_bonds(self, universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.unwrap()
         expected_message = (
@@ -1516,7 +1522,7 @@ class TestAttributeGetting(object):
             universe.atoms[0].center_of_mass()
         err = ('center_of_mass() is a method of AtomGroup, not Atom')
         assert str(exc.value) == err
-    
+
     @pytest.mark.parametrize('attr', ['altlocs', 'alt_Locs'])
     def test_wrong_name(self, universe, attr):
         with pytest.raises(AttributeError) as exc:
@@ -1524,7 +1530,6 @@ class TestAttributeGetting(object):
         err = ('AtomGroup has no attribute {}. '
                'Did you mean altLocs?').format(attr)
         assert str(exc.value) == err
-
 
 class TestInitGroup(object):
     @staticmethod
