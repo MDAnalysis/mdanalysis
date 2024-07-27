@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import itertools
+import re
 import numpy as np
 from numpy.testing import (
     assert_array_equal,
@@ -1485,17 +1486,19 @@ class TestAttributeGetting(object):
         with pytest.raises(AttributeError) as exc:
             universe.atoms.jabberwocky
         assert 'has no attribute' in str(exc.value)
-
+        
     def test_unwrap_without_bonds(self, universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.unwrap()
+        
         expected_message = (
             "AtomGroup.unwrap() not available; this AtomGroup lacks defined bonds. "
             "To resolve this, you can either:\n"
             "1. Guess the bonds at universe creation using `guess_bonds = True`, or\n"
             "2. Create a universe using a topology format where bonds are pre-defined."
         )
-        assert str(exc.value) == expected_message
+        expected_message_pattern = re.escape(expected_message)
+        assert re.fullmatch(expected_message_pattern, str(exc.value))
 
     def test_get_absent_attr_method(self, universe):
         with pytest.raises(NoDataError) as exc:
