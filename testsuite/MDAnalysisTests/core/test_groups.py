@@ -1486,11 +1486,8 @@ class TestAttributeGetting(object):
         with pytest.raises(AttributeError) as exc:
             universe.atoms.jabberwocky
         assert 'has no attribute' in str(exc.value)
-        
+
     def test_unwrap_without_bonds(self, universe):
-        with pytest.raises(NoDataError) as exc:
-            universe.atoms.unwrap()
-        
         expected_message = (
             "AtomGroup.unwrap() not available; this AtomGroup lacks defined bonds. "
             "To resolve this, you can either:\n"
@@ -1498,7 +1495,8 @@ class TestAttributeGetting(object):
             "2. Create a universe using a topology format where bonds are pre-defined."
         )
         expected_message_pattern = re.escape(expected_message)
-        assert re.fullmatch(expected_message_pattern, str(exc.value))
+        with pytest.raises(NoDataError, match=expected_message_pattern):
+            universe.atoms.unwrap()    
 
     def test_get_absent_attr_method(self, universe):
         with pytest.raises(NoDataError) as exc:
