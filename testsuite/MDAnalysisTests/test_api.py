@@ -39,10 +39,6 @@ def test_Universe():
     assert mda.Universe is mda.core.universe.Universe
 
 
-def test_fetch_mmtf():
-    assert mda.fetch_mmtf is mda.coordinates.MMTF.fetch_mmtf
-
-
 def test_Writer():
     assert mda.Writer is mda.coordinates.core.writer
 

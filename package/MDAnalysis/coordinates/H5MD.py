@@ -207,6 +207,7 @@ Classes
    :members:
 
 """
+import warnings
 
 import numpy as np
 import MDAnalysis as mda
@@ -673,10 +674,27 @@ class H5MDReader(base.ReaderBase):
     def _copy_to_data(self):
         """assigns values to keys in data dictionary"""
 
-        if 'observables' in self._file:
-            for key in self._file['observables'].keys():
-                self.ts.data[key] = self._file['observables'][key][
-                    'value'][self._frame]
+        if "observables" in self._file:
+            for key in self._file["observables"].keys():
+                try:
+                    # if has value as subkey read directly into data
+                    if "value" in self._file["observables"][key]:
+                        self.ts.data[key] = self._file["observables"][key][
+                            "value"
+                        ][self._frame]
+                    # if value is not a subkey, read dict of subkeys
+                    else:
+                        for subkey in self._file["observables"][key].keys():
+                            self.ts.data[key + "/" + subkey] = self._file[
+                                "observables"
+                            ][key][subkey]["value"][self._frame]
+                except (AttributeError, KeyError):
+                    # KeyError: subkey is a dataset, but does not have 'value'
+                    # AttributeError: key is a group, not a dataset
+                    raise ValueError(
+                        f"Could not read {key} from observables group. "
+                        "Possibly not a legal H5MD observable specification."
+                    )
 
         # pulls 'time' and 'step' out of first available parent group
         for name, value in self._has.items():
@@ -828,7 +846,6 @@ class H5MDReader(base.ReaderBase):
         self.__dict__ = state
         self._particle_group = self._file['particles'][
                                list(self._file['particles'])[0]]
-        self[self.ts.frame]
 
 
 class H5MDWriter(base.WriterBase):

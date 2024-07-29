@@ -88,3 +88,10 @@ def test_dimensionless():
     r = MMTFReader(MMTF_skinny2)
 
     assert r.ts.dimensions is None
+
+
+def test_deprecation():
+    wmsg = "The MMTF Reader is deprecated"
+
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        _ = MMTFReader(MMTF_skinny2)
