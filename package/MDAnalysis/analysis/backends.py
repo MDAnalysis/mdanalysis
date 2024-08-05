@@ -5,7 +5,7 @@
 
 
 The :mod:`backends` module provides :class:`BackendBase` base class to
-implement custom backends for
+implement custom execution backends for
 :meth:`MDAnalysis.analysis.base.AnalysisBase.run` and its
 subclasses.
 
@@ -16,10 +16,10 @@ subclasses.
 Backends
 --------
 
-Three built-in backend classes classes are provided:
+Three built-in backend classes are provided:
 
-* *serial*: :class:`BackendSerial`, that is equal to using no
-  parallelization and is default
+* *serial*: :class:`BackendSerial`, that is equivalent to using no
+  parallelization and is the default
 
 * *multiprocessing*: :class:`BackendMultiprocessing` that supports
   parallelization via standard Python :mod:`multiprocessing` module
