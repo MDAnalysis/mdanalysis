@@ -894,11 +894,11 @@ class AnalysisFromFunction(AnalysisBase):
         and 'dask' backends.
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
     @classmethod
     def get_supported_backends(cls):
         return ("serial", "multiprocessing", "dask")
-
-    _analysis_algorithm_is_parallelizable = True
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
         if (trajectory is not None) and (not isinstance(
