@@ -402,12 +402,11 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
-
-            .. versionadded:: 2.2.0
         frames : array_like, optional
             array of integers or booleans to slice trajectory; cannot be
             combined with ``start``, ``stop``, ``step``
 
+            .. versionadded:: 2.2.0
 
         Raises
         ------
