@@ -721,7 +721,6 @@ class AnalysisBase(object):
         verbose : bool, optional
             Turn on verbosity
 
-            .. versionadded:: 2.5.0
         progressbar_kwargs : dict, optional
             ProgressBar keywords with custom parameters regarding progress bar
             position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
