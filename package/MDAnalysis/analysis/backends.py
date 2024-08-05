@@ -159,7 +159,7 @@ class BackendBase:
 
 class BackendSerial(BackendBase):
     """A built-in backend that does serial execution of the function, without any
-    parallelization
+    parallelization.
 
     Parameters
     ----------
@@ -189,7 +189,7 @@ class BackendSerial(BackendBase):
 
     def apply(self, func: Callable, computations: list) -> list:
         """
-        Applies `func` to each object in ``computations``.
+        Serially applies `func` to each task object in ``computations``.
 
         Parameters
         ----------
@@ -233,7 +233,7 @@ class BackendMultiprocessing(BackendBase):
     """
 
     def apply(self, func: Callable, computations: list) -> list:
-        """Applies `func` to each object in ``computations``.
+        """Applies `func` to each object in ``computations`` using `multiprocessing`'s `Pool.map`.
 
         Parameters
         ----------
@@ -327,7 +327,7 @@ class BackendDask(BackendBase):
         base_checks = super()._get_checks()
         checks = {
             is_installed("dask"):
-            ("module 'dask' is missing. Please install: "
+            ("module 'dask' is missing. Please install 'dask': "
              "https://docs.dask.org/en/stable/install.html")
         }
         return base_checks | checks

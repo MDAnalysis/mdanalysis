@@ -10,8 +10,7 @@ Parallel analysis
    Parallelization of analysis classes was added during Google Summer of Code
    2023 by @marinegor and MDAnalysis GSoC mentors.
 
-Starting with v2.8.0, MDAnalysis, introduces process-based parallelization for
-analysis classes. This section explains the implementation and background for
+This section explains the implementation and background for
 parallelization with the :class:`MDAnalysis.analysis.base.AnalysisBase`, what 
 users and developers need to know, when you should use parallelization (almost 
 always!), and when you should abstain from doing so (rarely).
@@ -20,7 +19,7 @@ always!), and when you should abstain from doing so (rarely).
 How to use parallelization
 ==========================
 
-In order to use parallelization in a built-in analysis class ``SomeClass``,
+In order to use parallelization in a built-in analysis class ``SomeAnalysisClass``,
 simply check which backends are available (see :ref:`backends` for backends
 that are generally available), and then just enable them by providing
 ``backend='multiprocessing'`` and ``n_workers=...`` to ``SomeClass.run(...)``
@@ -79,7 +78,7 @@ between workers, and then
 for all frames of a computation group. Within this method, a user-implemented
 :meth:`~MDAnalysis.analysis.base.AnalysisBase._single_frame` method gets
 **applied** to each frame in a computation group.  After that, the main
-instance gets an object that will **combine** all the objects from remote
+instance gets an object that will **combine** all the objects from other
 workers, and all instances get *merged* with an instance of
 :class:`MDAnalysis.analysis.results.ResultsGroup`. Then, a normal
 user-implemented :meth:`~MDAnalysis.analysis.base.AnalysisBase._compute` method

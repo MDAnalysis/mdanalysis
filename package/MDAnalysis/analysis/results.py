@@ -29,6 +29,8 @@ multiple workers, initialized during a parallel run:
 .. code-block:: python
 
     from MDAnalysis.analysis.results import Results, ResultsGroup
+    import numpy as np
+    
     r1, r2 = Results(), Results()
     r1.masses = [1, 2, 3, 4, 5]
     r2.masses = [0, 0, 0, 0]
@@ -181,13 +183,16 @@ class ResultsGroup:
         self._lookup = lookup
 
     def merge(self, objects: Sequence[Results], require_all_aggregators: bool = True) -> Results:
-        """Merge results into a single object. If objects contain single element, returns it while ignoring _lookup attribute.
+        """Merge results into a single object. If objects contain single
+           element, returns it while ignoring _lookup attribute.
 
         Parameters
         ----------
         require_all_aggregators : bool, optional
-            if True, raise an exception when no aggregation function for a particular argument is found.
-            Allows to skip aggregation for the parameters that aren't needed in the final object -- see :class:`ResultsGroup`.
+            if True, raise an exception when no aggregation function for a
+            particular argument is found. Allows to skip aggregation for the
+            parameters that aren't needed in the final object --
+            see :class:`ResultsGroup`.
 
         Returns
         -------

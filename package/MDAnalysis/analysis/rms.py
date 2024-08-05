@@ -362,12 +362,12 @@ class RMSD(AnalysisBase):
        introduced a :meth:`get_supported_backends` allowing for execution on with
        ``multiprocessing`` and ``dask`` backends.
     """
+    _analysis_algorithm_is_parallelizable = True
 
     @classmethod
     def get_supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask',)
 
-    _analysis_algorithm_is_parallelizable = True
 
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, weights=None, weights_groupselections=False,
@@ -895,6 +895,7 @@ class RMSF(AnalysisBase):
         if not (self.results.rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
+
     @property
     def rmsf(self):
         wmsg = ("The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and "

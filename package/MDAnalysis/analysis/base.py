@@ -116,11 +116,12 @@ you have your :meth:`_single_frame` method storing important values under
 .. code-block:: python
 
     class MyAnalysis(AnalysisBase):
+        _analysis_algorithm_is_parallelizable = True
+
         @classmethod
         def get_supported_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
-        _analysis_algorithm_is_parallelizable = True
         
         def _get_aggregator(self):
           return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
@@ -450,7 +451,10 @@ class AnalysisBase(object):
 
     def _prepare(self):
         """
-        Set things up before the analysis loop begins. Note that
+        Set things up before the analysis loop begins. 
+        
+        Notes
+        -----
         ``self.results`` is initialized already in :meth:`self.__init__` with an
         empty instance of :class:`MDAnalysis.analysis.results.Results` object.
         You can still call your attributes as if they were usual ones,
@@ -463,7 +467,10 @@ class AnalysisBase(object):
         """Finalize the results you've gathered.
 
         Called at the end of the :meth:`run` method to finish everything up.
-        Note that aggregation of results from individual workers happens in
+
+        Notes
+        -----
+        Aggregation of results from individual workers happens in
         :meth:`self.run()`, so here you have to implement everything as if you
         had a non-parallel run. If you want to enable proper aggregation for
         parallel runs for you analysis class, implement ``self._get_aggregator``

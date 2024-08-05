@@ -47,9 +47,6 @@ def params_for_cls(cls, exclude: list[str] = None):
     return params
 
 
-# -----------------
-
-
 @pytest.fixture(scope='module', params=params_for_cls(FrameAnalysis))
 def client_FrameAnalysis(request):
     return request.param

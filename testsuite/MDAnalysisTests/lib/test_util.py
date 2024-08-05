@@ -2233,6 +2233,7 @@ def test_which():
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert util.which('python') == shutil.which('python')
 
+
 @pytest.mark.parametrize(
     "modulename,is_installed",
     [("math", True), ("sys", True), ("some_weird_module_name", False)],
