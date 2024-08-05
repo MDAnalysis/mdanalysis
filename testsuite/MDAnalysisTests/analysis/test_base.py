@@ -188,6 +188,9 @@ def test_fails_for_unparallelizable(u, run_class, backend, n_workers):
     ({'step': 10}, np.arange(0, 98, 10))
 ])
 def test_start_stop_step_parallel(u, run_kwargs, frames, client_FrameAnalysis):
+    # client_FrameAnalysis is defined [here](testsuite/MDAnalysisTests/analysis/conftest.py),
+    # and determines a set of parameters ('backend', 'n_workers'), taking only backends
+    # that are implemented for a given subclass, to run the test against.
     an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
@@ -396,6 +399,9 @@ def test_results_type(u):
     (20, 50, None, 30)
 ])
 def test_AnalysisFromFunction(u, start, stop, step, nframes, client_AnalysisFromFunction):
+    # client_AnalysisFromFunction is defined [here](testsuite/MDAnalysisTests/analysis/conftest.py),
+    # and determines a set of parameters ('backend', 'n_workers'), taking only backends
+    # that are implemented for a given subclass, to run the test against.
     ana1 = base.AnalysisFromFunction(simple_function, mobile=u.atoms)
     ana1.run(start=start, stop=stop, step=step, **client_AnalysisFromFunction)
 
