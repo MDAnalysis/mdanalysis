@@ -725,6 +725,8 @@ class AnalysisBase(object):
             ProgressBar keywords with custom parameters regarding progress bar
             position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
             for full list. Available only for ``backend='serial'``
+
+            .. versionadded:: 2.8.0
         backend : Union[str, BackendBase], optional
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend: ``str`` is matched to a
