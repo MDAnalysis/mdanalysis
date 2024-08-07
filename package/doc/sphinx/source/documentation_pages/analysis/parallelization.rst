@@ -41,8 +41,7 @@ impossible with any but the ``serial`` backend.
 
    Parallelization is getting added to existing analysis classes.  Initially,
    only :class:`MDAnalysis.analysis.rms.RMSD` supports parallel analysis, but
-   the goal is that the 3.0 release will support parallel analysis where
-   possible.
+   we aim to increase support in future releases.
 
 
 How does parallelization work
