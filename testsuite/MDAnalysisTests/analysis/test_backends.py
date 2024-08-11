@@ -62,7 +62,7 @@ class Test_Backends:
 
     @pytest.mark.parametrize("backend_cls,params,error_message", [
         pytest.param(backends.BackendDask, {'n_workers': 2},
-                     ("module 'dask' is missing. Please install: "
+                     ("module 'dask' is missing. Please install 'dask': "
                       "https://docs.dask.org/en/stable/install.html"),
                      marks=pytest.mark.skipif(is_installed('dask'),
                                               reason='dask is installed'))
