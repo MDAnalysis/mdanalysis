@@ -441,7 +441,7 @@ class AnalysisBase(object):
         Attributes accessible during your calculations:
 
           - ``self._frame_index``: index of the frame in results array
-          - ``self._ts`` -- frame timestamp value
+          - ``self._ts`` -- Timestep instance
           - ``self._sliced_trajectory`` -- trajectory that you're iterating over
           - ``self.results`` -- :class:`MDAnalysis.analysis.results.Results` instance
             holding run results initialized in :meth:`_prepare`.
@@ -542,7 +542,7 @@ class AnalysisBase(object):
         stop : int, optional
             stop frame
         step : int, optional
-            number of frames to skip between each analysed frame
+            step size for analysis (1 means to read every frame)
         frames : array_like, optional
             array of integers or booleans to slice trajectory; ``frames`` can
             only be used *instead* of ``start``, ``stop``, and ``step``. Setting
@@ -725,8 +725,6 @@ class AnalysisBase(object):
             ProgressBar keywords with custom parameters regarding progress bar
             position, etc; see :class:`MDAnalysis.lib.log.ProgressBar`
             for full list. Available only for ``backend='serial'``
-
-            .. versionadded:: 2.8.0
         backend : Union[str, BackendBase], optional
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend: ``str`` is matched to a
@@ -734,6 +732,7 @@ class AnalysisBase(object):
             ``dask``), or a :class:`MDAnalysis.analysis.results.BackendBase`
             subclass.
 
+            .. versionadded:: 2.8.0
         n_workers : int
             positive integer with number of workers (processes, in case of
             built-in backends) to split the work between

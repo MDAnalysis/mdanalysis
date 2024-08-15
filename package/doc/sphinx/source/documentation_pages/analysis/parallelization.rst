@@ -8,7 +8,7 @@ Parallel analysis
 
 .. versionadded:: 2.8.0
    Parallelization of analysis classes was added during Google Summer of Code
-   2023 by [@marinegor](https://github.com/marinegor) and MDAnalysis GSoC mentors.
+   2023 by `@marinegor <https://github.com/marinegor>`_ and MDAnalysis GSoC mentors.
 
 This section explains the implementation and background for
 parallelization with the :class:`MDAnalysis.analysis.base.AnalysisBase`, what 

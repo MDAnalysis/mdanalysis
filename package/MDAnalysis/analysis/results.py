@@ -183,11 +183,17 @@ class ResultsGroup:
         self._lookup = lookup
 
     def merge(self, objects: Sequence[Results], require_all_aggregators: bool = True) -> Results:
-        """Merge results into a single object. If objects contain single
-           element, returns it while ignoring _lookup attribute.
+        """Merge multiple Results into a single Results instance. 
+
+        Merge multiple :class:`Results` instances into a single one, using the 
+        `lookup` dictionary to determine the appropriate aggregator functions for
+        each named results attribute. If the resulting object only contains a single
+        element, it just returns it without using any aggregators.
 
         Parameters
         ----------
+        objects : Sequence[Results]
+            Multiple :class:`Results` instances with the same data attributes.
         require_all_aggregators : bool, optional
             if True, raise an exception when no aggregation function for a
             particular argument is found. Allows to skip aggregation for the
