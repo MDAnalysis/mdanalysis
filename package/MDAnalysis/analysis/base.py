@@ -660,7 +660,7 @@ class AnalysisBase(object):
                 for t in self._trajectory.transformations):
             raise ValueError((
                 "Trajectory should not have "
-                "associated parallelizable transformations"))
+                "associated unparallelizable transformations"))
 
         # conclude mapping from string to backend class if it's a builtin backend
         if isinstance(backend, str):
