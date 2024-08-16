@@ -49,6 +49,11 @@ Files and directories
 .. autofunction:: format_from_filename_extension
 .. autofunction:: guess_format
 
+Modules and packages
+--------------------
+
+.. autofunction:: is_installed
+
 Streams
 -------
 
@@ -147,6 +152,7 @@ Strings
 .. autofunction:: convert_aa_code
 .. autofunction:: parse_residue
 .. autofunction:: conv_float
+.. autofunction:: atoi
 
 Class decorators
 ----------------
@@ -205,6 +211,8 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import importlib
+import itertools
 
 import mmtf
 import numpy as np
@@ -1331,6 +1339,7 @@ def fixedwidth_bins(delta, xmin, xmax):
     N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
     return {'Nbins': N, 'delta': _delta, 'min': _xmin - dx, 'max': _xmax + dx}
+
 
 def get_weights(atoms, weights):
     """Check that a `weights` argument is compatible with `atoms`.
@@ -2560,3 +2569,48 @@ def no_copy_shim():
     else:
         copy = False
     return copy
+
+
+def atoi(s: str) -> int:
+    """Convert the leading number part of a string to an integer.
+
+    Parameters
+    ----------
+    s : str
+        The string to convert to an integer.
+
+    Returns
+    -------
+    number : int
+        The first numeric part of the string converted to an integer.
+        If the string does not start with a number, 0 is returned.
+
+    Examples
+    --------
+    >>> from MDAnalysis.lib.util import atoi
+    >>> atoi('34f4')
+    34
+    >>> atoi('foo')
+    0
+ 
+
+    .. versionadded:: 2.8.0
+    """
+    try:
+        return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
+    except ValueError:
+        return 0
+
+
+def is_installed(modulename: str):
+    """Checks if module is installed
+
+    Parameters
+    ----------
+    modulename : str
+        name of the module to be tested
+        
+     
+    .. versionadded:: 2.8.0
+    """
+    return importlib.util.find_spec(modulename) is not None      

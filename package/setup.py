@@ -259,7 +259,7 @@ def extensions(config):
     use_openmp = config.get('use_openmp', default=True)
     annotate_cython = config.get('annotate_cython', default=False)
 
-    extra_compile_args = ['-std=c99', '-O3', '-funroll-loops',
+    extra_compile_args = ['-std=c11', '-O3', '-funroll-loops',
                           '-fsigned-zeros'] # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
