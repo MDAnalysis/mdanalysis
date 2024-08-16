@@ -769,7 +769,6 @@ class AnalysisBase(object):
         progressbar_kwargs = {} if progressbar_kwargs is None else progressbar_kwargs
         if ((progressbar_kwargs or verbose) and 
             not (backend == "serial" or 
-            issubclass(backend, BackendSerial) or
             isinstance(backend, BackendSerial))):
             raise ValueError("Can not display progressbar with non-serial backend")
 
