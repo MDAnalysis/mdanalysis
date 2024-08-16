@@ -20,7 +20,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.1.1. Analysis building blocks — MDAnalysis.analysis.base &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>4.2.1. Analysis building blocks — MDAnalysis.analysis.base &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -41,7 +41,7 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.2.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="align.html" />
+    <link rel="next" title="4.2.2. Analysis backends — MDAnalysis.analysis.backends" href="backends.html" />
     <link rel="prev" title="4. Analysis modules" href="../analysis_modules.html" /> 
 </head>
 
@@ -103,25 +103,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.1.1. Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#example-of-using-a-standard-analysis-tool">4.1.1.1. Example of using a standard analysis tool</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#writing-new-analysis-tools">4.1.1.2. Writing new analysis tools</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#classes">4.1.1.3. Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#getting-started-with-analysis">4.1. Getting started with analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.2. Building blocks for Analysis</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.1. Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-using-a-standard-analysis-tool">4.2.1.1. Example of using a standard analysis tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-new-analysis-tools">4.2.1.2. Writing new analysis tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">4.2.1.3. Classes</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="backends.html">4.2.2. Analysis backends — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="results.html">4.2.3. Analysis results and their aggregation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="parallelization.html">4.2.4. Parallel analysis</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.3. Distances and contacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.4. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.5. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.6. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.7. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.8. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.9. Volumetric analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.10. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.11. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.12. Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
@@ -155,7 +159,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.1.1. </span>Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.2.1. </span>Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/analysis/base.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -166,7 +170,7 @@
            <div itemprop="articleBody">
              
   <section id="analysis-building-blocks-mdanalysis-analysis-base">
-<span id="module-MDAnalysis.analysis.base"></span><h1><span class="section-number">4.1.1. </span>Analysis building blocks — <a class="reference internal" href="#module-MDAnalysis.analysis.base" title="MDAnalysis.analysis.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a><a class="headerlink" href="#analysis-building-blocks-mdanalysis-analysis-base" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.analysis.base"></span><h1><span class="section-number">4.2.1. </span>Analysis building blocks — <a class="reference internal" href="#module-MDAnalysis.analysis.base" title="MDAnalysis.analysis.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a><a class="headerlink" href="#analysis-building-blocks-mdanalysis-analysis-base" title="Link to this heading"></a></h1>
 <p>MDAnalysis provides building blocks for creating analysis classes. One can
 think of each analysis class as a “tool” that performs a specific analysis over
 the trajectory frames and stores the results in the tool.</p>
@@ -185,13 +189,13 @@ is performed on. The <cite>verbose</cite> keyword argument enables additional ou
 progressbar is shown by default that also shows an estimate for the
 remaining time until the end of the analysis.</p></li>
 <li><p>Results are always stored in the attribute <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AnalysisBase.results</span></code></a>,
-which is an instance of <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a>, a kind of dictionary that allows
+which is an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code>, a kind of dictionary that allows
 allows item access via attributes. Each analysis class decides what and how
-to store in <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> and needs to document it. For time series, the
+to store in <code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code> and needs to document it. For time series, the
 <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.times" title="MDAnalysis.analysis.base.AnalysisBase.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AnalysisBase.times</span></code></a> contains the time stamps of the analyzed frames.</p></li>
 </ol>
 <section id="example-of-using-a-standard-analysis-tool">
-<h2><span class="section-number">4.1.1.1. </span>Example of using a standard analysis tool<a class="headerlink" href="#example-of-using-a-standard-analysis-tool" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.2.1.1. </span>Example of using a standard analysis tool<a class="headerlink" href="#example-of-using-a-standard-analysis-tool" title="Link to this heading"></a></h2>
 <p>For example, the <a class="reference internal" href="rms.html#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms.RMSD</span></code></a> performs a
 root-mean-square distance analysis in the following way:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
@@ -230,7 +234,7 @@ root-mean-square distance analysis in the following way:</p>
 </div>
 </section>
 <section id="writing-new-analysis-tools">
-<h2><span class="section-number">4.1.1.2. </span>Writing new analysis tools<a class="headerlink" href="#writing-new-analysis-tools" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.2.1.2. </span>Writing new analysis tools<a class="headerlink" href="#writing-new-analysis-tools" title="Link to this heading"></a></h2>
 <p>In order to write new analysis tools, derive a class from <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>
 and define at least the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> method, as described in
 <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>.</p>
@@ -240,12 +244,34 @@ and define at least the <code class="xref py py-meth docutils literal notranslat
 contains a step-by-step example for writing analysis tools with
 <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>.</p>
 </div>
+<p>If your analysis is operating independently on each frame, you might consider
+making it <strong>parallelizable</strong> via adding a <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code> method,
+and appropriate aggregation function for each of its results. For example, if
+you have your <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> method storing important values under
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">self.results.timeseries</span></code>, you will write:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span>
+
+
+    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;timeseries&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="results.html#module-MDAnalysis.analysis.results" title="MDAnalysis.analysis.results"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results</span></code></a> for more on aggregating results.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="parallelization.html#parallel-analysis"><span class="std std-ref">Parallel analysis</span></a></p>
+</div>
 </section>
 <section id="classes">
-<h2><span class="section-number">4.1.1.3. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
-<p>The <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> classes are the essential
-building blocks for almost all MDAnalysis tools in the
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code> module. They aim to be easily useable and
+<h2><span class="section-number">4.2.1.3. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.results.Results</span></code> and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> classes
+are the essential building blocks for almost all MDAnalysis tools in the
+<a class="reference internal" href="../analysis_modules.html#module-MDAnalysis.analysis" title="MDAnalysis.analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code></a> module. They aim to be easily useable and
 extendable.</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisFromFunction" title="MDAnalysis.analysis.base.AnalysisFromFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisFromFunction</span></code></a> and the <a class="reference internal" href="#MDAnalysis.analysis.base.analysis_class" title="MDAnalysis.analysis.base.analysis_class"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis_class()</span></code></a> functions are
 simple wrappers that make it even easier to create fully-featured analysis
@@ -261,10 +287,10 @@ This class will automatically take care of setting up the trajectory
 reader for iterating, and it offers to show a progress meter.
 Computed results are stored inside the <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> attribute.</p>
 <p>To define a new Analysis, <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> needs to be subclassed
-and <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> must be defined. It is also possible to define
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">_conclude()</span></code> for pre- and post-processing.
-All results should be stored as attributes of the <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a>
-container.</p>
+and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._single_frame" title="MDAnalysis.analysis.base.AnalysisBase._single_frame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code></a> must be defined. It is also possible to define
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._prepare" title="MDAnalysis.analysis.base.AnalysisBase._prepare"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare()</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._conclude" title="MDAnalysis.analysis.base.AnalysisBase._conclude"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_conclude()</span></code></a> for pre- and post-processing.
+All results should be stored as attributes of the
+<a class="reference internal" href="results.html#MDAnalysis.analysis.results.Results" title="MDAnalysis.analysis.results.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results.Results</span></code></a> container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -304,7 +330,7 @@ container.</p>
 to <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -360,9 +386,333 @@ should now be directly passed to <a class="reference internal" href="#MDAnalysis
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>Added <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>Added ability to run analysis in parallel using either a
+built-in backend (<cite>multiprocessing</cite> or <cite>dask</cite>) or a custom
+<cite>backends.BackendBase</cite> instance with an implemented <cite>apply</cite> method
+that is used to run the computations.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._compute">
+<span class="sig-name descname"><span class="pre">_compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indexed_frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><span class="pre">AnalysisBase</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._compute" title="Link to this definition"></a></dt>
+<dd><p>Perform the calculation on a balanced slice of frames
+that have been setup prior to that using _setup_computation_groups()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indexed_frames</strong> (<em>np.ndarray</em>) – np.ndarray of (n, 2) shape, where first column is frame iteration
+indices and second is frame numbers</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
+<li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar
+position, etc; see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a>
+for full list.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._conclude">
+<span class="sig-name descname"><span class="pre">_conclude</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._conclude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._conclude" title="Link to this definition"></a></dt>
+<dd><p>Finalize the results you’ve gathered.</p>
+<p>Called at the end of the <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method to finish everything up.</p>
+<p class="rubric">Notes</p>
+<p>Aggregation of results from individual workers happens in
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">self.run()</span></code>, so here you have to implement everything as if you
+had a non-parallel run. If you want to enable proper aggregation for
+parallel runs for you analysis class, implement <code class="docutils literal notranslate"><span class="pre">self._get_aggregator</span></code>
+and check <a class="reference internal" href="results.html#module-MDAnalysis.analysis.results" title="MDAnalysis.analysis.results"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results</span></code></a> for how to use it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._configure_backend">
+<span class="sig-name descname"><span class="pre">_configure_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="backends.html#MDAnalysis.analysis.backends.BackendBase" title="MDAnalysis.analysis.backends.BackendBase"><span class="pre">BackendBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unsupported_backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="backends.html#MDAnalysis.analysis.backends.BackendBase" title="MDAnalysis.analysis.backends.BackendBase"><span class="pre">BackendBase</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._configure_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._configure_backend" title="Link to this definition"></a></dt>
+<dd><p>Matches a passed backend string value with class attributes
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.parallelizable" title="MDAnalysis.analysis.base.AnalysisBase.parallelizable"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelizable</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.get_supported_backends" title="MDAnalysis.analysis.base.AnalysisBase.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a>
+to check if downstream calculations can be performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>backend</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference internal" href="backends.html#MDAnalysis.analysis.backends.BackendBase" title="MDAnalysis.analysis.backends.BackendBase"><em>BackendBase</em></a><em>]</em>) – <dl class="simple">
+<dt>backend to be used:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code> is matched to a builtin backend (one of “serial”,
+“multiprocessing” and “dask”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BackendBase</span></code> subclass is checked for the presence of
+an <code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code> method</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – positive integer with number of workers (processes, in case of
+built-in backends) to split the work between</p></li>
+<li><p><strong>unsupported_backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – if you want to run your custom backend on a parallelizable class
+that has not been tested by developers, by default <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>instance of a <code class="docutils literal notranslate"><span class="pre">BackendBase</span></code> class that will be used for computations</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="backends.html#MDAnalysis.analysis.backends.BackendBase" title="MDAnalysis.analysis.backends.BackendBase">BackendBase</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.parallelizable" title="MDAnalysis.analysis.base.AnalysisBase.parallelizable"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelizable</span></code></a> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> but backend is
+    not <code class="docutils literal notranslate"><span class="pre">serial</span></code></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.parallelizable" title="MDAnalysis.analysis.base.AnalysisBase.parallelizable"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelizable</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and custom backend instance is used
+    without specifying <code class="docutils literal notranslate"><span class="pre">unsupported_backend=True</span></code></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if your trajectory has associated parallelizable transformations
+    but backend is not serial</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">n_workers</span></code> was specified twice – in the run() method and durin
+    <code class="docutils literal notranslate"><span class="pre">__init__</span></code> of a custom backend</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if your backend object instance doesn’t have an <code class="docutils literal notranslate"><span class="pre">apply</span></code> method</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._define_run_frames">
+<span class="sig-name descname"><span class="pre">_define_run_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trajectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._define_run_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._define_run_frames" title="Link to this definition"></a></dt>
+<dd><p>Defines limits for the whole run, as passed by self.run() arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trajectory</strong> (<em>mda.Reader</em>) – a trajectory Reader</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis, by default None</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis, by default None</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame, by default None</p></li>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – array of integers or booleans to slice trajectory; cannot be
+combined with <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code>; by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Appropriate slicer for the trajectory that would give correct iteraction
+order via trajectory[slicer]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)">slice</a>, np.ndarray]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <em>both</em> <cite>frames</cite> and at least one of <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, or <code class="docutils literal notranslate"><span class="pre">step</span></code>
+    is provided (i.e. set to not <code class="docutils literal notranslate"><span class="pre">None</span></code> value).</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._get_aggregator">
+<span class="sig-name descname"><span class="pre">_get_aggregator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="results.html#MDAnalysis.analysis.results.ResultsGroup" title="MDAnalysis.analysis.results.ResultsGroup"><span class="pre">ResultsGroup</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._get_aggregator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._get_aggregator" title="Link to this definition"></a></dt>
+<dd><p>Returns a default aggregator that takes entire results
+if there is a single object, and raises ValueError otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>aggregating object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="results.html#MDAnalysis.analysis.results.ResultsGroup" title="MDAnalysis.analysis.results.ResultsGroup">ResultsGroup</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._prepare">
+<span class="sig-name descname"><span class="pre">_prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._prepare" title="Link to this definition"></a></dt>
+<dd><p>Set things up before the analysis loop begins.</p>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">self.results</span></code> is initialized already in <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.__init__()</span></code> with an
+empty instance of <a class="reference internal" href="results.html#MDAnalysis.analysis.results.Results" title="MDAnalysis.analysis.results.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results.Results</span></code></a> object.
+You can still call your attributes as if they were usual ones,
+<code class="docutils literal notranslate"><span class="pre">Results</span></code> just keeps track of that to be able to run a proper
+aggregation after a parallel run, if necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._prepare_sliced_trajectory">
+<span class="sig-name descname"><span class="pre">_prepare_sliced_trajectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slicer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._prepare_sliced_trajectory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._prepare_sliced_trajectory" title="Link to this definition"></a></dt>
+<dd><p>Prepares sliced trajectory for use in subsequent parallel computations:
+namely, assigns self._sliced_trajectory and its appropriate attributes,
+self.n_frames, self.frames and self.times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>slicer</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><em>slice</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – appropriate slicer for the trajectory</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._setup_computation_groups">
+<span class="sig-name descname"><span class="pre">_setup_computation_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><span class="pre">slice</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._setup_computation_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._setup_computation_groups" title="Link to this definition"></a></dt>
+<dd><p>Splits the trajectory frames, defined by <code class="docutils literal notranslate"><span class="pre">start/stop/step</span></code> or
+<code class="docutils literal notranslate"><span class="pre">frames</span></code>, into <code class="docutils literal notranslate"><span class="pre">n_parts</span></code> even groups, preserving their indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_parts</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of parts to split the workload into</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – step size for analysis (1 means to read every frame)</p></li>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – array of integers or booleans to slice trajectory; <code class="docutils literal notranslate"><span class="pre">frames</span></code> can
+only be used <em>instead</em> of <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code>. Setting
+<em>both</em> <code class="docutils literal notranslate"><span class="pre">frames</span></code> and at least one of <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code>
+to a non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <em>both</em> <code class="docutils literal notranslate"><span class="pre">frames</span></code> and at least one of <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, or
+    <code class="docutils literal notranslate"><span class="pre">frames</span></code> is provided (i.e., set to another value than <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>computation_groups</strong> – list of (n, 2) shaped np.ndarrays with frame indices and numbers</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a>[np.ndarray]</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._setup_frames">
+<span class="sig-name descname"><span class="pre">_setup_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trajectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._setup_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._setup_frames" title="Link to this definition"></a></dt>
+<dd><p>Pass a Reader object and define the desired iteration pattern
+through the trajectory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trajectory</strong> (<em>mda.Reader</em>) – A trajectory Reader</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; cannot be
+combined with <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.2.0.</span></p>
+</div>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <em>both</em> <cite>frames</cite> and at least one of <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, or
+    <code class="docutils literal notranslate"><span class="pre">frames</span></code> is provided (i.e., set to another value than <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.0: </span>Added .frames and .times arrays as attributes</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Added ability to iterate through trajectory by passing a list of
+frame indices in the <cite>frames</cite> keyword argument</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>Split function into two: <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._define_run_frames" title="MDAnalysis.analysis.base.AnalysisBase._define_run_frames"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_define_run_frames()</span></code></a> and
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._prepare_sliced_trajectory" title="MDAnalysis.analysis.base.AnalysisBase._prepare_sliced_trajectory"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare_sliced_trajectory()</span></code></a>: first one defines the limits
+for the whole run and is executed once during <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> in
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._setup_frames" title="MDAnalysis.analysis.base.AnalysisBase._setup_frames"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_setup_frames()</span></code></a>, second one prepares sliced trajectory for
+each of the workers and gets executed twice: one time in
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._setup_frames" title="MDAnalysis.analysis.base.AnalysisBase._setup_frames"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_setup_frames()</span></code></a> for the whole trajectory, second time in
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._compute" title="MDAnalysis.analysis.base.AnalysisBase._compute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_compute()</span></code></a> for each of the computation groups.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase._single_frame">
+<span class="sig-name descname"><span class="pre">_single_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase._single_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase._single_frame" title="Link to this definition"></a></dt>
+<dd><p>Calculate data from a single frame of trajectory</p>
+<p>Don’t worry about normalising, just deal with a single frame.
+Attributes accessible during your calculations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">self._frame_index</span></code>: index of the frame in results array</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self._ts</span></code> – Timestep instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self._sliced_trajectory</span></code> – trajectory that you’re iterating over</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self.results</span></code> – <a class="reference internal" href="results.html#MDAnalysis.analysis.results.Results" title="MDAnalysis.analysis.results.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results.Results</span></code></a> instance
+holding run results initialized in <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._prepare" title="MDAnalysis.analysis.base.AnalysisBase._prepare"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare()</span></code></a>.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.get_supported_backends">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.get_supported_backends" title="Link to this definition"></a></dt>
+<dd><p>Tuple with backends supported by the core library for a given class.
+User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
+(see documentation for <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a>):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘serial’: no parallelization</p></li>
+<li><p>‘multiprocessing’: parallelization using <cite>multiprocessing.Pool</cite></p></li>
+<li><p>‘dask’: parallelization using <cite>dask.delayed.compute()</cite>. Requires
+installation of <cite>mdanalysis[dask]</cite></p></li>
+</ul>
+</div></blockquote>
+<p>If you want to add your own backend to an existing class, pass a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">backends.BackendBase</span></code> subclass (see its documentation to learn
+how to implement it properly), and specify <code class="docutils literal notranslate"><span class="pre">unsupported_backend=True</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>names of built-in backends that can be used in <code class="xref py py-meth docutils literal notranslate"><span class="pre">run(backend=...)()</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.parallelizable">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.parallelizable" title="Link to this definition"></a></dt>
+<dd><p>Boolean mark showing that a given class can be parallelizable with
+split-apply-combine procedure. Namely, if we can safely distribute
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._single_frame" title="MDAnalysis.analysis.base.AnalysisBase._single_frame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code></a> to multiple workers and then combine them with a
+proper <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._conclude" title="MDAnalysis.analysis.base.AnalysisBase._conclude"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_conclude()</span></code></a> call. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, no backends except
+for <code class="docutils literal notranslate"><span class="pre">serial</span></code> are supported.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to check parallelizability of the whole class, without
+explicitly creating an instance of the class, see
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_analysis_algorithm_is_parallelizable</span></code>. Note that you
+setting it to other value will break things if the algorithm
+behind the analysis is not trivially parallelizable.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>if a given <code class="docutils literal notranslate"><span class="pre">AnalysisBase</span></code> subclass instance
+is parallelizable with split-apply-combine, or not</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><span class="pre">Iterable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="backends.html#MDAnalysis.analysis.backends.BackendBase" title="MDAnalysis.analysis.backends.BackendBase"><span class="pre">BackendBase</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unsupported_backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="Link to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -370,18 +720,45 @@ should now be directly passed to <a class="reference internal" href="#MDAnalysis
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
 <li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
-<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <cite>frames</cite> can
-only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>. Setting
-<em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
-non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <code class="docutils literal notranslate"><span class="pre">frames</span></code> can
+only be used <em>instead</em> of <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code>. Setting
+<em>both</em> <code class="docutils literal notranslate"><span class="pre">frames</span></code> and at least one of <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code>
+to a non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.2.0.</span></p>
 </div>
 </p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
 <li><p><strong>progressbar_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – ProgressBar keywords with custom parameters regarding progress bar
-position, etc; see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a> for full
-list.</p></li>
+position, etc; see <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressBar</span></code></a>
+for full list. Available only for <code class="docutils literal notranslate"><span class="pre">backend='serial'</span></code></p></li>
+<li><p><strong>backend</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference internal" href="backends.html#MDAnalysis.analysis.backends.BackendBase" title="MDAnalysis.analysis.backends.BackendBase"><em>BackendBase</em></a><em>]</em><em>, </em><em>optional</em>) – <p>By default, performs calculations in a serial fashion.
+Otherwise, user can choose a backend: <code class="docutils literal notranslate"><span class="pre">str</span></code> is matched to a
+builtin backend (one of <code class="docutils literal notranslate"><span class="pre">serial</span></code>, <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> and
+<code class="docutils literal notranslate"><span class="pre">dask</span></code>), or a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results.BackendBase</span></code>
+subclass.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</p></li>
+<li><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – <p>positive integer with number of workers (processes, in case of
+built-in backends) to split the work between</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</p></li>
+<li><p><strong>n_parts</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – <p>number of parts to split computations across. Can be more than
+number of workers.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</p></li>
+<li><p><strong>unsupported_backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>if you want to run your custom backend on a parallelizable class
+that has not been tested by developers, by default False</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -392,6 +769,11 @@ frame indices in the <cite>frames</cite> keyword argument.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.5.0: </span>Add <cite>progressbar_kwargs</cite> parameter,
 allowing to modify description, position etc of tqdm progressbars</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>Introduced <code class="docutils literal notranslate"><span class="pre">backend</span></code>, <code class="docutils literal notranslate"><span class="pre">n_workers</span></code>, <code class="docutils literal notranslate"><span class="pre">n_parts</span></code> and
+<code class="docutils literal notranslate"><span class="pre">unsupported_backend</span></code> keywords, and refactored the method logic to
+support parallelizable execution.</p>
 </div>
 </dd></dl>
 
@@ -468,45 +850,126 @@ has been removed. These should instead be passed to
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>Former <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code> are now stored as <a class="reference internal" href="#MDAnalysis.analysis.base.results.timeseries" title="MDAnalysis.analysis.base.results.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.timeseries</span></code></a></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>Added <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisFromFunction.get_supported_backends" title="MDAnalysis.analysis.base.AnalysisFromFunction.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a>, introducing ‘serial’, ‘multiprocessing’
+and ‘dask’ backends.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisFromFunction._conclude">
+<span class="sig-name descname"><span class="pre">_conclude</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisFromFunction._conclude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction._conclude" title="Link to this definition"></a></dt>
+<dd><p>Finalize the results you’ve gathered.</p>
+<p>Called at the end of the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method to finish everything up.</p>
+<p class="rubric">Notes</p>
+<p>Aggregation of results from individual workers happens in
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">self.run()</span></code>, so here you have to implement everything as if you
+had a non-parallel run. If you want to enable proper aggregation for
+parallel runs for you analysis class, implement <code class="docutils literal notranslate"><span class="pre">self._get_aggregator</span></code>
+and check <a class="reference internal" href="results.html#module-MDAnalysis.analysis.results" title="MDAnalysis.analysis.results"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results</span></code></a> for how to use it.</p>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.base.Results">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.base.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#Results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.Results" title="Link to this definition"></a></dt>
-<dd><p>Container object for storing results.</p>
-<p><a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> are dictionaries that provide two ways by which values
-can be accessed: by dictionary key <code class="docutils literal notranslate"><span class="pre">results[&quot;value_key&quot;]</span></code> or by object
-attribute, <code class="docutils literal notranslate"><span class="pre">results.value_key</span></code>. <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> stores all results
-obtained from an analysis after calling <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a>.</p>
-<p>The implementation is similar to the <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.utils.Bunch</span></code>
-class in <a class="reference external" href="https://scikit-learn.org/">scikit-learn</a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisFromFunction._get_aggregator">
+<span class="sig-name descname"><span class="pre">_get_aggregator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisFromFunction._get_aggregator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction._get_aggregator" title="Link to this definition"></a></dt>
+<dd><p>Returns a default aggregator that takes entire results
+if there is a single object, and raises ValueError otherwise</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If an assigned attribute has the same name as a default attribute.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a key is not of type <code class="docutils literal notranslate"><span class="pre">str</span></code> and therefore is not able to be
-    accessed by attribute.</p></li>
-</ul>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>aggregating object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="results.html#MDAnalysis.analysis.results.ResultsGroup" title="MDAnalysis.analysis.results.ResultsGroup">ResultsGroup</a></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">Results</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
-<span class="go">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="o">.</span><span class="n">b</span>
-<span class="go">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
-<span class="go">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
-<span class="go">[1, 2, 3, 4]</span>
-</pre></div>
-</div>
 <div class="versionadded">
-<p><span class="versionmodified added">Added in version 2.0.0.</span></p>
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisFromFunction._prepare">
+<span class="sig-name descname"><span class="pre">_prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisFromFunction._prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction._prepare" title="Link to this definition"></a></dt>
+<dd><p>Set things up before the analysis loop begins.</p>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">self.results</span></code> is initialized already in <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.__init__()</span></code> with an
+empty instance of <a class="reference internal" href="results.html#MDAnalysis.analysis.results.Results" title="MDAnalysis.analysis.results.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results.Results</span></code></a> object.
+You can still call your attributes as if they were usual ones,
+<code class="docutils literal notranslate"><span class="pre">Results</span></code> just keeps track of that to be able to run a proper
+aggregation after a parallel run, if necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisFromFunction._single_frame">
+<span class="sig-name descname"><span class="pre">_single_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisFromFunction._single_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction._single_frame" title="Link to this definition"></a></dt>
+<dd><p>Calculate data from a single frame of trajectory</p>
+<p>Don’t worry about normalising, just deal with a single frame.
+Attributes accessible during your calculations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">self._frame_index</span></code>: index of the frame in results array</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self._ts</span></code> – Timestep instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self._sliced_trajectory</span></code> – trajectory that you’re iterating over</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self.results</span></code> – <a class="reference internal" href="results.html#MDAnalysis.analysis.results.Results" title="MDAnalysis.analysis.results.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results.Results</span></code></a> instance
+holding run results initialized in <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisFromFunction._prepare" title="MDAnalysis.analysis.base.AnalysisFromFunction._prepare"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare()</span></code></a>.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisFromFunction.get_supported_backends">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisFromFunction.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction.get_supported_backends" title="Link to this definition"></a></dt>
+<dd><p>Tuple with backends supported by the core library for a given class.
+User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
+(see documentation for <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code>):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘serial’: no parallelization</p></li>
+<li><p>‘multiprocessing’: parallelization using <cite>multiprocessing.Pool</cite></p></li>
+<li><p>‘dask’: parallelization using <cite>dask.delayed.compute()</cite>. Requires
+installation of <cite>mdanalysis[dask]</cite></p></li>
+</ul>
+</div></blockquote>
+<p>If you want to add your own backend to an existing class, pass a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">backends.BackendBase</span></code> subclass (see its documentation to learn
+how to implement it properly), and specify <code class="docutils literal notranslate"><span class="pre">unsupported_backend=True</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>names of built-in backends that can be used in <code class="xref py py-meth docutils literal notranslate"><span class="pre">run(backend=...)()</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base._filter_baseanalysis_kwargs">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.base.</span></span><span class="sig-name descname"><span class="pre">_filter_baseanalysis_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#_filter_baseanalysis_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base._filter_baseanalysis_kwargs" title="Link to this definition"></a></dt>
+<dd><p>Create two dictionaries with <cite>kwargs</cite> separated for <cite>function</cite> and
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> (<em>callable</em>) – function to be called</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – keyword argument dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>base_args</strong> (<em>dict</em>) – dictionary of AnalysisBase kwargs</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – kwargs without AnalysisBase kwargs</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <cite>function</cite> has the same <cite>kwargs</cite> as <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -585,7 +1048,7 @@ stored after call to <code class="xref py py-meth docutils literal notranslate">
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../analysis_modules.html" class="btn btn-neutral float-left" title="4. Analysis modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="align.html" class="btn btn-neutral float-right" title="4.2.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="backends.html" class="btn btn-neutral float-right" title="4.2.2. Analysis backends — MDAnalysis.analysis.backends" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

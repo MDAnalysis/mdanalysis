@@ -20,7 +20,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.2.4. Simple atomic distance analysis — MDAnalysis.analysis.atomicdistances &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>4.3.4. Simple atomic distance analysis — MDAnalysis.analysis.atomicdistances &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -42,8 +42,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.2.5. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" />
-    <link rel="prev" title="4.2.3. Distance analysis — MDAnalysis.analysis.distances" href="distances.html" /> 
+    <link rel="next" title="4.3.5. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" />
+    <link rel="prev" title="4.3.3. Distance analysis — MDAnalysis.analysis.distances" href="distances.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -104,30 +104,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#basic-usage">4.2.4.1. Basic usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#getting-started-with-analysis">4.1. Getting started with analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.2. Building blocks for Analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.3. Distances and contacts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="align.html">4.3.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="contacts.html">4.3.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html">4.3.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-usage">4.3.4.1. Basic usage</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="rms.html">4.2.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="bat.html">4.2.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rms.html">4.3.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="psa.html">4.3.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="encore.html">4.3.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bat.html">4.3.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.4. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.5. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.6. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.7. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.8. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.9. Volumetric analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.10. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.11. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.12. Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
@@ -161,7 +162,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.2.4. </span>Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.3.4. </span>Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/analysis/atomicdistances.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -172,7 +173,7 @@
            <div itemprop="articleBody">
              
   <section id="simple-atomic-distance-analysis-mdanalysis-analysis-atomicdistances">
-<span id="module-MDAnalysis.analysis.atomicdistances"></span><h1><span class="section-number">4.2.4. </span>Simple atomic distance analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.atomicdistances" title="MDAnalysis.analysis.atomicdistances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a><a class="headerlink" href="#simple-atomic-distance-analysis-mdanalysis-analysis-atomicdistances" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.analysis.atomicdistances"></span><h1><span class="section-number">4.3.4. </span>Simple atomic distance analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.atomicdistances" title="MDAnalysis.analysis.atomicdistances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a><a class="headerlink" href="#simple-atomic-distance-analysis-mdanalysis-analysis-atomicdistances" title="Link to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Xu Hong Chen</p>
@@ -202,7 +203,7 @@ groups of atoms, please see <a class="reference internal" href="distances.html#m
 <p><a class="reference internal" href="distances.html#module-MDAnalysis.analysis.distances" title="MDAnalysis.analysis.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a>, <a class="reference internal" href="../lib/distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></p>
 </div>
 <section id="basic-usage">
-<h2><span class="section-number">4.2.4.1. </span>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.3.4.1. </span>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
 <p>This example uses files from the MDAnalysis test suite
 (<code class="xref py py-data docutils literal notranslate"><span class="pre">GRO</span></code> and
 <code class="xref py py-data docutils literal notranslate"><span class="pre">XTC</span></code>). To get started, execute</p>
@@ -317,8 +318,8 @@ the trajectory.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="distances.html" class="btn btn-neutral float-left" title="4.2.3. Distance analysis — MDAnalysis.analysis.distances" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="rms.html" class="btn btn-neutral float-right" title="4.2.5. Calculating root mean square quantities — MDAnalysis.analysis.rms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="distances.html" class="btn btn-neutral float-left" title="4.3.3. Distance analysis — MDAnalysis.analysis.distances" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rms.html" class="btn btn-neutral float-right" title="4.3.5. Calculating root mean square quantities — MDAnalysis.analysis.rms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

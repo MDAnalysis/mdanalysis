@@ -20,7 +20,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.2.7.1.7. Utility functions for ENCORE &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>4.3.7.1.7. Utility functions for ENCORE &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
@@ -41,8 +41,8 @@
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="4.2.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat" href="../bat.html" />
-    <link rel="prev" title="4.2.7.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" href="bootstrap.html" /> 
+    <link rel="next" title="4.3.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat" href="../bat.html" />
+    <link rel="prev" title="4.3.7.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" href="bootstrap.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -103,31 +103,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../analysis_modules.html">4. Analysis modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../atomicdistances.html">4.2.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.2.7.1. Modules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.7.2. References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#getting-started-with-analysis">4.1. Getting started with analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#building-blocks-for-analysis">4.2. Building blocks for Analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../analysis_modules.html#distances-and-contacts">4.3. Distances and contacts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../align.html">4.3.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.3.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.3.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../atomicdistances.html">4.3.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.3.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.3.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.3.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.3.7.1. Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.3.7.2. References</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../bat.html">4.2.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bat.html">4.3.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#polymers">4.6. Polymers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#structure">4.7. Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#data">4.11. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#hydrogen-bonding">4.4. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#membranes-and-membrane-proteins">4.5. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#nucleic-acids">4.6. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#polymers">4.7. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#structure">4.8. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#volumetric-analysis">4.9. Volumetric analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#dimensionality-reduction">4.10. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#legacy-analysis-modules">4.11. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#data">4.12. Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology_modules.html">5. Topology modules</a></li>
@@ -161,8 +162,8 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.2.7. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.2.7.1.7. </span>Utility functions for ENCORE</li>
+          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.3.7. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.3.7.1.7. </span>Utility functions for ENCORE</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/documentation_pages/analysis/encore/utils.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -173,7 +174,7 @@
            <div itemprop="articleBody">
              
   <section id="module-MDAnalysis.analysis.encore.utils">
-<span id="utility-functions-for-encore"></span><h1><span class="section-number">4.2.7.1.7. </span>Utility functions for ENCORE<a class="headerlink" href="#module-MDAnalysis.analysis.encore.utils" title="Link to this heading"></a></h1>
+<span id="utility-functions-for-encore"></span><h1><span class="section-number">4.3.7.1.7. </span>Utility functions for ENCORE<a class="headerlink" href="#module-MDAnalysis.analysis.encore.utils" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.utils.ParallelCalculation">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.utils.</span></span><span class="sig-name descname"><span class="pre">ParallelCalculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/utils.html#ParallelCalculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.utils.ParallelCalculation" title="Link to this definition"></a></dt>
@@ -409,8 +410,8 @@ without diagonal (e.g. no elements (0,0),(1,1),…,(n,n))</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="bootstrap.html" class="btn btn-neutral float-left" title="4.2.7.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../bat.html" class="btn btn-neutral float-right" title="4.2.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="bootstrap.html" class="btn btn-neutral float-left" title="4.3.7.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../bat.html" class="btn btn-neutral float-right" title="4.3.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

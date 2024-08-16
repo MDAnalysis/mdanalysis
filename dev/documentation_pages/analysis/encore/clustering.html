@@ -20,7 +20,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.2.7.1.2. Clustering &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>4.3.7.1.2. Clustering &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
@@ -41,8 +41,8 @@
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="4.2.7.1.3. Dimensionality reduction" href="dimensionality_reduction.html" />
-    <link rel="prev" title="4.2.7.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity" href="similarity.html" /> 
+    <link rel="next" title="4.3.7.1.3. Dimensionality reduction" href="dimensionality_reduction.html" />
+    <link rel="prev" title="4.3.7.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity" href="similarity.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -103,31 +103,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../analysis_modules.html">4. Analysis modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../atomicdistances.html">4.2.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.2.7.1. Modules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.7.2. References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#getting-started-with-analysis">4.1. Getting started with analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#building-blocks-for-analysis">4.2. Building blocks for Analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../analysis_modules.html#distances-and-contacts">4.3. Distances and contacts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../align.html">4.3.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.3.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.3.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../atomicdistances.html">4.3.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.3.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.3.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.3.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.3.7.1. Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.3.7.2. References</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../bat.html">4.2.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bat.html">4.3.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#polymers">4.6. Polymers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#structure">4.7. Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#data">4.11. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#hydrogen-bonding">4.4. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#membranes-and-membrane-proteins">4.5. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#nucleic-acids">4.6. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#polymers">4.7. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#structure">4.8. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#volumetric-analysis">4.9. Volumetric analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#dimensionality-reduction">4.10. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#legacy-analysis-modules">4.11. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#data">4.12. Data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology_modules.html">5. Topology modules</a></li>
@@ -161,8 +162,8 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.2.7. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.2.7.1.2. </span>Clustering</li>
+          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.3.7. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.3.7.1.2. </span>Clustering</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/documentation_pages/analysis/encore/clustering.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -173,9 +174,9 @@
            <div itemprop="articleBody">
              
   <section id="module-MDAnalysis.analysis.encore.clustering.cluster">
-<span id="clustering"></span><h1><span class="section-number">4.2.7.1.2. </span>Clustering<a class="headerlink" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="Link to this heading"></a></h1>
+<span id="clustering"></span><h1><span class="section-number">4.3.7.1.2. </span>Clustering<a class="headerlink" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="Link to this heading"></a></h1>
 <section id="clustering-frontend-mdanalysis-analysis-encore-clustering-cluster">
-<h2><span class="section-number">4.2.7.1.2.1. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="MDAnalysis.analysis.encore.clustering.cluster"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.cluster</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-cluster" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.3.7.1.2.1. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.cluster" title="MDAnalysis.analysis.encore.clustering.cluster"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.cluster</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-cluster" title="Link to this heading"></a></h2>
 <p>The module defines a function serving as front-end for various clustering
 algorithms, wrapping them to allow them to be used interchangably.</p>
 <dl class="field-list simple">
@@ -282,7 +283,7 @@ members of the two first clusters</p>
 </dd></dl>
 
 <section id="cluster-representation-mdanalysis-analysis-encore-clustering-clustercollection">
-<span id="module-MDAnalysis.analysis.encore.clustering.ClusterCollection"></span><h2><span class="section-number">4.2.7.1.2.2. </span>Cluster representation — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusterCollection" title="MDAnalysis.analysis.encore.clustering.ClusterCollection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection</span></code></a><a class="headerlink" href="#cluster-representation-mdanalysis-analysis-encore-clustering-clustercollection" title="Link to this heading"></a></h2>
+<span id="module-MDAnalysis.analysis.encore.clustering.ClusterCollection"></span><h2><span class="section-number">4.3.7.1.2.2. </span>Cluster representation — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusterCollection" title="MDAnalysis.analysis.encore.clustering.ClusterCollection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusterCollection</span></code></a><a class="headerlink" href="#cluster-representation-mdanalysis-analysis-encore-clustering-clustercollection" title="Link to this heading"></a></h2>
 <p>The module contains the Cluster and ClusterCollection classes which are
 designed to store results from clustering algorithms.</p>
 <dl class="field-list simple">
@@ -445,7 +446,7 @@ size as the elements array, with one value per element.</p></li>
 </dd></dl>
 
 <section id="clustering-frontend-mdanalysis-analysis-encore-clustering-clusteringmethod">
-<span id="module-MDAnalysis.analysis.encore.clustering.ClusteringMethod"></span><h2><span class="section-number">4.2.7.1.2.3. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-clusteringmethod" title="Link to this heading"></a></h2>
+<span id="module-MDAnalysis.analysis.encore.clustering.ClusteringMethod"></span><h2><span class="section-number">4.3.7.1.2.3. </span>clustering frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a><a class="headerlink" href="#clustering-frontend-mdanalysis-analysis-encore-clustering-clusteringmethod" title="Link to this heading"></a></h2>
 <p>The module defines classes for interfacing to various clustering algorithms.
 One has been implemented natively, and will always be available, while
 others are available only if scikit-learn is installed</p>
@@ -595,7 +596,7 @@ as described in documentation for ClusterCollection</p>
 </dd></dl>
 
 <section id="clustering-algorithms">
-<h2><span class="section-number">4.2.7.1.2.4. </span>Clustering algorithms<a class="headerlink" href="#clustering-algorithms" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.3.7.1.2.4. </span>Clustering algorithms<a class="headerlink" href="#clustering-algorithms" title="Link to this heading"></a></h2>
 <p>The following clustering algorithms are always available:</p>
 <p id="module-MDAnalysis.analysis.encore.clustering.affinityprop">Cython wrapper for the C implementation of the Affinity Perturbation clustering algorithm.</p>
 <dl class="field-list simple">
@@ -649,8 +650,8 @@ classes for more details.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="similarity.html" class="btn btn-neutral float-left" title="4.2.7.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dimensionality_reduction.html" class="btn btn-neutral float-right" title="4.2.7.1.3. Dimensionality reduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="similarity.html" class="btn btn-neutral float-left" title="4.3.7.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dimensionality_reduction.html" class="btn btn-neutral float-right" title="4.3.7.1.3. Dimensionality reduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
