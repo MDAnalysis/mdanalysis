@@ -767,7 +767,10 @@ class AnalysisBase(object):
         backend = "serial" if backend is None else backend
 
         progressbar_kwargs = {} if progressbar_kwargs is None else progressbar_kwargs
-        if (progressbar_kwargs or verbose) and backend != "serial":
+        if ((progressbar_kwargs or verbose) and 
+            not (backend == "serial" or 
+            issubclass(backend, BackendSerial) or
+            isinstance(backend, BackendSerial))):
             raise ValueError("Can not display progressbar with non-serial backend")
 
         # if number of workers not specified, try getting the number from
