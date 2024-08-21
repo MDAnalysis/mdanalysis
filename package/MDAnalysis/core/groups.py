@@ -598,14 +598,10 @@ class GroupBase(_MutableBase):
                 # important for boolean slicing
                 item = np.array(item)
 
-            # correctly flatten oddly shaped, but 1d arrays
-            # raises issues if flattening already suitable arrays
             if isinstance(item, np.ndarray) and item.ndim > 1:
-                item = np.squeeze(item)
                 # disallow high dimensional indexing.
                 # this doesnt stop the underlying issue
-                if item.ndim > 1:
-                    raise IndexError('Group index must be 1d')
+                raise IndexError('Group index must be 1d')
 
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class
