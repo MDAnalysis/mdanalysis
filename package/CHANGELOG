@@ -22,7 +22,7 @@ The rules for this file:
  * 2.8.0
 
 Fixes
- * Sanitise and catch higher dimensional indexing in GroupBase (Issue #4647)
+ * Catch higher dimensional indexing in GroupBase (Issue #4647)
  * Do not raise an Error reading H5MD files with datasets like
    `observables/<particle>/<property>` (part of Issue #4598, PR #4615)
  * Fix failure in double-serialization of TextIOPicklable file reader.

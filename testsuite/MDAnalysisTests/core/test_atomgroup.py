@@ -1592,18 +1592,6 @@ class TestAtomGroup(object):
                                                            "an AtomGroup")
         assert_equal(ag[1], ag[-1], "advanced slicing does not preserve order")
 
-    @pytest.mark.parametrize('shape', [(-1, 1), (1, -1)])
-    def test_1d_index_invariance(self, universe, shape):
-        u = universe
-        ag1 = u.atoms[np.arange(5)]
-        ag2 = u.atoms[np.arange(5).reshape(shape)]
-
-        # without correct sanitising, n_atoms is 1 when reshaped 'incorrectly'
-        assert ag2.n_atoms == 5, ("indexing with a 1d array was not "
-                                  "invarient of row vs column order")
-        assert_equal(ag1, ag2), ("indexing with a 1d array was not "
-                                 "invarient of row vs column order")
-
     def test_2d_indexing_caught(self, universe):
         u = universe
         index_2d = [[1, 2, 3],
