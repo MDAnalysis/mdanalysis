@@ -597,6 +597,12 @@ class GroupBase(_MutableBase):
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
                 item = np.array(item)
+
+            if isinstance(item, np.ndarray) and item.ndim > 1:
+                # disallow high dimensional indexing.
+                # this doesnt stop the underlying issue
+                raise IndexError('Group index must be 1d')
+
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class
             # resulting from slicing.
