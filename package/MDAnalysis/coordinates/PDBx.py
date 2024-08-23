@@ -42,15 +42,21 @@ class PDBxReader(base.SingleFrameReaderBase):
     format = ['cif', 'pdbx']
     units = {'time': None, 'length': 'Angstrom'}
 
+
+    # def __init__(self, filename, convert_units=True, **kwargs):
+    #     super().__init__(filename, convert_units=convert_units, **kwargs)
+    #     # set n_atoms
+    #     self.natoms = self.parse_n_atoms(filename)
+
     def _read_first_frame(self):
         doc = gemmi.cif.read(self.filename)
 
         block = doc.sole_block()
 
         coords = block.find('_atom_site.', ['Cartn_x', 'Cartn_y', 'Cartn_z'])
-        self.natoms = len(coords)
+        self.n_atoms = len(coords)
 
-        xyz = np.zeros((self.natoms, 3), dtype=np.float32)
+        xyz = np.zeros((self.n_atoms, 3), dtype=np.float32)
 
         for i, (x, y, z) in enumerate(coords):
             xyz[i, :] = x, y, z
@@ -73,3 +79,15 @@ class PDBxReader(base.SingleFrameReaderBase):
                 self.convert_pos_from_native(self.ts.dimensions[:3])
 
         return ts
+
+
+    # @staticmethod
+    # def parse_n_atoms(filename, **kwargs):
+    #     with open(filename, 'r') as f:
+    #         doc = gemmi.cif.read(filename)
+
+    #         block = doc.sole_block()
+
+    #         coords = block.find('_atom_site.', ['Cartn_x', 'Cartn_y', 'Cartn_z'])
+    #         n_atoms = len(coords)
+    #     return n_atoms
