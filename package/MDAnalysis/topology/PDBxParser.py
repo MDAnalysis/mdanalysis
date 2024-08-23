@@ -76,7 +76,7 @@ class PDBxParser(TopologyReaderBase):
         # hierarchy correspondence:
         # seq_id -> residues
         # entity_id -> chains
-        if recordtypes := block.find('_atom_site.group_PDB'):
+        if recordtypes := block.find('_atom_site.', ['group_PDB']):
             attrs.append(RecordTypes(recordtypes))
         ids = block.find_loop('_atom_site.id')
         n_atoms = len(ids)
@@ -92,16 +92,18 @@ class PDBxParser(TopologyReaderBase):
 
         # sort out residues/segments
         # label_seq_id seems to not cover entire model unlike author versions
-        resids = block.find_loop('_atom_site.auth_seq_id')
-        resnames = block.find_loop('_atom_site.auth_comp_id')
-        icodes = block.find_loop('_atom_site.pdbx_PDB_ins_code')
-        chainids = block.find_loop('_atom_site.auth_asym_id')
+        resids = np.array(block.find_loop('_entity_poly_seq.num'))
+        resnames = np.array(block.find_loop('_entity_poly_seq.mon_id'))
+        icodes = np.array(block.find_loop('_atom_site.pdbx_PDB_ins_code'))
+        chainids = np.array(block.find_loop('_atom_site.auth_asym_id'))
 
-        residx, (resids, icodes, resnames, chainids) = change_squash(
+        try:
+            residx, (resids, icodes, resnames, chainids) = change_squash(
             (resids, icodes), (resids, icodes, resnames, chainids)
         )
-        segidx, (chainids,) = change_squash((chainids,), (chainids,))
-
+            segidx, (chainids,) = change_squash((chainids,), (chainids,))
+        except IndexError:
+            ...
         attrs.extend((
             Resids(resids),
             Resnames(objarr(resnames)),
