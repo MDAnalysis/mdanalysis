@@ -83,42 +83,34 @@ from functools import lru_cache
 from io import StringIO
 
 import numpy as np
-from numpy.lib import NumpyVersion
 
 from ..coordinates import memory
 from ..coordinates.PDB import PDBWriter
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 from . import base
+from .RDKitInferring import RDBONDORDER, MDAnalysisInferer
 
-DEFAULT_INFERER = None
-# TODO: remove this guard when RDKit has a release
-# that supports NumPy 2
-if NumpyVersion(np.__version__) < "2.0.0":
-    with suppress(ImportError):
-        from rdkit import Chem
+with suppress(ImportError):
+    from rdkit import Chem
 
-        from .RDKitInferring import RDBONDORDER, MDAnalysisInferer
-
-        RDATTRIBUTES = {
-            "altLocs": "AltLoc",
-            "chainIDs": "ChainId",
-            "icodes": "InsertionCode",
-            "names": "Name",
-            "occupancies": "Occupancy",
-            "resnames": "ResidueName",
-            "resids": "ResidueNumber",
-            "segindices": "SegmentNumber",
-            "tempfactors": "TempFactor",
-        }
-        DEFAULT_INFERER = MDAnalysisInferer()
-        # only here for backwards compatibility
-        _infer_bo_and_charges = DEFAULT_INFERER._infer_bo_and_charges
-        _standardize_patterns = DEFAULT_INFERER._standardize_patterns
-        MONATOMIC_CATION_CHARGES = MDAnalysisInferer.MONATOMIC_CATION_CHARGES
-        STANDARDIZATION_REACTIONS = MDAnalysisInferer.STANDARDIZATION_REACTIONS
-else:
-    raise ImportError
+RDATTRIBUTES = {
+    "altLocs": "AltLoc",
+    "chainIDs": "ChainId",
+    "icodes": "InsertionCode",
+    "names": "Name",
+    "occupancies": "Occupancy",
+    "resnames": "ResidueName",
+    "resids": "ResidueNumber",
+    "segindices": "SegmentNumber",
+    "tempfactors": "TempFactor",
+}
+DEFAULT_INFERER = MDAnalysisInferer()
+# only here for backwards compatibility
+_infer_bo_and_charges = DEFAULT_INFERER._infer_bo_and_charges
+_standardize_patterns = DEFAULT_INFERER._standardize_patterns
+MONATOMIC_CATION_CHARGES = MDAnalysisInferer.MONATOMIC_CATION_CHARGES
+STANDARDIZATION_REACTIONS = MDAnalysisInferer.STANDARDIZATION_REACTIONS
 
 _deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 

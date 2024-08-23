@@ -51,6 +51,7 @@ from typing import ClassVar, Dict, List, Optional, Tuple
 
 import numpy as np
 
+RDBONDORDER = {}
 with suppress(ImportError):
     from rdkit import Chem
     from rdkit.Chem.AllChem import AssignBondOrdersFromTemplate
