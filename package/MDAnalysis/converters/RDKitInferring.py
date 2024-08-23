@@ -95,14 +95,8 @@ def reorder_atoms(
 
 
 def sanitize_mol(mol: "Chem.Mol") -> None:
-    """Tries to sanitize the molecule, and if an error is raised, logs it as a
-    warning.
-    """
-    err = Chem.SanitizeMol(mol, catchErrors=True)
-    if err:
-        warnings.warn(
-            f"Could not sanitize molecule: failed during step {err!r}"
-        )
+    """Sanitizes the molecule."""
+    Chem.SanitizeMol(mol)
 
 
 @dataclass(frozen=True)
@@ -115,6 +109,8 @@ class MDAnalysisInferer:
     max_iter : int
         Maximum number of iterations to standardize conjugated systems.
         See :meth:`~MDAnalysisInferer._rebuild_conjugated_bonds`
+    sanitize : bool
+        Whether to sanitize the molecule or not.
     MONATOMIC_CATION_CHARGES : ClassVar[Dict[int, int]]
         Charges that should be assigned to monatomic cations. Maps atomic
         number to  their formal charge. Anion charges are directly handled by
@@ -155,6 +151,7 @@ class MDAnalysisInferer:
     ]
 
     max_iter: int = 200
+    sanitize: bool = True
 
     def __call__(self, mol: "Chem.Mol") -> "Chem.Mol":
         """Infer bond orders and formal charges in the molecule.
@@ -171,7 +168,8 @@ class MDAnalysisInferer:
         self._infer_bo_and_charges(mol)
         mol = self._standardize_patterns(mol)
         mol = reorder_atoms(mol)
-        sanitize_mol(mol)
+        if self.sanitize:
+            sanitize_mol(mol)
         return mol
 
     @classmethod
@@ -375,7 +373,8 @@ class MDAnalysisInferer:
         ]
 
         # fragment mol (reactions must have single reactant and product)
-        fragments = list(Chem.GetMolFrags(mol, asMols=True))
+        fragments = list(Chem.GetMolFrags(mol, asMols=True,
+                                          sanitizeFrags=self.sanitize))
         for reactant in fragments:
             self._apply_reactions(reactions, reactant)
 
@@ -404,12 +403,12 @@ class MDAnalysisInferer:
 
         """
         reactant.UpdatePropertyCache(strict=False)
-        Chem.Kekulize(reactant)
+        Chem.KekulizeIfPossible(reactant)
         for reaction in reactions:
             while reaction.RunReactantInPlace(reactant):
                 reactant.UpdatePropertyCache(strict=False)
             reactant.UpdatePropertyCache(strict=False)
-            Chem.Kekulize(reactant)
+            Chem.KekulizeIfPossible(reactant)
 
     def _rebuild_conjugated_bonds(
         self, mol: "Chem.Mol", max_iter: Optional[int] = None
@@ -451,7 +450,7 @@ class MDAnalysisInferer:
         """
         max_iter = self.max_iter if max_iter is None else max_iter
         mol.UpdatePropertyCache(strict=False)
-        Chem.Kekulize(mol)
+        Chem.KekulizeIfPossible(mol)
         # pattern used to find problematic conjugated bonds
         # there's usually an even number of matches for this
         pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
