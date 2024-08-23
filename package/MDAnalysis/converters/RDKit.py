@@ -115,6 +115,8 @@ if NumpyVersion(np.__version__) < "2.0.0":
         # only here for backwards compatibility
         _infer_bo_and_charges = DEFAULT_INFERER._infer_bo_and_charges
         _standardize_patterns = DEFAULT_INFERER._standardize_patterns
+        MONATOMIC_CATION_CHARGES = MDAnalysisInferer.MONATOMIC_CATION_CHARGES
+        STANDARDIZATION_REACTIONS = MDAnalysisInferer.STANDARDIZATION_REACTIONS
 else:
     raise ImportError
 
