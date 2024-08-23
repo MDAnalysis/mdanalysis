@@ -7,6 +7,7 @@ from MDAnalysisTests.analysis.test_base import (
     OldAPIAnalysis,
 )
 from MDAnalysis.analysis.rms import RMSD, RMSF
+from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 from MDAnalysis.lib.util import is_installed
 
 
@@ -79,6 +80,8 @@ def client_OldAPIAnalysis(request):
     return request.param
 
 
+# MDAnalysis.analysis.rms
+
 @pytest.fixture(scope='module', params=params_for_cls(RMSD))
 def client_RMSD(request):
     return request.param
@@ -86,4 +89,21 @@ def client_RMSD(request):
 
 @pytest.fixture(scope='module', params=params_for_cls(RMSF))
 def client_RMSF(request):
+    return request.param
+
+
+# MDAnalysis.analysis.dihedrals
+
+@pytest.fixture(scope='module', params=params_for_cls(Dihedral))
+def client_Dihedral(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(Ramachandran))
+def client_Ramachandran(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(Janin))
+def client_Janin(request):
     return request.param
