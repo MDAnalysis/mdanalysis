@@ -57,8 +57,8 @@ class TestDihedral(object):
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_dihedral_single_frame(self, atomgroup):
-        dihedral = Dihedral([atomgroup]).run(start=5, stop=6)
+    def test_dihedral_single_frame(self, atomgroup, client_Dihedral):
+        dihedral = Dihedral([atomgroup]).run(start=5, stop=6, **client_Dihedral)
         test_dihedral = [np.load(DihedralArray)[5]]
 
         assert_allclose(dihedral.results.angles, test_dihedral, rtol=0, atol=1.5e-5,
@@ -73,12 +73,12 @@ class TestDihedral(object):
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_enough_atoms(self, atomgroup):
+    def test_enough_atoms(self, atomgroup, client_Dihedral):
         with pytest.raises(ValueError):
-            dihedral = Dihedral([atomgroup[:2]]).run()
+            dihedral = Dihedral([atomgroup[:2]]).run(**client_Dihedral)
 
-    def test_dihedral_attr_warning(self, atomgroup):
-        dihedral = Dihedral([atomgroup]).run(stop=2)
+    def test_dihedral_attr_warning(self, atomgroup, client_Dihedral):
+        dihedral = Dihedral([atomgroup]).run(stop=2, **client_Dihedral)
 
         wmsg = "The `angle` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -103,9 +103,9 @@ class TestRamachandran(object):
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_ramachandran_single_frame(self, universe, rama_ref_array):
+    def test_ramachandran_single_frame(self, universe, rama_ref_array, client_Ramachandran):
         rama = Ramachandran(universe.select_atoms("protein")).run(
-            start=5, stop=6)
+            start=5, stop=6, **client_Ramachandran)
 
         assert_allclose(rama.results.angles[0], rama_ref_array[5], rtol=0, atol=1.5e-5,
                             err_msg="error: dihedral angles should "
@@ -120,14 +120,14 @@ class TestRamachandran(object):
                             err_msg="error: dihedral angles should "
                             "match test values")
 
-    def test_outside_protein_length(self, universe):
+    def test_outside_protein_length(self, universe, client_Ramachandran):
         with pytest.raises(ValueError):
             rama = Ramachandran(universe.select_atoms("resid 220"),
-                                check_protein=True).run()
+                                check_protein=True).run(**client_Ramachandran)
 
-    def test_outside_protein_unchecked(self, universe):
+    def test_outside_protein_unchecked(self, universe, client_Ramachandran):
         rama = Ramachandran(universe.select_atoms("resid 220"),
-                            check_protein=False).run()
+                            check_protein=False).run(**client_Ramachandran)
 
     def test_protein_ends(self, universe):
         with pytest.warns(UserWarning) as record:
