@@ -34,6 +34,7 @@ Reads coordinates from a PDBx_ (mmcif) format file.  Will populate the Universe 
 """
 import gemmi
 import numpy as np
+from gemmi import FractionalBox
 
 from . import base
 
@@ -43,17 +44,38 @@ class PDBxReader(base.SingleFrameReaderBase):
     units = {'time': None, 'length': 'Angstrom'}
 
 
-    # def __init__(self, filename, convert_units=True, **kwargs):
-    #     super().__init__(filename, convert_units=convert_units, **kwargs)
-    #     # set n_atoms
-    #     self.natoms = self.parse_n_atoms(filename)
+    def __init__(self, filename, convert_units=True, **kwargs):
+        super().__init__(filename, convert_units=convert_units, **kwargs)
 
     def _read_first_frame(self):
         doc = gemmi.cif.read(self.filename)
 
         block = doc.sole_block()
 
+        # PDBx/mmCIF with _cell. sections
+        box = block.find('_cell.', ['length_a', 'length_b', 'length_c',
+                                    'angle_alpha', 'angle_beta', 'angle_gamma'])
+        # CIF file with _cell_ sections
+        if not box:
+            box = block.find('_cell_', ['length_a', 'length_b', 'length_c',
+                                    'angle_alpha', 'angle_beta', 'angle_gamma'])
+
+        if box:
+            unitcell = np.zeros(6, dtype=np.float64)
+            unitcell[:] = box[0]
+
+        # PDBx/mmCIF with _cell. sections
         coords = block.find('_atom_site.', ['Cartn_x', 'Cartn_y', 'Cartn_z'])
+        fractional = lambda xyz: xyz
+
+        # CIF file with _cell_ sections
+        if not coords:
+            coords = block.find('_atom_site_', ['fract_x', 'fract_y', 'fract_z'])
+            fractional = lambda xyz: np.multiply(xyz, unitcell[:3])
+
+        if not coords:
+            raise ValueError("No coordinates found in the file")
+
         self.n_atoms = len(coords)
 
         xyz = np.zeros((self.n_atoms, 3), dtype=np.float32)
@@ -61,16 +83,12 @@ class PDBxReader(base.SingleFrameReaderBase):
         for i, (x, y, z) in enumerate(coords):
             xyz[i, :] = x, y, z
 
+        # for CIF: multiply fractional coordinates by unitcell lengths
+        xyz = fractional(xyz)
+
         ts = self.ts = base.Timestep.from_coordinates(xyz, **self._ts_kwargs)
         ts.frame = 0
-
-        box = block.find('_cell.', ['length_a', 'length_b', 'length_c',
-                                    'angle_alpha', 'angle_beta', 'angle_gamma'])
-        if box:
-            unitcell = np.zeros(6, dtype=np.float64)
-            unitcell[:] = box[0]
-
-            ts.dimensions = unitcell
+        ts.dimensions = unitcell
 
         if self.convert_units:
             # in-place !
@@ -81,13 +99,3 @@ class PDBxReader(base.SingleFrameReaderBase):
         return ts
 
 
-    # @staticmethod
-    # def parse_n_atoms(filename, **kwargs):
-    #     with open(filename, 'r') as f:
-    #         doc = gemmi.cif.read(filename)
-
-    #         block = doc.sole_block()
-
-    #         coords = block.find('_atom_site.', ['Cartn_x', 'Cartn_y', 'Cartn_z'])
-    #         n_atoms = len(coords)
-    #     return n_atoms

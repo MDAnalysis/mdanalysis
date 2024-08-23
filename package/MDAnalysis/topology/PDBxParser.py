@@ -62,7 +62,7 @@ class PDBxParser(TopologyReaderBase):
     - "pdbx_PDB_ins_code" ICode
     - "auth_asym_id" ChainID
     """
-    format = ['PBDx', 'cif']
+    format = ['PDBx', 'cif']
 
     def parse(self, **kwargs) -> Topology:
         doc = gemmi.cif.read(self.filename)
