@@ -540,10 +540,7 @@ class TestSelectionsTPR(object):
 
 class TestSelectionRDKit(object):
     def setup_class(self):
-        if NumpyVersion(np.__version__) < "2.0.0":
-            pytest.importorskip("rdkit.Chem")
-        else:
-            pytest.skip("RDKit does not support NumPy 2")
+        pytest.importorskip("rdkit.Chem")
 
     @pytest.fixture
     def u(self):
@@ -1417,19 +1414,13 @@ def test_negative_resid():
     ("aromaticity False", 15),
 ])
 def test_bool_sel(selstr, n_atoms):
-    if NumpyVersion(np.__version__) >= "2.0.0":
-        pytest.skip("RDKit does not support NumPy 2")
-    else:
-        pytest.importorskip("rdkit.Chem")
+    pytest.importorskip("rdkit.Chem")
     u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
     assert len(u.select_atoms(selstr)) == n_atoms
 
 
 def test_bool_sel_error():
-    if NumpyVersion(np.__version__) >= "2.0.0":
-        pytest.skip("RDKit does not support NumPy 2")
-    else:
-        pytest.importorskip("rdkit.Chem")
+    pytest.importorskip("rdkit.Chem")
     u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
     with pytest.raises(SelectionError, match="'fragrant' is an invalid value"):
         u.select_atoms("aromaticity fragrant")
