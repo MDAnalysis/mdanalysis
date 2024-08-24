@@ -33,6 +33,7 @@ trajectory objects from other packages to an MDAnalysis object, and vice-versa.
 """
 from . import ParmEdParser
 from . import ParmEd
+from . import RDKitInferring
 from . import RDKitParser
 from . import RDKit
 from . import OpenMMParser

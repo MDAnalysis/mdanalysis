@@ -57,6 +57,21 @@ molecule::
     Please see `Issue #3339`_ and the `RDKitConverter benchmark`_ for more
     details.
 
+Instead of using the default bond-order and charge inferring algorithm that
+relies on the topology alone and the presence of explicit hydrogen atoms, you
+can also use alternative builtin algorithms (see the
+:mod:`~MDAnalysis.converters.RDKitInferring` module) or even your own function
+to modify the RDKit molecule::
+
+    >>> template = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
+    >>> inferer = mda.converters.RDKitInferring.TemplateInferer(template=template)
+    >>> u.atoms.convert_to.rdkit(inferer=inferer)
+    <rdkit.Chem.rdchem.Mol at 0x7f70ee6f3ca0>
+    >>> def dummy_inferer(mol):
+    ...     # assign bond orders and do any other modification here
+    ...     return mol
+    >>> u.atoms.convert_to.rdkit(inferer=dummy_inferer)
+    <rdkit.Chem.rdchem.Mol at 0x7f70ee6f2b90>
 
 
 Classes
