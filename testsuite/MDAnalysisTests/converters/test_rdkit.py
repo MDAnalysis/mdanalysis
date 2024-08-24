@@ -30,6 +30,15 @@ from unittest.mock import Mock
 import MDAnalysis as mda
 import numpy as np
 import pytest
+from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
+                                         _add_mda_attr_to_rdkit,
+                                         _set_atom_property,
+                                         atomgroup_to_mol)
+from MDAnalysis.converters.RDKitInferring import (MDAnalysisInferer,
+                                                  RDKitInferer,
+                                                  TemplateInferer,
+                                                  reorder_atoms,
+                                                  sanitize_mol)
 from MDAnalysis.topology.guessers import guess_atom_element
 from MDAnalysisTests.datafiles import (GRO, TRR, PDB_full, PDB_helix,
                                        mol2_molecule)
@@ -37,15 +46,6 @@ from MDAnalysisTests.util import import_not_available
 from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
 with suppress(ImportError):
-    from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
-                                             _add_mda_attr_to_rdkit,
-                                             _set_atom_property,
-                                             atomgroup_to_mol)
-    from MDAnalysis.converters.RDKitInferring import (MDAnalysisInferer,
-                                                      RDKitInferer,
-                                                      TemplateInferer,
-                                                      reorder_atoms,
-                                                      sanitize_mol)
     from rdkit import Chem
     from rdkit.Chem import AllChem
 
@@ -437,11 +437,11 @@ class TestRDKitConverter(object):
 
 @requires_rdkit
 class TestRDKitInferringFunctions:
-    def test_sanitize_mol_warning(self):
+    def test_sanitize_mol_error(self):
         mol = Chem.MolFromSmiles("[NH4]", sanitize=False)
-        with pytest.warns(match="Could not sanitize molecule: failed during "
-                          "step rdkit.Chem.rdmolops.SanitizeFlags"
-                          ".SANITIZE_PROPERTIES"):
+        with pytest.raises(Chem.AtomValenceException,
+                           match="Explicit valence for atom # 0 N, 4, is "
+                           "greater than permitted"):
             sanitize_mol(mol)
 
     def test_reorder_atoms_key_error(self):
@@ -783,6 +783,20 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
                               key=MDAnalysisInferer._atom_sorter)
         sorted_indices = [atom.GetIdx() for atom in sorted_atoms]
         assert sorted_indices == [6, 5, 1, 3]
+
+    @pytest.mark.parametrize("sanitize", [
+        pytest.param(
+            True,
+            marks=pytest.mark.xfail(reason="Invalid charge/valence",
+                                    strict=True)),
+        False,
+    ])
+    def test_sanitize(self, sanitize):
+        mol = Chem.MolFromSmiles("[H]-[C+](-[H])(-[H])-[H]", sanitize=False)
+        mol.UpdatePropertyCache()
+        inferrer = MDAnalysisInferer(sanitize=sanitize)
+        result = inferrer(mol)
+        assert isinstance(result, Chem.Mol)
 
 
 @requires_rdkit
