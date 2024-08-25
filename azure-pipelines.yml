@@ -101,7 +101,7 @@ jobs:
     displayName: 'pin to older NumPy (wheel test)'
     condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
   - script: >-
-      python -m pip install
+      python -m pip install -vvv
       biopython
       "chemfiles>=0.10,<0.10.4"
       duecredit
@@ -112,8 +112,8 @@ jobs:
       networkx
       parmed
       pytng>=0.2.3
-      tidynamics>=1.0.0
       "rdkit>=2020.03.1,<2024.3.5"
+      tidynamics>=1.0.0
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - script: >-
