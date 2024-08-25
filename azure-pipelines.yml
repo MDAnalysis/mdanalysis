@@ -112,7 +112,7 @@ jobs:
       networkx
       parmed
       pytng>=0.2.3
-      "rdkit>=2020.03.1,<2024.3.5"
+      rdkit>=2020.03.1
       tidynamics>=1.0.0
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
