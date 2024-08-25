@@ -46,7 +46,6 @@ from numpy.testing import (
     assert_equal,
 )
 import pytest
-from io import StringIO
 
 
 class TestGROReaderOld(RefAdK):

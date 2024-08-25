@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         yuxuanzhuang, PythonFZ, laksh-krishna-sharma
+          yuxuanzhuang, PythonFZ, laksh-krishna-sharma, talagayev, hmacdope
 
  * 2.8.0
 
@@ -53,6 +53,7 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Handling of Pathlib.Path in SingleFrameReaderBase, Topology and Universe (Issue #3937)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)

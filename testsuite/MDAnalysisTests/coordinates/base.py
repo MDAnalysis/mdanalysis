@@ -25,12 +25,14 @@ import pickle
 
 import numpy as np
 import pytest
+from pathlib import Path
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.timestep import Timestep
+from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.transformations import translate
 
 
@@ -133,6 +135,12 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(reader.ts, reader_p.ts,
                      "Modification of ts not preserved after serialization")
+
+    def test_pathlib_input_single(self):
+        path = Path(self.filename)
+        u_str = mda.Universe(self.filename)
+        u_path = mda.Universe(path)
+        assert u_str.atoms.n_atoms == u_path.atoms.n_atoms
 
 
 class BaseReference(object):
@@ -537,6 +545,16 @@ class BaseReaderTest(object):
         atoms = mda.Universe(reader.filename).select_atoms("index 1")
         with pytest.raises(ValueError, match="Cannot provide both"):
             timeseries = reader.timeseries(atomgroup=atoms, asel=atoms, order='fac')
+          
+    def test_pathlib_input_base(self, reader):     
+        if isinstance(reader, MemoryReader):
+            if isinstance(reader, MemoryReader):
+                skip_reason = "MemoryReader"
+            pytest.skip(f"Skipping test for Pathlib input with reason: {skip_reason}")
+        path = Path(reader.filename)
+        u_str = mda.Universe(reader.filename)
+        u_path = mda.Universe(path)
+        assert u_str.atoms.n_atoms == u_path.atoms.n_atoms
 
 
 class MultiframeReaderTest(BaseReaderTest):
