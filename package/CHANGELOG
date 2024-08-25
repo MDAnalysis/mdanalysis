@@ -17,11 +17,24 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         talagayev, hmacdope
-         
+          yuxuanzhuang, PythonFZ, laksh-krishna-sharma, talagayev, hmacdope
+
  * 2.8.0
 
 Fixes
+ * Catch higher dimensional indexing in GroupBase (Issue #4647)
+ * Do not raise an Error reading H5MD files with datasets like
+   `observables/<particle>/<property>` (part of Issue #4598, PR #4615)
+ * Fix failure in double-serialization of TextIOPicklable file reader.
+   (Issue #3723, PR #3722)
+ * Fix failure to preserve modification of coordinates after serialization,
+   e.g. with transformations
+   (Issue #4633, PR #3722)
+ * Fix PSFParser error when encoutering string-like resids
+ * (Issue #2053, Issue #4189 PR #4582)
+ * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
+   (Issue #4564, PR #4565)
+ * Fix #4259 via removing argument `parallelizable` of `NoJump` transformation.
  * Fix doctest errors of analysis/pca.py related to rounding issues 
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
@@ -41,6 +54,10 @@ Fixes
 
 Enhancements
  * Handling of Pathlib.Path in SingleFrameReaderBase, Topology and Universe (Issue #3937)
+ * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
+   (Issue #4158, PR #4304)
+ * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
+ * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
    (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
@@ -51,6 +68,10 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * The `fetch_mmtf` method has been removed as the REST API service
+   for MMTF files has ceased to exist (Issue #4634)
+ * MDAnalysis now builds against numpy 2.0 rather than the
+   minimum supported numpy version (PR #4620)
  * As per SPEC0 the minimum supported Python version has been raised
    to 3.10 (PR #4502)
  * MDAnalysis.analysis.hole2 is now directly imported from the mdakit
@@ -68,6 +89,8 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * The MMTF Reader is deprecated and will be removed in version 3.0
+   as the MMTF format is no longer supported (Issue #4634)
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
    of the waterdynamics MDAKit and will be removed in version 3.0.0 (PR #4404)
  * The MDAnalysis.analysis.psa module has been deprecated in favour of

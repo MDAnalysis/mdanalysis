@@ -659,6 +659,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
     .. versionchanged:: 2.0.0
        Now supports (un)pickle. Upon unpickling,
        the current timestep is retained by reconstrunction.
+    .. versionchanged:: 2.8.0
+       the modification of coordinates was preserved
+       after serialization.
     """
 
     #: The appropriate Timestep class, e.g.
@@ -1441,10 +1444,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             ts = transform(ts)
 
         return ts
-
-    def __setstate__(self, state):
-        self.__dict__ = state
-        self[self.ts.frame]
 
 
 class ReaderBase(ProtoReader):

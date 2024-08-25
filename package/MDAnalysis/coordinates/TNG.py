@@ -499,9 +499,15 @@ class TNGReader(base.ReaderBase):
         self.__dict__ = state
         # reconstruct file iterator
         self._file_iterator = pytng.TNGFileIterator(self.filename, "r")
-        # make sure we re-read the current frame to update C level objects in
-        # the file iterator
-        self._read_frame(self._frame)
+
+        # unlike self._read_frame(self._frame),
+        # the following lines update the state of the C-level file iterator
+        # without updating the ts object.
+        # This is necessary to preserve the modification,
+        # e.g. changing coordinates, in the ts object.
+        # see PR #3722 for more details.
+        step = self._frame_to_step(self._frame)
+        _ = self._file_iterator.read_step(step)
 
     def Writer(self):
         """Writer for TNG files

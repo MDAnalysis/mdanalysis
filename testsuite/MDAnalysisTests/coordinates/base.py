@@ -124,9 +124,17 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_pickle_singleframe_reader(self):
         reader = self.universe.trajectory
         reader_p = pickle.loads(pickle.dumps(reader))
+        reader_p_p = pickle.loads(pickle.dumps(reader_p))
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Single-frame timestep is changed after pickling")
+        assert_equal(len(reader), len(reader_p_p))
+        assert_equal(reader.ts, reader_p_p.ts,
+                     "Single-frame timestep is changed after double pickling")
+        reader.ts.positions[0] = np.array([1, 2, 3])
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(reader.ts, reader_p.ts,
+                     "Modification of ts not preserved after serialization")
 
     def test_pathlib_input_single(self):
         path = Path(self.filename)
@@ -451,6 +459,14 @@ class BaseReaderTest(object):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
+        reader_p_p = pickle.loads(pickle.dumps(reader_p))
+        assert_equal(len(reader), len(reader_p_p))
+        assert_equal(reader.ts, reader_p_p.ts,
+                     "Timestep is changed after double pickling")
+        reader.ts.positions[0] = np.array([1, 2, 3])
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(reader.ts, reader_p.ts,
+                     "Modification of ts not preserved after serialization")
 
     def test_frame_collect_all_same(self, reader):
         # check that the timestep resets so that the base reference is the same
@@ -622,6 +638,9 @@ class MultiframeReaderTest(BaseReaderTest):
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(next(reader), next(reader_p),
                      "Next timestep is changed after pickling")
+        reader_p_p = pickle.loads(pickle.dumps(reader_p))
+        assert_equal(next(reader), next(reader_p_p),
+                     "Next timestep is changed after double pickling")
 
     #  To make sure pickle works for last frame.
     def test_pickle_last_ts_reader(self, reader):
