@@ -87,7 +87,6 @@ from functools import lru_cache
 from io import StringIO
 
 import numpy as np
-from numpy.lib import NumpyVersion
 
 from . import base
 from ..coordinates import memory
@@ -96,13 +95,8 @@ from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 
 try:
-    # TODO: remove this guard when RDKit has a release
-    # that supports NumPy 2
-    if NumpyVersion(np.__version__) < "2.0.0":
-        from rdkit import Chem
-        from rdkit.Chem import AllChem
-    else:
-        raise ImportError
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
 except ImportError:
     pass
 else:
