@@ -288,7 +288,7 @@
 <span class="sd">    generates the principal components of the backbone of the atomgroup and</span>
 <span class="sd">    then transforms those atomgroup coordinates by the direction of those</span>
 <span class="sd">    variances. Please refer to the :ref:`PCA-tutorial` for more detailed</span>
-<span class="sd">    instructions. When using mean selections, the first frame of the selected </span>
+<span class="sd">    instructions. When using mean selections, the first frame of the selected</span>
 <span class="sd">    trajectory slice is used as a reference.</span>
 
 <span class="sd">    Parameters</span>
@@ -384,6 +384,7 @@
 <span class="sd">       incorrectly handle cases where the ``frame`` argument</span>
 <span class="sd">       was passed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
