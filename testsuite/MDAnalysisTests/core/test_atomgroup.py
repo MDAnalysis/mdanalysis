@@ -1238,7 +1238,8 @@ class TestAtomGroup(object):
             mda.core.groups.AtomGroup(['these', 'are', 'not', 'atoms'])
 
     def test_invalid_index_initialisation(self, universe):
-        indices = [[1,2,3],[4,5,6]]
+        indices = [[1, 2, 3],
+                   [4, 5, 6]]
         with pytest.raises(IndexError):
             mda.core.groups.AtomGroup(indices, universe)
 
