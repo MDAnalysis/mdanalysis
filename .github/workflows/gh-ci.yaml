@@ -100,6 +100,9 @@ jobs:
         # numpy version we want at runtime. To do this we ensure
         # that we use build isolation
         isolation: true
+        
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
 
     - name: check_deps
       run: |
