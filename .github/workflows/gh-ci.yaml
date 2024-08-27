@@ -60,8 +60,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
     - name: setup_os
       uses: ./.github/actions/setup-os
       with:
