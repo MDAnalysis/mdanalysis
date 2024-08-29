@@ -262,7 +262,11 @@ class BAT(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
    
     def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
         r"""Parameters
