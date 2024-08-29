@@ -17,7 +17,8 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst
+         yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst,
+         talagayev
 
  * 2.8.0
 
@@ -56,6 +57,7 @@ Enhancements
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
+ * enables parallelization for analysis.bat.BAT (Issue #4663)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
