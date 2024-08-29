@@ -261,6 +261,7 @@ class BAT(AnalysisBase):
        description="Bond-Angle-Torsions Coordinate Transformation",
        path="MDAnalysis.analysis.bat.BAT",
     )
+   
     @classmethod
     def get_supported_backends(cls):
         return (
