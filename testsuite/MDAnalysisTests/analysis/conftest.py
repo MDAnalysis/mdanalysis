@@ -89,6 +89,7 @@ def client_RMSD(request):
 def client_RMSF(request):
     return request.param
 
+
 @pytest.fixture(scope='module', params=params_for_cls(BAT))
 def client_BAT(request):
     return request.param
