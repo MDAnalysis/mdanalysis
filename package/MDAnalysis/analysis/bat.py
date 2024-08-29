@@ -256,10 +256,11 @@ class BAT(AnalysisBase):
     """
     _analysis_algorithm_is_parallelizable = True
    
-    @due.dcite(Doi("10.1002/jcc.26036"),
-               description="Bond-Angle-Torsions Coordinate Transformation",
-               path="MDAnalysis.analysis.bat.BAT")
-
+    @due.dcite(
+       Doi("10.1002/jcc.26036"),
+       description="Bond-Angle-Torsions Coordinate Transformation",
+       path="MDAnalysis.analysis.bat.BAT",
+    )
     @classmethod
     def get_supported_backends(cls):
         return (
@@ -267,7 +268,7 @@ class BAT(AnalysisBase):
             "multiprocessing",
             "dask",
         )
-   
+       
     def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
         r"""Parameters
         ----------
