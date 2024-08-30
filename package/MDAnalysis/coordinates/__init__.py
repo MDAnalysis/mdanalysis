@@ -757,7 +757,7 @@ Methods
    raw :class:`~MDAnalysis.coordinates.Timestep` objects.
 
 """
-__all__ = ['reader', 'writer', 'timestep']
+__all__ = ["reader", "writer", "timestep"]
 
 from . import base
 from . import timestep
@@ -770,6 +770,7 @@ from . import DLPoly
 from . import DMS
 from . import GMS
 from . import GRO
+from . import IMD
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
