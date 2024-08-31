@@ -92,7 +92,7 @@ import warnings
 
 import numpy as np
 
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 
 from MDAnalysis.analysis.base import Results
@@ -247,6 +247,12 @@ class GNMAnalysis(AnalysisBase):
        ``eigenvectors`` of the ``results`` attribute.
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "multiprocessing", "dask")
+    
     def __init__(self,
                  universe,
                  select='protein and name CA',
@@ -347,6 +353,15 @@ class GNMAnalysis(AnalysisBase):
         self.results.times = self.times
         self.results.eigenvalues = np.asarray(self.results.eigenvalues)
         self.results.eigenvectors = np.asarray(self.results.eigenvectors)
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "eigenvectors": ResultsGroup.ndarray_hstack,
+                "eigenvalues": ResultsGroup.ndarray_hstack,
+                "times": ResultsGroup.ndarray_hstack,
+            }
+        )
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
