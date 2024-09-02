@@ -53,6 +53,7 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
