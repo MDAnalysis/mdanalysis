@@ -81,7 +81,7 @@ inputs:
   pytng:
     default: 'pytng>=0.2.3'
   rdkit:
-    default: 'rdkit>=2020.03.1'
+    default: 'rdkit>=2024.03.4'  # supports both numpy v1 and v2
   scikit-learn:
     default: 'scikit-learn'
   seaborn:

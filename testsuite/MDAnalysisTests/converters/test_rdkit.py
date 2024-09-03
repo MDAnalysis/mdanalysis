@@ -23,28 +23,31 @@
 
 import copy
 import warnings
+from contextlib import suppress
 from io import StringIO
+from unittest.mock import Mock
 
 import MDAnalysis as mda
 import numpy as np
 import pytest
+from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
+                                         _add_mda_attr_to_rdkit,
+                                         _set_atom_property,
+                                         atomgroup_to_mol)
+from MDAnalysis.converters.RDKitInferring import (MDAnalysisInferer,
+                                                  RDKitInferer,
+                                                  TemplateInferer,
+                                                  reorder_atoms,
+                                                  sanitize_mol)
 from MDAnalysis.topology.guessers import guess_atom_element
-from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
+from MDAnalysisTests.datafiles import (GRO, TRR, PDB_full, PDB_helix,
+                                       mol2_molecule)
 from MDAnalysisTests.util import import_not_available
-from numpy.testing import assert_allclose, assert_equal
+from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
-try:
-    from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
-                                             _add_mda_attr_to_rdkit,
-                                             _atom_sorter,
-                                             _infer_bo_and_charges,
-                                             _rebuild_conjugated_bonds,
-                                             _set_atom_property,
-                                             _standardize_patterns)
+with suppress(ImportError):
     from rdkit import Chem
     from rdkit.Chem import AllChem
-except ImportError:
-    pass
 
 
 requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
@@ -71,7 +74,7 @@ class MolFactory:
     def smiles_mol():
         mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
         mol = Chem.AddHs(mol)
-        cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
+        AllChem.EmbedMultipleConfs(mol, numConfs=3)
         return mol
 
     @staticmethod
@@ -148,14 +151,14 @@ class TestRDKitConverter(object):
         # add elements
         elements = np.array([guess_atom_element(x) for x in u.atoms.types],
                             dtype=object)
-        u.add_TopologyAttr('elements', elements)
+        u.add_TopologyAttr("elements", elements)
         return u
 
     @pytest.fixture
     def peptide(self):
         u = mda.Universe(GRO)
         elements = mda.topology.guessers.guess_types(u.atoms.names)
-        u.add_TopologyAttr('elements', elements)
+        u.add_TopologyAttr("elements", elements)
         return u.select_atoms("resid 2-12")
 
     @pytest.fixture
@@ -171,7 +174,7 @@ class TestRDKitConverter(object):
     def test_single_atom_mol(self, smi):
         u = mda.Universe.from_smiles(smi, addHs=False,
                                      generate_coordinates=False)
-        mol = u.atoms.convert_to.rdkit(NoImplicit=False)
+        mol = u.atoms.convert_to.rdkit(inferer=None)
         assert mol.GetNumAtoms() == 1
         assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
 
@@ -194,7 +197,7 @@ class TestRDKitConverter(object):
     def test_monomer_info(self, pdb, sel_str, atom_index):
         sel = pdb.select_atoms(sel_str)
         mda_atom = sel.atoms[atom_index]
-        umol = sel.convert_to.rdkit(NoImplicit=False)
+        umol = sel.convert_to.rdkit(inferer=None)
         atom = umol.GetAtomWithIdx(atom_index)
         mi = atom.GetMonomerInfo()
         assert mda_atom.altLoc == mi.GetAltLoc()
@@ -227,7 +230,7 @@ class TestRDKitConverter(object):
         u = mda.Universe(mol2_molecule)
 
         # Delete topology attribute (PR #3069)
-        u.del_TopologyAttr('elements')
+        u.del_TopologyAttr("elements")
 
         with pytest.raises(
             AttributeError,
@@ -244,7 +247,7 @@ class TestRDKitConverter(object):
     def test_bonds_outside_sel(self):
         u = mda.Universe(Chem.MolFromSmiles("CC(=O)C"))
         ag = u.select_atoms("index 1")
-        ag.convert_to.rdkit(NoImplicit=False)
+        ag.convert_to.rdkit(inferer=None)
 
     def test_error_no_hydrogen(self, uo2):
         with pytest.raises(AttributeError,
@@ -255,12 +258,12 @@ class TestRDKitConverter(object):
     def test_error_no_hydrogen_implicit(self, uo2):
         with warnings.catch_warnings():
             warnings.simplefilter("error")
-            uo2.atoms.convert_to.rdkit(NoImplicit=False)
+            uo2.atoms.convert_to.rdkit(inferer=None)
 
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
                           match="Forcing to continue the conversion"):
-            uo2.atoms.convert_to.rdkit(NoImplicit=False, force=True)
+            uo2.atoms.convert_to.rdkit(force=True)
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "N",    " N  "),
@@ -301,13 +304,13 @@ class TestRDKitConverter(object):
     ])
     def test_index_property(self, pdb, sel_str):
         ag = pdb.select_atoms(sel_str)
-        mol = ag.convert_to.rdkit(NoImplicit=False)
+        mol = ag.convert_to.rdkit(inferer=None)
         expected = [i for i in range(len(ag))]
         indices = [a.GetIntProp("_MDAnalysis_index") for a in mol.GetAtoms()]
         assert_equal(indices, expected)
 
     def test_assign_coordinates(self, pdb):
-        mol = pdb.atoms.convert_to.rdkit(NoImplicit=False)
+        mol = pdb.atoms.convert_to.rdkit(inferer=None)
         positions = mol.GetConformer().GetPositions()
         assert_allclose(positions, pdb.atoms.positions)
 
@@ -379,7 +382,7 @@ class TestRDKitConverter(object):
         assert cached_func.cache_info().maxsize == 3
         # test (4): caching is sensitive to converter arguments
         previous_cache = cached_func.cache_info()
-        uc.atoms.convert_to.rdkit(NoImplicit=False)
+        uc.atoms.convert_to.rdkit(implicit_hydrogens=True)
         cache = cached_func.cache_info()
         assert cache.misses == previous_cache.misses + 1
         # test (5): skip cache
@@ -388,20 +391,67 @@ class TestRDKitConverter(object):
         assert cache == new_cache
 
     def test_sanitize_fail_warning(self):
-        mol = Chem.MolFromSmiles("[H]-N(-[H])(-[H])-[H]", sanitize=False)
-        mol.UpdatePropertyCache(strict=False)
-        mol = Chem.AddHs(mol)
+        params = Chem.SmilesParserParams()
+        params.removeHs = False
+        params.sanitize = False
+        mol = Chem.MolFromSmiles("[H]-N(-[H])(-[H])-[H]", params)
         u = mda.Universe(mol)
-        with pytest.warns(UserWarning, match="Could not sanitize molecule"):
-            u.atoms.convert_to.rdkit(NoImplicit=False)
-        with warnings.catch_warnings():
-            warnings.filterwarnings("error", "Could not sanitize molecule")
-            u.atoms.convert_to.rdkit()
+        with pytest.warns() as record:
+            u.atoms.convert_to.rdkit(inferer=None)
+        assert "Could not sanitize molecule" not in "\n".join(
+            [str(r.message)for r in record])
+
+    def test_deprecation_max_iter(self, mol2, monkeypatch):
+        mock = Mock(wraps=atomgroup_to_mol)
+        monkeypatch.setattr("MDAnalysis.converters.RDKit.atomgroup_to_mol",
+                            mock)
+        with pytest.warns(DeprecationWarning,
+                          match="Using `max_iter` is deprecated"):
+            mol2.atoms.convert_to.rdkit(max_iter=2)
+        assert mock.call_args.kwargs["inferer"].max_iter == 2
+
+    def test_deprecation_NoImplicit(self, mol2):
+        with pytest.warns(DeprecationWarning,
+                          match="Using `NoImplicit` is deprecated"):
+            mol2.atoms.convert_to.rdkit(NoImplicit=True)
+
+    def test_deprecation_atomgroup_to_mol_NoImplicit(self, mol2):
+        with pytest.warns(DeprecationWarning,
+                          match="Using `NoImplicit` is deprecated"):
+            atomgroup_to_mol(mol2.atoms, NoImplicit=False)
+
+    def test_atomgroup_to_mol_unexpected_kwargs(self, mol2):
+        with pytest.raises(ValueError,
+                           match="Found unexpected arguments: {'foo': 'bar'}"):
+            atomgroup_to_mol(mol2.atoms, foo="bar")
+
+    def test_custom_callable_inferer(self, mol2):
+        def potatoe(mol):
+            new = Chem.Mol(mol)
+            new.SetProp("_Name", "🥔")
+            return new
+
+        mol = mol2.atoms.convert_to.rdkit(inferer=potatoe)
+        assert mol.GetProp("_Name") == "🥔"
 
 
 @requires_rdkit
-class TestRDKitFunctions(object):
+class TestRDKitInferringFunctions:
+    def test_sanitize_mol_error(self):
+        mol = Chem.MolFromSmiles("[NH4]", sanitize=False)
+        with pytest.raises(Chem.AtomValenceException,
+                           match="Explicit valence for atom # 0 N, 4, is "
+                           "greater than permitted"):
+            sanitize_mol(mol)
 
+    def test_reorder_atoms_key_error(self):
+        mol = Chem.MolFromSmiles("CCO")
+        with pytest.warns(match="'_MDAnalysis_index' not available on the"
+                          " input mol atoms, skipping reordering of atoms"):
+            reorder_atoms(mol)
+
+
+class BaseInferer:
     def add_Hs_remove_bo_and_charges(self, mol):
         """Add hydrogens and remove bond orders and charges from a molecule"""
         mH = Chem.AddHs(mol)
@@ -415,6 +465,19 @@ class TestRDKitFunctions(object):
         mH.UpdatePropertyCache(strict=False)
         return mH
 
+    def assert_isomorphic_resonance_structure(self, mol, ref):
+        """
+        Checks if 2 molecules are isomorphic using their resonance structures
+        """
+        isomorphic = mol.HasSubstructMatch(ref)
+        if not isomorphic:
+            isomorphic = bool(Chem.ResonanceMolSupplier(mol)
+                              .GetSubstructMatch(ref))
+        assert isomorphic, f"{Chem.MolToSmiles(ref)} != {Chem.MolToSmiles(mol)}"
+
+
+@requires_rdkit
+class TestRDKitMDAnalysisInferer(BaseInferer):
     def enumerate_reordered_mol(self, mol):
         """Enumerates all possible starting atoms for a given molecule"""
         # go through each possible starting atom
@@ -426,22 +489,9 @@ class TestRDKitFunctions(object):
             reordered_mol.UpdatePropertyCache(strict=False)
             yield reordered_mol
 
-    def assign_bond_orders_and_charges(self, mol):
-        """Returns a sanitized molecule with infered bond orders and charges"""
-        _infer_bo_and_charges(mol)
-        mol = _standardize_patterns(mol)
-        Chem.SanitizeMol(mol)
-        return mol
-
-    def assert_isomorphic_resonance_structure(self, mol, ref):
-        """Checks if 2 molecules are isomorphic using their resonance
-        structures
-        """
-        isomorphic = mol.HasSubstructMatch(ref)
-        if not isomorphic:
-            isomorphic = bool(Chem.ResonanceMolSupplier(mol)
-                              .GetSubstructMatch(ref))
-        assert isomorphic, f"{Chem.MolToSmiles(ref)} != {Chem.MolToSmiles(mol)}"
+    @pytest.fixture(scope="class")
+    def inferer(self):
+        return MDAnalysisInferer()
 
     @pytest.mark.parametrize("smi, out", [
         ("C(-[H])(-[H])(-[H])-[H]", "C"),
@@ -462,11 +512,12 @@ class TestRDKitFunctions(object):
     def test_infer_bond_orders(self, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
-        _infer_bo_and_charges(mol)
+        inferer = MDAnalysisInferer()
+        inferer._infer_bo_and_charges(mol)
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
-        assert is_isomorphic(mol, molref), "{} != {}".format(Chem.MolToSmiles(mol), out)
+        assert is_isomorphic(mol, molref), f"{Chem.MolToSmiles(mol)} != {out}"
 
     @pytest.mark.parametrize("smi, atom_idx, charge", [
         ("[C](-[H])(-[H])(-[H])-[O]", 4, -1),
@@ -477,7 +528,8 @@ class TestRDKitFunctions(object):
     def test_infer_charges(self, smi, atom_idx, charge):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
-        _infer_bo_and_charges(mol)
+        inferer = MDAnalysisInferer()
+        inferer._infer_bo_and_charges(mol)
         Chem.SanitizeMol(mol)
         assert mol.GetAtomWithIdx(atom_idx).GetFormalCharge() == charge
 
@@ -500,13 +552,13 @@ class TestRDKitFunctions(object):
         ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
         ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
     ])
-    def test_standardize_patterns(self, smi, out):
+    def test_standardize_patterns(self, inferer, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
-        mol = self.assign_bond_orders_and_charges(mol)
+        mol = inferer(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
-        assert is_isomorphic(mol, molref), "{} != {}".format(Chem.MolToSmiles(mol), out)
+        assert is_isomorphic(mol, molref), f"{Chem.MolToSmiles(mol)} != {out}"
 
     @pytest.mark.parametrize("attr, value, getter", [
         ("index", 42, "GetIntProp"),
@@ -539,7 +591,7 @@ class TestRDKitFunctions(object):
         "c1cc[nH]c1",
         "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
     ])
-    def test_transfer_properties(self, smi):
+    def test_transfer_properties(self, inferer, smi):
         mol = Chem.MolFromSmiles(smi)
         mol = self.add_Hs_remove_bo_and_charges(mol)
         old = {}
@@ -548,7 +600,7 @@ class TestRDKitFunctions(object):
             atom.SetIntProp("_MDAnalysis_index", ix)
             atom.SetProp("dummy", f"foo_{ix}")
             old[ix] = {"_MDAnalysis_index": ix, "dummy": f"foo_{ix}"}
-        newmol = self.assign_bond_orders_and_charges(mol)
+        newmol = inferer(mol)
         new = {}
         for a in newmol.GetAtoms():
             ix = a.GetIntProp("_MDAnalysis_index")
@@ -632,13 +684,13 @@ class TestRDKitFunctions(object):
         "[O-]/N=C1/c2ccccc2-c2nc3ccc(C(F)(F)F)cc3nc21 CHEMBL4557878",
         "N#Cc1c[nH]c(C(=O)Nc2ccc(-c3cccc[n+]3[O-])cc2C2=CCCCC2)n1 CHEMBL1172116",
     ])
-    def test_order_independant(self, smi):
+    def test_order_independant(self, inferer, smi):
         # generate mol with hydrogens but without bond orders
         ref = Chem.MolFromSmiles(smi)
         stripped_mol = self.add_Hs_remove_bo_and_charges(ref)
         # enumerate mols with different starting atoms
         for m in self.enumerate_reordered_mol(stripped_mol):
-            m = self.assign_bond_orders_and_charges(m)
+            m = inferer(m)
             m = Chem.RemoveHs(m)
             self.assert_isomorphic_resonance_structure(m, ref)
 
@@ -655,9 +707,19 @@ class TestRDKitFunctions(object):
     def test_warn_conjugated_max_iter(self):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
         mol = Chem.MolFromSmiles(smi)
+        inferer = MDAnalysisInferer(max_iter=2)
         with pytest.warns(UserWarning,
                           match="reasonable number of iterations"):
-            _rebuild_conjugated_bonds(mol, 2)
+            inferer._rebuild_conjugated_bonds(mol)
+
+    def test_deprecation_warning_max_iter(self):
+        smi = "c1ccccc1"
+        mol = Chem.MolFromSmiles(smi)
+        inferer = MDAnalysisInferer()
+        with pytest.warns(DeprecationWarning,
+                          match="Specifying `max_iter` is deprecated and will"
+                          " be removed"):
+            inferer._standardize_patterns(mol, max_iter=1)
 
     @pytest.mark.parametrize("smi", [
         "[Li+]", "[Na+]", "[K+]", "[Rb+]", "[Ag+]", "[Cs+]",
@@ -667,10 +729,10 @@ class TestRDKitFunctions(object):
         "[O-2]",
         "[Na+].[Cl-]",
     ])
-    def test_ions(self, smi):
+    def test_ions(self, inferer, smi):
         ref = Chem.MolFromSmiles(smi)
         stripped_mol = self.add_Hs_remove_bo_and_charges(ref)
-        mol = self.assign_bond_orders_and_charges(stripped_mol)
+        mol = inferer(stripped_mol)
         assert is_isomorphic(mol, ref)
 
     @pytest.mark.parametrize("smi", [
@@ -717,6 +779,142 @@ class TestRDKitFunctions(object):
         # atom indices:      1 3 5 6
         mol.UpdatePropertyCache()
         sorted_atoms = sorted([atom for atom in mol.GetAtoms()
-                              if atom.GetAtomicNum() > 1], key=_atom_sorter)
+                              if atom.GetAtomicNum() > 1],
+                              key=MDAnalysisInferer._atom_sorter)
         sorted_indices = [atom.GetIdx() for atom in sorted_atoms]
         assert sorted_indices == [6, 5, 1, 3]
+
+    @pytest.mark.parametrize("sanitize", [
+        pytest.param(
+            True,
+            marks=pytest.mark.xfail(reason="Invalid charge/valence",
+                                    strict=True)),
+        False,
+    ])
+    def test_sanitize(self, sanitize):
+        mol = Chem.MolFromSmiles("[H]-[C+](-[H])(-[H])-[H]", sanitize=False)
+        mol.UpdatePropertyCache()
+        inferrer = MDAnalysisInferer(sanitize=sanitize)
+        result = inferrer(mol)
+        assert isinstance(result, Chem.Mol)
+
+
+@requires_rdkit
+class TestRDKitTemplateInferer:
+    @pytest.fixture(scope="function")
+    def template(self):
+        return Chem.MolFromSmiles("[NH3+]-C=O")
+
+    @pytest.fixture(scope="function")
+    def template_with_hydrogens(self):
+        params = Chem.SmilesParserParams()
+        params.removeHs = False
+        return Chem.MolFromSmiles("[N+](-[H])(-[H])(-[H])-C(-[H])=O", params)
+
+    @pytest.fixture(scope="function")
+    def mol(self, template):
+        mol = Chem.AddHs(template)
+        AllChem.EmbedMolecule(mol, randomSeed=0xAC1D1C)
+        mol.GetAtomWithIdx(0).SetFormalCharge(0)
+        mol.UpdatePropertyCache(strict=False)
+        for atom in mol.GetAtoms():
+            atom.SetIntProp("_MDAnalysis_index", atom.GetIdx())
+        return mol
+
+    def test_template_inferring(self, mol, template_with_hydrogens):
+        inferer = TemplateInferer(
+            template=template_with_hydrogens, adjust_hydrogens=False
+        )
+        new = inferer(mol)
+        assert new.GetAtomWithIdx(0).GetFormalCharge() == 1
+
+    def test_template_inferring_adjust_hydrogens(self, mol, template):
+        inferer = TemplateInferer(template=template, adjust_hydrogens=True)
+        new = inferer(mol)
+        assert new.GetAtomWithIdx(0).GetFormalCharge() == 1
+
+    def test_from_convert_to_method(self, template_with_hydrogens):
+        mol = Chem.Mol(template_with_hydrogens)
+        AllChem.EmbedMolecule(mol, randomSeed=0xAC1D1C)
+        u = mda.Universe(mol)
+        mol = u.atoms.convert_to.rdkit(
+            inferer=TemplateInferer(
+                template=template_with_hydrogens, adjust_hydrogens=False
+            )
+        )
+        assert mol.GetAtomWithIdx(0).GetFormalCharge() == 1
+        xyz = mol.GetConformer().GetPositions()
+        assert_array_equal(xyz, u.atoms.positions)
+
+    def test_adjust_hydrogens_bigger_mol(self):
+        u = mda.Universe(GRO, TRR)
+        elements = mda.topology.guessers.guess_types(u.atoms.names)
+        u.add_TopologyAttr("elements", elements)
+        ag = u.select_atoms("resid 1-3")
+        inferer = TemplateInferer(
+            template=Chem.MolFromSmiles(
+                "CCC(C)C(C=O)NC(=O)C(CCCNC(N)=[NH2+])NC(=O)C([NH3+])CCSC"
+            ),
+            adjust_hydrogens=True,
+        )
+        mol = ag.convert_to.rdkit(inferer=inferer)
+        xyz = mol.GetConformer().GetPositions()
+        assert_array_equal(xyz, ag.positions)
+
+
+@requires_rdkit
+class TestRDKitInferer(BaseInferer):
+    @pytest.mark.parametrize(
+        "smi",
+        [
+            "c1ccc(cc1)-c1ccccc1-c1ccccc1",
+            "c1cc[nH]c1",
+            "c1ccc(cc1)-c1ccc(-c2ccccc2)c(-c2ccccc2)c1-c1ccccc1",
+            "c1ccc2c(c1)c1ccccc1c1ccccc1c1ccccc1c1ccccc21",
+            "c1csc(c1)-c1ccoc1-c1cc[nH]c1",
+            "C1=C2C(=NC=N1)N=CN2",
+            "c1c[nH]c(c1)-c1ccc(s1)-c1ccoc1-c1c[nH]cc1-c1ccccc1",
+            "C=CC=CC=CC=CC=CC=C",
+            "NCCCCC([NH3+])C(=O)[O-]",
+            "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
+            "C#CC=C",
+            # amino acids
+            "C[C@H](N)C(=O)O",  # A
+            "NCC(=O)O",  # G
+            "CC[C@H](C)[C@H](N)C(=O)O",  # I
+            "CC(C)C[C@H](N)C(=O)O",  # L
+            "O=C(O)[C@@H]1CCCN1",  # P
+            "CC(C)[C@H](N)C(=O)O",  # V
+            "N[C@@H](Cc1ccccc1)C(=O)O",  # F
+            "N[C@@H](Cc1c[nH]c2ccccc12)C(=O)O",  # W
+            "N[C@@H](Cc1ccc(O)cc1)C(=O)O",  # Y
+            "N[C@@H](CC(=O)O)C(=O)O",  # D
+            "N[C@@H](CCC(=O)O)C(=O)O",  # E
+            "N=C(N)NCCC[C@H](N)C(=O)O",  # R
+            "N[C@@H](Cc1c[nH]cn1)C(=O)O",  # H
+            "NCCCC[C@H](N)C(=O)O",  # K
+            "N[C@@H](CO)C(=O)O",  # S
+            "C[C@@H](O)[C@H](N)C(=O)O",  # T
+            "N[C@@H](CS)C(=O)O",  # C
+            "CSCC[C@H](N)C(=O)O",  # M
+            "NC(=O)C[C@H](N)C(=O)O",  # N
+            "NC(=O)CC[C@H](N)C(=O)O",  # Q
+            # nucleic acids
+            "Nc1ncnc2c1ncn2[C@H]1C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O1",  # A
+            "Cc1cn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]c1=O",  # T
+            "O=c1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # U
+            "Nc1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)n1",  # C
+            "Nc1nc2c(ncn2[C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # G
+        ],
+    )
+    def test_inferring(self, smi):
+        # generate mol with hydrogens but without bond orders
+        ref = Chem.MolFromSmiles(smi)
+        charge = sum(atom.GetFormalCharge() for atom in ref.GetAtoms())
+        inferer = RDKitInferer(charge=charge)
+        mol = Chem.AddHs(ref)
+        AllChem.EmbedMolecule(mol, randomSeed=0xAC1D1C)
+        stripped_mol = self.add_Hs_remove_bo_and_charges(mol)
+        new = inferer(stripped_mol)
+        new = Chem.RemoveHs(new)
+        self.assert_isomorphic_resonance_structure(new, ref)
