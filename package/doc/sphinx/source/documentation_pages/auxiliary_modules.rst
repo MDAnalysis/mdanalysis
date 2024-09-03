@@ -15,3 +15,4 @@ alignment between auxiliary and trajectory data.
    auxiliary/core
    auxiliary/XVG
    auxiliary/EDR
+   auxiliary/NumPy
