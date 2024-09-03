@@ -98,9 +98,6 @@ jobs:
         # numpy version we want at runtime. To do this we ensure
         # that we use build isolation
         isolation: true
-        
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
 
     - name: check_deps
       run: |
@@ -116,7 +113,10 @@ jobs:
         fi
         echo $PYTEST_FLAGS
         pytest -n auto --timeout=200 testsuite/MDAnalysisTests $PYTEST_FLAGS
-
+        
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
       run: |
