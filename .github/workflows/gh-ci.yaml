@@ -114,7 +114,9 @@ jobs:
         echo $PYTEST_FLAGS
         pytest -n auto --timeout=200 testsuite/MDAnalysisTests $PYTEST_FLAGS
         
+
     - name: Setup tmate session
+      if: ${{ failure() }}
       uses: mxschmitt/action-tmate@v3
       
     - name: run_asv
