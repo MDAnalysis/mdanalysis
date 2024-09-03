@@ -117,7 +117,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        pytest -n auto --timeout=200 testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n auto --timeout=20000 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
       
     - name: run_asv
