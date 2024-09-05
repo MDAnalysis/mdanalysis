@@ -160,19 +160,43 @@ try:
     from .authors import __authors__
 except ImportError:
     logger = logging.getLogger("MDAnalysis.__init__")
-    logger.info('Could not find authors.py, __authors__ will be empty.')
+    logger.info(
+        'Could not find authors.py, __authors__ will be empty.'
+    )
     __authors__ = []
 
-__all__ = ['Universe', 'Writer', 'AtomGroup', 'ResidueGroup', 'SegmentGroup', '__version__',
-           'SelectionError', 'NoDataError', 'ApplicationError', 'SelectionWarning', 
-           'MissingDataWarning', 'ConversionWarning', 'FileFormatWarning', 'StreamWarning', 
-           'start_logging', 'stop_logging', 'units', 'Merge', 'converters']
+__all__ = [
+    "Universe",
+    "Writer",
+    "AtomGroup",
+    "ResidueGroup",
+    "SegmentGroup",
+    "__version__",
+    "SelectionError",
+    "NoDataError",
+    "ApplicationError",
+    "SelectionWarning",
+    "MissingDataWarning",
+    "ConversionWarning",
+    "FileFormatWarning",
+    "StreamWarning",
+    "start_logging",
+    "stop_logging",
+    "units",
+    "Merge",
+    "converters",
+]
 
 # custom exceptions and warnings
 from .exceptions import (
-    SelectionError, NoDataError, ApplicationError, SelectionWarning,
-    MissingDataWarning, ConversionWarning, FileFormatWarning,
-    StreamWarning
+    SelectionError,
+    NoDataError,
+    ApplicationError,
+    SelectionWarning,
+    MissingDataWarning,
+    ConversionWarning,
+    FileFormatWarning,
+    StreamWarning,
 )
 
 from .lib import log
