@@ -150,8 +150,6 @@ the OPLS/AA force field.
 
 """
 
-
-
 import logging
 import warnings
 from typing import Dict
@@ -161,11 +159,14 @@ from .version import __version__
 try:
     from .authors import __authors__
 except ImportError:
+    logger = logging.getLogger("MDAnalysis.__init__")
     logger.info('Could not find authors.py, __authors__ will be empty.')
     __authors__ = []
 
-__all__ = ['Universe', 'Writer',
-           'AtomGroup', 'ResidueGroup', 'SegmentGroup']
+__all__ = ['Universe', 'Writer', 'AtomGroup', 'ResidueGroup', 'SegmentGroup', '__version__',
+           'SelectionError', 'NoDataError', 'ApplicationError', 'SelectionWarning', 
+           'MissingDataWarning', 'ConversionWarning', 'FileFormatWarning', 'StreamWarning', 
+           'start_logging', 'stop_logging', 'units', 'Merge', 'converters']
 
 # custom exceptions and warnings
 from .exceptions import (
@@ -187,8 +188,6 @@ from .coordinates.core import writer as Writer
 from . import converters
 
 from .due import due, Doi, BibTeX
-
-logger = logging.getLogger("MDAnalysis.__init__")
 
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
