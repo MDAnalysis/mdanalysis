@@ -107,6 +107,8 @@ jobs:
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       with:
+        # set true if name is not numpy_min
+        if: ${{ matrix.name != 'numpy_min' }}
         detached: true
 
     - name: run_tests
