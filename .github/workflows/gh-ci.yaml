@@ -105,11 +105,16 @@ jobs:
         pip list
         
     - name: Setup tmate session
+      if: ${{ matrix.name != 'numpy_min' }}
       uses: mxschmitt/action-tmate@v3
       with:
-        # set true if name is not numpy_min
-        if: ${{ matrix.name != 'numpy_min' }}
         detached: true
+  
+    - name: Setup tmate session for numpy_min
+      if: ${{ matrix.name == 'numpy_min' }}
+      uses: mxschmitt/action-tmate@v3
+      with:
+        detached: false
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
