@@ -150,22 +150,45 @@ the OPLS/AA force field.
 
 """
 
-__all__ = ['Universe', 'Writer',
-           'AtomGroup', 'ResidueGroup', 'SegmentGroup']
+
 
 import logging
 import warnings
 from typing import Dict
 
-
-logger = logging.getLogger("MDAnalysis.__init__")
-
 from .version import __version__
+
 try:
     from .authors import __authors__
 except ImportError:
     logger.info('Could not find authors.py, __authors__ will be empty.')
     __authors__ = []
+
+__all__ = ['Universe', 'Writer',
+           'AtomGroup', 'ResidueGroup', 'SegmentGroup']
+
+# custom exceptions and warnings
+from .exceptions import (
+    SelectionError, NoDataError, ApplicationError, SelectionWarning,
+    MissingDataWarning, ConversionWarning, FileFormatWarning,
+    StreamWarning
+)
+
+from .lib import log
+from .lib.log import start_logging, stop_logging
+from . import units
+
+# Bring some often used objects into the current namespace
+from .core.universe import Universe, Merge
+from .core.groups import AtomGroup, ResidueGroup, SegmentGroup
+from .coordinates.core import writer as Writer
+
+# After Universe import
+from . import converters
+
+from .due import due, Doi, BibTeX
+
+logger = logging.getLogger("MDAnalysis.__init__")
 
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
@@ -183,15 +206,6 @@ _TOPOLOGY_TRANSPLANTS: Dict = {}   # {name: [attrname, method, transplant class]
 _TOPOLOGY_ATTRNAMES: Dict = {}   # {lower case name w/o _ : name}
 
 
-# custom exceptions and warnings
-from .exceptions import (
-    SelectionError, NoDataError, ApplicationError, SelectionWarning,
-    MissingDataWarning, ConversionWarning, FileFormatWarning,
-    StreamWarning
-)
-
-from .lib import log
-from .lib.log import start_logging, stop_logging
 
 logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
@@ -200,18 +214,6 @@ del logging
 warnings.filterwarnings(action='once', category=DeprecationWarning,
                         module='MDAnalysis')
 
-
-from . import units
-
-# Bring some often used objects into the current namespace
-from .core.universe import Universe, Merge
-from .core.groups import AtomGroup, ResidueGroup, SegmentGroup
-from .coordinates.core import writer as Writer
-
-# After Universe import
-from . import converters
-
-from .due import due, Doi, BibTeX
 
 due.cite(Doi("10.25080/majora-629e541a-00e"),
          description="Molecular simulation analysis library",
