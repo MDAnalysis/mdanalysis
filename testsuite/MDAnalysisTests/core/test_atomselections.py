@@ -1340,7 +1340,7 @@ def u_fake_masses():
     return u
 
 
-@pytest.skip()
+@pytest.mark.skip()
 @pytest.mark.parametrize("selstr,n_atoms, selkwargs", [
     ("mass 0.8 to 1.2", 23844, {}),
     ("mass 8e-1 to 1200e-3", 23844, {}),
@@ -1376,7 +1376,7 @@ def test_mass_sel(u_fake_masses, selstr, n_atoms, selkwargs):
     ag = u_fake_masses.select_atoms(selstr, **selkwargs)
     assert len(ag) == n_atoms
 
-@pytest.skip()
+@pytest.mark.skip()
 def test_mass_sel_warning(u_fake_masses):
     warn_msg = (r"Using float equality .* is not recommended .* "
                 r"we recommend using a range .*"
