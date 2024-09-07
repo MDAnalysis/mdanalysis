@@ -1237,6 +1237,12 @@ class TestAtomGroup(object):
         with pytest.raises(TypeError):
             mda.core.groups.AtomGroup(['these', 'are', 'not', 'atoms'])
 
+    def test_invalid_index_initialisation(self, universe):
+        indices = [[1, 2, 3],
+                   [4, 5, 6]]
+        with pytest.raises(IndexError):
+            mda.core.groups.AtomGroup(indices, universe)
+
     def test_n_atoms(self, ag):
         assert ag.n_atoms == 3341
 
@@ -1591,6 +1597,13 @@ class TestAtomGroup(object):
                                                            "does not produce "
                                                            "an AtomGroup")
         assert_equal(ag[1], ag[-1], "advanced slicing does not preserve order")
+
+    def test_2d_indexing_caught(self, universe):
+        u = universe
+        index_2d = [[1, 2, 3],
+                    [4, 5, 6]]
+        with pytest.raises(IndexError):
+            u.atoms[index_2d]
 
     @pytest.mark.parametrize('sel', (np.array([True, False, True]),
                                      [True, False, True]))

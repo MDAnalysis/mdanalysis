@@ -30,8 +30,11 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_helix, SDF_molecule
 
+# TODO: remove these shims when RDKit
+# has a release supporting NumPy 2
 Chem = pytest.importorskip('rdkit.Chem')
 AllChem = pytest.importorskip('rdkit.Chem.AllChem')
+
 
 class RDKitParserBase(ParserBase):
     parser = mda.converters.RDKitParser.RDKitParser

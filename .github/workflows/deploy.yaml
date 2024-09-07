@@ -201,7 +201,7 @@ jobs:
           mv dist/MDAnalysisTests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.8.10
+        uses: pypa/gh-action-pypi-publish@v1.10.0
 
   upload_pypi_mdanalysistests:
     if: |
@@ -227,7 +227,7 @@ jobs:
           mv dist/MDAnalysisTests-* testsuite/dist
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.8.10
+        uses: pypa/gh-action-pypi-publish@v1.10.0
         with:
           packages_dir: testsuite/dist
 

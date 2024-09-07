@@ -3,15 +3,13 @@
 requires = [
     "Cython>=0.28",
     "packaging",
-    # lowest NumPy we can use for a given Python,
-    # In part adapted from: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
-    # As per NEP29, we set the minimum version to 1.23.2 for Python <=3.11
-    # and 1.26.0 (first to support) for Python 3.12
-    "numpy==1.23.2; python_version<='3.11' and platform_python_implementation != 'PyPy'",
-    "numpy==1.26.0; python_version=='3.12' and platform_python_implementation != 'PyPy'",
-    # For unreleased versions of Python there is currently no known supported
-    # NumPy version. In that case we just let it be a bare NumPy install
-    "numpy<2.0; python_version>='3.13'",
+    # numpy requirement for wheel builds for distribution on PyPI - building
+    # against 2.x yields wheels that are also compatible with numpy 1.x at
+    # runtime.
+    # Note that building against numpy 1.x works fine too - users and
+    # redistributors can do this by installing the numpy version they like and
+    # disabling build isolation.
+    "numpy>=2.0.0",
     # Set to minimum version of setuptools that allows pyproject.toml
     "setuptools >= 40.9.0",
     "wheel",
@@ -95,6 +93,9 @@ doc = [
     "sphinxcontrib-bibtex",
     "pybtex",
     "pybtex-docutils",
+]
+parallel = [
+    "dask",
 ]
 
 [project.urls]

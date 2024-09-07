@@ -114,11 +114,12 @@ class FileIOPicklable(io.FileIO):
 
     def __setstate__(self, state):
         name = state["name_val"]
-        super().__init__(name, mode='r')
+        self.__init__(name, mode='r')
         try:
             self.seek(state["tell_val"])
         except KeyError:
             pass
+
 
     def __reduce_ex__(self, prot):
         if self._mode != 'r':
@@ -165,7 +166,7 @@ class BufferIOPicklable(io.BufferedReader):
         raw_class = state["raw_class"]
         name = state["name_val"]
         raw = raw_class(name)
-        super().__init__(raw)
+        self.__init__(raw)
         self.seek(state["tell_val"])
 
     def __reduce_ex__(self, prot):
@@ -177,17 +178,12 @@ class BufferIOPicklable(io.BufferedReader):
                  "name_val": self.name,
                  "tell_val": self.tell()})
 
+
 class TextIOPicklable(io.TextIOWrapper):
     """Character and line based picklable file-like object.
 
     This class provides a file-like :class:`io.TextIOWrapper` object that can
     be pickled. Note that this only works in read mode.
-
-    Note
-    ----
-    After pickling, the current position is reset. `universe.trajectory[i]` has
-    to be used to return to its original frame.
-
 
     Parameters
     ----------
@@ -207,21 +203,34 @@ class TextIOPicklable(io.TextIOWrapper):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.8.0
+       The raw class instance instead of the class name
+       that is wrapped inside will be serialized.
+       After deserialization, the current position is no longer reset
+       so `universe.trajectory[i]` is not needed to seek to the
+       original position.
     """
     def __init__(self, raw):
         super().__init__(raw)
         self.raw_class = raw.__class__
 
-
     def __setstate__(self, args):
         raw_class = args["raw_class"]
         name = args["name_val"]
+        tell = args["tell_val"]
         # raw_class is used for further expansion this functionality to
         # Gzip files, which also requires a text wrapper.
         raw = raw_class(name)
-        super().__init__(raw)
+        self.__init__(raw)
+        if tell is not None:
+            self.seek(tell)
 
     def __reduce_ex__(self, prot):
+        try:
+            curr_loc = self.tell()
+        # some readers (e.g. GMS) disable tell() due to using next()
+        except OSError:
+            curr_loc = None
         try:
             name = self.name
         except AttributeError:
@@ -230,7 +239,8 @@ class TextIOPicklable(io.TextIOWrapper):
         return (self.__class__.__new__,
                 (self.__class__,),
                 {"raw_class": self.raw_class,
-                 "name_val": name})
+                 "name_val": name,
+                 "tell_val": curr_loc})
 
 
 class BZ2Picklable(bz2.BZ2File):
@@ -293,9 +303,11 @@ class BZ2Picklable(bz2.BZ2File):
         return {"name_val": self._fp.name, "tell_val": self.tell()}
 
     def __setstate__(self, args):
-        super().__init__(args["name_val"])
+        name = args["name_val"]
+        tell = args["tell_val"]
+        self.__init__(name)
         try:
-            self.seek(args["tell_val"])
+            self.seek(tell)
         except KeyError:
             pass
 
@@ -361,9 +373,11 @@ class GzipPicklable(gzip.GzipFile):
                 "tell_val": self.tell()}
 
     def __setstate__(self, args):
-        super().__init__(args["name_val"])
+        name = args["name_val"]
+        tell = args["tell_val"]
+        self.__init__(name)
         try:
-            self.seek(args["tell_val"])
+            self.seek(tell)
         except KeyError:
             pass
 

@@ -570,7 +570,10 @@ class GroupBase(_MutableBase):
             raise TypeError(errmsg) from None
 
         # indices for the objects I hold
-        self._ix = np.asarray(ix, dtype=np.intp)
+        ix = np.asarray(ix, dtype=np.intp)
+        if ix.ndim > 1:
+            raise IndexError('Group index must be 1d')
+        self._ix = ix
         self._u = u
         self._cache = dict()
 
@@ -597,6 +600,7 @@ class GroupBase(_MutableBase):
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
                 item = np.array(item)
+
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class
             # resulting from slicing.
@@ -1874,9 +1878,13 @@ class GroupBase(_MutableBase):
         """
         atoms = self.atoms
         # bail out early if no bonds in topology:
-        if not hasattr(atoms, 'bonds'):
-            raise NoDataError("{}.unwrap() not available; this requires Bonds"
-                              "".format(self.__class__.__name__))
+        if not hasattr(atoms, 'bonds'): 
+            raise NoDataError(
+                f"{self.__class__.__name__}.unwrap() not available; this AtomGroup lacks defined bonds. "
+                "To resolve this, you can either:\n"
+                "1. Guess the bonds at universe creation using `guess_bonds = True`, or\n"
+                "2. Create a universe using a topology format where bonds are pre-defined."
+            )
         unique_atoms = atoms.unsorted_unique
 
         # Parameter sanity checking
@@ -4242,6 +4250,9 @@ class ComponentBase(_MutableBase):
 
     def __init__(self, ix, u):
         # index of component
+        if not isinstance(ix, numbers.Integral):
+            raise IndexError('Component can only be indexed by a single integer')
+
         self._ix = ix
         self._u = u
 
