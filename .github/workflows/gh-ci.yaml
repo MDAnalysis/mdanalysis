@@ -124,7 +124,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml --log-file-level=DEBUG"
         fi
         echo $PYTEST_FLAGS
-        pytest -n auto --timeout=20000 testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n logical --timeout=20000 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
       
     - name: run_asv
@@ -290,4 +290,4 @@ jobs:
 
     - name: run tests
       working-directory: ./dist
-      run: python -m pytest --timeout=200 -n auto --pyargs MDAnalysisTests
+      run: python -m pytest --timeout=200 -n logical --pyargs MDAnalysisTests
