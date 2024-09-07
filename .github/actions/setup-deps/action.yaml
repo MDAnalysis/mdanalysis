@@ -100,8 +100,6 @@ inputs:
   trove-classifiers:
     default: 'trove-classifiers'
   # pip-install optional dependencies
-  duecredit:
-    default: 'duecredit'
   parmed:
     default: 'parmed'
   pyedr:
@@ -178,7 +176,6 @@ runs:
           ${{ inputs.pytest-xdist }}
           ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |
-          ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
           ${{ inputs.pyedr }}
       run: |

@@ -114,7 +114,7 @@ import sys
 # collection of citations on the first `import MDAnalysis` so the environment
 # variable *must* come before MDAnalysis is imported the first time. See
 # issue #412 https://github.com/MDAnalysis/mdanalysis/issues/412 and PR #1822.
-os.environ['DUECREDIT_ENABLE'] = 'yes'
+os.environ['DUECREDIT_ENABLE'] = 'no'
 
 # Any tests that plot with matplotlib need to run with the simple agg backend
 # because on Travis there is no DISPLAY set.
