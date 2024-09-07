@@ -29,8 +29,6 @@ inputs:
     default: 'hypothesis'
   matplotlib:
     default: 'matplotlib-base'
-  mdahole2:
-    default: 'mdahole2-base'
   mda_xdrlib:
     default: 'mda-xdrlib'
   mmtf-python:
@@ -39,8 +37,6 @@ inputs:
     default: 'numpy'
   packaging:
     default: 'packaging'
-  pathsimanalysis:
-    default: 'pathsimanalysis'
   pip:
     default: 'pip'
   pytest:
@@ -51,8 +47,6 @@ inputs:
     default: 'threadpoolctl'
   tqdm:
     default: 'tqdm>=4.43.0'
-  waterdynamics:
-    default: 'waterdynamics'
   # conda-installed optional dependencies
   biopython:
     default: 'biopython>=1.80'
@@ -116,18 +110,15 @@ runs:
           ${{ inputs.griddataformats }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
-          ${{ inputs.mdahole2 }}
           ${{ inputs.mda_xdrlib }}
           ${{ inputs.mmtf-python }}
           ${{ inputs.numpy }}
           ${{ inputs.packaging }}
-          ${{ inputs.pathsimanalysis }}
           ${{ inputs.pip }}
           ${{ inputs.pytest }}
           ${{ inputs.scipy }}
           ${{ inputs.threadpoolctl }}
           ${{ inputs.tqdm }}
-          ${{ inputs.waterdynamics }}
         CONDA_OPT_DEPS: |
           ${{ inputs.biopython }}
           ${{ inputs.chemfiles-python }}

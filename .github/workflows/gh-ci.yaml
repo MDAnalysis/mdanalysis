@@ -288,6 +288,9 @@ jobs:
         python -m pip install mdanalysis-*.tar.gz
         python -m pip install mdanalysistests-*.tar.gz
 
+    - name: check install
+      run: pip list
+
     - name: run tests
       working-directory: ./dist
       run: python -m pytest --timeout=200 -n logical --pyargs MDAnalysisTests
