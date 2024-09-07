@@ -264,15 +264,15 @@ jobs:
             - conda-forge
             - bioconda
 
+    - name: install_mdanalysis
+      run: |
+          micromamba install mdanalysis mdanalysistests
+
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
         micromamba: true
         full-deps: true
-
-    - name: install_mdanalysis
-      run: |
-          micromamba install mdanalysis mdanalysistests
 
     - name: run_tests
       run: |
