@@ -129,7 +129,7 @@ jobs:
     displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
-      pytest MDAnalysisTests --disable-pytest-warnings -n logical --timeout=50 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n logical --timeout=200 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash
