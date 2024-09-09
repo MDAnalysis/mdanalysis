@@ -245,6 +245,10 @@ class GNMAnalysis(AnalysisBase):
        Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
        store results as attributes ``times``, ``eigenvalues`` and
        ``eigenvectors`` of the ``results`` attribute.
+
+    .. versionchanged:: 2.8.0
+       introduced a :meth:`get_supported_backends` allowing for execution on with
+       ``multiprocessing`` and ``dask`` backends.
     """
 
     _analysis_algorithm_is_parallelizable = True
