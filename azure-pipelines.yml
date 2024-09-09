@@ -105,7 +105,8 @@ jobs:
       biopython
       "chemfiles>=0.10,<0.10.4"
       duecredit
-      "gsd>3.0.0"
+      # remove from azure to avoid test hanging #4707
+#      "gsd>3.0.0"
       joblib
       GridDataFormats
       mmtf-python
