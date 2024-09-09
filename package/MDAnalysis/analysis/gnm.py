@@ -247,8 +247,9 @@ class GNMAnalysis(AnalysisBase):
        ``eigenvectors`` of the ``results`` attribute.
 
     .. versionchanged:: 2.8.0
-       introduced a :meth:`get_supported_backends` allowing for execution on with
-       ``multiprocessing`` and ``dask`` backends.
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` 
+       backends; use the new method :meth:`get_supported_backends` to see all 
+       supported backends.
     """
 
     _analysis_algorithm_is_parallelizable = True
