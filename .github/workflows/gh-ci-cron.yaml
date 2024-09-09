@@ -5,9 +5,9 @@ on:
     - cron: "0 3 * * 2,5"
   workflow_dispatch:
   # Uncomment when you need to test on a PR
-  pull_request:
-    branches:
-      - develop
+  # pull_request:
+  #  branches:
+  #    - develop
 
 
 concurrency:
