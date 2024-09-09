@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies
+         yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies,
          talagayev
 
  * 2.8.0
@@ -56,6 +56,7 @@ Fixes
 Enhancements
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
+ * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
  * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
  * enables parallelization for analysis.bat.BAT (Issue #4663)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
