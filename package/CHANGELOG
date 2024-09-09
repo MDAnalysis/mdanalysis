@@ -17,11 +17,13 @@ The rules for this file:
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
-         yuxuanzhuang, PythonFZ, laksh-krishna-sharma
+         yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies,
+         talagayev
 
  * 2.8.0
 
 Fixes
+ * Catch higher dimensional indexing in GroupBase & ComponentBase (Issue #4647)
  * Do not raise an Error reading H5MD files with datasets like
    `observables/<particle>/<property>` (part of Issue #4598, PR #4615)
  * Fix failure in double-serialization of TextIOPicklable file reader.
@@ -54,6 +56,8 @@ Fixes
 Enhancements
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
+ * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
+ * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`

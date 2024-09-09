@@ -117,7 +117,7 @@ def import_not_available(module_name):
     # TODO: remove once these packages have a release
     # with NumPy 2 support
     if NumpyVersion(np.__version__) >= "2.0.0":
-        if module_name in {"rdkit", "parmed"}:
+        if module_name == "parmed":
             return True
     try:
         test = importlib.import_module(module_name)
