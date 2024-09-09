@@ -128,13 +128,6 @@ jobs:
     displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
-      $env:OPENBLAS_NUM_THREADS=1
-      $env:GOTO_NUM_THREADS=1
-      $env:OMP_NUM_THREADS=1
-      $env:MKL_NUM_THREADS=1
-      # limit to 2 workers to avoid overloading the CI
-      $env:PYTEST_XDIST_AUTO_NUM_WORKERS=1
-
       pytest MDAnalysisTests --disable-pytest-warnings -n auto --timeout=200 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
