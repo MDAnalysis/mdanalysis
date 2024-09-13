@@ -78,6 +78,7 @@ extra_formats = [
     "pytng>=0.2.3",
     "gsd>3.0.0",
     "rdkit>=2020.03.1",
+    "gemmi", # for mmcif format
 ]
 analysis = [
     "biopython>=1.80",
