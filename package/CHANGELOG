@@ -58,6 +58,7 @@ Enhancements
    (Issue #4158, PR #4304)
  * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
  * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
+ * enables parallelization for analysis.bat.BAT (Issue #4663)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
