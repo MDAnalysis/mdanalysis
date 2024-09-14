@@ -288,6 +288,11 @@ previous snippet has been executed.</p>
 <dd><p>Calculate BAT coordinates for the specified AtomGroup.</p>
 <p>Bond-Angle-Torsions (BAT) internal coordinates will be computed for
 the group of atoms and all frame in the trajectory belonging to <cite>ag</cite>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>Enabled <strong>parallel execution</strong> with the <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> and <code class="docutils literal notranslate"><span class="pre">dask</span></code>
+backends; use the new method <a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.get_supported_backends" title="MDAnalysis.analysis.bat.BAT.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a> to see all
+supported backends.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -364,7 +369,7 @@ periodic boundary.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.get_supported_backends">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.get_supported_backends" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.run" title="MDAnalysis.analysis.bat.BAT.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method

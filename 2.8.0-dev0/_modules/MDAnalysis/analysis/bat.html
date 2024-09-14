@@ -307,7 +307,7 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">calc_bonds</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_dihedrals</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.mdamath</span> <span class="kn">import</span> <span class="n">make_whole</span>
@@ -398,10 +398,31 @@
 <span class="sd">    Bond-Angle-Torsions (BAT) internal coordinates will be computed for</span>
 <span class="sd">    the group of atoms and all frame in the trajectory belonging to `ag`.</span>
 
+<span class="sd">    .. versionchanged:: 2.8.0</span>
+<span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` </span>
+<span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all </span>
+<span class="sd">       supported backends.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.26036&quot;</span><span class="p">),</span>
-               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Bond-Angle-Torsions Coordinate Transformation&quot;</span><span class="p">,</span>
-               <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.bat.BAT&quot;</span><span class="p">)</span>
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+      
+<div class="viewcode-block" id="BAT.get_supported_backends">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+       <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.26036&quot;</span><span class="p">),</span>
+       <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Bond-Angle-Torsions Coordinate Transformation&quot;</span><span class="p">,</span>
+       <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.bat.BAT&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+   
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">initial_atom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
@@ -711,7 +732,10 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The atomgroup for which BAT are computed (read-only property)&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span>
+
+    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;bat&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span></div>
 
 </pre></div>
 
