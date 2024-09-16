@@ -48,7 +48,7 @@ import functools
 from math import ceil
 import numpy as np
 
-from ..lib.util import openany
+from ..lib.util import openany, atoi
 from . import guessers
 from .base import TopologyReaderBase, squash_by, change_squash
 from ..core.topologyattrs import (
@@ -89,6 +89,10 @@ class PSFParser(TopologyReaderBase):
     - impropers
 
     .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
+
+
+    .. versionchanged:: 2.8.0
+       PSFParser now reads string resids and converts them to integers.
     """
     format = 'PSF'
 
@@ -248,7 +252,8 @@ class PSFParser(TopologyReaderBase):
         }
         atom_parser = atom_parsers[self._format]
         # once partitioned, assigned each component the correct type
-        set_type = lambda x: (int(x[0]) - 1, x[1] or "SYSTEM", int(x[2]), x[3],
+        set_type = lambda x: (int(x[0]) - 1, x[1] or "SYSTEM",
+                              atoi(x[2]), x[3],
                               x[4], x[5], float(x[6]), float(x[7]))
 
         # Oli: I don't think that this is the correct OUTPUT format:
