@@ -38,10 +38,10 @@ def universe():
     return mda.Universe(GRO, XTC)
 
 
-def test_gnm(universe, tmpdir):
+def test_gnm(universe, tmpdir, client_GNMAnalysis):
     output = os.path.join(str(tmpdir), 'output.txt')
     gnm = mda.analysis.gnm.GNMAnalysis(universe, ReportVector=output)
-    gnm.run()
+    gnm.run(**client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 10
     assert_almost_equal(gnm.results.times, np.arange(0, 1000, 100), decimal=4)
@@ -51,9 +51,9 @@ def test_gnm(universe, tmpdir):
        4.2058769e-15, 3.9839431e-15])
 
 
-def test_gnm_run_step(universe):
+def test_gnm_run_step(universe, client_GNMAnalysis):
     gnm = mda.analysis.gnm.GNMAnalysis(universe)
-    gnm.run(step=3)
+    gnm.run(step=3, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 4
     assert_almost_equal(gnm.results.times, np.arange(0, 1200, 300), decimal=4)
@@ -88,9 +88,9 @@ def test_gnm_SVD_fail(universe):
             mda.analysis.gnm.GNMAnalysis(universe).run(stop=1)
 
 
-def test_closeContactGNMAnalysis(universe):
+def test_closeContactGNMAnalysis(universe, client_GNMAnalysis):
     gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, weights="size")
-    gnm.run(stop=2)
+    gnm.run(stop=2, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 2
     assert_almost_equal(gnm.results.times, (0,  100), decimal=4)
@@ -114,9 +114,9 @@ def test_closeContactGNMAnalysis(universe):
        0.0, 0.0, -2.263157894736841, -0.24333213169614382])
 
 
-def test_closeContactGNMAnalysis_weights_None(universe):
+def test_closeContactGNMAnalysis_weights_None(universe, client_GNMAnalysis):
     gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, weights=None)
-    gnm.run(stop=2)
+    gnm.run(stop=2, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 2
     assert_almost_equal(gnm.results.times, (0, 100), decimal=4)
