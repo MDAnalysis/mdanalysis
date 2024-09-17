@@ -306,7 +306,7 @@ class RDKitParser(TopologyReaderBase):
         if atomtypes:
             attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
         else:
-            atomtypes = elements
+            atomtypes = np.char.upper(elements)
 
         # Partial charges
         if charges:

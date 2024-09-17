@@ -1498,7 +1498,7 @@ class Universe(object):
         return cls(mol, **kwargs)
 
     def guess_TopologyAttrs(
-            self, context=None, to_guess=(), force_guess=(), **kwargs):
+            self, context=None, to_guess=None, force_guess=None, **kwargs):
         """
         Guess and add attributes through a specific context-aware guesser.
 
@@ -1506,7 +1506,7 @@ class Universe(object):
         ----------
         context: str or :mod:`Guesser<MDAanalysis.guesser>` class
             For calling a matching guesser class for this specific context
-        to_guess: list[str] (optional, default ``['types', 'masses']``)
+        to_guess: Optional[list[str]]
             TopologyAttrs to be guessed. These TopologyAttrs will be wholly
             guessed if they don't exist in the Universe. If they already exist in
             the Universe, only empty or missing values will be guessed.
@@ -1518,7 +1518,7 @@ class Universe(object):
                 by default** and it will be up to the user to request guessing
                 using ``to_guess`` and ``force_guess``.
             
-        force_guess: list[str], (optional)
+        force_guess: Optional[list[str]]
             TopologyAttrs in this list will be force guessed. If the
             TopologyAttr does not already exist in the Universe, this has no
             effect. If the TopologyAttr does already exist, all values will
@@ -1540,7 +1540,11 @@ class Universe(object):
         guesser = get_guesser(context, self.universe, **kwargs)
         self._context = guesser
 
-        total_guess = list(force_guess) + list(to_guess)
+        total_guess = []
+        if to_guess is not None:
+            total_guess += list(to_guess)
+        if force_guess is not None:
+            total_guess += list(force_guess)
 
         # Removing duplicates from the guess list while keeping attributes
         # order as it is more convenient to guess attributes
