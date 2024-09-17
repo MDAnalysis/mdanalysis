@@ -164,7 +164,7 @@ import numpy as np
 import copy
 
 import MDAnalysis as mda
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.lib.mdamath import make_whole
@@ -253,10 +253,28 @@ class BAT(AnalysisBase):
     Bond-Angle-Torsions (BAT) internal coordinates will be computed for
     the group of atoms and all frame in the trajectory belonging to `ag`.
 
+    .. versionchanged:: 2.8.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` 
+       backends; use the new method :meth:`get_supported_backends` to see all 
+       supported backends.
+
     """
-    @due.dcite(Doi("10.1002/jcc.26036"),
-               description="Bond-Angle-Torsions Coordinate Transformation",
-               path="MDAnalysis.analysis.bat.BAT")
+    _analysis_algorithm_is_parallelizable = True
+      
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
+    @due.dcite(
+       Doi("10.1002/jcc.26036"),
+       description="Bond-Angle-Torsions Coordinate Transformation",
+       path="MDAnalysis.analysis.bat.BAT",
+    )
+   
     def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
         r"""Parameters
         ----------
@@ -558,3 +576,6 @@ class BAT(AnalysisBase):
     def atoms(self):
         """The atomgroup for which BAT are computed (read-only property)"""
         return self._ag
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'bat': ResultsGroup.ndarray_vstack})

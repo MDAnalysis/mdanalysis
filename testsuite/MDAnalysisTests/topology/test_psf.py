@@ -32,6 +32,7 @@ from MDAnalysisTests.datafiles import (
     PSF_nosegid,
     PSF_notop,
     PSF_NAMD,
+    PSF_inscode,
     XYZ_psf,
     XYZ,
 )
@@ -157,3 +158,8 @@ def test_psf_nosegid():
     assert isinstance(u, mda.Universe)
     assert u.atoms.n_atoms == 98
     assert_equal(u.segments.segids, ["SYSTEM"])
+
+def test_psf_inscode():
+    """Issue #2053 and #4189"""
+    u = mda.Universe(PSF_inscode)
+    assert_equal(u.residues.resids[:3], [1, 1, 1])

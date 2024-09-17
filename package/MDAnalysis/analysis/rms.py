@@ -166,10 +166,10 @@ import numpy as np
 import logging
 import warnings
 
-import MDAnalysis.lib.qcprot as qcp
-from MDAnalysis.analysis.base import AnalysisBase
-from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.util import asiterable, iterable, get_weights
+from ..lib import qcprot as qcp
+from ..analysis.base import AnalysisBase, ResultsGroup
+from ..exceptions import SelectionError
+from ..lib.util import asiterable, iterable, get_weights
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -358,8 +358,17 @@ class RMSD(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`rmsd` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.8.0
+       introduced a :meth:`get_supported_backends` allowing for execution on with
+       ``multiprocessing`` and ``dask`` backends.
     """
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
+
+
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, weights=None, weights_groupselections=False,
                  tol_mass=0.1, ref_frame=0, **kwargs):
@@ -670,6 +679,9 @@ class RMSD(AnalysisBase):
 
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'rmsd': ResultsGroup.ndarray_vstack})
+
     def _single_frame(self):
         mobile_com = self.mobile_atoms.center(self.weights_select).astype(np.float64)
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
@@ -739,6 +751,11 @@ class RMSF(AnalysisBase):
     in the array :attr:`RMSF.results.rmsf`.
 
     """
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial',)
+
     def __init__(self, atomgroup, **kwargs):
         r"""Parameters
         ----------

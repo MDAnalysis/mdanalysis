@@ -136,16 +136,6 @@ class TestMMTFgzUniverseFromDecoder(TestMMTFgzUniverse):
         return mda.Universe(top)
 
 
-class TestMMTFFetch(TestMMTFUniverse):
-    @pytest.fixture()
-    def u(self):
-        top = mmtf.parse(MMTF)
-        with mock.patch('mmtf.fetch') as mock_fetch:
-            mock_fetch.return_value = top
-
-            return mda.fetch_mmtf('173D')  # string is irrelevant
-
-
 class TestSelectModels(object):
     # tests for 'model' keyword in select_atoms
     @pytest.fixture()

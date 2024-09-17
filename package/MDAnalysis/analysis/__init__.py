@@ -23,6 +23,7 @@
 
 __all__ = [
     'align',
+    'backends',
     'base',
     'contacts',
     'density',
@@ -45,6 +46,7 @@ __all__ = [
     'pca',
     'psa',
     'rdf',
+    'results',
     'rms',
     'waterdynamics',
 ]

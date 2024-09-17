@@ -121,6 +121,11 @@ class TestAtom(object):
         atm_in = pickle.loads(pickle.dumps(atm_out))
         assert atm_in == atm_out
 
+    def test_improper_initialisation(self, universe):
+        with pytest.raises(IndexError):
+            indices = [0, 1]
+            mda.core.groups.Atom(indices, universe)
+
 
 class TestAtomNoForceNoVel(object):
     @staticmethod

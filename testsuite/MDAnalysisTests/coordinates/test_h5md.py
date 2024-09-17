@@ -5,16 +5,25 @@ import sys
 import os
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
+
 if HAS_H5PY:
     import h5py
+    from MDAnalysis.coordinates.H5MD import H5MDReader
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import (H5MD_xvf, TPR_xvf, TRR_xvf,
-                                       COORDINATES_TOPOLOGY,
-                                       COORDINATES_H5MD)
-from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
-                                              BaseReference, BaseWriterTest,
-                                              assert_timestep_almost_equal)
+from MDAnalysisTests.datafiles import (
+    H5MD_xvf,
+    TPR_xvf,
+    TRR_xvf,
+    COORDINATES_TOPOLOGY,
+    COORDINATES_H5MD,
+    H5MD_energy,
+    H5MD_malformed,
+)
+from MDAnalysisTests.coordinates.base import (
+    MultiframeReaderTest,
+    BaseReference,
+    BaseWriterTest,
+)
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
@@ -894,3 +903,29 @@ class TestH5PYNotInstalled(object):
                         u.atoms.n_atoms) as W:
                 for ts in u.trajectory:
                     W.write(universe)
+
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+class TestH5MDReaderWithObservables(object):
+    """Read H5MD file with 'observables/atoms/energy'."""
+
+    prec = 3
+    ext = 'h5md'
+
+    def test_read_h5md_issue4598(self):
+        """Read a H5MD file with observables.
+
+        The reader will ignore the 'observables/atoms/energy'.
+        """
+
+        u = mda.Universe.empty(n_atoms=108, trajectory=True)
+        reader = H5MDReader(H5MD_energy)
+        u.trajectory = reader
+        for ts in u.trajectory:
+            assert "atoms/energy" in ts.data
+
+    def test_read_h5md_malformed(self):
+        """Try reading an H5MD file with malformed observables."""
+
+        with pytest.raises(ValueError):
+            H5MDReader(H5MD_malformed)
