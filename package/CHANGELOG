@@ -80,16 +80,13 @@ Changes
 
 Deprecations
  * Unknown masses are set to 0.0 for current version, this will be depracated
-   in version 3.0.0 and replaced by Masse's no_value_label attribute(np.nan)
+   in version 3.0.0 and replaced by :class:`Masses`' no_value_label attribute(np.nan)
    (PR #3753)
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour
    of the waterdynamics MDAKit and will be removed in version 3.0.0 (PR #4404)
  * The MDAnalysis.analysis.psa module has been deprecated in favour of
    the PathSimAnalysis MDAKit and will be removed in version 3.0.0
    (PR #4403)
- * Unknown masses are set to 0.0 for current version, this will be deprecated
-   in version 3.0.0 and replaced by Masse's no_value_label attribute(np.nan)
-   (PR #3753)
 
 
 12/26/23 IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 

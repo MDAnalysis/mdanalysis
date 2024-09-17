@@ -58,14 +58,14 @@ class DefaultGuesser(GuesserBase):
     guessing different topology attribute. It has the same methods which where
     originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
-    * masses
-    * types
-    * elements
-    * angles
-    * dihedrals
-    * bonds
-    * improper dihedrals
-    * aromaticities
+     - masses
+     - types
+     - elements
+     - angles
+     - dihedrals
+     - bonds
+     - improper dihedrals
+     - aromaticities
 
     You can use this guesser either directly through an instance, or through
     the :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` method.
@@ -99,16 +99,17 @@ class DefaultGuesser(GuesserBase):
 
     def guess_masses(self, atom_types=None, indices_to_guess=None):
         """Guess the mass of many atoms based upon their type.
-        For guessing masses through Universe.guess_TopologyAttrs():
+        For guessing masses through :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`:
+
         First try to guess masses from atom elements, if not available,
         try to guess masses from types and if not available, try to guess
         types.
 
         Parameters
         ----------
-        atom_types
+        atom_types : Optional[np.ndarray]
           Atom types/elements to guess masses from
-        indices_to_guess (optional)
+        indices_to_guess : Optional[np.ndarray]
           Mask array for partially guess masses for certain atoms
 
         Returns

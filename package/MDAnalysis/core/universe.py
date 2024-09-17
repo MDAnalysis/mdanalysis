@@ -1543,7 +1543,7 @@ class Universe(object):
         total_guess = list(force_guess) + list(to_guess)
 
         # Removing duplicates from the guess list while keeping attributes
-        # order as it is more convientent to guess attributes
+        # order as it is more convenient to guess attributes
         # in the same order that the user provided
         total_guess = list(dict.fromkeys(total_guess))
 

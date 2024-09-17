@@ -79,7 +79,8 @@ class GuesserBase(metaclass=_GuesserMeta):
         attributes to be used in guessing processes. (this is relevant to how
         the universe's guess_TopologyAttrs API works.
         See :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`).
-    **kwargs: to pass additional data to the guesser that can be used with
+    **kwargs : dict, optional
+        To pass additional data to the guesser that can be used with
               different methods.
 
 
@@ -132,7 +133,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Returns
         -------
-        list of guessed values
+        NDArray of guessed values
 
         """
 
@@ -170,7 +171,8 @@ def get_guesser(context, u=None, **kwargs):
     u: Universe
         to be passed to the guesser
     context: str or Guesser
-    **kwargs: extra arguments are passed to the guesser.
+    **kwargs : dict, optional
+        Extra arguments are passed to the guesser.
 
     Returns
     -------
