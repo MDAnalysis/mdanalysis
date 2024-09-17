@@ -1540,11 +1540,12 @@ class Universe(object):
         guesser = get_guesser(context, self.universe, **kwargs)
         self._context = guesser
 
-        total_guess = []
-        if to_guess is not None:
-            total_guess += list(to_guess)
-        if force_guess is not None:
-            total_guess += list(force_guess)
+        if to_guess is None:
+            to_guess = []
+        if force_guess is None:
+            force_guess = []
+
+        total_guess = list(to_guess) + list(force_guess)
 
         # Removing duplicates from the guess list while keeping attributes
         # order as it is more convenient to guess attributes
