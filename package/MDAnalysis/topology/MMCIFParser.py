@@ -24,8 +24,8 @@ from ..core.topologyattrs import (
     Resids,
     Resnames,
     Resnums,
-    Tempfactors,
     Segids,
+    Tempfactors,
 )
 from .base import TopologyReaderBase
 
@@ -68,7 +68,7 @@ class MMCIFParser(TopologyReaderBase):
             occupancies,  # at.occ
             record_types,  # res.het_flag
             tempfactors,  # at.b_iso
-            residx,  # res.index?
+            residx,  # _into_idx(res.seqid.num)
         ) = map(  # this is probably not pretty, but it's efficient -- one loop over the mmcif
             np.array,
             list(
@@ -88,7 +88,7 @@ class MMCIFParser(TopologyReaderBase):
                             at.occ,  # occupancies
                             res.het_flag,  # record_types
                             at.b_iso,  # tempfactors
-                            res.seqid.num,  # residx TODO: translate to continious index
+                            res.seqid.num,  # residx, later translated into continious repr
                         )
                         for chain in model
                         for res in chain
@@ -103,6 +103,7 @@ class MMCIFParser(TopologyReaderBase):
             resids,  # res.seqid.num
             resnames,  # res.name
             segidx,  # chain.name TODO: translate into continious index
+            resnums,
         ) = map(
             np.array,
             list(
@@ -113,6 +114,7 @@ class MMCIFParser(TopologyReaderBase):
                             res.seqid.num,
                             res.name,
                             chain.name,
+                            res.seqid.num,
                         )
                         for chain in model
                         for res in chain
@@ -150,6 +152,7 @@ class MMCIFParser(TopologyReaderBase):
             # ---------------------------------------
             Occupancies(occupancies),  # at.occ
             RecordTypes(record_types),  # res.het_flat
+            Resnums(resnums),  # res.seqid.num
             Tempfactors(tempfactors),  # at.b_iso
             #
             # ResidueAttr subclasses
@@ -179,6 +182,6 @@ class MMCIFParser(TopologyReaderBase):
             n_residues,
             n_segments,
             attrs=attrs,
-            atom_resindex=np.arange(n_atoms),
-            residue_segindex=np.arange(n_residues),
+            atom_resindex=residx,
+            residue_segindex=segidx,
         )
