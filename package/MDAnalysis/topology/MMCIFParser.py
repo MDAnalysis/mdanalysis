@@ -3,26 +3,29 @@ MMCIF Topology Parser # TODO
 ===================
 """
 
+import gemmi
 import numpy as np
-from .base import TopologyReaderBase, change_squash
+import warnings
+
 from ..core.topology import Topology
 from ..core.topologyattrs import (
-    Atomnames,
-    Atomids,
     AltLocs,
-    ChainIDs,
+    Atomids,
+    Atomnames,
     Atomtypes,
+    ChainIDs,
     Elements,
+    FormalCharges,
     ICodes,
     Masses,
     Occupancies,
     RecordTypes,
     Resids,
     Resnames,
-    Segids,
     Tempfactors,
-    FormalCharges,
+    Segids,
 )
+from .base import TopologyReaderBase, change_squash
 
 
 class MMCIFParser(TopologyReaderBase):
@@ -35,22 +38,32 @@ class MMCIFParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        import gemmi
-
         structure = gemmi.read_structure(self.filename)
+
+        if len(structure) > 1:
+            warnings.warn(
+                "MMCIF model {self.filename} contains {len(model)=} different models, "
+                "but only the first one will be used to assign the topology"
+            )
+        model = structure[0]
 
         # atom properties
         (
-            altlocs,
-            atomtypes,
-            elements,
-            formalcharges,
-            names,
-            serials,
-            tempfactors,
-            occupancies,
-            weights,
-        ) = map(
+            altlocs,  # at.altlog
+            atomtypes,  # at.name
+            elements,  # at.element.name
+            formalcharges,  # at.charge
+            names,  # at.name
+            serials,  # at.serial
+            tempfactors,  # at.b_iso
+            occupancies,  # at.occ
+            weights,  # at.element.weight
+            record_types,  # res.het_flag TODO: match to ATOM/HETATM
+            chainids,  # chain.name
+            resids,  # res.seqid.num
+            resnames,  # res.name
+            icodes,  # residue.seqid.icode
+        ) = map(  # this is probably not pretty, but it's efficient -- one loop over the mmcif
             np.array,
             list(
                 zip(
@@ -65,8 +78,12 @@ class MMCIFParser(TopologyReaderBase):
                             at.b_iso,  # tempfactores
                             at.occ,  # occupancies
                             at.element.weight,  # weights
+                            res.het_flag,
+                            chain.name,  # chainids
+                            res.seqid.num,
+                            res.name,
+                            res.seqid.icode,
                         )
-                        for model in structure
                         for chain in model
                         for res in chain
                         for at in res
@@ -74,58 +91,42 @@ class MMCIFParser(TopologyReaderBase):
                 )
             ),
         )
-        # per-residue properties
-        (
-            icodes,
-            record_types,
-            resids,
-            resnames,
-            segids,
-        ) = map(
-            np.array,
-            list(
-                zip(
-                    *[
-                        (
-                            res.seqid.icode,  # icodes
-                            res.het_flag,  # record_types
-                            res.seqid.num,  # resids
-                            res.name,  # resnames
-                            res.segment,  # segids
-                        )
-                        for model in structure
-                        for chain in model
-                        for res in chain
-                    ]
-                )
-            ),
-        )
+
+        # fill in altlocs
+        altlocs = ["A" if not elem else elem for elem in altlocs]
 
         attrs = [
-            # per atom
+            # AtomAttr subclasses
             AltLocs(altlocs),
+            Atomids(serials),
+            Atomnames(names),
             Atomtypes(atomtypes),
+            ChainIDs(chainids),  # actually for atom
             Elements(elements),
             FormalCharges(formalcharges),
-            Atomnames(names),
-            Atomids(serials),
-            Tempfactors(tempfactors),
-            Occupancies(occupancies),
             Masses(weights),
-            # per residue
-            ICodes(icodes),  # for each atom
+            Occupancies(occupancies),
             RecordTypes(record_types),  # for atom too?
+            Tempfactors(tempfactors),
+            # ResidueAttr subclasses
+            ICodes(icodes),  # for each atom
             Resids(resids),  # for residue
             Resnames(resnames),  # for residue
-            #
-            # Segids(segids),  # for segment (currently for residue)
-            # per chain
-            # ChainIDs(chainids),  # actually for atom
+            # SegmentAttr subclasses
+            Segids(segids),
         ]
 
         n_atoms = len(names)
         n_residues = len(resids)
-        n_segments = len(segids)
+        n_segments = len(set(chainids))
+
+        print(resids)
+        print(change_squash(resids, resids))
+
         top = Topology(n_atoms, n_residues, n_segments, attrs=attrs)
+
+        print(f"{n_atoms=}")
+        print(f"{n_residues=}")
+        print(f"{n_segments=}")
 
         return top
