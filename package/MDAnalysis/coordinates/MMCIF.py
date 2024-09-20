@@ -34,4 +34,5 @@ class MMCIFReader(base.SingleFrameReaderBase):
         pass
 
 
-class MMCIFWriter(base.WriterBase): ...
+class MMCIFWriter(base.WriterBase):
+    pass
