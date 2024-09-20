@@ -23,7 +23,7 @@ The rules for this file:
  * 2.8.0
 
 Fixes
- * reset `n_parts` to the total number of frames being analyzed if
+ * set `n_parts` to the total number of frames being analyzed if
    `n_parts` is bigger. (Issue #4685)
  * Catch higher dimensional indexing in GroupBase & ComponentBase (Issue #4647)
  * Do not raise an Error reading H5MD files with datasets like
