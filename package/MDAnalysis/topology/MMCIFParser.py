@@ -102,7 +102,7 @@ class MMCIFParser(TopologyReaderBase):
             icodes,  # res.seqid.icode
             resids,  # res.seqid.num
             resnames,  # res.name
-            segidx,  # chain.name 
+            segidx,  # chain.name
             resnums,
         ) = map(
             np.array,
@@ -167,15 +167,6 @@ class MMCIFParser(TopologyReaderBase):
         n_atoms = len(names)
         n_residues = len(resids)
         n_segments = len(segids)
-
-        print(f"{len(residx)=}")
-        print(f"{residx=}")
-        print(f"{len(segidx)=}")
-        print(f"{segidx=}")
-
-        print(f"{n_atoms=}")
-        print(f"{n_residues=}")
-        print(f"{n_segments=}")
 
         return Topology(
             n_atoms,
