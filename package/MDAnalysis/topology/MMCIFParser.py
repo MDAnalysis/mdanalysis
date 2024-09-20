@@ -49,18 +49,21 @@ class MMCIFParser(TopologyReaderBase):
 
         # atom properties
         (
-            altlocs,  # at.altlog
+            altlocs,  # at.altloc
+            serials,  # at.serial
+            names,  # at.name
             atomtypes,  # at.name
+            # ------------------
+            chainids,  # chain.name
             elements,  # at.element.name
             formalcharges,  # at.charge
-            names,  # at.name
-            serials,  # at.serial
-            tempfactors,  # at.b_iso
-            occupancies,  # at.occ
             weights,  # at.element.weight
+            # ------------------
+            occupancies,  # at.occ
             record_types,  # res.het_flag TODO: match to ATOM/HETATM
-            chainids,  # chain.name
+            tempfactors,  # at.b_iso
             resids,  # res.seqid.num
+            # ------------------
             resnames,  # res.name
             icodes,  # residue.seqid.icode
         ) = map(  # this is probably not pretty, but it's efficient -- one loop over the mmcif
@@ -70,17 +73,20 @@ class MMCIFParser(TopologyReaderBase):
                     *[
                         (
                             at.altloc,  # altlocs
+                            at.serial,  # serials
+                            at.name,  # names
                             at.name,  # atomtypes
+                            # ------------------
+                            chain.name,  # chainids
                             at.element.name,  # elements
                             at.charge,  # formalcharges
-                            at.name,  # names
-                            at.serial,  # serials
-                            at.b_iso,  # tempfactores
-                            at.occ,  # occupancies
                             at.element.weight,  # weights
-                            res.het_flag,
-                            chain.name,  # chainids
+                            # ------------------
+                            at.occ,  # occupancies
+                            res.het_flag,  # record_types
+                            at.b_iso,  # tempfactors
                             res.seqid.num,
+                            # ------------------
                             res.name,
                             res.seqid.icode,
                         )
@@ -97,17 +103,19 @@ class MMCIFParser(TopologyReaderBase):
 
         attrs = [
             # AtomAttr subclasses
-            AltLocs(altlocs),
-            Atomids(serials),
-            Atomnames(names),
-            Atomtypes(atomtypes),
-            ChainIDs(chainids),  # actually for atom
-            Elements(elements),
-            FormalCharges(formalcharges),
-            Masses(weights),
-            Occupancies(occupancies),
-            RecordTypes(record_types),  # for atom too?
-            Tempfactors(tempfactors),
+            AltLocs(altlocs),  # ✅
+            Atomids(serials),  # ✅
+            Atomnames(names),  # ✅
+            Atomtypes(atomtypes),  # ✅
+            # ------------------
+            ChainIDs(chainids),  # ✅
+            Elements(elements),  # ✅; same as atomtypes
+            FormalCharges(formalcharges),  # ✅
+            Masses(weights),  # ✅
+            # ------------------
+            Occupancies(occupancies),  # ✅
+            RecordTypes(record_types),  # ✅
+            Tempfactors(tempfactors),  # ✅
             # ResidueAttr subclasses
             ICodes(icodes),  # for each atom
             Resids(resids),  # for residue
