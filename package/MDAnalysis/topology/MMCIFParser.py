@@ -1,5 +1,5 @@
 """
-MMCIF Topology Parser # TODO
+MMCIF Topology Parser # 
 ===================
 """
 
@@ -102,7 +102,7 @@ class MMCIFParser(TopologyReaderBase):
             icodes,  # res.seqid.icode
             resids,  # res.seqid.num
             resnames,  # res.name
-            segidx,  # chain.name TODO: translate into continious index
+            segidx,  # chain.name 
             resnums,
         ) = map(
             np.array,
