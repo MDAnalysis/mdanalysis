@@ -6,6 +6,7 @@ MMCIF Topology Parser # TODO
 import gemmi
 import numpy as np
 import warnings
+import itertools
 
 from ..core.topology import Topology
 from ..core.topologyattrs import (
@@ -22,10 +23,15 @@ from ..core.topologyattrs import (
     RecordTypes,
     Resids,
     Resnames,
+    Resnums,
     Tempfactors,
     Segids,
 )
-from .base import TopologyReaderBase, change_squash
+from .base import TopologyReaderBase
+
+
+def _into_idx(arr: list[int]) -> list[int]:
+    return [idx for idx, (_, group) in enumerate(itertools.groupby(arr)) for _ in group]
 
 
 class MMCIFParser(TopologyReaderBase):
@@ -60,12 +66,9 @@ class MMCIFParser(TopologyReaderBase):
             weights,  # at.element.weight
             # ------------------
             occupancies,  # at.occ
-            record_types,  # res.het_flag TODO: match to ATOM/HETATM
+            record_types,  # res.het_flag
             tempfactors,  # at.b_iso
-            resids,  # res.seqid.num
-            # ------------------
-            resnames,  # res.name
-            icodes,  # residue.seqid.icode
+            residx,  # res.index?
         ) = map(  # this is probably not pretty, but it's efficient -- one loop over the mmcif
             np.array,
             list(
@@ -85,10 +88,7 @@ class MMCIFParser(TopologyReaderBase):
                             at.occ,  # occupancies
                             res.het_flag,  # record_types
                             at.b_iso,  # tempfactors
-                            res.seqid.num,
-                            # ------------------
-                            res.name,
-                            res.seqid.icode,
+                            res.seqid.num,  # residx TODO: translate to continious index
                         )
                         for chain in model
                         for res in chain
@@ -98,43 +98,87 @@ class MMCIFParser(TopologyReaderBase):
             ),
         )
 
+        (
+            icodes,  # res.seqid.icode
+            resids,  # res.seqid.num
+            resnames,  # res.name
+            segidx,  # chain.name TODO: translate into continious index
+        ) = map(
+            np.array,
+            list(
+                zip(
+                    *[
+                        (
+                            res.seqid.icode,
+                            res.seqid.num,
+                            res.name,
+                            chain.name,
+                        )
+                        for chain in model
+                        for res in chain
+                    ]
+                )
+            ),
+        )
+
+        segids = [chain.name for chain in model]
+
+        # transform *idx into continious numpy arrays
+        residx = np.array(_into_idx(residx))
+        segidx = np.array(_into_idx(segidx))
+
         # fill in altlocs
         altlocs = ["A" if not elem else elem for elem in altlocs]
+        record_types = [
+            "ATOM" if record == "A" else "HETATM" if record == "H" else None
+            for record in record_types
+        ]
+        if any((elem is None for elem in record_types)):
+            raise ValueError("Found an atom that is neither ATOM or HETATM")
 
         attrs = [
             # AtomAttr subclasses
-            AltLocs(altlocs),  # ✅
-            Atomids(serials),  # ✅
-            Atomnames(names),  # ✅
-            Atomtypes(atomtypes),  # ✅
-            # ------------------
-            ChainIDs(chainids),  # ✅
-            Elements(elements),  # ✅; same as atomtypes
-            FormalCharges(formalcharges),  # ✅
-            Masses(weights),  # ✅
-            # ------------------
-            Occupancies(occupancies),  # ✅
-            RecordTypes(record_types),  # ✅
-            Tempfactors(tempfactors),  # ✅
+            AltLocs(altlocs),  # at.altloc
+            Atomids(serials),  # at.serial
+            Atomnames(names),  # at.name
+            Atomtypes(atomtypes),  # at.name
+            # ---------------------------------------
+            ChainIDs(chainids),  # chain.name
+            Elements(elements),  # at.element.name
+            FormalCharges(formalcharges),  # at.charge
+            Masses(weights),  # at.element.weight
+            # ---------------------------------------
+            Occupancies(occupancies),  # at.occ
+            RecordTypes(record_types),  # res.het_flat
+            Tempfactors(tempfactors),  # at.b_iso
+            #
             # ResidueAttr subclasses
-            ICodes(icodes),  # for each atom
-            Resids(resids),  # for residue
-            Resnames(resnames),  # for residue
+            ICodes(icodes),  # res.seqid.icode
+            Resids(resids),  # res.seqid.num
+            Resnames(resnames),  # res.name
+            #
             # SegmentAttr subclasses
-            Segids(segids),
+            Segids(segids),  # chain.name
         ]
 
         n_atoms = len(names)
         n_residues = len(resids)
-        n_segments = len(set(chainids))
+        n_segments = len(segids)
 
-        print(resids)
-        print(change_squash(resids, resids))
-
-        top = Topology(n_atoms, n_residues, n_segments, attrs=attrs)
+        print(f"{len(residx)=}")
+        print(f"{residx=}")
+        print(f"{len(segidx)=}")
+        print(f"{segidx=}")
 
         print(f"{n_atoms=}")
         print(f"{n_residues=}")
         print(f"{n_segments=}")
 
-        return top
+        return Topology(
+            n_atoms,
+            n_residues,
+            n_segments,
+            attrs=attrs,
+            atom_resindex=np.arange(n_atoms),
+            residue_segindex=np.arange(n_residues),
+        )
