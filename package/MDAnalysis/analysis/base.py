@@ -577,6 +577,13 @@ class AnalysisBase(object):
 
         # similar to list(enumerate(frames))
         enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
+        if len(enumerated_frames) == 0:
+            return [np.empty((0, 2), dtype=np.int64)]
+        elif len(enumerated_frames) < n_parts:
+            # Issue #4685
+            n_parts = len(enumerated_frames)
+            warnings.warn(f"Set to {n_parts} parts to match the total number "
+                          "of frames being analyzed")
 
         return np.array_split(enumerated_frames, n_parts)
 
@@ -762,6 +769,10 @@ class AnalysisBase(object):
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
+
+        .. versionchanged:: 2.8.0
+            Set `n_parts` for parallel analysis to the number of frames
+            if `n_parts` is larger.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
