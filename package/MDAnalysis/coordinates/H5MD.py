@@ -208,7 +208,8 @@ Classes
 
 """
 import warnings
-
+import dask.array as da
+from typing import Any, Union, Optional, List, Dict
 import numpy as np
 import MDAnalysis as mda
 from . import base, core
@@ -809,6 +810,52 @@ class H5MDReader(base.ReaderBase):
         kwargs.setdefault('velocities', self.has_velocities)
         kwargs.setdefault('forces', self.has_forces)
         return H5MDWriter(filename, n_atoms, **kwargs)
+
+    def dask_timeseries(self, asel: Optional['AtomGroup']=None,
+                   atomgroup: Optional['Atomgroup']=None,
+                   start: Optional[int]=None, stop: Optional[int]=None,
+                   step: Optional[int]=None,
+                   order: Optional[str]='fac') -> np.ndarray:
+        if asel is not None:
+            warnings.warn(
+                "asel argument to timeseries will be renamed to"
+                "'atomgroup' in 3.0, see #3911",
+                category=DeprecationWarning)
+            if atomgroup:
+                raise ValueError("Cannot provide both asel and atomgroup kwargs")
+            atomgroup = asel
+        start, stop, step = self.check_slice_indices(start, stop, step)
+        nframes = len(range(start, stop, step))
+
+        if atomgroup is not None:
+            if len(atomgroup) == 0:
+                raise ValueError(
+                    "Timeseries requires at least one atom to analyze")
+            atom_numbers = atomgroup.indices
+            natoms = len(atom_numbers)
+        else:
+            natoms = self.n_atoms
+            atom_numbers = np.arange(natoms)
+
+        coordinates = da.from_array(self._particle_group['position']['value'],)[start:stop:step, atom_numbers, :]
+
+        # switch axes around
+        default_order = 'fac'
+        if order != default_order:
+            try:
+                newidx = [default_order.index(i) for i in order]
+            except ValueError:
+                raise ValueError(f"Unrecognized order key in {order}, "
+                                 "must be permutation of 'fac'")
+
+            try:
+                coordinates = da.moveaxis(coordinates, newidx, [0, 1, 2])
+            except ValueError:
+                errmsg = ("Repeated or missing keys passed to argument "
+                          f"`order`: {order}, each key must be used once")
+                raise ValueError(errmsg)
+        return coordinates
+
 
     @property
     def has_positions(self):
