@@ -49,6 +49,11 @@ Files and directories
 .. autofunction:: format_from_filename_extension
 .. autofunction:: guess_format
 
+Modules and packages
+--------------------
+
+.. autofunction:: is_installed
+
 Streams
 -------
 
@@ -147,6 +152,7 @@ Strings
 .. autofunction:: convert_aa_code
 .. autofunction:: parse_residue
 .. autofunction:: conv_float
+.. autofunction:: atoi
 
 Class decorators
 ----------------
@@ -205,6 +211,7 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
+import importlib
 import itertools
 
 import mmtf
@@ -1332,6 +1339,7 @@ def fixedwidth_bins(delta, xmin, xmax):
     N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
     return {'Nbins': N, 'delta': _delta, 'min': _xmin - dx, 'max': _xmax + dx}
+
 
 def get_weights(atoms, weights):
     """Check that a `weights` argument is compatible with `atoms`.
@@ -2592,3 +2600,17 @@ def atoi(s: str) -> int:
         return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
     except ValueError:
         return 0
+
+
+def is_installed(modulename: str):
+    """Checks if module is installed
+
+    Parameters
+    ----------
+    modulename : str
+        name of the module to be tested
+        
+     
+    .. versionadded:: 2.8.0
+    """
+    return importlib.util.find_spec(modulename) is not None      
