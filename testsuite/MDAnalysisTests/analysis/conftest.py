@@ -7,7 +7,9 @@ from MDAnalysisTests.analysis.test_base import (
     OldAPIAnalysis,
 )
 from MDAnalysis.analysis.rms import RMSD, RMSF
+from MDAnalysis.analysis.bat import BAT
 from MDAnalysis.lib.util import is_installed
+from MDAnalysis.analysis.gnm import GNMAnalysis
 
 
 def params_for_cls(cls, exclude: list[str] = None):
@@ -87,3 +89,13 @@ def client_RMSD(request):
 @pytest.fixture(scope='module', params=params_for_cls(RMSF))
 def client_RMSF(request):
     return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(GNMAnalysis))
+def client_GNMAnalysis(request):
+    return request.param
+
+  
+@pytest.fixture(scope='module', params=params_for_cls(BAT))
+def client_BAT(request):
+  return request.param
