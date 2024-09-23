@@ -3,6 +3,13 @@ MMCIF Topology Parser #
 ===================
 """
 
+try:
+    import gemmi
+except ImportError:
+    HAS_GEMMI = False
+else:
+    HAS_GEMMI = True
+
 import gemmi
 import numpy as np
 import warnings
@@ -26,12 +33,134 @@ from ..core.topologyattrs import (
     Resnums,
     Segids,
     Tempfactors,
+    AtomAttr,
+    ResidueAttr,
+    SegmentAttr,
 )
 from .base import TopologyReaderBase
 
 
 def _into_idx(arr: list[int]) -> list[int]:
     return [idx for idx, (_, group) in enumerate(itertools.groupby(arr)) for _ in group]
+
+
+def get_Atomattrs(model: gemmi.Model) -> tuple[list[AtomAttr], np.ndarray]:
+    (
+        altlocs,  # at.altloc
+        serials,  # at.serial
+        names,  # at.name
+        atomtypes,  # at.name
+        # ------------------
+        chainids,  # chain.name
+        elements,  # at.element.name
+        formalcharges,  # at.charge
+        weights,  # at.element.weight
+        # ------------------
+        occupancies,  # at.occ
+        record_types,  # res.het_flag
+        tempfactors,  # at.b_iso
+        residx,  # _into_idx(res.seqid.num)
+    ) = map(  # this is probably not pretty, but it's efficient -- one loop over the mmcif
+        np.array,
+        list(
+            zip(
+                *[
+                    (
+                        at.altloc,  # altlocs
+                        at.serial,  # serials
+                        at.name,  # names
+                        at.name,  # atomtypes
+                        # ------------------
+                        chain.name,  # chainids
+                        at.element.name,  # elements
+                        at.charge,  # formalcharges
+                        at.element.weight,  # weights
+                        # ------------------
+                        at.occ,  # occupancies
+                        res.het_flag,  # record_types
+                        at.b_iso,  # tempfactors
+                        res.seqid.num,  # residx, later translated into continious repr
+                    )
+                    for chain in model
+                    for res in chain
+                    for at in res
+                ]
+            )
+        ),
+    )
+
+    # transform *idx into continious numpy arrays
+    residx = np.array(_into_idx(residx))
+
+    # fill in altlocs
+    altlocs = ["A" if not elem else elem for elem in altlocs]
+    record_types = [
+        "ATOM" if record == "A" else "HETATM" if record == "H" else None
+        for record in record_types
+    ]
+    if any((elem is None for elem in record_types)):
+        raise ValueError("Found an atom that is neither ATOM or HETATM")
+
+    attrs = [
+        AltLocs(altlocs),  # at.altloc
+        Atomids(serials),  # at.serial
+        Atomnames(names),  # at.name
+        Atomtypes(atomtypes),  # at.name
+        # ---------------------------------------
+        ChainIDs(chainids),  # chain.name
+        Elements(elements),  # at.element.name
+        FormalCharges(formalcharges),  # at.charge
+        Masses(weights),  # at.element.weight
+        # ---------------------------------------
+        Occupancies(occupancies),  # at.occ
+        RecordTypes(record_types),  # res.het_flat
+        Tempfactors(tempfactors),  # at.b_iso
+    ]
+
+    n_atoms = len(names)  # TODO: replace in class itself with len(attrs[0])
+    return attrs, residx
+
+
+def get_Residueattrs(model: gemmi.Model) -> tuple[list[ResidueAttr], np.ndarray]:
+    (
+        icodes,  # res.seqid.icode
+        resids,  # res.seqid.num
+        resnames,  # res.name
+        segidx,  # chain.name
+        resnums,
+    ) = map(
+        np.array,
+        list(
+            zip(
+                *[
+                    (
+                        res.seqid.icode,
+                        res.seqid.num,
+                        res.name,
+                        chain.name,
+                        res.seqid.num,
+                    )
+                    for chain in model
+                    for res in chain
+                ]
+            )
+        ),
+    )
+    segidx = np.array(_into_idx(segidx))
+    attrs = [
+        Resnums(resnums),  # res.seqid.num
+        ICodes(icodes),  # res.seqid.icode
+        Resids(resids),  # res.seqid.num
+        Resnames(resnames),  # res.name
+    ]
+    n_residues = len(resids)  # TODO: replace in class itself with len(attrs[0])
+    return attrs, segidx
+
+
+def get_Segmentattrs(model: gemmi.Model) -> list[SegmentAttr]:
+    segids = [chain.name for chain in model]
+    n_segments = len(segids)  # TODO: replace in class itself with len(attrs[0])
+    return [Segids(segids)]
 
 
 class MMCIFParser(TopologyReaderBase):
