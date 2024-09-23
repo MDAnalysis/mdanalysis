@@ -10,14 +10,15 @@ except ImportError:
 else:
     HAS_GEMMI = True
 
-import gemmi
-import numpy as np
-import warnings
 import itertools
+import warnings
+
+import numpy as np
 
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     AltLocs,
+    AtomAttr,
     Atomids,
     Atomnames,
     Atomtypes,
@@ -29,13 +30,12 @@ from ..core.topologyattrs import (
     Occupancies,
     RecordTypes,
     Resids,
+    ResidueAttr,
     Resnames,
     Resnums,
     Segids,
-    Tempfactors,
-    AtomAttr,
-    ResidueAttr,
     SegmentAttr,
+    Tempfactors,
 )
 from .base import TopologyReaderBase
 
