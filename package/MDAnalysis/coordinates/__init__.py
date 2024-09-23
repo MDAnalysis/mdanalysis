@@ -770,7 +770,6 @@ from . import DLPoly
 from . import DMS
 from . import GMS
 from . import GRO
-from . import IMD
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
