@@ -1,7 +1,9 @@
-import numpy as np
 import logging
-from . import base
 import warnings
+
+import numpy as np
+
+from . import base
 
 try:
     import gemmi
