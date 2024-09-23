@@ -19,7 +19,7 @@ class DaskTimeSeriesAnalysisBase:
     def _conclude(self):
         pass  # pylint: disable=unnecessary-pass
 
-    def run(self, verbose):
+    def run(self):
         self._prepare()
         self._compute()
         self._conclude()
@@ -29,7 +29,6 @@ class DaskTimeSeriesAnalysisBase:
 class DaskRMSF(DaskTimeSeriesAnalysisBase):
     def __init__(self, dask_timeseries, verbose=False, **kwargs):
         super().__init__(dask_timeseries, verbose=verbose, **kwargs)
-        self._kwargs = kwargs
 
     def _prepare(self):
         n_atoms = len(self._dts[0])
@@ -44,7 +43,7 @@ class DaskRMSF(DaskTimeSeriesAnalysisBase):
         sqrt_avg_squared_deviations = da.sqrt(avg_squared_deviations)
         self.results.rmsf = da.sqrt(
             (sqrt_avg_squared_deviations**2).sum(axis=1)
-        )
+        ).compute()
 
     def _conclude(self):
         pass

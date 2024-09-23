@@ -209,6 +209,7 @@ Classes
 """
 import warnings
 import dask.array as da
+from .. import units
 from typing import Any, Union, Optional, List, Dict
 import numpy as np
 import MDAnalysis as mda
@@ -854,6 +855,11 @@ class H5MDReader(base.ReaderBase):
                 errmsg = ("Repeated or missing keys passed to argument "
                           f"`order`: {order}, each key must be used once")
                 raise ValueError(errmsg)
+            
+        f = units.get_conversion_factor('length',
+                                        self.units['length'], 'Angstrom')
+        coordinates *= f
+        
         return coordinates
 
 
