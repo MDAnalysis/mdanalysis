@@ -43,7 +43,6 @@ dependencies = [
     'waterdynamics',
     'pathsimanalysis',
     'mdahole2',
-    "imdclient @ git+https://github.com/ljwoods2/imdclient.git@main",
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
