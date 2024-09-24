@@ -199,9 +199,12 @@ def test_start_stop_step_parallel(u, run_kwargs, frames, client_FrameAnalysis):
 
 
 def test_reset_n_parts_to_n_frames(u):
-    # Issue #4685
+    """
+    Issue #4685
+    https://github.com/MDAnalysis/mdanalysis/issues/4685
+    """
     a = FrameAnalysis(u.trajectory)
-    with pytest.warns(UserWarning, match='Set to'):
+    with pytest.warns(UserWarning, match='Set `n_parts` to'):
         a.run(backend='multiprocessing',
               start=0,
               stop=1,
