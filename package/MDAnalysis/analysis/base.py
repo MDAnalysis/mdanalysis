@@ -582,8 +582,8 @@ class AnalysisBase(object):
         elif len(enumerated_frames) < n_parts:
             # Issue #4685
             n_parts = len(enumerated_frames)
-            warnings.warn(f"Set `n_parts` to {n_parts} to match the total number "
-                          "of frames being analyzed")
+            warnings.warn(f"Set `n_parts` to {n_parts} to match the total "
+                          "number of frames being analyzed")
 
         return np.array_split(enumerated_frames, n_parts)
 
