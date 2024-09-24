@@ -53,9 +53,9 @@ class TestHydrogenBondAnalysisTIP3P(object):
     }
 
     @pytest.fixture(scope='class')
-    def h(self, universe):
+    def h(self, universe, client_HydrogenBondAnalysis):
         h = HydrogenBondAnalysis(universe, **self.kwargs)
-        h.run()
+        h.run(**client_HydrogenBondAnalysis)
         return h
 
     def test_hbond_analysis(self, h):
@@ -181,12 +181,12 @@ class TestHydrogenBondAnalysisIdeal(object):
 
     @staticmethod
     @pytest.fixture(scope='class')
-    def hydrogen_bonds(universe):
+    def hydrogen_bonds(universe, client_HydrogenBondAnalysis):
         h = HydrogenBondAnalysis(
             universe,
             **TestHydrogenBondAnalysisIdeal.kwargs
         )
-        h.run()
+        h.run(**client_HydrogenBondAnalysis)
         return h
 
     def test_count_by_type(self, hydrogen_bonds):
@@ -263,10 +263,10 @@ class TestHydrogenBondAnalysisIdeal(object):
         with pytest.raises(NoDataError, match=".hbonds attribute is None"):
             hbonds.lifetime(tau_max=2, intermittency=1)
 
-    def test_logging_step_not_1(self, universe, caplog):
+    def test_logging_step_not_1(self, universe, caplog, client_HydrogenBondAnalysis):
         hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
         # using step 2
-        hbonds.run(step=2)
+        hbonds.run(**client_HydrogenBondAnalysis, step=2)
 
         caplog.set_level(logging.WARNING)
         hbonds.lifetime(tau_max=2, intermittency=1)
@@ -342,12 +342,12 @@ class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
 
     @staticmethod
     @pytest.fixture(scope='class')
-    def hydrogen_bonds(universe):
+    def hydrogen_bonds(universe, client_HydrogenBondAnalysis):
         h = HydrogenBondAnalysis(
             universe,
             **TestHydrogenBondAnalysisNoRes.kwargs
         )
-        h.run()
+        h.run(**client_HydrogenBondAnalysis)
         return h
 
     def test_no_hydrogen_bonds(self, universe):
@@ -441,10 +441,10 @@ class TestHydrogenBondAnalysisBetween(object):
 
         return u
 
-    def test_between_all(self, universe):
+    def test_between_all(self, universe, client_HydrogenBondAnalysis):
         # don't specify groups between which to find hydrogen bonds
         hbonds = HydrogenBondAnalysis(universe, between=None, **self.kwargs)
-        hbonds.run()
+        hbonds.run(**client_HydrogenBondAnalysis)
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
@@ -457,14 +457,14 @@ class TestHydrogenBondAnalysisBetween(object):
                            expected_hbond_indices)
         assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
-    def test_between_PW(self, universe):
+    def test_between_PW(self, universe, client_HydrogenBondAnalysis):
         # Find only protein-water hydrogen bonds
         hbonds = HydrogenBondAnalysis(
             universe,
             between=["resname PROT", "resname SOL"],
             **self.kwargs
         )
-        hbonds.run()
+        hbonds.run(**client_HydrogenBondAnalysis)
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
@@ -475,7 +475,7 @@ class TestHydrogenBondAnalysisBetween(object):
                            expected_hbond_indices)
         assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
-    def test_between_PW_PP(self, universe):
+    def test_between_PW_PP(self, universe, client_HydrogenBondAnalysis):
         # Find protein-water and protein-protein hydrogen bonds (not
         # water-water)
         hbonds = HydrogenBondAnalysis(
@@ -486,7 +486,7 @@ class TestHydrogenBondAnalysisBetween(object):
             ],
             **self.kwargs
         )
-        hbonds.run()
+        hbonds.run(**client_HydrogenBondAnalysis)
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
@@ -512,7 +512,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         'd_h_a_angle_cutoff': 120.0
     }
 
-    def test_no_hydrogens(self, universe):
+    def test_no_hydrogens(self, universe, client_HydrogenBondAnalysis):
         # If no hydrogens are identified at a given frame, check an
         # empty donor atom group is created
         test_kwargs = TestHydrogenBondAnalysisTIP3P.kwargs.copy()
@@ -520,7 +520,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         test_kwargs['hydrogens_sel'] = "name H"  # no atoms have name H
 
         h = HydrogenBondAnalysis(universe, **test_kwargs)
-        h.run()
+        h.run(**client_HydrogenBondAnalysis)
 
         assert h._hydrogens.n_atoms == 0
         assert h._donors.n_atoms == 0
@@ -629,9 +629,9 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
     }
 
     @pytest.fixture(scope='class')
-    def h(self, universe):
+    def h(self, universe, client_HydrogenBondAnalysis):
         h = HydrogenBondAnalysis(universe, **self.kwargs)
-        h.run(start=1, step=2)
+        h.run(**client_HydrogenBondAnalysis, start=1, step=2)
         return h
 
     def test_hbond_analysis(self, h):
@@ -690,11 +690,11 @@ class TestHydrogenBondAnalysisEmptySelections:
         with pytest.warns(UserWarning, match=self.msg.format(seltype)):
             HydrogenBondAnalysis(universe, **sel_kwarg)
 
-    def test_hbond_analysis(self, universe):
+    def test_hbond_analysis(self, universe, client_HydrogenBondAnalysis):
 
         h = HydrogenBondAnalysis(universe, donors_sel=' ', hydrogens_sel=' ',
                                  acceptors_sel=' ')
-        h.run()
+        h.run(**client_HydrogenBondAnalysis)
 
         assert h.donors_sel == ''
         assert h.hydrogens_sel == ''
