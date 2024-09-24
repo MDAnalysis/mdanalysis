@@ -241,7 +241,7 @@ from collections.abc import Iterable
 
 import numpy as np
 
-from ..base import AnalysisBase, Results
+from ..base import AnalysisBase, Results, ResultsGroup
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
@@ -266,6 +266,12 @@ class HydrogenBondAnalysis(AnalysisBase):
     """
     Perform an analysis of hydrogen bonds in a Universe.
     """
+
+      _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
 
     def __init__(self, universe,
                  donors_sel=None, hydrogens_sel=None, acceptors_sel=None,
@@ -787,6 +793,9 @@ class HydrogenBondAnalysis(AnalysisBase):
     def _conclude(self):
 
         self.results.hbonds = np.asarray(self.results.hbonds).T
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'hbonds': ResultsGroup.ndarray_hstack})
 
     @property
     def hbonds(self):
