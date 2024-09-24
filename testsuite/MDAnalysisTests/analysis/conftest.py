@@ -10,6 +10,7 @@ from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysis.analysis.bat import BAT
 from MDAnalysis.lib.util import is_installed
 from MDAnalysis.analysis.gnm import GNMAnalysis
+from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis
 
 
 def params_for_cls(cls, exclude: list[str] = None):
@@ -99,3 +100,8 @@ def client_GNMAnalysis(request):
 @pytest.fixture(scope='module', params=params_for_cls(BAT))
 def client_BAT(request):
   return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(HydrogenBondAnalysis))
+def client_HydrogenBondAnalysis(request):
+    return request.param
