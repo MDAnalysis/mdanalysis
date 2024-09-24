@@ -151,3 +151,8 @@ filterwarnings = [
     # NamedStream warnings
     "ignore:Constructed NamedStream:RuntimeWarning",
 ]
+
+[tool.black]
+line-length = 79
+target-version = ['py39', 'py310', 'py311', 'py312']
+extend-exclude = '.'
