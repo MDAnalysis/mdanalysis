@@ -267,7 +267,7 @@ class HydrogenBondAnalysis(AnalysisBase):
     Perform an analysis of hydrogen bonds in a Universe.
     """
 
-      _analysis_algorithm_is_parallelizable = True
+    _analysis_algorithm_is_parallelizable = True
 
     @classmethod
     def get_supported_backends(cls):
