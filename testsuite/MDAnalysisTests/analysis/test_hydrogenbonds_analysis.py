@@ -263,7 +263,8 @@ class TestHydrogenBondAnalysisIdeal(object):
         with pytest.raises(NoDataError, match=".hbonds attribute is None"):
             hbonds.lifetime(tau_max=2, intermittency=1)
 
-    def test_logging_step_not_1(self, universe, caplog, client_HydrogenBondAnalysis):
+    def test_logging_step_not_1(self, universe, caplog,
+                                client_HydrogenBondAnalysis):
         hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
         # using step 2
         hbonds.run(**client_HydrogenBondAnalysis, step=2)
