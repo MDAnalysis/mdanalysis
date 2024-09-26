@@ -769,10 +769,6 @@ class AnalysisBase(object):
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
-
-        .. versionchanged:: 2.8.0
-            Set `n_parts` for parallel analysis to the number of frames
-            if `n_parts` is larger.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
