@@ -748,6 +748,13 @@
 
         <span class="c1"># similar to list(enumerate(frames))</span>
         <span class="n">enumerated_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">used_frames</span><span class="p">)),</span> <span class="n">used_frames</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_parts</span><span class="p">:</span>
+            <span class="c1"># Issue #4685</span>
+            <span class="n">n_parts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Set `n_parts` to </span><span class="si">{</span><span class="n">n_parts</span><span class="si">}</span><span class="s2"> to match the total &quot;</span>
+                          <span class="s2">&quot;number of frames being analyzed&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">,</span> <span class="n">n_parts</span><span class="p">)</span></div>
 
