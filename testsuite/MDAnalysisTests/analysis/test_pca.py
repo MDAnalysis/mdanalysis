@@ -23,6 +23,7 @@
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.analysis import align
+import MDAnalysis.analysis.pca
 from MDAnalysis.analysis.pca import (PCA, cosine_content,
                                      rmsip, cumulative_overlap)
 
@@ -384,3 +385,23 @@ def test_pca_attr_warning(u, attr):
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(pca, attr) is pca.results[attr]
+
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (MDAnalysis.analysis.pca.PCA, False),
+    ]
+)
+def test_class_is_parallelizable(classname, is_parallelizable):
+    assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
+
+
+@pytest.mark.parametrize(
+    "classname,backends",
+    [
+        (MDAnalysis.analysis.pca.PCA,  ('serial',)),
+    ]
+)
+def test_supported_backends(classname, backends):
+    assert classname.get_supported_backends() == backends
+

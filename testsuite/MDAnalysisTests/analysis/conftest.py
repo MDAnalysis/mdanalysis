@@ -8,8 +8,9 @@ from MDAnalysisTests.analysis.test_base import (
 )
 from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
+from MDAnalysis.analysis.bat import BAT
+from MDAnalysis.analysis.gnm import GNMAnalysis
 from MDAnalysis.lib.util import is_installed
-
 
 def params_for_cls(cls, exclude: list[str] = None):
     """
@@ -107,3 +108,18 @@ def client_Ramachandran(request):
 @pytest.fixture(scope='module', params=params_for_cls(Janin))
 def client_Janin(request):
     return request.param
+
+
+# MDAnalysis.analysis.gnm
+  
+@pytest.fixture(scope='module', params=params_for_cls(GNMAnalysis))
+def client_GNMAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.bat
+
+@pytest.fixture(scope='module', params=params_for_cls(BAT))
+def client_BAT(request):
+  return request.param
+

@@ -143,7 +143,7 @@ class PCA(AnalysisBase):
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
-    instructions. When using mean selections, the first frame of the selected 
+    instructions. When using mean selections, the first frame of the selected
     trajectory slice is used as a reference.
 
     Parameters
@@ -239,6 +239,7 @@ class PCA(AnalysisBase):
        incorrectly handle cases where the ``frame`` argument
        was passed.
     """
+    _analysis_algorithm_is_parallelizable = False
 
     def __init__(self, universe, select='all', align=False, mean=None,
                  n_components=None, **kwargs):

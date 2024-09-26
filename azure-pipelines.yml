@@ -105,7 +105,6 @@ jobs:
       biopython
       "chemfiles>=0.10,<0.10.4"
       duecredit
-      "gsd>3.0.0"
       joblib
       GridDataFormats
       mmtf-python
@@ -114,6 +113,8 @@ jobs:
       pytng>=0.2.3
       rdkit>=2020.03.1
       tidynamics>=1.0.0
+    # remove from azure to avoid test hanging #4707
+    # "gsd>3.0.0"
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - script: >-
@@ -128,7 +129,7 @@ jobs:
     displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
-      pytest MDAnalysisTests --disable-pytest-warnings -n auto --timeout=200 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n logical --timeout=200 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash
