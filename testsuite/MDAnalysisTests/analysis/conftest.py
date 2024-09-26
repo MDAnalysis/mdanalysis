@@ -121,5 +121,4 @@ def client_GNMAnalysis(request):
 
 @pytest.fixture(scope='module', params=params_for_cls(BAT))
 def client_BAT(request):
-  return request.param
-
+    return request.param
