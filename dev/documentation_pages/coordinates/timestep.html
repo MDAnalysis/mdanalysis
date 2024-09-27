@@ -400,11 +400,11 @@ cartesian coordinates (in MDAnalysis units, i.e. Å).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Normally one does not directly access <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep._pos" title="MDAnalysis.coordinates.timestep.Timestep._pos"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_pos</span></code></a> but uses
-the <code class="xref py py-meth docutils literal notranslate"><span class="pre">coordinates()</span></code>
-method of an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> but
+the <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">positions</span></code></a>
+attribute of a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> but
 sometimes it can be faster to directly use the raw
 coordinates. Any changes to this array are immediately
-reflected in atom positions. If the frame is written to a new
+reflected in the atom positions. If the frame is written to a new
 trajectory then the coordinates are changed. If a new
 trajectory frame is loaded, then <em>all</em> contents of
 <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep._pos" title="MDAnalysis.coordinates.timestep.Timestep._pos"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_pos</span></code></a> are overwritten.</p>
@@ -416,15 +416,15 @@ trajectory frame is loaded, then <em>all</em> contents of
 <span class="sig-name descname"><span class="pre">_velocities</span></span><a class="headerlink" href="#MDAnalysis.coordinates.timestep.Timestep._velocities" title="Link to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of dtype <code class="xref py py-class docutils literal notranslate"><span class="pre">float32</span></code>. of shape
 (<em>n_atoms</em>, 3), holding the raw velocities (in MDAnalysis
-units, i.e. typically Å/ps).</p>
+units, i.e., Å/ps).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Normally velocities are accessed through the
-<a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep.velocities" title="MDAnalysis.coordinates.timestep.Timestep.velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">velocities</span></code></a> or the
-<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.velocities" title="MDAnalysis.core.groups.AtomGroup.velocities"><code class="xref py py-meth docutils literal notranslate"><span class="pre">velocities()</span></code></a>
-method of an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a></p>
+<a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep.velocities" title="MDAnalysis.coordinates.timestep.Timestep.velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.velocities</span></code></a> attribute or the
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.velocities" title="MDAnalysis.core.groups.AtomGroup.velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">velocities</span></code></a>
+attribute of an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a></p>
 <p><a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep._velocities" title="MDAnalysis.coordinates.timestep.Timestep._velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_velocities</span></code></a> only exists if the <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep.has_velocities" title="MDAnalysis.coordinates.timestep.Timestep.has_velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">has_velocities</span></code></a>
-flag is True</p>
+flag is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.7.5.</span></p>
@@ -437,7 +437,7 @@ flag is True</p>
 <dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of dtype <code class="xref py py-class docutils literal notranslate"><span class="pre">float32</span></code>. of shape
 (<em>n_atoms</em>, 3), holding the forces</p>
 <p><a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep._forces" title="MDAnalysis.coordinates.timestep.Timestep._forces"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_forces</span></code></a> only exists if <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep.has_forces" title="MDAnalysis.coordinates.timestep.Timestep.has_forces"><code class="xref py py-attr docutils literal notranslate"><span class="pre">has_forces</span></code></a>
-is True</p>
+is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.11.0: </span>Added as optional to <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
 </div>
