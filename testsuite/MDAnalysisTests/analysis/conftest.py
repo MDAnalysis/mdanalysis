@@ -7,10 +7,10 @@ from MDAnalysisTests.analysis.test_base import (
     OldAPIAnalysis,
 )
 from MDAnalysis.analysis.rms import RMSD, RMSF
+from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 from MDAnalysis.analysis.bat import BAT
-from MDAnalysis.lib.util import is_installed
 from MDAnalysis.analysis.gnm import GNMAnalysis
-
+from MDAnalysis.lib.util import is_installed
 
 def params_for_cls(cls, exclude: list[str] = None):
     """
@@ -81,6 +81,8 @@ def client_OldAPIAnalysis(request):
     return request.param
 
 
+# MDAnalysis.analysis.rms
+
 @pytest.fixture(scope='module', params=params_for_cls(RMSD))
 def client_RMSD(request):
     return request.param
@@ -91,11 +93,32 @@ def client_RMSF(request):
     return request.param
 
 
+# MDAnalysis.analysis.dihedrals
+
+@pytest.fixture(scope='module', params=params_for_cls(Dihedral))
+def client_Dihedral(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(Ramachandran))
+def client_Ramachandran(request):
+    return request.param
+
+
+@pytest.fixture(scope='module', params=params_for_cls(Janin))
+def client_Janin(request):
+    return request.param
+
+
+# MDAnalysis.analysis.gnm
+  
 @pytest.fixture(scope='module', params=params_for_cls(GNMAnalysis))
 def client_GNMAnalysis(request):
     return request.param
 
-  
+
+# MDAnalysis.analysis.bat
+
 @pytest.fixture(scope='module', params=params_for_cls(BAT))
 def client_BAT(request):
-  return request.param
+    return request.param

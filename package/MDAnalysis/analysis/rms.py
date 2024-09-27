@@ -103,16 +103,16 @@ The trajectory is included with the test data files. The data in
    ax.set_xlabel("time (ps)")
    ax.set_ylabel(r"RMSD ($\\AA$)")
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
-   
+
 .. _figure-RMSD:
 
 .. figure:: /images/RSMD_plot.png
       :scale: 50 %
       :alt: RMSD plot
-      
+
       RMSD plot for backbone and CORE, LID, NMP domain of the protein.
 
-      
+
 Functions
 ---------
 
@@ -359,8 +359,8 @@ class RMSD(AnalysisBase):
        :attr:`rmsd` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     .. versionchanged:: 2.8.0
-       introduced a :meth:`get_supported_backends` allowing for execution on with
-       ``multiprocessing`` and ``dask`` backends.
+       introduced :meth:`get_supported_backends` allowing for parallel
+       execution on ``multiprocessing`` and ``dask`` backends.
     """
     _analysis_algorithm_is_parallelizable = True
 
@@ -427,8 +427,8 @@ class RMSD(AnalysisBase):
 
         weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
              1. ``False`` will apply imposed weights to `groupselections` from
-             ``weights`` option if ``weights`` is either ``"mass"`` or ``None``. 
-             Otherwise will assume a list of length equal to length of 
+             ``weights`` option if ``weights`` is either ``"mass"`` or ``None``.
+             Otherwise will assume a list of length equal to length of
              `groupselections` filled with ``None`` values.
 
              2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
