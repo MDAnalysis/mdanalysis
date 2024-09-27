@@ -10,6 +10,7 @@ from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 from MDAnalysis.analysis.bat import BAT
 from MDAnalysis.analysis.gnm import GNMAnalysis
+from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.lib.util import is_installed
 
 def params_for_cls(cls, exclude: list[str] = None):
@@ -121,4 +122,11 @@ def client_GNMAnalysis(request):
 
 @pytest.fixture(scope='module', params=params_for_cls(BAT))
 def client_BAT(request):
+    return request.param
+
+
+# MDAnalysis.analysis.dssp.dssp
+
+@pytest.fixture(scope="module", params=params_for_cls(DSSP))
+def client_DSSP(request):
     return request.param
