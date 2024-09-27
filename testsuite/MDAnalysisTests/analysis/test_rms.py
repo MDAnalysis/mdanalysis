@@ -267,7 +267,7 @@ class TestRMSD(object):
                                             select='backbone',
                                             groupselections=['name CA and resid 1-5', 'name CA and resid 1'],
                                             weights=None,
-                                            weights_groupselections=[[1, 0, 0, 0, 0], None]).run(step=49, 
+                                            weights_groupselections=[[1, 0, 0, 0, 0], None]).run(step=49,
                                                                                                  **client_RMSD
                                                                                                 )
 
@@ -281,7 +281,7 @@ class TestRMSD(object):
                                             groupselections=['all', 'all'],
                                             weights=None,
                                             weights_groupselections=['mass',
-                                                                     universe.atoms.masses]).run(step=49, 
+                                                                     universe.atoms.masses]).run(step=49,
                                                                                                 **client_RMSD
                                                                                                 )
 
@@ -439,7 +439,7 @@ class TestRMSF(object):
         (MDAnalysis.analysis.rms.RMSF, False),
     ]
 )
-def test_not_parallelizable(classname, is_parallelizable):
+def test_class_is_parallelizable(classname, is_parallelizable):
     assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
 
 
