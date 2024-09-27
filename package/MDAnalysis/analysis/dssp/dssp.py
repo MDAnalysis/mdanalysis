@@ -148,7 +148,7 @@ from typing import Union
 import numpy as np
 from MDAnalysis import Universe, AtomGroup
 
-from ..base import AnalysisBase
+from ..base import AnalysisBase, ResultsGroup
 from ...due import due, Doi
 
 due.cite(
@@ -278,6 +278,12 @@ class DSSP(AnalysisBase):
     .. versionadded:: 2.8.0
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
+    
     def __init__(
         self,
         atoms: Union[Universe, AtomGroup],
@@ -382,6 +388,10 @@ class DSSP(AnalysisBase):
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
         self.results.resids = self._heavy_atoms["CA"].resids
 
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={
+        'dssp_ndarray': ResultsGroup.flatten_sequence},
+        )
 
 def translate(onehot: np.ndarray) -> np.ndarray:
     """Translate a one-hot encoding summary into char-based secondary structure
