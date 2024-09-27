@@ -246,16 +246,16 @@
 <span class="sd">   ax.set_xlabel(&quot;time (ps)&quot;)</span>
 <span class="sd">   ax.set_ylabel(r&quot;RMSD ($\\AA$)&quot;)</span>
 <span class="sd">   fig.savefig(&quot;rmsd_all_CORE_LID_NMP_ref1AKE.pdf&quot;)</span>
-<span class="sd">   </span>
+
 <span class="sd">.. _figure-RMSD:</span>
 
 <span class="sd">.. figure:: /images/RSMD_plot.png</span>
 <span class="sd">      :scale: 50 %</span>
 <span class="sd">      :alt: RMSD plot</span>
-<span class="sd">      </span>
+
 <span class="sd">      RMSD plot for backbone and CORE, LID, NMP domain of the protein.</span>
 
-<span class="sd">      </span>
+
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
 
@@ -507,8 +507,8 @@
 <span class="sd">       :attr:`rmsd` results are now stored in a</span>
 <span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">    .. versionchanged:: 2.8.0</span>
-<span class="sd">       introduced a :meth:`get_supported_backends` allowing for execution on with</span>
-<span class="sd">       ``multiprocessing`` and ``dask`` backends.</span>
+<span class="sd">       introduced :meth:`get_supported_backends` allowing for parallel</span>
+<span class="sd">       execution on ``multiprocessing`` and ``dask`` backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -578,8 +578,8 @@
 
 <span class="sd">        weights_groupselections : False or list of {&quot;mass&quot;, ``None`` or array_like} (optional)</span>
 <span class="sd">             1. ``False`` will apply imposed weights to `groupselections` from</span>
-<span class="sd">             ``weights`` option if ``weights`` is either ``&quot;mass&quot;`` or ``None``. </span>
-<span class="sd">             Otherwise will assume a list of length equal to length of </span>
+<span class="sd">             ``weights`` option if ``weights`` is either ``&quot;mass&quot;`` or ``None``.</span>
+<span class="sd">             Otherwise will assume a list of length equal to length of</span>
 <span class="sd">             `groupselections` filled with ``None`` values.</span>
 
 <span class="sd">             2. A list of {&quot;mass&quot;, ``None`` or array_like} with the length of `groupselections`</span>

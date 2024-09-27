@@ -324,6 +324,10 @@ it must be given as a list of one atomgroup.</p>
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">angles</span></code></a> results are now stored in a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code> instance.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>introduced <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends" title="MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a> allowing for parallel
+execution on <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> and <code class="docutils literal notranslate"><span class="pre">dask</span></code> backends.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>atomgroups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>[</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>]</em>) – a list of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> for which
@@ -356,7 +360,7 @@ an <code class="docutils literal notranslate"><span class="pre">n_frames×len(at
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.run" title="MDAnalysis.analysis.dihedrals.Dihedral.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
@@ -544,6 +548,10 @@ selection cannot be made, that residue will be removed from the analysis.</p>
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">angles</span></code></a> results are now stored in a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code> instance.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>introduced <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends" title="MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a> allowing for parallel
+execution on <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> and <code class="docutils literal notranslate"><span class="pre">dask</span></code> backends.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="Link to this definition"></a></dt>
@@ -567,7 +575,7 @@ content <code class="docutils literal notranslate"><span class="pre">[[[phi,</sp
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.run" title="MDAnalysis.analysis.dihedrals.Ramachandran.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
