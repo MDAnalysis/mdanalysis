@@ -278,9 +278,9 @@ class DSSP(AnalysisBase):
     .. versionadded:: 2.8.0
 
     .. versionchanged:: 2.8.0
-       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` 
-       backends; use the new method :meth:`get_supported_backends` to see all 
-       supported backends.   
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -288,7 +288,7 @@ class DSSP(AnalysisBase):
     @classmethod
     def get_supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask',)
-    
+
     def __init__(
         self,
         atoms: Union[Universe, AtomGroup],
@@ -395,8 +395,8 @@ class DSSP(AnalysisBase):
 
     def _get_aggregator(self):
         return ResultsGroup(lookup={
-        'dssp_ndarray': ResultsGroup.flatten_sequence},
-        )
+            'dssp_ndarray': ResultsGroup.flatten_sequence},
+                           )
 
 def translate(onehot: np.ndarray) -> np.ndarray:
     """Translate a one-hot encoding summary into char-based secondary structure
