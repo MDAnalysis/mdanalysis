@@ -287,7 +287,12 @@ class DSSP(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
 
     def __init__(
         self,
@@ -394,9 +399,9 @@ class DSSP(AnalysisBase):
         self.results.resids = self._heavy_atoms["CA"].resids
 
     def _get_aggregator(self):
-        return ResultsGroup(lookup={
-            'dssp_ndarray': ResultsGroup.flatten_sequence},
-                           )
+        return ResultsGroup(
+            lookup={"dssp_ndarray": ResultsGroup.flatten_sequence},
+        )
 
 def translate(onehot: np.ndarray) -> np.ndarray:
     """Translate a one-hot encoding summary into char-based secondary structure
