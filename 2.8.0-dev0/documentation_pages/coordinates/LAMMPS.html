@@ -2291,17 +2291,27 @@ to their real values.</p>
 will be unwrapped. See <a class="reference external" href="https://docs.lammps.org/read_data.html">read_data</a>  in the lammps
 documentation for more information.</p></li>
 <li><p><strong>**kwargs</strong> – Other keyword arguments used in <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReaderBase</span></code></a></p></li>
-<li><p><strong>versionchanged:</strong> (<em>..</em>) – 2.7.0: Reading of arbitrary, additional columns is now supported.
-(Issue #3608)</p></li>
-<li><p><strong>versionchanged:</strong> – 2.4.0: Now imports velocities and forces, translates the box to the origin,
-and optionally unwraps trajectories with image flags upon loading.</p></li>
-<li><p><strong>versionchanged:</strong> – 2.2.0: Triclinic simulation boxes are supported.
-(Issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3383">#3383</a>)</p></li>
-<li><p><strong>versionchanged:</strong> – 2.0.0: Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)</p></li>
-<li><p><strong>versionadded:</strong> (<em>..</em>) – 0.19.0:</p></li>
 </ul>
 </dd>
 </dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.7.0: </span>Reading of arbitrary, additional columns is now supported.
+(Issue #3608)</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span>Now imports velocities and forces, translates the box to the origin,
+and optionally unwraps trajectories with image flags upon loading.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Triclinic simulation boxes are supported.
+(Issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3383">#3383</a>)</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.19.0.</span></p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.OtherWriter">
 <span class="sig-name descname"><span class="pre">OtherWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.OtherWriter" title="Link to this definition"></a></dt>
