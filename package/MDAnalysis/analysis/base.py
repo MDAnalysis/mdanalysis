@@ -577,6 +577,13 @@ class AnalysisBase(object):
 
         # similar to list(enumerate(frames))
         enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
+        if len(enumerated_frames) == 0:
+            return [np.empty((0, 2), dtype=np.int64)]
+        elif len(enumerated_frames) < n_parts:
+            # Issue #4685
+            n_parts = len(enumerated_frames)
+            warnings.warn(f"Set `n_parts` to {n_parts} to match the total "
+                          "number of frames being analyzed")
 
         return np.array_split(enumerated_frames, n_parts)
 

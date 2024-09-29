@@ -547,6 +547,7 @@ class DumpReader(base.ReaderBase):
     **kwargs
        Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
+
     .. versionchanged:: 2.7.0
        Reading of arbitrary, additional columns is now supported.
        (Issue #3608)

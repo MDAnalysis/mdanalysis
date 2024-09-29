@@ -24,6 +24,8 @@ The rules for this file:
 
 Fixes
  * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
+ * set `n_parts` to the total number of frames being analyzed if
+   `n_parts` is bigger. (Issue #4685)
  * Catch higher dimensional indexing in GroupBase & ComponentBase (Issue #4647)
  * Do not raise an Error reading H5MD files with datasets like
    `observables/<particle>/<property>` (part of Issue #4598, PR #4615)
@@ -37,14 +39,14 @@ Fixes
  * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
    (Issue #4564, PR #4565)
  * Fix #4259 via removing argument `parallelizable` of `NoJump` transformation.
- * Fix doctest errors of analysis/pca.py related to rounding issues 
+ * Fix doctest errors of analysis/pca.py related to rounding issues
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
  * Atomname methods can handle empty groups (Issue #2879, PR #4529)
  * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
    (PR #4459)
- * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
+ * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader
    (Issue #3349, PR #4407)
  * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
  * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
@@ -71,15 +73,17 @@ Enhancements
  * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
  * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
  * enables parallelization for analysis.bat.BAT (Issue #4663)
+ * enable parallelization for analysis.dihedrals.{Dihedral,Ramachandran,Janin}
+   (Issue #4673) 
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
    (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
- * Documented the r0 attribute in the `Contacts` class and added the 
+ * Documented the r0 attribute in the `Contacts` class and added the
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
- * Implement average structures with iterative algorithm from 
+ * Implement average structures with iterative algorithm from
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes

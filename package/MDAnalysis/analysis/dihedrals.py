@@ -245,7 +245,7 @@ import matplotlib.pyplot as plt
 import warnings
 
 import MDAnalysis as mda
-from MDAnalysis.analysis.base import AnalysisBase
+from MDAnalysis.analysis.base import AnalysisBase, ResultsGroup
 from MDAnalysis.lib.distances import calc_dihedrals
 from MDAnalysis.analysis.data.filenames import Rama_ref, Janin_ref
 
@@ -267,8 +267,16 @@ class Dihedral(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`angles` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.8.0
+       introduced :meth:`get_supported_backends` allowing for parallel
+       execution on ``multiprocessing`` and ``dask`` backends.
     """
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
+
 
     def __init__(self, atomgroups, **kwargs):
         """Parameters
@@ -297,6 +305,9 @@ class Dihedral(AnalysisBase):
 
     def _prepare(self):
         self.results.angles = []
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'angles': ResultsGroup.ndarray_vstack})
 
     def _single_frame(self):
         angle = calc_dihedrals(self.ag1.positions, self.ag2.positions,
@@ -379,8 +390,15 @@ class Ramachandran(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`angles` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.8.0
+       introduced :meth:`get_supported_backends` allowing for parallel
+       execution on ``multiprocessing`` and ``dask`` backends.
     """
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
 
     def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
                  check_protein=True, **kwargs):
@@ -436,6 +454,9 @@ class Ramachandran(AnalysisBase):
 
     def _prepare(self):
         self.results.angles = []
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'angles': ResultsGroup.ndarray_vstack})
 
     def _single_frame(self):
         phi_angles = calc_dihedrals(self.ag1.positions, self.ag2.positions,
