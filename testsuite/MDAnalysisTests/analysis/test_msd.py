@@ -21,11 +21,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-
 from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 import MDAnalysis as mda
 
-from numpy.testing import (assert_almost_equal, assert_equal)
+from numpy.testing import (assert_almost_equal, assert_equal, assert_allclose)
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
@@ -86,7 +85,7 @@ def test_notidynamics(u, SELECTION):
 def characteristic_poly(n, d):
     # polynomial that describes unit step traj MSD
     x = np.arange(0, n)
-    y = d*x*x
+    y = d * x * x
     return y
 
 
@@ -112,23 +111,32 @@ class TestMSDSimple(object):
         with pytest.raises(ValueError, match=errmsg):
             m = MSD(u, SELECTION, msd_type=msdtype)
 
-    @pytest.mark.parametrize("dim, dim_factor", [
-        ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
+    @pytest.mark.parametrize("dim, dim_factor", [('xyz', 3), ('xy', 2),
+                                                 ('xz', 2), ('yz', 2),
+                                                 ('x', 1), ('y', 1), ('z', 1)])
     def test_simple_step_traj_all_dims(self, step_traj, NSTEP, dim,
                                        dim_factor):
         # testing the "simple" algorithm on constant velocity trajectory
         # should fit the polynomial y=dim_factor*x**2
-        m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
+        m_simple = MSD(step_traj,
+                       'all',
+                       msd_type=dim,
+                       fft=False,
+                       nongaussian=True)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
+        # In the simple alorithm with an exact solution, mean(r(d)^4) == MSD^2
+        # So, alpha = 3/5 - 1 = -0.4
+        alpha = -0.4 * np.ones(NSTEP)
+        alpha[0] = np.nan
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=4)
+        assert_almost_equal(m_simple.results.nongaussian_parameter,
+                            alpha,
+                            decimal=5)
 
-    @pytest.mark.parametrize("dim, dim_factor", [
-        ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
+    @pytest.mark.parametrize("dim, dim_factor", [('xyz', 3), ('xy', 2),
+                                                 ('xz', 2), ('yz', 2),
+                                                 ('x', 1), ('y', 1), ('z', 1)])
     def test_simple_start_stop_step_all_dims(self, step_traj, NSTEP, dim,
                                              dim_factor):
         # testing the "simple" algorithm on constant velocity trajectory
@@ -137,16 +145,38 @@ class TestMSDSimple(object):
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
+        assert_almost_equal(m_simple.results.timeseries,
+                            poly[0:990:10],
                             decimal=4)
 
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
-        msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
+        msd_rw = MSD(random_walk_u,
+                     'all',
+                     msd_type='xyz',
+                     fft=False,
+                     nongaussian=True)
         msd_rw.run()
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
+        # nongaussian parameter may have negative values (above -2.5) and
+        # positive values, but converge to zero at long times.
+        assert_allclose(msd_rw.results.nongaussian_parameter[:20],
+                        np.array([
+                            np.nan, 0.00049, 0.00048, 0.00536, -0.00299,
+                            0.00014, -0.0046, -0.00612, -0.00307, 0.00033,
+                            0.00584, 0.0131, 0.01516, 0.01666, 0.01924,
+                            0.02052, 0.01961, 0.01743, 0.01355, 0.00997
+                        ]),
+                        atol=1e-5)
+
+    def test_no_fft_if_nongaussian(self, random_walk_u):
+        # regress against random_walk test data
+        errmsg = ("The nongaussian parameter can only be computed"
+                  " when `fft=False`")
+        with pytest.raises(ValueError, match=errmsg):
+            msd_rw = MSD(random_walk_u, 'all', fft=True, nongaussian=True)
 
 
 @pytest.mark.skipif(import_not_available("tidynamics"),
@@ -195,10 +225,9 @@ class TestMSDFFT(object):
         per_particle_fft = m_fft.results.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
-    @pytest.mark.parametrize("dim, dim_factor", [
-        ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
+    @pytest.mark.parametrize("dim, dim_factor", [('xyz', 3), ('xy', 2),
+                                                 ('xz', 2), ('yz', 2),
+                                                 ('x', 1), ('y', 1), ('z', 1)])
     def test_fft_step_traj_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the fft algorithm on constant velocity trajectory
         # this should fit the polynomial y=dim_factor*x**2
@@ -211,10 +240,9 @@ class TestMSDFFT(object):
         # this was relaxed from decimal=4 for numpy=1.13 test
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=3)
 
-    @pytest.mark.parametrize("dim, dim_factor", [(
-        'xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
+    @pytest.mark.parametrize("dim, dim_factor", [('xyz', 3), ('xy', 2),
+                                                 ('xz', 2), ('yz', 2),
+                                                 ('x', 1), ('y', 1), ('z', 1)])
     def test_fft_start_stop_step_all_dims(self, step_traj, NSTEP, dim,
                                           dim_factor):
         # testing the fft algorithm on constant velocity trajectory
@@ -223,7 +251,8 @@ class TestMSDFFT(object):
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
+        assert_almost_equal(m_simple.results.timeseries,
+                            poly[0:990:10],
                             decimal=3)
 
     def test_random_walk_u_fft(self, random_walk_u):
