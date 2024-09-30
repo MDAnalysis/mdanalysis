@@ -40,11 +40,46 @@ from ..core.topologyattrs import (
 from .base import TopologyReaderBase
 
 
-def _into_idx(arr: list[int]) -> list[int]:
+def _into_idx(arr: list) -> list[int]:
+    """Replace consecutive identical elements of an array with their indices.
+
+    Example
+    -------
+    .. code-block:: python
+
+        arr: list[int] = [1, 1, 5, 5, 7, 3, 3]
+        assert _into_idx(arr) == [0, 0, 1, 1, 2, 3, 3]
+
+    Parameters
+    ----------
+    arr
+        input array of elements that can be compared with `__eq__`
+
+    Returns
+    -------
+        list[int] -- array where these elements are replaced with their unique indices, in order of appearance.
+    """
     return [idx for idx, (_, group) in enumerate(itertools.groupby(arr)) for _ in group]
 
 
 def get_Atomattrs(model: gemmi.Model) -> tuple[list[AtomAttr], np.ndarray]:
+    """Extract all attributes that are subclasses of :class:`..core.topologyattrs.AtomAttr` from a  ``gemmi.Model`` object,
+    and a `segidx` index.
+
+    Parameters
+    ----------
+    model
+        input `gemmi.Model`, e.g. `gemmi.read_structure('file.cif')[0]`
+
+    Returns
+    -------
+        tuple[list[AtomAttr], np.ndarray] -- first element is list of all extracted attributes, second element is `segidx`
+
+    Raises
+    ------
+    ValueError
+        if any of the records is neither 'ATOM' nor 'HETATM'
+    """
     (
         altlocs,  # at.altloc
         serials,  # at.serial
@@ -60,30 +95,34 @@ def get_Atomattrs(model: gemmi.Model) -> tuple[list[AtomAttr], np.ndarray]:
         record_types,  # res.het_flag
         tempfactors,  # at.b_iso
         residx,  # _into_idx(res.seqid.num)
-    ) = map(  # this is probably not pretty, but it's efficient -- one loop over the mmcif
+    ) = map(  # this construct takes np.ndarray of all lists of attributes, extracted from the `gemmi.Model`
         np.array,
         list(
             zip(
                 *[
                     (
-                        at.altloc,  # altlocs
-                        at.serial,  # serials
-                        at.name,  # names
-                        at.name,  # atomtypes
+                        # tuple of attributes
+                        # extracted from residue, atom or chain in the structure
+                        # ------------------
+                        atom.altloc,  # altlocs
+                        atom.serial,  # serials
+                        atom.name,  # names
+                        atom.name,  # atomtypes
                         # ------------------
                         chain.name,  # chainids
-                        at.element.name,  # elements
-                        at.charge,  # formalcharges
-                        at.element.weight,  # weights
+                        atom.element.name,  # elements
+                        atom.charge,  # formalcharges
+                        atom.element.weight,  # weights
                         # ------------------
-                        at.occ,  # occupancies
-                        res.het_flag,  # record_types
-                        at.b_iso,  # tempfactors
-                        res.seqid.num,  # residx, later translated into continious repr
+                        atom.occ,  # occupancies
+                        residue.het_flag,  # record_types
+                        atom.b_iso,  # tempfactors
+                        residue.seqid.num,  # residx, later translated into continious repr
                     )
+                    # the main loop over the `gemmi.Model` object
                     for chain in model
-                    for res in chain
-                    for at in res
+                    for residue in chain
+                    for atom in residue
                 ]
             )
         ),
@@ -92,8 +131,10 @@ def get_Atomattrs(model: gemmi.Model) -> tuple[list[AtomAttr], np.ndarray]:
     # transform *idx into continious numpy arrays
     residx = np.array(_into_idx(residx))
 
-    # fill in altlocs
+    # fill in altlocs, since gemmi has '' as default
     altlocs = ["A" if not elem else elem for elem in altlocs]
+
+    # convert default gemmi record types to default MDAnalysis record types
     record_types = [
         "ATOM" if record == "A" else "HETATM" if record == "H" else None
         for record in record_types
@@ -102,19 +143,19 @@ def get_Atomattrs(model: gemmi.Model) -> tuple[list[AtomAttr], np.ndarray]:
         raise ValueError("Found an atom that is neither ATOM or HETATM")
 
     attrs = [
-        AltLocs(altlocs),  # at.altloc
-        Atomids(serials),  # at.serial
-        Atomnames(names),  # at.name
-        Atomtypes(atomtypes),  # at.name
-        # ---------------------------------------
-        ChainIDs(chainids),  # chain.name
-        Elements(elements),  # at.element.name
-        FormalCharges(formalcharges),  # at.charge
-        Masses(weights),  # at.element.weight
-        # ---------------------------------------
-        Occupancies(occupancies),  # at.occ
-        RecordTypes(record_types),  # res.het_flat
-        Tempfactors(tempfactors),  # at.b_iso
+        AltLocs(altlocs),
+        Atomids(serials),
+        Atomnames(names),
+        Atomtypes(atomtypes),
+        # ----------------------------
+        ChainIDs(chainids),
+        Elements(elements),
+        FormalCharges(formalcharges),
+        Masses(weights),
+        # ----------------------------
+        Occupancies(occupancies),
+        RecordTypes(record_types),
+        Tempfactors(tempfactors),
     ]
 
     return attrs, residx
