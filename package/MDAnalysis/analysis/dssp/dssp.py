@@ -277,7 +277,6 @@ class DSSP(AnalysisBase):
 
     .. versionadded:: 2.8.0
 
-    .. versionchanged:: 2.8.0
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
