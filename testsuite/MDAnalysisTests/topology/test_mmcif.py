@@ -34,10 +34,10 @@ def test_chains(mmcif_filename, n_chains):
 @pytest.mark.parametrize(
     "mmcif_filename,sequence",
     [
-        (f"{MMCIF_FOLDER}/1YJP.cif", ["GLY", "ASN", "ASN", "GLN", "GLN", "ASN", "TRY"]),
+        (f"{MMCIF_FOLDER}/1YJP.cif", ["GLY", "ASN", "ASN", "GLN", "GLN", "ASN", "TYR"]),
         (
             f"{MMCIF_FOLDER}/1YJP.cif.gz",
-            ["GLY", "ASN", "ASN", "GLN", "GLN", "ASN", "TRY"],
+            ["GLY", "ASN", "ASN", "GLN", "GLN", "ASN", "TYR"],
         ),
         (f"{MMCIF_FOLDER}/7ETN.cif", ["PRO", "PHE", "LEU", "ILE"]),
         (f"{MMCIF_FOLDER}/7ETN.cif.gz", ["PRO", "PHE", "LEU", "ILE"]),
@@ -45,4 +45,7 @@ def test_chains(mmcif_filename, n_chains):
 )
 def test_sequence(mmcif_filename, sequence):
     u = mda.Universe(mmcif_filename)
-    assert [res.resname for res in u.residues] == sequence
+    in_structure = [
+        str(res.resname) for res in u.select_atoms("protein and chainid A").residues
+    ]
+    assert in_structure == sequence, ":".join(in_structure)
