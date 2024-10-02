@@ -259,7 +259,7 @@ class MMCIFParser(TopologyReaderBase):
     .. versionadded:: 2.8.0
     """
 
-    format = "MMCIF"
+    format = ["cif", "cif.gz", "mmcif"]
 
     def parse(self, **kwargs):
         """Read the file and return the structure.

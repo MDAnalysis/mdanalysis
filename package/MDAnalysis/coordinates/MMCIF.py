@@ -45,7 +45,7 @@ class MMCIFReader(base.SingleFrameReaderBase):
     .. versionadded:: 2.8.0
     """
 
-    format = "MMCIF"
+    format = ["cif", "cif.gz", "mmcif"]
     units = {"time": None, "length": "Angstrom"}
 
     def _read_first_frame(self):
