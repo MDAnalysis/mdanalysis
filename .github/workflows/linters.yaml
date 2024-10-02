@@ -16,12 +16,10 @@ defaults:
     shell: bash -l {0}
 
 jobs:
-  darker_lint:
+  black:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    permissions:
-      pull-requests: write
     defaults:
       run:
         shell: bash
@@ -35,66 +33,17 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: darker-main-code
-      id: darker-main-code
-      uses: akaihola/darker@v2.1.1
-      continue-on-error: true
+    - uses: psf/black@stable
       with:
-        version: "~=1.6.1"
-        options: "--check --diff --color"
-        src: "./package/MDAnalysis"
-        revision: "HEAD^"
-        lint: "flake8"
-
-    - name: darker-test-code
-      id: darker-test-code
-      uses: akaihola/darker@v2.1.1
-      continue-on-error: true
+        options: "--check --verbose"
+        src: "./package"
+        version: "~= 24.0"
+    
+    - uses: psf/black@stable
       with:
-        version: "~=1.6.1"
-        options: "--check --diff --color"
-        src: "./testsuite/MDAnalysisTests"
-        revision: "HEAD^"
-        lint: "flake8"
-
-    - name: get-pr-info
-      uses: actions/github-script@v7
-      with:
-        script:
-            const prNumber = context.payload.number;
-            core.exportVariable('PULL_NUMBER', prNumber);
-
-    - name: save-status
-      env:
-        MAIN: ${{ steps.darker-main-code.outcome }}
-        TEST: ${{ steps.darker-test-code.outcome }}
-      shell: python
-      run: |
-        import os
-        import json
-        from pathlib import Path
-
-        Path('./darker_results/').mkdir(exist_ok=True)
-
-        d = {
-            'main_stat': os.environ['MAIN'],
-            'test_stat': os.environ['TEST'],
-            'PR_NUM': os.environ['PULL_NUMBER'],
-            'RUN_ID': os.environ['GITHUB_RUN_ID'],
-        }
-
-        with open('darker_results/status.json', 'w') as f:
-            json.dump(d, f)
-
-    - name: check-json
-      run: cat darker_results/status.json
-
-    - name: upload-status
-      uses: actions/upload-artifact@v4
-      with:
-        name: darkerlint
-        path: darker_results/
-        retention-days: 1
+        options: "--check --verbose"
+        src: "./testsuite"
+        version: "~= 24.0"
 
 
   pylint_check:
