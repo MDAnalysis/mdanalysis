@@ -389,6 +389,17 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results = Results()
         self.results.hbonds = None
 
+        # Set atom selections if they have not been provided
+        if self.acceptors_sel is None:
+            self.acceptors_sel = self.guess_acceptors()
+        if self.hydrogens_sel is None:
+            self.hydrogens_sel = self.guess_hydrogens()
+
+        # Select atom groups
+        self._acceptors = self.u.select_atoms(self.acceptors_sel,
+                                              updating=self.update_selections)
+        self._donors, self._hydrogens = self._get_dh_pairs()
+
     def guess_hydrogens(self,
                         select='all',
                         max_mass=1.1,
@@ -705,16 +716,6 @@ class HydrogenBondAnalysis(AnalysisBase):
     def _prepare(self):
         self.results.hbonds = [[], [], [], [], [], []]
 
-        # Set atom selections if they have not been provided
-        if self.acceptors_sel is None:
-            self.acceptors_sel = self.guess_acceptors()
-        if self.hydrogens_sel is None:
-            self.hydrogens_sel = self.guess_hydrogens()
-
-        # Select atom groups
-        self._acceptors = self.u.select_atoms(self.acceptors_sel,
-                                              updating=self.update_selections)
-        self._donors, self._hydrogens = self._get_dh_pairs()
 
     def _single_frame(self):
 
