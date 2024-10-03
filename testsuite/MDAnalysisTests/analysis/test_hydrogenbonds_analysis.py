@@ -208,9 +208,12 @@ class TestHydrogenBondAnalysisIdeal(object):
             'd_h_a_angle_cutoff': 120.0
         }
 
+        u = universe.copy()
+        n_residues = 2
+        u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
+        u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
         with pytest.raises(NoDataError, match="no bond information"):
-            h = HydrogenBondAnalysis(universe, **kwargs)
-            h._get_dh_pairs()
+            h = HydrogenBondAnalysis(u, **kwargs)
 
     def test_no_bond_donor_sel(self, universe):
 
