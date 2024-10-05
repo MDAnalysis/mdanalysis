@@ -127,6 +127,7 @@ def client_GNMAnalysis(request):
 def client_BAT(request):
     return request.param
 
+# MDAnalysis.analysis.hydrogenbonds
   
 @pytest.fixture(scope='module', params=params_for_cls(HydrogenBondAnalysis))
 def client_HydrogenBondAnalysis(request):
