@@ -341,7 +341,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         .. versionchanged:: 2.4.0
             Added use of atom types in selection strings for hydrogen atoms, 
             bond donors, or bond acceptors
-
+        .. versionchanged:: 2.8.0
+            Introduced :meth:`get_supported_backends` allowing for parallel execution on
+            :mod:`multiprocessing` and :mod:`dask` backends.
         """
 
         self.u = universe
