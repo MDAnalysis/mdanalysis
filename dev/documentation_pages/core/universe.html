@@ -196,13 +196,13 @@ loaded from the “topology” file unless a trajectory is supplied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><em>Topology</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>numpy.ndarray</em></a><em>, </em><em>None</em>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+<li><p><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><em>Topology</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>numpy.ndarray</em></a><em>, </em><em>None</em>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
 define the list of atoms. If the file includes bond information,
 partial charges, atom masses, … then these data will be available to
 MDAnalysis. Alternatively, an existing
 <a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topology.Topology</span></code></a> instance may be given,
 numpy coordinates, or <code class="docutils literal notranslate"><span class="pre">None</span></code> for an empty universe.</p></li>
-<li><p><strong>coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><em>stream</em><em> (</em><em>optional</em><em>)</em>) – Coordinates can be provided as files of
+<li><p><strong>coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><em>stream</em><em> (</em><em>optional</em><em>)</em>) – Coordinates can be provided as files of
 a single frame (eg a PDB, CRD, or GRO file); a list of single
 frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs
 XTC/TRR, or generic XYZ format). The coordinates must be
@@ -230,15 +230,15 @@ between atoms.  This will populate the .bonds, .angles, and .dihedrals
 attributes of the Universe.</p></li>
 <li><p><strong>vdwradii</strong> (dict, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
 atom type which are used in guessing bonds.</p></li>
-<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>default</em><em> [</em><em>0.55</em><em>]</em>) – For use with <em>guess_bonds</em>. Supply the factor by which atoms must
+<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default</em><em> [</em><em>0.55</em><em>]</em>) – For use with <em>guess_bonds</em>. Supply the factor by which atoms must
 overlap each other to be considered a bond.</p></li>
-<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>default</em><em> [</em><em>0.1</em><em>]</em>) – For use with <em>guess_bonds</em>. Supply the minimum bond length.</p></li>
+<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default</em><em> [</em><em>0.1</em><em>]</em>) – For use with <em>guess_bonds</em>. Supply the minimum bond length.</p></li>
 <li><p><strong>transformations</strong> (function or list, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide a list of transformations that you wish to apply to the
 trajectory upon reading. Transformations can be found in
 <a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a>, or can be user-created.</p></li>
 <li><p><strong>in_memory</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – After reading in the trajectory, transfer it to an in-memory
 representations, which allow for manipulation of coordinates.</p></li>
-<li><p><strong>in_memory_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>default 1</em>) – Only read every nth frame into in-memory representation.</p></li>
+<li><p><strong>in_memory_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default 1</em>) – Only read every nth frame into in-memory representation.</p></li>
 <li><p><strong>continuous</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – The <cite>continuous</cite> option is used by the
 <a class="reference internal" href="../coordinates/chain.html#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ChainReader</span></code></a>, which contains the
 functionality to treat independent trajectory files as a single virtual
@@ -397,7 +397,7 @@ be specified as a keyword.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>segment</strong> (<em>MDAnalysis.Segment</em>) – If there are multiple segments, then the Segment that the new
 Residue will belong in must be specified.</p></li>
-<li><p><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – For each Residue attribute, the value for the new Residue must be
+<li><p><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – For each Residue attribute, the value for the new Residue must be
 specified</p></li>
 </ul>
 </dd>
@@ -428,7 +428,7 @@ specified</p></li>
 <dd><p>Add a new Segment to this Universe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – For each Segment attribute as a key, give the value in the new
+<dd class="field-odd"><p><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – For each Segment attribute as a key, give the value in the new
 Segment</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -495,7 +495,7 @@ keywords are ignored.
 If AtomGroups, Angles, or a TopologyGroup are passed,
 they <em>must</em> be from the same Universe.</p></li>
 <li><p><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
-<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
+<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
 <li><p><strong>versionadded:</strong> (<em>..</em>) – 1.0.0:</p></li>
 </ul>
 </dd>
@@ -515,7 +515,7 @@ keywords are ignored.
 If AtomGroups, Bonds, or a TopologyGroup are passed,
 they <em>must</em> be from the same Universe.</p></li>
 <li><p><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
-<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
+<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
 <li><p><strong>order</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
 </ul>
 </dd>
@@ -560,7 +560,7 @@ keywords are ignored.
 If AtomGroups, Dihedrals, or a TopologyGroup are passed,
 they <em>must</em> be from the same Universe.</p></li>
 <li><p><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
-<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
+<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -582,7 +582,7 @@ keywords are ignored.
 If AtomGroups, Impropers, or a TopologyGroup are passed,
 they <em>must</em> be from the same Universe.</p></li>
 <li><p><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
-<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
+<li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -744,20 +744,20 @@ attached to the Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of Atoms in the Universe</p></li>
-<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Residues in the Universe, defaults to 1</p></li>
-<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Segments in the Universe, defaults to 1</p></li>
-<li><p><strong>n_frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Frames in the Universe, defaults to 1</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of Atoms in the Universe</p></li>
+<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Residues in the Universe, defaults to 1</p></li>
+<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Segments in the Universe, defaults to 1</p></li>
+<li><p><strong>n_frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Frames in the Universe, defaults to 1</p></li>
 <li><p><strong>atom_resindex</strong> (<em>array like</em><em>, </em><em>optional</em>) – mapping of atoms to residues, e.g. with 6 atoms,
 <cite>atom_resindex=[0, 0, 1, 1, 2, 2]</cite> would put 2 atoms
 into each of 3 residues.</p></li>
 <li><p><strong>residue_segindex</strong> (<em>array like</em><em>, </em><em>optional</em>) – mapping of residues to segments</p></li>
-<li><p><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, attaches a
+<li><p><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, attaches a
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> allowing
 coordinates to be set and written.</p></li>
-<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the
+<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a></p></li>
-<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the
+<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a></p></li>
 </ul>
 </dd>
@@ -797,17 +797,17 @@ positions for the atoms and a mass attribute:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>smiles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – SMILES string</p></li>
-<li><p><strong>sanitize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Toggle the sanitization of the molecule</p></li>
-<li><p><strong>addHs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Add all necessary hydrogens to the molecule</p></li>
-<li><p><strong>generate_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Generate 3D coordinates using RDKit’s
+<li><p><strong>smiles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – SMILES string</p></li>
+<li><p><strong>sanitize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Toggle the sanitization of the molecule</p></li>
+<li><p><strong>addHs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Add all necessary hydrogens to the molecule</p></li>
+<li><p><strong>generate_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Generate 3D coordinates using RDKit’s
 <code class="xref py py-func docutils literal notranslate"><span class="pre">AllChem.EmbedMultipleConfs()</span></code> function. Requires adding
 hydrogens with the <cite>addHs</cite> parameter</p></li>
-<li><p><strong>numConfs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>, </em><em>default 1</em><em>)</em>) – Number of frames to generate coordinates for. Ignored if
+<li><p><strong>numConfs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>, </em><em>default 1</em><em>)</em>) – Number of frames to generate coordinates for. Ignored if
 <code class="docutils literal notranslate"><span class="pre">generate_coordinates=False</span></code></p></li>
-<li><p><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – Other arguments passed to the RDKit <code class="xref py py-func docutils literal notranslate"><span class="pre">EmbedMultipleConfs()</span></code>
+<li><p><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – Other arguments passed to the RDKit <code class="xref py py-func docutils literal notranslate"><span class="pre">EmbedMultipleConfs()</span></code>
 function</p></li>
-<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Parameters passed on Universe creation</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Parameters passed on Universe creation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -858,22 +858,22 @@ filenames.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – the coordinate file (single frame or trajectory) <em>or</em> a list of
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – the coordinate file (single frame or trajectory) <em>or</em> a list of
 filenames, which are read one after another.</p></li>
-<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><em>object</em></a><em> (</em><em>optional</em><em>)</em>) – provide the file format of the coordinate or trajectory file;
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a><em> (</em><em>optional</em><em>)</em>) – provide the file format of the coordinate or trajectory file;
 <code class="docutils literal notranslate"><span class="pre">None</span></code> guesses it from the file extension. Note that this
 keyword has no effect if a list of file names is supplied because
 the “chained” reader has to guess the file format for each
 individual list member [<code class="docutils literal notranslate"><span class="pre">None</span></code>]. Can also pass a subclass of
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> to define a custom
 reader to be used on the trajectory file.</p></li>
-<li><p><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Directly load trajectory into memory with the
+<li><p><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Directly load trajectory into memory with the
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a></p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.16.0.</span></p>
 </div>
 </p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Other kwargs are passed to the trajectory reader (only for
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Other kwargs are passed to the trajectory reader (only for
 advanced use)</p></li>
 </ul>
 </dd>
@@ -884,7 +884,7 @@ advanced use)</p></li>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe">Universe</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – if trajectory format can not be determined or no appropriate
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – if trajectory format can not be determined or no appropriate
     trajectory reader found</p>
 </dd>
 </dl>
@@ -945,10 +945,10 @@ editing of coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – start reading from the nth frame.</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – read upto and excluding the nth frame.</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Read in every nth frame. [1]</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Will print the progress of loading trajectory to memory, if
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – start reading from the nth frame.</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – read upto and excluding the nth frame.</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Read in every nth frame. [1]</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Will print the progress of loading trajectory to memory, if
 set to True. Default value is False.</p></li>
 </ul>
 </dd>
@@ -983,8 +983,8 @@ set to True. Default value is False.</p></li>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – Too few arguments or an AtomGroup is empty and</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – Arguments are not <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Too few arguments or an AtomGroup is empty and</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – Arguments are not <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances.</p></li>
 </ul>
 </dd>
 </dl>

@@ -175,9 +175,9 @@ each step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_selector</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em><em>, </em><em>optional</em>) – Index of column in .xvg file storing time, assumed to be in ps. Default
+<li><p><strong>time_selector</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>None</em><em>, </em><em>optional</em>) – Index of column in .xvg file storing time, assumed to be in ps. Default
 value is 0 (i.e. first column).</p></li>
-<li><p><strong>data_selector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em><em>, </em><em>optional</em>) – List of indices of columns in .xvg file containing data of interest to
+<li><p><strong>data_selector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>None</em><em>, </em><em>optional</em>) – List of indices of columns in .xvg file containing data of interest to
 be stored in <code class="docutils literal notranslate"><span class="pre">data</span></code>. Default value is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>**kwargs</strong> – Other AuxStep options.</p></li>
 </ul>
@@ -210,7 +210,7 @@ stored on initialisation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Location of the file containing the auxiliary data.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Location of the file containing the auxiliary data.</p></li>
 <li><p><strong>**kwargs</strong> – Other AuxReader options.</p></li>
 </ul>
 </dd>
@@ -233,7 +233,7 @@ contents is practical.</p>
 <dd class="field-odd"><p>Time at each step.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>NumPy array of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+<dd class="field-even"><p>NumPy array of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -250,7 +250,7 @@ memory footprint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Location of the file containing the auxiliary data.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Location of the file containing the auxiliary data.</p></li>
 <li><p><strong>**kwargs</strong> – Other AuxReader options.</p></li>
 </ul>
 </dd>
@@ -272,7 +272,7 @@ memory footprint.</p>
 <dd class="field-odd"><p>Time of each step</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>NumPy array of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+<dd class="field-even"><p>NumPy array of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -285,7 +285,7 @@ memory footprint.</p>
 <dd><p>Remove comments from lines in an .xvg file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Lines as directly read from .xvg file</p>
+<dd class="field-odd"><p><strong>lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Lines as directly read from .xvg file</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>str</em> – The next non-comment line, with any trailing comments removed</p>

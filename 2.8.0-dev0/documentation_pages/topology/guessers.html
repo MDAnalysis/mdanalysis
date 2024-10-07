@@ -272,7 +272,7 @@ then (1,2,3) must be an angle.</p>
 Suitable for use in u._topology</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of tuples</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of tuples</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -364,14 +364,14 @@ the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atoms for which bonds should be guessed</p></li>
 <li><p><strong>coords</strong> (<em>array</em>) – coordinates of the atoms (i.e., <cite>AtomGroup.positions)</cite>)</p></li>
-<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap eachother to be considered a
+<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap eachother to be considered a
 bond.  Larger values will increase the number of bonds found. [0.55]</p></li>
-<li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – To supply custom vdwradii for atoms in the algorithm. Must be a dict
+<li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – To supply custom vdwradii for atoms in the algorithm. Must be a dict
 of format {type:radii}. The default table of van der Waals radii is
 hard-coded as <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.vdwradii" title="MDAnalysis.topology.tables.vdwradii"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables.vdwradii</span></code></a>.  Any user
 defined vdwradii passed as an argument will supercede the table
 values. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
-<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length will
+<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length will
 be ignored. This is useful for parsing PDB with altloc records where
 atoms with altloc A and B maybe very close together and there should be
 no chemical bond between them. [0.1]</p></li>
@@ -384,7 +384,7 @@ search. [<code class="docutils literal notranslate"><span class="pre">None</span
 <dd class="field-even"><p>List of tuples suitable for use in Universe topology building.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 <div class="admonition warning">
@@ -394,7 +394,7 @@ structure is correct. This is wrong and will burn somebody.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – </p>
 </dd>
 </dl>
 <div class="versionadded">

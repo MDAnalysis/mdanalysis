@@ -180,8 +180,8 @@
   <section id="base-topology-reader-classes-mdanalysis-topology-base">
 <span id="module-MDAnalysis.topology.base"></span><h1><span class="section-number">5.24. </span>Base topology reader classes — <a class="reference internal" href="#module-MDAnalysis.topology.base" title="MDAnalysis.topology.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a><a class="headerlink" href="#base-topology-reader-classes-mdanalysis-topology-base" title="Link to this heading"></a></h1>
 <p>Derive topology reader classes from the base class in this module. All
-topology readers raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> upon failing to read a topology
-file and <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> upon failing to make sense of the read data.</p>
+topology readers raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> upon failing to read a topology
+file and <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> upon failing to make sense of the read data.</p>
 <section id="classes">
 <h2><span class="section-number">5.24.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
@@ -191,7 +191,7 @@ file and <a class="reference external" href="https://docs.python.org/3/library/e
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of the topology file</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the topology file</p></li>
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em>, </em><em>optional</em>) – Supply a Universe to the Parser.  This then passes it to the
 atom instances that are created within parsers.</p></li>
 <li><p><strong>which</strong> (<em>All topology readers must define a parse method</em>)</p></li>
@@ -199,8 +199,8 @@ atom instances that are created within parsers.</p></li>
 </ul>
 </dd>
 </dl>
-<p>:raises * <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> upon failing to read a topology file:
-:raises * <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> upon failing to make sense of the read data:
+<p>:raises * <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> upon failing to read a topology file:
+:raises * <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> upon failing to make sense of the read data:
 :raises .. versionadded:: 0.9.0:
 :raises .. versionchanged:: 0.9.2: Added keyword ‘universe’ to pass to Atom creation.</p>
 <dl class="py method">
@@ -217,7 +217,7 @@ atom instances that are created within parsers.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -240,7 +240,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -263,7 +263,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -289,7 +289,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -315,7 +315,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -343,7 +343,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -370,7 +370,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -393,7 +393,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>

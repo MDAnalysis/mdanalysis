@@ -195,11 +195,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><em>NamedStream</em></a>) – filename; extension is replaced unless <code class="docutils literal notranslate"><span class="pre">keep=True</span></code>;
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> or </em><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><em>NamedStream</em></a>) – filename; extension is replaced unless <code class="docutils literal notranslate"><span class="pre">keep=True</span></code>;
 <cite>name</cite> can also be a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> (and its
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">NamedStream.name</span></code> will be changed accordingly)</p></li>
-<li><p><strong>ext</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – extension to use in the new filename</p></li>
-<li><p><strong>keep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – <ul>
+<li><p><strong>ext</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – extension to use in the new filename</p></li>
+<li><p><strong>keep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: replace existing extension with <cite>ext</cite>;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: keep old extension if one existed</p></li>
 </ul>
@@ -216,10 +216,10 @@
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.openany">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">openany</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#openany"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.openany" title="Link to this definition"></a></dt>
 <dd><p>Context manager for <a class="reference internal" href="#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">anyopen()</span></code></a>.</p>
-<p>Open the <cite>datasource</cite> and close it when the context of the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.12)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a>
+<p>Open the <cite>datasource</cite> and close it when the context of the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.13)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a>
 statement exits.</p>
 <p><cite>datasource</cite> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><code class="xref py py-func docutils literal notranslate"><span class="pre">isstream()</span></code></a>). A stream
-is reset to its start if possible (via <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> or
+is reset to its start if possible (via <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> or
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code>).</p>
 <p>The advantage of this function is that very different input sources
 (“streams”) can be used for a “file”, ranging from files on disk (including
@@ -230,7 +230,7 @@ they have a file-like interface.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>datasource</strong> (<em>a file</em><em> or </em><em>a stream</em>)</p></li>
 <li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'}</em><em> (</em><em>optional</em><em>)</em>) – open in r(ead) or w(rite) mode</p></li>
-<li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
 </ul>
 </dd>
 </dl>
@@ -260,19 +260,19 @@ they have a file-like interface.</p>
 <dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
 <p><cite>datasource</cite> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><code class="xref py py-func docutils literal notranslate"><span class="pre">isstream()</span></code></a>). By
 default, a stream is reset to its start if possible (via
-<a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code>).</p>
+<a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase.seek" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code>).</p>
 <p>If possible, the attribute <code class="docutils literal notranslate"><span class="pre">stream.name</span></code> is set to the filename or
 “&lt;stream&gt;” if no filename could be associated with the <em>datasource</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>datasource</strong> – a file (from <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>) or a stream (e.g. from
-<code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>)</p></li>
+<li><p><strong>datasource</strong> – a file (from <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>) or a stream (e.g. from
+<code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>)</p></li>
 <li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'</em><em>, </em><em>'a'}</em><em> (</em><em>optional</em><em>)</em>) – Open in r(ead), w(rite) or a(ppend) mode. This string is directly
 passed to the file opening handler (either Python’s openfe, bz2, or
 gzip). More complex modes are supported if the file opening handler
 supports it.</p></li>
-<li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start</p></li>
+<li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -282,7 +282,7 @@ supports it.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a></dt><dd><p>to be used with the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.12)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> statement.</p>
+<dt><a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a></dt><dd><p>to be used with the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.13)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> statement.</p>
 </dd>
 </dl>
 </div>
@@ -303,10 +303,10 @@ They return a custom picklable file stream in
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">greedy_splitext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#greedy_splitext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.greedy_splitext" title="Link to this definition"></a></dt>
 <dd><p>Split extension in path <em>p</em> at the left-most separator.</p>
 <p>Extensions are taken to be separated from the filename with the
-separator <a class="reference external" href="https://docs.python.org/3/library/os.html#os.extsep" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">os.extsep</span></code></a> (as used by <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.splitext" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.splitext()</span></code></a>).</p>
+separator <a class="reference external" href="https://docs.python.org/3/library/os.html#os.extsep" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">os.extsep</span></code></a> (as used by <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.splitext" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.splitext()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – path</p>
+<dd class="field-odd"><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – path</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>(root, extension)</strong> – where <code class="docutils literal notranslate"><span class="pre">root</span></code> is the full path and filename with all
@@ -314,7 +314,7 @@ extensions removed whereas <code class="docutils literal notranslate"><span clas
 all extensions.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -332,13 +332,13 @@ all extensions.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>programe</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of the executable</p>
+<dd class="field-odd"><p><strong>programe</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the executable</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>path</strong> – absolute path to the executable if it can be found, else <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a> or None</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a> or None</p>
 </dd>
 </dl>
 <div class="deprecated">
@@ -361,7 +361,7 @@ Please use shutil.which instead.</p>
 <dd><p>Return the lower-cased extension of <cite>filename</cite> without a leading dot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -380,8 +380,8 @@ Please use shutil.which instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – path of a file, without extension <cite>ext</cite></p></li>
-<li><p><strong>ext</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – extension (currently only “bz2” and “gz” are recognized as compressed formats)</p></li>
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – path of a file, without extension <cite>ext</cite></p></li>
+<li><p><strong>ext</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – extension (currently only “bz2” and “gz” are recognized as compressed formats)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -389,7 +389,7 @@ Please use shutil.which instead.</p>
 <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -407,16 +407,16 @@ Please use shutil.which instead.</p>
 <dd><p>Guess file format from the file extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>format</strong></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – if the file format cannot be determined</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – if the file format cannot be determined</p>
 </dd>
 </dl>
 </dd></dl>
@@ -429,17 +429,17 @@ Please use shutil.which instead.</p>
 around compressed format extensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><em>stream</em>) – path to the file or a stream, in which case <code class="docutils literal notranslate"><span class="pre">filename.name</span></code> is looked
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> or </em><em>stream</em>) – path to the file or a stream, in which case <code class="docutils literal notranslate"><span class="pre">filename.name</span></code> is looked
 at for a hint to the format</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>format</strong> – format specifier (upper case)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if the heuristics are insufficient to guess a supported format</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if the heuristics are insufficient to guess a supported format</p>
 </dd>
 </dl>
 <div class="versionadded">
@@ -452,11 +452,11 @@ at for a hint to the format</p>
 <h2><span class="section-number">13.2.10.2. </span>Modules and packages<a class="headerlink" href="#modules-and-packages" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.is_installed">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">is_installed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modulename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#is_installed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.is_installed" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">is_installed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modulename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#is_installed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.is_installed" title="Link to this definition"></a></dt>
 <dd><p>Checks if module is installed</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>modulename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of the module to be tested</p>
+<dd class="field-odd"><p><strong>modulename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of the module to be tested</p>
 </dd>
 </dl>
 <div class="versionadded">
@@ -470,7 +470,7 @@ at for a hint to the format</p>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a>). It is also possible to provide more
-general streams as inputs, such as a <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>
+general streams as inputs, such as a <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>
 instances (essentially, a memory buffer) by wrapping these instances
 into a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>. This <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> can then be
 used in place of an ordinary file name (typically, with a
@@ -497,7 +497,7 @@ provide the <code class="docutils literal notranslate"><span class="pre">format=
 <p>The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
 intermediate frames (typically in the PDB format) are not written to disk but
-remain in memory via e.g. <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a> buffers.</p>
+remain in memory via e.g. <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a> buffers.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>A remote connection created by <code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> is not seekable
@@ -509,17 +509,17 @@ and therefore will often not work as an input. But try it…</p>
 <dd><p>Stream that also provides a (fake) name.</p>
 <p>By wrapping a stream <cite>stream</cite> in this class, it can be passed to
 code that uses inspection of the filename to make decisions. For
-instance. <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.split" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.split()</span></code></a> will work correctly on a
+instance. <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.split" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.split()</span></code></a> will work correctly on a
 <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>.</p>
 <p>The class can be used as a context manager.</p>
-<p><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> is derived from <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.IOBase</span></code></a> (to indicate that
+<p><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> is derived from <a class="reference external" href="https://docs.python.org/3/library/io.html#io.IOBase" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.IOBase</span></code></a> (to indicate that
 it is a stream). Many operations that normally expect a string will also
 work with a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>; for instance, most of the functions in
-<a class="reference external" href="https://docs.python.org/3/library/os.path.html#module-os.path" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">os.path</span></code></a> will work with the exception of <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expandvars" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expandvars()</span></code></a>
-and <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expanduser" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expanduser()</span></code></a>, which will return the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>
+<a class="reference external" href="https://docs.python.org/3/library/os.path.html#module-os.path" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">os.path</span></code></a> will work with the exception of <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expandvars" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expandvars()</span></code></a>
+and <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expanduser" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expanduser()</span></code></a>, which will return the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>
 itself instead of a string if no substitutions were made.</p>
 <p class="rubric">Example</p>
-<p>Wrap a <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a> instance to write to:</p>
+<p>Wrap a <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a> instance to write to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="n">stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
@@ -533,7 +533,7 @@ itself instead of a string if no substitutions were made.</p>
 </pre></div>
 </div>
 <p>Use as a context manager (closes stream automatically when the
-<a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.12)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> block is left):</p>
+<a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.13)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> block is left):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">NamedStream</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.pdb&quot;</span><span class="p">),</span> <span class="s2">&quot;input.pdb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
    <span class="c1"># use f</span>
    <span class="nb">print</span> <span class="n">f</span><span class="o">.</span><span class="n">closed</span>  <span class="c1"># --&gt; False</span>
@@ -561,18 +561,18 @@ the keyword <cite>reset</cite> is set to <code class="docutils literal notransla
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>stream</strong> (<em>stream</em>) – an open stream (e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>)</p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the filename that should be associated with the stream</p></li>
-<li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> or <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>)
+<li><p><strong>stream</strong> (<em>stream</em>) – an open stream (e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>)</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the filename that should be associated with the stream</p></li>
+<li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> or <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>)
 when the class instance is constructed</p></li>
-<li><p><strong>close</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – close the stream when a <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.12)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> block exits or when
+<li><p><strong>close</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – close the stream when a <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.13)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> block exits or when
 <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> is called; note that the default is <strong>not to close
 the stream</strong></p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>By default, this stream will <em>not</em> be closed by <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.12)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> and
+<p>By default, this stream will <em>not</em> be closed by <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#with" title="(in Python v3.13)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> and
 <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> (see there) unless the <cite>close</cite> keyword is set to
 <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <div class="versionadded">
@@ -603,7 +603,7 @@ always closes the underlying stream.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.fileno">
 <span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.fileno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.fileno" title="Link to this definition"></a></dt>
 <dd><p>Return the underlying file descriptor (an integer) of the stream if it exists.</p>
-<p>An <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> is raised if the IO object does not use a file descriptor.</p>
+<p>An <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> is raised if the IO object does not use a file descriptor.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -611,7 +611,7 @@ always closes the underlying stream.</p>
 <span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.flush" title="Link to this definition"></a></dt>
 <dd><p>Flush the write buffers of the stream if applicable.</p>
 <p>This does nothing for read-only and non-blocking streams. For file
-objects one also needs to call <a class="reference external" href="https://docs.python.org/3/library/os.html#os.fsync" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.fsync()</span></code></a> to write contents to
+objects one also needs to call <a class="reference external" href="https://docs.python.org/3/library/os.html#os.fsync" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.fsync()</span></code></a> to write contents to
 disk.</p>
 </dd></dl>
 
@@ -619,7 +619,7 @@ disk.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.readable">
 <span class="sig-name descname"><span class="pre">readable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readable" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream can be read from.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -645,7 +645,7 @@ terminator(s) recognized.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – <cite>offset</cite> is interpreted relative to the position
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – <cite>offset</cite> is interpreted relative to the position
 indicated by <cite>whence</cite>.</p></li>
 <li><p><strong>whence</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em><em> (</em><em>optional</em><em>)</em>) – <p>Values for <cite>whence</cite> are:</p>
 <blockquote>
@@ -665,7 +665,7 @@ negative</p></li>
 <dd class="field-even"><p>the new absolute position in bytes.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -675,7 +675,7 @@ negative</p></li>
 <span class="sig-name descname"><span class="pre">seekable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seekable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seekable" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream supports random access.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.tell" title="MDAnalysis.lib.util.NamedStream.tell"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tell()</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.truncate" title="MDAnalysis.lib.util.NamedStream.truncate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">truncate()</span></code></a> will
-raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
+raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -690,7 +690,7 @@ raise <a class="reference external" href="https://docs.python.org/3/library/exce
 <dd><p>Truncate the stream’s size to <cite>size</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – The <cite>size</cite> defaults to the current position (if no <cite>size</cite> argument
+<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – The <cite>size</cite> defaults to the current position (if no <cite>size</cite> argument
 is supplied). The current file position is not changed.</p>
 </dd>
 </dl>
@@ -700,7 +700,7 @@ is supplied). The current file position is not changed.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.NamedStream.writable">
 <span class="sig-name descname"><span class="pre">writable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.writable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.writable" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the stream can be written to.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -720,18 +720,18 @@ is supplied). The current file position is not changed.</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>stream</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
+<dd class="field-odd"><p><strong>obj</strong> (<em>stream</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>obj</cite> is a stream, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.9.0.</span></p>
@@ -752,7 +752,7 @@ nor a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" titl
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.asiterable">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">asiterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#asiterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.asiterable" title="Link to this definition"></a></dt>
 <dd><p>Returns <cite>obj</cite> so that it can be iterated over.</p>
-<p>A string is <em>not</em> detected as and iterable and is wrapped into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>
+<p>A string is <em>not</em> detected as and iterable and is wrapped into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>
 with a single element.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -804,7 +804,7 @@ with a single element.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arr</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>numpy.ndarray</em></a>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(n1,</span> <span class="pre">m)</span></code>.</p></li>
-<li><p><strong>return_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, returns indices of array that formed answer (see
+<li><p><strong>return_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, returns indices of array that formed answer (see
 <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.unique()</span></code></a>)</p></li>
 </ul>
 </dd>
@@ -843,8 +843,8 @@ is <code class="docutils literal notranslate"><span class="pre">True</span></cod
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>numpy.ndarray</em></a>) – Input array, must be C contiguous and at least 2D.</p></li>
-<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Size of block in first dimension.</p></li>
-<li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Size of block in second dimension.</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Size of block in first dimension.</p></li>
+<li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Size of block in second dimension.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -856,7 +856,7 @@ fit in the original.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the supplied <cite>n</cite> and <cite>m</cite> don’t divide <cite>a</cite> into an integer number
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the supplied <cite>n</cite> and <cite>m</cite> don’t divide <cite>a</cite> into an integer number
     of blocks or if <cite>a</cite> is not C contiguous.</p>
 </dd>
 </dl>
@@ -923,7 +923,7 @@ edit descriptors (see <a class="reference external" href="http://www.webcitation
 <p>The string <cite>fmt</cite> should look like ‘2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – FORTRAN format edit descriptor for a line as described in <a class="reference external" href="http://www.webcitation.org/5xbaWMV2x">Fortran
+<dd class="field-odd"><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – FORTRAN format edit descriptor for a line as described in <a class="reference external" href="http://www.webcitation.org/5xbaWMV2x">Fortran
 Formats</a></p>
 </dd>
 </dl>
@@ -946,16 +946,16 @@ Formats</a></p>
 <dd><p>Parse the descriptor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>edit_descriptor</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – FORTRAN format edit descriptor</p>
+<dd class="field-odd"><p><strong>edit_descriptor</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – FORTRAN format edit descriptor</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>dict with totallength (in chars), repeat, length, format, decimals</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – The <cite>edit_descriptor</cite> is not recognized and cannot be parsed</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – The <cite>edit_descriptor</cite> is not recognized and cannot be parsed</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -972,16 +972,16 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 <p>Values are converted to Python types according to the format specifier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>)</p>
+<dd class="field-odd"><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of entries with appropriate types</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – Any of the conversions cannot be made (e.g. space for an int)</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Any of the conversions cannot be made (e.g. space for an int)</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -995,7 +995,7 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRAN_format_regex">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">FORTRAN_format_regex</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'(?P&lt;repeat&gt;\\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\\d+)(\\.(?P&lt;decimals&gt;\\d+))?)?'</span></em><a class="headerlink" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="Link to this definition"></a></dt>
-<dd><p>Regular expresssion (see <a class="reference external" href="https://docs.python.org/3/library/re.html#module-re" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">re</span></code></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
+<dd><p>Regular expresssion (see <a class="reference external" href="https://docs.python.org/3/library/re.html#module-re" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">re</span></code></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
 <code class="docutils literal notranslate"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></code></p>
 </dd></dl>
 
@@ -1015,9 +1015,9 @@ correpsonding to one dimension).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><em>array_like</em>) – desired spacing of the bins</p></li>
-<li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><em>array_like</em>) – lower bound (left boundary of first bin)</p></li>
-<li><p><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><em>array_like</em>) – upper bound (right boundary of last bin)</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><em>array_like</em>) – desired spacing of the bins</p></li>
+<li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><em>array_like</em>) – lower bound (left boundary of first bin)</p></li>
+<li><p><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><em>array_like</em>) – upper bound (right boundary of last bin)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1025,7 +1025,7 @@ correpsonding to one dimension).</p>
 floats or arrays, depending on the input.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -1061,10 +1061,10 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If <cite>weights</cite> is not one of the allowed values or if “mass” is
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If <cite>weights</cite> is not one of the allowed values or if “mass” is
     selected but <code class="docutils literal notranslate"><span class="pre">atoms.masses</span></code> is not available.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If <cite>weights</cite> is not a 1D array with the same length as
-    <cite>atoms</cite>, then the exception is raised.  <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> is
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <cite>weights</cite> is not a 1D array with the same length as
+    <cite>atoms</cite>, then the exception is raised.  <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> is
     also raised if <code class="docutils literal notranslate"><span class="pre">atoms.masses</span></code> is not defined.</p></li>
 </ul>
 </dd>
@@ -1078,15 +1078,15 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – value to truncate</p></li>
-<li><p><strong>ndigits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of digits to keep</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – value to truncate</p></li>
+<li><p><strong>ndigits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of digits to keep</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>truncated</strong> – only the <cite>ndigits</cite> least significant digits from <cite>value</cite></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1105,10 +1105,10 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 <dd><p>Flatten a nested dict <cite>d</cite> into a shallow dict with tuples as keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>)</p>
+<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -1130,16 +1130,16 @@ by user <a class="reference external" href="https://stackoverflow.com/users/1897
 <dd><p>Converts between 3-letter and 1-letter amino acid codes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – 1-letter or 3-letter amino acid code</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – 1-letter or 3-letter amino acid code</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>3-letter or 1-letter amino acid code</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – No conversion can be made; the amino acid code is not defined.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – No conversion can be made; the amino acid code is not defined.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -1154,7 +1154,7 @@ by user <a class="reference external" href="https://stackoverflow.com/users/1897
 <dd><p>Process residue string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>residue</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The <em>residue</em> must contain a 1-letter or 3-letter or
+<dd class="field-odd"><p><strong>residue</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The <em>residue</em> must contain a 1-letter or 3-letter or
 4-letter residue string, a number (the resid) and
 optionally an atom identifier, which must be separate
 from the residue with a colon (“:”). White space is
@@ -1165,7 +1165,7 @@ allowed in between.</p>
 aa codes are converted to 3-letter codes</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1182,25 +1182,25 @@ aa codes are converted to 3-letter codes</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.conv_float">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">conv_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#conv_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.conv_float" title="Link to this definition"></a></dt>
 <dd><p>Convert an object <cite>s</cite> to float if possible.</p>
-<p>Function to be passed into <a class="reference external" href="https://docs.python.org/3/library/functions.html#map" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">map()</span></code></a> or a list comprehension. If
+<p>Function to be passed into <a class="reference external" href="https://docs.python.org/3/library/functions.html#map" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">map()</span></code></a> or a list comprehension. If
 the argument can be interpreted as a float it is converted,
 otherwise the original object is passed back.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.atoi">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">atoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#atoi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.atoi" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">atoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#atoi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.atoi" title="Link to this definition"></a></dt>
 <dd><p>Convert the leading number part of a string to an integer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The string to convert to an integer.</p>
+<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The string to convert to an integer.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>number</strong> – The first numeric part of the string converted to an integer.
 If the string does not start with a number, 0 is returned.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1362,28 +1362,28 @@ keyword argument <cite>check_lengths_match</cite>.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*coord_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – Arbitrary number of strings corresponding to names of positional
+<li><p><strong>*coord_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Arbitrary number of strings corresponding to names of positional
 arguments of the decorated function.</p></li>
-<li><p><strong>**options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – <ul>
-<li><p><strong>enforce_copy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Enforce working on a
+<li><p><strong>**options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – <ul>
+<li><p><strong>enforce_copy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Enforce working on a
 copy of the coordinate arrays. This is useful to ensure that the input
 arrays are left unchanged. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>enforce_dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Enforce a conversion
+<li><p><strong>enforce_dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Enforce a conversion
 to float32.  Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>allow_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Allow the input
+<li><p><strong>allow_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – Allow the input
 coordinate array to be a single coordinate with shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code>.</p></li>
-<li><p><strong>convert_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, single
+<li><p><strong>convert_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, single
 coordinate arrays will be converted to have a shape of <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">3)</span></code>.
 Only has an effect if <cite>allow_single</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>reduce_result_if_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>
+<li><p><strong>reduce_result_if_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>
 and <em>all</em> input coordinates are single, a decorated function <code class="docutils literal notranslate"><span class="pre">func</span></code>
 will return <code class="docutils literal notranslate"><span class="pre">func()[0]</span></code> instead of <code class="docutils literal notranslate"><span class="pre">func()</span></code>. Only has an effect if
 <cite>allow_single</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>check_lengths_match</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, a
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if not all coordinate arrays contain the
+<li><p><strong>check_lengths_match</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, a
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if not all coordinate arrays contain the
 same number of coordinates. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>allow_atomgroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">False</span></code>, a
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code></a> is raised if an <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> is supplied
+<li><p><strong>allow_atomgroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">False</span></code>, a
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code></a> is raised if an <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> is supplied
 Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </p></li>
@@ -1391,7 +1391,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the decorator is used without positional arguments (for development
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the decorator is used without positional arguments (for development
     purposes only).
     
     If any of the positional arguments supplied to the decorator doesn’t
@@ -1399,7 +1399,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
     arguments.
     
     If any of the coordinate arrays has a wrong shape.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If any of the coordinate arrays is not a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or an
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If any of the coordinate arrays is not a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or an
     <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.
     
     If the dtype of any of the coordinate arrays is not convertible to
@@ -1458,7 +1458,7 @@ allow_atomgroup with default False to retain old behaviour</p>
 <p>Avoids downstream errors in computing properties of empty atomgroups.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the input <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>,
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the input <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>,
     of a decorated method is empty.</p>
 </dd>
 </dl>
@@ -1485,17 +1485,17 @@ which the function was deprecated.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>function</em>) – The function to be deprecated.</p></li>
-<li><p><strong>old_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the function to be deprecated. Default is None, in
+<li><p><strong>old_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the function to be deprecated. Default is None, in
 which case the name of <cite>func</cite> is used.</p></li>
-<li><p><strong>new_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The new name for the function. Default is None, in which case the
+<li><p><strong>new_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – The new name for the function. Default is None, in which case the
 deprecation message is that <cite>old_name</cite> is deprecated. If given, the
 deprecation message is that <cite>old_name</cite> is deprecated and <cite>new_name</cite>
 should be used instead.</p></li>
-<li><p><strong>release</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Release in which the function was deprecated. This is given as
+<li><p><strong>release</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Release in which the function was deprecated. This is given as
 a keyword argument for technical reasons but is required; a
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if it is missing.</p></li>
-<li><p><strong>remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Release for which removal of the feature is planned.</p></li>
-<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Additional explanation of the deprecation.  Displayed in the
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if it is missing.</p></li>
+<li><p><strong>remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Release for which removal of the feature is planned.</p></li>
+<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Additional explanation of the deprecation.  Displayed in the
 docstring after the warning.</p></li>
 </ul>
 </dd>
@@ -1514,7 +1514,7 @@ example,</p>
 </pre></div>
 </div>
 <p>then <code class="docutils literal notranslate"><span class="pre">oldfunc</span></code> will return a value after printing
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#DeprecationWarning" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeprecationWarning</span></code></a>; <code class="docutils literal notranslate"><span class="pre">func</span></code> is still available as it was
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#DeprecationWarning" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeprecationWarning</span></code></a>; <code class="docutils literal notranslate"><span class="pre">func</span></code> is still available as it was
 before.</p>
 <p>When used as a decorator, <code class="docutils literal notranslate"><span class="pre">func</span></code> will be changed and issue the
 warning and contain the deprecation note in the do string.</p>
@@ -1563,19 +1563,19 @@ keyword argument with the decorator.)</p>
 <dd><p>Dedent typical python doc string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – string, typically something like <code class="docutils literal notranslate"><span class="pre">func.__doc__</span></code>.</p>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – string, typically something like <code class="docutils literal notranslate"><span class="pre">func.__doc__</span></code>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>string with the leading common whitespace removed from each
 line</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/textwrap.html#textwrap.dedent" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">textwrap.dedent</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/textwrap.html#textwrap.dedent" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">textwrap.dedent</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.19.0.</span></p>
@@ -1617,7 +1617,7 @@ matrix as returned by
 </p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If <cite>box</cite> is not of the form <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <cite>box</cite> is not of the form <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>
     or contains data that is not convertible to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p>
 </dd>
 </dl>

@@ -222,7 +222,7 @@ Now passes a weakref of self to ts (ts._reader).</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.1: </span>Now checks for the correct <cite>n_atoms</cite> on reading
-and can raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+and can raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.1.0: </span>TRZReader now returns a default <code class="xref py py-attr docutils literal notranslate"><span class="pre">dt</span></code> of 1.0 when it cannot be
@@ -239,13 +239,13 @@ and will be removed in version 3.0.0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>trzfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of input file</p></li>
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms in trajectory, must be taken from topology file!</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – converts units to MDAnalysis defaults</p></li>
+<li><p><strong>trzfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of input file</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms in trajectory, must be taken from topology file!</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – converts units to MDAnalysis defaults</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If <cite>n_atoms</cite> or the number of atoms in the topology file do not
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <cite>n_atoms</cite> or the number of atoms in the topology file do not
     match the number of atoms in the trajectory.</p>
 </dd>
 </dl>
@@ -316,11 +316,11 @@ and will be removed in version 3.0.0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of output file</p></li>
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms in trajectory</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – name of output file</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms in trajectory</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
 shorter, a longer title raises a ValueError exception.</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
 </ul>
 </dd>
 </dl>

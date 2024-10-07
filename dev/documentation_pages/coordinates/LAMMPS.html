@@ -271,10 +271,10 @@ arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are “fs” a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – trajectory filename</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert units to MDAnalysis units</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – overwrite time delta stored in DCD</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – General reader arguments.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – trajectory filename</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert units to MDAnalysis units</p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – overwrite time delta stored in DCD</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – General reader arguments.</p></li>
 </ul>
 </dd>
 </dl>
@@ -301,7 +301,7 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDReader.add_auxiliary">
-<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.add_auxiliary" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.add_auxiliary" title="Link to this definition"></a></dt>
 <dd><p>Add auxiliary data to be read alongside trajectory.</p>
 <p>Auxiliary data may be any data timeseries from the trajectory
 additional to that read in by the trajectory reader. <em>auxdata</em> can
@@ -385,7 +385,7 @@ example above would be equivalent to</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates
+<dd class="field-odd"><p><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates
 in the order given in the list</p>
 </dd>
 </dl>
@@ -410,11 +410,11 @@ the warning below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of 0, i.e., the initial frame.</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of n_frames, i.e., it includes the last frame of the trajectory.</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
 include every frame in the range <cite>start</cite>, <cite>stop</cite>.</p></li>
 </ul>
 </dd>
@@ -422,14 +422,14 @@ include every frame in the range <cite>start</cite>, <cite>stop</cite>.</p></li>
 <dd class="field-even"><p><strong>start, stop, step</strong> – Integers representing the slice</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>)</p>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The returned values <cite>start</cite>, <cite>stop</cite> and <cite>step</cite> give the expected result
 when passed in <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code> but gives unexpected behavior when passed
-in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
+in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
 <p>This can be a problem for downstream processing of the output from this
 method. For example, slicing of trajectories is implemented by passing
 the values returned by <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.check_slice_indices" title="MDAnalysis.coordinates.LAMMPS.DCDReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> to <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code></p>
@@ -439,7 +439,7 @@ the values returned by <a class="reference internal" href="#MDAnalysis.coordinat
 <p>and using them as the indices to randomly seek to. On the other hand,
 in <a class="reference internal" href="../analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a> the values returned
 by <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.check_slice_indices" title="MDAnalysis.coordinates.LAMMPS.DCDReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> are used to splice the trajectory by
-creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
+creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -465,7 +465,7 @@ creating a <a class="reference external" href="https://docs.python.org/3/library
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -488,7 +488,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -511,7 +511,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -537,7 +537,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -563,7 +563,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -591,7 +591,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -618,7 +618,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -641,7 +641,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -686,7 +686,7 @@ with default parameters which may differ from the original class.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDReader.frame">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.frame" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.frame" title="Link to this definition"></a></dt>
 <dd><p>Frame number of the current time step.</p>
 <p>This is a simple short cut to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code>.</p>
 </dd></dl>
@@ -698,8 +698,8 @@ with default parameters which may differ from the original class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to get value for</p></li>
-<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to get value for</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</p></li>
 </ul>
 </dd>
 </dl>
@@ -728,7 +728,7 @@ second trajectory:</p>
 <dd class="field-odd"><p>List of dictionaries of the args/kwargs describing each auxiliary.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -760,7 +760,7 @@ through the trajectory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to iterate over.</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to iterate over.</p></li>
 <li><p><strong>(</strong><strong>start</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
 <li><p><strong>stop</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
 <li><p><strong>step</strong><strong>)</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
@@ -818,10 +818,10 @@ steps are more frequent, this will work the same as calling
 <dd class="field-odd"><p><strong>n_atoms</strong> – the number of atoms in the coordinate file</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
 </dd>
 </dl>
 </dd></dl>
@@ -847,12 +847,12 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to rename</p></li>
-<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – New name to try set</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to rename</p></li>
+<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – New name to try set</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -870,8 +870,8 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to alter</p></li>
-<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to alter</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</p></li>
 <li><p><strong>new</strong> – New value to try set <em>attrname</em> to</p></li>
 </ul>
 </dd>
@@ -905,15 +905,15 @@ coordinate data is returned.</p>
 </div>
 </p></li>
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> (</em><em>optional</em><em>)</em>) – Same as <cite>asel</cite>, will replace <cite>asel</cite> in 3.0.0</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Begin reading the trajectory at frame index <cite>start</cite> (where 0 is the
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Begin reading the trajectory at frame index <cite>start</cite> (where 0 is the
 index of the first frame in the trajectory); the default <code class="docutils literal notranslate"><span class="pre">None</span></code>
 starts at the beginning.</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – End reading the trajectory at frame index <cite>stop</cite>-1, i.e, <cite>stop</cite> is
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – End reading the trajectory at frame index <cite>stop</cite>-1, i.e, <cite>stop</cite> is
 excluded. The trajectory is read to the end with the default
 <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Step size for reading; the default <code class="docutils literal notranslate"><span class="pre">None</span></code> is equivalent to 1 and
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Step size for reading; the default <code class="docutils literal notranslate"><span class="pre">None</span></code> is equivalent to 1 and
 means to read every frame.</p></li>
-<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
 where the shape is (frame, number of atoms,
@@ -932,7 +932,7 @@ AtomGroup</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDReader.totaltime">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.totaltime" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.totaltime" title="Link to this definition"></a></dt>
 <dd><p>Total length of the trajectory</p>
 <p>The time is calculated as <code class="docutils literal notranslate"><span class="pre">(n_frames</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">dt</span></code>, i.e., we assume that
 the first frame no time as elapsed. Thus, a trajectory with two frames will
@@ -966,24 +966,24 @@ values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – filename of trajectory</p></li>
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms to be written</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert from MDAnalysis units to format specific units</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of steps between frames to be written</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – time between two frames. If <code class="docutils literal notranslate"><span class="pre">None</span></code> guess from first written
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – filename of trajectory</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms to be written</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert from MDAnalysis units to format specific units</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of steps between frames to be written</p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – time between two frames. If <code class="docutils literal notranslate"><span class="pre">None</span></code> guess from first written
 <code class="xref py py-class docutils literal notranslate"><span class="pre">TimeStep</span></code></p></li>
-<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – remarks to be stored in DCD. Shouldn’t be more then 240 characters</p></li>
-<li><p><strong>nsavc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – DCD files can also store the number of integrator time steps that
+<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – remarks to be stored in DCD. Shouldn’t be more then 240 characters</p></li>
+<li><p><strong>nsavc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – DCD files can also store the number of integrator time steps that
 correspond to the interval between two frames as nsavc (i.e., every
 how many MD steps is a frame saved to the DCD). By default, this
 number is just set to one and this should be sufficient for almost
 all cases but if required, <cite>nsavc</cite> can be changed.</p></li>
-<li><p><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame number in integrator timesteps. CHARMM defaults to
+<li><p><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame number in integrator timesteps. CHARMM defaults to
 <cite>nsavc</cite>, i.e., start at frame number 1 = <cite>istart</cite> / <cite>nsavc</cite>. The value
 <code class="docutils literal notranslate"><span class="pre">None</span></code> will set <cite>istart</cite> to <cite>nsavc</cite> (the CHARMM default).
 The MDAnalysis default is 0 so that the frame number and time of the first
 frame is 0.</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – General writer arguments</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – General writer arguments</p></li>
 </ul>
 </dd>
 </dl>
@@ -1009,7 +1009,7 @@ is not appropriate then this method has to be overriden.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1032,7 +1032,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1055,7 +1055,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1081,7 +1081,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1107,7 +1107,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1135,7 +1135,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1162,7 +1162,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1185,7 +1185,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1211,12 +1211,12 @@ is avoided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>criteria</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – dictionary containing the <em>max</em> and <em>min</em> values in native units</p></li>
+<li><p><strong>criteria</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – dictionary containing the <em>max</em> and <em>min</em> values in native units</p></li>
 <li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>numpy.ndarray</em></a>) – <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1280,7 +1280,7 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DATAReader.add_auxiliary">
-<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.add_auxiliary" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.add_auxiliary" title="Link to this definition"></a></dt>
 <dd><p>Add auxiliary data to be read alongside trajectory.</p>
 <p>Auxiliary data may be any data timeseries from the trajectory
 additional to that read in by the trajectory reader. <em>auxdata</em> can
@@ -1356,7 +1356,7 @@ raise an exception.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates</p>
+<dd class="field-odd"><p><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1380,11 +1380,11 @@ the warning below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of 0, i.e., the initial frame.</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of n_frames, i.e., it includes the last frame of the trajectory.</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
 include every frame in the range <cite>start</cite>, <cite>stop</cite>.</p></li>
 </ul>
 </dd>
@@ -1392,14 +1392,14 @@ include every frame in the range <cite>start</cite>, <cite>stop</cite>.</p></li>
 <dd class="field-even"><p><strong>start, stop, step</strong> – Integers representing the slice</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>)</p>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The returned values <cite>start</cite>, <cite>stop</cite> and <cite>step</cite> give the expected result
 when passed in <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code> but gives unexpected behavior when passed
-in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
+in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
 <p>This can be a problem for downstream processing of the output from this
 method. For example, slicing of trajectories is implemented by passing
 the values returned by <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.check_slice_indices" title="MDAnalysis.coordinates.LAMMPS.DATAReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> to <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code></p>
@@ -1409,7 +1409,7 @@ the values returned by <a class="reference internal" href="#MDAnalysis.coordinat
 <p>and using them as the indices to randomly seek to. On the other hand,
 in <a class="reference internal" href="../analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a> the values returned
 by <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.check_slice_indices" title="MDAnalysis.coordinates.LAMMPS.DATAReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> are used to splice the trajectory by
-creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
+creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1435,7 +1435,7 @@ creating a <a class="reference external" href="https://docs.python.org/3/library
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1458,7 +1458,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1481,7 +1481,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1507,7 +1507,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1533,7 +1533,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1561,7 +1561,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1588,7 +1588,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1611,7 +1611,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1644,13 +1644,13 @@ with default parameters which may differ from the original class.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DATAReader.dt">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.dt" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.dt" title="Link to this definition"></a></dt>
 <dd><p>Time between two trajectory frames in picoseconds.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DATAReader.frame">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.frame" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.frame" title="Link to this definition"></a></dt>
 <dd><p>Frame number of the current time step.</p>
 <p>This is a simple short cut to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code>.</p>
 </dd></dl>
@@ -1662,8 +1662,8 @@ with default parameters which may differ from the original class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to get value for</p></li>
-<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to get value for</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</p></li>
 </ul>
 </dd>
 </dl>
@@ -1692,7 +1692,7 @@ second trajectory:</p>
 <dd class="field-odd"><p>List of dictionaries of the args/kwargs describing each auxiliary.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1724,7 +1724,7 @@ through the trajectory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to iterate over.</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to iterate over.</p></li>
 <li><p><strong>(</strong><strong>start</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
 <li><p><strong>stop</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
 <li><p><strong>step</strong><strong>)</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
@@ -1776,10 +1776,10 @@ steps are more frequent, this will work the same as calling
 <dd class="field-odd"><p><strong>n_atoms</strong> – the number of atoms in the coordinate file</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1805,12 +1805,12 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to rename</p></li>
-<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – New name to try set</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to rename</p></li>
+<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – New name to try set</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1828,8 +1828,8 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to alter</p></li>
-<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to alter</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</p></li>
 <li><p><strong>new</strong> – New value to try set <em>attrname</em> to</p></li>
 </ul>
 </dd>
@@ -1850,7 +1850,7 @@ time = <code class="xref py py-attr docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DATAReader.timeseries">
-<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atomgroup</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fac'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.timeseries" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atomgroup</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fac'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.timeseries" title="Link to this definition"></a></dt>
 <dd><p>Return a subset of coordinate data for an AtomGroup</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1863,15 +1863,15 @@ of coordinate data is returned.</p>
 </div>
 </p></li>
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> (</em><em>optional</em><em>)</em>) – Same as <cite>asel</cite>, will replace <cite>asel</cite> in 3.0.0</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Begin reading the trajectory at frame index <cite>start</cite> (where 0 is the
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Begin reading the trajectory at frame index <cite>start</cite> (where 0 is the
 index of the first frame in the trajectory); the default
 <code class="docutils literal notranslate"><span class="pre">None</span></code> starts at the beginning.</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – End reading the trajectory at frame index <cite>stop</cite>-1, i.e, <cite>stop</cite> is
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – End reading the trajectory at frame index <cite>stop</cite>-1, i.e, <cite>stop</cite> is
 excluded. The trajectory is read to the end with the default
 <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Step size for reading; the default <code class="docutils literal notranslate"><span class="pre">None</span></code> is equivalent to 1 and
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Step size for reading; the default <code class="docutils literal notranslate"><span class="pre">None</span></code> is equivalent to 1 and
 means to read every frame.</p></li>
-<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
 where the shape is (frame, number of atoms,
@@ -1890,7 +1890,7 @@ coordinates)</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DATAReader.totaltime">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.totaltime" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.totaltime" title="Link to this definition"></a></dt>
 <dd><p>Total length of the trajectory</p>
 <p>The time is calculated as <code class="docutils literal notranslate"><span class="pre">(n_frames</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">dt</span></code>, i.e., we assume that
 the first frame no time as elapsed. Thus, a trajectory with two frames will
@@ -1941,8 +1941,8 @@ an integer &gt;= 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – output filename</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – output filename</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
 </ul>
 </dd>
 </dl>
@@ -1968,7 +1968,7 @@ is not appropriate then this method has to be overriden.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -1991,7 +1991,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2014,7 +2014,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2040,7 +2040,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2066,7 +2066,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2094,7 +2094,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2121,7 +2121,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2144,7 +2144,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2170,12 +2170,12 @@ is avoided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>criteria</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – dictionary containing the <em>max</em> and <em>min</em> values in native units</p></li>
+<li><p><strong>criteria</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – dictionary containing the <em>max</em> and <em>min</em> values in native units</p></li>
 <li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>numpy.ndarray</em></a>) – <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2209,7 +2209,7 @@ included.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis AtomGroup (selection or Universe.atoms) or also Universe</p></li>
-<li><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – optionally move to frame number <cite>frame</cite></p></li>
+<li><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – optionally move to frame number <cite>frame</cite></p></li>
 </ul>
 </dd>
 </dl>
@@ -2261,8 +2261,8 @@ to be read. The keyword expects a list of the names of the columns or
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Filename of LAMMPS dump file</p></li>
-<li><p><strong>lammps_coordinate_convention</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>) </em><em>default=&quot;auto&quot;</em>) – <p>Convention used in coordinates, can be one of the following according
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Filename of LAMMPS dump file</p></li>
+<li><p><strong>lammps_coordinate_convention</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>) </em><em>default=&quot;auto&quot;</em>) – <p>Convention used in coordinates, can be one of the following according
 to the <a class="reference external" href="https://docs.lammps.org/dump.html">LAMMPS documentation</a>:</p>
 <blockquote>
 <div><ul>
@@ -2287,7 +2287,7 @@ or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will
 automatically be converted from their scaled/fractional representation
 to their real values.</p>
 </p></li>
-<li><p><strong>unwrap_images</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>) </em><em>default=False</em>) – If <cite>True</cite> and the dump file contains image flags, the coordinates
+<li><p><strong>unwrap_images</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>) </em><em>default=False</em>) – If <cite>True</cite> and the dump file contains image flags, the coordinates
 will be unwrapped. See <a class="reference external" href="https://docs.lammps.org/read_data.html">read_data</a>  in the lammps
 documentation for more information.</p></li>
 <li><p><strong>**kwargs</strong> – Other keyword arguments used in <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReaderBase</span></code></a></p></li>
@@ -2332,7 +2332,7 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.add_auxiliary">
-<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.add_auxiliary" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.add_auxiliary" title="Link to this definition"></a></dt>
 <dd><p>Add auxiliary data to be read alongside trajectory.</p>
 <p>Auxiliary data may be any data timeseries from the trajectory
 additional to that read in by the trajectory reader. <em>auxdata</em> can
@@ -2416,7 +2416,7 @@ example above would be equivalent to</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates
+<dd class="field-odd"><p><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates
 in the order given in the list</p>
 </dd>
 </dl>
@@ -2441,11 +2441,11 @@ the warning below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of 0, i.e., the initial frame.</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of n_frames, i.e., it includes the last frame of the trajectory.</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><em>None</em>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
 include every frame in the range <cite>start</cite>, <cite>stop</cite>.</p></li>
 </ul>
 </dd>
@@ -2453,14 +2453,14 @@ include every frame in the range <cite>start</cite>, <cite>stop</cite>.</p></li>
 <dd class="field-even"><p><strong>start, stop, step</strong> – Integers representing the slice</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>)</p>
 </dd>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The returned values <cite>start</cite>, <cite>stop</cite> and <cite>step</cite> give the expected result
 when passed in <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code> but gives unexpected behavior when passed
-in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
+in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
 <p>This can be a problem for downstream processing of the output from this
 method. For example, slicing of trajectories is implemented by passing
 the values returned by <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.check_slice_indices" title="MDAnalysis.coordinates.LAMMPS.DumpReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> to <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code></p>
@@ -2470,7 +2470,7 @@ the values returned by <a class="reference internal" href="#MDAnalysis.coordinat
 <p>and using them as the indices to randomly seek to. On the other hand,
 in <a class="reference internal" href="../analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a> the values returned
 by <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.check_slice_indices" title="MDAnalysis.coordinates.LAMMPS.DumpReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> are used to splice the trajectory by
-creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
+creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2496,7 +2496,7 @@ creating a <a class="reference external" href="https://docs.python.org/3/library
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2519,7 +2519,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2542,7 +2542,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2568,7 +2568,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2594,7 +2594,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2622,7 +2622,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2649,7 +2649,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2672,7 +2672,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -2705,13 +2705,13 @@ with default parameters which may differ from the original class.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.dt">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.dt" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.dt" title="Link to this definition"></a></dt>
 <dd><p>Time between two trajectory frames in picoseconds.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.frame">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.frame" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.frame" title="Link to this definition"></a></dt>
 <dd><p>Frame number of the current time step.</p>
 <p>This is a simple short cut to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code>.</p>
 </dd></dl>
@@ -2723,8 +2723,8 @@ with default parameters which may differ from the original class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to get value for</p></li>
-<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to get value for</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</p></li>
 </ul>
 </dd>
 </dl>
@@ -2753,7 +2753,7 @@ second trajectory:</p>
 <dd class="field-odd"><p>List of dictionaries of the args/kwargs describing each auxiliary.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2785,7 +2785,7 @@ through the trajectory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to iterate over.</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to iterate over.</p></li>
 <li><p><strong>(</strong><strong>start</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
 <li><p><strong>stop</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
 <li><p><strong>step</strong><strong>)</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
@@ -2837,10 +2837,10 @@ steps are more frequent, this will work the same as calling
 <dd class="field-odd"><p><strong>n_atoms</strong> – the number of atoms in the coordinate file</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2866,12 +2866,12 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to rename</p></li>
-<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – New name to try set</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to rename</p></li>
+<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – New name to try set</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2889,8 +2889,8 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the auxiliary to alter</p></li>
-<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</p></li>
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the auxiliary to alter</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</p></li>
 <li><p><strong>new</strong> – New value to try set <em>attrname</em> to</p></li>
 </ul>
 </dd>
@@ -2911,7 +2911,7 @@ time = <code class="xref py py-attr docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.timeseries">
-<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atomgroup</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fac'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.timeseries" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Atomgroup</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fac'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><span class="pre">ndarray</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.timeseries" title="Link to this definition"></a></dt>
 <dd><p>Return a subset of coordinate data for an AtomGroup</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2924,15 +2924,15 @@ of coordinate data is returned.</p>
 </div>
 </p></li>
 <li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> (</em><em>optional</em><em>)</em>) – Same as <cite>asel</cite>, will replace <cite>asel</cite> in 3.0.0</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Begin reading the trajectory at frame index <cite>start</cite> (where 0 is the
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Begin reading the trajectory at frame index <cite>start</cite> (where 0 is the
 index of the first frame in the trajectory); the default
 <code class="docutils literal notranslate"><span class="pre">None</span></code> starts at the beginning.</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – End reading the trajectory at frame index <cite>stop</cite>-1, i.e, <cite>stop</cite> is
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – End reading the trajectory at frame index <cite>stop</cite>-1, i.e, <cite>stop</cite> is
 excluded. The trajectory is read to the end with the default
 <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Step size for reading; the default <code class="docutils literal notranslate"><span class="pre">None</span></code> is equivalent to 1 and
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Step size for reading; the default <code class="docutils literal notranslate"><span class="pre">None</span></code> is equivalent to 1 and
 means to read every frame.</p></li>
-<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
 where the shape is (frame, number of atoms,
@@ -2951,7 +2951,7 @@ coordinates)</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.totaltime">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.totaltime" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.totaltime" title="Link to this definition"></a></dt>
 <dd><p>Total length of the trajectory</p>
 <p>The time is calculated as <code class="docutils literal notranslate"><span class="pre">(n_frames</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">dt</span></code>, i.e., we assume that
 the first frame no time as elapsed. Thus, a trajectory with two frames will

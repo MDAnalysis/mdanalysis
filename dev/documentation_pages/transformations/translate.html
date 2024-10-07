@@ -195,9 +195,9 @@ limiting threads and checking if it can be used in parallel analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
+<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>
-<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
+<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
 analysis approach.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
@@ -221,12 +221,12 @@ If a point is given, the center of the atomgroup will be translated to this poin
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atom group to be centered on the unit cell.</p></li>
-<li><p><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – used to choose the method of centering on the given atom group. Can be ‘geometry’
+<li><p><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – used to choose the method of centering on the given atom group. Can be ‘geometry’
 or ‘mass’</p></li>
 <li><p><strong>point</strong> (<em>array-like</em><em>, </em><em>optional</em>) – overrides the unit cell center - the coordinates of the Timestep are translated so
 that the center of mass/geometry of the given AtomGroup is aligned to this position
 instead. Defined as an array of size 3.</p></li>
-<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
 before calculating the center of mass or geometry. Default is <cite>False</cite>, no changes
 to the atom coordinates are done before calculating the center of the AtomGroup.</p></li>
 </ul>
@@ -246,9 +246,9 @@ limiting threads and checking if it can be used in parallel analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
+<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>
-<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
+<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
 analysis approach.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>

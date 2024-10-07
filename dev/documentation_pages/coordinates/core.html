@@ -189,14 +189,14 @@
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.core.</span></span><span class="sig-name descname"><span class="pre">reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#reader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.reader" title="Link to this definition"></a></dt>
 <dd><p>Provide a trajectory reader instance for <em>filename</em>.</p>
 <p>This function guesses the file format from the extension of <em>filename</em> and
-it will throw a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> if the extension is not recognized.</p>
+it will throw a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> if the extension is not recognized.</p>
 <p>In most cases, no special keyword arguments are necessary.</p>
 <p>All other keywords are passed on to the underlying Reader classes; see
 their documentation for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – filename (or tuple of filenames) of the input coordinate file</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – filename (or tuple of filenames) of the input coordinate file</p></li>
 <li><p><strong>kwargs</strong> – Keyword arguments for the selected Reader class.</p></li>
 </ul>
 </dd>
@@ -220,11 +220,11 @@ their documentation for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Output filename of the trajectory; the extension determines the
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Output filename of the trajectory; the extension determines the
 format.</p></li>
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – The number of atoms in the output trajectory; can be ommitted
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – The number of atoms in the output trajectory; can be ommitted
 for single-frame writers.</p></li>
-<li><p><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: write a trajectory with multiple frames; <code class="docutils literal notranslate"><span class="pre">False</span></code>
+<li><p><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: write a trajectory with multiple frames; <code class="docutils literal notranslate"><span class="pre">False</span></code>
 only write a single frame snapshot; <code class="docutils literal notranslate"><span class="pre">None</span></code> first try to get
 a multiframe writer and then fall back to single frame [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
 <li><p><strong>kwargs</strong> (<em>optional</em>) – Keyword arguments for the writer; all trajectory Writers accept
@@ -273,7 +273,7 @@ a Reader and will be returned.</p></li>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Reader</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If no appropriate Reader is found</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If no appropriate Reader is found</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -312,8 +312,8 @@ examined for its extension and the Writer is chosen accordingly.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided, then
 <a class="reference internal" href="null.html#MDAnalysis.coordinates.null.NullWriter" title="MDAnalysis.coordinates.null.NullWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullWriter</span></code></a> is selected (and
 all output is discarded silently).</p></li>
-<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Explicitly set a format.</p></li>
-<li><p><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: write multiple frames to the trajectory; <code class="docutils literal notranslate"><span class="pre">False</span></code>: only
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Explicitly set a format.</p></li>
+<li><p><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: write multiple frames to the trajectory; <code class="docutils literal notranslate"><span class="pre">False</span></code>: only
 write a single coordinate frame; <code class="docutils literal notranslate"><span class="pre">None</span></code>: first try trajectory (multi
 frame writers), then the single frame ones. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
@@ -340,7 +340,7 @@ behaviour.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.14.0: </span>Removed the default value for the <cite>format</cite> argument. Now, the value
 provided with the <cite>format</cite> parameter takes precedence over the extension
-of <cite>filename</cite>. A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if the format cannot be
+of <cite>filename</cite>. A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if the format cannot be
 deduced from <cite>filename</cite>.</p>
 </div>
 <div class="versionchanged">

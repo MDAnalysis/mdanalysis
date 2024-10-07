@@ -198,7 +198,7 @@ format is read:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">recordName</span> <span class="n">serial</span> <span class="n">atomName</span> <span class="n">residueName</span> <span class="n">residueNumber</span> <span class="n">X</span> <span class="n">Y</span> <span class="n">Z</span> <span class="n">charge</span> <span class="n">radius</span>
 </pre></div>
 </div>
-<p>Anything else will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<p>Anything else will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 <p>The whitespace is the most important feature of this format: fields
 <em>must</em> be separated by at least one space or tab character. The fields
 are:</p>
@@ -264,7 +264,7 @@ In all cases the <cite>dimensions</cite> attribute will be set to <cite>None</ci
 <dd><p>Returns a PQRWriter for <em>filename</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – filename of the output PQR file</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – filename of the output PQR file</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="MDAnalysis.coordinates.PQR.PQRWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PQRWriter</span></code></a></p>
@@ -307,9 +307,9 @@ for files to be written under compressed formats</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – output filename</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
-<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – remark lines (list of strings) or single string to be added to the
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – output filename</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – remark lines (list of strings) or single string to be added to the
 top of the PQR file</p></li>
 </ul>
 </dd>
@@ -329,7 +329,7 @@ top of the PQR file</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis AtomGroup or Universe</p></li>
-<li><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – optionally move to frame index <cite>frame</cite>; by default, write the
+<li><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – optionally move to frame index <cite>frame</cite>; by default, write the
 current frame</p></li>
 </ul>
 </dd>

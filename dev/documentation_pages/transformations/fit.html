@@ -190,7 +190,7 @@ fitting its center of mass to the center of mass of a reference <cite>ref</cite>
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></p></li>
 <li><p><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – reference structure, a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or a
 whole <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></p></li>
-<li><p><strong>plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – used to define the plane on which the translations will be removed.
+<li><p><strong>plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – used to define the plane on which the translations will be removed.
 Defined as a string of the plane.
 Suported planes are yz, xz and xy planes.</p></li>
 <li><p><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like, optional) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
@@ -214,9 +214,9 @@ limiting threads and checking if it can be used in parallel analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
+<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>
-<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
+<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
 analysis approach.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
@@ -258,7 +258,7 @@ by fitting it to a reference <cite>ref</cite>, using the masses as weights for t
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></p></li>
 <li><p><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – reference structure, a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or a whole
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></p></li>
-<li><p><strong>plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – used to define the plane on which the rotations and translations will be removed.
+<li><p><strong>plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – used to define the plane on which the rotations and translations will be removed.
 Defined as a string of the plane. Supported planes are “yz”, “xz” and “xy” planes.</p></li>
 <li><p><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like, optional) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
 weigh each atom equally. If a float array of the same length as
@@ -281,9 +281,9 @@ limiting threads and checking if it can be used in parallel analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
+<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>
-<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
+<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
 analysis approach.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>

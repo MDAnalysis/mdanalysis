@@ -214,23 +214,23 @@ atoms have unknown atom types, the elements attribute will not be set.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">resid</span></code> will set to 1 when not provided.</p></li>
 <li><p>If no atoms have <code class="docutils literal notranslate"><span class="pre">resname</span></code> field, resnames attribute will not be set;
 If some atoms have <code class="docutils literal notranslate"><span class="pre">resname</span></code> while some do not,
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> will occur.</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> will occur.</p></li>
 <li><p>If “NO_CHARGES” shows up in “&#64;&lt;TRIPOS&gt;MOLECULE” section
 and no atoms have the <code class="docutils literal notranslate"><span class="pre">charge</span></code> field, charges attribute will not be set;
 If “NO_CHARGES” shows up while <code class="docutils literal notranslate"><span class="pre">charge</span></code> field appears,
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> will occur;
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> will occur;
 If a charge model is specified while some atoms don’t have <code class="docutils literal notranslate"><span class="pre">charge</span></code>,
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> will occur as well.</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> will occur as well.</p></li>
 </ol>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If some atoms have the optional field <code class="docutils literal notranslate"><span class="pre">resname</span></code> (aka <code class="docutils literal notranslate"><span class="pre">subst_name</span></code>)
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If some atoms have the optional field <code class="docutils literal notranslate"><span class="pre">resname</span></code> (aka <code class="docutils literal notranslate"><span class="pre">subst_name</span></code>)
     while some do not.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If “NO_CHARGES” shows up in “&#64;&lt;TRIPOS&gt;MOLECULE” section while
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If “NO_CHARGES” shows up in “&#64;&lt;TRIPOS&gt;MOLECULE” section while
     some atoms have the optional field <code class="docutils literal notranslate"><span class="pre">charge</span></code>.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a charge model is specified in “&#64;&lt;TRIPOS&gt;MOLECULE” section while
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If a charge model is specified in “&#64;&lt;TRIPOS&gt;MOLECULE” section while
     some atoms do not have the optional field <code class="docutils literal notranslate"><span class="pre">charge</span></code>.</p></li>
 </ul>
 </dd>
@@ -265,7 +265,7 @@ Ignores status bit strings</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -288,7 +288,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -311,7 +311,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -337,7 +337,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -363,7 +363,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -391,7 +391,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -418,7 +418,7 @@ returned.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>
@@ -441,7 +441,7 @@ is avoided.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
 </dd>
 </dl>

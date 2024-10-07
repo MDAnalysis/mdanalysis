@@ -197,7 +197,7 @@ coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
 </dd>
@@ -290,10 +290,10 @@ for possible post processing into a common unitcell data structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame, default to 0</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – stop frame, default to <code class="docutils literal notranslate"><span class="pre">n_frames</span></code></p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames read, defaults to 1</p></li>
-<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – give order of returned array with <cite>f</cite>:frames, <cite>a</cite>:atoms, <cite>c</cite>:coordinates</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame, default to 0</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – stop frame, default to <code class="docutils literal notranslate"><span class="pre">n_frames</span></code></p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames read, defaults to 1</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – give order of returned array with <cite>f</cite>:frames, <cite>a</cite>:atoms, <cite>c</cite>:coordinates</p></li>
 <li><p><strong>indices</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – only read selected atoms. In <code class="docutils literal notranslate"><span class="pre">None</span></code> read all.</p></li>
 </ul>
 </dd>
@@ -318,7 +318,7 @@ unitcell data structure.</p>
 <dd><p>Seek to Frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – seek the file to given frame (0-based)</p>
+<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – seek the file to given frame (0-based)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -355,13 +355,13 @@ unitcell data structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – remarks of DCD file. Writes up to 239 characters (ASCII). The
+<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – remarks of DCD file. Writes up to 239 characters (ASCII). The
 character 240 will be the null terminator</p></li>
-<li><p><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms to write</p></li>
-<li><p><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – starting frame number</p></li>
-<li><p><strong>nsavc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of frames between saves</p></li>
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – integrator time step. The time for 1 frame is nsavc * delta</p></li>
-<li><p><strong>is_periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – write unitcell information. Also pretends that file was written by CHARMM 24</p></li>
+<li><p><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms to write</p></li>
+<li><p><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – starting frame number</p></li>
+<li><p><strong>nsavc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of frames between saves</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – integrator time step. The time for 1 frame is nsavc * delta</p></li>
+<li><p><strong>is_periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – write unitcell information. Also pretends that file was written by CHARMM 24</p></li>
 </ul>
 </dd>
 </dl>

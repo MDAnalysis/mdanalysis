@@ -270,8 +270,8 @@ XYZ.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – filename of the output trajectory</p></li>
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms. If none is given use the same number of atoms from
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – filename of the output trajectory</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms. If none is given use the same number of atoms from
 the reader instance is used</p></li>
 <li><p><strong>**kwargs</strong> – See <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> for additional kwargs</p></li>
 </ul>
@@ -337,16 +337,16 @@ passed to the writer, these should be added to the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – filename of trajectory file. If it ends with “gz” then the file
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – filename of trajectory file. If it ends with “gz” then the file
 will be gzip-compressed; if it ends with “bz2” it will be bzip2
 compressed.</p></li>
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of atoms in trajectory. By default assume that this is None
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of atoms in trajectory. By default assume that this is None
 and that this file is used to store several different models
 instead of a single trajectory. If a number is provided each
 written TimeStep has to contain the same number of atoms.</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
 writing  [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
-<li><p><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
+<li><p><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
 version and frame</p></li>
 </ul>
 </dd>

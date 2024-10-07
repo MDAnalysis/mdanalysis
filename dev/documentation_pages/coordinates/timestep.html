@@ -204,14 +204,14 @@ MDAnalysis.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_atoms</strong> (<em>uint64</em>) – The total number of atoms this Timestep describes</p></li>
-<li><p><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
-<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
-<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
 <li><p><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
 when attributes require trajectory manipulation (e.g. dt)</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep.time" title="MDAnalysis.coordinates.timestep.Timestep.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep.time" title="MDAnalysis.coordinates.timestep.Timestep.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
 is set, then <cite>dt</cite> will be ignored.</p></li>
-<li><p><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</p></li>
+<li><p><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</p></li>
 </ul>
 </dd>
 </dl>
@@ -512,7 +512,7 @@ triclinic vectors.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.timestep.Timestep.data">
 <span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#MDAnalysis.coordinates.timestep.Timestep.data" title="Link to this definition"></a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> that holds arbitrary per Timestep data</p>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> that holds arbitrary per Timestep data</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.11.0.</span></p>
 </div>
@@ -563,8 +563,8 @@ correspond to atom indices,
 <dd><p>Make a new <cite>Timestep</cite> containing a subset of the original <cite>Timestep</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sel</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><em>slice</em></a>) – The underlying position, velocity, and force arrays are sliced
-using a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>, or any array-like.</p>
+<dd class="field-odd"><p><strong>sel</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><em>slice</em></a>) – The underlying position, velocity, and force arrays are sliced
+using a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>, or any array-like.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A <cite>Timestep</cite> object of the same type containing all header
@@ -576,11 +576,11 @@ information and all atom information relevant to the selection.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The selection must be a 0 based <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or array of the atom indices
+<p>The selection must be a 0 based <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or array of the atom indices
 in this <a class="reference internal" href="#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
 </div>
 <p class="rubric">Example</p>
-<p>Using a Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> object:</p>
+<p>Using a Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> object:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
 </pre></div>
 </div>

@@ -176,7 +176,7 @@ coordinates (where the coordinates are stored in <cite>x</cite> attribute of the
 <p>Besides iteration, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRRFile</span></code></a> one can also seek to
 arbitrary frames using the <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a> method. This is provided by
 lazily generating a offset list for stored frames. The offset list is generated
-the first time <a class="reference external" href="https://docs.python.org/3/library/functions.html#len" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">len()</span></code></a> or :<cite>~XTCFile.seek</cite> is called.</p>
+the first time <a class="reference external" href="https://docs.python.org/3/library/functions.html#len" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">len()</span></code></a> or :<cite>~XTCFile.seek</cite> is called.</p>
 <p>(For more details on how to use <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRRFile</span></code></a> on their
 own please see the source code in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/develop/package/MDAnalysis/lib/formats/libmdaxdr.pyx">lib/formats/libmdaxdr.pyx</a> for the time being.)</p>
 </section>
@@ -190,7 +190,7 @@ line. Additionally the context-manager protocoll is supported as well.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
 </dd>
@@ -220,7 +220,7 @@ frame and offsets</p>
 <dd><p>Close the open XDR file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -243,12 +243,12 @@ frame and offsets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -271,7 +271,7 @@ frame and offsets</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -298,7 +298,7 @@ a pre-existing array.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 <div class="versionadded">
@@ -315,10 +315,10 @@ they haven’t been set before. For large file this means the first seek
 can be very slow. Later seeks will be very fast.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – seek the file to given frame</p>
+<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – seek the file to given frame</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -346,14 +346,14 @@ can be very slow. Later seeks will be very fast.</p>
 <li><p><strong>velocity</strong> (array_like, shape=(<cite>n_atoms</cite>, 3), optional) – cartesion velocities. Only written if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>forces</strong> (array_like, shape=(<cite>n_atoms</cite>, 3), optional) – cartesion forces. Only written if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – Box vectors for this frame</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – current step number, 1 indexed</p></li>
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – current time</p></li>
-<li><p><strong>_lambda</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – current lambda value</p></li>
-<li><p><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms in frame</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – current step number, 1 indexed</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – current time</p></li>
+<li><p><strong>_lambda</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – current lambda value</p></li>
+<li><p><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms in frame</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -370,7 +370,7 @@ line. Additionally the context-manager protocoll is supported as well.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
 </dd>
@@ -400,7 +400,7 @@ frame and offsets</p>
 <dd><p>Close the open XDR file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -423,12 +423,12 @@ frame and offsets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -451,7 +451,7 @@ frame and offsets</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -478,7 +478,7 @@ a pre-existing array.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 <div class="versionadded">
@@ -495,10 +495,10 @@ they haven’t been set before. For large file this means the first seek
 can be very slow. Later seeks will be very fast.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – seek the file to given frame</p>
+<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – seek the file to given frame</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -524,9 +524,9 @@ can be very slow. Later seeks will be very fast.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xyz</strong> (array_like, shape=(<cite>n_atoms</cite>, 3)) – cartesion coordinates</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – Box vectors for this frame</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – current step number, 1 indexed</p></li>
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – current time</p></li>
-<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – precision of saved trajectory, see Notes</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – current step number, 1 indexed</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – current time</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – precision of saved trajectory, see Notes</p></li>
 </ul>
 </dd>
 </dl>
@@ -536,7 +536,7 @@ will be multiplied by precision and then converted to an integer. This
 means a precision of 1000 yields an accuracy of 3 decimal places.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><strong>IOError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>

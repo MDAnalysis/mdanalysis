@@ -186,9 +186,9 @@ by this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms in topology. Must be larger then 1 at each level</p></li>
-<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of residues in topology. Must be larger then 1 at each level</p></li>
-<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of segments in topology. Must be larger then 1 at each level</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms in topology. Must be larger then 1 at each level</p></li>
+<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of residues in topology. Must be larger then 1 at each level</p></li>
+<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of segments in topology. Must be larger then 1 at each level</p></li>
 <li><p><strong>attrs</strong> (<em>TopologyAttr objects</em>) – components of the topology to be included</p></li>
 <li><p><strong>atom_resindex</strong> (<em>array</em>) – 1-D array giving the resindex of each atom in the system</p></li>
 <li><p><strong>residue_segindex</strong> (<em>array</em>) – 1-D array giving the segindex of each residue in the system</p></li>
@@ -217,7 +217,7 @@ by this object.</p>
 <dd><p>Adds a new Segment to the Topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new_attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – the new attributes for the new segment, eg {‘segid’: ‘B’}</p>
+<dd class="field-odd"><p><strong>new_attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – the new attributes for the new segment, eg {‘segid’: ‘B’}</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – if an attribute wasn’t specified.</p>
@@ -226,7 +226,7 @@ by this object.</p>
 <dd class="field-odd"><p><strong>ix</strong> – the idx of the new segment</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 <div class="versionchanged">
@@ -293,9 +293,9 @@ object (suffix <cite>_2d</cite>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of atoms in topology</p></li>
-<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of residues in topology</p></li>
-<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of segments in topology</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms in topology</p></li>
+<li><p><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of residues in topology</p></li>
+<li><p><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of segments in topology</p></li>
 <li><p><strong>atom_resindex</strong> (<em>1-D array</em>) – resindex for each atom in the topology; the number of unique values in
 this array must be &lt;= <cite>n_residues</cite>, and the array must be length
 <cite>n_atoms</cite>; giving None defaults to placing all atoms in residue 0</p></li>
@@ -311,7 +311,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <dd><p>number of atoms in topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -322,7 +322,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <dd><p>number of residues in topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -333,7 +333,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <dd><p>number of segments in topology</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -345,7 +345,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 the TransTable</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -439,7 +439,7 @@ the TransTable</p>
 in that residue</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -492,7 +492,7 @@ in that residue</p>
 in that segment</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -528,7 +528,7 @@ in that segment</p>
 present in that segment</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -572,7 +572,7 @@ of each parent.  Length <cite>nparents</cite> + 1</p>
 <p>Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 &amp; 5</p>
 <p class="rubric">Notes</p>
 <p>The final entry in the return array will be <code class="docutils literal notranslate"><span class="pre">None</span></code> to ensure that the
-dtype of the array is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>.</p>
+dtype of the array is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This means negative indexing should <strong>never</strong>

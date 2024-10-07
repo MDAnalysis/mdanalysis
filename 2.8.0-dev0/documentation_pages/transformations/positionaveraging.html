@@ -237,8 +237,8 @@ simply removing the first <code class="docutils literal notranslate"><span class
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>avg_frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Determines the number of frames to be used for the position averaging.</p></li>
-<li><p><strong>check_reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, position averaging will be reset and a warning raised
+<li><p><strong>avg_frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Determines the number of frames to be used for the position averaging.</p></li>
+<li><p><strong>check_reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, position averaging will be reset and a warning raised
 when the trajectory iteration direction changes. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, position
 averaging will not reset, regardless of the iteration.</p></li>
 </ul>
@@ -254,9 +254,9 @@ limiting threads and checking if it can be used in parallel analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
+<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>
-<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
+<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
 analysis approach.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>

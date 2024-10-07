@@ -200,7 +200,7 @@ optional argument to <a class="reference internal" href="#MDAnalysis.start_loggi
 “MDAnalysis.”.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module in the standard library contains in depth
+<p>The <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module in the standard library contains in depth
 documentation about using logging.</p>
 </div>
 <section id="convenience-functions">
@@ -267,56 +267,56 @@ trajectory.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>iterable</strong> (<em>iterable</em><em>, </em><em>optional</em>) – Iterable to decorate with a progressbar.
 Leave blank to manually manage the updates.</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> (the default) then show the progress bar, <em>unless</em> the
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> (the default) then show the progress bar, <em>unless</em> the
 <cite>disable</cite> keyword is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> (<cite>disable</cite> takes precedence over
 <cite>verbose</cite>). If <cite>verbose</cite> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the progress bar is
 displayed (like <code class="docutils literal notranslate"><span class="pre">True</span></code>), <em>unless</em> this is a non-TTY output device
 (see <cite>disable</cite>).</p></li>
-<li><p><strong>desc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Prefix for the progressbar.</p></li>
-<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The number of expected iterations. If unspecified,
+<li><p><strong>desc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Prefix for the progressbar.</p></li>
+<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The number of expected iterations. If unspecified,
 <code class="docutils literal notranslate"><span class="pre">len(iterable)</span></code> is used if possible. If <code class="docutils literal notranslate"><span class="pre">float(&quot;inf&quot;)</span></code> or as a last
 resort, only basic progress statistics are displayed
 (no ETA, no progressbar).</p></li>
-<li><p><strong>leave</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If [default: <code class="docutils literal notranslate"><span class="pre">True</span></code>], keeps all traces of the progressbar
+<li><p><strong>leave</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If [default: <code class="docutils literal notranslate"><span class="pre">True</span></code>], keeps all traces of the progressbar
 upon termination of iteration.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code>, will leave only if <cite>position</cite> is 0.</p></li>
-<li><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOWrapper" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.TextIOWrapper</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>, optional) – Specifies where to output the progress messages (default:
-<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.stderr</span></code></a>). Uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">file.write()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">file.flush()</span></code>
+<li><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOWrapper" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.TextIOWrapper</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>, optional) – Specifies where to output the progress messages (default:
+<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.stderr</span></code></a>). Uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">file.write()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">file.flush()</span></code>
 methods.  For encoding, see <cite>write_bytes</cite>.</p></li>
-<li><p><strong>ncols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The width of the entire output message. If specified,
+<li><p><strong>ncols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The width of the entire output message. If specified,
 dynamically resizes the progressbar to stay within this bound.
 If unspecified, attempts to use environment width. The
 fallback is a meter width of 10 and no limit for the counter and
 statistics. If 0, will not print any meter (only stats).</p></li>
-<li><p><strong>mininterval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum progress display update interval [default: 0.1] seconds.</p></li>
-<li><p><strong>maxinterval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum progress display update interval [default: 10] seconds.
+<li><p><strong>mininterval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum progress display update interval [default: 0.1] seconds.</p></li>
+<li><p><strong>maxinterval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum progress display update interval [default: 10] seconds.
 Automatically adjusts <cite>miniters</cite> to correspond to <cite>mininterval</cite>
 after long display update lag. Only works if <cite>dynamic_miniters</cite>
 or monitor thread is enabled.</p></li>
-<li><p><strong>miniters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum progress display update interval, in iterations.
+<li><p><strong>miniters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum progress display update interval, in iterations.
 If 0 and <cite>dynamic_miniters</cite>, will automatically adjust to equal
 <cite>mininterval</cite> (more CPU efficient, good for tight loops).
 If &gt; 0, will skip display of specified number of iterations.
 Tweak this and <cite>mininterval</cite> to get very efficient loops.
 If your progress is erratic with both fast and slow iterations
 (network, skipping items, etc) you should set miniters=1.</p></li>
-<li><p><strong>ascii</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – If unspecified or <code class="docutils literal notranslate"><span class="pre">False</span></code>, use unicode (smooth blocks) to fill
+<li><p><strong>ascii</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – If unspecified or <code class="docutils literal notranslate"><span class="pre">False</span></code>, use unicode (smooth blocks) to fill
 the meter. The fallback is to use ASCII characters “ 123456789#”.</p></li>
-<li><p><strong>disable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to disable the entire progressbar wrapper
+<li><p><strong>disable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to disable the entire progressbar wrapper
 [default: <code class="docutils literal notranslate"><span class="pre">False</span></code>]. If set to None, disable on non-TTY.</p></li>
-<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – String that will be used to define the unit of each iteration
+<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – String that will be used to define the unit of each iteration
 [default: it].</p></li>
-<li><p><strong>unit_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If 1 or True, the number of iterations will be reduced/scaled
+<li><p><strong>unit_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – If 1 or True, the number of iterations will be reduced/scaled
 automatically and a metric prefix following the
 International System of Units standard will be added
 (kilo, mega, etc.) [default: <code class="docutils literal notranslate"><span class="pre">False</span></code>]. If any other non-zero
 number, will scale <cite>total</cite> and <cite>n</cite>.</p></li>
-<li><p><strong>dynamic_ncols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If set, constantly alters <cite>ncols</cite> and <cite>nrows</cite> to the
+<li><p><strong>dynamic_ncols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If set, constantly alters <cite>ncols</cite> and <cite>nrows</cite> to the
 environment (allowing for window resizes) [default: <code class="docutils literal notranslate"><span class="pre">False</span></code>].</p></li>
-<li><p><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Exponential moving average smoothing factor for speed estimates
+<li><p><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Exponential moving average smoothing factor for speed estimates
 (ignored in GUI mode). Ranges from 0 (average speed) to 1
 (current/instantaneous speed) [default: 0.3].</p></li>
-<li><p><strong>bar_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – <p>Specify a custom bar string formatting. May impact performance.
+<li><p><strong>bar_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – <p>Specify a custom bar string formatting. May impact performance.
 [default: <code class="docutils literal notranslate"><span class="pre">'{l_bar}{bar}{r_bar}'</span></code>], where <code class="docutils literal notranslate"><span class="pre">l_bar='{desc}:</span>
 <span class="pre">{percentage:3.0f}%|'</span></code> and <code class="docutils literal notranslate"><span class="pre">r_bar='|</span> <span class="pre">{n_fmt}/{total_fmt}</span>
 <span class="pre">[{elapsed}&lt;{remaining},</span> <span class="pre">{rate_fmt}{postfix}]'</span></code></p>
@@ -328,21 +328,21 @@ remaining, remaining_s.</p>
 <p>Note that a trailing “: “ is automatically removed after {desc}
 if the latter is empty.</p>
 </p></li>
-<li><p><strong>initial</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The initial counter value. Useful when restarting a progress bar
-[default: 0]. If using <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, consider specifying <code class="docutils literal notranslate"><span class="pre">{n:.3f}</span></code>
+<li><p><strong>initial</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The initial counter value. Useful when restarting a progress bar
+[default: 0]. If using <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, consider specifying <code class="docutils literal notranslate"><span class="pre">{n:.3f}</span></code>
 or similar in <cite>bar_format</cite>, or specifying <cite>unit_scale</cite>.</p></li>
-<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Specify the line offset to print this bar (starting from 0)
+<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Specify the line offset to print this bar (starting from 0)
 Automatic if unspecified.
 Useful to manage multiple bars at once (e.g., from threads).</p></li>
-<li><p><strong>postfix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em> or </em><em>*</em><em>, </em><em>optional</em>) – Specify additional stats to display at the end of the bar.
-Calls <code class="docutils literal notranslate"><span class="pre">set_postfix(**postfix)</span></code> if possible (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>).</p></li>
-<li><p><strong>unit_divisor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – [default: 1000], ignored unless <cite>unit_scale</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>write_bytes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) and <cite>file</cite> is unspecified,
+<li><p><strong>postfix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> or </em><em>*</em><em>, </em><em>optional</em>) – Specify additional stats to display at the end of the bar.
+Calls <code class="docutils literal notranslate"><span class="pre">set_postfix(**postfix)</span></code> if possible (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>).</p></li>
+<li><p><strong>unit_divisor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – [default: 1000], ignored unless <cite>unit_scale</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>write_bytes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) and <cite>file</cite> is unspecified,
 bytes will be written in Python 2. If <cite>True</cite> will also write
 bytes. In all other cases will default to unicode.</p></li>
-<li><p><strong>lock_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a><em>, </em><em>optional</em>) – Passed to <cite>refresh</cite> for intermediate output
+<li><p><strong>lock_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>, </em><em>optional</em>) – Passed to <cite>refresh</cite> for intermediate output
 (initialisation, iterating, and updating).</p></li>
-<li><p><strong>nrows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The screen height. If specified, hides nested bars outside this
+<li><p><strong>nrows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The screen height. If specified, hides nested bars outside this
 bound. If unspecified, attempts to use environment height.
 The fallback is 20.</p></li>
 </ul>

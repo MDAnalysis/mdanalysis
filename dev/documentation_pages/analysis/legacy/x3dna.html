@@ -310,20 +310,20 @@ is always</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The <cite>filename</cite> is used as input for X3DNA in the
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The <cite>filename</cite> is used as input for X3DNA in the
 <strong class="program">xdna_ensemble</strong> command.  It specifies the name of a
 PDB coordinate file to be used. This must be in Brookhaven
 protein databank format or something closely approximating
 this.</p></li>
-<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Path to the <strong class="program">xdna_ensemble</strong> executable directories
+<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Path to the <strong class="program">xdna_ensemble</strong> executable directories
 (e.g. <code class="docutils literal notranslate"><span class="pre">/opt/x3dna/2.1</span> <span class="pre">and</span> <span class="pre">/opt/x3dna/2.1/bin</span></code>) must be set
 and then added to export in bashrc file. See X3DNA
 documentation for set-up instructions.</p></li>
-<li><p><strong>x3dna_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Determines whether base step or base pair parameters will be
+<li><p><strong>x3dna_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Determines whether base step or base pair parameters will be
 calculated. If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default) then stacked <em>base step</em>
 parameters will be analyzed.  If <code class="docutils literal notranslate"><span class="pre">False</span></code> then stacked <em>base
 pair</em> parameters will be analyzed.</p></li>
-<li><p><strong>logfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Write output from X3DNA to <cite>logfile</cite> (default: “bp_step.par”)</p></li>
+<li><p><strong>logfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Write output from X3DNA to <cite>logfile</cite> (default: “bp_step.par”)</p></li>
 </ul>
 </dd>
 </dl>
@@ -358,8 +358,8 @@ saved to a gzipped data file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em>) – identifier, free form [1]</p></li>
-<li><p><strong>outdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – save output data under <cite>outdir</cite>/<cite>run</cite> if set to any other
+<li><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em>) – identifier, free form [1]</p></li>
+<li><p><strong>outdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – save output data under <cite>outdir</cite>/<cite>run</cite> if set to any other
 value but <code class="docutils literal notranslate"><span class="pre">None</span></code> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
 </ul>
 </dd>
@@ -377,7 +377,7 @@ order is <code class="docutils literal notranslate"><span class="pre">[shear,</s
 <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -394,7 +394,7 @@ for the helicoidal parameters. The order for both lists is <code class="docutils
 <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a>)</p>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -449,7 +449,7 @@ parameters. The order is <code class="docutils literal notranslate"><span class=
 <span class="pre">propeller,</span> <span class="pre">opening,</span> <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -478,14 +478,14 @@ each frame and runs X3DNA on the frame.</p>
 converted to a sequence of PDB files and X3DNA is run on each
 individual file. (Use the <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite> keywords
 to slice the trajectory.)</p></li>
-<li><p><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string (default: “nucleic”) to select the
+<li><p><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string (default: “nucleic”) to select the
 atoms that should be analyzed.</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>)</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>)</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame indices to slice the trajectory as
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>)</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>)</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame indices to slice the trajectory as
 <code class="docutils literal notranslate"><span class="pre">universe.trajectory[start,</span> <span class="pre">stop,</span> <span class="pre">step]</span></code>; by default, the whole
 trajectory is analyzed.</p></li>
-<li><p><strong>x3dna_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – indicates whether stacked bases or stacked base-pairs will be
+<li><p><strong>x3dna_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – indicates whether stacked bases or stacked base-pairs will be
 analyzed. <code class="docutils literal notranslate"><span class="pre">True</span></code> is bases and <code class="docutils literal notranslate"><span class="pre">False</span></code> is stacked base-pairs
 [Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>].</p></li>
 <li><p><strong>kwargs</strong> (<em>keyword arguments</em><em> (</em><em>optional</em><em>)</em>) – All other keywords are passed on to <a class="reference internal" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA" title="MDAnalysis.analysis.legacy.x3dna.X3DNA"><code class="xref py py-class docutils literal notranslate"><span class="pre">X3DNA</span></code></a> (see there
@@ -519,7 +519,7 @@ order is <code class="docutils literal notranslate"><span class="pre">[shear,</s
 <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -536,7 +536,7 @@ for the helicoidal parameters. The order for both lists is <code class="docutils
 <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a>)</p>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -600,7 +600,7 @@ parameters. The order is <code class="docutils literal notranslate"><span class=
 <span class="pre">propeller,</span> <span class="pre">opening,</span> <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>

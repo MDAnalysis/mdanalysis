@@ -235,7 +235,7 @@ Numbers such as 1.2, 1.2e-01, -1.2 are all parsed as Python floats.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.selection.FloatRangeSelection.dtype">
 <span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#MDAnalysis.core.selection.FloatRangeSelection.dtype" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -347,7 +347,7 @@ Delimiters include “:”, “-”, “to” and can have arbitrary whitespace.
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.selection.RangeSelection.dtype">
 <span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#MDAnalysis.core.selection.RangeSelection.dtype" title="Link to this definition"></a></dt>
-<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -406,18 +406,18 @@ expressions into nested Selection tree.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>selectstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The string that describes the selection</p></li>
+<li><p><strong>selectstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The string that describes the selection</p></li>
 <li><p><strong>selgroups</strong> (<em>AtomGroups</em>) – AtomGroups to be used in <cite>group</cite> selections</p></li>
-<li><p><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – for distance based selections, whether to consider
+<li><p><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – for distance based selections, whether to consider
 periodic boundary conditions</p></li>
-<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The absolute tolerance parameter for float comparisons.
+<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The absolute tolerance parameter for float comparisons.
 Passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="(in NumPy v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code></a>.</p></li>
-<li><p><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The relative tolerance parameter for float comparisons.
+<li><p><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The relative tolerance parameter for float comparisons.
 Passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="(in NumPy v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code></a>.</p></li>
-<li><p><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to sorted the output AtomGroup.</p></li>
-<li><p><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed to the RDKitConverter when using selection based
+<li><p><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to sorted the output AtomGroup.</p></li>
+<li><p><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed to the RDKitConverter when using selection based
 on SMARTS queries</p></li>
-<li><p><strong>smarts_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed internally to RDKit’s <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches">GetSubstructMatches</a>.</p></li>
+<li><p><strong>smarts_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed internally to RDKit’s <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches">GetSubstructMatches</a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -492,10 +492,10 @@ module to avoid namespace clashes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>singular</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – singular name of TopologyAttr</p></li>
-<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – attribute name of TopologyAttr</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><em>type</em></a>) – type of TopologyAttr</p></li>
-<li><p><strong>per_object</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – level of TopologyAttr</p></li>
+<li><p><strong>singular</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – singular name of TopologyAttr</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – attribute name of TopologyAttr</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><em>type</em></a>) – type of TopologyAttr</p></li>
+<li><p><strong>per_object</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – level of TopologyAttr</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -505,7 +505,7 @@ module to avoid namespace clashes.</p>
 <dd class="field-odd"><p>subclass of Selection</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is not one of the supported types</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is not one of the supported types</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -532,13 +532,13 @@ as that is automatically handled by
 <dd><p>Pop tokens from the left until you hit a keyword</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tokens</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.12)"><em>collections.deque</em></a>) – deque of strings, some tokens some not</p>
+<dd class="field-odd"><p><strong>tokens</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.13)"><em>collections.deque</em></a>) – deque of strings, some tokens some not</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>values</strong> – All non keywords found until a keyword was hit</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of strings</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of strings</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -575,13 +575,13 @@ as that is automatically handled by
 <dd><p>Join range values that are separated by whitespace</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – list of value strings</p>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – list of value strings</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>values</strong></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of strings</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of strings</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

@@ -202,7 +202,7 @@ the center of geometry of a given AtomGroup:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – rotation angle in degrees</p></li>
+<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – rotation angle in degrees</p></li>
 <li><p><strong>direction</strong> (<em>array-like</em>) – vector that will define the direction of a custom axis of rotation from the
 provided point. Expected shapes are (3, ) or (1, 3).</p></li>
 <li><p><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>, </em><em>optional</em>) – use the weighted center of an AtomGroup as the point from where the rotation axis
@@ -215,7 +215,7 @@ With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quo
 If a float array of the same length as <cite>ag</cite> is provided, use each element of
 the <cite>array_like</cite> as a weight for the corresponding atom in <cite>ag</cite>. Default is
 None.</p></li>
-<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
 before calculating the center of mass or geometry. Default is <cite>False</cite>, no changes
 to the atom coordinates are done before calculating the center of the AtomGroup.</p></li>
 </ul>
@@ -240,9 +240,9 @@ limiting threads and checking if it can be used in parallel analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
+<li><p><strong>max_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum thread number can be used.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means the default or the external setting.</p></li>
-<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
+<li><p><strong>parallelizable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – A check for if this can be used in split-apply-combine parallel
 analysis approach.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>

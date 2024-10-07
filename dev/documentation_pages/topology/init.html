@@ -507,7 +507,7 @@ data read from the topology file.</p>
 </section>
 <section id="bonds">
 <h3><span class="section-number">5.1.1.2. </span>bonds<a class="headerlink" href="#bonds" title="Link to this heading"></a></h3>
-<p><strong>Bonds</strong> are represented as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each tuple
+<p><strong>Bonds</strong> are represented as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each tuple
 contains two atom numbers, which indicate the atoms between which the
 bond is formed. Only one of the two permutations is stored, typically
 the one with the lower atom number first.</p>
@@ -520,20 +520,20 @@ information is then passed to Bond initialisation in u._init_bonds()</p>
 </section>
 <section id="angles">
 <h3><span class="section-number">5.1.1.4. </span>angles<a class="headerlink" href="#angles" title="Link to this heading"></a></h3>
-<p><strong>Angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
+<p><strong>Angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains three atom numbers.  The second of these numbers
 represents the apex of the angle.</p>
 </section>
 <section id="dihedrals">
 <h3><span class="section-number">5.1.1.5. </span>dihedrals<a class="headerlink" href="#dihedrals" title="Link to this heading"></a></h3>
-<p><strong>Proper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
+<p><strong>Proper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains four atom numbers. The angle of the torsion
 is defined by the angle between the planes formed by atoms 1, 2, and 3,
 and 2, 3, and 4.</p>
 </section>
 <section id="impropers">
 <h3><span class="section-number">5.1.1.6. </span>impropers<a class="headerlink" href="#impropers" title="Link to this heading"></a></h3>
-<p><strong>Improper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
+<p><strong>Improper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains four atom numbers.  The angle of the improper torsion
 is again defined by the angle between the planes formed by atoms 1, 2, and 3,
 and 2, 3, and 4.  Improper dihedrals differ from regular dihedrals as the

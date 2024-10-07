@@ -188,8 +188,8 @@ subclasses.</p>
 <li><p><em>serial</em>: <a class="reference internal" href="#MDAnalysis.analysis.backends.BackendSerial" title="MDAnalysis.analysis.backends.BackendSerial"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendSerial</span></code></a>, that is equivalent to using no
 parallelization and is the default</p></li>
 <li><p><em>multiprocessing</em>: <a class="reference internal" href="#MDAnalysis.analysis.backends.BackendMultiprocessing" title="MDAnalysis.analysis.backends.BackendMultiprocessing"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendMultiprocessing</span></code></a> that supports
-parallelization via standard Python <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module
-and uses default <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> serialization</p></li>
+parallelization via standard Python <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> module
+and uses default <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> serialization</p></li>
 <li><p><em>dask</em>: <a class="reference internal" href="#MDAnalysis.analysis.backends.BackendDask" title="MDAnalysis.analysis.backends.BackendDask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendDask</span></code></a>, that uses the same process-based
 parallelization as <a class="reference internal" href="#MDAnalysis.analysis.backends.BackendMultiprocessing" title="MDAnalysis.analysis.backends.BackendMultiprocessing"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendMultiprocessing</span></code></a>, but different
 serialization algorithm via <a class="reference external" href="https://dask.org/">dask</a> (see <a class="reference external" href="https://distributed.dask.org/en/latest/serialization.html">dask
@@ -202,13 +202,13 @@ serialization algorithms</a> for details)</p></li>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendBase" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendBase" title="Link to this definition"></a></dt>
 <dd><p>Base class for backend implementation.</p>
 <p>Initializes an instance and performs checks for its validity, such as
 <code class="docutils literal notranslate"><span class="pre">n_workers</span></code> and possibly other ones.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of workers (usually, processes) over which the work is split</p>
+<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of workers (usually, processes) over which the work is split</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -255,7 +255,7 @@ validity of the backend instance</p>
 checked during <code class="docutils literal notranslate"><span class="pre">_validate()</span></code> run</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -271,7 +271,7 @@ the good usage of the backend instance</p>
 checked during <code class="docutils literal notranslate"><span class="pre">_validate()</span></code> run</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -283,14 +283,14 @@ checked during <code class="docutils literal notranslate"><span class="pre">_val
 and good usage (e.g. <code class="docutils literal notranslate"><span class="pre">n_workers=1</span></code> if backend is serial) of the backend</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if one of the conditions in <a class="reference internal" href="#MDAnalysis.analysis.backends.BackendBase._get_checks" title="MDAnalysis.analysis.backends.BackendBase._get_checks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_checks()</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if one of the conditions in <a class="reference internal" href="#MDAnalysis.analysis.backends.BackendBase._get_checks" title="MDAnalysis.analysis.backends.BackendBase._get_checks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_checks()</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendBase.apply">
-<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendBase.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendBase.apply" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendBase.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendBase.apply" title="Link to this definition"></a></dt>
 <dd><p>map function <cite>func</cite> to all tasks in the <cite>computations</cite> list</p>
 <p>Main method that will get called when using an instance of
 <code class="docutils literal notranslate"><span class="pre">BackendBase</span></code>.  It is equivalent to running <code class="docutils literal notranslate"><span class="pre">[func(item)</span> <span class="pre">for</span> <span class="pre">item</span> <span class="pre">in</span>
@@ -299,14 +299,14 @@ and good usage (e.g. <code class="docutils literal notranslate"><span class="pre
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>Callable</em>) – function to be called on each of the tasks in computations list</p></li>
-<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – computation tasks to apply function to</p></li>
+<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – computation tasks to apply function to</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of results of the function</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -315,7 +315,7 @@ and good usage (e.g. <code class="docutils literal notranslate"><span class="pre
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendDask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendDask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendDask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendDask" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendDask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendDask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendDask" title="Link to this definition"></a></dt>
 <dd><p>A built-in backend that executes a given function with <em>dask</em>.</p>
 <p>Execution is performed with the <a class="reference external" href="https://docs.dask.org/en/stable/api.html#dask.compute" title="(in Dask)"><code class="xref py py-func docutils literal notranslate"><span class="pre">dask.compute()</span></code></a> function of
 <a class="reference external" href="https://docs.dask.org/en/stable/delayed-api.html#dask.delayed.Delayed" title="(in Dask)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dask.delayed.Delayed</span></code></a> object (created with
@@ -325,9 +325,9 @@ processes). Requires the <a class="reference external" href="https://docs.dask.o
 to be <a class="reference external" href="https://docs.dask.org/en/stable/install.html">installed</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of processes in to distribute the workload
+<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of processes in to distribute the workload
 between. Must be a positive integer. Workers are actually
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.pool.Pool</span></code></a> processes, but they use a different and
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.pool.Pool</span></code></a> processes, but they use a different and
 more flexible <a class="reference external" href="https://docs.dask.org/en/stable/phases-of-computation.html#graph-serialization">serialization protocol</a>.</p>
 </dd>
 </dl>
@@ -353,27 +353,27 @@ installed in the environment.</p>
 checked during <code class="docutils literal notranslate"><span class="pre">_validate()</span></code> run</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendDask.apply">
-<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendDask.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendDask.apply" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendDask.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendDask.apply" title="Link to this definition"></a></dt>
 <dd><p>Applies <cite>func</cite> to each object in <code class="docutils literal notranslate"><span class="pre">computations</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>Callable</em>) – function to be called on each of the tasks in computations list</p></li>
-<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – computation tasks to apply function to</p></li>
+<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – computation tasks to apply function to</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of results of the function</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -382,12 +382,12 @@ checked during <code class="docutils literal notranslate"><span class="pre">_val
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendMultiprocessing">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendMultiprocessing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendMultiprocessing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendMultiprocessing" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendMultiprocessing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendMultiprocessing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendMultiprocessing" title="Link to this definition"></a></dt>
 <dd><p>A built-in backend that executes a given function using the
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool.map" title="(in Python v3.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">multiprocessing.Pool.map</span></code></a> method.</p>
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool.map" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">multiprocessing.Pool.map</span></code></a> method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of processes in <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code></a> to distribute the workload
+<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of processes in <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Pool</span></code></a> to distribute the workload
 between. Must be a positive integer.</p>
 </dd>
 </dl>
@@ -403,20 +403,20 @@ between. Must be a positive integer.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendMultiprocessing.apply">
-<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendMultiprocessing.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendMultiprocessing.apply" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendMultiprocessing.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendMultiprocessing.apply" title="Link to this definition"></a></dt>
 <dd><p>Applies <cite>func</cite> to each object in <code class="docutils literal notranslate"><span class="pre">computations</span></code> using <cite>multiprocessing</cite>’s <cite>Pool.map</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>Callable</em>) – function to be called on each of the tasks in computations list</p></li>
-<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – computation tasks to apply function to</p></li>
+<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – computation tasks to apply function to</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of results of the function</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -425,12 +425,12 @@ between. Must be a positive integer.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendSerial">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendSerial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendSerial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendSerial" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.backends.</span></span><span class="sig-name descname"><span class="pre">BackendSerial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendSerial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendSerial" title="Link to this definition"></a></dt>
 <dd><p>A built-in backend that does serial execution of the function, without any
 parallelization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Is ignored in this class, and if <code class="docutils literal notranslate"><span class="pre">n_workers</span></code> &gt; 1, a warning will be
+<dd class="field-odd"><p><strong>n_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Is ignored in this class, and if <code class="docutils literal notranslate"><span class="pre">n_workers</span></code> &gt; 1, a warning will be
 given.</p>
 </dd>
 </dl>
@@ -449,27 +449,27 @@ of workers is not 1, otherwise gives warning.</p>
 checked during <code class="docutils literal notranslate"><span class="pre">_validate()</span></code> run</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.backends.BackendSerial.apply">
-<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendSerial.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendSerial.apply" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">computations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/backends.html#BackendSerial.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.backends.BackendSerial.apply" title="Link to this definition"></a></dt>
 <dd><p>Serially applies <cite>func</cite> to each task object in <code class="docutils literal notranslate"><span class="pre">computations</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>Callable</em>) – function to be called on each of the tasks in computations list</p></li>
-<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – computation tasks to apply function to</p></li>
+<li><p><strong>computations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – computation tasks to apply function to</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of results of the function</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -175,8 +175,8 @@ in a object composition approach.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.picklable_file_io.FileIOPicklable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.picklable_file_io.</span></span><span class="sig-name descname"><span class="pre">FileIOPicklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/picklable_file_io.html#FileIOPicklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="Link to this definition"></a></dt>
 <dd><p>File object (read-only) that can be pickled.</p>
-<p>This class provides a file-like object (as returned by <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>,
-namely <a class="reference external" href="https://docs.python.org/3/library/io.html#io.FileIO" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.FileIO</span></code></a>) that, unlike standard Python file objects,
+<p>This class provides a file-like object (as returned by <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>,
+namely <a class="reference external" href="https://docs.python.org/3/library/io.html#io.FileIO" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.FileIO</span></code></a>) that, unlike standard Python file objects,
 can be pickled. Only read mode is supported.</p>
 <p>When the file is pickled, filename and position of the open file handle in
 the file are saved. On unpickling, the file is opened by filename,
@@ -191,10 +191,10 @@ a file in text mode, use the <a class="reference internal" href="#MDAnalysis.lib
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – either a text or byte string giving the name (and the path
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
 be opened.</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – only reading (‘r’) mode works. It exists to be consistent
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – only reading (‘r’) mode works. It exists to be consistent
 with a wider API.</p></li>
 </ul>
 </dd>
@@ -222,7 +222,7 @@ with a wider API.</p></li>
 <dt class="sig sig-object py" id="MDAnalysis.lib.picklable_file_io.BufferIOPicklable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.picklable_file_io.</span></span><span class="sig-name descname"><span class="pre">BufferIOPicklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/picklable_file_io.html#BufferIOPicklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="Link to this definition"></a></dt>
 <dd><p>A picklable buffer object for read-only FileIO object.</p>
-<p>This class provides a buffered <a class="reference external" href="https://docs.python.org/3/library/io.html#io.BufferedReader" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.BufferedReader</span></code></a>
+<p>This class provides a buffered <a class="reference external" href="https://docs.python.org/3/library/io.html#io.BufferedReader" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.BufferedReader</span></code></a>
 that can be pickled.
 Note that this only works in read mode.</p>
 <dl class="field-list simple">
@@ -248,7 +248,7 @@ Note that this only works in read mode.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.picklable_file_io.TextIOPicklable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.picklable_file_io.</span></span><span class="sig-name descname"><span class="pre">TextIOPicklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/picklable_file_io.html#TextIOPicklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="Link to this definition"></a></dt>
 <dd><p>Character and line based picklable file-like object.</p>
-<p>This class provides a file-like <a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOWrapper" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.TextIOWrapper</span></code></a> object that can
+<p>This class provides a file-like <a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOWrapper" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.TextIOWrapper</span></code></a> object that can
 be pickled. Note that this only works in read mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -280,8 +280,8 @@ original position.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.picklable_file_io.BZ2Picklable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.picklable_file_io.</span></span><span class="sig-name descname"><span class="pre">BZ2Picklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/picklable_file_io.html#BZ2Picklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="Link to this definition"></a></dt>
 <dd><p>File object (read-only) for bzip2 (de)compression that can be pickled.</p>
-<p>This class provides a file-like object (as returned by <a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bz2.open()</span></code></a>,
-namely <a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bz2.BZ2File</span></code></a>) that, unlike standard Python file objects,
+<p>This class provides a file-like object (as returned by <a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bz2.open()</span></code></a>,
+namely <a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bz2.BZ2File</span></code></a>) that, unlike standard Python file objects,
 can be pickled. Only read mode is supported.</p>
 <p>When the file is pickled, filename and position of the open file handle in
 the file are saved. On unpickling, the file is opened by filename,
@@ -296,10 +296,10 @@ to open a compressed file in text mode, use <a class="reference internal" href="
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – either a text or byte string giving the name (and the path
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
 be opened.</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – can only be ‘r’, ‘rb’ to make pickle work.</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – can only be ‘r’, ‘rb’ to make pickle work.</p></li>
 </ul>
 </dd>
 </dl>
@@ -338,8 +338,8 @@ multiple compressed streams.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.picklable_file_io.GzipPicklable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.picklable_file_io.</span></span><span class="sig-name descname"><span class="pre">GzipPicklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/picklable_file_io.html#GzipPicklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="Link to this definition"></a></dt>
 <dd><p>Gzip file object (read-only) that can be pickled.</p>
-<p>This class provides a file-like object (as returned by <a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">gzip.open()</span></code></a>,
-namely <a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.GzipFile" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gzip.GzipFile</span></code></a>) that, unlike standard Python file objects,
+<p>This class provides a file-like object (as returned by <a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">gzip.open()</span></code></a>,
+namely <a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.GzipFile" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gzip.GzipFile</span></code></a>) that, unlike standard Python file objects,
 can be pickled. Only read mode is supported.</p>
 <p>When the file is pickled, filename and position of the open file handle in
 the file are saved. On unpickling, the file is opened by filename,
@@ -354,10 +354,10 @@ to open a compressed file in text mode, use the <a class="reference internal" hr
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – either a text or byte string giving the name (and the path
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
 be opened.</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – can only be ‘r’, ‘rb’ to make pickle work.</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – can only be ‘r’, ‘rb’ to make pickle work.</p></li>
 </ul>
 </dd>
 </dl>
@@ -412,7 +412,7 @@ If omitted or None, the current time is used.</p>
 BufferIOPicklable class when given the “rb” reading mode,
 or a FileIOPicklable object wrapped in a TextIOPicklable class with the “r”
 or “rt” reading mode. It can be used as a context manager, and replace the
-built-in <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> function in read mode that only returns an
+built-in <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> function in read mode that only returns an
 unpicklable file object.
 In order to serialize a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Universe</span></code>, this function
 can used to open trajectory/topology files. This object composition is more
@@ -425,7 +425,7 @@ for new readers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – either a text or byte string giving the name (and the path
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
 be opened.</p></li>
 <li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'rt'</em><em>, </em><em>'rb'}</em><em> (</em><em>optional</em><em>)</em>) – ‘r’:  open for reading in text mode;
@@ -441,7 +441,7 @@ when mode is ‘rb’, returns BufferIOPicklable</p>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable">BufferIOPicklable</a> or <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable">TextIOPicklable</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -458,7 +458,7 @@ when mode is ‘rb’, returns BufferIOPicklable</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="util.html#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.anyopen()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">io.open()</span></code></a></p>
+<p><a class="reference internal" href="util.html#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.anyopen()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">io.open()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>
@@ -474,7 +474,7 @@ with pickle function implemented.</p>
 reading mode, or a BZ2Picklable object wrapped in a TextIOPicklable class
 with the “rt” reading mode.
 It can be used as a context manager, and replace the built-in
-<a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bz2.open()</span></code></a> function in read mode that only returns an
+<a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bz2.open()</span></code></a> function in read mode that only returns an
 unpicklable file object.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -483,7 +483,7 @@ unpicklable file object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – either a text or byte string giving the name (and the path
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
 be opened.</p></li>
 <li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'rt'</em><em>, </em><em>'rb'}</em><em> (</em><em>optional</em><em>)</em>) – ‘r’:  open for reading in binary mode;
@@ -499,7 +499,7 @@ when mode is ‘r’ or ‘rb’, returns BZ2Picklable</p>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable">BZ2Picklable</a> or <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable">TextIOPicklable</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -516,7 +516,7 @@ when mode is ‘r’ or ‘rb’, returns BZ2Picklable</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">io.open()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bz2.open()</span></code></a>, <a class="reference internal" href="util.html#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.anyopen()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.pickle_open" title="MDAnalysis.lib.picklable_file_io.pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.pickle_open()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.gzip_pickle_open" title="MDAnalysis.lib.picklable_file_io.gzip_pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.gzip_pickle_open()</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">io.open()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/bz2.html#bz2.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bz2.open()</span></code></a>, <a class="reference internal" href="util.html#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.anyopen()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.pickle_open" title="MDAnalysis.lib.picklable_file_io.pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.pickle_open()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.gzip_pickle_open" title="MDAnalysis.lib.picklable_file_io.gzip_pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.gzip_pickle_open()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>
@@ -532,7 +532,7 @@ with pickle function implemented.</p>
 reading mode, or a GzipPicklable object wrapped in a TextIOPicklable class
 with the “rt” reading mode.
 It can be used as a context manager, and replace the built-in
-<a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">gzip.open()</span></code></a> function in read mode that only returns an
+<a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">gzip.open()</span></code></a> function in read mode that only returns an
 unpicklable file object.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -541,7 +541,7 @@ unpicklable file object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – either a text or byte string giving the name (and the path
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
 be opened.</p></li>
 <li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'rt'</em><em>, </em><em>'rb'}</em><em> (</em><em>optional</em><em>)</em>) – ‘r’:  open for reading in binary mode;
@@ -557,7 +557,7 @@ when mode is ‘r’ or ‘rb’, returns GzipPicklable</p>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable">GzipPicklable</a> or <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable">TextIOPicklable</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -574,7 +574,7 @@ when mode is ‘r’ or ‘rb’, returns GzipPicklable</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">io.open()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.open" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">gzip.open()</span></code></a>, <a class="reference internal" href="util.html#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.anyopen()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.pickle_open" title="MDAnalysis.lib.picklable_file_io.pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.pickle_open()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.bz2_pickle_open" title="MDAnalysis.lib.picklable_file_io.bz2_pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.bz2_pickle_open()</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">io.open()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/gzip.html#gzip.open" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">gzip.open()</span></code></a>, <a class="reference internal" href="util.html#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.anyopen()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.pickle_open" title="MDAnalysis.lib.picklable_file_io.pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.pickle_open()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.bz2_pickle_open" title="MDAnalysis.lib.picklable_file_io.bz2_pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.bz2_pickle_open()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>

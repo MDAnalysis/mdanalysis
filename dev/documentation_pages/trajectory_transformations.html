@@ -279,7 +279,7 @@ So in this case, a transformation function (closure) can be roughly defined as f
     <span class="k">return</span> <span class="n">wrapped</span>
 </pre></div>
 </div>
-<p>An alternative to using a wrapped function is using partials from <a class="reference external" href="https://docs.python.org/3/library/functools.html#module-functools" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">functools</span></code></a>. The
+<p>An alternative to using a wrapped function is using partials from <a class="reference external" href="https://docs.python.org/3/library/functools.html#module-functools" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">functools</span></code></a>. The
 above function can be written as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">functools</span>
 
@@ -294,7 +294,7 @@ above function can be written as:</p>
 in MDAnalysis from release 2.0.0 onwards because they cannot be reliably
 serialized and thus a <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> with such transformations cannot be
 used with common parallelization schemes (e.g., ones based on
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a>).
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a>).
 For detailed descriptions about how to write a closure-style transformation,
 please refer to MDAnalysis 1.x documentation.</p>
 </section>

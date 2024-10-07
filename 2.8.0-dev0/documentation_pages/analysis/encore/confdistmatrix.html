@@ -200,19 +200,19 @@ args and kwargs are passed to conf_dist_function.</p>
 be computed.</p></li>
 <li><p><strong>conf_dist_function</strong> (<em>function object</em>) – Function that fills the matrix with conformational distance
 values. See set_rmsd_matrix_elements for an example.</p></li>
-<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – use this selection for the calculation of conformational distance</p></li>
-<li><p><strong>superimposition_select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – use atoms from this selection for fitting instead of those of
+<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – use this selection for the calculation of conformational distance</p></li>
+<li><p><strong>superimposition_select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – use atoms from this selection for fitting instead of those of
 <cite>select</cite></p></li>
-<li><p><strong>pairwise_align</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to perform pairwise alignment between conformations.
+<li><p><strong>pairwise_align</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to perform pairwise alignment between conformations.
 Default is True (do the superimposition)</p></li>
 <li><p><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – weights to be used for fit. Can be either ‘mass’ or an array_like</p></li>
-<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to build a metadata dataset for the calculated matrix.
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to build a metadata dataset for the calculated matrix.
 Default is True.</p></li>
-<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Number of cores to be used for parallel calculation
+<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Number of cores to be used for parallel calculation
 Default is 1. -1 uses all available cores</p></li>
-<li><p><strong>max_nbytes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Threshold on the size of arrays passed to the workers that triggers automated memory mapping in temp_folder (default is None).
+<li><p><strong>max_nbytes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Threshold on the size of arrays passed to the workers that triggers automated memory mapping in temp_folder (default is None).
 See <a class="reference external" href="https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html">https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html</a> for detailed documentation.</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – enable verbose output</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – enable verbose output</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -242,20 +242,20 @@ an encore.utils.TriangularMatrix object.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>)</p></li>
-<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
-<li><p><strong>load_matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Load similarity/dissimilarity matrix from numpy binary file instead
+<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</p></li>
+<li><p><strong>load_matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Load similarity/dissimilarity matrix from numpy binary file instead
 of calculating it (default is None). A filename is required.</p></li>
-<li><p><strong>save_matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Save calculated matrix as numpy binary file (default is None). A
+<li><p><strong>save_matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Save calculated matrix as numpy binary file (default is None). A
 filename is required.</p></li>
-<li><p><strong>superimpose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to superimpose structures before calculating distance
+<li><p><strong>superimpose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to superimpose structures before calculating distance
 (default is True).</p></li>
-<li><p><strong>superimposition_subset</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Group for superimposition using MDAnalysis selection syntax
+<li><p><strong>superimposition_subset</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Group for superimposition using MDAnalysis selection syntax
 (default is CA atoms: “name CA”)</p></li>
 <li><p><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – weights to be used for fit. Can be either ‘mass’ or an array_like</p></li>
-<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1). If -1 use all cores.</p></li>
-<li><p><strong>max_nbytes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Threshold on the size of arrays passed to the workers that triggers automated memory mapping in temp_folder (default is None).
+<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1). If -1 use all cores.</p></li>
+<li><p><strong>max_nbytes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Threshold on the size of arrays passed to the workers that triggers automated memory mapping in temp_folder (default is None).
 See <a class="reference external" href="https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html">https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html</a> for detailed documentation.</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – print progress</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – print progress</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -274,7 +274,7 @@ See <a class="reference external" href="https://joblib.readthedocs.io/en/latest/
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tasks</strong> (<em>iterator</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> of </em><em>length 2</em>) – <p>Given a triangular matrix, this function will calculate RMSD
+<li><p><strong>tasks</strong> (<em>iterator</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> of </em><em>length 2</em>) – <p>Given a triangular matrix, this function will calculate RMSD
 values from element tasks[0] to tasks[1]. Since the matrix
 is triangular, the trm_indices matrix automatically
 calculates the corrisponding i,j matrix indices.

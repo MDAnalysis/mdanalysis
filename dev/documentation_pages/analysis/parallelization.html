@@ -278,7 +278,7 @@ it, and fills the <code class="xref py py-attr docutils literal notranslate"><sp
 the computation will be later split between other processes, this method will
 be called again on each of the computation groups.</p>
 <p>The method <code class="xref py py-meth docutils literal notranslate"><span class="pre">_configure_backend()</span></code> performs basic health checks for a given
-analysis class – namely, it compares a given backend (if it’s a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>
+analysis class – namely, it compares a given backend (if it’s a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>
 instance, such as <code class="docutils literal notranslate"><span class="pre">'multiprocessing'</span></code>) with the list of builtin backends (and
 also the backends implemented for a given analysis subclass), and configures a
 <a class="reference internal" href="backends.html#MDAnalysis.analysis.backends.BackendBase" title="MDAnalysis.analysis.backends.BackendBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends.BackendBase</span></code></a> instance accordingly. If the
@@ -356,19 +356,19 @@ to not get any benefits from parallelization. Otherwise, you should be fine.</p>
 <section id="serialization-issues">
 <h3><span class="section-number">4.2.4.4.2. </span>Serialization issues<a class="headerlink" href="#serialization-issues" title="Link to this heading"></a></h3>
 <p>For built-in analysis classes, the default serialization with both
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">dask</span></code> is known to work. If you’re using some custom
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">dask</span></code> is known to work. If you’re using some custom
 analysis class that e.g. stores a non-serializable object in one of its
 attributes, you might get a serialization error (<code class="xref py py-exc docutils literal notranslate"><span class="pre">PicklingError</span></code> if you’re
 using a <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> backend). If you want to get around that, we suggest
 trying <code class="docutils literal notranslate"><span class="pre">backend='dask'</span></code> (it uses <code class="docutils literal notranslate"><span class="pre">dask</span></code> serialization engine instead of
-<a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>).</p>
+<a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>).</p>
 </section>
 <section id="out-of-memory-issues">
 <h3><span class="section-number">4.2.4.4.3. </span>Out of memory issues<a class="headerlink" href="#out-of-memory-issues" title="Link to this heading"></a></h3>
 <p>If you have large memory footprint of each worker, you can run into
 out-of-memory errors (i.e. your server freezes when executing a run). In this
 case we suggest decreasing the number of workers from all available CPUs (that
-you can get with <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.cpu_count" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">multiprocessing.cpu_count()</span></code></a>) to a smaller number.</p>
+you can get with <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.cpu_count" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">multiprocessing.cpu_count()</span></code></a>) to a smaller number.</p>
 </section>
 <section id="progress-bar-is-missing">
 <h3><span class="section-number">4.2.4.4.4. </span>Progress bar is missing<a class="headerlink" href="#progress-bar-is-missing" title="Link to this heading"></a></h3>

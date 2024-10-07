@@ -218,9 +218,9 @@ and <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.result
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>g1</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – First AtomGroup</p></li>
 <li><p><strong>g2</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Second AtomGroup</p></li>
-<li><p><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of bins in the histogram</p></li>
-<li><p><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – The size of the RDF</p></li>
-<li><p><strong>norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>{'rdf'</em><em>, </em><em>'density'</em><em>, </em><em>'none'}</em>) – <p>For ‘rdf’ calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>. For
+<li><p><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of bins in the histogram</p></li>
+<li><p><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – The size of the RDF</p></li>
+<li><p><strong>norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>{'rdf'</em><em>, </em><em>'density'</em><em>, </em><em>'none'}</em>) – <p>For ‘rdf’ calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>. For
 ‘density’ the <a class="reference internal" href="#equation-nab"><span class="std std-ref">single particle density</span></a>
 <span class="math notranslate nohighlight">\(n_{ab}(r)\)</span> is computed. ‘none’ computes the number of
 particles occurences in each spherical shell.</p>
@@ -228,11 +228,11 @@ particles occurences in each spherical shell.</p>
 <p><span class="versionmodified added">Added in version 2.3.0.</span></p>
 </div>
 </p></li>
-<li><p><strong>exclusion_block</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – A tuple representing the tile to exclude from the distance array.</p></li>
-<li><p><strong>exclude_same</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Will exclude pairs of atoms that share the same “residue”, “segment”, or “chain”.
+<li><p><strong>exclusion_block</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – A tuple representing the tile to exclude from the distance array.</p></li>
+<li><p><strong>exclude_same</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Will exclude pairs of atoms that share the same “residue”, “segment”, or “chain”.
 Those are the only valid values. This is intended to remove atoms that are
 spatially correlated due to direct bonded connections.</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Show detailed progress of the calculation if set to <cite>True</cite></p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Show detailed progress of the calculation if set to <cite>True</cite></p></li>
 </ul>
 </dd>
 </dl>
@@ -415,11 +415,11 @@ in a protein.</p>
 MDAnalysis 3.0.0.</p>
 </div>
 </p></li>
-<li><p><strong>ags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – a list of pairs of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
+<li><p><strong>ags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – a list of pairs of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 instances</p></li>
-<li><p><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of bins in the histogram</p></li>
-<li><p><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – The size of the RDF</p></li>
-<li><p><strong>norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>{'rdf'</em><em>, </em><em>'density'</em><em>, </em><em>'none'}</em>) – <p>For ‘rdf’ calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>. For
+<li><p><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of bins in the histogram</p></li>
+<li><p><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – The size of the RDF</p></li>
+<li><p><strong>norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>{'rdf'</em><em>, </em><em>'density'</em><em>, </em><em>'none'}</em>) – <p>For ‘rdf’ calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>. For
 ‘density’ the <a class="reference internal" href="#equation-nab"><span class="std std-ref">single particle density</span></a>
 <span class="math notranslate nohighlight">\(n_{ab}(r)\)</span> is computed. ‘none’ computes the number of
 particles occurences in each spherical shell.</p>
@@ -427,7 +427,7 @@ particles occurences in each spherical shell.</p>
 <p><span class="versionmodified added">Added in version 2.3.0.</span></p>
 </div>
 </p></li>
-<li><p><strong>density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – <p><cite>False</cite>: calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>; <cite>True</cite>: calculate
+<li><p><strong>density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <p><cite>False</cite>: calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>; <cite>True</cite>: calculate
 the true <a class="reference internal" href="#equation-nab"><span class="std std-ref">single particle density</span></a>
 <span class="math notranslate nohighlight">\(n_{ab}(r)\)</span>. <cite>density</cite> overwrites the <cite>norm</cite> parameter.</p>
 <div class="versionadded">
@@ -506,7 +506,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="Link to this definition"></a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
 functions</span></a> if <cite>norm=’rdf’</cite> or <a class="reference internal" href="#equation-nab"><span class="std std-ref">density
 functions</span></a> for the <code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code>
 if <cite>norm=’density’</cite>. The list contains
@@ -520,7 +520,7 @@ and <code class="docutils literal notranslate"><span class="pre">B[2]</span></co
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -535,7 +535,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -543,7 +543,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.count">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.count" title="Link to this definition"></a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific radial histograms, i.e., the
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific radial histograms, i.e., the
 raw counts, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>. The data have the same
 structure as <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code> except that the arrays contain
 the raw counts.</p>
@@ -552,7 +552,7 @@ the raw counts.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -567,7 +567,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -575,7 +575,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">cdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="Link to this definition"></a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative
 counts</span></a>, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>. The data
 have the same structure as <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code> except that the arrays
 contain the cumulative counts.</p>
@@ -585,7 +585,7 @@ contain the cumulative counts.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -600,7 +600,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -675,7 +675,7 @@ radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</
 <dd class="field-odd"><p><strong>cdf</strong> – list of arrays with the same structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a></p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -731,7 +731,7 @@ after iteration but simply remain on the one frame in the trajectory.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">close()</span></code></dt><dd><p>close the file and cease I/O</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">next()</span></code></dt><dd><p>advance to next time step or raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> when moving
+<dt><code class="docutils literal notranslate"><span class="pre">next()</span></code></dt><dd><p>advance to next time step or raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a> when moving
 past the last frame</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">rewind()</span></code></dt><dd><p>reposition to first frame</p>
@@ -784,12 +784,12 @@ readers in MDAnalysis should support random access.</p>
 <p>For external custom readers this may not be easily (or reliably)
 implementable and thus one is restricted to sequential iteration.
 If the Reader is not able to provide random access to frames then it
-should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> on indexing. It is possible to partially
+should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> on indexing. It is possible to partially
 implement <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> (as done on
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader.__getitem__</span></code> where slicing the
 full trajectory is equivalent to
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader.__iter__</span></code> (which is always
-implemented) and other slices raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a>.</p>
+implemented) and other slices raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a>.</p>
 <p>When indexed with a slice, a sequence of indices, or a mask of booleans,
 the return value is an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">FrameIteratorSliced</span></code> or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">FrameIteratorIndices</span></code>. See <a class="reference internal" href="base.html#frameiterators"><span class="std std-ref">FrameIterators</span></a> for more details.</p>
@@ -801,7 +801,7 @@ Must be implemented as either a staticmethod or a classmethod.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">Writer(filename,</span> <span class="pre">**kwargs)</span></code></dt><dd><p>returns a <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.WriterBase" title="MDAnalysis.coordinates.base.WriterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriterBase</span></code></a> which is set up with
 the same parameters as the trajectory that is being read (e.g. time step,
 length etc), which facilitates copying and simple on-the-fly manipulation.</p>
-<p>If no Writer is defined then a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is raised.</p>
+<p>If no Writer is defined then a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is raised.</p>
 <p>The <em>kwargs</em> can be used to customize the Writer as they are typically
 passed through to the init method of the Writer, with sensible defaults
 filled in; the actual keyword arguments depend on the Writer.</p>

@@ -166,10 +166,10 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Change in time between auxiliary steps (in ps). If not specified, will
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Change in time between auxiliary steps (in ps). If not specified, will
 attempt to determine from auxiliary data; otherwise defaults to 1 ps.
 Ignored if <code class="docutils literal notranslate"><span class="pre">constant_dt</span></code> is False.</p></li>
-<li><p><strong>initial_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Time of first auxiliary step (in ps). If not specified, will attempt to
+<li><p><strong>initial_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Time of first auxiliary step (in ps). If not specified, will attempt to
 determine from auxiliary data; otherwise defaults to 0 ps. Ignored if
 <code class="docutils literal notranslate"><span class="pre">constant_dt</span></code> is False.</p></li>
 <li><p><strong>time_selector</strong> (<em>optional</em>) – Key to select ‘time’ value from the full set of data read for each
@@ -182,10 +182,10 @@ data read for each step, if data selection is enabled by the reader;
 type will vary depending on the auxiliary data format (see individual
 AuxReader documentation).
 If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default value), the full set of data is returned.</p></li>
-<li><p><strong>constant_dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: True) Set to False if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is not constant
+<li><p><strong>constant_dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: True) Set to False if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is not constant
 throughout the auxiliary data set, in which case a valid
 <code class="docutils literal notranslate"><span class="pre">time_selector</span></code> must be provided.</p></li>
-<li><p><strong>memory_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Sets the threshold of memory usage by auxiliary data  (in GB) at which
+<li><p><strong>memory_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Sets the threshold of memory usage by auxiliary data  (in GB) at which
 to issue a warning. Default: 1 GB.</p></li>
 </ul>
 </dd>
@@ -196,7 +196,7 @@ to issue a warning. Default: 1 GB.</p></li>
 <dd><p>Number of the current auxiliary step (0-based).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -240,12 +240,12 @@ creates a deep copy of the instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Name for auxiliary data. When added to a trajectory, the representative
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>optional</em>) – Name for auxiliary data. When added to a trajectory, the representative
 auxiliary value(s) for the timestep may be accessed as <code class="docutils literal notranslate"><span class="pre">ts.aux.auxname</span></code>
 or <code class="docutils literal notranslate"><span class="pre">ts.aux['auxname']</span></code>.</p></li>
-<li><p><strong>represent_ts_as</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Method to use to calculate representative value of auxiliary data for a
+<li><p><strong>represent_ts_as</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Method to use to calculate representative value of auxiliary data for a
 trajectory timestep. See <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.calc_representative" title="MDAnalysis.auxiliary.base.AuxReader.calc_representative"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_representative()</span></code></a> for valid options.</p></li>
-<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Auxiliary steps further from the trajectory timestep than <em>cutoff</em>
+<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – Auxiliary steps further from the trajectory timestep than <em>cutoff</em>
 (in ps) will be ignored when calculating representative values. If None
 (default), all auxiliary steps assigned to that timestep will be used.</p></li>
 <li><p><strong>**kwargs</strong> – Options to be passed to <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code></a></p></li>
@@ -266,7 +266,7 @@ current trajectory timestep, indexed by the difference in time between
 the step and trajectory timestep (i.e. <code class="docutils literal notranslate"><span class="pre">auxstep.time</span> <span class="pre">-</span> <span class="pre">ts.time</span></code>; in ps)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -288,7 +288,7 @@ the step and trajectory timestep (i.e. <code class="docutils literal notranslate
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.attach_auxiliary">
-<span class="sig-name descname"><span class="pre">attach_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.attach_auxiliary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.attach_auxiliary" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">attach_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.attach_auxiliary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.attach_auxiliary" title="Link to this definition"></a></dt>
 <dd><p>Attaches the data specified in <cite>aux_spec</cite> to the <cite>coord_parent</cite></p>
 <p>This method is called from within
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.add_auxiliary" title="MDAnalysis.coordinates.base.ReaderBase.add_auxiliary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ReaderBase.add_auxiliary()</span></code></a>.
@@ -302,7 +302,7 @@ called.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coord_parent</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><em>MDAnalysis.coordinates.base.ReaderBase</em></a>) – Reader object to which to attach the auxiliary data.</p></li>
-<li><p><strong>aux_spec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em><em>, </em><em>None</em>) – Specifies which data to add to <cite>coord_parent</cite>. String types are
+<li><p><strong>aux_spec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em><em>, </em><em>None</em>) – Specifies which data to add to <cite>coord_parent</cite>. String types are
 for <a class="reference internal" href="XVG.html#MDAnalysis.auxiliary.XVG.XVGReader" title="MDAnalysis.auxiliary.XVG.XVGReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG.XVGReader</span></code></a> only. Dictionaries
 are the standard way of providing <cite>aux_spec</cite> information (see also:
 <a class="reference internal" href="EDR.html#module-MDAnalysis.auxiliary.EDR" title="MDAnalysis.auxiliary.EDR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a>).
@@ -313,7 +313,7 @@ Passing <cite>None</cite> causes all data to be added.</p></li>
 <dd class="field-even"><p>None</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If trying to add data under an <cite>aux_spec</cite> key that is already
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If trying to add data under an <cite>aux_spec</cite> key that is already
     assigned.</p>
 </dd>
 </dl>
@@ -404,7 +404,7 @@ reload an auxiliary into a trajectory:</p>
 AuxReader.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -461,7 +461,7 @@ frame is to be found.</p>
 <dd class="field-even"><p>Index of the next auxiliary-containing frame in the trajectory.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -534,11 +534,11 @@ also optionally be returned with <em>return_time_diff</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of the auxiliary step to calculate closest trajectory frame
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of the auxiliary step to calculate closest trajectory frame
 for.</p></li>
 <li><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – (Any) timestep from the trajectory the calculated frame number is to
 correspond to.</p></li>
-<li><p><strong>return_time_diff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: False) Additionally return the time difference between
+<li><p><strong>return_time_diff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: False) Additionally return the time difference between
 <em>step</em> and returned frame.</p></li>
 </ul>
 </dd>
@@ -568,16 +568,16 @@ otherwise from the list of times as read from the auxiliary data for
 each step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Index (0-based) of step to return time for</p>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Index (0-based) of step to return time for</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>time</strong> – Time (in ps) of step <em>i</em></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – When <em>i</em> not in valid range</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – When <em>i</em> not in valid range</p>
 </dd>
 </dl>
 </dd></dl>
@@ -621,7 +621,7 @@ value in <code class="docutils literal notranslate"><span class="pre">ts.aux</sp
 <dd class="field-odd"><p><a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">auxname</span></code> is not set.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">auxname</span></code> is not set.</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -642,7 +642,7 @@ large to read in at once.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Location of the file containing the auxiliary data.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Location of the file containing the auxiliary data.</p></li>
 <li><p><strong>**kwargs</strong> – Other AuxReader options.</p></li>
 </ul>
 </dd>

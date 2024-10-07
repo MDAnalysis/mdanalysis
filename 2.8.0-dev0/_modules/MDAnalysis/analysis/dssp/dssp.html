@@ -291,7 +291,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span><span class="p">,</span> <span class="n">AtomGroup</span>
 
-<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 <span class="kn">from</span> <span class="nn">...due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
@@ -341,7 +341,7 @@
 <span class="sd">    .. Warning::</span>
 <span class="sd">       For DSSP to work properly, your atoms must represent a protein. The</span>
 <span class="sd">       hydrogen atom bound to the backbone nitrogen atom is matched by name</span>
-<span class="sd">       as given by the keyword argument `hydrogen_atom`. There may only be </span>
+<span class="sd">       as given by the keyword argument `hydrogen_atom`. There may only be</span>
 <span class="sd">       a single backbone nitrogen hydrogen atom per residue; the one exception</span>
 <span class="sd">       is proline, for which there should not exist any such hydrogens.</span>
 <span class="sd">       The default value of `hydrogen_atom` should handle the common naming</span>
@@ -374,8 +374,8 @@
 <span class="sd">        (except proline), namely the one bound to the backbone nitrogen.</span>
 
 <span class="sd">        .. Note::</span>
-<span class="sd">           To work with different hydrogen-naming conventions by default, the </span>
-<span class="sd">           default selection is broad but if hydrogens are incorrectly selected </span>
+<span class="sd">           To work with different hydrogen-naming conventions by default, the</span>
+<span class="sd">           default selection is broad but if hydrogens are incorrectly selected</span>
 <span class="sd">           (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`</span>
 <span class="sd">           for your specific case.</span>
 
@@ -408,7 +408,7 @@
 <span class="sd">    The :attr:`results.dssp_ndarray` attribute holds a</span>
 <span class="sd">    ``(n_frames, n_residues, 3)`` shape ndarray with a *one-hot encoding*</span>
 <span class="sd">    of *loop* &#39;-&#39; (index 0), *helix* &#39;H&#39; (index 1), and *sheet* &#39;E&#39;</span>
-<span class="sd">    (index 2), respectively for each frame of the trajectory. It can be </span>
+<span class="sd">    (index 2), respectively for each frame of the trajectory. It can be</span>
 <span class="sd">    used to compute, for instance, the **average secondary structure**:</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.analysis.dssp import translate, DSSP</span>
@@ -421,7 +421,25 @@
 
 
 <span class="sd">    .. versionadded:: 2.8.0</span>
+
+<span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
+<span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
+<span class="sd">       supported backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="DSSP.get_supported_backends">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/dssp.html#MDAnalysis.analysis.dssp.dssp.DSSP.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -525,8 +543,12 @@
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">resids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">resids</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">resids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">resids</span>
 
+    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
+            <span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dssp_ndarray&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">flatten_sequence</span><span class="p">},</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="translate">
