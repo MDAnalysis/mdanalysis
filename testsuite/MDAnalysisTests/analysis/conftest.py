@@ -13,6 +13,7 @@ from MDAnalysis.analysis.gnm import GNMAnalysis
 from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
+)
 from MDAnalysis.lib.util import is_installed
 
 
