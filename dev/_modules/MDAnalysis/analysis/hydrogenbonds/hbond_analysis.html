@@ -384,7 +384,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
@@ -411,6 +411,15 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform an analysis of hydrogen bonds in a Universe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="HydrogenBondAnalysis.get_supported_backends">
+<a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span></div>
+
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
                  <span class="n">donors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hydrogens_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -480,7 +489,9 @@
 <span class="sd">        .. versionchanged:: 2.4.0</span>
 <span class="sd">            Added use of atom types in selection strings for hydrogen atoms, </span>
 <span class="sd">            bond donors, or bond acceptors</span>
-
+<span class="sd">        .. versionchanged:: 2.8.0</span>
+<span class="sd">            Introduced :meth:`get_supported_backends` allowing for parallel execution on</span>
+<span class="sd">            :mod:`multiprocessing` and :mod:`dask` backends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
@@ -527,6 +538,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span> <span class="o">=</span> <span class="n">update_selections</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Set atom selections if they have not been provided</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
+
+        <span class="c1"># Select atom groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span><span class="p">,</span>
+                                              <span class="n">updating</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dh_pairs</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>
@@ -853,16 +875,6 @@
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
 
-        <span class="c1"># Set atom selections if they have not been provided</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
-
-        <span class="c1"># Select atom groups</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span><span class="p">,</span>
-                                              <span class="n">updating</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dh_pairs</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -941,6 +953,9 @@
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;hbonds&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">})</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hbonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
