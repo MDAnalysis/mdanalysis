@@ -161,6 +161,12 @@ class NucPairDist(AnalysisBase):
         helper for selecting atom pairs for distance analysis.
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
+    
     _s1: mda.AtomGroup
     _s2: mda.AtomGroup
     _n_sel: int
@@ -292,6 +298,11 @@ class NucPairDist(AnalysisBase):
         self.results['pair_distances'] = self.results['distances']
         # TODO: remove pair_distances in 3.0.0
 
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={
+        'distances': ResultsGroup.ndarray_vstack,
+        'pair_distances': ResultsGroup.ndarray_vstack,}
+        )
 
 class WatsonCrickDist(NucPairDist):
     r"""
