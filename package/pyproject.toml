@@ -121,3 +121,9 @@ find = {}
 MDAnalysis = [
     'analysis/data/*.npy',
 ]
+
+[tool.black]
+line-length = 79
+target-version = ['py310', 'py311', 'py312']
+extend-exclude = '.'
+required-version = '24'
