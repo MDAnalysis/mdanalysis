@@ -169,7 +169,7 @@ from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressBar
 
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 import logging
 
@@ -398,6 +398,12 @@ class DensityAnalysis(AnalysisBase):
 
     """
 
+    _analysis_algorithm_is_parallelizable = True
+    
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask')
+   
     def __init__(self, atomgroup, delta=1.0,
                  metadata=None, padding=2.0,
                  gridcenter=None,
@@ -489,6 +495,11 @@ class DensityAnalysis(AnalysisBase):
         density.make_density()
         self.results.density = density
 
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={
+        'density': ResultsGroup.ndarray_vstack,}
+        )
+   
     @property
     def density(self):
         wmsg = ("The `density` attribute was deprecated in MDAnalysis 2.0.0 "
