@@ -492,7 +492,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
         expected = np.asarray(range(3), dtype=np.float32) * 2.0
         with tmpdir.as_cwd():
             self.create_ncdf(params)
-            u = mda.Universe(params['filename'])
+            u = mda.Universe(params['filename'], to_guess=())
             for ts in u.trajectory:
                 assert_almost_equal(ts.positions[0], expected, self.prec)
 
@@ -502,7 +502,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
         expected = np.asarray(range(3), dtype=np.float32) * 3.0
         with tmpdir.as_cwd():
             self.create_ncdf(params)
-            u = mda.Universe(params['filename'])
+            u = mda.Universe(params['filename'], to_guess=())
             for ts in u.trajectory:
                 assert_almost_equal(ts.velocities[0], expected, self.prec)
 
@@ -512,7 +512,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
         expected = np.asarray(range(3), dtype=np.float32) * 10.0 * 4.184
         with tmpdir.as_cwd():
             self.create_ncdf(params)
-            u = mda.Universe(params['filename'])
+            u = mda.Universe(params['filename'], to_guess=())
             for ts in u.trajectory:
                 assert_almost_equal(ts.forces[0], expected, self.prec)
 
@@ -526,7 +526,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
         params = self.gen_params(keypair=mutation, restart=False)
         with tmpdir.as_cwd():
             self.create_ncdf(params)
-            u = mda.Universe(params['filename'])
+            u = mda.Universe(params['filename'], to_guess=())
             for ts in u.trajectory:
                 assert_almost_equal(ts.dimensions, expected, self.prec)
 
@@ -599,7 +599,7 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
         with tmpdir.as_cwd():
             self.create_ncdf(params)
             with pytest.raises(IOError):
-                u = mda.Universe(params['filename'])
+                u = mda.Universe(params['filename'], to_guess=())
                 u.trajectory.close()
                 u.trajectory[-1]
 

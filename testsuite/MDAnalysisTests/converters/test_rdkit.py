@@ -26,9 +26,10 @@ import warnings
 from io import StringIO
 
 import MDAnalysis as mda
+from MDAnalysis.guesser.default_guesser import DefaultGuesser
+
 import numpy as np
 import pytest
-from MDAnalysis.topology.guessers import guess_atom_element
 from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
 from MDAnalysisTests.util import import_not_available
 from numpy.testing import assert_allclose, assert_equal
@@ -146,7 +147,8 @@ class TestRDKitConverter(object):
     def mol2(self):
         u = mda.Universe(mol2_molecule)
         # add elements
-        elements = np.array([guess_atom_element(x) for x in u.atoms.types],
+        guesser = DefaultGuesser(None)
+        elements = np.array([guesser.guess_atom_element(x) for x in u.atoms.types],
                             dtype=object)
         u.add_TopologyAttr('elements', elements)
         return u
@@ -154,7 +156,7 @@ class TestRDKitConverter(object):
     @pytest.fixture
     def peptide(self):
         u = mda.Universe(GRO)
-        elements = mda.topology.guessers.guess_types(u.atoms.names)
+        elements = mda.guesser.DefaultGuesser(None).guess_types(u.atoms.names)
         u.add_TopologyAttr('elements', elements)
         return u.select_atoms("resid 2-12")
 

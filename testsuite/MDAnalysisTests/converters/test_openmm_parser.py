@@ -53,8 +53,14 @@ class OpenMMTopologyBase(ParserBase):
         "bonds",
         "chainIDs",
         "elements",
+        "types"
     ]
     expected_n_bonds = 0
+
+    @pytest.fixture()
+    def top(self, filename):
+        with self.parser(filename) as p:
+            yield p.parse()
 
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
@@ -130,6 +136,14 @@ class OpenMMTopologyBase(ParserBase):
         else:
             assert top.masses.values == []
 
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
+        u_guessed_attrs = [attr.attrname for attr
+                           in u._topology.guessed_attributes]
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
+            assert attr in u_guessed_attrs
+
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
     parser = mda.converters.OpenMMParser.OpenMMAppTopologyParser
@@ -142,13 +156,24 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
         "bonds",
         "chainIDs",
         "elements",
+        "types"
     ]
     expected_n_bonds = 0
+
+    @pytest.fixture()
+    def top(self, filename):
+        with self.parser(filename) as p:
+            yield p.parse()
 
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
         u = mda.Universe(filename, topology_format="OPENMMAPP")
         assert isinstance(u, mda.Universe)
+
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, topology_format="OPENMMAPP")
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
 
 
 class TestOpenMMTopologyParser(OpenMMTopologyBase):
@@ -171,10 +196,13 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
         wmsg1 = ("Element information missing for some atoms. "
                  "These have been given an empty element record ")
 
-        wmsg2 = ("For absent elements, atomtype has been  "
-                 "set to 'X' and mass has been set to 0.0. "
-                 "If needed these can be guessed using "
-                 "MDAnalysis.topology.guessers.")
+        wmsg2 = (
+            "For absent elements, atomtype has been  "
+            "set to 'X' and mass has been set to 0.0. "
+            "If needed these can be guessed using "
+            "universe.guess_TopologyAttrs(to_guess=['masses', 'types']). "
+            "(for MDAnalysis version 2.x this is done automatically,"
+            " but it will be removed in 3.0).")
 
         with pytest.warns(UserWarning) as warnings:
             mda_top = self.parser(self.ref_filename).parse()
@@ -182,6 +210,8 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
             assert mda_top.types.values[3388] == 'X'
             assert mda_top.elements.values[3344] == ''
             assert mda_top.elements.values[3388] == ''
+            assert mda_top.masses.values[3344] == 0.0
+            assert mda_top.masses.values[3388] == 0.0
 
             assert len(warnings) == 2
             assert str(warnings[0].message) == wmsg1
@@ -194,14 +224,20 @@ def test_no_elements_warn():
     for a in omm_top.atoms():
         a.element = None
 
-    wmsg = ("Element information is missing for all the atoms. "
-            "Elements attribute will not be populated. "
-            "Atomtype attribute will be guessed using atom "
-            "name and mass will be guessed using atomtype."
-            "See MDAnalysis.topology.guessers.")
+    wmsg = (
+        "Element information is missing for all the atoms. "
+        "Elements attribute will not be populated. "
+        "Atomtype attribute will be guessed using atom "
+        "name and mass will be guessed using atomtype."
+        "For MDAnalysis version 2.x this is done automatically, "
+        "but it will be removed in MDAnalysis v3.0. "
+        "These can be guessed using "
+        "universe.guess_TopologyAttrs(to_guess=['masses', 'types']) "
+        "See MDAnalysis.guessers.")
 
-    with pytest.warns(UserWarning, match=wmsg):
+    with pytest.warns(UserWarning) as warnings:
         mda_top = parser(omm_top).parse()
+        assert str(warnings[0].message) == wmsg
 
 
 def test_invalid_element_symbols():

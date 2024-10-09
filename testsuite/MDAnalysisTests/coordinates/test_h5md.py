@@ -449,7 +449,7 @@ class TestH5MDReaderWithRealTrajectory(object):
                     except KeyError:
                         continue
 
-        u = mda.Universe(outfile)
+        u = mda.Universe(outfile, to_guess=())
         assert_equal(u.atoms.n_atoms, n_atoms_in_dset)
 
     def test_parse_n_atoms_error(self, h5md_file, outfile):

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -27,7 +27,8 @@ ITP topology parser
 
 Reads a GROMACS ITP_ or TOP_ file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
-charges, chargegroups, masses (guessed if not found), moltypes, and molnums. 
+charges, chargegroups, masses, moltypes, and molnums.
+Any masses that are in the file will be read; any missing values will be guessed.
 Bonds, angles, dihedrals and impropers are also read from the file.
 
 If an ITP file is passed without a ``[ molecules ]`` directive, passing 
@@ -106,7 +107,7 @@ will have charges of 3 for the HW1 and HW2 atoms::
 
     u = mda.Universe(ITP_tip5p, EXTRA_ATOMS=True, HW1_CHARGE=3, HW2_CHARGE=3)
 
-These keyword variables are **case-sensitive**. Note that if you set keywords to 
+These keyword variables are **case-sensitive**. Note that if you set keywords to
 ``False`` or ``None``, they will be treated as if they are not defined in #ifdef conditions.
 
 For example, the universe below will only have 5 atoms. ::
@@ -132,8 +133,10 @@ import os
 import logging
 import numpy as np
 
+import warnings
 from ..lib.util import openany
-from . import guessers
+from ..guesser.tables import SYMB2Z
+from ..guesser.default_guesser import DefaultGuesser
 from .base import TopologyReaderBase, change_squash, reduce_singular
 from ..core.topologyattrs import (
     Atomids,
@@ -152,6 +155,7 @@ from ..core.topologyattrs import (
     Dihedrals,
     Impropers,
     AtomAttr,
+    Elements,
 )
 from ..core.topology import Topology
 
@@ -216,7 +220,7 @@ class GmxTopIterator:
         except ValueError:
             _, variable = line.split()
             value = True
-        
+
         # kwargs overrides files
         if variable not in self._original_defines:
             self.defines[variable] = value
@@ -252,7 +256,7 @@ class GmxTopIterator:
                 break
         else:
             raise IOError('Missing #endif in {}'.format(self.current_file))
-    
+
     def skip_until_endif(self, infile):
         """Skip lines until #endif"""
         for line in self.clean_file_lines(infile):
@@ -333,9 +337,9 @@ class Molecule:
                 lst.append('')
     
     def parse_bonds(self, line):
-        self.add_param(line, self.bonds, n_funct=2, 
+        self.add_param(line, self.bonds, n_funct=2,
                        funct_values=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-    
+
     def parse_angles(self, line):
         self.add_param(line, self.angles, n_funct=3, 
                        funct_values=(1, 2, 3, 4, 5, 6, 8, 10))
@@ -355,7 +359,7 @@ class Molecule:
         # water molecules.
         # In ITP files this is defined with only the 
         # oxygen atom index. The next two atoms are 
-        # assumed to be hydrogens. Unlike TPRParser,  
+        # assumed to be hydrogens. Unlike TPRParser, 
         # the manual only lists this format (as of 2019).
         # These are treated as 2 bonds.
         # No angle component is included to avoid discrepancies
@@ -471,6 +475,12 @@ class ITPParser(TopologyReaderBase):
 
     .. versionchanged:: 2.2.0
       no longer adds angles for water molecules with SETTLE constraint
+    .. versionchanged:: 2.8.0
+      Removed mass guessing (attributes guessing takes place now
+      through universe.guess_TopologyAttrs() API).
+      Added guessed elements if all elements are valid to preserve partial
+      mass guessing behavior
+
     """
     format = 'ITP'
 
@@ -503,7 +513,7 @@ class ITPParser(TopologyReaderBase):
         self._molecules = []  # for order
         self.current_mol = None
         self.parser = self._pass
-        self.system_molecules = []        
+        self.system_molecules = []      
 
         # Open and check itp validity
         with openany(self.filename) as itpfile:
@@ -523,10 +533,10 @@ class ITPParser(TopologyReaderBase):
                     
                     elif self.current_mol:
                         self.parser = self.current_mol.parsers.get(section, self._pass)
-                    
+
                     else:
                         self.parser = self._pass
-                
+ 
                 else:
                     self.parser(line)
 
@@ -575,13 +585,21 @@ class ITPParser(TopologyReaderBase):
 
         if not all(self.masses):
             empty = self.masses == ''
-            self.masses[empty] = guessers.guess_masses(
-                guessers.guess_types(self.types)[empty])
-            attrs.append(Masses(np.array(self.masses, dtype=np.float64),
-                                guessed=True))
+            self.masses[empty] = Masses.missing_value_label
+
+        attrs.append(Masses(np.array(self.masses, dtype=np.float64),
+                            guessed=False))
+
+        self.elements = DefaultGuesser(None).guess_types(self.types)
+        if all(e.capitalize() in SYMB2Z for e in self.elements):
+            attrs.append(Elements(np.array(self.elements,
+                         dtype=object), guessed=True))
+
         else:
-            attrs.append(Masses(np.array(self.masses, dtype=np.float64),
-                                guessed=False))
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using universe.guess_TopologyAttrs("
+                          "to_guess=['elements']).")
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)

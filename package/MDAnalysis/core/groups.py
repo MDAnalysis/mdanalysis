@@ -3453,7 +3453,6 @@ class AtomGroup(GroupBase):
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
-
         fudge_factor : float, optional
             The factor by which atoms must overlap each other to be considered
             a bond.  Larger values will increase the number of bonds found. [0.55]
@@ -3477,8 +3476,8 @@ class AtomGroup(GroupBase):
            Corrected misleading docs, and now allows passing of `fudge_factor`
            and `lower_bound` arguments.
         """
-        from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
+        from ..guesser.default_guesser import DefaultGuesser
 
         def get_TopAttr(u, name, cls):
             """either get *name* or create one from *cls*"""
@@ -3490,22 +3489,20 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(
-            self.atoms,
-            self.atoms.positions,
-            vdwradii=vdwradii,
-            box=self.dimensions,
-            fudge_factor=fudge_factor,
-            lower_bound=lower_bound,
-        )
-        bondattr = get_TopAttr(self.universe, "bonds", Bonds)
+        guesser = DefaultGuesser(None, fudge_factor=fudge_factor,
+                                 lower_bound=lower_bound,
+                                 box=self.dimensions,
+                                 vdwradii=vdwradii)
+        b = guesser.guess_bonds(self.atoms, self.atoms.positions)
+
+        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
-        a = guess_angles(self.bonds)
+        a = guesser.guess_angles(self.bonds)
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
         angleattr._add_bonds(a, guessed=True)
 
-        d = guess_dihedrals(self.angles)
+        d = guesser.guess_dihedrals(self.angles)
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
         diheattr._add_bonds(d)
 

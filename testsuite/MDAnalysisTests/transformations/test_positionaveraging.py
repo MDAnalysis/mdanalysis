@@ -13,7 +13,7 @@ def posaveraging_universes():
     '''
     Create the universe objects for the tests.
     '''
-    u = md.Universe(datafiles.XTC_multi_frame)
+    u = md.Universe(datafiles.XTC_multi_frame, to_guess=())
     transformation = PositionAverager(3)
     u.trajectory.add_transformations(transformation)
     return u
@@ -24,7 +24,7 @@ def posaveraging_universes_noreset():
     Create the universe objects for the tests.
     Position averaging reset is set to False.
     '''
-    u = md.Universe(datafiles.XTC_multi_frame)
+    u = md.Universe(datafiles.XTC_multi_frame,  to_guess=())
     transformation = PositionAverager(3, check_reset=False)
     u.trajectory.add_transformations(transformation)
     return u   
@@ -106,6 +106,6 @@ def test_posavging_specific_noreset(posaveraging_universes_noreset):
         specr_avgd[...,idx] = ts.positions.copy()
         idx += 1
     assert_array_almost_equal(ref_matrix_specr, specr_avgd[1,:,-1], decimal=5) 
-    
+
 
 

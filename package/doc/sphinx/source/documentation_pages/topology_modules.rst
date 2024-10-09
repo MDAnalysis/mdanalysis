@@ -28,10 +28,10 @@ topology file format in the *topology_format* keyword argument to
    topology/CRDParser
    topology/DLPolyParser
    topology/DMSParser
-   topology/FHIAIMSParser   
+   topology/FHIAIMSParser
    topology/GMSParser
    topology/GROParser
-   topology/GSDParser   
+   topology/GSDParser
    topology/HoomdXMLParser
    topology/ITPParser
    topology/LAMMPSParser
@@ -59,6 +59,4 @@ the topology readers.
 
    topology/base
    topology/core
-   topology/guessers
-   topology/tables
    topology/tpr_util

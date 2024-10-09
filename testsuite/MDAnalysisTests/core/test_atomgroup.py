@@ -129,7 +129,7 @@ class TestAtomGroupWriting(object):
         ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=frames)
 
-        u_new = mda.Universe(destination)
+        u_new = mda.Universe(destination, to_guess=())
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
@@ -145,7 +145,7 @@ class TestAtomGroupWriting(object):
         ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=selection)
 
-        u_new = mda.Universe(destination)
+        u_new = mda.Universe(destination, to_guess=())
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
@@ -155,7 +155,7 @@ class TestAtomGroupWriting(object):
     def test_write_frame_none(self, u, tmpdir, extension, compression):
         destination = str(tmpdir / 'test.' + extension + compression)
         u.atoms.write(destination, frames=None)
-        u_new = mda.Universe(destination)
+        u_new = mda.Universe(destination, to_guess=())
         new_positions = np.stack([ts.positions for ts in u_new.trajectory])
         # Most format only save 3 decimals; XTC even has only 2.
         assert_array_almost_equal(u.atoms.positions[None, ...],
@@ -165,7 +165,8 @@ class TestAtomGroupWriting(object):
     def test_write_frames_all(self, u, tmpdir, compression):
         destination = str(tmpdir / 'test.dcd' + compression)
         u.atoms.write(destination, frames='all')
-        u_new = mda.Universe(destination)
+
+        u_new = mda.Universe(destination, to_guess=())
         ref_positions = np.stack([ts.positions.copy() for ts in u.trajectory])
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
         assert_array_almost_equal(new_positions, ref_positions)

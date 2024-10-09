@@ -181,7 +181,7 @@ _CONVERTERS: Dict = {}
 _TOPOLOGY_ATTRS: Dict = {}   # {attrname: cls}
 _TOPOLOGY_TRANSPLANTS: Dict = {}   # {name: [attrname, method, transplant class]}
 _TOPOLOGY_ATTRNAMES: Dict = {}   # {lower case name w/o _ : name}
-
+_GUESSERS: Dict = {}
 
 # custom exceptions and warnings
 from .exceptions import (
