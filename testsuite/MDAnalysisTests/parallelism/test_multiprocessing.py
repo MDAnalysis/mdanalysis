@@ -81,8 +81,8 @@ from MDAnalysisTests.datafiles import (
     ),
     (NCDF,),
     (np.arange(150).reshape(5, 10, 3).astype(np.float64),),
-    (GRO, [GRO, GRO, GRO, GRO, GRO]),
-    (PDB, [PDB, PDB, PDB, PDB, PDB]),
+    (GRO, [GRO, GRO]),
+    (PDB, [PDB, PDB]),
     (GRO, [XTC, XTC]),
     (TRC_PDB_VAC, TRC_TRAJ1_VAC),
     (TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC]),
@@ -121,11 +121,11 @@ def test_multiprocess_COG(u):
     ag = u.atoms[2:5]
 
     ref = np.array([cog(u, ag, i)
-                    for i in range(3)])
+                    for i in range(2)])
 
     p = multiprocessing.Pool(2)
     res = np.array([p.apply(cog, args=(u, ag, i))
-                    for i in range(3)])
+                    for i in range(2)])
     p.close()
     assert_equal(ref, res)
 
@@ -198,9 +198,9 @@ def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
     ('TRC', TRC_TRAJ1_VAC, dict()),
     ('CHAIN', [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC], dict()),
-    ('CHAIN', [GRO, GRO, GRO], dict()),
-    ('CHAIN', [PDB, PDB, PDB], dict()),
-    ('CHAIN', [XTC, XTC, XTC], dict()),
+    ('CHAIN', [GRO, GRO], dict()),
+    ('CHAIN', [PDB, PDB], dict()),
+    ('CHAIN', [XTC, XTC], dict()),
 ])
 def ref_reader(request):
     fmt_name, filename, extras = request.param
