@@ -70,7 +70,7 @@ import numpy as np
 
 import MDAnalysis as mda
 from .distances import calc_bonds
-from .base import AnalysisBase, Results
+from .base import AnalysisBase, ResultsGroup
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
 
@@ -282,7 +282,7 @@ class NucPairDist(AnalysisBase):
         return (sel1, sel2)
 
     def _prepare(self) -> None:
-        self._res_array: np.ndarray = np.zeros(
+        self.results.distances: np.ndarray = np.zeros(
             [self.n_frames, self._n_sel]
         )
 
@@ -291,17 +291,16 @@ class NucPairDist(AnalysisBase):
             self._s1.positions, self._s2.positions
         )
 
-        self._res_array[self._frame_index, :] = dist
+        self.results.distances[self._frame_index, :] = dist
 
     def _conclude(self) -> None:
-        self.results['distances'] = self._res_array
         self.results['pair_distances'] = self.results['distances']
         # TODO: remove pair_distances in 3.0.0
 
     def _get_aggregator(self):
         return ResultsGroup(lookup={
         'distances': ResultsGroup.ndarray_vstack,
-        'pair_distances': ResultsGroup.ndarray_vstack,}
+        }
         )
 
 class WatsonCrickDist(NucPairDist):
