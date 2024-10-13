@@ -56,6 +56,7 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * MDAnalysis now supports Python 3.13 (PR #4732)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
