@@ -32,6 +32,11 @@ jobs:
           full-deps: [true, ]
           codecov: [true, ]
           include:
+            - name: python_313
+              os: ubunut-latest
+              python-version: "3.13"
+              full-deps: false
+              codecov: true
             - name: macOS_monterey_py311
               os: macOS-12
               python-version: "3.12"
