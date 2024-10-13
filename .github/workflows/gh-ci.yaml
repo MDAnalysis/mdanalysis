@@ -33,7 +33,7 @@ jobs:
           codecov: [true, ]
           include:
             - name: python_313
-              os: ubunut-latest
+              os: ubuntu-latest
               python-version: "3.13"
               full-deps: false
               codecov: true
