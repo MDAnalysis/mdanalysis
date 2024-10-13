@@ -347,7 +347,7 @@ def test_verbose_progressbar_run(u, capsys):
     _, err = capsys.readouterr()
     expected = u'100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert expected == actual[:15]
+    assert actual[:15] == expected
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
     FrameAnalysis(u.trajectory).run(
@@ -355,7 +355,7 @@ def test_verbose_progressbar_run_with_kwargs(u, capsys):
     _, err = capsys.readouterr()
     expected = u'custom: 100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert expected == actual[:23]
+    assert actual[:23] == expected
 
 
 def test_progressbar_multiprocessing(u):
