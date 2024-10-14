@@ -159,6 +159,11 @@ class NucPairDist(AnalysisBase):
     .. versionchanged:: 2.7.0
         Added static method :attr:`select_strand_atoms` as a
         helper for selecting atom pairs for distance analysis.
+
+    .. versionchanged:: 2.8.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` 
+       backends; use the new method :meth:`get_supported_backends` to see all 
+       supported backends.
     """
 
     _analysis_algorithm_is_parallelizable = True
