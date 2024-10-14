@@ -26,30 +26,33 @@ warning under MPI(see PR #1794 for rationale)
 
 """
 
-__version__ = '0.0.5'
+__version__ = "0.0.5"
 
 
 class InactiveDueCreditCollector(object):
     """Just a stub at the Collector which would not do anything"""
+
     def _donothing(self, *args, **kwargs):
         """Perform no good and no bad"""
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def dcite(self, *args, **kwargs):
         """If I could cite I would"""
+
         def nondecorating_decorator(func):
             return func
+
         return nondecorating_decorator
 
     cite = load = add = _donothing
 
     def __repr__(self):
-        return self.__class__.__name__ + '()'
+        return self.__class__.__name__ + "()"
 
 
 def _donothing_func(*args, **kwargs):
     """Perform no good and no bad"""
-    pass # pylint: disable=unnecessary-pass
+    pass  # pylint: disable=unnecessary-pass
 
 
 try:
@@ -60,17 +63,21 @@ try:
     import duecredit
 
     from duecredit import due, BibTeX, Doi, Url
-    if 'due' in locals() and not hasattr(due, 'cite'):
+
+    if "due" in locals() and not hasattr(due, "cite"):
         raise RuntimeError(
-            "Imported due lacks .cite. DueCredit is now disabled")
+            "Imported due lacks .cite. DueCredit is now disabled"
+        )
 except Exception as err:
     if not isinstance(err, ImportError):
         import logging
         import warnings
+
         errmsg = "Failed to import duecredit due to {}".format(str(err))
         warnings.warn(errmsg)
         logging.getLogger("duecredit").error(
-            "Failed to import duecredit due to {}".format(str(err)))
+            "Failed to import duecredit due to {}".format(str(err))
+        )
     # else:
     #   Do not issue any warnings if duecredit is not installed;
     #   this is the user's choice (Issue #1872)
