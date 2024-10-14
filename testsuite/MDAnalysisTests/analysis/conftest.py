@@ -145,7 +145,7 @@ def client_HydrogenBondAnalysis(request):
 
 
 # MDAnalysis.analysis.nucleicacids
-  
+
 @pytest.fixture(scope="module", params=params_for_cls(NucPairDist))
 def client_NucPairDist(request):
     return request.param
