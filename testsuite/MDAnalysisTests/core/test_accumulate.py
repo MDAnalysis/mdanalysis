@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import DuplicateWarning, NoDataError
@@ -291,3 +291,39 @@ class TestMultipole(object):
         assert_almost_equal(quadrupoles,
                             np.array([0., 0.0011629, 0.1182701, 0.6891748
                                       ])) and len(quadrupoles) == n_compounds
+
+
+class TestCache:
+    @pytest.fixture()
+    def group(self):
+        return mda.Universe(PSF, DCD).atoms
+
+    def test_cache(self, group):
+        """Test that one cache per compound is created."""
+        group_nocache = group.copy()
+        group_cache = group.copy()
+
+        for compound in ['residues', 'fragments']:
+            actual = group_nocache.accumulate("masses", compound=compound)
+            desired = group_cache.accumulate("masses", compound=compound)
+
+            assert_allclose(actual, desired)
+            group_nocache._cache.pop(f"{compound}_masks")
+
+    @pytest.mark.parametrize("compound",
+                             ['residues', 'fragments'])
+    def test_cache_updating(self, group, compound):
+        """Test caching of compound_masks for updating atomgroups."""
+        kwargs = {"attribute": "masses", "compound": compound}
+
+        group_nocache = group.select_atoms("prop z < 1.0", updating=True)
+        group_cache = group.select_atoms("prop z < 1.0", updating=True)
+
+        assert_allclose(group_nocache.accumulate(**kwargs),
+                        group_cache.accumulate(**kwargs))
+
+        # Clear cache and forward to next frame
+        group_nocache._cache.pop(f"{compound}_masks")
+        group.universe.trajectory.next()
+        assert_allclose(group_nocache.accumulate(**kwargs),
+                        group_cache.accumulate(**kwargs))
