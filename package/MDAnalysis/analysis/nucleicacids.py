@@ -161,8 +161,8 @@ class NucPairDist(AnalysisBase):
         helper for selecting atom pairs for distance analysis.
 
     .. versionchanged:: 2.8.0
-       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` 
-       backends; use the new method :meth:`get_supported_backends` to see all 
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
     """
 
