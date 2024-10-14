@@ -166,7 +166,7 @@ class NucPairDist(AnalysisBase):
     @classmethod
     def get_supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask',)
-    
+        
     _s1: mda.AtomGroup
     _s2: mda.AtomGroup
     _n_sel: int
@@ -299,7 +299,7 @@ class NucPairDist(AnalysisBase):
 
     def _get_aggregator(self):
         return ResultsGroup(lookup={
-        'distances': ResultsGroup.ndarray_vstack,
+            'distances': ResultsGroup.ndarray_vstack,
         }
         )
 
