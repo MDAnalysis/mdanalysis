@@ -313,6 +313,11 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
+    
+    if backend == 'distopia':
+        distances = distances.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -327,6 +332,9 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         _run("calc_distance_array",
              args=(reference, configuration, distances),
              backend=backend)
+
+    if backend == 'distopia':
+        distances = distances.astype(np.float64)
 
     return distances
 
