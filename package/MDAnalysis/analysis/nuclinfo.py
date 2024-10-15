@@ -250,6 +250,8 @@ def phase_cp(universe, seg, i):
     -------
     float
         Phase angle in degrees
+
+    .. versionadded:: 0.7.6
     """
     
     # Select atoms
