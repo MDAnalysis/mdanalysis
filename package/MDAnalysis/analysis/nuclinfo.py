@@ -356,7 +356,7 @@ def phase_as(universe, seg, i):
          + (data4 * cos(2 * 2 * pi * (4 - 1.) / 5.))
          + (data5 * cos(2 * 2 * pi * (5 - 1.) / 5.))) * 2. / 5.
 
-    phase_ang = (np.arctan2(D, C) + (np.pi / 2.)) * 180. / np.pi
+    phase_ang = (np.arctan2(B, A) + (np.pi / 2.)) * 180. / np.pi
     return phase_ang % 360
 
 
