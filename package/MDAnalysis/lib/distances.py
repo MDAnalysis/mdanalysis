@@ -1494,13 +1494,14 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
+    if backend == 'distopia':
+        bondlengths = bondlengths.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
 
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
             if boxtype == "ortho":
-                if backend == 'distopia':
-                    bondlengths = bondlengths.astype(np.float32)
                 _run(
                     "calc_bond_distance_ortho",
                     args=(coords1, coords2, box, bondlengths),
@@ -1608,6 +1609,10 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
     numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
 
+    if backend == 'distopia':
+        angles = angles.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
@@ -1624,6 +1629,8 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
                    args=(coords1, coords2, coords3, angles),
                    backend=backend)
 
+    if backend == 'distopia':
+        angles = angles.astype(np.float64)
     return angles
 
 
@@ -1726,6 +1733,10 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
 
+    if backend == 'distopia':
+        dihedrals = dihedrals.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
@@ -1741,7 +1752,8 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
             _run("calc_dihedral",
                  args=(coords1, coords2, coords3, coords4, dihedrals),
                  backend=backend)
-
+    if backend == 'distopia':
+        dihedrals = dihedrals.astype(np.float64)
     return dihedrals
 
 
