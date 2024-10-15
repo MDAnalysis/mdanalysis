@@ -33,6 +33,16 @@ from MDAnalysis.lib import mdamath
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 
 
+def distopia_conditional_backend():
+    # functions that allow distopia acceleration need to be tested with
+    # distopia backend argument but distopia is an optional dep.
+    if HAS_DISTOPIA:
+        return ["serial", "openmp", "distopia"]
+    else:
+        return ["serial", "openmp"]
+
+
+
 class TestCheckResultArray(object):
 
     ref = np.zeros(1, dtype=np.float64)
@@ -309,7 +319,7 @@ def ref_system_universe(ref_system):
             u.select_atoms("index 1 to 3"))
 
 
-@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+@pytest.mark.parametrize("backend", distopia_conditional_backend())
 class TestDistanceArray(object):
     @staticmethod
     def _dist(x, ref):
@@ -826,14 +836,6 @@ def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
             conv_dtype_if_ndarr(d, dtype))
 
 
-def distopia_conditional_backend():
-    # functions that allow distopia acceleration need to be tested with
-    # distopia backend argument but distopia is an optional dep.
-    if HAS_DISTOPIA:
-        return ["serial", "openmp", "distopia"]
-    else:
-        return ["serial", "openmp"]
-
 
 class TestCythonFunctions(object):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
@@ -1138,7 +1140,7 @@ class TestCythonFunctions(object):
             err_msg="Cython bonds didn't match numpy calculations",
         )
 
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_numpy_compliance_angles(self, positions, backend):
         a, b, c, d = positions
         # Checks that the cython functions give identical results to the numpy versions
@@ -1154,7 +1156,7 @@ class TestCythonFunctions(object):
             err_msg="Cython angles didn't match numpy calcuations",
         )
 
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_numpy_compliance_dihedrals(self, positions, backend):
         a, b, c, d = positions
         # Checks that the cython functions give identical results to the numpy versions
