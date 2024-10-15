@@ -56,8 +56,9 @@ import scipy.spatial.distance
 import MDAnalysis
 
 
-def determine_container_limits(topology_file_path, trajectory_file_path,
-                               buffer_value):
+def determine_container_limits(
+    topology_file_path, trajectory_file_path, buffer_value
+):
     """Calculate the extent of the atom coordinates + buffer.
 
     A function for the parent process which should take the input trajectory
@@ -73,19 +74,29 @@ def determine_container_limits(topology_file_path, trajectory_file_path,
     buffer_value : float
         buffer value (padding) in +/- {x, y, z}
     """
-    universe_object = MDAnalysis.Universe(topology_file_path, trajectory_file_path)
-    all_atom_selection = universe_object.select_atoms('all')  # select all particles
+    universe_object = MDAnalysis.Universe(
+        topology_file_path, trajectory_file_path
+    )
+    all_atom_selection = universe_object.select_atoms(
+        "all"
+    )  # select all particles
     all_atom_coordinate_array = all_atom_selection.positions
     x_min, x_max, y_min, y_max, z_min, z_max = [
         all_atom_coordinate_array[..., 0].min(),
-        all_atom_coordinate_array[..., 0].max(), all_atom_coordinate_array[..., 1].min(),
-        all_atom_coordinate_array[..., 1].max(), all_atom_coordinate_array[..., 2].min(),
-        all_atom_coordinate_array[..., 2].max()]
-    tuple_of_limits = \
-        (
-            x_min - buffer_value,
-            x_max + buffer_value, y_min - buffer_value, y_max + buffer_value, z_min - buffer_value,
-            z_max + buffer_value)  # using buffer_value to catch particles near edges
+        all_atom_coordinate_array[..., 0].max(),
+        all_atom_coordinate_array[..., 1].min(),
+        all_atom_coordinate_array[..., 1].max(),
+        all_atom_coordinate_array[..., 2].min(),
+        all_atom_coordinate_array[..., 2].max(),
+    ]
+    tuple_of_limits = (
+        x_min - buffer_value,
+        x_max + buffer_value,
+        y_min - buffer_value,
+        y_max + buffer_value,
+        z_min - buffer_value,
+        z_max + buffer_value,
+    )  # using buffer_value to catch particles near edges
     return tuple_of_limits
 
 
@@ -109,7 +120,11 @@ def produce_grid(tuple_of_limits, grid_spacing):
 
     """
     x_min, x_max, y_min, y_max, z_min, z_max = tuple_of_limits
-    grid = np.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing, z_min:z_max:grid_spacing]
+    grid = np.mgrid[
+        x_min:x_max:grid_spacing,
+        y_min:y_max:grid_spacing,
+        z_min:z_max:grid_spacing,
+    ]
     return grid
 
 
@@ -139,78 +154,124 @@ def split_grid(grid, num_cores):
     num_z_values = z.shape[-1]
     num_sheets = z.shape[0]
     delta_array_shape = tuple(
-        [n - 1 for n in x.shape])  # the final target shape for return delta arrays is n-1 in each dimension
+        [n - 1 for n in x.shape]
+    )  # the final target shape for return delta arrays is n-1 in each dimension
 
     ordered_list_per_sheet_x_values = []
-    for x_sheet in x:  # each x_sheet should have shape (25,23) and the same x value in each element
+    for (
+        x_sheet
+    ) in (
+        x
+    ):  # each x_sheet should have shape (25,23) and the same x value in each element
         array_all_x_values_current_sheet = x_sheet.flatten()
-        ordered_list_per_sheet_x_values.append(array_all_x_values_current_sheet)
+        ordered_list_per_sheet_x_values.append(
+            array_all_x_values_current_sheet
+        )
     ordered_list_per_sheet_y_values = []
     for y_columns in y:
         array_all_y_values_current_sheet = y_columns.flatten()
-        ordered_list_per_sheet_y_values.append(array_all_y_values_current_sheet)
+        ordered_list_per_sheet_y_values.append(
+            array_all_y_values_current_sheet
+        )
     ordered_list_per_sheet_z_values = []
     for z_slices in z:
         array_all_z_values_current_sheet = z_slices.flatten()
-        ordered_list_per_sheet_z_values.append(array_all_z_values_current_sheet)
+        ordered_list_per_sheet_z_values.append(
+            array_all_z_values_current_sheet
+        )
 
     ordered_list_cartesian_coordinates_per_sheet = []
-    for x_sheet_coords, y_sheet_coords, z_sheet_coords in zip(ordered_list_per_sheet_x_values,
-                                                              ordered_list_per_sheet_y_values,
-                                                              ordered_list_per_sheet_z_values):
-        ordered_list_cartesian_coordinates_per_sheet.append(list(zip(x_sheet_coords, y_sheet_coords, z_sheet_coords)))
-    array_ordered_cartesian_coords_per_sheet = np.array(ordered_list_cartesian_coordinates_per_sheet)
-    #now I'm going to want to build cubes in an ordered fashion, and in such a way that I can track the index /
+    for x_sheet_coords, y_sheet_coords, z_sheet_coords in zip(
+        ordered_list_per_sheet_x_values,
+        ordered_list_per_sheet_y_values,
+        ordered_list_per_sheet_z_values,
+    ):
+        ordered_list_cartesian_coordinates_per_sheet.append(
+            list(zip(x_sheet_coords, y_sheet_coords, z_sheet_coords))
+        )
+    array_ordered_cartesian_coords_per_sheet = np.array(
+        ordered_list_cartesian_coordinates_per_sheet
+    )
+    # now I'm going to want to build cubes in an ordered fashion, and in such a way that I can track the index /
     # centroid of each cube for domain decomposition / reconstruction and mayavi mlab.flow() input
-    #cubes will be formed from N - 1 base sheets combined with subsequent sheets
+    # cubes will be formed from N - 1 base sheets combined with subsequent sheets
     current_base_sheet = 0
     dictionary_cubes_centroids_indices = {}
     cube_counter = 0
     while current_base_sheet < num_sheets - 1:
-        current_base_sheet_array = array_ordered_cartesian_coords_per_sheet[current_base_sheet]
+        current_base_sheet_array = array_ordered_cartesian_coords_per_sheet[
+            current_base_sheet
+        ]
         current_top_sheet_array = array_ordered_cartesian_coords_per_sheet[
-            current_base_sheet + 1]  # the points of the sheet 'to the right' in the grid
+            current_base_sheet + 1
+        ]  # the points of the sheet 'to the right' in the grid
         current_index = 0
         while current_index < current_base_sheet_array.shape[0] - num_z_values:
             # iterate through all the indices in each of the sheet arrays (careful to avoid extra
             # points not needed for cubes)
-            column_z_level = 0  # start at the bottom of a given 4-point column and work up
+            column_z_level = (
+                0  # start at the bottom of a given 4-point column and work up
+            )
             while column_z_level < num_z_values - 1:
                 current_list_cube_vertices = []
-                first_two_vertices_base_sheet = current_base_sheet_array[current_index:current_index + 2, ...].tolist()
-                first_two_vertices_top_sheet = current_top_sheet_array[current_index:current_index + 2, ...].tolist()
-                next_two_vertices_base_sheet = current_base_sheet_array[current_index +
-                                                                        num_z_values: 2 +
-                                                                        num_z_values + current_index, ...].tolist()
-                next_two_vertices_top_sheet = current_top_sheet_array[current_index +
-                                                                      num_z_values: 2 +
-                                                                      num_z_values + current_index, ...].tolist()
+                first_two_vertices_base_sheet = current_base_sheet_array[
+                    current_index : current_index + 2, ...
+                ].tolist()
+                first_two_vertices_top_sheet = current_top_sheet_array[
+                    current_index : current_index + 2, ...
+                ].tolist()
+                next_two_vertices_base_sheet = current_base_sheet_array[
+                    current_index
+                    + num_z_values : 2
+                    + num_z_values
+                    + current_index,
+                    ...,
+                ].tolist()
+                next_two_vertices_top_sheet = current_top_sheet_array[
+                    current_index
+                    + num_z_values : 2
+                    + num_z_values
+                    + current_index,
+                    ...,
+                ].tolist()
                 for vertex_set in [
-                    first_two_vertices_base_sheet, first_two_vertices_top_sheet,
-                    next_two_vertices_base_sheet, next_two_vertices_top_sheet
+                    first_two_vertices_base_sheet,
+                    first_two_vertices_top_sheet,
+                    next_two_vertices_base_sheet,
+                    next_two_vertices_top_sheet,
                 ]:
                     current_list_cube_vertices.extend(vertex_set)
                 vertex_array = np.array(current_list_cube_vertices)
-                assert vertex_array.shape == (8, 3), "vertex_array has incorrect shape"
-                cube_centroid = np.average(np.array(current_list_cube_vertices), axis=0)
+                assert vertex_array.shape == (
+                    8,
+                    3,
+                ), "vertex_array has incorrect shape"
+                cube_centroid = np.average(
+                    np.array(current_list_cube_vertices), axis=0
+                )
                 dictionary_cubes_centroids_indices[cube_counter] = {
-                    'centroid': cube_centroid,
-                    'vertex_list': current_list_cube_vertices}
+                    "centroid": cube_centroid,
+                    "vertex_list": current_list_cube_vertices,
+                }
                 cube_counter += 1
                 current_index += 1
                 column_z_level += 1
-                if column_z_level == num_z_values - 1:  # the loop will break but I should also increment the
+                if (
+                    column_z_level == num_z_values - 1
+                ):  # the loop will break but I should also increment the
                     # current_index
                     current_index += 1
         current_base_sheet += 1
     total_cubes = len(dictionary_cubes_centroids_indices)
 
-    #produce an array of pseudo cube indices (actually the dictionary keys which are cube numbers in string format):
+    # produce an array of pseudo cube indices (actually the dictionary keys which are cube numbers in string format):
     pseudo_cube_indices = np.arange(0, total_cubes)
-    sublist_of_cube_indices_per_core = np.array_split(pseudo_cube_indices, num_cores)
-    #now, the split of pseudoindices seems to work well, and the above sublist_of_cube_indices_per_core is a list of
+    sublist_of_cube_indices_per_core = np.array_split(
+        pseudo_cube_indices, num_cores
+    )
+    # now, the split of pseudoindices seems to work well, and the above sublist_of_cube_indices_per_core is a list of
     # arrays of cube numbers / keys in the original dictionary
-    #now I think I'll try to produce a list of dictionaries that each contain their assigned cubes based on the above
+    # now I think I'll try to produce a list of dictionaries that each contain their assigned cubes based on the above
     #  per core split
     list_dictionaries_for_cores = []
     subdictionary_counter = 0
@@ -224,11 +285,22 @@ def split_grid(grid, num_cores):
             items_popped += 1
         list_dictionaries_for_cores.append(current_core_dictionary)
         subdictionary_counter += 1
-    return list_dictionaries_for_cores, total_cubes, num_sheets, delta_array_shape
+    return (
+        list_dictionaries_for_cores,
+        total_cubes,
+        num_sheets,
+        delta_array_shape,
+    )
 
 
-def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cube_data_this_core, MDA_selection,
-                  start_frame, end_frame):
+def per_core_work(
+    start_frame_coord_array,
+    end_frame_coord_array,
+    dictionary_cube_data_this_core,
+    MDA_selection,
+    start_frame,
+    end_frame,
+):
     """Run the analysis on one core.
 
     The code to perform on a given core given the dictionary of cube data.
@@ -237,82 +309,137 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
     list_previous_frame_indices = []
     # define some utility functions for trajectory iteration:
 
-    def point_in_cube(array_point_coordinates, list_cube_vertices, cube_centroid):
+    def point_in_cube(
+        array_point_coordinates, list_cube_vertices, cube_centroid
+    ):
         """Determine if an array of coordinates are within a cube."""
-        #the simulation particle point can't be more than half the cube side length away from the cube centroid in
+        # the simulation particle point can't be more than half the cube side length away from the cube centroid in
         # any given dimension:
         array_cube_vertices = np.array(list_cube_vertices)
-        cube_half_side_length = scipy.spatial.distance.pdist(array_cube_vertices, 'euclidean').min() / 2.0
-        array_cube_vertex_distances_from_centroid = scipy.spatial.distance.cdist(array_cube_vertices,
-                                                                                 cube_centroid[np.newaxis, :])
-        np.testing.assert_allclose(array_cube_vertex_distances_from_centroid.min(),
-                                          array_cube_vertex_distances_from_centroid.max(), rtol=0, atol=1.5e-4,
-                                          err_msg="not all cube vertex to centroid distances are the same, "
-                                                  "so not a true cube")
-        absolute_delta_coords = np.absolute(np.subtract(array_point_coordinates, cube_centroid))
+        cube_half_side_length = (
+            scipy.spatial.distance.pdist(
+                array_cube_vertices, "euclidean"
+            ).min()
+            / 2.0
+        )
+        array_cube_vertex_distances_from_centroid = (
+            scipy.spatial.distance.cdist(
+                array_cube_vertices, cube_centroid[np.newaxis, :]
+            )
+        )
+        np.testing.assert_allclose(
+            array_cube_vertex_distances_from_centroid.min(),
+            array_cube_vertex_distances_from_centroid.max(),
+            rtol=0,
+            atol=1.5e-4,
+            err_msg="not all cube vertex to centroid distances are the same, "
+            "so not a true cube",
+        )
+        absolute_delta_coords = np.absolute(
+            np.subtract(array_point_coordinates, cube_centroid)
+        )
         absolute_delta_x_coords = absolute_delta_coords[..., 0]
-        indices_delta_x_acceptable = np.where(absolute_delta_x_coords <= cube_half_side_length)
+        indices_delta_x_acceptable = np.where(
+            absolute_delta_x_coords <= cube_half_side_length
+        )
         absolute_delta_y_coords = absolute_delta_coords[..., 1]
-        indices_delta_y_acceptable = np.where(absolute_delta_y_coords <= cube_half_side_length)
+        indices_delta_y_acceptable = np.where(
+            absolute_delta_y_coords <= cube_half_side_length
+        )
         absolute_delta_z_coords = absolute_delta_coords[..., 2]
-        indices_delta_z_acceptable = np.where(absolute_delta_z_coords <= cube_half_side_length)
-        intersection_xy_acceptable_arrays = np.intersect1d(indices_delta_x_acceptable[0],
-                                                              indices_delta_y_acceptable[0])
-        overall_indices_points_in_current_cube = np.intersect1d(intersection_xy_acceptable_arrays,
-                                                                   indices_delta_z_acceptable[0])
+        indices_delta_z_acceptable = np.where(
+            absolute_delta_z_coords <= cube_half_side_length
+        )
+        intersection_xy_acceptable_arrays = np.intersect1d(
+            indices_delta_x_acceptable[0], indices_delta_y_acceptable[0]
+        )
+        overall_indices_points_in_current_cube = np.intersect1d(
+            intersection_xy_acceptable_arrays, indices_delta_z_acceptable[0]
+        )
         return overall_indices_points_in_current_cube
 
-    def update_dictionary_point_in_cube_start_frame(array_simulation_particle_coordinates,
-                                                    dictionary_cube_data_this_core):
+    def update_dictionary_point_in_cube_start_frame(
+        array_simulation_particle_coordinates, dictionary_cube_data_this_core
+    ):
         """Basically update the cube dictionary objects assigned to this core to contain a new key/value pair
         corresponding to the indices of the relevant particles that fall within a given cube. Also, for a given cube,
-        store a key/value pair for the centroid of the particles that fall within the cube."""
+        store a key/value pair for the centroid of the particles that fall within the cube.
+        """
         cube_counter = 0
         for key, cube in dictionary_cube_data_this_core.items():
-            index_list_in_cube = point_in_cube(array_simulation_particle_coordinates, cube['vertex_list'],
-                                               cube['centroid'])
-            cube['start_frame_index_list_in_cube'] = index_list_in_cube
-            if len(index_list_in_cube) > 0:  # if there's at least one particle in this cube
-                centroid_particles_in_cube = np.average(array_simulation_particle_coordinates[index_list_in_cube],
-                                                           axis=0)
-                cube['centroid_of_particles_first_frame'] = centroid_particles_in_cube
+            index_list_in_cube = point_in_cube(
+                array_simulation_particle_coordinates,
+                cube["vertex_list"],
+                cube["centroid"],
+            )
+            cube["start_frame_index_list_in_cube"] = index_list_in_cube
+            if (
+                len(index_list_in_cube) > 0
+            ):  # if there's at least one particle in this cube
+                centroid_particles_in_cube = np.average(
+                    array_simulation_particle_coordinates[index_list_in_cube],
+                    axis=0,
+                )
+                cube["centroid_of_particles_first_frame"] = (
+                    centroid_particles_in_cube
+                )
             else:  # empty cube
-                cube['centroid_of_particles_first_frame'] = None
+                cube["centroid_of_particles_first_frame"] = None
             cube_counter += 1
 
-    def update_dictionary_end_frame(array_simulation_particle_coordinates, dictionary_cube_data_this_core):
+    def update_dictionary_end_frame(
+        array_simulation_particle_coordinates, dictionary_cube_data_this_core
+    ):
         """Update the cube dictionary objects again as appropriate for the second and final frame."""
         cube_counter = 0
         for key, cube in dictionary_cube_data_this_core.items():
             # if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0
-            if cube['centroid_of_particles_first_frame'] is None:
-                cube['dx'] = 0
-                cube['dy'] = 0
-                cube['dz'] = 0
+            if cube["centroid_of_particles_first_frame"] is None:
+                cube["dx"] = 0
+                cube["dy"] = 0
+                cube["dz"] = 0
             else:  # there was at least one particle in the starting cube so we can get dx,dy,dz centroid values
-                new_coordinate_array_for_particles_starting_in_this_cube = array_simulation_particle_coordinates[
-                    cube['start_frame_index_list_in_cube']]
+                new_coordinate_array_for_particles_starting_in_this_cube = (
+                    array_simulation_particle_coordinates[
+                        cube["start_frame_index_list_in_cube"]
+                    ]
+                )
                 new_centroid_for_particles_starting_in_this_cube = np.average(
-                    new_coordinate_array_for_particles_starting_in_this_cube, axis=0)
-                cube['centroid_of_paticles_final_frame'] = new_centroid_for_particles_starting_in_this_cube
-                delta_centroid_array_this_cube = new_centroid_for_particles_starting_in_this_cube - cube[
-                    'centroid_of_particles_first_frame']
-                cube['dx'] = delta_centroid_array_this_cube[0]
-                cube['dy'] = delta_centroid_array_this_cube[1]
-                cube['dz'] = delta_centroid_array_this_cube[2]
+                    new_coordinate_array_for_particles_starting_in_this_cube,
+                    axis=0,
+                )
+                cube["centroid_of_paticles_final_frame"] = (
+                    new_centroid_for_particles_starting_in_this_cube
+                )
+                delta_centroid_array_this_cube = (
+                    new_centroid_for_particles_starting_in_this_cube
+                    - cube["centroid_of_particles_first_frame"]
+                )
+                cube["dx"] = delta_centroid_array_this_cube[0]
+                cube["dy"] = delta_centroid_array_this_cube[1]
+                cube["dz"] = delta_centroid_array_this_cube[2]
             cube_counter += 1
 
-    #now that the parent process is dealing with the universe object & grabbing required coordinates, each child
+    # now that the parent process is dealing with the universe object & grabbing required coordinates, each child
     # process only needs to take the coordinate arrays & perform the operations with its assigned cubes (no more file
     #  opening and trajectory iteration on each core--which I'm hoping will substantially reduce the physical memory
     # footprint of my 3D streamplot code)
-    update_dictionary_point_in_cube_start_frame(start_frame_coord_array, dictionary_cube_data_this_core)
-    update_dictionary_end_frame(end_frame_coord_array, dictionary_cube_data_this_core)
+    update_dictionary_point_in_cube_start_frame(
+        start_frame_coord_array, dictionary_cube_data_this_core
+    )
+    update_dictionary_end_frame(
+        end_frame_coord_array, dictionary_cube_data_this_core
+    )
     return dictionary_cube_data_this_core
 
 
-def produce_coordinate_arrays_single_process(topology_file_path, trajectory_file_path, MDA_selection, start_frame,
-                                             end_frame):
+def produce_coordinate_arrays_single_process(
+    topology_file_path,
+    trajectory_file_path,
+    MDA_selection,
+    start_frame,
+    end_frame,
+):
     """Generate coordinate arrays.
 
     To reduce memory footprint produce only a single MDA selection and get
@@ -321,24 +448,46 @@ def produce_coordinate_arrays_single_process(topology_file_path, trajectory_file
     waste memory.
 
     """
-    universe_object = MDAnalysis.Universe(topology_file_path, trajectory_file_path)
+    universe_object = MDAnalysis.Universe(
+        topology_file_path, trajectory_file_path
+    )
     relevant_particles = universe_object.select_atoms(MDA_selection)
     # pull out coordinate arrays from desired frames:
     for ts in universe_object.trajectory:
         if ts.frame > end_frame:
             break  # stop here
         if ts.frame == start_frame:
-            start_frame_relevant_particle_coordinate_array_xyz = relevant_particles.positions
+            start_frame_relevant_particle_coordinate_array_xyz = (
+                relevant_particles.positions
+            )
         elif ts.frame == end_frame:
-            end_frame_relevant_particle_coordinate_array_xyz = relevant_particles.positions
+            end_frame_relevant_particle_coordinate_array_xyz = (
+                relevant_particles.positions
+            )
         else:
             continue
-    return (start_frame_relevant_particle_coordinate_array_xyz, end_frame_relevant_particle_coordinate_array_xyz)
+    return (
+        start_frame_relevant_particle_coordinate_array_xyz,
+        end_frame_relevant_particle_coordinate_array_xyz,
+    )
 
 
-def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
-                            end_frame, xmin, xmax, ymin, ymax, zmin, zmax, maximum_delta_magnitude=2.0,
-                            num_cores='maximum'):
+def generate_streamlines_3d(
+    topology_file_path,
+    trajectory_file_path,
+    grid_spacing,
+    MDA_selection,
+    start_frame,
+    end_frame,
+    xmin,
+    xmax,
+    ymin,
+    ymax,
+    zmin,
+    zmax,
+    maximum_delta_magnitude=2.0,
+    num_cores="maximum",
+):
     r"""Produce the x, y and z components of a 3D streamplot data set.
 
     Parameters
@@ -439,68 +588,91 @@ def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spaci
     .. _mayavi: http://docs.enthought.com/mayavi/mayavi/
     """
     # work out the number of cores to use:
-    if num_cores == 'maximum':
+    if num_cores == "maximum":
         num_cores = multiprocessing.cpu_count()  # use all available cores
     else:
         num_cores = num_cores  # use the value specified by the user
         # assert isinstance(num_cores,(int,long)), "The number of specified cores must (of course) be an integer."
-    np.seterr(all='warn', over='raise')
+    np.seterr(all="warn", over="raise")
     parent_cube_dictionary = {}  # collect all data from child processes here
 
     def log_result_to_parent(process_dict):
         parent_cube_dictionary.update(process_dict)
 
-    #step 1: produce tuple of cartesian coordinate limits for the first frame
-    #tuple_of_limits = determine_container_limits(topology_file_path = topology_file_path,trajectory_file_path =
+    # step 1: produce tuple of cartesian coordinate limits for the first frame
+    # tuple_of_limits = determine_container_limits(topology_file_path = topology_file_path,trajectory_file_path =
     # trajectory_file_path,buffer_value=buffer_value)
     tuple_of_limits = (xmin, xmax, ymin, ymax, zmin, zmax)
-    #step 2: produce a suitable grid (will assume that grid size / container size does not vary during simulation--or
+    # step 2: produce a suitable grid (will assume that grid size / container size does not vary during simulation--or
     #  at least not beyond the buffer limit, such that this grid can be used for all subsequent frames)
-    grid = produce_grid(tuple_of_limits=tuple_of_limits, grid_spacing=grid_spacing)
-    #step 3: split the grid into a dictionary of cube information that can be sent to each core for processing:
-    list_dictionaries_for_cores, total_cubes, num_sheets, delta_array_shape = split_grid(grid=grid, num_cores=num_cores)
-    #step 3b: produce required coordinate arrays on a single core to avoid making a universe object on each core:
-    start_frame_coord_array, end_frame_coord_array = produce_coordinate_arrays_single_process(topology_file_path,
-                                                                                              trajectory_file_path,
-                                                                                              MDA_selection,
-                                                                                              start_frame, end_frame)
-    #step 4: per process work using the above grid data split
+    grid = produce_grid(
+        tuple_of_limits=tuple_of_limits, grid_spacing=grid_spacing
+    )
+    # step 3: split the grid into a dictionary of cube information that can be sent to each core for processing:
+    list_dictionaries_for_cores, total_cubes, num_sheets, delta_array_shape = (
+        split_grid(grid=grid, num_cores=num_cores)
+    )
+    # step 3b: produce required coordinate arrays on a single core to avoid making a universe object on each core:
+    start_frame_coord_array, end_frame_coord_array = (
+        produce_coordinate_arrays_single_process(
+            topology_file_path,
+            trajectory_file_path,
+            MDA_selection,
+            start_frame,
+            end_frame,
+        )
+    )
+    # step 4: per process work using the above grid data split
     pool = multiprocessing.Pool(num_cores)
     for sub_dictionary_of_cube_data in list_dictionaries_for_cores:
-        pool.apply_async(per_core_work, args=(
-            start_frame_coord_array, end_frame_coord_array, sub_dictionary_of_cube_data, MDA_selection, start_frame,
-            end_frame), callback=log_result_to_parent)
+        pool.apply_async(
+            per_core_work,
+            args=(
+                start_frame_coord_array,
+                end_frame_coord_array,
+                sub_dictionary_of_cube_data,
+                MDA_selection,
+                start_frame,
+                end_frame,
+            ),
+            callback=log_result_to_parent,
+        )
     pool.close()
     pool.join()
-    #so, at this stage the parent process now has a single dictionary with all the cube objects updated from all
+    # so, at this stage the parent process now has a single dictionary with all the cube objects updated from all
     # available cores
-    #the 3D streamplot (i.e, mayavi flow() function) will require separate 3D np arrays for dx,dy,dz
-    #the shape of each 3D array will unfortunately have to match the mgrid data structure (bit of a pain): (
+    # the 3D streamplot (i.e, mayavi flow() function) will require separate 3D np arrays for dx,dy,dz
+    # the shape of each 3D array will unfortunately have to match the mgrid data structure (bit of a pain): (
     # num_sheets - 1, num_sheets - 1, cubes_per_column)
     cubes_per_sheet = int(float(total_cubes) / float(num_sheets - 1))
-    #produce dummy zero arrays for dx,dy,dz of the appropriate shape:
+    # produce dummy zero arrays for dx,dy,dz of the appropriate shape:
     dx_array = np.zeros(delta_array_shape)
     dy_array = np.zeros(delta_array_shape)
     dz_array = np.zeros(delta_array_shape)
-    #now use the parent cube dictionary to correctly substitute in dx,dy,dz values
+    # now use the parent cube dictionary to correctly substitute in dx,dy,dz values
     current_sheet = 0  # which is also the current row
     y_index_current_sheet = 0  # sub row
     z_index_current_column = 0  # column
     total_cubes_current_sheet = 0
     for cube_number in range(0, total_cubes):
-        dx_array[current_sheet, y_index_current_sheet, z_index_current_column] = parent_cube_dictionary[cube_number][
-            'dx']
-        dy_array[current_sheet, y_index_current_sheet, z_index_current_column] = parent_cube_dictionary[cube_number][
-            'dy']
-        dz_array[current_sheet, y_index_current_sheet, z_index_current_column] = parent_cube_dictionary[cube_number][
-            'dz']
+        dx_array[
+            current_sheet, y_index_current_sheet, z_index_current_column
+        ] = parent_cube_dictionary[cube_number]["dx"]
+        dy_array[
+            current_sheet, y_index_current_sheet, z_index_current_column
+        ] = parent_cube_dictionary[cube_number]["dy"]
+        dz_array[
+            current_sheet, y_index_current_sheet, z_index_current_column
+        ] = parent_cube_dictionary[cube_number]["dz"]
         z_index_current_column += 1
         total_cubes_current_sheet += 1
         if z_index_current_column == delta_array_shape[2]:
             # done building current y-column so iterate y value and reset z
             z_index_current_column = 0
             y_index_current_sheet += 1
-            if y_index_current_sheet == delta_array_shape[1]:  # current sheet is complete
+            if (
+                y_index_current_sheet == delta_array_shape[1]
+            ):  # current sheet is complete
                 current_sheet += 1
                 y_index_current_sheet = 0  # restart for new sheet
                 z_index_current_column = 0
