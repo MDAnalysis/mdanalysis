@@ -56,6 +56,7 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * MDAnalysis now supports Python 3.13 (PR #4732)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
@@ -63,6 +64,8 @@ Enhancements
  * enables parallelization for analysis.bat.BAT (Issue #4663)
  * enable parallelization for analysis.dihedrals.{Dihedral,Ramachandran,Janin}
    (Issue #4673) 
+ * enables parallelization for analysis.dssp.dssp.DSSP (Issue #4674)
+ * Enables parallelization for analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis (Issue #4664)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
