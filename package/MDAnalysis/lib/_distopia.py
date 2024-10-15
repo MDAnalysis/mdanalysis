@@ -98,7 +98,7 @@ def calc_dihedral_triclinic(
 ) -> None:
     distopia.calc_dihedrals_triclinic(coords1, coords2, coords3, coords4, box, results=results)
 
-def calc_calc_distance_array(
+def calc_distance_array(
     coords1: np.ndarray, coords2: np.ndarray, results: np.ndarray
 ) -> None:
     distopia.calc_distance_array_no_box(coords1, coords2, results=results)

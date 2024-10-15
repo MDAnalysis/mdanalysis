@@ -963,7 +963,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize("dtype", (np.float32, np.float64))
     @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_angles(self, backend, dtype, pos, request):
         a, b, c, d = request.getfixturevalue(pos)
         a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
@@ -979,7 +979,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(angles[3], 0.098174833, self.prec,
                             err_msg="Small angle failed in calc_angles")
 
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_angles_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
@@ -1005,7 +1005,7 @@ class TestCythonFunctions(object):
     )
     @pytest.mark.parametrize("shift", shifts)
     @pytest.mark.parametrize("periodic", [True, False])
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_angles_single_coords(self, case, shift, periodic, backend):
         def manual_angle(x, y, z):
             return mdamath.angle(y - x, y - z)
@@ -1026,7 +1026,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize("dtype", (np.float32, np.float64))
     @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_dihedrals(self, backend, dtype, pos, request):
         a, b, c, d = request.getfixturevalue(pos)
         a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
@@ -1039,7 +1039,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
 
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_dihedrals_wronglength(self, positions, wronglength, backend):
         a, b, c, d = positions
         with pytest.raises(ValueError):
@@ -1054,7 +1054,7 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             distances.calc_dihedrals(a, b, c, wronglength, backend=backend)
 
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_dihedrals_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
@@ -1105,7 +1105,7 @@ class TestCythonFunctions(object):
     )
     @pytest.mark.parametrize("shift", shifts)
     @pytest.mark.parametrize("periodic", [True, False])
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_dihedrals_single_coords(self, case, shift, periodic, backend):
         def manual_dihedral(a, b, c, d):
             return mdamath.dihedral(b - a, c - b, d - c)
@@ -1472,7 +1472,7 @@ class TestInputUnchanged(object):
         assert_equal([crd.positions for crd in crds], refs)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_input_unchanged_calc_angles(self, coords, box, backend):
         crds = coords[:3]
         refs = [crd.copy() for crd in crds]
@@ -1481,7 +1481,7 @@ class TestInputUnchanged(object):
         assert_equal(crds, refs)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_input_unchanged_calc_angles_atomgroup(self, coords_atomgroups,
                                                    box, backend):
         crds = coords_atomgroups[:3]
@@ -1491,7 +1491,7 @@ class TestInputUnchanged(object):
         assert_equal([crd.positions for crd in crds], refs)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_input_unchanged_calc_dihedrals(self, coords, box, backend):
         crds = coords
         refs = [crd.copy() for crd in crds]
@@ -1500,7 +1500,7 @@ class TestInputUnchanged(object):
         assert_equal(crds, refs)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_input_unchanged_calc_dihedrals_atomgroup(self, coords_atomgroups,
                                                       box, backend):
         crds = coords_atomgroups
@@ -1555,14 +1555,14 @@ class TestEmptyInputCoordinates(object):
         return np.empty((0, 3), dtype=np.float32)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_empty_input_distance_array(self, empty_coord, box, backend):
         res = distances.distance_array(empty_coord, empty_coord, box=box,
                                        backend=backend)
         assert_equal(res, np.empty((0, 0), dtype=np.float64))
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_empty_input_self_distance_array(self, empty_coord, box, backend):
         res = distances.self_distance_array(empty_coord, box=box,
                                             backend=backend)
@@ -1620,14 +1620,14 @@ class TestEmptyInputCoordinates(object):
         assert_equal(res, np.empty((0,), dtype=np.float64))
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_empty_input_calc_angles(self, empty_coord, box, backend):
         res = distances.calc_angles(empty_coord, empty_coord, empty_coord,
                                     box=box, backend=backend)
         assert_equal(res, np.empty((0,), dtype=np.float64))
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_empty_input_calc_dihedrals(self, empty_coord, box, backend):
         res = distances.calc_dihedrals(empty_coord, empty_coord, empty_coord,
                                        empty_coord, box=box, backend=backend)
@@ -1783,7 +1783,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('incoords',
                              [3 * [coords[0]]] + list(comb(coords[1:], 3)))
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_output_type_calc_angles(self, incoords, box, backend):
         res = distances.calc_angles(*incoords, box=box, backend=backend)
         maxdim = max([crd.ndim for crd in incoords])
@@ -1798,7 +1798,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('incoords',
                              [4 * [coords[0]]] + list(comb(coords[1:], 4)))
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_output_type_calc_dihedrals(self, incoords, box, backend):
         res = distances.calc_dihedrals(*incoords, box=box, backend=backend)
         maxdim = max([crd.ndim for crd in incoords])
@@ -1812,7 +1812,7 @@ class TestOutputTypes(object):
 
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('incoords', coords)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_output_type_apply_PBC(self, incoords, box, backend):
         res = distances.apply_PBC(incoords, box, backend=backend)
         assert type(res) == np.ndarray
