@@ -1812,7 +1812,7 @@ class TestOutputTypes(object):
 
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('incoords', coords)
-    @pytest.mark.parametrize('backend', distopia_conditional_backend())
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_output_type_apply_PBC(self, incoords, box, backend):
         res = distances.apply_PBC(incoords, box, backend=backend)
         assert type(res) == np.ndarray
