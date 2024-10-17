@@ -43,9 +43,17 @@ numbers up to 99,999.
    if unknown. Partial charges are not set. Elements are parsed if they are
    valid. If partially missing or incorrect, empty records are assigned.
 
+.. Note::
+
+   You can also use :mod:`~MDAnalysis.topology.MMCIFParser` to parse PDB files
+   that you're having troubles parsing with standard PDB parser. ``MMCIFParser``
+   uses ``gemmi`` library (https://github.com/project-gemmi/gemmi) that is developed
+   together with RCSB, and might work better for your particular situation.
+
 See Also
 --------
 * :mod:`MDAnalysis.topology.ExtendedPDBParser`
+* :mod:`MDAnalysis.topology.MMCIFParser`
 * :class:`MDAnalysis.coordinates.PDB.PDBReader`
 * :class:`MDAnalysis.core.universe.Universe`
 
