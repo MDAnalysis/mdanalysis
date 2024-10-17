@@ -59,7 +59,7 @@ inputs:
   dask:
     default: 'dask'
   distopia:
-    default: 'distopia>=0.2.0'
+    default: 'distopia>=0.3.0'
   h5py:
     default: 'h5py>=2.10'
   hole2:

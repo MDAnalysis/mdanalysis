@@ -61,14 +61,22 @@ module are covered. Consult the following table to see if the function
 you wish to use is covered by distopia. For more information see the
 `distopia documentation`_.
 
-.. Table:: Functions available using the `distopia`_ backend.
-    :align: center
+.. table:: Functions available using the `distopia`_ backend.
+   :align: center
 
-    +-------------------------------------+-----------------------------------+
-    | Functions                           | Notes                             |
-    +=====================================+===================================+
-    | MDAnalysis.lib.distances.calc_bonds | Doesn't support triclinic boxes   |
-    +-------------------------------------+-----------------------------------+
+   +-----------------------------------------------+
+   | Functions                                     |
+   +===============================================+
+   | MDAnalysis.lib.distances.calc_bonds           |
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.calc_angles          |
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.calc_dihedrals       |
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.distance_array       | 
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.self_distance_array  |
+   +-----------------------------------------------+
 
 If `distopia`_ is installed, the functions in this table will accept the key
 'distopia' for the `backend` keyword argument. If the distopia backend is
@@ -83,7 +91,7 @@ if and must be selected.**
 
 .. Note::
     Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
-    intrinsics in distopia via `VCL2`_, the precision of your results may
+    intrinsics in distopia via `HWY`_, the precision of your results may
     depend on the ISA available on your machine. However, in all tested cases
     distopia satisfied the accuracy thresholds used to the functions in this
     module. Please document any issues you encounter with distopia's accuracy
@@ -92,7 +100,7 @@ if and must be selected.**
 .. _distopia: https://github.com/MDAnalysis/distopia
 .. _distopia documentation: https://www.mdanalysis.org/distopia
 .. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
-.. _VCL2: https://github.com/vectorclass/version2
+.. _HWY: https://github.com/google/highway
 .. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915
 
 .. versionadded:: 0.13.0
@@ -101,6 +109,8 @@ if and must be selected.**
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 .. versionchanged:: 2.5.0
    Interface to the `distopia`_ package added.
+.. versionchanged:: 2.7.0
+    Distopia support greatly expanded.
 
 Functions
 ---------
@@ -303,6 +313,11 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
+    
+    if backend == 'distopia':
+        distances = distances.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -317,6 +332,9 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         _run("calc_distance_array",
              args=(reference, configuration, distances),
              backend=backend)
+
+    if backend == 'distopia':
+        distances = distances.astype(np.float64)
 
     return distances
 
@@ -1484,13 +1502,14 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
+    if backend == 'distopia':
+        bondlengths = bondlengths.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
 
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
             if boxtype == "ortho":
-                if backend == 'distopia':
-                    bondlengths = bondlengths.astype(np.float32)
                 _run(
                     "calc_bond_distance_ortho",
                     args=(coords1, coords2, box, bondlengths),
@@ -1598,6 +1617,10 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
     numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
 
+    if backend == 'distopia':
+        angles = angles.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
@@ -1614,6 +1637,8 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
                    args=(coords1, coords2, coords3, angles),
                    backend=backend)
 
+    if backend == 'distopia':
+        angles = angles.astype(np.float64)
     return angles
 
 
@@ -1716,6 +1741,10 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
 
+    if backend == 'distopia':
+        dihedrals = dihedrals.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
@@ -1731,7 +1760,8 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
             _run("calc_dihedral",
                  args=(coords1, coords2, coords3, coords4, dihedrals),
                  backend=backend)
-
+    if backend == 'distopia':
+        dihedrals = dihedrals.astype(np.float64)
     return dihedrals
 
 
