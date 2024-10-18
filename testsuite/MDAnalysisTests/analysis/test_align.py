@@ -446,7 +446,7 @@ class TestAlign(object):
 
 
 def _get_aligned_average_positions(
-  ref_files, ref, select="all", **kwargs, client_AlignTraj
+  ref_files, ref, client_AlignTraj, select="all", **kwargs
 ):
     u = mda.Universe(*ref_files, in_memory=True)
     prealigner = align.AlignTraj(u, ref, select=select,
