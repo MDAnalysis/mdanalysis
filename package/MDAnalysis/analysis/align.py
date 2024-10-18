@@ -682,7 +682,7 @@ class AlignTraj(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ("serial", "dask")
+        return ("serial", "multiprocessing", "dask")
 
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
