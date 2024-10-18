@@ -473,7 +473,7 @@ class TestAverageStructure(object):
     ):
         # Issue #3278 - remove in MDAnalysis 3.0.0
         avg = align.AverageStructure(universe, reference).run(
-          stop=2,**client_AverageStructure
+          stop=2, **client_AverageStructure
         )
 
         wmsg = "The `universe` attribute was deprecated in MDAnalysis 2.0.0"
@@ -503,7 +503,9 @@ class TestAverageStructure(object):
       self, universe, reference, client_AverageStructure
     ):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
-        avg = align.AverageStructure(universe, reference, weights='mass').run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, reference, weights='mass').run(
+          **client_AverageStructure
+        )
         assert_allclose(avg.results.universe.atoms.positions, ref,
                             rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
@@ -513,8 +515,9 @@ class TestAverageStructure(object):
     ):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
-        avg = align.AverageStructure(universe, reference,
-                                     select=select).run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, reference, select=select).run(
+          **client_AverageStructure
+        )
         assert_allclose(avg.results.universe.atoms.positions, ref,
                             rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
@@ -535,7 +538,9 @@ class TestAverageStructure(object):
         with pytest.raises(SelectionError):
             align.AverageStructure(universe, u)
 
-    def test_average_structure_ref_frame(self, universe, client_AverageStructure):
+    def test_average_structure_ref_frame(
+      self, universe, client_AverageStructure
+    ):
         ref_frame = 3
         u = mda.Merge(universe.atoms)
 
@@ -546,8 +551,9 @@ class TestAverageStructure(object):
         # back to start
         universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
-        avg = align.AverageStructure(universe, 
-                                     ref_frame=ref_frame).run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, ref_frame=ref_frame).run(
+          **client_AverageStructure
+        )
         assert_allclose(avg.results.universe.atoms.positions, ref,
                         rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
@@ -555,8 +561,9 @@ class TestAverageStructure(object):
     def test_average_structure_in_memory(
       self, universe, client_AverageStructure
     ):
-        avg = align.AverageStructure(universe, 
-                                     in_memory=True).run(**client_AverageStructure)
+        avg = align.AverageStructure(universe, in_memory=True).run(
+          **client_AverageStructure
+        )
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
         assert_allclose(avg.results.universe.atoms.positions,
                         reference_coordinates, rtol=0, atol=1.5e-4)
