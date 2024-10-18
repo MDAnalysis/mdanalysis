@@ -445,9 +445,12 @@ class TestAlign(object):
                                   rtol=0, atol=1.5e-3)
 
 
-def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs, client_AlignTraj):
+def _get_aligned_average_positions(
+  ref_files, ref, select="all", **kwargs, client_AlignTraj
+):
     u = mda.Universe(*ref_files, in_memory=True)
-    prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run(**client_AlignTraj)
+    prealigner = align.AlignTraj(u, ref, select=select,
+                                 **kwargs).run(**client_AlignTraj)
     ag = u.select_atoms(select)
     reference_coordinates = u.trajectory.timeseries(asel=ag).mean(axis=1)
     rmsd = sum(prealigner.results.rmsd/len(u.trajectory))
@@ -465,9 +468,13 @@ class TestAverageStructure(object):
     def reference(self):
         return mda.Universe(PSF, CRD)
 
-    def test_average_structure_deprecated_attrs(self, universe, reference, client_AverageStructure):
+    def test_average_structure_deprecated_attrs(
+      self, universe, reference, client_AverageStructure
+    ):
         # Issue #3278 - remove in MDAnalysis 3.0.0
-        avg = align.AverageStructure(universe, reference).run(stop=2, **client_AverageStructure)
+        avg = align.AverageStructure(universe, reference).run(stop=2,
+                                                              **client_AverageStructure
+                                                             )
 
         wmsg = "The `universe` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
