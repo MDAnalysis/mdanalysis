@@ -244,10 +244,14 @@ class TestAlign(object):
             finally:
                 x._writer.close()
 
-    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
+    def test_AlignTraj_outfile_default_exists(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        align.AlignTraj(universe, reference, filename=outfile).run()
+        align.AlignTraj(universe, reference, filename=outfile).run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
 
         # ensure default file exists
@@ -262,25 +266,37 @@ class TestAlign(object):
             with pytest.raises(IOError):
                 align.AlignTraj(fitted, reference, force=False)
 
-    def test_AlignTraj_step_works(self, universe, reference, tmpdir):
+    def test_AlignTraj_step_works(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
         # this shouldn't throw an exception
-        align.AlignTraj(universe, reference, filename=outfile).run(step=10)
+        align.AlignTraj(universe, reference, filename=outfile).run(
+          step=10, **client_AlignTraj
+        )
 
-    def test_AlignTraj_deprecated_attribute(self, universe, reference, tmpdir):
+    def test_AlignTraj_deprecated_attribute(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        x = align.AlignTraj(universe, reference, filename=outfile).run(stop=2)
+        x = align.AlignTraj(universe, reference, filename=outfile).run(
+          stop=2, **client_AlignTraj
+        )
 
         wmsg = "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(x.rmsd, x.results.rmsd)
 
-    def test_AlignTraj(self, universe, reference, tmpdir):
+    def test_AlignTraj(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        x = align.AlignTraj(universe, reference, filename=outfile).run()
+        x = align.AlignTraj(universe, reference, filename=outfile).run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
 
         assert_allclose(x.results.rmsd[0], 6.9290, rtol=0, atol=1.5e-3)
@@ -292,10 +308,14 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, 0, 6.929083044751061)
         self._assert_rmsd(reference, fitted, -1, 0.0)
 
-    def test_AlignTraj_weighted(self, universe, reference, tmpdir):
+    def test_AlignTraj_weighted(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         x = align.AlignTraj(universe, reference,
-                            filename=outfile, weights='mass').run()
+                            filename=outfile, weights='mass').run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
         assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
@@ -305,7 +325,9 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
                           weights=universe.atoms.masses)
 
-    def test_AlignTraj_custom_weights(self, universe, reference, tmpdir):
+    def test_AlignTraj_custom_weights(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         weights = np.zeros(universe.atoms.n_atoms)
         ca = universe.select_atoms('name CA')
         weights[ca.indices] = 1
@@ -313,17 +335,25 @@ class TestAlign(object):
         outfile = str(tmpdir.join('align_test.dcd'))
 
         x = align.AlignTraj(universe, reference,
-                            filename=outfile, select='name CA').run()
+                            filename=outfile, select='name CA').run(
+          **client_AlignTraj
+        )
         x_weights = align.AlignTraj(universe, reference,
-                                    filename=outfile, weights=weights).run()
+                                    filename=outfile, weights=weights).run(
+          **client_AlignTraj
+        )
 
         assert_allclose(x.results.rmsd, x_weights.results.rmsd, rtol=0, atol=1.5e-7)
 
-    def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir):
+    def test_AlignTraj_custom_mass_weights(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         x = align.AlignTraj(universe, reference,
                             filename=outfile,
-                            weights=reference.atoms.masses).run()
+                            weights=reference.atoms.masses).run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
         assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
@@ -333,18 +363,24 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
                           weights=universe.atoms.masses)
 
-    def test_AlignTraj_partial_fit(self, universe, reference, tmpdir):
+    def test_AlignTraj_partial_fit(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         # fitting on a partial selection should still write the whole topology
         align.AlignTraj(universe, reference, select='resid 1-20',
-                        filename=outfile, weights='mass').run()
+                        filename=outfile, weights='mass').run(
+          **client_AlignTraj
+        )
         mda.Universe(PSF, outfile)
 
-    def test_AlignTraj_in_memory(self, universe, reference, tmpdir):
+    def test_AlignTraj_in_memory(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         reference.trajectory[-1]
         x = align.AlignTraj(universe, reference, filename=outfile,
-                            in_memory=True).run()
+                            in_memory=True).run(**client_AlignTraj)
         assert x.filename is None
         assert_allclose(x.results.rmsd[0], 6.9290, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 5.2797e-07, rtol=0, atol=1.5e-3)
@@ -353,7 +389,9 @@ class TestAlign(object):
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
         self._assert_rmsd(reference, universe, -1, 0.0)
 
-    def test_AlignTraj_writer_kwargs(self, universe, reference, tmpdir):
+    def test_AlignTraj_writer_kwargs(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         # Issue 4564
         writer_kwargs = dict(precision=2)
         with tmpdir.as_cwd():
@@ -361,7 +399,7 @@ class TestAlign(object):
                                       select='protein and name CA',
                                       filename='aligned_traj.xtc',
                                       writer_kwargs=writer_kwargs,
-                                      in_memory=False).run()
+                                      in_memory=False).run(**client_AlignTraj)
             assert_equal(aligner._writer.precision, 2)
 
     def _assert_rmsd(self, reference, fitted, frame, desired, weights=None):
@@ -427,9 +465,13 @@ class TestAverageStructure(object):
     def reference(self):
         return mda.Universe(PSF, CRD)
 
-    def test_average_structure_deprecated_attrs(self, universe, reference):
+    def test_average_structure_deprecated_attrs(
+      self, universe, reference, client_AverageStructure
+    ):
         # Issue #3278 - remove in MDAnalysis 3.0.0
-        avg = align.AverageStructure(universe, reference).run(stop=2)
+        avg = align.AverageStructure(universe, reference).run(
+          stop=2, **client_AverageStructure
+        )
 
         wmsg = "The `universe` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -444,36 +486,48 @@ class TestAverageStructure(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert avg.rmsd == avg.results.rmsd
 
-    def test_average_structure(self, universe, reference):
+    def test_average_structure(
+      self, universe, reference, client_AverageStructure
+    ):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
-        avg = align.AverageStructure(universe, reference).run()
+        avg = align.AverageStructure(universe, reference).run(
+          **client_AverageStructure
+        )
         assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
-    def test_average_structure_mass_weighted(self, universe, reference):
+    def test_average_structure_mass_weighted(
+      self, universe, reference, client_AverageStructure
+    ):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
-        avg = align.AverageStructure(universe, reference, weights='mass').run()
+        avg = align.AverageStructure(universe, reference, weights='mass').run(
+          **client_AverageStructure
+        )
         assert_allclose(avg.results.universe.atoms.positions, ref,
                             rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
-    def test_average_structure_select(self, universe, reference):
+    def test_average_structure_select(
+      self, universe, reference, client_AverageStructure
+    ):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
-        avg = align.AverageStructure(universe, reference, select=select).run()
+        avg = align.AverageStructure(universe, reference, select=select).run(
+          **client_AverageStructure
+        )
         assert_allclose(avg.results.universe.atoms.positions, ref,
                             rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
-    def test_average_structure_no_ref(self, universe):
+    def test_average_structure_no_ref(self, universe, client_AverageStructure):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
-        avg = align.AverageStructure(universe).run()
+        avg = align.AverageStructure(universe).run(**client_AverageStructure)
         assert_allclose(avg.results.universe.atoms.positions, ref,
                         rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
-    def test_average_structure_no_msf(self, universe):
-        avg = align.AverageStructure(universe).run()
+    def test_average_structure_no_msf(self, universe, client_AverageStructure):
+        avg = align.AverageStructure(universe).run(**client_AverageStructure)
         assert not hasattr(avg, 'msf')
 
     def test_mismatch_atoms(self, universe):
@@ -481,7 +535,9 @@ class TestAverageStructure(object):
         with pytest.raises(SelectionError):
             align.AverageStructure(universe, u)
 
-    def test_average_structure_ref_frame(self, universe):
+    def test_average_structure_ref_frame(
+      self, universe, client_AverageStructure
+    ):
         ref_frame = 3
         u = mda.Merge(universe.atoms)
 
@@ -492,13 +548,19 @@ class TestAverageStructure(object):
         # back to start
         universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
-        avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
+        avg = align.AverageStructure(universe, ref_frame=ref_frame).run(
+          **client_AverageStructure
+        )
         assert_allclose(avg.results.universe.atoms.positions, ref,
                         rtol=0, atol=1.5e-4)
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
-    def test_average_structure_in_memory(self, universe):
-        avg = align.AverageStructure(universe, in_memory=True).run()
+    def test_average_structure_in_memory(
+      self, universe, client_AverageStructure
+    ):
+        avg = align.AverageStructure(universe, in_memory=True).run(
+          **client_AverageStructure
+        )
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
         assert_allclose(avg.results.universe.atoms.positions,
                         reference_coordinates, rtol=0, atol=1.5e-4)
