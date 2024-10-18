@@ -177,7 +177,8 @@ class NucPairDist(AnalysisBase):
     _s1: mda.AtomGroup
     _s2: mda.AtomGroup
     _n_sel: int
-
+    _res_dict: Dict[int, List[float]]
+    
     def __init__(self, selection1: List[mda.AtomGroup],
                  selection2: List[mda.AtomGroup],
                  **kwargs) -> None:
