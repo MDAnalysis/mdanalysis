@@ -678,6 +678,12 @@ class AlignTraj(AnalysisBase):
 
     """
 
+    _analysis_algorithm_is_parallelizable = True
+    
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "dask")
+     
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
@@ -866,6 +872,12 @@ class AlignTraj(AnalysisBase):
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "rmsd": ResultsGroup.ndarray_hstack,
+            }
+        )
 
 class AverageStructure(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection,
