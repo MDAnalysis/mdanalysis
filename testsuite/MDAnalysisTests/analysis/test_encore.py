@@ -30,6 +30,7 @@ import sys
 import os
 import warnings
 import platform
+from importlib import reload
 
 import pytest
 from numpy.testing import assert_equal, assert_allclose
@@ -45,6 +46,11 @@ import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 def function(x):
     return x**2
 
+
+def test_moved_to_mdakit_warning():
+    wmsg = "MDAnalysis.analysis.encore is deprecated"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(encore)
 
 class TestEncore(object):
     @pytest.fixture(scope='class')
