@@ -445,12 +445,9 @@ class TestAlign(object):
                                   rtol=0, atol=1.5e-3)
 
 
-def _get_aligned_average_positions(
-  ref_files, ref, client_AlignTraj, select="all", **kwargs
-):
+def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
     u = mda.Universe(*ref_files, in_memory=True)
-    prealigner = align.AlignTraj(u, ref, select=select,
-                                 **kwargs).run(**client_AlignTraj)
+    prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run()
     ag = u.select_atoms(select)
     reference_coordinates = u.trajectory.timeseries(asel=ag).mean(axis=1)
     rmsd = sum(prealigner.results.rmsd/len(u.trajectory))
