@@ -351,7 +351,9 @@ class TestAlign(object):
         outfile = str(tmpdir.join('align_test.dcd'))
         x = align.AlignTraj(universe, reference,
                             filename=outfile,
-                            weights=reference.atoms.masses).run(**client_AlignTraj)
+                            weights=reference.atoms.masses).run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
         assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
@@ -361,14 +363,20 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
                           weights=universe.atoms.masses)
 
-    def test_AlignTraj_partial_fit(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_partial_fit(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         # fitting on a partial selection should still write the whole topology
         align.AlignTraj(universe, reference, select='resid 1-20',
-                        filename=outfile, weights='mass').run(**client_AlignTraj)
+                        filename=outfile, weights='mass').run(
+          **client_AlignTraj
+        )
         mda.Universe(PSF, outfile)
 
-    def test_AlignTraj_in_memory(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_in_memory(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         reference.trajectory[-1]
         x = align.AlignTraj(universe, reference, filename=outfile,
@@ -381,7 +389,9 @@ class TestAlign(object):
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
         self._assert_rmsd(reference, universe, -1, 0.0)
 
-    def test_AlignTraj_writer_kwargs(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_writer_kwargs(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         # Issue 4564
         writer_kwargs = dict(precision=2)
         with tmpdir.as_cwd():
