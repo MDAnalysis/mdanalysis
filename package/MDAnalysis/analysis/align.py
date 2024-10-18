@@ -679,11 +679,11 @@ class AlignTraj(AnalysisBase):
     """
 
     _analysis_algorithm_is_parallelizable = True
-    
+
     @classmethod
     def get_supported_backends(cls):
         return ("serial", "dask")
-     
+
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
@@ -909,11 +909,11 @@ class AverageStructure(AnalysisBase):
     """
 
     _analysis_algorithm_is_parallelizable = True
-    
+
     @classmethod
     def get_supported_backends(cls):
         return ("serial", "multiprocessing", "dask")
-     
+
     def __init__(self, mobile, reference=None, select='all', filename=None,
                 weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
@@ -1115,7 +1115,7 @@ class AverageStructure(AnalysisBase):
                 "rmsd": ResultsGroup.ndarray_vstack,
             }
         )
-     
+
     @property
     def universe(self):
         wmsg = ("The `universe` attribute was deprecated in MDAnalysis 2.0.0 "
