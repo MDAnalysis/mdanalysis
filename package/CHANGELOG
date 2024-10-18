@@ -99,6 +99,8 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * The MDAnalysis.anaylsis.encore module has been deprecated in favour of the
+   mdaencore MDAKit and will be removed in version 3.0.0 (PR #4737)
  * The MMTF Reader is deprecated and will be removed in version 3.0
    as the MMTF format is no longer supported (Issue #4634)
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour

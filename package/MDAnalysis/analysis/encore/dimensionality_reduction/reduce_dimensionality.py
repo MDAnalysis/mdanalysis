@@ -31,6 +31,11 @@ reduction algorithms, wrapping them to allow them to be used interchangably.
 
 .. versionadded:: 0.16.0
 
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
+
 """
 import numpy as np
 from ..confdistmatrix import get_distance_matrix

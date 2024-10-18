@@ -29,6 +29,11 @@ Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity
 
 .. versionadded:: 0.16.0
 
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
+
 The module contains implementations of similarity measures between protein
 ensembles described in :footcite:p:`LindorffLarsen2009`. The implementation and
 examples are described in :footcite:p:`Tiberti2015`.
