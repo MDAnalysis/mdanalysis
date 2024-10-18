@@ -244,10 +244,14 @@ class TestAlign(object):
             finally:
                 x._writer.close()
 
-    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_outfile_default_exists(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        align.AlignTraj(universe, reference, filename=outfile).run(**client_AlignTraj)
+        align.AlignTraj(universe, reference, filename=outfile).run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
 
         # ensure default file exists
@@ -262,11 +266,15 @@ class TestAlign(object):
             with pytest.raises(IOError):
                 align.AlignTraj(fitted, reference, force=False)
 
-    def test_AlignTraj_step_works(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_step_works(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
         # this shouldn't throw an exception
-        align.AlignTraj(universe, reference, filename=outfile).run(step=10, **client_AlignTraj)
+        align.AlignTraj(universe, reference, filename=outfile).run(
+          step=10, **client_AlignTraj
+        )
 
     def test_AlignTraj_deprecated_attribute(self, universe, reference, tmpdir, client_AlignTraj):
         reference.trajectory[-1]
