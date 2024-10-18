@@ -276,19 +276,27 @@ class TestAlign(object):
           step=10, **client_AlignTraj
         )
 
-    def test_AlignTraj_deprecated_attribute(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_deprecated_attribute(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        x = align.AlignTraj(universe, reference, filename=outfile).run(stop=2, **client_AlignTraj)
+        x = align.AlignTraj(universe, reference, filename=outfile).run(
+          stop=2, **client_AlignTraj
+        )
 
         wmsg = "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(x.rmsd, x.results.rmsd)
 
-    def test_AlignTraj(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        x = align.AlignTraj(universe, reference, filename=outfile).run(**client_AlignTraj)
+        x = align.AlignTraj(universe, reference, filename=outfile).run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
 
         assert_allclose(x.results.rmsd[0], 6.9290, rtol=0, atol=1.5e-3)
@@ -300,10 +308,14 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, 0, 6.929083044751061)
         self._assert_rmsd(reference, fitted, -1, 0.0)
 
-    def test_AlignTraj_weighted(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_weighted(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         x = align.AlignTraj(universe, reference,
-                            filename=outfile, weights='mass').run(**client_AlignTraj)
+                            filename=outfile, weights='mass').run(
+          **client_AlignTraj
+        )
         fitted = mda.Universe(PSF, outfile)
         assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
@@ -313,7 +325,9 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
                           weights=universe.atoms.masses)
 
-    def test_AlignTraj_custom_weights(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_custom_weights(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         weights = np.zeros(universe.atoms.n_atoms)
         ca = universe.select_atoms('name CA')
         weights[ca.indices] = 1
@@ -321,13 +335,19 @@ class TestAlign(object):
         outfile = str(tmpdir.join('align_test.dcd'))
 
         x = align.AlignTraj(universe, reference,
-                            filename=outfile, select='name CA').run(**client_AlignTraj)
+                            filename=outfile, select='name CA').run(
+          **client_AlignTraj
+        )
         x_weights = align.AlignTraj(universe, reference,
-                                    filename=outfile, weights=weights).run(**client_AlignTraj)
+                                    filename=outfile, weights=weights).run(
+          **client_AlignTraj
+        )
 
         assert_allclose(x.results.rmsd, x_weights.results.rmsd, rtol=0, atol=1.5e-7)
 
-    def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir, client_AlignTraj):
+    def test_AlignTraj_custom_mass_weights(
+      self, universe, reference, tmpdir, client_AlignTraj
+    ):
         outfile = str(tmpdir.join('align_test.dcd'))
         x = align.AlignTraj(universe, reference,
                             filename=outfile,
