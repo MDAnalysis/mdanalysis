@@ -31,7 +31,7 @@ Parses data_ or dump_ files produced by LAMMPS_.
 
     By default, masses will be guessed on Universe creation if they are not read
     from the input file. This may change in release 3.0.
-    See :ref:`Guessers`_ for more information.
+    See :ref:`Guessers` for more information.
 
 .. _LAMMPS: http://lammps.sandia.gov/
 .. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html

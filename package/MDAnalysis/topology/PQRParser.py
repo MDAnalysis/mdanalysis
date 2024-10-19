@@ -86,7 +86,7 @@ class PQRParser(TopologyReaderBase):
         (e.g. GROMACS PQR files). Otherwise, they will be guessed on Universe
         creation. By default, masses will also be guessed on Universe creation.
         This may change in release 3.0.
-        See :ref:`Guessers`_ for more information.
+        See :ref:`Guessers` for more information.
 
 
     .. versionchanged:: 0.9.0

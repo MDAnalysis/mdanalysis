@@ -68,7 +68,7 @@ Segments:
 
     By default, masses will be guessed on Universe creation.
     This may change in release 3.0.
-    See :ref:`Guessers`_ for more information.
+    See :ref:`Guessers` for more information.
 
 Classes
 -------

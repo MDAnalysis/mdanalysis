@@ -34,7 +34,7 @@ DLPoly files have the following Attributes:
 
         By default, atomtypes and masses will be guessed on Universe creation.
         This may change in release 3.0.
-        See :ref:`Guessers`_ for more information.
+        See :ref:`Guessers` for more information.
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 

@@ -478,7 +478,7 @@ class ITPParser(TopologyReaderBase):
         By default, atomtypes and masses will be guessed on Universe creation
         if they are not read from the input file.
         This may change in release 3.0.
-        See :ref:`Guessers`_ for more information.
+        See :ref:`Guessers` for more information.
 
     .. versionchanged:: 2.2.0
       no longer adds angles for water molecules with SETTLE constraint

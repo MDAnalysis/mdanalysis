@@ -90,7 +90,7 @@ class DMSParser(TopologyReaderBase):
 
         By default, atomtypes will be guessed on Universe creation.
         This may change in release 3.0.
-        See :ref:`Guessers`_ for more information.
+        See :ref:`Guessers` for more information.
 
     .. _DESRES: http://www.deshawresearch.com
     .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
