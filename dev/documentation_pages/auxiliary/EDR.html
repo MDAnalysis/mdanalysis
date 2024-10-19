@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>11.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="11. Core modules" href="../core_modules.html" />
-    <link rel="prev" title="10.4. XVG auxiliary reader — MDAnalysis.auxiliary.XVG" href="XVG.html" /> 
+    <link rel="next" title="12. Core modules" href="../core_modules.html" />
+    <link rel="prev" title="11.4. XVG auxiliary reader — MDAnalysis.auxiliary.XVG" href="XVG.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,31 +102,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">10.1. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">10.2. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">10.3. Common functions for auxiliary reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XVG.html">10.4. XVG auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">10.5. EDR auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#background">10.5.1. Background</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#standalone-usage-of-the-edrreader">10.5.2. Standalone Usage of the EDRReader</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#adding-edr-data-to-trajectories">10.5.3. Adding EDR data to trajectories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#classes">10.5.4. Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">11.1. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">11.2. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">11.3. Common functions for auxiliary reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XVG.html">11.4. XVG auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">11.5. EDR auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#background">11.5.1. Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standalone-usage-of-the-edrreader">11.5.2. Standalone Usage of the EDRReader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-edr-data-to-trajectories">11.5.3. Adding EDR data to trajectories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">11.5.4. Classes</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -144,8 +145,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../auxiliary_modules.html"><span class="section-number">10. </span>Auxiliary modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">10.5. </span>EDR auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></li>
+          <li class="breadcrumb-item"><a href="../auxiliary_modules.html"><span class="section-number">11. </span>Auxiliary modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">11.5. </span>EDR auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/auxiliary/EDR.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -156,12 +157,12 @@
            <div itemprop="articleBody">
              
   <section id="edr-auxiliary-reader-mdanalysis-auxiliary-edr">
-<span id="module-MDAnalysis.auxiliary.EDR"></span><h1><span class="section-number">10.5. </span>EDR auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.EDR" title="MDAnalysis.auxiliary.EDR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a><a class="headerlink" href="#edr-auxiliary-reader-mdanalysis-auxiliary-edr" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.auxiliary.EDR"></span><h1><span class="section-number">11.5. </span>EDR auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.EDR" title="MDAnalysis.auxiliary.EDR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a><a class="headerlink" href="#edr-auxiliary-reader-mdanalysis-auxiliary-edr" title="Link to this heading"></a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.4.0.</span></p>
 </div>
 <section id="background">
-<h2><span class="section-number">10.5.1. </span>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<h2><span class="section-number">11.5.1. </span>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://manual.gromacs.org/current/reference-manual/file-formats.html#edr">EDR files</a> are binary files following the <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc1014">XDR</a> protocol. They are written by
 GROMACS during simulations and contain time-series non-trajectory data on the
 system, such as energies, temperature, or pressure.</p>
@@ -203,7 +204,7 @@ EDRReader is created:</p>
 </div>
 </section>
 <section id="standalone-usage-of-the-edrreader">
-<h2><span class="section-number">10.5.2. </span>Standalone Usage of the EDRReader<a class="headerlink" href="#standalone-usage-of-the-edrreader" title="Link to this heading"></a></h2>
+<h2><span class="section-number">11.5.2. </span>Standalone Usage of the EDRReader<a class="headerlink" href="#standalone-usage-of-the-edrreader" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a> can be used to access the data stored in EDR files on
 its own, without association of data to trajectory frames.
 This is useful, for example, for plotting. The data for a single term, a list
@@ -221,7 +222,7 @@ returned in this dictionary to make plotting easier:</p>
 </div>
 </section>
 <section id="adding-edr-data-to-trajectories">
-<h2><span class="section-number">10.5.3. </span>Adding EDR data to trajectories<a class="headerlink" href="#adding-edr-data-to-trajectories" title="Link to this heading"></a></h2>
+<h2><span class="section-number">11.5.3. </span>Adding EDR data to trajectories<a class="headerlink" href="#adding-edr-data-to-trajectories" title="Link to this heading"></a></h2>
 <p>Like other AuxReaders, the <a class="reference internal" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a> can attach its data to a
 trajectory by associating it to the appropriate time steps.
 In general, to add EDR data to a trajectory, one needs to provide two
@@ -292,7 +293,7 @@ data this way, the terms in <a class="reference internal" href="#MDAnalysis.auxi
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">10.5.4. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">11.5.4. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.EDR.EDRReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.EDR.</span></span><span class="sig-name descname"><span class="pre">EDRReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/EDR.html#EDRReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.EDR.EDRReader" title="Link to this definition"></a></dt>
@@ -457,8 +458,8 @@ be stored in <code class="docutils literal notranslate"><span class="pre">data</
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="XVG.html" class="btn btn-neutral float-left" title="10.4. XVG auxiliary reader — MDAnalysis.auxiliary.XVG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../core_modules.html" class="btn btn-neutral float-right" title="11. Core modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="XVG.html" class="btn btn-neutral float-left" title="11.4. XVG auxiliary reader — MDAnalysis.auxiliary.XVG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../core_modules.html" class="btn btn-neutral float-right" title="12. Core modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

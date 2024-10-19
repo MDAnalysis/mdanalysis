@@ -99,18 +99,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -227,7 +228,7 @@
 <span class="kn">from</span> <span class="nn">.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span><span class="p">,</span> <span class="n">BFACTOR_WARNING</span>
 <span class="kn">from</span> <span class="nn">.topologyobjects</span> <span class="kn">import</span> <span class="n">TopologyObject</span>
-
+<span class="kn">from</span> <span class="nn">..guesser.base</span> <span class="kn">import</span> <span class="n">get_guesser</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.core.universe&quot;</span><span class="p">)</span>
 
@@ -381,6 +382,25 @@
 <span class="sd">    vdwradii: dict, ``None``, default ``None``</span>
 <span class="sd">        For use with *guess_bonds*. Supply a dict giving a vdwradii for each</span>
 <span class="sd">        atom type which are used in guessing bonds.</span>
+<span class="sd">    context: str or :mod:`Guesser&lt;MDAnalysis.guesser&gt;`, default ``&#39;default&#39;``</span>
+<span class="sd">        Type of the Guesser to be used in guessing TopologyAttrs</span>
+<span class="sd">    to_guess: list[str] (optional, default ``[&#39;types&#39;, &#39;masses&#39;]``)</span>
+<span class="sd">        TopologyAttrs to be guessed. These TopologyAttrs will be wholly</span>
+<span class="sd">        guessed if they don&#39;t exist in the Universe. If they already exist in</span>
+<span class="sd">        the Universe, only empty or missing values will be guessed.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            In MDAnalysis 2.x, types and masses are being automatically guessed</span>
+<span class="sd">            if they are missing (``to_guess=(&#39;types, &#39;masses&#39;)``).</span>
+<span class="sd">            However, starting with release 3.0 **no guessing will be done</span>
+<span class="sd">            by default** and it will be up to the user to request guessing</span>
+<span class="sd">            using ``to_guess`` and ``force_guess``.</span>
+
+<span class="sd">    force_guess: list[str], (optional)</span>
+<span class="sd">        TopologyAttrs in this list will be force guessed. If the TopologyAttr</span>
+<span class="sd">        does not already exist in the Universe, this has no effect. If the</span>
+<span class="sd">        TopologyAttr does already exist, all values will be overwritten</span>
+<span class="sd">        by guessed values.</span>
 <span class="sd">    fudge_factor: float, default [0.55]</span>
 <span class="sd">        For use with *guess_bonds*. Supply the factor by which atoms must</span>
 <span class="sd">        overlap each other to be considered a bond.</span>
@@ -410,7 +430,7 @@
 <span class="sd">    dimensions : numpy.ndarray</span>
 <span class="sd">        system dimensions (simulation unit cell, if set in the</span>
 <span class="sd">        trajectory) at the *current time step*</span>
-<span class="sd">        (see :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`).</span>
+<span class="sd">        (see :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`).</span>
 <span class="sd">        The unit cell can be set for the current time step (but the change is</span>
 <span class="sd">        not permanent unless written to a file).</span>
 <span class="sd">    atoms : AtomGroup</span>
@@ -463,11 +483,18 @@
 <span class="sd">    .. versionchanged:: 2.5.0</span>
 <span class="sd">        Added fudge_factor and lower_bound parameters for use with</span>
 <span class="sd">        *guess_bonds*.</span>
+
+<span class="sd">    .. versionchanged:: 2.8.0</span>
+<span class="sd">        Added :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` API</span>
+<span class="sd">        guessing masses and atom types after topology</span>
+<span class="sd">        is read from a registered parser.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span>
-                 <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
+                 <span class="n">to_guess</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;types&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">),</span> <span class="n">force_guess</span><span class="o">=</span><span class="p">(),</span>
                  <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># managed attribute holding Reader</span>
@@ -476,7 +503,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">get_guesser</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;transformations&#39;</span><span class="p">:</span> <span class="n">transformations</span><span class="p">,</span>
             <span class="s1">&#39;guess_bonds&#39;</span><span class="p">:</span> <span class="n">guess_bonds</span><span class="p">,</span>
@@ -524,14 +551,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">guess_bonds</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span><span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="n">fudge_factor</span><span class="p">,</span>
-                                   <span class="n">lower_bound</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">)</span>
+            <span class="n">force_guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">force_guess</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="s1">&#39;dihedrals&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">,</span> <span class="n">to_guess</span><span class="p">,</span> <span class="n">force_guess</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="Universe.copy">
 <a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">[docs]</a>
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an independent copy of this Universe&quot;&quot;&quot;</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                             <span class="n">to_guess</span><span class="o">=</span><span class="p">(),</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
         <span class="n">new</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">new</span></div>
 
@@ -623,7 +655,7 @@
                        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">residue_segindex</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="n">n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">trajectory</span><span class="p">:</span>
             <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -872,10 +904,10 @@
             <span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_unpickle_U</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">traj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_unpickle_U</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">traj</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Special method used by __reduce__ to deserialise a Universe&quot;&quot;&quot;</span>
         <span class="c1">#  top is a Topology obj at this point, but Universe can handle that.</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">(),</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
         <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">traj</span>
 
         <span class="k">return</span> <span class="n">u</span>
@@ -885,7 +917,7 @@
         <span class="c1">#  transformation (that has AtomGroup inside). Use __reduce__ instead.</span>
         <span class="c1">#  Universe&#39;s two &quot;legs&quot; of top and traj both serialise themselves.</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpickle_U</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">))</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
 
     <span class="c1"># Properties</span>
     <span class="nd">@property</span>
@@ -1655,12 +1687,116 @@
                 <span class="s2">&quot;hydrogens with `addHs=True`&quot;</span><span class="p">)</span>
 
             <span class="n">numConfs</span> <span class="o">=</span> <span class="n">rdkit_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;numConfs&quot;</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">numConfs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">and</span> <span class="n">numConfs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">numConfs</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">numConfs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;numConfs must be a non-zero positive &quot;</span>
-                <span class="s2">&quot;integer instead of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numConfs</span><span class="p">))</span>
+                                  <span class="s2">&quot;integer instead of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numConfs</span><span class="p">))</span>
             <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMultipleConfs</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">,</span> <span class="o">**</span><span class="n">rdkit_kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Universe.guess_TopologyAttrs">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_TopologyAttrs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Guess and add attributes through a specific context-aware guesser.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context: str or :mod:`Guesser&lt;MDAanalysis.guesser&gt;` class</span>
+<span class="sd">            For calling a matching guesser class for this specific context</span>
+<span class="sd">        to_guess: Optional[list[str]]</span>
+<span class="sd">            TopologyAttrs to be guessed. These TopologyAttrs will be wholly</span>
+<span class="sd">            guessed if they don&#39;t exist in the Universe. If they already exist in</span>
+<span class="sd">            the Universe, only empty or missing values will be guessed.</span>
+
+<span class="sd">            .. warning::</span>
+<span class="sd">                In MDAnalysis 2.x, types and masses are being automatically guessed</span>
+<span class="sd">                if they are missing (``to_guess=(&#39;types, &#39;masses&#39;)``).</span>
+<span class="sd">                However, starting with release 3.0 **no guessing will be done</span>
+<span class="sd">                by default** and it will be up to the user to request guessing</span>
+<span class="sd">                using ``to_guess`` and ``force_guess``.</span>
+<span class="sd">            </span>
+<span class="sd">        force_guess: Optional[list[str]]</span>
+<span class="sd">            TopologyAttrs in this list will be force guessed. If the</span>
+<span class="sd">            TopologyAttr does not already exist in the Universe, this has no</span>
+<span class="sd">            effect. If the TopologyAttr does already exist, all values will</span>
+<span class="sd">            be overwritten by guessed values.</span>
+<span class="sd">        **kwargs: extra arguments to be passed to the guesser class</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        To guess ``masses`` and ``types`` attributes::</span>
+
+<span class="sd">            u.guess_TopologyAttrs(context=&#39;default&#39;, to_guess=[&#39;masses&#39;, &#39;types&#39;])</span>
+
+<span class="sd">        .. versionadded:: 2.8.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span>
+
+        <span class="n">guesser</span> <span class="o">=</span> <span class="n">get_guesser</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">guesser</span>
+
+        <span class="k">if</span> <span class="n">to_guess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">to_guess</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">force_guess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">force_guess</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">total_guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_guess</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">force_guess</span><span class="p">)</span>
+
+        <span class="c1"># Removing duplicates from the guess list while keeping attributes</span>
+        <span class="c1"># order as it is more convenient to guess attributes</span>
+        <span class="c1"># in the same order that the user provided</span>
+        <span class="n">total_guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">total_guess</span><span class="p">))</span>
+
+        <span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="s1">&#39;impropers&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Checking if the universe is empty to avoid errors</span>
+        <span class="c1"># from guesser methods</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="n">topology_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">att</span><span class="o">.</span><span class="n">attrname</span> <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">read_attributes</span><span class="p">]</span>
+
+            <span class="n">common_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">to_guess</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">topology_attrs</span><span class="p">)</span>
+            <span class="n">common_attrs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">common_attrs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_attrs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The attribute(s) </span><span class="si">{</span><span class="n">common_attrs</span><span class="si">}</span><span class="s1"> have already been read &#39;</span>
+                    <span class="s1">&#39;from the topology file. The guesser will &#39;</span>
+                    <span class="s1">&#39;only guess empty values for this attribute, &#39;</span>
+                    <span class="s1">&#39;if any exists. To overwrite it by completely &#39;</span>
+                    <span class="s1">&#39;guessed values, you can pass the attribute to&#39;</span>
+                    <span class="s1">&#39; the force_guess parameter instead of &#39;</span>
+                    <span class="s1">&#39;the to_guess one&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">total_guess</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">guesser</span><span class="o">.</span><span class="n">is_guessable</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
+                    <span class="n">fg</span> <span class="o">=</span>  <span class="n">attr</span> <span class="ow">in</span> <span class="n">force_guess</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">guesser</span><span class="o">.</span><span class="n">guess_attr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">fg</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span>
+                                <span class="n">attr</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">guessed_attr</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">attr</span><span class="p">](</span><span class="n">values</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">guessed_attr</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;attribute </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1"> has been guessed&#39;</span>
+                            <span class="s1">&#39; successfully.&#39;</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s1"> guesser can not guess the&#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39; following attribute: </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Can not guess attributes &#39;</span>
+                          <span class="s1">&#39;for universe with 0 atoms&#39;</span><span class="p">)</span></div>
 </div>
 
 

@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>13.2.10. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>14.2.10. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="13.2.11. Correlations utilities — MDAnalysis.lib.correlations" href="correlations.html" />
-    <link rel="prev" title="13.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" /> 
+    <link rel="next" title="14.2.11. Correlations utilities — MDAnalysis.lib.correlations" href="correlations.html" />
+    <link rel="prev" title="14.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,54 +102,55 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">13.1. Overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">13.2. List of modules</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="distances.html">13.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">13.2.4. Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">13.2.5. PeriodicKDTree — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="log.html">13.2.6. Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mdamath.html">13.2.7. Mathematical helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#files-and-directories">13.2.10.1. Files and directories</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#modules-and-packages">13.2.10.2. Modules and packages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#streams">13.2.10.3. Streams</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#containers-and-lists">13.2.10.4. Containers and lists</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#arrays">13.2.10.5. Arrays</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#file-parsing">13.2.10.6. File parsing</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">13.2.10.7. Data manipulation and handling</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#strings">13.2.10.8. Strings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#class-decorators">13.2.10.9. Class decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#function-decorators">13.2.10.10. Function decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#code-management">13.2.10.11. Code management</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-format-checks">13.2.10.12. Data format checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">14.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">14.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">14.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">14.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">14.2.3. Neighbor Search wrapper for MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">14.2.4. Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">14.2.5. PeriodicKDTree — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">14.2.6. Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">14.2.7. Mathematical helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">14.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">14.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">14.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#files-and-directories">14.2.10.1. Files and directories</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modules-and-packages">14.2.10.2. Modules and packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#streams">14.2.10.3. Streams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#containers-and-lists">14.2.10.4. Containers and lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#arrays">14.2.10.5. Arrays</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-parsing">14.2.10.6. File parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">14.2.10.7. Data manipulation and handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strings">14.2.10.8. Strings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-decorators">14.2.10.9. Class decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#function-decorators">14.2.10.10. Function decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-management">14.2.10.11. Code management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-format-checks">14.2.10.12. Data format checks</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html">13.2.11. Correlations utilities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html#autocorrelation-function">13.2.12. Autocorrelation Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html#intermittency-function">13.2.13. Intermittency Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">13.2.14. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="correlations.html">14.2.11. Correlations utilities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="correlations.html#autocorrelation-function">14.2.12. Autocorrelation Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="correlations.html#intermittency-function">14.2.13. Intermittency Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">14.2.14. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#libmdanalysis">13.4. Libmdanalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">14.3. Low level file formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#libmdanalysis">14.4. Libmdanalysis</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -167,8 +168,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../lib_modules.html"><span class="section-number">13. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">13.2.10. </span>Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></li>
+          <li class="breadcrumb-item"><a href="../lib_modules.html"><span class="section-number">14. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">14.2.10. </span>Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/lib/util.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -179,13 +180,13 @@
            <div itemprop="articleBody">
              
   <section id="helper-functions-mdanalysis-lib-util">
-<span id="module-MDAnalysis.lib.util"></span><h1><span class="section-number">13.2.10. </span>Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.lib.util"></span><h1><span class="section-number">14.2.10. </span>Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Link to this heading"></a></h1>
 <p>Small helper functions that don’t fit anywhere else.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved mathematical functions into lib.mdamath</p>
 </div>
 <section id="files-and-directories">
-<h2><span class="section-number">13.2.10.1. </span>Files and directories<a class="headerlink" href="#files-and-directories" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.1. </span>Files and directories<a class="headerlink" href="#files-and-directories" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.filename">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.filename" title="Link to this definition"></a></dt>
@@ -447,7 +448,7 @@ at for a hint to the format</p>
 
 </section>
 <section id="modules-and-packages">
-<h2><span class="section-number">13.2.10.2. </span>Modules and packages<a class="headerlink" href="#modules-and-packages" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.2. </span>Modules and packages<a class="headerlink" href="#modules-and-packages" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.is_installed">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">is_installed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modulename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#is_installed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.is_installed" title="Link to this definition"></a></dt>
@@ -464,7 +465,7 @@ at for a hint to the format</p>
 
 </section>
 <section id="streams">
-<h2><span class="section-number">13.2.10.3. </span>Streams<a class="headerlink" href="#streams" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.3. </span>Streams<a class="headerlink" href="#streams" title="Link to this heading"></a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a>). It is also possible to provide more
@@ -738,7 +739,7 @@ is supplied). The current file position is not changed.</p>
 
 </section>
 <section id="containers-and-lists">
-<h2><span class="section-number">13.2.10.4. </span>Containers and lists<a class="headerlink" href="#containers-and-lists" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.4. </span>Containers and lists<a class="headerlink" href="#containers-and-lists" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.iterable">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Link to this definition"></a></dt>
@@ -772,7 +773,7 @@ with a single element.</p>
 
 </section>
 <section id="arrays">
-<h2><span class="section-number">13.2.10.5. </span>Arrays<a class="headerlink" href="#arrays" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.5. </span>Arrays<a class="headerlink" href="#arrays" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.unique_int_1d">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">unique_int_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Link to this definition"></a></dt>
@@ -907,7 +908,7 @@ sequences.</p>
 
 </section>
 <section id="file-parsing">
-<h2><span class="section-number">13.2.10.6. </span>File parsing<a class="headerlink" href="#file-parsing" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.6. </span>File parsing<a class="headerlink" href="#file-parsing" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRANReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">FORTRANReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Link to this definition"></a></dt>
@@ -999,7 +1000,7 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 
 </section>
 <section id="data-manipulation-and-handling">
-<h2><span class="section-number">13.2.10.7. </span>Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.7. </span>Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.fixedwidth_bins">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">fixedwidth_bins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Link to this definition"></a></dt>
@@ -1121,7 +1122,7 @@ by user <a class="reference external" href="https://stackoverflow.com/users/1897
 
 </section>
 <section id="strings">
-<h2><span class="section-number">13.2.10.8. </span>Strings<a class="headerlink" href="#strings" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.8. </span>Strings<a class="headerlink" href="#strings" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.convert_aa_code">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">convert_aa_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Link to this definition"></a></dt>
@@ -1216,7 +1217,7 @@ If the string does not start with a number, 0 is returned.</p>
 
 </section>
 <section id="class-decorators">
-<h2><span class="section-number">13.2.10.9. </span>Class decorators<a class="headerlink" href="#class-decorators" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.9. </span>Class decorators<a class="headerlink" href="#class-decorators" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.cached">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">cached</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">universe_validation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Link to this definition"></a></dt>
@@ -1277,7 +1278,7 @@ stored in the dictionary.</p></li>
 
 </section>
 <section id="function-decorators">
-<h2><span class="section-number">13.2.10.10. </span>Function decorators<a class="headerlink" href="#function-decorators" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.10. </span>Function decorators<a class="headerlink" href="#function-decorators" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.static_variables">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">static_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#static_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.static_variables" title="Link to this definition"></a></dt>
@@ -1467,7 +1468,7 @@ allow_atomgroup with default False to retain old behaviour</p>
 
 </section>
 <section id="code-management">
-<h2><span class="section-number">13.2.10.11. </span>Code management<a class="headerlink" href="#code-management" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.11. </span>Code management<a class="headerlink" href="#code-management" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.deprecate">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">deprecate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Link to this definition"></a></dt>
@@ -1582,7 +1583,7 @@ line</p>
 
 </section>
 <section id="data-format-checks">
-<h2><span class="section-number">13.2.10.12. </span>Data format checks<a class="headerlink" href="#data-format-checks" title="Link to this heading"></a></h2>
+<h2><span class="section-number">14.2.10.12. </span>Data format checks<a class="headerlink" href="#data-format-checks" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.check_box">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_box" title="Link to this definition"></a></dt>
@@ -1648,8 +1649,8 @@ close it.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="qcprot.html" class="btn btn-neutral float-left" title="13.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="correlations.html" class="btn btn-neutral float-right" title="13.2.11. Correlations utilities — MDAnalysis.lib.correlations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="qcprot.html" class="btn btn-neutral float-left" title="14.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="correlations.html" class="btn btn-neutral float-right" title="14.2.11. Correlations utilities — MDAnalysis.lib.correlations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

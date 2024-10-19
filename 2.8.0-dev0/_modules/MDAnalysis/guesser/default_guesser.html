@@ -1,0 +1,803 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.guesser.default_guesser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=a9b57af3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/js/versions.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.8.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.8.0-dev0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">18. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.guesser.default_guesser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.guesser.default_guesser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the Lesser GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Default Guesser</span>
+<span class="sd">================</span>
+<span class="sd">.. _DefaultGuesser:</span>
+
+<span class="sd">DefaultGuesser is a generic guesser class that has basic guessing methods.</span>
+<span class="sd">This class is a general purpose guesser that can be used with most topologies,</span>
+<span class="sd">but being generic makes it the less accurate among all guessers.</span>
+
+
+
+
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: DefaultGuesser</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">GuesserBase</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">tables</span>
+
+
+<div class="viewcode-block" id="DefaultGuesser">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser">[docs]</a>
+<span class="k">class</span> <span class="nc">DefaultGuesser</span><span class="p">(</span><span class="n">GuesserBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This guesser holds generic methods (not directed to specific contexts) for</span>
+<span class="sd">    guessing different topology attribute. It has the same methods which where</span>
+<span class="sd">    originally found in Topology.guesser.py. The attributes that can be</span>
+<span class="sd">    guessed by this class are:</span>
+<span class="sd">     - masses</span>
+<span class="sd">     - types</span>
+<span class="sd">     - elements</span>
+<span class="sd">     - angles</span>
+<span class="sd">     - dihedrals</span>
+<span class="sd">     - bonds</span>
+<span class="sd">     - improper dihedrals</span>
+<span class="sd">     - aromaticities</span>
+
+<span class="sd">    You can use this guesser either directly through an instance, or through</span>
+<span class="sd">    the :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` method.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    to guess bonds for a universe::</span>
+
+<span class="sd">        import MDAnalysis as mda</span>
+<span class="sd">        from MDAnalysisTests.datafiles import two_water_gro</span>
+
+<span class="sd">        u = mda.Universe(two_water_gro, context=&#39;default&#39;, to_guess=[&#39;bonds&#39;])</span>
+
+<span class="sd">    .. versionadded:: 2.8.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_guesser_methods</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;masses&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_masses</span><span class="p">,</span>
+            <span class="s1">&#39;types&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">,</span>
+            <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">,</span>
+            <span class="s1">&#39;bonds&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">,</span>
+            <span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_angles</span><span class="p">,</span>
+            <span class="s1">&#39;dihedrals&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_dihedrals</span><span class="p">,</span>
+            <span class="s1">&#39;impropers&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_improper_dihedrals</span><span class="p">,</span>
+            <span class="s1">&#39;aromaticities&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_aromaticities</span><span class="p">,</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="DefaultGuesser.guess_masses">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_masses">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indices_to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess the mass of many atoms based upon their type.</span>
+<span class="sd">        For guessing masses through :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`:</span>
+
+<span class="sd">        First try to guess masses from atom elements, if not available,</span>
+<span class="sd">        try to guess masses from types and if not available, try to guess</span>
+<span class="sd">        types.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atom_types : Optional[np.ndarray]</span>
+<span class="sd">          Atom types/elements to guess masses from</span>
+<span class="sd">        indices_to_guess : Optional[np.ndarray]</span>
+<span class="sd">          Mask array for partially guess masses for certain atoms</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        atom_masses : np.ndarray dtype float64</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        :exc:`ValueError`</span>
+<span class="sd">            If there are no atom types or elements to guess mass from.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom_types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">atom_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">elements</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">atom_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">types</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">atom_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span>
+                            <span class="n">atom_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;there is no reference attributes&quot;</span>
+                            <span class="s2">&quot; (elements, types, or names)&quot;</span>
+                            <span class="s2">&quot; in this universe to guess mass from&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">indices_to_guess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atom_types</span> <span class="o">=</span> <span class="n">atom_types</span><span class="p">[</span><span class="n">indices_to_guess</span><span class="p">]</span>
+
+        <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">get_atom_mass</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_types</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">masses</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.get_atom_mass">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.get_atom_mass">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_atom_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the atomic mass in u for *element*.</span>
+<span class="sd">        Masses are looked up in :data:`MDAnalysis.guesser.tables.masses`.</span>
+
+<span class="sd">        .. Warning:: Until version 3.0.0 unknown masses are set to 0.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">masses</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">masses</span><span class="p">[</span><span class="n">element</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;Unknown masses are set to 0.0 for current version, &quot;</span>
+                    <span class="s2">&quot;this will be deprecated in version 3.0.0 and replaced by&quot;</span>
+                    <span class="s2">&quot; Masse&#39;s no_value_label (np.nan)&quot;</span><span class="p">,</span>
+                    <span class="ne">PendingDeprecationWarning</span><span class="p">)</span>
+                <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_atom_mass">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_mass">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_atom_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess a mass based on the atom name.</span>
+
+<span class="sd">        :func:`guess_atom_element` is used to determine the kind of atom.</span>
+
+<span class="sd">        .. warning:: Until version 3.0.0 anything not recognized is simply</span>
+<span class="sd">           set to 0.0; if you rely on the masses you might want to double-check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_atom_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_types">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_types">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indices_to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess the atom type of many atoms based on atom name</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atom_types (optional)</span>
+<span class="sd">          atoms names if types guessing is desired to be from names</span>
+<span class="sd">        indices_to_guess (optional)</span>
+<span class="sd">          Mask array for partially guess types for certain atoms</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        atom_types : np.ndarray dtype object</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        :exc:`ValueError`</span>
+<span class="sd">           If there is no names to guess types from.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom_types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">atom_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;there is no reference attributes in this universe&quot;</span>
+                    <span class="s2">&quot;to guess types from&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">indices_to_guess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atom_types</span> <span class="o">=</span> <span class="n">atom_types</span><span class="p">[</span><span class="n">indices_to_guess</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_types</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_atom_element">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess the element of the atom from the name.</span>
+
+<span class="sd">        Looks in dict to see if element is found, otherwise it uses the first</span>
+<span class="sd">        character in the atomname. The table comes from CHARMM and AMBER atom</span>
+<span class="sd">        types, where the first character is not sufficient to determine the</span>
+<span class="sd">        atom type. Some GROMOS ions have also been added.</span>
+
+<span class="sd">        .. Warning: The translation table is incomplete.</span>
+<span class="sd">           This will probably result in some mistakes,</span>
+<span class="sd">           but it still better than nothing!</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :func:`guess_atom_type`</span>
+<span class="sd">        :mod:`MDAnalysis.guesser.tables`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">NUMBERS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]&#39;</span><span class="p">)</span>  <span class="c1"># match numbers</span>
+        <span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[*+-]&#39;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
+        <span class="k">if</span> <span class="n">atomname</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">atomelements</span><span class="p">[</span><span class="n">atomname</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># strip symbols and numbers</span>
+            <span class="n">no_symbols</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">SYMBOLS</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">atomname</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">NUMBERS</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">no_symbols</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+            <span class="c1"># just in case</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tables</span><span class="o">.</span><span class="n">atomelements</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">atomelements</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+            <span class="k">while</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tables</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">name</span>
+                <span class="k">if</span> <span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">tables</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="n">tables</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># probably element is on left not right</span>
+
+            <span class="c1"># if it&#39;s numbers</span>
+            <span class="k">return</span> <span class="n">no_symbols</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_bonds">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Guess if bonds exist between two atoms based on their distance.</span>
+
+<span class="sd">        Bond between two atoms is created, if the two atoms are within</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">              d &lt; f \cdot (R_1 + R_2)</span>
+
+<span class="sd">        of each other, where :math:`R_1` and :math:`R_2` are the VdW radii</span>
+<span class="sd">        of the atoms and :math:`f` is an ad-hoc *fudge_factor*. This is</span>
+<span class="sd">        the `same algorithm that VMD uses`_.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atoms : AtomGroup</span>
+<span class="sd">             atoms for which bonds should be guessed</span>
+<span class="sd">        fudge_factor : float, optional</span>
+<span class="sd">            The factor by which atoms must overlap eachother to be considered a</span>
+<span class="sd">            bond. Larger values will increase the number of bonds found. [0.55]</span>
+<span class="sd">        vdwradii : dict, optional</span>
+<span class="sd">            To supply custom vdwradii for atoms in the algorithm. Must be a</span>
+<span class="sd">            dict of format {type:radii}. The default table of van der Waals</span>
+<span class="sd">            radii is hard-coded as :data:`MDAnalysis.guesser.tables.vdwradii`.</span>
+<span class="sd">            Any user defined vdwradii passed as an argument will supercede the</span>
+<span class="sd">            table values. [``None``]</span>
+<span class="sd">        lower_bound : float, optional</span>
+<span class="sd">            The minimum bond length. All bonds found shorter than this length</span>
+<span class="sd">            will be ignored. This is useful for parsing PDB with altloc records</span>
+<span class="sd">            where atoms with altloc A and B maybe very close together and</span>
+<span class="sd">            there should be no chemical bond between them. [0.1]</span>
+<span class="sd">        box : array_like, optional</span>
+<span class="sd">            Bonds are found using a distance search, if unit cell information</span>
+<span class="sd">            is given, periodic boundary conditions will be considered in the</span>
+<span class="sd">            distance search. [``None``]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            List of tuples suitable for use in Universe topology building.</span>
+
+<span class="sd">        Warnings</span>
+<span class="sd">        --------</span>
+<span class="sd">        No check is done after the bonds are guessed to see if Lewis</span>
+<span class="sd">        structure is correct. This is wrong and will burn somebody.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        :exc:`ValueError` </span>
+<span class="sd">           If inputs are malformed or `vdwradii` data is missing.</span>
+
+
+<span class="sd">        .. _`same algorithm that VMD uses`:</span>
+<span class="sd">           http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span>
+
+        <span class="k">if</span> <span class="n">coords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;atoms&#39; and &#39;coord&#39; must be the same length&quot;</span><span class="p">)</span>
+
+        <span class="n">fudge_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fudge_factor&#39;</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">)</span>
+
+        <span class="c1"># so I don&#39;t permanently change it</span>
+        <span class="n">vdwradii</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">vdwradii</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">user_vdwradii</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vdwradii&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># this should make algo use their values over defaults</span>
+        <span class="k">if</span> <span class="n">user_vdwradii</span><span class="p">:</span>
+            <span class="n">vdwradii</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">user_vdwradii</span><span class="p">)</span>
+
+        <span class="c1"># Try using types, then elements</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;types&#39;</span><span class="p">):</span>
+            <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">types</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atomtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">atom_types</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+
+        <span class="c1"># check that all types have a defined vdw</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">vdwradii</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;vdw radii for types: &quot;</span> <span class="o">+</span>
+                              <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span> <span class="k">if</span>
+                                         <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vdwradii</span><span class="p">])</span> <span class="o">+</span>
+                              <span class="s2">&quot;. These can be defined manually using the&quot;</span> <span class="o">+</span>
+                              <span class="sa">f</span><span class="s2">&quot; keyword &#39;vdwradii&#39;&quot;</span><span class="p">))</span>
+
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;box&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+
+        <span class="c1"># to speed up checking, calculate what the largest possible bond</span>
+        <span class="c1"># atom that would warrant attention.</span>
+        <span class="c1"># then use this to quickly mask distance results later</span>
+        <span class="n">max_vdw</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">vdwradii</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">atomtypes</span><span class="p">])</span>
+
+        <span class="n">bonds</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">self_capped_distance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span>
+                                                     <span class="n">max_cutoff</span><span class="o">=</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">max_vdw</span><span class="p">,</span>
+                                                     <span class="n">min_cutoff</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">,</span>
+                                                     <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">vdwradii</span><span class="p">[</span><span class="n">atomtypes</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span>
+                 <span class="n">vdwradii</span><span class="p">[</span><span class="n">atomtypes</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span> <span class="o">*</span> <span class="n">fudge_factor</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">d</span><span class="p">):</span>
+                <span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_angles">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_angles">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a list of Bonds, find all angles that exist between atoms.</span>
+
+<span class="sd">        Works by assuming that if atoms 1 &amp; 2 are bonded, and 2 &amp; 3 are bonded,</span>
+<span class="sd">        then (1,2,3) must be an angle.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bonds : Bonds</span>
+<span class="sd">             from which angles should be guessed</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of tuples</span>
+<span class="sd">            List of tuples defining the angles.</span>
+<span class="sd">            Suitable for use in u._topology</span>
+
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :meth:`guess_bonds`</span>
+
+<span class="sd">      &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+
+        <span class="n">angles_found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+   
+        <span class="k">if</span> <span class="n">bonds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">):</span>
+                <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">temp_u</span> <span class="o">=</span> <span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">))</span>
+                <span class="n">bonds</span> <span class="o">=</span> <span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span>
+
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+                <span class="n">other_a</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>  <span class="c1"># who&#39;s my friend currently in Bond</span>
+                <span class="k">for</span> <span class="n">other_b</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">other_b</span> <span class="o">!=</span> <span class="n">b</span><span class="p">:</span>  <span class="c1"># if not the same bond I start as</span>
+                        <span class="n">third_a</span> <span class="o">=</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                        <span class="n">desc</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">other_a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">third_a</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
+                        <span class="c1"># first index always less than last</span>
+                        <span class="k">if</span> <span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">desc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="n">desc</span> <span class="o">=</span> <span class="n">desc</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">angles_found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">angles_found</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_dihedrals">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_dihedrals">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a list of Angles, find all dihedrals that exist between atoms.</span>
+
+<span class="sd">        Works by assuming that if (1,2,3) is an angle, and 3 &amp; 4 are bonded,</span>
+<span class="sd">        then (1,2,3,4) must be a dihedral.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        angles : Angles</span>
+<span class="sd">             from which dihedrals should be guessed</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of tuples</span>
+<span class="sd">            List of tuples defining the dihedrals.</span>
+<span class="sd">            Suitable for use in u._topology</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+
+        <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">):</span>
+                <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">angles</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">temp_u</span> <span class="o">=</span> <span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">))</span>
+     
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_angles</span><span class="p">(</span><span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span><span class="p">))</span>
+
+                <span class="n">angles</span> <span class="o">=</span> <span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">angles</span>
+
+        <span class="n">dihedrals_found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">:</span>
+            <span class="n">a_tup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">b</span><span class="p">])</span>  <span class="c1"># angle as tuple of numbers</span>
+            <span class="c1"># if searching with b[0], want tuple of (b[2], b[1], b[0], +new)</span>
+            <span class="c1"># search the first and last atom of each angle</span>
+            <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+                                    <span class="p">[</span><span class="n">a_tup</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">a_tup</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">other_b</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+                        <span class="n">third_a</span> <span class="o">=</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                        <span class="n">desc</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="p">(</span><span class="n">third_a</span><span class="o">.</span><span class="n">index</span><span class="p">,)</span>
+                        <span class="k">if</span> <span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">desc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="n">desc</span> <span class="o">=</span> <span class="n">desc</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">dihedrals_found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">dihedrals_found</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_improper_dihedrals">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_improper_dihedrals">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_improper_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a list of Angles, find all improper dihedrals</span>
+<span class="sd">        that exist between atoms.</span>
+
+<span class="sd">        Works by assuming that if (1,2,3) is an angle, and 2 &amp; 4 are bonded,</span>
+<span class="sd">        then (2, 1, 3, 4) must be an improper dihedral.</span>
+<span class="sd">        ie the improper dihedral is the angle between the planes formed by</span>
+<span class="sd">        (1, 2, 3) and (1, 3, 4)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            List of tuples defining the improper dihedrals.</span>
+<span class="sd">            Suitable for use in u._topology</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+
+        <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">):</span>
+                <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">angles</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">temp_u</span> <span class="o">=</span> <span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">))</span>
+
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_angles</span><span class="p">(</span><span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span><span class="p">))</span>
+
+                <span class="n">angles</span> <span class="o">=</span> <span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">angles</span>
+
+        <span class="n">dihedrals_found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">:</span>
+            <span class="n">atom</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># select middle atom in angle</span>
+            <span class="c1"># start of improper tuple</span>
+            <span class="n">a_tup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+            <span class="c1"># if searching with b[1], want tuple of (b[1], b[2], b[0], +new)</span>
+            <span class="c1"># search the first and last atom of each angle</span>
+            <span class="k">for</span> <span class="n">other_b</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+                <span class="n">other_atom</span> <span class="o">=</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                <span class="c1"># if this atom isn&#39;t in the angle I started with</span>
+                <span class="k">if</span> <span class="n">other_atom</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+                    <span class="n">desc</span> <span class="o">=</span> <span class="n">a_tup</span> <span class="o">+</span> <span class="p">(</span><span class="n">other_atom</span><span class="o">.</span><span class="n">index</span><span class="p">,)</span>
+                    <span class="k">if</span> <span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">desc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">desc</span> <span class="o">=</span> <span class="n">desc</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">dihedrals_found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">dihedrals_found</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_atom_charge">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_charge">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_atom_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess atom charge from the name.</span>
+
+<span class="sd">        .. Warning:: Not implemented; simply returns 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: do something slightly smarter, at least use name/element</span>
+        <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_aromaticities">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_aromaticities">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_aromaticities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess aromaticity of atoms using RDKit</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        aromaticities : numpy.ndarray</span>
+<span class="sd">            Array of boolean values for the aromaticity of each atom</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atomgroup</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span>
+
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()])</span></div>
+
+
+<div class="viewcode-block" id="DefaultGuesser.guess_gasteiger_charges">
+<a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_gasteiger_charges">[docs]</a>
+    <span class="k">def</span> <span class="nf">guess_gasteiger_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess Gasteiger partial charges using RDKit</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomgroup : mda.core.groups.AtomGroup</span>
+<span class="sd">            Atoms for which the charges will be guessed</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        charges : numpy.ndarray</span>
+<span class="sd">            Array of float values representing the charge of each atom</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">rdkit.Chem.rdPartialCharges</span> <span class="kn">import</span> <span class="n">ComputeGasteigerCharges</span>
+        <span class="n">ComputeGasteigerCharges</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">throwOnParamFailure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()],</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2024, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.8.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

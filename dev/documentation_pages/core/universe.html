@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>11.2.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>12.2.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="11.2.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
-    <link rel="prev" title="11.1. Core functions of MDAnalysis" href="init.html" /> 
+    <link rel="next" title="12.2.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
+    <link rel="prev" title="12.1. Core functions of MDAnalysis" href="init.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,32 +102,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">11. Core modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">11.1. Core functions of MDAnalysis</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.2. Important objects for users</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#classes">11.2.1.1. Classes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#functions">11.2.1.2. Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">12. Core modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">12.1. Core functions of MDAnalysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#important-objects-for-users">12.2. Important objects for users</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#classes">12.2.1.1. Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">12.2.1.2. Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="groups.html">11.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">12.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">11.3. Topology system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.4. Selection system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">12.3. Topology system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">12.4. Selection system</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -145,8 +146,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../core_modules.html"><span class="section-number">11. </span>Core modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">11.2.1. </span>Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
+          <li class="breadcrumb-item"><a href="../core_modules.html"><span class="section-number">12. </span>Core modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">12.2.1. </span>Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/core/universe.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -157,7 +158,7 @@
            <div itemprop="articleBody">
              
   <section id="core-object-universe-mdanalysis-core-universe">
-<span id="module-MDAnalysis.core.universe"></span><h1><span class="section-number">11.2.1. </span>Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.core.universe"></span><h1><span class="section-number">12.2.1. </span>Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> class ties a topology
 and a trajectory together. Almost all code in MDAnalysis starts with a
 <code class="docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
@@ -171,10 +172,10 @@ construct a <code class="docutils literal notranslate"><span class="pre">Univers
 <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances with the
 <a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-func docutils literal notranslate"><span class="pre">Merge()</span></code></a> function.</p>
 <section id="classes">
-<h2><span class="section-number">11.2.1.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">12.2.1.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Universe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fudge_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.55</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Universe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fudge_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.55</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('types',</span> <span class="pre">'masses')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Link to this definition"></a></dt>
 <dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
 <p>The system always requires a <em>topology file</em> — in the simplest case just
 a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
@@ -228,6 +229,23 @@ between atoms.  This will populate the .bonds, .angles, and .dihedrals
 attributes of the Universe.</p></li>
 <li><p><strong>vdwradii</strong> (dict, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
 atom type which are used in guessing bonds.</p></li>
+<li><p><strong>context</strong> (str or <code class="xref py py-mod docutils literal notranslate"><span class="pre">Guesser</span></code>, default <code class="docutils literal notranslate"><span class="pre">'default'</span></code>) – Type of the Guesser to be used in guessing TopologyAttrs</p></li>
+<li><p><strong>to_guess</strong> (list[str] (optional, default <code class="docutils literal notranslate"><span class="pre">['types',</span> <span class="pre">'masses']</span></code>)) – <p>TopologyAttrs to be guessed. These TopologyAttrs will be wholly
+guessed if they don’t exist in the Universe. If they already exist in
+the Universe, only empty or missing values will be guessed.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>In MDAnalysis 2.x, types and masses are being automatically guessed
+if they are missing (<code class="docutils literal notranslate"><span class="pre">to_guess=('types,</span> <span class="pre">'masses')</span></code>).
+However, starting with release 3.0 <strong>no guessing will be done
+by default</strong> and it will be up to the user to request guessing
+using <code class="docutils literal notranslate"><span class="pre">to_guess</span></code> and <code class="docutils literal notranslate"><span class="pre">force_guess</span></code>.</p>
+</div>
+</p></li>
+<li><p><strong>force_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em><em>, </em><em>(</em><em>optional</em><em>)</em>) – TopologyAttrs in this list will be force guessed. If the TopologyAttr
+does not already exist in the Universe, this has no effect. If the
+TopologyAttr does already exist, all values will be overwritten
+by guessed values.</p></li>
 <li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default</em><em> [</em><em>0.55</em><em>]</em>) – For use with <em>guess_bonds</em>. Supply the factor by which atoms must
 overlap each other to be considered a bond.</p></li>
 <li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default</em><em> [</em><em>0.1</em><em>]</em>) – For use with <em>guess_bonds</em>. Supply the minimum bond length.</p></li>
@@ -262,7 +280,7 @@ trajectory.</p></li>
 <span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dimensions" title="Link to this definition"></a></dt>
 <dd><p>system dimensions (simulation unit cell, if set in the
 trajectory) at the <em>current time step</em>
-(see <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>).
+(see <code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code>).
 The unit cell can be set for the current time step (but the change is
 not permanent unless written to a file).</p>
 <dl class="field-list simple">
@@ -382,6 +400,11 @@ Removed instant selectors.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.5.0: </span>Added fudge_factor and lower_bound parameters for use with
 <em>guess_bonds</em>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>Added <a class="reference internal" href="#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="MDAnalysis.core.universe.Universe.guess_TopologyAttrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code></a> API
+guessing masses and atom types after topology
+is read from a registered parser.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_Residue">
@@ -839,6 +862,44 @@ the input SMILES string; coordinates are included if
 </div>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.guess_TopologyAttrs">
+<span class="sig-name descname"><span class="pre">guess_TopologyAttrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.guess_TopologyAttrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="Link to this definition"></a></dt>
+<dd><p>Guess and add attributes through a specific context-aware guesser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> (str or <code class="xref py py-mod docutils literal notranslate"><span class="pre">Guesser</span></code> class) – For calling a matching guesser class for this specific context</p></li>
+<li><p><strong>to_guess</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em><em>]</em>) – <p>TopologyAttrs to be guessed. These TopologyAttrs will be wholly
+guessed if they don’t exist in the Universe. If they already exist in
+the Universe, only empty or missing values will be guessed.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>In MDAnalysis 2.x, types and masses are being automatically guessed
+if they are missing (<code class="docutils literal notranslate"><span class="pre">to_guess=('types,</span> <span class="pre">'masses')</span></code>).
+However, starting with release 3.0 <strong>no guessing will be done
+by default</strong> and it will be up to the user to request guessing
+using <code class="docutils literal notranslate"><span class="pre">to_guess</span></code> and <code class="docutils literal notranslate"><span class="pre">force_guess</span></code>.</p>
+</div>
+</p></li>
+<li><p><strong>force_guess</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em><em>]</em>) – TopologyAttrs in this list will be force guessed. If the
+TopologyAttr does not already exist in the Universe, this has no
+effect. If the TopologyAttr does already exist, all values will
+be overwritten by guessed values.</p></li>
+<li><p><strong>**kwargs</strong> (<em>extra arguments to be passed to the guesser class</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>To guess <code class="docutils literal notranslate"><span class="pre">masses</span></code> and <code class="docutils literal notranslate"><span class="pre">types</span></code> attributes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;masses&#39;</span><span class="p">,</span> <span class="s1">&#39;types&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.kwargs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.kwargs" title="Link to this definition"></a></dt>
@@ -963,7 +1024,7 @@ set to True. Default value is False.</p></li>
 
 </section>
 <section id="functions">
-<h2><span class="section-number">11.2.1.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<h2><span class="section-number">12.2.1.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Merge">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Merge" title="Link to this definition"></a></dt>
@@ -1031,8 +1092,8 @@ of them together:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="init.html" class="btn btn-neutral float-left" title="11.1. Core functions of MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="groups.html" class="btn btn-neutral float-right" title="11.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="init.html" class="btn btn-neutral float-left" title="12.1. Core functions of MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="groups.html" class="btn btn-neutral float-right" title="12.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

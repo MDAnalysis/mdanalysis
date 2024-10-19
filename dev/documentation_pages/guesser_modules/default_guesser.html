@@ -1,0 +1,537 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6.1.1.2. Default Guesser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=a9b57af3"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../_static/js/versions.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.8.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="6.1.1.3. Base guesser classes — MDAnalysis.guesser.base" href="base.html" />
+    <link rel="prev" title="6.1.1.1. Context-specific guessers — MDAnalysis.guesser" href="init.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.8.0-dev0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../guesser_modules.html#example-uses-of-guessers">6.1. Example uses of guessers</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../guesser_modules.html#guessing-using-guess-topologyattrs-api">6.1.1. Guessing using <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code> API</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="init.html">6.1.1.1. Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">6.1.1.2. Default Guesser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html">6.1.1.3. Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tables.html">6.1.1.4. MDAnalysis topology tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../guesser_modules.html"><span class="section-number">6. </span>Guesser modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">6.1.1.2. </span>Default Guesser</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/documentation_pages/guesser_modules/default_guesser.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="default-guesser">
+<span id="module-MDAnalysis.guesser.default_guesser"></span><h1><span class="section-number">6.1.1.2. </span>Default Guesser<a class="headerlink" href="#default-guesser" title="Link to this heading"></a></h1>
+<p id="defaultguesser">DefaultGuesser is a generic guesser class that has basic guessing methods.
+This class is a general purpose guesser that can be used with most topologies,
+but being generic makes it the less accurate among all guessers.</p>
+<section id="classes">
+<h2><span class="section-number">6.1.1.2.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.guesser.default_guesser.</span></span><span class="sig-name descname"><span class="pre">DefaultGuesser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser" title="Link to this definition"></a></dt>
+<dd><p>This guesser holds generic methods (not directed to specific contexts) for
+guessing different topology attribute. It has the same methods which where
+originally found in Topology.guesser.py. The attributes that can be
+guessed by this class are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>masses</p></li>
+<li><p>types</p></li>
+<li><p>elements</p></li>
+<li><p>angles</p></li>
+<li><p>dihedrals</p></li>
+<li><p>bonds</p></li>
+<li><p>improper dihedrals</p></li>
+<li><p>aromaticities</p></li>
+</ul>
+</div></blockquote>
+<p>You can use this guesser either directly through an instance, or through
+the <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="MDAnalysis.core.universe.Universe.guess_TopologyAttrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code></a> method.</p>
+<p class="rubric">Examples</p>
+<p>to guess bonds for a universe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">two_water_gro</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">two_water_gro</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bonds&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.copy" title="Link to this definition"></a></dt>
+<dd><p>Return a copy of this Guesser</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.get_atom_mass">
+<span class="sig-name descname"><span class="pre">get_atom_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.get_atom_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.get_atom_mass" title="Link to this definition"></a></dt>
+<dd><p>Return the atomic mass in u for <em>element</em>.
+Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.guesser.tables.masses" title="MDAnalysis.guesser.tables.masses"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.guesser.tables.masses</span></code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Until version 3.0.0 unknown masses are set to 0.0</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_angles">
+<span class="sig-name descname"><span class="pre">guess_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_angles" title="Link to this definition"></a></dt>
+<dd><p>Given a list of Bonds, find all angles that exist between atoms.</p>
+<p>Works by assuming that if atoms 1 &amp; 2 are bonded, and 2 &amp; 3 are bonded,
+then (1,2,3) must be an angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bonds</strong> (<a class="reference internal" href="../core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><em>Bonds</em></a>) – from which angles should be guessed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples defining the angles.
+Suitable for use in u._topology</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of tuples</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_bonds()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_aromaticities">
+<span class="sig-name descname"><span class="pre">guess_aromaticities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_aromaticities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_aromaticities" title="Link to this definition"></a></dt>
+<dd><p>Guess aromaticity of atoms using RDKit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>aromaticities</strong> – Array of boolean values for the aromaticity of each atom</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_charge">
+<span class="sig-name descname"><span class="pre">guess_atom_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_atom_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_charge" title="Link to this definition"></a></dt>
+<dd><p>Guess atom charge from the name.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Not implemented; simply returns 0.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element">
+<span class="sig-name descname"><span class="pre">guess_atom_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_atom_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element" title="Link to this definition"></a></dt>
+<dd><p>Guess the element of the atom from the name.</p>
+<p>Looks in dict to see if element is found, otherwise it uses the first
+character in the atomname. The table comes from CHARMM and AMBER atom
+types, where the first character is not sufficient to determine the
+atom type. Some GROMOS ions have also been added.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_type()</span></code>, <a class="reference internal" href="tables.html#module-MDAnalysis.guesser.tables" title="MDAnalysis.guesser.tables"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.tables</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_mass">
+<span class="sig-name descname"><span class="pre">guess_atom_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_atom_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_mass" title="Link to this definition"></a></dt>
+<dd><p>Guess a mass based on the atom name.</p>
+<p><a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a> is used to determine the kind of atom.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Until version 3.0.0 anything not recognized is simply
+set to 0.0; if you rely on the masses you might want to double-check.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_attr">
+<span class="sig-name descname"><span class="pre">guess_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_to_guess</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_attr" title="Link to this definition"></a></dt>
+<dd><p>map the attribute to be guessed with the apporpiate guessing method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attr_to_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – an atrribute to be guessed then to be added to the universe</p></li>
+<li><p><strong>force_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – To indicate wether to only partialy guess the empty values of the
+attribute or to overwrite all existing values by guessed one</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>NDArray of guessed values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds">
+<span class="sig-name descname"><span class="pre">guess_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds" title="Link to this definition"></a></dt>
+<dd><p>Guess if bonds exist between two atoms based on their distance.</p>
+<p>Bond between two atoms is created, if the two atoms are within</p>
+<div class="math notranslate nohighlight">
+\[d &lt; f \cdot (R_1 + R_2)\]</div>
+<p>of each other, where <span class="math notranslate nohighlight">\(R_1\)</span> and <span class="math notranslate nohighlight">\(R_2\)</span> are the VdW radii
+of the atoms and <span class="math notranslate nohighlight">\(f\)</span> is an ad-hoc <em>fudge_factor</em>. This is
+the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html">same algorithm that VMD uses</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atoms for which bonds should be guessed</p></li>
+<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap eachother to be considered a
+bond. Larger values will increase the number of bonds found. [0.55]</p></li>
+<li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – To supply custom vdwradii for atoms in the algorithm. Must be a
+dict of format {type:radii}. The default table of van der Waals
+radii is hard-coded as <a class="reference internal" href="tables.html#MDAnalysis.guesser.tables.vdwradii" title="MDAnalysis.guesser.tables.vdwradii"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.guesser.tables.vdwradii</span></code></a>.
+Any user defined vdwradii passed as an argument will supercede the
+table values. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length
+will be ignored. This is useful for parsing PDB with altloc records
+where atoms with altloc A and B maybe very close together and
+there should be no chemical bond between them. [0.1]</p></li>
+<li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Bonds are found using a distance search, if unit cell information
+is given, periodic boundary conditions will be considered in the
+distance search. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples suitable for use in Universe topology building.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>No check is done after the bonds are guessed to see if Lewis
+structure is correct. This is wrong and will burn somebody.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If inputs are malformed or <cite>vdwradii</cite> data is missing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_dihedrals">
+<span class="sig-name descname"><span class="pre">guess_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_dihedrals" title="Link to this definition"></a></dt>
+<dd><p>Given a list of Angles, find all dihedrals that exist between atoms.</p>
+<p>Works by assuming that if (1,2,3) is an angle, and 3 &amp; 4 are bonded,
+then (1,2,3,4) must be a dihedral.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>angles</strong> (<a class="reference internal" href="../core/topologyattrs.html#MDAnalysis.core.topologyattrs.Angles" title="MDAnalysis.core.topologyattrs.Angles"><em>Angles</em></a>) – from which dihedrals should be guessed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples defining the dihedrals.
+Suitable for use in u._topology</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of tuples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_gasteiger_charges">
+<span class="sig-name descname"><span class="pre">guess_gasteiger_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_gasteiger_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_gasteiger_charges" title="Link to this definition"></a></dt>
+<dd><p>Guess Gasteiger partial charges using RDKit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>atomgroup</strong> (<em>mda.core.groups.AtomGroup</em>) – Atoms for which the charges will be guessed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>charges</strong> – Array of float values representing the charge of each atom</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_improper_dihedrals">
+<span class="sig-name descname"><span class="pre">guess_improper_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_improper_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_improper_dihedrals" title="Link to this definition"></a></dt>
+<dd><p>Given a list of Angles, find all improper dihedrals
+that exist between atoms.</p>
+<p>Works by assuming that if (1,2,3) is an angle, and 2 &amp; 4 are bonded,
+then (2, 1, 3, 4) must be an improper dihedral.
+ie the improper dihedral is the angle between the planes formed by
+(1, 2, 3) and (1, 3, 4)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>List of tuples defining the improper dihedrals.</em></p></li>
+<li><p><em>Suitable for use in u._topology</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_masses">
+<span class="sig-name descname"><span class="pre">guess_masses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_to_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_masses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_masses" title="Link to this definition"></a></dt>
+<dd><p>Guess the mass of many atoms based upon their type.
+For guessing masses through <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="MDAnalysis.core.universe.Universe.guess_TopologyAttrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code></a>:</p>
+<p>First try to guess masses from atom elements, if not available,
+try to guess masses from types and if not available, try to guess
+types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom_types</strong> (<em>Optional</em><em>[</em><em>np.ndarray</em><em>]</em>) – Atom types/elements to guess masses from</p></li>
+<li><p><strong>indices_to_guess</strong> (<em>Optional</em><em>[</em><em>np.ndarray</em><em>]</em>) – Mask array for partially guess masses for certain atoms</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>atom_masses</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray dtype float64</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If there are no atom types or elements to guess mass from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_types">
+<span class="sig-name descname"><span class="pre">guess_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_to_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_types" title="Link to this definition"></a></dt>
+<dd><p>Guess the atom type of many atoms based on atom name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> (<em>indices_to_guess</em>) – atoms names if types guessing is desired to be from names</p></li>
+<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> – Mask array for partially guess types for certain atoms</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>atom_types</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray dtype object</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If there is no names to guess types from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.is_guessable">
+<span class="sig-name descname"><span class="pre">is_guessable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_to_guess</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.is_guessable" title="Link to this definition"></a></dt>
+<dd><p>check if the passed atrribute can be guessed by the guesser class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Attribute to be guessed then added to the Universe</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="init.html" class="btn btn-neutral float-left" title="6.1.1.1. Context-specific guessers — MDAnalysis.guesser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="base.html" class="btn btn-neutral float-right" title="6.1.1.3. Base guesser classes — MDAnalysis.guesser.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2024, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.8.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.1. Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>7.1. Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" />
-    <link rel="prev" title="6. Coordinates modules" href="../coordinates_modules.html" /> 
+    <link rel="next" title="7.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" />
+    <link rel="prev" title="7. Coordinates modules" href="../coordinates_modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,69 +102,70 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.1. Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#readers">6.1.1. Readers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#writers">6.1.2. Writers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#timesteps">6.1.3. Timesteps</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#supported-coordinate-formats">6.1.4. Supported coordinate formats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#trajectory-api">6.1.5. Trajectory API</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#registry">6.1.5.1. Registry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#timestep-class">6.1.5.2. Timestep class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#trajectory-reader-class">6.1.5.3. Trajectory Reader class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#trajectory-writer-class">6.1.5.4. Trajectory Writer class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#single-frame-writer-class">6.1.5.5. Single Frame Writer class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.1. Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#readers">7.1.1. Readers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writers">7.1.2. Writers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timesteps">7.1.3. Timesteps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-coordinate-formats">7.1.4. Supported coordinate formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trajectory-api">7.1.5. Trajectory API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#registry">7.1.5.1. Registry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#timestep-class">7.1.5.2. Timestep class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trajectory-reader-class">7.1.5.3. Trajectory Reader class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trajectory-writer-class">7.1.5.4. Trajectory Writer class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#single-frame-writer-class">7.1.5.5. Single Frame Writer class</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="H5MD.html">6.9. H5MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.10. INPCRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.11. LAMMPS DCD trajectory and DATA I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.16. PDBQT structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TNG.html">6.18. TNG trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TNG</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRC.html">6.19. GROMOS11 trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRC</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.20. AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.21. TRR trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.22. TRZ trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.23. TXYZ file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.24. XTC trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.25. XYZ trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.26. FHI-AIMS file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory.html">6.27. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.28. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="null.html">6.29. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="timestep.html">6.30. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.31. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.32. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.33. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.34. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.35. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">7.2. CRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">7.3. DCD trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">7.4. DL_Poly format reader <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">7.5. DESRES file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">7.6. GAMESS trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">7.7. GSD trajectory reader  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">7.8. GRO file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="H5MD.html">7.9. H5MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">7.10. INPCRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">7.11. LAMMPS DCD trajectory and DATA I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">7.12. MMTF trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2.html">7.13. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">7.14. NAMDBIN files format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">7.15. PDB structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">7.16. PDBQT structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">7.17. PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TNG.html">7.18. TNG trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TNG</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRC.html">7.19. GROMOS11 trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">7.20. AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">7.21. TRR trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">7.22. TRZ trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">7.23. TXYZ file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">7.24. XTC trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">7.25. XYZ trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">7.26. FHI-AIMS file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">7.27. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">7.28. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">7.29. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">7.30. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">7.31. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">7.32. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">7.33. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">7.34. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">7.35. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -182,8 +183,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../coordinates_modules.html"><span class="section-number">6. </span>Coordinates modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">6.1. </span>Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></li>
+          <li class="breadcrumb-item"><a href="../coordinates_modules.html"><span class="section-number">7. </span>Coordinates modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">7.1. </span>Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/coordinates/init.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -194,7 +195,7 @@
            <div itemprop="articleBody">
              
   <section id="trajectory-readers-and-writers-mdanalysis-coordinates">
-<span id="module-MDAnalysis.coordinates.__init__"></span><h1><span class="section-number">6.1. </span>Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code><a class="headerlink" href="#trajectory-readers-and-writers-mdanalysis-coordinates" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.coordinates.__init__"></span><h1><span class="section-number">7.1. </span>Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code><a class="headerlink" href="#trajectory-readers-and-writers-mdanalysis-coordinates" title="Link to this heading"></a></h1>
 <p>The coordinates submodule contains code to read, write and store coordinate
 information, either single frames (e.g., the <a class="reference internal" href="GRO.html#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">GRO</span></code></a>
 format) or trajectories (such as the <code class="xref py py-mod docutils literal notranslate"><span class="pre">DCD</span></code> format);
@@ -205,7 +206,7 @@ called <em>“Writers”</em>. Readers and Writers provide a common interface to
 underlying coordinate data. This abstraction of coordinate access through an
 object-oriented interface is one of the key capabilities of MDAnalysis.</p>
 <section id="readers">
-<span id="id1"></span><h2><span class="section-number">6.1.1. </span>Readers<a class="headerlink" href="#readers" title="Link to this heading"></a></h2>
+<span id="id1"></span><h2><span class="section-number">7.1.1. </span>Readers<a class="headerlink" href="#readers" title="Link to this heading"></a></h2>
 <p>All Readers are based on a <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a>
 class that defines a common <a class="reference internal" href="#trajectory-api"><span class="std std-ref">Trajectory API</span></a> and allows other code to
 interface with all trajectory formats in the same way, independent of the
@@ -242,7 +243,7 @@ alongside a trajectory using
 the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><span class="std std-ref">Auxiliary API</span></a>.</p>
 </section>
 <section id="writers">
-<span id="writing-trajectories"></span><h2><span class="section-number">6.1.2. </span>Writers<a class="headerlink" href="#writers" title="Link to this heading"></a></h2>
+<span id="writing-trajectories"></span><h2><span class="section-number">7.1.2. </span>Writers<a class="headerlink" href="#writers" title="Link to this heading"></a></h2>
 <p>In order to <strong>write coordinates</strong>, a factory function is provided
 (<a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core.writer()</span></code></a>, which is also made available as
 <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.Writer()</span></code>) that returns a <em>Writer</em> appropriate for the desired
@@ -269,7 +270,7 @@ only keep the protein:</p>
 the last frame has been written.</p>
 </section>
 <section id="timesteps">
-<h2><span class="section-number">6.1.3. </span>Timesteps<a class="headerlink" href="#timesteps" title="Link to this heading"></a></h2>
+<h2><span class="section-number">7.1.3. </span>Timesteps<a class="headerlink" href="#timesteps" title="Link to this heading"></a></h2>
 <p>Both Readers and Writers use Timesteps as their working object.  A
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> represents all data for a given
 frame in a trajectory.  The data inside a
@@ -289,7 +290,7 @@ due to differences in individual simulation packages, but all share in common a
 broad set of basic data, detailed in <a class="reference internal" href="#timestep-api">Timestep API</a></p>
 </section>
 <section id="supported-coordinate-formats">
-<h2><span class="section-number">6.1.4. </span>Supported coordinate formats<a class="headerlink" href="#supported-coordinate-formats" title="Link to this heading"></a></h2>
+<h2><span class="section-number">7.1.4. </span>Supported coordinate formats<a class="headerlink" href="#supported-coordinate-formats" title="Link to this heading"></a></h2>
 <p>The table below lists the coordinate file formats understood by MDAnalysis. The
 emphasis is on formats that are used in popular molecular dynamics codes. By
 default, MDAnalysis figures out formats by looking at the extension. Thus, a
@@ -540,7 +541,7 @@ providing a file of this format: <code class="docutils literal notranslate"><spa
 </aside>
 </section>
 <section id="trajectory-api">
-<span id="id17"></span><h2><span class="section-number">6.1.5. </span>Trajectory API<a class="headerlink" href="#trajectory-api" title="Link to this heading"></a></h2>
+<span id="id17"></span><h2><span class="section-number">7.1.5. </span>Trajectory API<a class="headerlink" href="#trajectory-api" title="Link to this heading"></a></h2>
 <p>The <strong>Trajectory API</strong> defines how classes have to be structured that allow
 reading and writing of coordinate files. By following the API it is possible to
 seamlessly enhance the I/O capabilities of MDAnalysis. The actual underlying
@@ -550,7 +551,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <p>Reader and Writer classes are derived from base classes in
 <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a>.</p>
 <section id="registry">
-<h3><span class="section-number">6.1.5.1. </span>Registry<a class="headerlink" href="#registry" title="Link to this heading"></a></h3>
+<h3><span class="section-number">7.1.5.1. </span>Registry<a class="headerlink" href="#registry" title="Link to this heading"></a></h3>
 <p>In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
 correct format, all I/O classes must subclass either
@@ -573,7 +574,7 @@ To define that a Writer <em>does not</em> support single frame writing the
 by default, ie we assume all Writers can also do a single frame.</p>
 </section>
 <section id="timestep-class">
-<span id="timestep-api"></span><h3><span class="section-number">6.1.5.2. </span>Timestep class<a class="headerlink" href="#timestep-class" title="Link to this heading"></a></h3>
+<span id="timestep-api"></span><h3><span class="section-number">7.1.5.2. </span>Timestep class<a class="headerlink" href="#timestep-class" title="Link to this heading"></a></h3>
 <p>A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read.</p>
 <p>Timestep classes are derived from
@@ -581,7 +582,7 @@ new frame of the trajectory is read.</p>
 implementation example (and used directly for the DCDReader).</p>
 <p>The discussion on this format is detailed in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/250">Issue 250</a></p>
 <section id="methods">
-<h4><span class="section-number">6.1.5.2.1. </span>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.2.1. </span>Methods<a class="headerlink" href="#methods" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">__init__(n_atoms,</span> <span class="pre">positions=True,</span> <span class="pre">velocities=False,</span> <span class="pre">forces=False)</span></code></dt><dd><p>Define the number of atoms this Timestep will hold and whether or not
 it will have velocity and force information</p>
@@ -604,7 +605,7 @@ initialize <code class="xref py py-attr docutils literal notranslate"><span clas
 </dl>
 </section>
 <section id="attributes">
-<h4><span class="section-number">6.1.5.2.2. </span>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.2.2. </span>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h4>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">n_atoms</span></code></dt><dd><p>number of atoms in the frame</p>
 </dd>
@@ -654,7 +655,7 @@ in <code class="xref py py-attr docutils literal notranslate"><span class="pre">
 </dl>
 </section>
 <section id="private-attributes">
-<h4><span class="section-number">6.1.5.2.3. </span>Private attributes<a class="headerlink" href="#private-attributes" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.2.3. </span>Private attributes<a class="headerlink" href="#private-attributes" title="Link to this heading"></a></h4>
 <p>These attributes are set directly by the underlying trajectory
 readers. Normally the user should not have to directly access those,
 but instead should use the attribute above.</p>
@@ -679,7 +680,7 @@ this attribute.</p>
 </section>
 </section>
 <section id="trajectory-reader-class">
-<h3><span class="section-number">6.1.5.3. </span>Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Link to this heading"></a></h3>
+<h3><span class="section-number">7.1.5.3. </span>Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Link to this heading"></a></h3>
 <p>Trajectory readers are derived from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ReaderBase</span></code></a> (or from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> if they do not required
@@ -695,7 +696,7 @@ from a subclass of <a class="reference internal" href="base.html#MDAnalysis.coor
 for implementation details.</p>
 </div>
 <section id="id18">
-<h4><span class="section-number">6.1.5.3.1. </span>Methods<a class="headerlink" href="#id18" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.3.1. </span>Methods<a class="headerlink" href="#id18" title="Link to this heading"></a></h4>
 <p>The <a class="reference internal" href="DCD.html#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD.DCDReader</span></code></a> class is the primary
 implementation example.</p>
 <p><strong>Mandatory methods</strong></p>
@@ -809,7 +810,7 @@ filled in; the actual keyword arguments depend on the Writer.</p>
 </dl>
 </section>
 <section id="id19">
-<h4><span class="section-number">6.1.5.3.2. </span>Attributes<a class="headerlink" href="#id19" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.3.2. </span>Attributes<a class="headerlink" href="#id19" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">filename</span></code></dt><dd><p>filename of the trajectory</p>
 </dd>
@@ -863,7 +864,7 @@ the stride at which the MD simulation was sampled)</p>
 </section>
 </section>
 <section id="trajectory-writer-class">
-<h3><span class="section-number">6.1.5.4. </span>Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Link to this heading"></a></h3>
+<h3><span class="section-number">7.1.5.4. </span>Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Link to this heading"></a></h3>
 <p>Trajectory writers are derived from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.WriterBase" title="MDAnalysis.coordinates.base.WriterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.WriterBase</span></code></a>. They are used to write
 multiple frames to a trajectory file. Every time the
@@ -885,7 +886,7 @@ another frame is appended to the trajectory.</p>
 for implementation details.</p>
 </div>
 <section id="id20">
-<h4><span class="section-number">6.1.5.4.1. </span>Methods<a class="headerlink" href="#id20" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.4.1. </span>Methods<a class="headerlink" href="#id20" title="Link to this heading"></a></h4>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">__init__(filename,</span> <span class="pre">n_atoms,</span> <span class="pre">**kwargs)</span></code></dt><dd><p>Set-up the reader. This <em>may</em> open file <em>filename</em> and <em>may</em>
 write content to it such as headers immediately but the writer is
@@ -905,7 +906,7 @@ unitcell representation of the format</p>
 </dl>
 </section>
 <section id="id21">
-<h4><span class="section-number">6.1.5.4.2. </span>Attributes<a class="headerlink" href="#id21" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.4.2. </span>Attributes<a class="headerlink" href="#id21" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">filename</span></code></dt><dd><p>name of the trajectory file</p>
 </dd>
@@ -926,7 +927,7 @@ Any field not used should be set to <code class="docutils literal notranslate"><
 </section>
 </section>
 <section id="single-frame-writer-class">
-<h3><span class="section-number">6.1.5.5. </span>Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Link to this heading"></a></h3>
+<h3><span class="section-number">7.1.5.5. </span>Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Link to this heading"></a></h3>
 <p>A single frame writer is a special case of a trajectory writer in that it
 writes only a single coordinate frame to a file, for instance, a pdb or gro
 file. Unlike trajectory formats, which only contains coordinates, <em>single
@@ -944,7 +945,7 @@ arguments (filename and n_atoms) as for the Trajectory writers. In
 this way, the simple <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><code class="xref py py-func docutils literal notranslate"><span class="pre">writer()</span></code></a>
 factory function can be used for all writers.</p>
 <section id="id22">
-<h4><span class="section-number">6.1.5.5.1. </span>Methods<a class="headerlink" href="#id22" title="Link to this heading"></a></h4>
+<h4><span class="section-number">7.1.5.5.1. </span>Methods<a class="headerlink" href="#id22" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">__init__(filename,</span> <span class="pre">**kwargs)</span></code></dt><dd><p>opens <em>filename</em> for writing; <cite>kwargs</cite> are typically ignored</p>
 </dd>
@@ -969,8 +970,8 @@ raw <code class="xref py py-class docutils literal notranslate"><span class="pre
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../coordinates_modules.html" class="btn btn-neutral float-left" title="6. Coordinates modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="CRD.html" class="btn btn-neutral float-right" title="6.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../coordinates_modules.html" class="btn btn-neutral float-left" title="7. Coordinates modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CRD.html" class="btn btn-neutral float-right" title="7.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

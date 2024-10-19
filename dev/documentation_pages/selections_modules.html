@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>9. Selection exporters &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>10. Selection exporters &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="9.2.1. VMD selections" href="selections/vmd.html" />
-    <link rel="prev" title="8.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" href="transformations/boxdimensions.html" /> 
+    <link rel="next" title="10.2.1. VMD selections" href="selections/vmd.html" />
+    <link rel="prev" title="9.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" href="transformations/boxdimensions.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,34 +102,35 @@
 <li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">9. Selection exporters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#how-to-write-selections">9.1. How to write selections</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#single-atomgroup">9.1.1. Single AtomGroup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multiple-selections">9.1.2. Multiple selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">10. Selection exporters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-write-selections">10.1. How to write selections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-atomgroup">10.1.1. Single AtomGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-selections">10.1.2. Multiple selections</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#selection-writers">9.2. Selection writers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="selections/vmd.html">9.2.1. VMD selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/pymol.html">9.2.2. PyMOL selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/gromacs.html">9.2.3. Gromacs selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/charmm.html">9.2.4. CHARMM selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/jmol.html">9.2.5. Jmol selections</a></li>
-<li class="toctree-l3"><a class="reference internal" href="selections/base.html">9.2.6. Base classes for the selection writers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selection-writers">10.2. Selection writers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="selections/vmd.html">10.2.1. VMD selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/pymol.html">10.2.2. PyMOL selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/gromacs.html">10.2.3. Gromacs selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/charmm.html">10.2.4. CHARMM selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/jmol.html">10.2.5. Jmol selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/base.html">10.2.6. Base classes for the selection writers</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -147,7 +148,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">9. </span>Selection exporters</li>
+      <li class="breadcrumb-item active"><span class="section-number">10. </span>Selection exporters</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/documentation_pages/selections_modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -158,7 +159,7 @@
            <div itemprop="articleBody">
              
   <section id="selection-exporters">
-<span id="id1"></span><h1><span class="section-number">9. </span>Selection exporters<a class="headerlink" href="#selection-exporters" title="Link to this heading"></a></h1>
+<span id="id1"></span><h1><span class="section-number">10. </span>Selection exporters<a class="headerlink" href="#selection-exporters" title="Link to this heading"></a></h1>
 <p>The classes in this module allow writing a selection to a file that can be read by
 <em>another program</em> to select the atoms in a MDAnalysis
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>. Such cross-package interoperability
@@ -207,9 +208,9 @@ module <a class="reference internal" href="selections/jmol.html#module-MDAnalysi
 </tbody>
 </table>
 <section id="how-to-write-selections">
-<h2><span class="section-number">9.1. </span>How to write selections<a class="headerlink" href="#how-to-write-selections" title="Link to this heading"></a></h2>
+<h2><span class="section-number">10.1. </span>How to write selections<a class="headerlink" href="#how-to-write-selections" title="Link to this heading"></a></h2>
 <section id="single-atomgroup">
-<h3><span class="section-number">9.1.1. </span>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Link to this heading"></a></h3>
+<h3><span class="section-number">10.1.1. </span>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Link to this heading"></a></h3>
 <p>The typical situation is that one has an
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> and wants to work with the
 same selection of atoms in a different package, for example, to
@@ -232,7 +233,7 @@ Representations</span> window in the list <span class="guilabel">Selections: Sin
 “mda_protein”.</p>
 </section>
 <section id="multiple-selections">
-<h3><span class="section-number">9.1.2. </span>Multiple selections<a class="headerlink" href="#multiple-selections" title="Link to this heading"></a></h3>
+<h3><span class="section-number">10.1.2. </span>Multiple selections<a class="headerlink" href="#multiple-selections" title="Link to this heading"></a></h3>
 <p>The <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="MDAnalysis.core.groups.AtomGroup.write"><code class="xref py py-class docutils literal notranslate"><span class="pre">write</span></code></a> method can take
 additional keyword arguments, including <code class="docutils literal notranslate"><span class="pre">mode</span></code>. The default is
 <code class="docutils literal notranslate"><span class="pre">mode=&quot;w&quot;</span></code>, which will overwrite the provided file. If <code class="docutils literal notranslate"><span class="pre">mode=&quot;a&quot;</span></code>
@@ -255,7 +256,7 @@ described next.</p>
 </section>
 </section>
 <section id="selection-writers">
-<h2><span class="section-number">9.2. </span>Selection writers<a class="headerlink" href="#selection-writers" title="Link to this heading"></a></h2>
+<h2><span class="section-number">10.2. </span>Selection writers<a class="headerlink" href="#selection-writers" title="Link to this heading"></a></h2>
 <p>There exist different <a class="reference internal" href="selections/base.html#MDAnalysis.selections.base.SelectionWriterBase" title="MDAnalysis.selections.base.SelectionWriterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriterBase</span></code></a>
 classes for different packages. The
 <a class="reference internal" href="#MDAnalysis.selections.get_writer" title="MDAnalysis.selections.get_writer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_writer()</span></code></a> function can automatically pick
@@ -287,12 +288,12 @@ the appropriate one, based on the file name extension in the <a class="reference
 <p>Each module implements a <code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriter</span></code> for a specific format.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="selections/vmd.html">9.2.1. VMD selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/pymol.html">9.2.2. PyMOL selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/gromacs.html">9.2.3. Gromacs selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/charmm.html">9.2.4. CHARMM selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/jmol.html">9.2.5. Jmol selections</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections/base.html">9.2.6. Base classes for the selection writers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/vmd.html">10.2.1. VMD selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/pymol.html">10.2.2. PyMOL selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/gromacs.html">10.2.3. Gromacs selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/charmm.html">10.2.4. CHARMM selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/jmol.html">10.2.5. Jmol selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/base.html">10.2.6. Base classes for the selection writers</a></li>
 </ul>
 </div>
 </section>
@@ -302,8 +303,8 @@ the appropriate one, based on the file name extension in the <a class="reference
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="transformations/boxdimensions.html" class="btn btn-neutral float-left" title="8.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="selections/vmd.html" class="btn btn-neutral float-right" title="9.2.1. VMD selections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="transformations/boxdimensions.html" class="btn btn-neutral float-left" title="9.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="selections/vmd.html" class="btn btn-neutral float-right" title="10.2.1. VMD selections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

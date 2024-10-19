@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7.3. RDKit topology parser — MDAnalysis.converters.RDKitParser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>8.3. RDKit topology parser — MDAnalysis.converters.RDKitParser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="7.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" href="OpenMM.html" />
-    <link rel="prev" title="7.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" href="ParmEd.html" /> 
+    <link rel="next" title="8.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" href="OpenMM.html" />
+    <link rel="prev" title="8.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" href="ParmEd.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,34 +102,35 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../converters.html">7. Converter modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ParmEd.html">7.1. ParmEd topology parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEdParser</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ParmEd.html#parmed-structure-i-o-mdanalysis-converters-parmed">7.2. ParmEd structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEd</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">7.3. RDKit topology parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">7.3.1. Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../converters.html">8. Converter modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ParmEd.html">8.1. ParmEd topology parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEdParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ParmEd.html#parmed-structure-i-o-mdanalysis-converters-parmed">8.2. ParmEd structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEd</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8.3. RDKit topology parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">8.3.1. Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit">7.4. RDKit molecule I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">7.4.1. Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit">8.4. RDKit molecule I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">8.4.1. Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">7.5. OpenMM topology parser <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">7.6. OpenMM structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core/accessors.html">7.7. AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">7.8. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">8.5. OpenMM topology parser <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">8.6. OpenMM structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/accessors.html">8.7. AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">8.8. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.base</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -147,8 +148,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../converters.html"><span class="section-number">7. </span>Converter modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">7.3. </span>RDKit topology parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></li>
+          <li class="breadcrumb-item"><a href="../converters.html"><span class="section-number">8. </span>Converter modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8.3. </span>RDKit topology parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/converters/RDKit.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -159,14 +160,14 @@
            <div itemprop="articleBody">
              
   <section id="rdkit-topology-parser-mdanalysis-converters-rdkitparser">
-<span id="module-MDAnalysis.converters.RDKitParser"></span><h1><span class="section-number">7.3. </span>RDKit topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.RDKitParser" title="MDAnalysis.converters.RDKitParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><a class="headerlink" href="#rdkit-topology-parser-mdanalysis-converters-rdkitparser" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.converters.RDKitParser"></span><h1><span class="section-number">8.3. </span>RDKit topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.RDKitParser" title="MDAnalysis.converters.RDKitParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><a class="headerlink" href="#rdkit-topology-parser-mdanalysis-converters-rdkitparser" title="Link to this heading"></a></h1>
 <p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a></p>
 </div>
 <section id="classes">
-<h2><span class="section-number">7.3.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">8.3.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitParser.</span></span><span class="sig-name descname"><span class="pre">RDKitParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitParser.html#RDKitParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitParser.RDKitParser" title="Link to this definition"></a></dt>
@@ -177,16 +178,13 @@
 <li><p>Atomnames</p></li>
 <li><p>Aromaticities</p></li>
 <li><p>Elements</p></li>
+<li><p>Types</p></li>
 <li><p>Masses</p></li>
 <li><p>Bonds</p></li>
 <li><p>Resids</p></li>
 <li><p>Resnums</p></li>
 <li><p>RSChirality</p></li>
 <li><p>Segids</p></li>
-</ul>
-</dd>
-<dt>Guesses the following:</dt><dd><ul class="simple">
-<li><p>Atomtypes</p></li>
 </ul>
 </dd>
 <dt>Depending on RDKit’s input, the following Attributes might be present:</dt><dd><ul class="simple">
@@ -267,6 +265,12 @@ atom.GetProp(‘_TriposAtomName’)</p></td>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.1.0: </span>Added R/S chirality support</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.8.0: </span>Removed type guessing (attributes guessing takes place now
+through universe.guess_TopologyAttrs() API). If atoms types is not
+present in the input rdkit molecule as a _TriposAtomType property,
+the type attribute get the same values as the element attribute.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.close">
@@ -496,7 +500,7 @@ is avoided.</p>
 </section>
 </section>
 <section id="rdkit-molecule-i-o-mdanalysis-converters-rdkit">
-<span id="module-MDAnalysis.converters.RDKit"></span><h1><span class="section-number">7.4. </span>RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.converters.RDKit"></span><h1><span class="section-number">8.4. </span>RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit" title="Link to this heading"></a></h1>
 <p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
 <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitReader" title="MDAnalysis.converters.RDKit.RDKitReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitReader</span></code></a> into an MDAnalysis Universe. Convert it back to a
 <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="MDAnalysis.converters.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
@@ -526,7 +530,7 @@ Please see <a class="reference external" href="https://github.com/MDAnalysis/mda
 details.</p>
 </div>
 <section id="id1">
-<h2><span class="section-number">7.4.1. </span>Classes<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<h2><span class="section-number">8.4.1. </span>Classes<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">RDKitReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitReader" title="Link to this definition"></a></dt>
@@ -631,9 +635,7 @@ atom.GetProp(“_MDAnalysis_name”)</p></td>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="kn">from</span> <span class="nn">rdkit.Chem.Descriptors3D</span> <span class="kn">import</span> <span class="n">Asphericity</span>
 
-<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="n">elements</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;elements&#39;</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">])</span>
 <span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 1-10&quot;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
@@ -849,8 +851,8 @@ with aromatic rings.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="ParmEd.html" class="btn btn-neutral float-left" title="7.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="OpenMM.html" class="btn btn-neutral float-right" title="7.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ParmEd.html" class="btn btn-neutral float-left" title="8.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="OpenMM.html" class="btn btn-neutral float-right" title="8.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

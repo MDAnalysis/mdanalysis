@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10.4. XVG auxiliary reader — MDAnalysis.auxiliary.XVG &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>11.4. XVG auxiliary reader — MDAnalysis.auxiliary.XVG &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="10.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" href="EDR.html" />
-    <link rel="prev" title="10.3. Common functions for auxiliary reading — MDAnalysis.auxiliary.core" href="core.html" /> 
+    <link rel="next" title="11.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" href="EDR.html" />
+    <link rel="prev" title="11.3. Common functions for auxiliary reading — MDAnalysis.auxiliary.core" href="core.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,28 +102,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">10.1. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">10.2. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">10.3. Common functions for auxiliary reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">10.4. XVG auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#xvg-readers">10.4.1. XVG Readers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">11.1. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">11.2. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">11.3. Common functions for auxiliary reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">11.4. XVG auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xvg-readers">11.4.1. XVG Readers</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="EDR.html">10.5. EDR auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="EDR.html">11.5. EDR auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -141,8 +142,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../auxiliary_modules.html"><span class="section-number">10. </span>Auxiliary modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">10.4. </span>XVG auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></li>
+          <li class="breadcrumb-item"><a href="../auxiliary_modules.html"><span class="section-number">11. </span>Auxiliary modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">11.4. </span>XVG auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/auxiliary/XVG.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -153,7 +154,7 @@
            <div itemprop="articleBody">
              
   <section id="xvg-auxiliary-reader-mdanalysis-auxiliary-xvg">
-<span id="module-MDAnalysis.auxiliary.XVG"></span><h1><span class="section-number">10.4. </span>XVG auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.XVG" title="MDAnalysis.auxiliary.XVG"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a><a class="headerlink" href="#xvg-auxiliary-reader-mdanalysis-auxiliary-xvg" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.auxiliary.XVG"></span><h1><span class="section-number">11.4. </span>XVG auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.XVG" title="MDAnalysis.auxiliary.XVG"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a><a class="headerlink" href="#xvg-auxiliary-reader-mdanalysis-auxiliary-xvg" title="Link to this heading"></a></h1>
 <p>xvg files are produced by Gromacs during simulation or analysis, formatted
 for plotting data with Grace.</p>
 <p>Data is column-formatted; time/data selection is enabled by providing column
@@ -188,7 +189,7 @@ be stored in <code class="docutils literal notranslate"><span class="pre">data</
 </dd></dl>
 
 <section id="xvg-readers">
-<h2><span class="section-number">10.4.1. </span>XVG Readers<a class="headerlink" href="#xvg-readers" title="Link to this heading"></a></h2>
+<h2><span class="section-number">11.4.1. </span>XVG Readers<a class="headerlink" href="#xvg-readers" title="Link to this heading"></a></h2>
 <p>The default <a class="reference internal" href="#MDAnalysis.auxiliary.XVG.XVGReader" title="MDAnalysis.auxiliary.XVG.XVGReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XVGReader</span></code></a> reads and stores the full contents of the .xvg
 file on initialisation, while a second reader (<a class="reference internal" href="#MDAnalysis.auxiliary.XVG.XVGFileReader" title="MDAnalysis.auxiliary.XVG.XVGFileReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XVGFileReader</span></code></a>) that
 reads steps one at a time as required is also provided for when a lower memory
@@ -298,8 +299,8 @@ memory footprint.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="core.html" class="btn btn-neutral float-left" title="10.3. Common functions for auxiliary reading — MDAnalysis.auxiliary.core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="EDR.html" class="btn btn-neutral float-right" title="10.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="core.html" class="btn btn-neutral float-left" title="11.3. Common functions for auxiliary reading — MDAnalysis.auxiliary.core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="EDR.html" class="btn btn-neutral float-right" title="11.5. EDR auxiliary reader — MDAnalysis.auxiliary.EDR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

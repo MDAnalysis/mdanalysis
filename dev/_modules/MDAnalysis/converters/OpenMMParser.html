@@ -99,18 +99,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -166,6 +167,9 @@
 <span class="sd">===================================================================</span>
 
 <span class="sd">.. versionadded:: 2.0.0</span>
+<span class="sd">.. versionchanged:: 2.8.0</span>
+<span class="sd">   Removed type and mass guessing (attributes guessing takes place</span>
+<span class="sd">   now through universe.guess_TopologyAttrs() API)</span>
 
 
 <span class="sd">Converts an</span>
@@ -200,8 +204,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">..topology.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
-<span class="kn">from</span> <span class="nn">..topology.tables</span> <span class="kn">import</span> <span class="n">SYMB2Z</span>
-<span class="kn">from</span> <span class="nn">..topology.guessers</span> <span class="kn">import</span> <span class="n">guess_types</span><span class="p">,</span> <span class="n">guess_masses</span>
+<span class="kn">from</span> <span class="nn">..guesser.tables</span> <span class="kn">import</span> <span class="n">SYMB2Z</span>
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
@@ -251,11 +254,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        top : MDAnalysis.core.topology.Topology</span>
 
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        When none of the elements are present in the openmm topolgy, their</span>
-<span class="sd">        atomtypes are guessed using their names and their masses are</span>
-<span class="sd">        then guessed using their atomtypes.</span>
 
 <span class="sd">        When partial elements are present, values from available elements</span>
 <span class="sd">        are used whereas the absent elements are assigned an empty string</span>
@@ -327,21 +325,32 @@
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Element information missing for some atoms. &quot;</span>
                               <span class="s2">&quot;These have been given an empty element record &quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;X&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">atomtypes</span><span class="p">):</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;For absent elements, atomtype has been  &quot;</span>
-                                  <span class="s2">&quot;set to &#39;X&#39; and mass has been set to 0.0. &quot;</span>
-                                  <span class="s2">&quot;If needed these can be guessed using &quot;</span>
-                                  <span class="s2">&quot;MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;For absent elements, atomtype has been  &quot;</span>
+                        <span class="s2">&quot;set to &#39;X&#39; and mass has been set to 0.0. &quot;</span>
+                        <span class="s2">&quot;If needed these can be guessed using &quot;</span>
+                        <span class="s2">&quot;universe.guess_TopologyAttrs(&quot;</span>
+                        <span class="s2">&quot;to_guess=[&#39;masses&#39;, &#39;types&#39;]). &quot;</span>
+                        <span class="s2">&quot;(for MDAnalysis version 2.x &quot;</span>
+                        <span class="s2">&quot;this is done automatically,&quot;</span>
+                        <span class="s2">&quot; but it will be removed in 3.0).&quot;</span><span class="p">)</span>
+
                 <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">,</span>
                                                <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">guess_types</span><span class="p">(</span><span class="n">atomnames</span><span class="p">)</span>
-                <span class="n">masses</span> <span class="o">=</span> <span class="n">guess_masses</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span>
-                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Element information is missing for all the atoms. &quot;</span>
-                        <span class="s2">&quot;Elements attribute will not be populated. &quot;</span>
-                        <span class="s2">&quot;Atomtype attribute will be guessed using atom &quot;</span>
-                        <span class="s2">&quot;name and mass will be guessed using atomtype.&quot;</span>
-                        <span class="s2">&quot;See MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;Element information is missing for all the atoms. &quot;</span>
+                    <span class="s2">&quot;Elements attribute will not be populated. &quot;</span>
+                    <span class="s2">&quot;Atomtype attribute will be guessed using atom &quot;</span>
+                    <span class="s2">&quot;name and mass will be guessed using atomtype.&quot;</span>
+                    <span class="s2">&quot;For MDAnalysis version 2.x this is done automatically, &quot;</span>
+                    <span class="s2">&quot;but it will be removed in MDAnalysis v3.0. &quot;</span>
+                    <span class="s2">&quot;These can be guessed using &quot;</span>
+                    <span class="s2">&quot;universe.guess_TopologyAttrs(&quot;</span>
+                    <span class="s2">&quot;to_guess=[&#39;masses&#39;, &#39;types&#39;]) &quot;</span>
+                    <span class="s2">&quot;See MDAnalysis.guessers.&quot;</span><span class="p">)</span>
+
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>

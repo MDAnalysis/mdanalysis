@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>11.3.1. Core Topology object — MDAnalysis.core.topology &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>12.3.1. Core Topology object — MDAnalysis.core.topology &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="11.3.2. Core Topology Objects — MDAnalysis.core.topologyobjects" href="topologyobjects.html" />
-    <link rel="prev" title="11.2.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" /> 
+    <link rel="next" title="12.3.2. Core Topology Objects — MDAnalysis.core.topologyobjects" href="topologyobjects.html" />
+    <link rel="prev" title="12.2.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -102,33 +102,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">11. Core modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">11.1. Core functions of MDAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.2. Important objects for users</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">11.3. Topology system</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">11.3.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#classes">11.3.1.1. Classes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#helper-functions">11.3.1.2. Helper functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">12. Core modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">12.1. Core functions of MDAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">12.2. Important objects for users</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">12.3. Topology system</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.3.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#classes">12.3.1.1. Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#helper-functions">12.3.1.2. Helper functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="topologyobjects.html">11.3.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">11.3.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyobjects.html">12.3.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">12.3.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.4. Selection system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">12.4. Selection system</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -146,8 +147,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../core_modules.html"><span class="section-number">11. </span>Core modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">11.3.1. </span>Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></li>
+          <li class="breadcrumb-item"><a href="../core_modules.html"><span class="section-number">12. </span>Core modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">12.3.1. </span>Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/core/topology.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -158,7 +159,7 @@
            <div itemprop="articleBody">
              
   <section id="core-topology-object-mdanalysis-core-topology">
-<span id="module-MDAnalysis.core.topology"></span><h1><span class="section-number">11.3.1. </span>Core Topology object — <a class="reference internal" href="#module-MDAnalysis.core.topology" title="MDAnalysis.core.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><a class="headerlink" href="#core-topology-object-mdanalysis-core-topology" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.core.topology"></span><h1><span class="section-number">12.3.1. </span>Core Topology object — <a class="reference internal" href="#module-MDAnalysis.core.topology" title="MDAnalysis.core.topology"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a><a class="headerlink" href="#core-topology-object-mdanalysis-core-topology" title="Link to this heading"></a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.16.0.</span></p>
 </div>
@@ -171,7 +172,7 @@ information and discussions on the new system. The issue number <em>363</em>
 is also being used as a short-hand in discussions to refer to the new
 topology system.</p>
 <section id="classes">
-<h2><span class="section-number">11.3.1.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">12.3.1.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.Topology">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">Topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_resindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_segindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#Topology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.Topology" title="Link to this definition"></a></dt>
@@ -535,7 +536,7 @@ present in that segment</p>
 
 </section>
 <section id="helper-functions">
-<h2><span class="section-number">11.3.1.2. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Link to this heading"></a></h2>
+<h2><span class="section-number">12.3.1.2. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.make_downshift_arrays">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topology.</span></span><span class="sig-name descname"><span class="pre">make_downshift_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upshift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nparents</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#make_downshift_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.make_downshift_arrays" title="Link to this definition"></a></dt>
@@ -585,8 +586,8 @@ be used with these arrays.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="groups.html" class="btn btn-neutral float-left" title="11.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="topologyobjects.html" class="btn btn-neutral float-right" title="11.3.2. Core Topology Objects — MDAnalysis.core.topologyobjects" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="groups.html" class="btn btn-neutral float-left" title="12.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="topologyobjects.html" class="btn btn-neutral float-right" title="12.3.2. Core Topology Objects — MDAnalysis.core.topologyobjects" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -99,18 +99,19 @@
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/topology_modules.html">5. Topology modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/converters.html">7. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections_modules.html">9. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/core_modules.html">11. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/references.html">17. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/references.html">18. References</a></li>
 </ul>
 
 </div>
@@ -496,6 +497,8 @@
 </li>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.arcball_nearest_axis">arcball_nearest_axis() (in module MDAnalysis.lib.transformations)</a>
 </li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.are_values_missing">are_values_missing() (MDAnalysis.core.topologyattrs.TopologyAttr class method)</a>
+</li>
       <li><a href="documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.args">args (MDAnalysis.analysis.encore.utils.ParallelCalculation attribute)</a>
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Aromaticities">Aromaticities (class in MDAnalysis.core.topologyattrs)</a>
@@ -546,7 +549,7 @@
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr">AtomAttr (class in MDAnalysis.core.topologyattrs)</a>
 </li>
-      <li><a href="documentation_pages/topology/tables.html#MDAnalysis.topology.tables.atomelements">atomelements (in module MDAnalysis.topology.tables)</a>
+      <li><a href="documentation_pages/guesser_modules/tables.html#MDAnalysis.guesser.tables.atomelements">atomelements (in module MDAnalysis.guesser.tables)</a>
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup">AtomGroup (class in MDAnalysis.core.groups)</a>
 </li>
@@ -2151,6 +2154,10 @@
 </li>
         <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">(MDAnalysis.core.universe.Universe method)</a>
 </li>
+        <li><a href="documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase.copy">(MDAnalysis.guesser.base.GuesserBase method)</a>
+</li>
+        <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.copy">(MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
+</li>
       </ul></li>
       <li><a href="documentation_pages/coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.copy_slice">copy_slice() (MDAnalysis.coordinates.timestep.Timestep method)</a>
 </li>
@@ -2261,6 +2268,8 @@
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.default_format">default_format (MDAnalysis.analysis.density.Density attribute)</a>
 </li>
       <li><a href="documentation_pages/selections/jmol.html#MDAnalysis.selections.jmol.SelectionWriter.default_numterms">default_numterms (MDAnalysis.selections.jmol.SelectionWriter attribute)</a>
+</li>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser">DefaultGuesser (class in MDAnalysis.guesser.default_guesser)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.define_unpack_real">define_unpack_real() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
@@ -3107,7 +3116,7 @@
 </li>
       <li><a href="documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.get_array">get_array() (MDAnalysis.coordinates.memory.MemoryReader method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.get_atom_mass">get_atom_mass() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.get_atom_mass">get_atom_mass() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr.get_atoms">get_atoms() (MDAnalysis.core.topologyattrs.AtomAttr method)</a>
 
@@ -3226,6 +3235,8 @@
       <li><a href="documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples">get_ensemble_bootstrap_samples() (in module MDAnalysis.analysis.encore.bootstrap)</a>
 </li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.get_ext">get_ext() (in module MDAnalysis.lib.util)</a>
+</li>
+      <li><a href="documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.get_guesser">get_guesser() (in module MDAnalysis.guesser.base)</a>
 </li>
       <li><a href="documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.get_ids">get_ids() (MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection method)</a>
 </li>
@@ -3379,25 +3390,29 @@
 </li>
       <li><a href="documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors">guess_acceptors() (MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_angles">guess_angles() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_angles">guess_angles() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_aromaticities">guess_aromaticities() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_aromaticities">guess_aromaticities() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_charge">guess_atom_charge() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_charge">guess_atom_charge() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_element">guess_atom_element() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element">guess_atom_element() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_mass">guess_atom_mass() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_mass">guess_atom_mass() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_type">guess_atom_type() (in module MDAnalysis.topology.guessers)</a>
-</li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_bonds">guess_bonds() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase.guess_attr">guess_attr() (MDAnalysis.guesser.base.GuesserBase method)</a>
 
       <ul>
-        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds">(MDAnalysis.core.groups.AtomGroup method)</a>
+        <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_attr">(MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_dihedrals">guess_dihedrals() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds">guess_bonds() (MDAnalysis.core.groups.AtomGroup method)</a>
+
+      <ul>
+        <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds">(MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
+</li>
+      </ul></li>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_dihedrals">guess_dihedrals() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
       <li><a href="documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_donors">guess_donors() (MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis method)</a>
 </li>
@@ -3405,17 +3420,21 @@
 </li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.guess_format">guess_format() (in module MDAnalysis.lib.util)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_gasteiger_charges">guess_gasteiger_charges() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_gasteiger_charges">guess_gasteiger_charges() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
       <li><a href="documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">guess_hydrogens() (MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_improper_dihedrals">guess_improper_dihedrals() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_improper_dihedrals">guess_improper_dihedrals() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_masses">guess_masses() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_masses">guess_masses() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_types">guess_types() (in module MDAnalysis.topology.guessers)</a>
+      <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs">guess_TopologyAttrs() (MDAnalysis.core.universe.Universe method)</a>
+</li>
+      <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_types">guess_types() (MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
 </li>
       <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.guessed_attributes">guessed_attributes (MDAnalysis.core.topology.Topology property)</a>
+</li>
+      <li><a href="documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase">GuesserBase (class in MDAnalysis.guesser.base)</a>
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.gyration_moments">gyration_moments() (MDAnalysis.core.groups.AtomGroup method)</a>
 
@@ -3589,6 +3608,12 @@
       </ul></li>
       <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase">IOBase (class in MDAnalysis.coordinates.base)</a>
 </li>
+      <li><a href="documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase.is_guessable">is_guessable() (MDAnalysis.guesser.base.GuesserBase method)</a>
+
+      <ul>
+        <li><a href="documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.is_guessable">(MDAnalysis.guesser.default_guesser.DefaultGuesser method)</a>
+</li>
+      </ul></li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.is_guessed">is_guessed (MDAnalysis.core.topologyattrs.TopologyAttr property)</a>
 </li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.is_installed">is_installed() (in module MDAnalysis.lib.util)</a>
@@ -3641,6 +3666,8 @@
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.issuperset">(MDAnalysis.core.groups.SegmentGroup method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.isunique">isunique (MDAnalysis.core.groups.AtomGroup property)</a>
 
       <ul>
@@ -3649,8 +3676,6 @@
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.isunique">(MDAnalysis.core.groups.SegmentGroup property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.iter_as_aux">iter_as_aux() (MDAnalysis.coordinates.base.ProtoReader method)</a>
 
       <ul>
@@ -3781,7 +3806,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="documentation_pages/topology/tables.html#MDAnalysis.topology.tables.kv2dict">kv2dict() (in module MDAnalysis.topology.tables)</a>
+      <li><a href="documentation_pages/guesser_modules/tables.html#MDAnalysis.guesser.tables.kv2dict">kv2dict() (in module MDAnalysis.guesser.tables)</a>
 </li>
       <li><a href="documentation_pages/analysis/encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.kwargs">kwargs (MDAnalysis.analysis.encore.utils.ParallelCalculation attribute)</a>
 
@@ -3883,7 +3908,7 @@
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses">Masses (class in MDAnalysis.core.topologyattrs)</a>
 </li>
-      <li><a href="documentation_pages/topology/tables.html#MDAnalysis.topology.tables.masses">masses (in module MDAnalysis.topology.tables)</a>
+      <li><a href="documentation_pages/guesser_modules/tables.html#MDAnalysis.guesser.tables.masses">masses (in module MDAnalysis.guesser.tables)</a>
 </li>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.matrix">matrix() (MDAnalysis.lib.transformations.Arcball method)</a>
 </li>
@@ -4620,6 +4645,34 @@
 </li>
       </ul></li>
       <li>
+    MDAnalysis.guesser.__init__
+
+      <ul>
+        <li><a href="documentation_pages/guesser_modules/init.html#module-MDAnalysis.guesser.__init__">module</a>
+</li>
+      </ul></li>
+      <li>
+    MDAnalysis.guesser.base
+
+      <ul>
+        <li><a href="documentation_pages/guesser_modules/base.html#module-MDAnalysis.guesser.base">module</a>
+</li>
+      </ul></li>
+      <li>
+    MDAnalysis.guesser.default_guesser
+
+      <ul>
+        <li><a href="documentation_pages/guesser_modules/default_guesser.html#module-MDAnalysis.guesser.default_guesser">module</a>
+</li>
+      </ul></li>
+      <li>
+    MDAnalysis.guesser.tables
+
+      <ul>
+        <li><a href="documentation_pages/guesser_modules/tables.html#module-MDAnalysis.guesser.tables">module</a>
+</li>
+      </ul></li>
+      <li>
     MDAnalysis.lib
 
       <ul>
@@ -4822,6 +4875,8 @@
         <li><a href="documentation_pages/topology/ExtendedPDBParser.html#module-MDAnalysis.topology.ExtendedPDBParser">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     MDAnalysis.topology.FHIAIMSParser
 
@@ -4843,20 +4898,11 @@
         <li><a href="documentation_pages/topology/GROParser.html#module-MDAnalysis.topology.GROParser">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     MDAnalysis.topology.GSDParser
 
       <ul>
         <li><a href="documentation_pages/topology/GSDParser.html#module-MDAnalysis.topology.GSDParser">module</a>
-</li>
-      </ul></li>
-      <li>
-    MDAnalysis.topology.guessers
-
-      <ul>
-        <li><a href="documentation_pages/topology/guessers.html#module-MDAnalysis.topology.guessers">module</a>
 </li>
       </ul></li>
       <li>
@@ -4927,13 +4973,6 @@
 
       <ul>
         <li><a href="documentation_pages/topology/PSFParser.html#module-MDAnalysis.topology.PSFParser">module</a>
-</li>
-      </ul></li>
-      <li>
-    MDAnalysis.topology.tables
-
-      <ul>
-        <li><a href="documentation_pages/topology/tables.html#module-MDAnalysis.topology.tables">module</a>
 </li>
       </ul></li>
       <li>
@@ -5347,6 +5386,14 @@
 </li>
         <li><a href="documentation_pages/exceptions.html#module-MDAnalysis.exceptions">MDAnalysis.exceptions</a>
 </li>
+        <li><a href="documentation_pages/guesser_modules/init.html#module-MDAnalysis.guesser.__init__">MDAnalysis.guesser.__init__</a>
+</li>
+        <li><a href="documentation_pages/guesser_modules/base.html#module-MDAnalysis.guesser.base">MDAnalysis.guesser.base</a>
+</li>
+        <li><a href="documentation_pages/guesser_modules/default_guesser.html#module-MDAnalysis.guesser.default_guesser">MDAnalysis.guesser.default_guesser</a>
+</li>
+        <li><a href="documentation_pages/guesser_modules/tables.html#module-MDAnalysis.guesser.tables">MDAnalysis.guesser.tables</a>
+</li>
         <li><a href="documentation_pages/lib_modules.html#module-MDAnalysis.lib">MDAnalysis.lib</a>
 </li>
         <li><a href="documentation_pages/lib/c_distances.html#module-MDAnalysis.lib.c_distances">MDAnalysis.lib.c_distances</a>
@@ -5413,8 +5460,6 @@
 </li>
         <li><a href="documentation_pages/topology/GSDParser.html#module-MDAnalysis.topology.GSDParser">MDAnalysis.topology.GSDParser</a>
 </li>
-        <li><a href="documentation_pages/topology/guessers.html#module-MDAnalysis.topology.guessers">MDAnalysis.topology.guessers</a>
-</li>
         <li><a href="documentation_pages/topology/HoomdXMLParser.html#module-MDAnalysis.topology.HoomdXMLParser">MDAnalysis.topology.HoomdXMLParser</a>
 </li>
         <li><a href="documentation_pages/topology/ITPParser.html#module-MDAnalysis.topology.ITPParser">MDAnalysis.topology.ITPParser</a>
@@ -5434,8 +5479,6 @@
         <li><a href="documentation_pages/topology/PQRParser.html#module-MDAnalysis.topology.PQRParser">MDAnalysis.topology.PQRParser</a>
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#module-MDAnalysis.topology.PSFParser">MDAnalysis.topology.PSFParser</a>
-</li>
-        <li><a href="documentation_pages/topology/tables.html#module-MDAnalysis.topology.tables">MDAnalysis.topology.tables</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#module-MDAnalysis.topology.TOPParser">MDAnalysis.topology.TOPParser</a>
 </li>
@@ -7016,11 +7059,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.table">table (MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis attribute)</a>
 </li>
-      <li><a href="documentation_pages/topology/tables.html#MDAnalysis.topology.tables.TABLE_ATOMELEMENTS">TABLE_ATOMELEMENTS (in module MDAnalysis.topology.tables)</a>
+      <li><a href="documentation_pages/guesser_modules/tables.html#MDAnalysis.guesser.tables.TABLE_ATOMELEMENTS">TABLE_ATOMELEMENTS (in module MDAnalysis.guesser.tables)</a>
 </li>
-      <li><a href="documentation_pages/topology/tables.html#MDAnalysis.topology.tables.TABLE_MASSES">TABLE_MASSES (in module MDAnalysis.topology.tables)</a>
+      <li><a href="documentation_pages/guesser_modules/tables.html#MDAnalysis.guesser.tables.TABLE_MASSES">TABLE_MASSES (in module MDAnalysis.guesser.tables)</a>
 </li>
-      <li><a href="documentation_pages/topology/tables.html#MDAnalysis.topology.tables.TABLE_VDWRADII">TABLE_VDWRADII (in module MDAnalysis.topology.tables)</a>
+      <li><a href="documentation_pages/guesser_modules/tables.html#MDAnalysis.guesser.tables.TABLE_VDWRADII">TABLE_VDWRADII (in module MDAnalysis.guesser.tables)</a>
 </li>
       <li><a href="documentation_pages/lib/formats/libdcd.html#MDAnalysis.lib.formats.libdcd.DCDFile.tell">tell() (MDAnalysis.lib.formats.libdcd.DCDFile method)</a>
 
@@ -7672,8 +7715,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.Box.v">v (MDAnalysis.topology.tpr.obj.Box attribute)</a>
 </li>
-      <li><a href="documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.validate_atom_types">validate_atom_types() (in module MDAnalysis.topology.guessers)</a>
-</li>
       <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle.value">value() (MDAnalysis.core.topologyobjects.Angle method)</a>
 
       <ul>
@@ -7694,7 +7735,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="documentation_pages/topology/tables.html#MDAnalysis.topology.tables.vdwradii">vdwradii (in module MDAnalysis.topology.tables)</a>
+      <li><a href="documentation_pages/guesser_modules/tables.html#MDAnalysis.guesser.tables.vdwradii">vdwradii (in module MDAnalysis.guesser.tables)</a>
 </li>
       <li><a href="documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.vector_of_best_fit">vector_of_best_fit() (in module MDAnalysis.analysis.helix_analysis)</a>
 </li>
