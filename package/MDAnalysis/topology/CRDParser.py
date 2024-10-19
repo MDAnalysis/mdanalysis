@@ -33,6 +33,12 @@ resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
 Residues are detected through a change is either resid or resname
 while segments are detected according to changes in segid.
 
+.. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers`_ for more information.
+
 .. _CRD: https://www.charmmtutorial.org/index.php/CHARMM:The_Basics
 
 
@@ -71,6 +77,13 @@ class CRDParser(TopologyReaderBase):
      - Resnames
      - Resnums
      - Segids
+
+    
+    .. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers`_ for more information.
 
     .. versionchanged:: 2.8.0
        Type and mass are not longer guessed here. Until 3.0 these will still be

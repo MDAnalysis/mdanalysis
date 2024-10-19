@@ -473,6 +473,13 @@ class ITPParser(TopologyReaderBase):
     .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
     .. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top
 
+    .. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation
+        if they are not read from the input file.
+        This may change in release 3.0.
+        See :ref:`Guessers`_ for more information.
+
     .. versionchanged:: 2.2.0
       no longer adds angles for water molecules with SETTLE constraint
     .. versionchanged:: 2.8.0
