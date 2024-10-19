@@ -169,7 +169,7 @@ from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressBar
 
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 import logging
 
@@ -398,6 +398,12 @@ class DensityAnalysis(AnalysisBase):
 
     """
 
+    _analysis_algorithm_is_parallelizable = True
+    
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask')
+   
     def __init__(self, atomgroup, delta=1.0,
                  metadata=None, padding=2.0,
                  gridcenter=None,
@@ -412,7 +418,6 @@ class DensityAnalysis(AnalysisBase):
         self._ydim = ydim
         self._zdim = zdim
 
-    def _prepare(self):
         coord = self._atomgroup.positions
         if (self._gridcenter is not None or
                 any([self._xdim, self._ydim, self._zdim])):
@@ -465,7 +470,7 @@ class DensityAnalysis(AnalysisBase):
         grid, edges = np.histogramdd(np.zeros((1, 3)), bins=bins,
                                      range=arange, density=False)
         grid *= 0.0
-        self._grid = grid
+        self.results._grid = grid
         self._edges = edges
         self._arange = arange
         self._bins = bins
@@ -474,21 +479,22 @@ class DensityAnalysis(AnalysisBase):
         h, _ = np.histogramdd(self._atomgroup.positions,
                               bins=self._bins, range=self._arange,
                               density=False)
-        # reduce (proposed change #2542 to match the parallel version in pmda.density)
-        # return self._reduce(self._grid, h)
-        #
-        # serial code can simply do
-        self._grid += h
+        self.results._grid += h
 
     def _conclude(self):
         # average:
-        self._grid /= float(self.n_frames)
-        density = Density(grid=self._grid, edges=self._edges,
+        self.results._grid /= float(self.n_frames)
+        density = Density(grid=self.results._grid, edges=self._edges,
                           units={'length': "Angstrom"},
                           parameters={'isDensity': False})
         density.make_density()
         self.results.density = density
 
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={
+        '_grid': ResultsGroup.ndarray_sum,}
+        )
+   
     @property
     def density(self):
         wmsg = ("The `density` attribute was deprecated in MDAnalysis 2.0.0 "
