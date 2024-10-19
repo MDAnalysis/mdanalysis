@@ -27,8 +27,69 @@ Default Guesser
 
 DefaultGuesser is a generic guesser class that has basic guessing methods.
 This class is a general purpose guesser that can be used with most topologies,
-but being generic makes it the less accurate among all guessers.
+but being generic makes it the least accurate among all guessers.
 
+
+Guessing behavior
+-----------------
+
+This section describes how each attribute is guessed by the DefaultGuesser.
+
+Masses
+~~~~~~
+
+We first attempt to look up the mass of an atom based on its element if the
+element TopologyAttr is available. If not, we attempt to lookup the mass based
+on the atom type (``type``) TopologyAttr. If neither of these is available, we
+attempt to guess the atom type based on the atom name (``name``) and then
+lookup the mass based on the guessed atom type.
+
+
+Types
+~~~~~
+
+We attempt to guess the atom type based on the atom name (``name``).
+The name is first stripped of any numbers and symbols, and then looked up in
+the :data:`MDAnalysis.guesser.tables.atomelements` table. If the name is not
+found, we continue checking variations of the name following the logic in 
+:meth:`DefaultGuesser.guess_atom_element`. Ultimately, if no match is found, the first character
+of the stripped name is returned.
+
+Elements
+~~~~~~~~
+
+This follows the same method as guessing atom types.
+
+
+Bonds
+~~~~~
+
+Bonds are guessed based on the distance between atoms.
+See :meth:`DefaultGuesser.guess_bonds` for more details.
+
+Angles
+~~~~~~
+
+Angles are guessed based on the bonds between atoms.
+See :meth:`DefaultGuesser.guess_angles` for more details.
+
+Dihedrals
+~~~~~~~~~
+
+Dihedrals are guessed based on the angles between atoms.
+See :meth:`DefaultGuesser.guess_dihedrals` for more details.
+
+Improper Dihedrals
+~~~~~~~~~~~~~~~~~~
+
+Improper dihedrals are guessed based on the angles between atoms.
+See :meth:`DefaultGuesser.guess_improper_dihedrals` for more details.
+
+Aromaticities
+~~~~~~~~~~~~~
+
+Aromaticity is guessed using RDKit's GetIsAromatic method.
+See :meth:`DefaultGuesser.guess_aromaticities` for more details.
 
 
 
@@ -70,6 +131,23 @@ class DefaultGuesser(GuesserBase):
     You can use this guesser either directly through an instance, or through
     the :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` method.
 
+    Parameters
+    ----------
+    universe : Universe
+        The Universe to apply the guesser on
+    box : np.ndarray, optional
+        The box of the Universe. This is used for bond guessing.
+    vdwradii : dict, optional
+        Dict relating atom types: vdw radii. This is used for bond guessing
+    fudge_factor : float, optional
+        The factor by which atoms must overlap each other to be considered
+        a bond.  Larger values will increase the number of bonds found. [0.55]
+    lower_bound : float, optional
+        The minimum bond length. All bonds found shorter than this length
+        will be ignored. This is useful for parsing PDB with altloc records
+        where atoms with altloc A and B may be very close together and
+        there should be no chemical bond between them. [0.1]
+
     Examples
     --------
     to guess bonds for a universe::
@@ -84,8 +162,23 @@ class DefaultGuesser(GuesserBase):
     """
     context = 'default'
 
-    def __init__(self, universe, **kwargs):
-        super().__init__(universe, **kwargs)
+    def __init__(
+        self,
+        universe,
+        box=None,
+        vdwradii=None,
+        fudge_factor=0.55,
+        lower_bound=0.1,
+        **kwargs
+    ):
+        super().__init__(
+            universe,
+            box=box,
+            vdwradii=vdwradii,
+            fudge_factor=fudge_factor,
+            lower_bound=lower_bound,
+            **kwargs
+        )
         self._guesser_methods = {
             'masses': self.guess_masses,
             'types': self.guess_types,
@@ -212,8 +305,16 @@ class DefaultGuesser(GuesserBase):
     def guess_atom_element(self, atomname):
         """Guess the element of the atom from the name.
 
-        Looks in dict to see if element is found, otherwise it uses the first
-        character in the atomname. The table comes from CHARMM and AMBER atom
+        First all numbers and symbols are stripped from the name.
+        Then the name is looked up in the :data:`MDAnalysis.guesser.tables.atomelements`
+        table. If the name is not found, we remove the last
+        character or first character from the name and check the table for both,
+        with a preference for removing the last character. If the name is still
+        not found, we iteratively continue to remove the last character or
+        first character until we find a match. If ultimately no match is found,
+        the first character of the stripped name is returned.
+        
+        The table comes from CHARMM and AMBER atom
         types, where the first character is not sufficient to determine the
         atom type. Some GROMOS ions have also been added.
 
@@ -270,26 +371,11 @@ class DefaultGuesser(GuesserBase):
 
         Parameters
         ----------
-        atoms : AtomGroup
-             atoms for which bonds should be guessed
-        fudge_factor : float, optional
-            The factor by which atoms must overlap eachother to be considered a
-            bond. Larger values will increase the number of bonds found. [0.55]
-        vdwradii : dict, optional
-            To supply custom vdwradii for atoms in the algorithm. Must be a
-            dict of format {type:radii}. The default table of van der Waals
-            radii is hard-coded as :data:`MDAnalysis.guesser.tables.vdwradii`.
-            Any user defined vdwradii passed as an argument will supercede the
-            table values. [``None``]
-        lower_bound : float, optional
-            The minimum bond length. All bonds found shorter than this length
-            will be ignored. This is useful for parsing PDB with altloc records
-            where atoms with altloc A and B maybe very close together and
-            there should be no chemical bond between them. [0.1]
-        box : array_like, optional
-            Bonds are found using a distance search, if unit cell information
-            is given, periodic boundary conditions will be considered in the
-            distance search. [``None``]
+        atoms: AtomGroup
+            atoms for which bonds should be guessed
+        coords: np.ndarray, optional
+            coordinates of the atoms. If not provided, the coordinates
+            of the ``atoms`` in the universe are used.
 
         Returns
         -------

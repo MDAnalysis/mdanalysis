@@ -66,6 +66,13 @@ class FHIAIMSParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
+
+    .. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers`_ for more information.
+
     .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).

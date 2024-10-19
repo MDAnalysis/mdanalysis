@@ -77,6 +77,13 @@ class MOL2Parser(TopologyReaderBase):
      - Bonds
      - Elements
 
+    
+    .. note::
+
+        By default, masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers`_ for more information.
+
 
     Notes
     -----

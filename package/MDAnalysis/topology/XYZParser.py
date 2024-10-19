@@ -59,6 +59,12 @@ class XYZParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
+    .. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers`_ for more information.
+
 
     .. versionadded:: 0.9.1
 

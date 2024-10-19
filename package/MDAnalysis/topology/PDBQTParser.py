@@ -32,6 +32,12 @@ partial charges (:attr:`Atom.charge`).
 * Reads a PDBQT file line by line and does not require sequential atom numbering.
 * Multi-model PDBQT files are not supported.
 
+.. note::
+
+    By default, masses will be guessed on Universe creation.
+    This may change in release 3.0.
+    See :ref:`Guessers`_ for more information.
+
 Notes
 -----
 Only reads atoms and their names; connectivity is not
