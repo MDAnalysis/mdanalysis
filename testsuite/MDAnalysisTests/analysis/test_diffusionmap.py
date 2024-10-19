@@ -86,9 +86,11 @@ def test_dist_weights_frames(u, client_DistanceMatrix):
                                 [-.707, -.707, 0, 0],
                                 [.707, -.707, 0, 0]]), 2)
 
+
 def test_distvalues_ag_universe(u, client_DistanceMatrix):
-    dist_universe = diffusionmap.DistanceMatrix(u, 
-                                                select='backbone').run(**client_DistanceMatrix)
+    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run(
+        **client_DistanceMatrix
+    )
     ag = u.select_atoms('backbone')
     dist_ag = diffusionmap.DistanceMatrix(ag).run(**client_DistanceMatrix)
     assert_allclose(dist_universe.results.dist_matrix,
@@ -96,11 +98,13 @@ def test_distvalues_ag_universe(u, client_DistanceMatrix):
 
 
 def test_distvalues_ag_select(u, client_DistanceMatrix):
-    dist_universe = diffusionmap.DistanceMatrix(u, 
-                                                select='backbone').run(**client_DistanceMatrix)
+    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run(
+        **client_DistanceMatrix
+    )
     ag = u.select_atoms('protein')
-    dist_ag = diffusionmap.DistanceMatrix(ag, 
-                                          select='backbone').run(**client_DistanceMatrix)
+    dist_ag = diffusionmap.DistanceMatrix(ag, select='backbone').run(
+        **client_DistanceMatrix
+    )
     assert_allclose(dist_universe.results.dist_matrix,
                     dist_ag.results.dist_matrix)
                     
