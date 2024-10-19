@@ -66,7 +66,7 @@ class GROParser(TopologyReaderBase):
       - resnames
       - atomids
       - atomnames
-    
+
     .. note::
 
         By default, atomtypes and masses will be guessed on Universe creation.

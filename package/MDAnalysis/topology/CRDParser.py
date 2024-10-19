@@ -78,7 +78,7 @@ class CRDParser(TopologyReaderBase):
      - Resnums
      - Segids
 
-    
+
     .. note::
 
         By default, atomtypes and masses will be guessed on Universe creation.

@@ -77,7 +77,7 @@ class ExtendedPDBParser(PDBParser.PDBParser):
      - elements
      - bonds
      - formalcharges
-   
+
    .. note::
 
       By default, atomtypes and masses will be guessed on Universe creation.

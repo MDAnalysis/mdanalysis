@@ -51,9 +51,9 @@ Types
 We attempt to guess the atom type based on the atom name (``name``).
 The name is first stripped of any numbers and symbols, and then looked up in
 the :data:`MDAnalysis.guesser.tables.atomelements` table. If the name is not
-found, we continue checking variations of the name following the logic in 
-:meth:`DefaultGuesser.guess_atom_element`. Ultimately, if no match is found, the first character
-of the stripped name is returned.
+found, we continue checking variations of the name following the logic in
+:meth:`DefaultGuesser.guess_atom_element`. Ultimately, if no match is found,
+the first character of the stripped name is returned.
 
 Elements
 ~~~~~~~~
@@ -306,14 +306,15 @@ class DefaultGuesser(GuesserBase):
         """Guess the element of the atom from the name.
 
         First all numbers and symbols are stripped from the name.
-        Then the name is looked up in the :data:`MDAnalysis.guesser.tables.atomelements`
-        table. If the name is not found, we remove the last
-        character or first character from the name and check the table for both,
-        with a preference for removing the last character. If the name is still
-        not found, we iteratively continue to remove the last character or
-        first character until we find a match. If ultimately no match is found,
-        the first character of the stripped name is returned.
-        
+        Then the name is looked up in the
+        :data:`MDAnalysis.guesser.tables.atomelements` table.
+        If the name is not found, we remove the last character or
+        first character from the name and check the table for both,
+        with a preference for removing the last character. If the name is
+        still not found, we iteratively continue to remove the last character
+        or first character until we find a match. If ultimately no match
+        is found, the first character of the stripped name is returned.
+
         The table comes from CHARMM and AMBER atom
         types, where the first character is not sufficient to determine the
         atom type. Some GROMOS ions have also been added.

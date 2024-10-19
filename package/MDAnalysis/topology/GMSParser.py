@@ -73,7 +73,7 @@ class GMSParser(TopologyReaderBase):
      - names
      - atomic charges
 
-    
+
     .. note::
 
         By default, atomtypes and masses will be guessed on Universe creation.
