@@ -66,6 +66,7 @@ Enhancements
    values (PR #3753)
  * Added guessed `Element` attribute to the ITPParser to preserve old mass
    partial guessing behavior from being broken (PR #3753)
+ * MDAnalysis now supports Python 3.13 (PR #4732)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
