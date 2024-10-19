@@ -498,7 +498,7 @@ def test_elements_deprecation_warning():
         mda.Universe(ITP_nomass)
 
 
-def test_nodeprecation_warning():
+def test_elements_nodeprecation_warning():
     "Test deprecation warning is not present if elements isn't guessed"
     with pytest.warns(UserWarning) as record:
         mda.Universe(ITP_atomtypes)
