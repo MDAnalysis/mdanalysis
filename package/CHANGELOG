@@ -23,6 +23,8 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Adds guessed attributes documentation back to each parser page
+   and updates overall guesser docs (Issue #4696)
  * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
  * set `n_parts` to the total number of frames being analyzed if
    `n_parts` is bigger. (Issue #4685)
