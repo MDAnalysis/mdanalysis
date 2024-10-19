@@ -110,6 +110,8 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * Element guessing in the ITPParser is deprecated and will be removed in version 3.0
+   (Issue #4698)
  * Unknown masses are set to 0.0 for current version, this will be depracated
    in version 3.0.0 and replaced by :class:`Masses`' no_value_label attribute(np.nan)
    (PR #3753)
