@@ -27,6 +27,7 @@
 This module is a stub to provide distopia distance functions to `distances.py`
 as a selectable backend.
 """
+import warnings
 
 # check for distopia
 try:
@@ -36,10 +37,22 @@ except ImportError:
 else:
     HAS_DISTOPIA = True
 
+    # check for compatibility: currently needs to be >=0.2.0,<0.3.0 (issue
+    # #4740) No distopia.__version__ available so we have to do some probing.
+    needed_funcs = ['calc_bonds_no_box_float', 'calc_bonds_ortho_float']
+    has_distopia_020 = all([hasattr(distopia, func) for func in needed_funcs])
+    if not has_distopia_020:
+        warnings.warn("Install 'distopia>=0.2.0,<0.3.0' to be used with this "
+                      "release of MDAnalysis. Your installed version of "
+                      "distopia >=0.3.0 will NOT be used.",
+                      category=RuntimeWarning)
+        del distopia
+        HAS_DISTOPIA = False
+
+
 from .c_distances import (
     calc_bond_distance_triclinic as _calc_bond_distance_triclinic_serial,
 )
-import warnings
 import numpy as np
 
 
