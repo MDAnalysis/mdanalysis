@@ -595,7 +595,7 @@ class ITPParser(TopologyReaderBase):
             attrs.append(Elements(np.array(self.elements,
                          dtype=object), guessed=True))
             warnings.warn(
-                "Element guessing has been added temporarily to the ITPParser "
+                "Element guessing from types has been added temporarily to the ITPParser "
                 "to preserve the previous behavior of guessing any masses of particles "
                 "that were not defined in the ITP file as we transition to the new "
                 "guessing API. This behavior will be removed in release 3.0. "
