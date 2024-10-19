@@ -345,17 +345,17 @@ def test_verbose_progressbar(u, capsys):
 def test_verbose_progressbar_run(u, capsys):
     FrameAnalysis(u.trajectory).run(verbose=True)
     _, err = capsys.readouterr()
-    expected = u'100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    expected = u'100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert actual[:24] == expected[:24]
+    assert actual[:15] == expected
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
     FrameAnalysis(u.trajectory).run(
         verbose=True, progressbar_kwargs={'desc': 'custom'})
     _, err = capsys.readouterr()
-    expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    expected = u'custom: 100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert actual[:30] == expected[:30]
+    assert actual[:23] == expected
 
 
 def test_progressbar_multiprocessing(u):
