@@ -77,7 +77,7 @@ class TXYZParser(TopologyReaderBase):
 
         By default, masses will be guessed on Universe creation.
         This may change in release 3.0.
-        See :ref:`Guessers`_ for more information.
+        See :ref:`Guessers` for more information.
 
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.4.0
