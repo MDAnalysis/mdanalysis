@@ -18,7 +18,7 @@ Default behavior
 By default, MDAnalysis will guess the "mass" and "type" (atom type) attributes for all particles in the Universe
 using the :class:`~MDAnalysis.guesser.default_guesser.DefaultGuesser` at the time of Universe creation,
 if they are not read from the input file.
-Please see the :ref:`DefaultGuesser` for more information.
+Please see the :class:`~MDAnalysis.guesser.default_guesser.DefaultGuesser` for more information.
 
 
 
