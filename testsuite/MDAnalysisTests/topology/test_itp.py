@@ -492,7 +492,7 @@ def test_missing_elements_no_attribute():
         _ = u.atoms.elements
 
 
-def test_deprecation_warning():
+def test_elements_deprecation_warning():
     "Test deprecation warning is present"
     with pytest.warns(DeprecationWarning, match="removed in release 3.0"):
         mda.Universe(ITP_nomass)
