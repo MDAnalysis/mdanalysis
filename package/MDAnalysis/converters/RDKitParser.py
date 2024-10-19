@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -47,7 +47,6 @@ import warnings
 import numpy as np
 
 from ..topology.base import TopologyReaderBase, change_squash
-from ..topology import guessers
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -90,15 +89,13 @@ class RDKitParser(TopologyReaderBase):
      - Atomnames
      - Aromaticities
      - Elements
+     - Types
      - Masses
      - Bonds
      - Resids
      - Resnums
      - RSChirality
      - Segids
-
-    Guesses the following:
-     - Atomtypes
 
     Depending on RDKit's input, the following Attributes might be present:
      - Charges
@@ -156,6 +153,12 @@ class RDKitParser(TopologyReaderBase):
     .. versionadded:: 2.0.0
     .. versionchanged:: 2.1.0
        Added R/S chirality support
+    .. versionchanged:: 2.8.0
+       Removed type guessing (attributes guessing takes place now
+       through universe.guess_TopologyAttrs() API). If atoms types is not
+       present in the input rdkit molecule as a _TriposAtomType property,
+       the type attribute get the same values as the element attribute.
+
     """
     format = 'RDKIT'
 
@@ -303,8 +306,7 @@ class RDKitParser(TopologyReaderBase):
         if atomtypes:
             attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
         else:
-            atomtypes = guessers.guess_types(names)
-            attrs.append(Atomtypes(atomtypes, guessed=True))
+            atomtypes = np.char.upper(elements)
 
         # Partial charges
         if charges:

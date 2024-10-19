@@ -155,7 +155,6 @@ from ..lib import util
 from ..lib.util import store_init_arguments
 from . import base
 from .timestep import Timestep
-from ..topology.core import guess_atom_element
 from ..exceptions import NoDataError
 
 

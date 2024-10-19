@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 from io import StringIO
 
@@ -91,6 +91,11 @@ class LammpsBase(ParserBase):
 
     def test_creates_universe(self, filename):
         u = mda.Universe(filename, format='DATA')
+
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, format='DATA')
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
 
 
 class TestLammpsData(LammpsBase):
@@ -263,8 +268,7 @@ def test_interpret_atom_style_missing():
 
 
 class TestDumpParser(ParserBase):
-    expected_attrs = ['types']
-    guessed_attrs = ['masses']
+    expected_attrs = ['types', 'masses']
     expected_n_atoms = 24
     expected_n_residues = 1
     expected_n_segments = 1
@@ -284,12 +288,27 @@ class TestDumpParser(ParserBase):
         with self.parser(self.ref_filename) as p:
             with pytest.warns(UserWarning, match='Guessed all Masses to 1.0'):
                 p.parse()
-            
+
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
+
     def test_id_ordering(self):
         # ids are nonsequential in file, but should get rearranged
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        expected = [1., 1., 1., 1., 1., 1., 1.]
+        assert_allclose(u.atoms.masses[:7], expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        expected = ['2', '1', '1', '2', '1', '1', '2']
+        assert (u.atoms.types[:7] == expected).all()
 
 # this tests that topology can still be constructed if non-standard or uneven
 # column present.

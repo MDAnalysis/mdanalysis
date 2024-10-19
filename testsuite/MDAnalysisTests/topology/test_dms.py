@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
-
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import DMS_DOMAINS, DMS_NO_SEGID
 
@@ -61,6 +60,11 @@ class TestDMSParser(ParserBase):
 
         s5 = u.select_atoms("resname ALA")
         assert len(s5) == 190
+
+    def test_guessed_types(self, filename):
+            u = mda.Universe(filename)
+            expected = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+            assert (u.atoms.types[:7] == expected).all()
 
 
 class TestDMSParserNoSegid(TestDMSParser):

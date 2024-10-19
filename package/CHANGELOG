@@ -16,13 +16,14 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
-         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher, 
          yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies,
-         talagayev
+         talagayev, aya9aladdin
 
  * 2.8.0
 
 Fixes
+ * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
  * set `n_parts` to the total number of frames being analyzed if
    `n_parts` is bigger. (Issue #4685)
  * Catch higher dimensional indexing in GroupBase & ComponentBase (Issue #4647)
@@ -56,6 +57,15 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Removed type and mass guessing from all topology parsers (PR #3753)
+ * Added guess_TopologyAttrs() API to the Universe to handle attribute
+   guessing (PR #3753)
+ * Added the DefaultGuesser class, which is a general-purpose guesser with
+   the same functionalities as the existing guesser.py methods (PR #3753)
+ * Added is_value_missing() to `TopologyAttrs` to check for missing
+   values (PR #3753)
+ * Added guessed `Element` attribute to the ITPParser to preserve old mass
+   partial guessing behavior from being broken (PR #3753)
  * MDAnalysis now supports Python 3.13 (PR #4732)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
@@ -100,6 +110,9 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * Unknown masses are set to 0.0 for current version, this will be depracated
+   in version 3.0.0 and replaced by :class:`Masses`' no_value_label attribute(np.nan)
+   (PR #3753)
  * The MDAnalysis.anaylsis.encore module has been deprecated in favour of the
    mdaencore MDAKit and will be removed in version 3.0.0 (PR #4737)
  * The MMTF Reader is deprecated and will be removed in version 3.0

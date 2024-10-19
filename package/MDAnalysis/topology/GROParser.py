@@ -28,7 +28,6 @@ GRO topology parser
 Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to
 build a basic topology.
 
-Atom types and masses are guessed.
 
 See Also
 --------
@@ -49,9 +48,7 @@ import numpy as np
 from ..lib.util import openany
 from ..core.topologyattrs import (
     Atomnames,
-    Atomtypes,
     Atomids,
-    Masses,
     Resids,
     Resnames,
     Resnums,
@@ -59,7 +56,6 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 from .base import TopologyReaderBase, change_squash
-from . import guessers
 
 
 class GROParser(TopologyReaderBase):
@@ -71,9 +67,10 @@ class GROParser(TopologyReaderBase):
       - atomids
       - atomnames
 
-    Guesses the following attributes
-      - atomtypes
-      - masses
+    .. versionchanged:: 2.8.0
+        Removed type and mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
+
     """
     format = 'GRO'
 
@@ -129,9 +126,6 @@ class GROParser(TopologyReaderBase):
             for s in starts:
                 resids[s:] += 100000
 
-        # Guess types and masses
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(atomtypes)
 
         residx, (new_resids, new_resnames) = change_squash(
                                 (resids, resnames), (resids, resnames))
@@ -141,11 +135,9 @@ class GROParser(TopologyReaderBase):
         attrs = [
             Atomnames(names),
             Atomids(indices),
-            Atomtypes(atomtypes, guessed=True),
             Resids(new_resids),
             Resnums(new_resids.copy()),
             Resnames(new_resnames),
-            Masses(masses, guessed=True),
             Segids(np.array(['SYSTEM'], dtype=object))
         ]
 

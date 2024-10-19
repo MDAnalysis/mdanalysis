@@ -162,7 +162,7 @@ class TestTRZReader(RefTRZ):
         with mda.Writer(outfile, n_atoms=10) as w:
             w.write(u)
 
-        u2 = mda.Universe(outfile, n_atoms=10)
+        u2 = mda.Universe(outfile, n_atoms=10, to_guess=())
 
         assert u2.dimensions is None
 

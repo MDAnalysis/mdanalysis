@@ -26,11 +26,6 @@
 The various topology parsers make use of functions and classes in this
 module. They are mostly of use to developers.
 
-See Also
---------
-:mod:`MDAnalysis.topology.tables`
-  for some hard-coded atom information that is used by functions such as
-  :func:`guess_atom_type` and :func:`guess_atom_mass`.
 
 """
 
@@ -40,12 +35,6 @@ import numpy as np
 from collections import defaultdict
 
 # Local imports
-from . import tables
-from .guessers import (
-    guess_atom_element, guess_atom_type,
-    get_atom_mass, guess_atom_mass, guess_atom_charge,
-    guess_bonds, guess_angles, guess_dihedrals, guess_improper_dihedrals,
-)
 from ..core._get_readers import get_parser_for
 from ..lib.util import cached
 

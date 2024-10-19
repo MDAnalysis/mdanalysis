@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -44,7 +44,6 @@ Classes
 import os
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase, squash_by
 from ..core.topologyattrs import (
@@ -54,14 +53,13 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     Elements,
-    Masses,
     Resids,
     Resnums,
     Resnames,
     Segids,
 )
 from ..core.topology import Topology
-from .tables import SYBYL2SYMB
+from ..guesser.tables import SYBYL2SYMB
 
 import warnings
 
@@ -79,8 +77,6 @@ class MOL2Parser(TopologyReaderBase):
      - Bonds
      - Elements
 
-    Guesses the following:
-     - masses
 
     Notes
     -----
@@ -95,7 +91,7 @@ class MOL2Parser(TopologyReaderBase):
       2. If no atoms have ``resname`` field, resnames attribute will not be set;
          If some atoms have ``resname`` while some do not,
          :exc:`ValueError` will occur.
-    
+
       3. If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section
          and no atoms have the ``charge`` field, charges attribute will not be set;
          If "NO_CHARGES" shows up while ``charge`` field appears,
@@ -129,6 +125,10 @@ class MOL2Parser(TopologyReaderBase):
        Parse elements from atom types.
     .. versionchanged:: 2.2.0
        Read MOL2 files with optional columns omitted.
+    .. versionchanged:: 2.8.0
+        Removed mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
+
     """
     format = 'MOL2'
 
@@ -235,15 +235,12 @@ class MOL2Parser(TopologyReaderBase):
                           f"atoms: {invalid_elements}. "
                           "These have been given an empty element record.")
 
-        masses = guessers.guess_masses(validated_elements)
-
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         if has_charges:
             attrs.append(Charges(np.array(charges, dtype=np.float32)))
-        attrs.append(Masses(masses, guessed=True))
 
         if not np.all(validated_elements == ''):
             attrs.append(Elements(validated_elements))

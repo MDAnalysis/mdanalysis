@@ -82,7 +82,7 @@ class TopologyAttrMixin(object):
 
     @pytest.fixture()
     def universe(self, top):
-        return mda.Universe(top)
+        return mda.Universe(top, to_guess=())
 
     def test_len(self, attr):
         assert len(attr) == len(attr.values)
@@ -197,6 +197,17 @@ class TestAtomnames(TestAtomAttr):
         assert groupsize == 0
         assert groupsize == len(u.residues[[]].atoms)
 
+    def test_missing_values(self, attr):
+        assert_equal(attr.are_values_missing(self.values), np.array(
+            [False, False, False, False, False, False,
+             False, False, False, False]))
+
+    def test_missing_value_label(self):
+        self.attrclass.missing_value_label = 'FOO'
+        values = np.array(['NA', 'C', 'N', 'FOO'])
+        assert_equal(self.attrclass.are_values_missing(values),
+                     np.array([False, False, False, True]))
+
 
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
@@ -216,6 +227,10 @@ class AggregationMixin(TestAtomAttr):
 class TestMasses(AggregationMixin):
     attrclass = tpattrs.Masses
 
+    def test_missing_masses(self):
+        values = [1., 2., np.nan, 3.]
+        assert_equal(self.attrclass.are_values_missing(values),
+                            np.array([False, False, True, False]))
 
 class TestCharges(AggregationMixin):
     values = np.array([+2, -1, 0, -1, +1, +2, 0, 0, 0, -1])

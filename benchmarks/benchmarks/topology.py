@@ -1,6 +1,6 @@
 import MDAnalysis
 import numpy as np
-from MDAnalysis.topology import guessers
+from MDAnalysis.guesser import DefaultGuesser
 
 try:
     from MDAnalysisTests.datafiles import GRO
@@ -26,7 +26,7 @@ class TopologyGuessBench(object):
 
     def time_guessbonds(self, num_atoms):
         """Benchmark for guessing bonds"""
-        guessers.guess_bonds(self.ag, self.ag.positions,
+        DefaultGuesser(None).guess_bonds(self.ag, self.ag.positions,
                              box=self.ag.dimensions,
                              vdwradii=self.vdwradii)
 
