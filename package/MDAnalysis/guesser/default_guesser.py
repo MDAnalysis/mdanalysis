@@ -314,6 +314,8 @@ class DefaultGuesser(GuesserBase):
         still not found, we iteratively continue to remove the last character
         or first character until we find a match. If ultimately no match
         is found, the first character of the stripped name is returned.
+        
+        If the input name is an empty string, an empty string is returned.
 
         The table comes from CHARMM and AMBER atom
         types, where the first character is not sufficient to determine the
