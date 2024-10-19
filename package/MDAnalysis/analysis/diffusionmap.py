@@ -299,7 +299,7 @@ class DistanceMatrix(AnalysisBase):
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "dist_matrix": ResultsGroup.ndarray_vstack,
+                "dist_matrix": ResultsGroup.ndarray_mean,
             }
         )
 
