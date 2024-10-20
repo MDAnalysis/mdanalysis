@@ -407,6 +407,17 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         if guess_bonds:
+            warnings.warn(
+                "Bond guessing through the `guess_bonds` keyword is deprecated"
+                " and will be removed in MDAnalysis 3.0. "
+                "Instead, pass 'bonds', 'angles', and 'dihedrals' to "
+                "the `to_guess` keyword in Universe for guessing these. "
+                "The kwargs `fudge_factor`, `vdwradii`, and `lower_bound` "
+                "are also deprecated and will be removed in MDAnalysis 3.0, "
+                "where they should be passed into Context creation "
+                "or guess_TopologyAttrs instead.",
+                DeprecationWarning
+            )
             force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
 
         self.guess_TopologyAttrs(
