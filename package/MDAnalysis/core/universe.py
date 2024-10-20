@@ -410,7 +410,8 @@ class Universe(object):
             force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
 
         self.guess_TopologyAttrs(
-            context, to_guess, force_guess, vdwradii=vdwradii, **kwargs)
+            context, to_guess, force_guess, error_if_missing=False
+        )
 
 
     def copy(self):
@@ -1498,7 +1499,9 @@ class Universe(object):
         return cls(mol, **kwargs)
 
     def guess_TopologyAttrs(
-            self, context=None, to_guess=None, force_guess=None, **kwargs):
+        self, context=None, to_guess=None, force_guess=None,
+        error_if_missing=True, **kwargs
+    ):
         """
         Guess and add attributes through a specific context-aware guesser.
 
@@ -1523,6 +1526,13 @@ class Universe(object):
             TopologyAttr does not already exist in the Universe, this has no
             effect. If the TopologyAttr does already exist, all values will
             be overwritten by guessed values.
+        error_if_missing: bool
+            If True, raise an error if the guesser cannot guess the attribute
+            due to missing TopologyAttrs used as the inputs for guessing.
+            If False, a warning will be raised instead.
+            Errors will always be raised if an attribute is in the
+            ``force_guess`` list, even if this parameter is set to False.
+
         **kwargs: extra arguments to be passed to the guesser class
 
         Examples
@@ -1537,7 +1547,11 @@ class Universe(object):
         if not context:
             context = self._context
 
-        guesser = get_guesser(context, self.universe, **kwargs)
+        # update iteratively to avoid multiple kwargs clashing
+        guesser_kwargs = {}
+        guesser_kwargs.update(self._kwargs)
+        guesser_kwargs.update(kwargs)
+        guesser = get_guesser(context, self.universe, **guesser_kwargs)
         self._context = guesser
 
         if to_guess is None:
@@ -1577,7 +1591,14 @@ class Universe(object):
             for attr in total_guess:
                 if guesser.is_guessable(attr):
                     fg =  attr in force_guess
-                    values = guesser.guess_attr(attr, fg)
+                    try:
+                        values = guesser.guess_attr(attr, fg)
+                    except ValueError as e:
+                        if error_if_missing or fg:
+                            raise e
+                        else:
+                            warnings.warn(str(e))
+                            continue
 
                     if values is not None:
                         if attr in objects:

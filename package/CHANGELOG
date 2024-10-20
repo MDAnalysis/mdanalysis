@@ -23,6 +23,8 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Changes error to warning on Universe creation if guessing fails
+   due to missing information (Issue #4750, PR #4754)
  * Adds guessed attributes documentation back to each parser page
    and updates overall guesser docs (Issue #4696)
  * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
