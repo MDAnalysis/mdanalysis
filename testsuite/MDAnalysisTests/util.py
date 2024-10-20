@@ -233,6 +233,8 @@ class _NoDeprecatedCallContext(object):
         if isinstance(message, Warning):
             self._captured_categories.append(message.__class__)
         else:
+            if category is None:
+                category = UserWarning
             self._captured_categories.append(category)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
