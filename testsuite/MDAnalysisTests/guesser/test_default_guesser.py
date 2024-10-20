@@ -117,7 +117,10 @@ class TestGuessTypes(object):
 
     def test_guess_elements_from_no_data(self):
         top = Topology(5)
-        msg = "there is no reference attributes in this universe to guess types from"
+        msg = (
+            "there is no reference attributes in this "
+            "universe to guess types from"
+        )
         with pytest.warns(UserWarning, match=msg):
             mda.Universe(top, to_guess=['types'])
 
@@ -233,7 +236,7 @@ def test_guess_bonds_water():
                          (0, 2),
                          (3, 4),
                          (3, 5)))
-    
+
 
 @pytest.mark.parametrize(
     "fudge_factor, n_bonds",
