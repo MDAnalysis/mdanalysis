@@ -13,9 +13,10 @@ from MDAnalysis.guesser.tables import (
     SYBYL2SYMB,
 )
 
-wmsg = ("Deprecated in version 2.8.0\n"
-        "MDAnalysis.topology.tables has been moved to "
-        "MDAnalysis.guesser.tables. This import point "
-        "will be removed in MDAnalysis version 3.0.0")
+wmsg = (
+    "Deprecated in version 2.8.0\n"
+    "MDAnalysis.topology.tables has been moved to "
+    "MDAnalysis.guesser.tables. This import point "
+    "will be removed in MDAnalysis version 3.0.0"
+)
 warnings.warn(wmsg, category=DeprecationWarning)
-
