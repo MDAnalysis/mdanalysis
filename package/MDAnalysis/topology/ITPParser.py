@@ -601,7 +601,15 @@ class ITPParser(TopologyReaderBase):
         if all(e.capitalize() in SYMB2Z for e in self.elements):
             attrs.append(Elements(np.array(self.elements,
                          dtype=object), guessed=True))
-
+            warnings.warn(
+                "The elements attribute has been populated by guessing "
+                "elements from atom types. This behaviour has been "
+                "temporarily added to the ITPParser as we transition "
+                "to the new guessing API. "
+                "This behavior will be removed in release 3.0. "
+                "Please see issue #4698 for more information. ",
+                DeprecationWarning
+            )
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
