@@ -30,7 +30,7 @@ import MDAnalysis.tests.datafiles as datafiles
 from numpy.testing import assert_allclose, assert_equal
 
 
-class TesttBaseGuesser():
+class TestBaseGuesser():
 
     def test_get_guesser(self):
         class TestGuesser1(GuesserBase):
@@ -100,3 +100,11 @@ class TesttBaseGuesser():
         top = Topology(4, 1, 1, attrs=[names, types, ])
         u = mda.Universe(top, to_guess=['types'])
         assert_equal(u.atoms.types, ['', '', '', ''])
+
+
+@pytest.mark.parametrize(
+    "universe_input",
+    [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB]
+)
+def test_universe_creation_from_coordinates(universe_input):
+    mda.Universe(universe_input)
