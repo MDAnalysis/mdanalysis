@@ -233,6 +233,9 @@ class _NoDeprecatedCallContext(object):
         if isinstance(message, Warning):
             self._captured_categories.append(message.__class__)
         else:
+            # as follows Python documentation at
+            # https://docs.python.org/3/library/warnings.html#warnings.warn
+            # if category is None, the default UserWarning is used
             if category is None:
                 category = UserWarning
             self._captured_categories.append(category)
