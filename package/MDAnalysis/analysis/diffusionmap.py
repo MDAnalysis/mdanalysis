@@ -143,7 +143,7 @@ import numpy as np
 from MDAnalysis.core.universe import Universe
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -233,8 +233,18 @@ class DistanceMatrix(AnalysisBase):
          :class:`DistanceMatrix` now also accepts `AtomGroup`.
     .. versionchanged:: 2.8.0
          :class:`DistanceMatrix` is now correctly works with `frames=...`
-         parameter (#4432) by iterating over `self._sliced_trajectory`
+         parameter (#4432) by iterating over `self._sliced_trajectory`.
+         Enabled **parallel execution** with the ``multiprocessing`` and
+         ``dask`` backends; use the new method :meth:`get_supported_backends`
+         to see all supported backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask')
+
     def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
         # remember that this must be called before referencing self.n_frames
@@ -286,6 +296,12 @@ class DistanceMatrix(AnalysisBase):
     def _conclude(self):
         self._calculated = True
 
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "dist_matrix": ResultsGroup.ndarray_mean,
+            }
+        )
 
 class DiffusionMap(object):
     """Non-linear dimension reduction method

@@ -14,6 +14,7 @@ from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
 )
+from MDAnalysis.analysis.diffusionmap import DistanceMatrix
 from MDAnalysis.lib.util import is_installed
 
 
@@ -140,4 +141,11 @@ def client_DSSP(request):
   
 @pytest.fixture(scope='module', params=params_for_cls(HydrogenBondAnalysis))
 def client_HydrogenBondAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.hydrogenbonds
+
+@pytest.fixture(scope="module", params=params_for_cls(DistanceMatrix))
+def client_DistanceMatrix(request):
     return request.param
