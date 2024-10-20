@@ -1530,6 +1530,8 @@ class Universe(object):
             If True, raise an error if the guesser cannot guess the attribute
             due to missing TopologyAttrs used as the inputs for guessing.
             If False, a warning will be raised instead.
+            Errors will always be raised if an attribute is in the
+            ``force_guess`` list, even if this parameter is set to False.
 
         **kwargs: extra arguments to be passed to the guesser class
 
@@ -1592,7 +1594,7 @@ class Universe(object):
                     try:
                         values = guesser.guess_attr(attr, fg)
                     except ValueError as e:
-                        if error_if_missing:
+                        if error_if_missing or fg:
                             raise e
                         else:
                             warnings.warn(str(e))
