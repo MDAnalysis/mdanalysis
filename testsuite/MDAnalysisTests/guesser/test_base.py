@@ -103,5 +103,8 @@ class TesttBaseGuesser():
 
 
 def test_Universe_guess_bonds_deprecated():
-    with pytest.warns(DeprecationWarning, match='`guess_bonds` keyword is deprecated'):
+    with pytest.warns(
+        DeprecationWarning,
+        match='`guess_bonds` keyword is deprecated'
+    ):
         u = mda.Universe(datafiles.PDB_full, guess_bonds=True)

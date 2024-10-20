@@ -408,8 +408,8 @@ class Universe(object):
 
         if guess_bonds:
             warnings.warn(
-                "Bond guessing through the `guess_bonds` keyword is deprecated "
-                "and will be removed in MDAnalysis 3.0. "
+                "Bond guessing through the `guess_bonds` keyword is deprecated"
+                " and will be removed in MDAnalysis 3.0. "
                 "Instead, pass 'bonds', 'angles', and 'dihedrals' to "
                 "the `to_guess` keyword in Universe for guessing these. "
                 "The kwargs `fudge_factor`, `vdwradii`, and `lower_bound` "
