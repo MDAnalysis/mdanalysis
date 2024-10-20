@@ -376,11 +376,13 @@ class Universe(object):
 
         format, topology_format = _resolve_formats(*coordinates, format=format,
                                                    topology_format=topology_format)
+
         if not isinstance(topology, Topology) and not topology is None:
             self.filename = _check_file_like(topology)
             topology = _topology_from_file_like(self.filename,
                                                 topology_format=topology_format,
                                                 **kwargs)
+
         if topology is not None:
             self._topology = topology
         else:
