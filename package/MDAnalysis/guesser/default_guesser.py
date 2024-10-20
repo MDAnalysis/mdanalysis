@@ -109,6 +109,7 @@ import math
 
 import re
 
+from ..exceptions import NoDataError
 from ..lib import distances
 from . import tables
 
@@ -218,15 +219,15 @@ class DefaultGuesser(GuesserBase):
         if atom_types is None:
             try:
                 atom_types = self._universe.atoms.elements
-            except AttributeError:
+            except NoDataError:
                 try:
                     atom_types = self._universe.atoms.types
-                except AttributeError:
+                except NoDataError:
                     try:
                         atom_types = self.guess_types(
                             atom_types=self._universe.atoms.names)
-                    except ValueError:
-                        raise ValueError(
+                    except NoDataError:
+                        raise NoDataError(
                             "there is no reference attributes"
                             " (elements, types, or names)"
                             " in this universe to guess mass from")
@@ -291,8 +292,8 @@ class DefaultGuesser(GuesserBase):
         if atom_types is None:
             try:
                 atom_types = self._universe.atoms.names
-            except AttributeError:
-                raise ValueError(
+            except NoDataError:
+                raise NoDataError(
                     "there is no reference attributes in this universe"
                     "to guess types from")
 
