@@ -35,6 +35,13 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
+.. note::
+
+    Atomtypes will be created from elements if they are present and valid.
+    Otherwise, they will be guessed on Universe creation.
+    By default, masses will also be guessed on Universe creation.
+    This may change in release 3.0.
+    See :ref:`Guessers` for more information.
 
 
 .. Note::

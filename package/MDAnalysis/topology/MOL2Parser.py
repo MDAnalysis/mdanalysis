@@ -78,6 +78,13 @@ class MOL2Parser(TopologyReaderBase):
      - Elements
 
 
+    .. note::
+
+        By default, masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
+
     Notes
     -----
     Elements are obtained directly from the SYBYL atom types. If some atoms have

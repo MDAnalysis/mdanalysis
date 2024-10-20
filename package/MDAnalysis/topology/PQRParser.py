@@ -80,6 +80,14 @@ class PQRParser(TopologyReaderBase):
      - Resnames
      - Segids
 
+     .. note::
+
+        Atomtypes will be read from the input file if they are present
+        (e.g. GROMACS PQR files). Otherwise, they will be guessed on Universe
+        creation. By default, masses will also be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
 
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used

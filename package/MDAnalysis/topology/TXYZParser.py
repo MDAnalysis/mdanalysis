@@ -73,6 +73,12 @@ class TXYZParser(TopologyReaderBase):
     - Atomtypes
     - Elements (if all atom names are element symbols)
 
+    .. note::
+
+        By default, masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.4.0
        Adding the `Element` attribute if all names are valid element symbols.
