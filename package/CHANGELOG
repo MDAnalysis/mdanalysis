@@ -112,6 +112,8 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * The `guess_bonds`, `vdwradii`, `fudge_factor`, and `lower_bound` kwargs
+   are deprecated for Universe creation.
  * Unknown masses are set to 0.0 for current version, this will be depracated
    in version 3.0.0 and replaced by :class:`Masses`' no_value_label attribute(np.nan)
    (PR #3753)
