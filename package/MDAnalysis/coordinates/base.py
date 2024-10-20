@@ -795,6 +795,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         #         ts = self.ts
         #     ts.frame = self._read_next_frame(etc)
         #     return ts
+        # NOTE: ts argument is deprecated as of 2.7.0 and will be removed in 3.0.0
         ...
 
     def __iter__(self):
