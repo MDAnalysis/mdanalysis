@@ -224,6 +224,14 @@
 <span class="sd">     - Resnames</span>
 <span class="sd">     - Segids</span>
 
+<span class="sd">     .. note::</span>
+
+<span class="sd">        Atomtypes will be read from the input file if they are present</span>
+<span class="sd">        (e.g. GROMACS PQR files). Otherwise, they will be guessed on Universe</span>
+<span class="sd">        creation. By default, masses will also be guessed on Universe creation.</span>
+<span class="sd">        This may change in release 3.0.</span>
+<span class="sd">        See :ref:`Guessers` for more information.</span>
+
 
 <span class="sd">    .. versionchanged:: 0.9.0</span>
 <span class="sd">       Read chainID from a PQR file and use it as segid (before we always used</span>

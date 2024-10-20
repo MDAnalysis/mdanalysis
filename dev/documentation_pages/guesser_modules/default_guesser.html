@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.1.1.2. Default Guesser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>6.1.2.2. Default Guesser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -40,8 +40,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.1.1.3. Base guesser classes — MDAnalysis.guesser.base" href="base.html" />
-    <link rel="prev" title="6.1.1.1. Context-specific guessers — MDAnalysis.guesser" href="init.html" /> 
+    <link rel="next" title="6.1.2.3. Base guesser classes — MDAnalysis.guesser.base" href="base.html" />
+    <link rel="prev" title="6.1.2.1. Context-specific guessers — MDAnalysis.guesser" href="init.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -105,11 +105,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../guesser_modules.html#example-uses-of-guessers">6.1. Example uses of guessers</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../guesser_modules.html#guessing-using-guess-topologyattrs-api">6.1.1. Guessing using <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code> API</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="init.html">6.1.1.1. Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">6.1.1.2. Default Guesser</a></li>
-<li class="toctree-l4"><a class="reference internal" href="base.html">6.1.1.3. Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tables.html">6.1.1.4. MDAnalysis topology tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guesser_modules.html#default-behavior">6.1.1. Default behavior</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../guesser_modules.html#guessing-using-guess-topologyattrs-api">6.1.2. Guessing using <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code> API</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="init.html">6.1.2.1. Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">6.1.2.2. Default Guesser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html">6.1.2.3. Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tables.html">6.1.2.4. MDAnalysis topology tables</a></li>
 </ul>
 </li>
 </ul>
@@ -146,7 +147,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../guesser_modules.html"><span class="section-number">6. </span>Guesser modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">6.1.1.2. </span>Default Guesser</li>
+      <li class="breadcrumb-item active"><span class="section-number">6.1.2.2. </span>Default Guesser</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/guesser_modules/default_guesser.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -157,15 +158,65 @@
            <div itemprop="articleBody">
              
   <section id="default-guesser">
-<span id="module-MDAnalysis.guesser.default_guesser"></span><h1><span class="section-number">6.1.1.2. </span>Default Guesser<a class="headerlink" href="#default-guesser" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.guesser.default_guesser"></span><h1><span class="section-number">6.1.2.2. </span>Default Guesser<a class="headerlink" href="#default-guesser" title="Link to this heading"></a></h1>
 <p id="defaultguesser">DefaultGuesser is a generic guesser class that has basic guessing methods.
 This class is a general purpose guesser that can be used with most topologies,
-but being generic makes it the less accurate among all guessers.</p>
+but being generic makes it the least accurate among all guessers.</p>
+<section id="guessing-behavior">
+<h2><span class="section-number">6.1.2.2.1. </span>Guessing behavior<a class="headerlink" href="#guessing-behavior" title="Link to this heading"></a></h2>
+<p>This section describes how each attribute is guessed by the DefaultGuesser.</p>
+<section id="masses">
+<h3><span class="section-number">6.1.2.2.1.1. </span>Masses<a class="headerlink" href="#masses" title="Link to this heading"></a></h3>
+<p>We first attempt to look up the mass of an atom based on its element if the
+element TopologyAttr is available. If not, we attempt to lookup the mass based
+on the atom type (<code class="docutils literal notranslate"><span class="pre">type</span></code>) TopologyAttr. If neither of these is available, we
+attempt to guess the atom type based on the atom name (<code class="docutils literal notranslate"><span class="pre">name</span></code>) and then
+lookup the mass based on the guessed atom type.</p>
+</section>
+<section id="types">
+<h3><span class="section-number">6.1.2.2.1.2. </span>Types<a class="headerlink" href="#types" title="Link to this heading"></a></h3>
+<p>We attempt to guess the atom type based on the atom name (<code class="docutils literal notranslate"><span class="pre">name</span></code>).
+The name is first stripped of any numbers and symbols, and then looked up in
+the <a class="reference internal" href="tables.html#MDAnalysis.guesser.tables.atomelements" title="MDAnalysis.guesser.tables.atomelements"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.guesser.tables.atomelements</span></code></a> table. If the name is not
+found, we continue checking variations of the name following the logic in
+<a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultGuesser.guess_atom_element()</span></code></a>. Ultimately, if no match is found,
+the first character of the stripped name is returned.</p>
+</section>
+<section id="elements">
+<h3><span class="section-number">6.1.2.2.1.3. </span>Elements<a class="headerlink" href="#elements" title="Link to this heading"></a></h3>
+<p>This follows the same method as guessing atom types.</p>
+</section>
+<section id="bonds">
+<h3><span class="section-number">6.1.2.2.1.4. </span>Bonds<a class="headerlink" href="#bonds" title="Link to this heading"></a></h3>
+<p>Bonds are guessed based on the distance between atoms.
+See <a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultGuesser.guess_bonds()</span></code></a> for more details.</p>
+</section>
+<section id="angles">
+<h3><span class="section-number">6.1.2.2.1.5. </span>Angles<a class="headerlink" href="#angles" title="Link to this heading"></a></h3>
+<p>Angles are guessed based on the bonds between atoms.
+See <a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_angles" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_angles"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultGuesser.guess_angles()</span></code></a> for more details.</p>
+</section>
+<section id="dihedrals">
+<h3><span class="section-number">6.1.2.2.1.6. </span>Dihedrals<a class="headerlink" href="#dihedrals" title="Link to this heading"></a></h3>
+<p>Dihedrals are guessed based on the angles between atoms.
+See <a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_dihedrals" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_dihedrals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultGuesser.guess_dihedrals()</span></code></a> for more details.</p>
+</section>
+<section id="improper-dihedrals">
+<h3><span class="section-number">6.1.2.2.1.7. </span>Improper Dihedrals<a class="headerlink" href="#improper-dihedrals" title="Link to this heading"></a></h3>
+<p>Improper dihedrals are guessed based on the angles between atoms.
+See <a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_improper_dihedrals" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_improper_dihedrals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultGuesser.guess_improper_dihedrals()</span></code></a> for more details.</p>
+</section>
+<section id="aromaticities">
+<h3><span class="section-number">6.1.2.2.1.8. </span>Aromaticities<a class="headerlink" href="#aromaticities" title="Link to this heading"></a></h3>
+<p>Aromaticity is guessed using RDKit’s GetIsAromatic method.
+See <a class="reference internal" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_aromaticities" title="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_aromaticities"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DefaultGuesser.guess_aromaticities()</span></code></a> for more details.</p>
+</section>
+</section>
 <section id="classes">
-<h2><span class="section-number">6.1.1.2.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">6.1.2.2.2. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.guesser.default_guesser.</span></span><span class="sig-name descname"><span class="pre">DefaultGuesser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.guesser.default_guesser.</span></span><span class="sig-name descname"><span class="pre">DefaultGuesser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fudge_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.55</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser" title="Link to this definition"></a></dt>
 <dd><p>This guesser holds generic methods (not directed to specific contexts) for
 guessing different topology attribute. It has the same methods which where
 originally found in Topology.guesser.py. The attributes that can be
@@ -184,6 +235,21 @@ guessed by this class are:</p>
 </div></blockquote>
 <p>You can use this guesser either directly through an instance, or through
 the <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="MDAnalysis.core.universe.Universe.guess_TopologyAttrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code></a> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – The Universe to apply the guesser on</p></li>
+<li><p><strong>box</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – The box of the Universe. This is used for bond guessing.</p></li>
+<li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – Dict relating atom types: vdw radii. This is used for bond guessing</p></li>
+<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap each other to be considered
+a bond.  Larger values will increase the number of bonds found. [0.55]</p></li>
+<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length
+will be ignored. This is useful for parsing PDB with altloc records
+where atoms with altloc A and B may be very close together and
+there should be no chemical bond between them. [0.1]</p></li>
+</ul>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>to guess bonds for a universe:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
@@ -264,8 +330,17 @@ Suitable for use in u._topology</p>
 <dt class="sig sig-object py" id="MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element">
 <span class="sig-name descname"><span class="pre">guess_atom_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/default_guesser.html#DefaultGuesser.guess_atom_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element" title="Link to this definition"></a></dt>
 <dd><p>Guess the element of the atom from the name.</p>
-<p>Looks in dict to see if element is found, otherwise it uses the first
-character in the atomname. The table comes from CHARMM and AMBER atom
+<p>First all numbers and symbols are stripped from the name.
+Then the name is looked up in the
+<a class="reference internal" href="tables.html#MDAnalysis.guesser.tables.atomelements" title="MDAnalysis.guesser.tables.atomelements"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.guesser.tables.atomelements</span></code></a> table.
+If the name is not found, we remove the last character or
+first character from the name and check the table for both,
+with a preference for removing the last character. If the name is
+still not found, we iteratively continue to remove the last character
+or first character until we find a match. If ultimately no match
+is found, the first character of the stripped name is returned.</p>
+<p>If the input name is an empty string, an empty string is returned.</p>
+<p>The table comes from CHARMM and AMBER atom
 types, where the first character is not sufficient to determine the
 atom type. Some GROMOS ions have also been added.</p>
 <div class="admonition seealso">
@@ -318,20 +393,8 @@ the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atoms for which bonds should be guessed</p></li>
-<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap eachother to be considered a
-bond. Larger values will increase the number of bonds found. [0.55]</p></li>
-<li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – To supply custom vdwradii for atoms in the algorithm. Must be a
-dict of format {type:radii}. The default table of van der Waals
-radii is hard-coded as <a class="reference internal" href="tables.html#MDAnalysis.guesser.tables.vdwradii" title="MDAnalysis.guesser.tables.vdwradii"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.guesser.tables.vdwradii</span></code></a>.
-Any user defined vdwradii passed as an argument will supercede the
-table values. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
-<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length
-will be ignored. This is useful for parsing PDB with altloc records
-where atoms with altloc A and B maybe very close together and
-there should be no chemical bond between them. [0.1]</p></li>
-<li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Bonds are found using a distance search, if unit cell information
-is given, periodic boundary conditions will be considered in the
-distance search. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>coords</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – coordinates of the atoms. If not provided, the coordinates
+of the <code class="docutils literal notranslate"><span class="pre">atoms</span></code> in the universe are used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -483,8 +546,8 @@ types.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="init.html" class="btn btn-neutral float-left" title="6.1.1.1. Context-specific guessers — MDAnalysis.guesser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="base.html" class="btn btn-neutral float-right" title="6.1.1.3. Base guesser classes — MDAnalysis.guesser.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="init.html" class="btn btn-neutral float-left" title="6.1.2.1. Context-specific guessers — MDAnalysis.guesser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="base.html" class="btn btn-neutral float-right" title="6.1.2.3. Base guesser classes — MDAnalysis.guesser.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.1.1.3. Base guesser classes — MDAnalysis.guesser.base &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>6.1.2.3. Base guesser classes — MDAnalysis.guesser.base &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.1.1.4. MDAnalysis topology tables" href="tables.html" />
-    <link rel="prev" title="6.1.1.2. Default Guesser" href="default_guesser.html" /> 
+    <link rel="next" title="6.1.2.4. MDAnalysis topology tables" href="tables.html" />
+    <link rel="prev" title="6.1.2.2. Default Guesser" href="default_guesser.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -104,11 +104,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../guesser_modules.html#example-uses-of-guessers">6.1. Example uses of guessers</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../guesser_modules.html#guessing-using-guess-topologyattrs-api">6.1.1. Guessing using <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code> API</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="init.html">6.1.1.1. Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="default_guesser.html">6.1.1.2. Default Guesser</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">6.1.1.3. Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tables.html">6.1.1.4. MDAnalysis topology tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guesser_modules.html#default-behavior">6.1.1. Default behavior</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../guesser_modules.html#guessing-using-guess-topologyattrs-api">6.1.2. Guessing using <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code> API</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="init.html">6.1.2.1. Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="default_guesser.html">6.1.2.2. Default Guesser</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">6.1.2.3. Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tables.html">6.1.2.4. MDAnalysis topology tables</a></li>
 </ul>
 </li>
 </ul>
@@ -145,7 +146,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../guesser_modules.html"><span class="section-number">6. </span>Guesser modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">6.1.1.3. </span>Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></li>
+      <li class="breadcrumb-item active"><span class="section-number">6.1.2.3. </span>Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/guesser_modules/base.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -156,10 +157,10 @@
            <div itemprop="articleBody">
              
   <section id="base-guesser-classes-mdanalysis-guesser-base">
-<span id="module-MDAnalysis.guesser.base"></span><h1><span class="section-number">6.1.1.3. </span>Base guesser classes — <a class="reference internal" href="#module-MDAnalysis.guesser.base" title="MDAnalysis.guesser.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a><a class="headerlink" href="#base-guesser-classes-mdanalysis-guesser-base" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.guesser.base"></span><h1><span class="section-number">6.1.2.3. </span>Base guesser classes — <a class="reference internal" href="#module-MDAnalysis.guesser.base" title="MDAnalysis.guesser.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a><a class="headerlink" href="#base-guesser-classes-mdanalysis-guesser-base" title="Link to this heading"></a></h1>
 <p>Derive context-specific guesser classes from the base class in this module.</p>
 <section id="classes">
-<h2><span class="section-number">6.1.1.3.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">6.1.2.3.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.guesser.base.GuesserBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.guesser.base.</span></span><span class="sig-name descname"><span class="pre">GuesserBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/guesser/base.html#GuesserBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.guesser.base.GuesserBase" title="Link to this definition"></a></dt>
@@ -252,8 +253,8 @@ attribute or to overwrite all existing values by guessed one</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="default_guesser.html" class="btn btn-neutral float-left" title="6.1.1.2. Default Guesser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tables.html" class="btn btn-neutral float-right" title="6.1.1.4. MDAnalysis topology tables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="default_guesser.html" class="btn btn-neutral float-left" title="6.1.2.2. Default Guesser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tables.html" class="btn btn-neutral float-right" title="6.1.2.4. MDAnalysis topology tables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

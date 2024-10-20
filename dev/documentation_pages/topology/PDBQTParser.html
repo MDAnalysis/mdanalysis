@@ -183,6 +183,12 @@ partial charges (<code class="xref py py-attr docutils literal notranslate"><spa
 <li><p>Reads a PDBQT file line by line and does not require sequential atom numbering.</p></li>
 <li><p>Multi-model PDBQT files are not supported.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, masses will be guessed on Universe creation.
+This may change in release 3.0.
+See <a class="reference internal" href="../guesser_modules.html#guessers"><span class="std std-ref">Guesser modules</span></a> for more information.</p>
+</div>
 <p class="rubric">Notes</p>
 <p>Only reads atoms and their names; connectivity is not
 deduced.</p>

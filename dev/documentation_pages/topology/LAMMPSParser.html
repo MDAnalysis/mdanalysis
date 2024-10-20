@@ -178,6 +178,12 @@
   <section id="lammpsparser">
 <span id="module-MDAnalysis.topology.LAMMPSParser"></span><h1><span class="section-number">5.11. </span>LAMMPSParser<a class="headerlink" href="#lammpsparser" title="Link to this heading"></a></h1>
 <p>Parses <a class="reference external" href="DATAfileformat::http://lammps.sandia.gov/doc/2001/data_format.html">data</a> or <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">dump</a> files produced by <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, masses will be guessed on Universe creation if they are not
+read from the input file. This may change in release 3.0.
+See <a class="reference internal" href="../guesser_modules.html#guessers"><span class="std std-ref">Guesser modules</span></a> for more information.</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">LAMMPSDataConverter</span></code> has now been removed.</p>
 </div>

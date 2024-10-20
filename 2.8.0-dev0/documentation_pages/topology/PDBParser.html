@@ -186,6 +186,14 @@ a different file format (e.g. the “extended” PDB, <em>XPDB</em> format, see
 numbers up to 99,999.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<p>Atomtypes will be created from elements if they are present and valid.
+Otherwise, they will be guessed on Universe creation.
+By default, masses will also be guessed on Universe creation.
+This may change in release 3.0.
+See <a class="reference internal" href="../guesser_modules.html#guessers"><span class="std std-ref">Guesser modules</span></a> for more information.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>The parser processes atoms and their names.
 Partial charges are not set. Elements are parsed if they are
 valid. If partially missing or incorrect, empty records are assigned.</p>

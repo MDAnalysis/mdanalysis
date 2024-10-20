@@ -177,6 +177,13 @@
 <span class="sd">:mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue</span>
 <span class="sd">numbers up to 99,999.</span>
 
+<span class="sd">.. note::</span>
+
+<span class="sd">    Atomtypes will be created from elements if they are present and valid.</span>
+<span class="sd">    Otherwise, they will be guessed on Universe creation.</span>
+<span class="sd">    By default, masses will also be guessed on Universe creation.</span>
+<span class="sd">    This may change in release 3.0.</span>
+<span class="sd">    See :ref:`Guessers` for more information.</span>
 
 
 <span class="sd">.. Note::</span>

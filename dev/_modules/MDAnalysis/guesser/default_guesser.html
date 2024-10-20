@@ -169,8 +169,69 @@
 
 <span class="sd">DefaultGuesser is a generic guesser class that has basic guessing methods.</span>
 <span class="sd">This class is a general purpose guesser that can be used with most topologies,</span>
-<span class="sd">but being generic makes it the less accurate among all guessers.</span>
+<span class="sd">but being generic makes it the least accurate among all guessers.</span>
 
+
+<span class="sd">Guessing behavior</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">This section describes how each attribute is guessed by the DefaultGuesser.</span>
+
+<span class="sd">Masses</span>
+<span class="sd">~~~~~~</span>
+
+<span class="sd">We first attempt to look up the mass of an atom based on its element if the</span>
+<span class="sd">element TopologyAttr is available. If not, we attempt to lookup the mass based</span>
+<span class="sd">on the atom type (``type``) TopologyAttr. If neither of these is available, we</span>
+<span class="sd">attempt to guess the atom type based on the atom name (``name``) and then</span>
+<span class="sd">lookup the mass based on the guessed atom type.</span>
+
+
+<span class="sd">Types</span>
+<span class="sd">~~~~~</span>
+
+<span class="sd">We attempt to guess the atom type based on the atom name (``name``).</span>
+<span class="sd">The name is first stripped of any numbers and symbols, and then looked up in</span>
+<span class="sd">the :data:`MDAnalysis.guesser.tables.atomelements` table. If the name is not</span>
+<span class="sd">found, we continue checking variations of the name following the logic in</span>
+<span class="sd">:meth:`DefaultGuesser.guess_atom_element`. Ultimately, if no match is found,</span>
+<span class="sd">the first character of the stripped name is returned.</span>
+
+<span class="sd">Elements</span>
+<span class="sd">~~~~~~~~</span>
+
+<span class="sd">This follows the same method as guessing atom types.</span>
+
+
+<span class="sd">Bonds</span>
+<span class="sd">~~~~~</span>
+
+<span class="sd">Bonds are guessed based on the distance between atoms.</span>
+<span class="sd">See :meth:`DefaultGuesser.guess_bonds` for more details.</span>
+
+<span class="sd">Angles</span>
+<span class="sd">~~~~~~</span>
+
+<span class="sd">Angles are guessed based on the bonds between atoms.</span>
+<span class="sd">See :meth:`DefaultGuesser.guess_angles` for more details.</span>
+
+<span class="sd">Dihedrals</span>
+<span class="sd">~~~~~~~~~</span>
+
+<span class="sd">Dihedrals are guessed based on the angles between atoms.</span>
+<span class="sd">See :meth:`DefaultGuesser.guess_dihedrals` for more details.</span>
+
+<span class="sd">Improper Dihedrals</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Improper dihedrals are guessed based on the angles between atoms.</span>
+<span class="sd">See :meth:`DefaultGuesser.guess_improper_dihedrals` for more details.</span>
+
+<span class="sd">Aromaticities</span>
+<span class="sd">~~~~~~~~~~~~~</span>
+
+<span class="sd">Aromaticity is guessed using RDKit&#39;s GetIsAromatic method.</span>
+<span class="sd">See :meth:`DefaultGuesser.guess_aromaticities` for more details.</span>
 
 
 
@@ -214,6 +275,23 @@
 <span class="sd">    You can use this guesser either directly through an instance, or through</span>
 <span class="sd">    the :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` method.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">        The Universe to apply the guesser on</span>
+<span class="sd">    box : np.ndarray, optional</span>
+<span class="sd">        The box of the Universe. This is used for bond guessing.</span>
+<span class="sd">    vdwradii : dict, optional</span>
+<span class="sd">        Dict relating atom types: vdw radii. This is used for bond guessing</span>
+<span class="sd">    fudge_factor : float, optional</span>
+<span class="sd">        The factor by which atoms must overlap each other to be considered</span>
+<span class="sd">        a bond.  Larger values will increase the number of bonds found. [0.55]</span>
+<span class="sd">    lower_bound : float, optional</span>
+<span class="sd">        The minimum bond length. All bonds found shorter than this length</span>
+<span class="sd">        will be ignored. This is useful for parsing PDB with altloc records</span>
+<span class="sd">        where atoms with altloc A and B may be very close together and</span>
+<span class="sd">        there should be no chemical bond between them. [0.1]</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    to guess bonds for a universe::</span>
@@ -228,8 +306,23 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">universe</span><span class="p">,</span>
+        <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span>
+        <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">universe</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+            <span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">,</span>
+            <span class="n">fudge_factor</span><span class="o">=</span><span class="n">fudge_factor</span><span class="p">,</span>
+            <span class="n">lower_bound</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guesser_methods</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;masses&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_masses</span><span class="p">,</span>
             <span class="s1">&#39;types&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">,</span>
@@ -370,8 +463,19 @@
     <span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess the element of the atom from the name.</span>
 
-<span class="sd">        Looks in dict to see if element is found, otherwise it uses the first</span>
-<span class="sd">        character in the atomname. The table comes from CHARMM and AMBER atom</span>
+<span class="sd">        First all numbers and symbols are stripped from the name.</span>
+<span class="sd">        Then the name is looked up in the</span>
+<span class="sd">        :data:`MDAnalysis.guesser.tables.atomelements` table.</span>
+<span class="sd">        If the name is not found, we remove the last character or</span>
+<span class="sd">        first character from the name and check the table for both,</span>
+<span class="sd">        with a preference for removing the last character. If the name is</span>
+<span class="sd">        still not found, we iteratively continue to remove the last character</span>
+<span class="sd">        or first character until we find a match. If ultimately no match</span>
+<span class="sd">        is found, the first character of the stripped name is returned.</span>
+<span class="sd">        </span>
+<span class="sd">        If the input name is an empty string, an empty string is returned.</span>
+
+<span class="sd">        The table comes from CHARMM and AMBER atom</span>
 <span class="sd">        types, where the first character is not sufficient to determine the</span>
 <span class="sd">        atom type. Some GROMOS ions have also been added.</span>
 
@@ -431,26 +535,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        atoms : AtomGroup</span>
-<span class="sd">             atoms for which bonds should be guessed</span>
-<span class="sd">        fudge_factor : float, optional</span>
-<span class="sd">            The factor by which atoms must overlap eachother to be considered a</span>
-<span class="sd">            bond. Larger values will increase the number of bonds found. [0.55]</span>
-<span class="sd">        vdwradii : dict, optional</span>
-<span class="sd">            To supply custom vdwradii for atoms in the algorithm. Must be a</span>
-<span class="sd">            dict of format {type:radii}. The default table of van der Waals</span>
-<span class="sd">            radii is hard-coded as :data:`MDAnalysis.guesser.tables.vdwradii`.</span>
-<span class="sd">            Any user defined vdwradii passed as an argument will supercede the</span>
-<span class="sd">            table values. [``None``]</span>
-<span class="sd">        lower_bound : float, optional</span>
-<span class="sd">            The minimum bond length. All bonds found shorter than this length</span>
-<span class="sd">            will be ignored. This is useful for parsing PDB with altloc records</span>
-<span class="sd">            where atoms with altloc A and B maybe very close together and</span>
-<span class="sd">            there should be no chemical bond between them. [0.1]</span>
-<span class="sd">        box : array_like, optional</span>
-<span class="sd">            Bonds are found using a distance search, if unit cell information</span>
-<span class="sd">            is given, periodic boundary conditions will be considered in the</span>
-<span class="sd">            distance search. [``None``]</span>
+<span class="sd">        atoms: AtomGroup</span>
+<span class="sd">            atoms for which bonds should be guessed</span>
+<span class="sd">        coords: np.ndarray, optional</span>
+<span class="sd">            coordinates of the atoms. If not provided, the coordinates</span>
+<span class="sd">            of the ``atoms`` in the universe are used.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

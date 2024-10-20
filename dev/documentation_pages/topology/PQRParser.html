@@ -188,7 +188,7 @@ connectivity is deduced.</p>
 <dt class="sig sig-object py" id="MDAnalysis.topology.PQRParser.PQRParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.PQRParser.</span></span><span class="sig-name descname"><span class="pre">PQRParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PQRParser.html#PQRParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.PQRParser.PQRParser" title="Link to this definition"></a></dt>
 <dd><p>Parse atom information from PQR file <em>filename</em>.</p>
-<dl class="simple">
+<dl>
 <dt>Creates a MDAnalysis Topology with the following attributes</dt><dd><ul class="simple">
 <li><p>Atomids</p></li>
 <li><p>Atomnames</p></li>
@@ -199,6 +199,14 @@ connectivity is deduced.</p>
 <li><p>Resnames</p></li>
 <li><p>Segids</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Atomtypes will be read from the input file if they are present
+(e.g. GROMACS PQR files). Otherwise, they will be guessed on Universe
+creation. By default, masses will also be guessed on Universe creation.
+This may change in release 3.0.
+See <a class="reference internal" href="../guesser_modules.html#guessers"><span class="std std-ref">Guesser modules</span></a> for more information.</p>
+</div>
 </dd>
 </dl>
 <div class="versionchanged">

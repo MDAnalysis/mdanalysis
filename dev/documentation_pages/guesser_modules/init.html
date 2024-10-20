@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.1.1.1. Context-specific guessers — MDAnalysis.guesser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
+  <title>6.1.2.1. Context-specific guessers — MDAnalysis.guesser &mdash; MDAnalysis 2.8.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,7 +39,7 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.1.1.2. Default Guesser" href="default_guesser.html" />
+    <link rel="next" title="6.1.2.2. Default Guesser" href="default_guesser.html" />
     <link rel="prev" title="6. Guesser modules" href="../guesser_modules.html" /> 
 </head>
 
@@ -104,11 +104,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../guesser_modules.html#example-uses-of-guessers">6.1. Example uses of guessers</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../guesser_modules.html#guessing-using-guess-topologyattrs-api">6.1.1. Guessing using <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code> API</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">6.1.1.1. Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="default_guesser.html">6.1.1.2. Default Guesser</a></li>
-<li class="toctree-l4"><a class="reference internal" href="base.html">6.1.1.3. Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tables.html">6.1.1.4. MDAnalysis topology tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guesser_modules.html#default-behavior">6.1.1. Default behavior</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../guesser_modules.html#guessing-using-guess-topologyattrs-api">6.1.2. Guessing using <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code> API</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">6.1.2.1. Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="default_guesser.html">6.1.2.2. Default Guesser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html">6.1.2.3. Base guesser classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tables.html">6.1.2.4. MDAnalysis topology tables</a></li>
 </ul>
 </li>
 </ul>
@@ -145,7 +146,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../guesser_modules.html"><span class="section-number">6. </span>Guesser modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">6.1.1.1. </span>Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></li>
+      <li class="breadcrumb-item active"><span class="section-number">6.1.2.1. </span>Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/guesser_modules/init.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -156,7 +157,7 @@
            <div itemprop="articleBody">
              
   <section id="context-specific-guessers-mdanalysis-guesser">
-<span id="module-MDAnalysis.guesser.__init__"></span><h1><span class="section-number">6.1.1.1. </span>Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code><a class="headerlink" href="#context-specific-guessers-mdanalysis-guesser" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.guesser.__init__"></span><h1><span class="section-number">6.1.2.1. </span>Context-specific guessers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.guesser</span></code><a class="headerlink" href="#context-specific-guessers-mdanalysis-guesser" title="Link to this heading"></a></h1>
 <p>You can use guesser classes either directly by initiating an instance of it and use its guessing methods or through
 the <code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs</span></code>: API of the universe.</p>
 <p>The following table lists the currently supported Context-aware Guessers along with
@@ -188,7 +189,7 @@ improper dihedrals</p></td>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../guesser_modules.html" class="btn btn-neutral float-left" title="6. Guesser modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="default_guesser.html" class="btn btn-neutral float-right" title="6.1.1.2. Default Guesser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="default_guesser.html" class="btn btn-neutral float-right" title="6.1.2.2. Default Guesser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

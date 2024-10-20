@@ -182,6 +182,12 @@ resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
 (SEGID) and tempfactor (Weighting).</p>
 <p>Residues are detected through a change is either resid or resname
 while segments are detected according to changes in segid.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, atomtypes and masses will be guessed on Universe creation.
+This may change in release 3.0.
+See <a class="reference internal" href="../guesser_modules.html#guessers"><span class="std std-ref">Guesser modules</span></a> for more information.</p>
+</div>
 <section id="classes">
 <h2><span class="section-number">5.2.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
@@ -200,6 +206,12 @@ while segments are detected according to changes in segid.</p>
 </ul>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, atomtypes and masses will be guessed on Universe creation.
+This may change in release 3.0.
+See <a class="reference internal" href="../guesser_modules.html#guessers"><span class="std std-ref">Guesser modules</span></a> for more information.</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.8.0: </span>Type and mass are not longer guessed here. Until 3.0 these will still be
 set by default through through universe.guess_TopologyAttrs() API.</p>

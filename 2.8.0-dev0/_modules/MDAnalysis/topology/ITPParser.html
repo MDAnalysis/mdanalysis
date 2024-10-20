@@ -617,6 +617,13 @@
 <span class="sd">    .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file</span>
 <span class="sd">    .. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top</span>
 
+<span class="sd">    .. note::</span>
+
+<span class="sd">        By default, atomtypes and masses will be guessed on Universe creation</span>
+<span class="sd">        if they are not read from the input file.</span>
+<span class="sd">        This may change in release 3.0.</span>
+<span class="sd">        See :ref:`Guessers` for more information.</span>
+
 <span class="sd">    .. versionchanged:: 2.2.0</span>
 <span class="sd">      no longer adds angles for water molecules with SETTLE constraint</span>
 <span class="sd">    .. versionchanged:: 2.8.0</span>

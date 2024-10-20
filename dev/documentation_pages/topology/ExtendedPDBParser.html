@@ -202,7 +202,8 @@ handle such residue numbers.</p>
 <dt class="sig sig-object py" id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.ExtendedPDBParser.</span></span><span class="sig-name descname"><span class="pre">ExtendedPDBParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/ExtendedPDBParser.html#ExtendedPDBParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser" title="Link to this definition"></a></dt>
 <dd><p>Parser that handles non-standard “extended” PDB file.</p>
-<p>Extended PDB files (MDAnalysis format specifier <em>XPDB</em>) may contain residue
+<blockquote>
+<div><p>Extended PDB files (MDAnalysis format specifier <em>XPDB</em>) may contain residue
 sequence numbers up to 99,999 by utilizing the insertion character field of
 the PDB standard.</p>
 <dl class="simple">
@@ -222,9 +223,18 @@ the PDB standard.</p>
 </ul>
 </dd>
 </dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.ExtendedPDBReader" title="MDAnalysis.coordinates.PDB.ExtendedPDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.ExtendedPDBReader</span></code></a>, <code class="xref py py-obj docutils literal notranslate"></code></p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<blockquote>
+<div><p>By default, atomtypes and masses will be guessed on Universe creation.
+This may change in release 3.0.
+See <a class="reference internal" href="../guesser_modules.html#guessers"><span class="std std-ref">Guesser modules</span></a> for more information.</p>
+</div></blockquote>
+<p><a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.ExtendedPDBReader" title="MDAnalysis.coordinates.PDB.ExtendedPDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.ExtendedPDBReader</span></code></a></p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.8.</span></p>
+</div>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.close">
