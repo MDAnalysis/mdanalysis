@@ -108,3 +108,12 @@ class TestBaseGuesser():
 )
 def test_universe_creation_from_coordinates(universe_input):
     mda.Universe(universe_input)
+
+
+def test_universe_creation_from_specific_array():
+    a = np.array([
+        [0., 0., 150.], [0., 0., 150.], [200., 0., 150.],
+        [0., 0., 150.], [100., 100., 150.], [200., 100., 150.],
+        [0., 200., 150.], [100., 200., 150.], [200., 200., 150.]
+    ])
+    mda.Universe(a, n_atoms=9)
