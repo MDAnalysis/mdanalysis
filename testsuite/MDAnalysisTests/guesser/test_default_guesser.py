@@ -26,7 +26,8 @@ import MDAnalysis as mda
 
 from numpy.testing import assert_equal, assert_allclose
 import numpy as np
-from MDAnalysis.core.topologyattrs import Angles, Atomtypes, Atomnames, Masses
+from MDAnalysis.core.topologyattrs import Angles, Atomtypes, Atomnames
+from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.guesser.default_guesser import DefaultGuesser
 from MDAnalysis.core.topology import Topology
 from MDAnalysisTests import make_Universe
@@ -82,7 +83,7 @@ class TestGuessMasses(object):
 
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
-        with pytest.raises(ValueError,
+        with pytest.raises(NoDataError,
                            match=('there is no reference attributes ')):
             u.guess_TopologyAttrs('default', ['masses'])
 
@@ -119,7 +120,7 @@ class TestGuessTypes(object):
         top = Topology(5)
         msg = "there is no reference attributes in this universe"
         "to guess types from"
-        with pytest.raises(ValueError, match=(msg)):
+        with pytest.raises(NoDataError, match=(msg)):
             mda.Universe(top, to_guess=['types'])
 
     @pytest.mark.parametrize('name, element', (
@@ -148,7 +149,7 @@ def test_guess_charge(default_guesser):
 def test_guess_bonds_Error():
     u = make_Universe(trajectory=True)
     msg = "This Universe does not contain name information"
-    with pytest.raises(ValueError, match=msg):
+    with pytest.raises(NoDataError, match=msg):
         u.guess_TopologyAttrs(to_guess=['bonds'])
 
 
