@@ -37,25 +37,24 @@ try:
     import distopia
 except ImportError:
     HAS_DISTOPIA = False
+    distopia_version = Version("0.0.0")
 else:
     HAS_DISTOPIA = True
 
     # check for compatibility: currently needs to be >=0.3.1,
-
     # some versions of `distopia` don't have a version attribute
     try:
         distopia_version = Version(distopia.__version__)
     except AttributeError:
         warnings.warn("distopia version cannot be determined, assuming 0.0.0")
         distopia_version = Version("0.0.0")
-    else:
-        if distopia_version < MIN_DISTOPIA_VERSION:
-            warnings.warn(
-                f"distopia version {distopia_version} is too old; "
-                f"need at least {MIN_DISTOPIA_VERSION}, Your installed version of "
-                "distopia will NOT be used."
-            )
-            HAS_DISTOPIA = False
+    if distopia_version < MIN_DISTOPIA_VERSION:
+        warnings.warn(
+            f"distopia version {distopia_version} is too old; "
+            f"need at least {MIN_DISTOPIA_VERSION}, Your installed version of "
+            "distopia will NOT be used.", category=RuntimeWarning
+        )
+        HAS_DISTOPIA = False
 
 
 import numpy as np

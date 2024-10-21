@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import sys
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
@@ -840,38 +840,19 @@ def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
 
 
 
-def test_HAS_DISTOPIA_incompatible_distopia():
-    # warn if distopia is the wrong version and set HAS_DISTOPIA to False
-    sys.modules.pop("distopia", None)
-    sys.modules.pop("MDAnalysis.lib._distopia", None)
 
-    # fail any Attribute access for calc_bonds_ortho_float,
-    # calc_bonds_no_box_float but pretend to have the distopia
-    # 0.3.0 functions (from
-    # https://github.com/MDAnalysis/distopia/blob/main/distopia/__init__.py
-    # __all__):
-    mock_distopia_030 = Mock(spec=[
-        'calc_bonds_ortho',
-        'calc_bonds_no_box',
-        'calc_bonds_triclinic',
-        'calc_angles_no_box',
-        'calc_angles_ortho',
-        'calc_angles_triclinic',
-        'calc_dihedrals_no_box',
-        'calc_dihedrals_ortho',
-        'calc_dihedrals_triclinic',
-        'calc_distance_array_no_box',
-        'calc_distance_array_ortho',
-        'calc_distance_array_triclinic',
-        'calc_self_distance_array_no_box',
-        'calc_self_distance_array_ortho',
-        'calc_self_distance_array_triclinic',
-    ])
-    with patch.dict("sys.modules", {"distopia": mock_distopia_030}):
-        with pytest.warns(RuntimeWarning,
-                          match="Install 'distopia>=0.2.0,<0.3.0' to"):
-            import MDAnalysis.lib._distopia
-        assert not MDAnalysis.lib._distopia.HAS_DISTOPIA
+def test_HAS_DISTOPIA_distopia_too_old():
+    # mock a version of distopia that is too old
+    sys.modules.pop("distopia", None)
+    sys.modules.pop("MDAnalysis.lib._distopia", None)   
+    if HAS_DISTOPIA:
+        with patch('distopia.__version__', '0.1.0'):
+            with pytest.warns(RuntimeWarning,
+                              match="distopia will NOT be used"):
+                import MDAnalysis.lib._distopia
+                assert not MDAnalysis.lib._distopia.HAS_DISTOPIA
+
+
 
 class TestCythonFunctions(object):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
@@ -1071,7 +1052,8 @@ class TestCythonFunctions(object):
         assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
         assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
         assert np.isnan(dihedrals[1]), "Straight line dihedral failed"
-        assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
+        # 180 degree dihedral can be either pi or (-pi for distopia)
+        assert_almost_equal(np.abs(dihedrals[2]), np.pi, self.prec, err_msg="180 degree dihedral failed")
         assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
 
@@ -1201,6 +1183,8 @@ class TestCythonFunctions(object):
         bc = b - c
         cd = c - d
         dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
+        # 180 (and 360) degree dihedral can be either pi or (-pi for distopia)
+        dihedrals[2] = np.abs(dihedrals[2]) 
         assert_almost_equal(dihedrals, dihedrals_numpy, self.prec,
                             err_msg="Cython dihedrals didn't match numpy calculations")
 
