@@ -18,7 +18,7 @@ The rules for this file:
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher, 
          yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies,
-         talagayev, aya9aladdin
+         talagayev, aya9aladdin, hmacdope
 
  * 2.8.0
 
@@ -59,6 +59,8 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Improve distopia backend support in line with new functionality available 
+   in `distopia 0.3.0+`
  * Removed type and mass guessing from all topology parsers (PR #3753)
  * Added guess_TopologyAttrs() API to the Universe to handle attribute
    guessing (PR #3753)
