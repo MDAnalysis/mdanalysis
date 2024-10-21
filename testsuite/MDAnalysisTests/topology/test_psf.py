@@ -148,7 +148,7 @@ class TestPSFParserNoTop(PSFBase):
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 0
-    
+
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 0
 

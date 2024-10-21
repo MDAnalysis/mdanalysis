@@ -24,7 +24,7 @@ from io import StringIO
 
 import pytest
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -43,6 +43,7 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysis.topology.PDBParser import PDBParser
 from MDAnalysis import NoDataError
+from MDAnalysis.guesser import tables
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
 
@@ -252,8 +253,6 @@ def test_PDB_hex():
 
 @pytest.mark.filterwarnings("error:Failed to guess the mass")
 def test_PDB_metals():
-    from MDAnalysis.topology import tables
-
     u = mda.Universe(StringIO(PDB_metals), format='PDB')
 
     assert len(u.atoms) == 4
@@ -310,11 +309,32 @@ def test_wrong_elements_warnings():
     column which have been parsed and returns an appropriate warning.
     """
     with pytest.warns(UserWarning, match='Unknown element XX found'):
-        u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
+        u = mda.Universe(StringIO(PDB_wrong_ele,), format='PDB')
 
-    expected = np.array(['N', '', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
-                        dtype=object)
-    assert_equal(u.atoms.elements, expected)
+    expected_elements = np.array(['N', '', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
+                                 dtype=object)
+    gussed_types = np.array(['N', '', 'C', 'O', 'XX', 'CU', 'Fe', 'MG'])
+    guseed_masses = np.array([14.007, 0.0, 12.011, 15.999,  0.0,
+                              63.546, 55.847, 24.305], dtype=float)
+
+    assert_equal(u.atoms.elements, expected_elements)
+    assert_equal(u.atoms.types, gussed_types)
+    assert_allclose(u.atoms.masses, guseed_masses)
+
+
+def test_guessed_masses_and_types_values():
+    """Test that guessed masses and types have the expected values for universe
+       constructed from PDB file.
+    """
+    u = mda.Universe(PDB, format='PDB')
+    gussed_types = np.array(['N', 'H', 'H', 'H', 'C', 'H', 'C', 'H', 'H', 'C'])
+    guseed_masses = [14.007, 1.008, 1.008, 1.008,
+                     12.011, 1.008, 12.011, 1.008, 1.008, 12.011]
+    failed_type_guesses = u.atoms.types == ""
+
+    assert_allclose(u.atoms.masses[:10], guseed_masses)
+    assert_equal(u.atoms.types[:10], gussed_types)
+    assert not failed_type_guesses.any()
 
 
 def test_nobonds_error():

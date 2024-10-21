@@ -26,12 +26,14 @@ import numpy as np
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
+
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
     guessed_attrs = ['masses']
     expected_attrs = ['ids', 'names', 'bonds', 'types', 'elements']
+
     expected_n_residues = 1
     expected_n_atoms = 9
     expected_n_segments = 1
@@ -60,18 +62,24 @@ def test_TXYZ_elements():
     u = mda.Universe(TXYZ, format='TXYZ')
     element_list = np.array(['C', 'H', 'H', 'O', 'H', 'C', 'H', 'H', 'H'], dtype=object)
     assert_equal(u.atoms.elements, element_list)
-    
-    
+
+
 def test_missing_elements_noattribute():
     """Check that:
 
     1) a warning is raised if elements are missing
     2) the elements attribute is not set
     """
-    wmsg = ("Element information is missing, elements attribute will not be "
-            "populated")
+    wmsg = ("Element information is missing, elements attribute "
+            "will not be populated. If needed these can be ")
     with pytest.warns(UserWarning, match=wmsg):
         u = mda.Universe(ARC_PBC)
     with pytest.raises(AttributeError):
         _ = u.atoms.elements
 
+
+def test_guessed_masses():
+    u = mda.Universe(TXYZ)
+    expected = [12.011,  1.008,  1.008, 15.999,  1.008, 12.011,
+                1.008,  1.008, 1.008]
+    assert_allclose(u.atoms.masses, expected)

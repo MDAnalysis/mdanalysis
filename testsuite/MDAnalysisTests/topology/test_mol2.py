@@ -23,11 +23,12 @@
 from io import StringIO
 
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import pytest
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
+
 from MDAnalysisTests.datafiles import (
     mol2_molecule,
     mol2_molecules,
@@ -178,6 +179,7 @@ class TestMOL2Base(ParserBase):
         'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds',
         'elements',
     ]
+
     guessed_attrs = ['masses']
     expected_n_atoms = 49
     expected_n_residues = 1
@@ -235,11 +237,16 @@ def test_wrong_elements_warnings():
     with pytest.warns(UserWarning, match='Unknown elements found') as record:
         u = mda.Universe(StringIO(mol2_wrong_element), format='MOL2')
 
-    # One warning from invalid elements, one from invalid masses
-    assert len(record) == 2
+    # One warning from invalid elements, one from masses PendingDeprecationWarning
+    assert len(record) == 3
 
-    expected = np.array(['N', '', ''], dtype=object)
-    assert_equal(u.atoms.elements, expected)
+    expected_elements = np.array(['N', '', ''], dtype=object)
+    guseed_masses = np.array([14.007, 0.0, 0.0], dtype=float)
+    gussed_types = np.array(['N.am', 'X.o2', 'XX.am'])
+
+    assert_equal(u.atoms.elements, expected_elements)
+    assert_equal(u.atoms.types, gussed_types)
+    assert_allclose(u.atoms.masses, guseed_masses)
 
 
 def test_all_wrong_elements_warnings():
@@ -301,3 +308,9 @@ def test_unformat():
     with pytest.raises(ValueError,
                        match='Some atoms in the mol2 file'):
         u = mda.Universe(StringIO(mol2_resname_unformat), format='MOL2')
+
+
+def test_guessed_masses():
+    u = mda.Universe(mol2_molecules)
+    assert_allclose(u.atoms.masses[:7], [14.007, 32.06,
+                    14.007, 14.007, 15.999, 15.999, 12.011])

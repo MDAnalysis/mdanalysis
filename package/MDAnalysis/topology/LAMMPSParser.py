@@ -27,6 +27,12 @@ LAMMPSParser
 
 Parses data_ or dump_ files produced by LAMMPS_.
 
+.. note::
+
+    By default, masses will be guessed on Universe creation if they are not
+    read from the input file. This may change in release 3.0.
+    See :ref:`Guessers` for more information.
+
 .. _LAMMPS: http://lammps.sandia.gov/
 .. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
 .. _dump: http://lammps.sandia.gov/doc/dump.html
@@ -81,7 +87,6 @@ import string
 import functools
 import warnings
 
-from . import guessers
 from ..lib.util import openany, conv_float
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReaderBase, squash_by
@@ -182,6 +187,10 @@ class DATAParser(TopologyReaderBase):
     see :ref:`atom_style_kwarg`.
 
     .. versionadded:: 0.9.0
+    .. versionchanged:: 2.8.0
+        Removed mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
+
     """
     format = 'DATA'
 
@@ -252,9 +261,9 @@ class DATAParser(TopologyReaderBase):
         if missing_attrs:
             raise ValueError("atom_style string missing required field(s): {}"
                              "".format(', '.join(missing_attrs)))
-                
+
         return style_dict
-    
+
     def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
@@ -300,7 +309,7 @@ class DATAParser(TopologyReaderBase):
                 type, sect = self._parse_bond_section(sects[L], nentries, mapping)
             except KeyError:
                 type, sect = [], []
-            
+
             top.add_TopologyAttr(attr(sect, type))
 
         return top
@@ -323,7 +332,7 @@ class DATAParser(TopologyReaderBase):
             self.style_dict = None
         else:
             self.style_dict = self._interpret_atom_style(atom_style)
-        
+
         header, sects = self.grab_datafile()
 
         unitcell = self._parse_box(header)
@@ -361,7 +370,7 @@ class DATAParser(TopologyReaderBase):
                 style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
         else:
             style_dict = self.style_dict
-    
+
         for i, line in enumerate(datalines):
             line = line.split()
 
@@ -520,10 +529,6 @@ class DATAParser(TopologyReaderBase):
             for i, at in enumerate(types):
                 masses[i] = massdict[at]
             attrs.append(Masses(masses))
-        else:
-            # Guess them
-            masses = guessers.guess_masses(types)
-            attrs.append(Masses(masses, guessed=True))
 
         residx, resids = squash_by(resids)[:2]
         n_residues = len(resids)
@@ -610,7 +615,7 @@ class LammpsDumpParser(TopologyReaderBase):
 
             indices = np.zeros(natoms, dtype=int)
             types = np.zeros(natoms, dtype=object)
-            
+
             atomline = fin.readline()  # ITEM ATOMS
             attrs = atomline.split()[2:]  # attributes on coordinate line
             col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids

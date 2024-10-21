@@ -20,6 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import sys
+from unittest.mock import Mock, patch
 import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
@@ -798,9 +800,10 @@ class TestTriclinicDistances(object):
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
 
-@pytest.mark.parametrize("box", 
+
+@pytest.mark.parametrize("box",
     [
-        None, 
+        None,
         np.array([10., 15., 20., 90., 90., 90.]), # otrho
         np.array([10., 15., 20., 70.53571, 109.48542, 70.518196]), # TRIC
     ]
@@ -836,6 +839,39 @@ def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
             conv_dtype_if_ndarr(d, dtype))
 
 
+
+def test_HAS_DISTOPIA_incompatible_distopia():
+    # warn if distopia is the wrong version and set HAS_DISTOPIA to False
+    sys.modules.pop("distopia", None)
+    sys.modules.pop("MDAnalysis.lib._distopia", None)
+
+    # fail any Attribute access for calc_bonds_ortho_float,
+    # calc_bonds_no_box_float but pretend to have the distopia
+    # 0.3.0 functions (from
+    # https://github.com/MDAnalysis/distopia/blob/main/distopia/__init__.py
+    # __all__):
+    mock_distopia_030 = Mock(spec=[
+        'calc_bonds_ortho',
+        'calc_bonds_no_box',
+        'calc_bonds_triclinic',
+        'calc_angles_no_box',
+        'calc_angles_ortho',
+        'calc_angles_triclinic',
+        'calc_dihedrals_no_box',
+        'calc_dihedrals_ortho',
+        'calc_dihedrals_triclinic',
+        'calc_distance_array_no_box',
+        'calc_distance_array_ortho',
+        'calc_distance_array_triclinic',
+        'calc_self_distance_array_no_box',
+        'calc_self_distance_array_ortho',
+        'calc_self_distance_array_triclinic',
+    ])
+    with patch.dict("sys.modules", {"distopia": mock_distopia_030}):
+        with pytest.warns(RuntimeWarning,
+                          match="Install 'distopia>=0.2.0,<0.3.0' to"):
+            import MDAnalysis.lib._distopia
+        assert not MDAnalysis.lib._distopia.HAS_DISTOPIA
 
 class TestCythonFunctions(object):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
@@ -1599,7 +1635,7 @@ class TestEmptyInputCoordinates(object):
             assert_equal(res[1], np.empty((0,), dtype=np.float64))
         else:
             assert_equal(res, np.empty((0, 2), dtype=np.int64))
-    
+
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_empty_input_transform_RtoS(self, empty_coord, box, backend):

@@ -90,7 +90,7 @@ import logging
 import numpy as np
 
 from ..topology.base import TopologyReaderBase, change_squash
-from ..topology.tables import Z2SYMB
+from ..guesser.tables import Z2SYMB
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,

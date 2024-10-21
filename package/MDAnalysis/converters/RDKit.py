@@ -255,9 +255,7 @@ class RDKitConverter(base.ConverterBase):
         from MDAnalysisTests.datafiles import PSF, DCD
         from rdkit.Chem.Descriptors3D import Asphericity
 
-        u = mda.Universe(PSF, DCD)
-        elements = mda.topology.guessers.guess_types(u.atoms.names)
-        u.add_TopologyAttr('elements', elements)
+        u = mda.Universe(PSF, DCD, to_guess=['elements'])
         ag = u.select_atoms("resid 1-10")
 
         for ts in u.trajectory:

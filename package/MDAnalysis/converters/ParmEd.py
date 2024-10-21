@@ -81,12 +81,12 @@ import functools
 import itertools
 import warnings
 
+from ..guesser.tables import SYMB2Z
 import numpy as np
 from numpy.lib import NumpyVersion
 
 from . import base
 from ..coordinates.base import SingleFrameReaderBase
-from ..topology.tables import SYMB2Z
 from ..core.universe import Universe
 from ..exceptions import NoDataError
 

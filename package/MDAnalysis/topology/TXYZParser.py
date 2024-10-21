@@ -47,17 +47,16 @@ import itertools
 import numpy as np
 import warnings
 
-from . import guessers
-from .tables import SYMB2Z
+from ..guesser.tables import SYMB2Z
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
+from ..guesser.tables import SYMB2Z
 from ..core.topologyattrs import (
     Atomnames,
     Atomids,
     Atomtypes,
     Bonds,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -74,9 +73,19 @@ class TXYZParser(TopologyReaderBase):
     - Atomtypes
     - Elements (if all atom names are element symbols)
 
+    .. note::
+
+        By default, masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.4.0
        Adding the `Element` attribute if all names are valid element symbols.
+    .. versionchanged:: 2.8.0
+       Removed mass guessing (attributes guessing takes place now
+       through universe.guess_TopologyAttrs() API).
+
     """
     format = ['TXYZ', 'ARC']
 
@@ -95,6 +104,7 @@ class TXYZParser(TopologyReaderBase):
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=object)
             bonds = []
+
             # Find first atom line, maybe there's box information
             fline = inf.readline()
             try:
@@ -120,26 +130,23 @@ class TXYZParser(TopologyReaderBase):
                     if i < other_atom:
                         bonds.append((i, other_atom))
 
-        # Guessing time
-        masses = guessers.guess_masses(names)
-
         attrs = [Atomnames(names),
                  Atomids(atomids),
                  Atomtypes(types),
                  Bonds(tuple(bonds)),
-                 Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
                  ]
         if all(n.capitalize() in SYMB2Z for n in names):
             attrs.append(Elements(np.array(names, dtype=object)))
-            
+
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed using MDAnalysis.topology.guessers.")
- 
+                          "guessed using universe.guess_TopologyAttrs("
+                          "to_guess=['elements']).")
+
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
 

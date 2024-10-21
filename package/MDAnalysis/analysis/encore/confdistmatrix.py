@@ -34,6 +34,11 @@ class to compute an RMSD matrix in such a way is also available.
 
 .. versionadded:: 0.16.0
 
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
+
 """
 from joblib import Parallel, delayed
 import numpy as np
