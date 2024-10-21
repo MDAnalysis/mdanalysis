@@ -82,12 +82,8 @@ If `distopia`_ is installed, the functions in this table will accept the key
 'distopia' for the `backend` keyword argument. If the distopia backend is
 selected the `distopia` library will be used to calculate the distances. Note
 that for functions listed in this table **distopia is not the default backend
-if and must be selected.**
+and must be selected.**
 
-.. Note::
-   Distopia does not currently support triclinic simulation boxes. If you
-   specify `distopia` as the backend and your simulation box is triclinic,
-   the function will fall back to the default `serial` backend.
 
 .. Note::
     Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
