@@ -28,6 +28,9 @@ This module is a stub to provide distopia distance functions to `distances.py`
 as a selectable backend.
 """
 import warnings
+from packaging.version import Version
+
+MIN_DISTOPIA_VERSION = Version("0.3.1")
 
 # check for distopia
 try:
@@ -37,17 +40,22 @@ except ImportError:
 else:
     HAS_DISTOPIA = True
 
-    # check for compatibility: currently needs to be >=0.2.0,<0.3.0 (issue
-    # #4740) No distopia.__version__ available so we have to do some probing.
-    needed_funcs = ['calc_bonds_no_box_float', 'calc_bonds_ortho_float']
-    has_distopia_020 = all([hasattr(distopia, func) for func in needed_funcs])
-    if not has_distopia_020:
-        warnings.warn("Install 'distopia>=0.2.0,<0.3.0' to be used with this "
-                      "release of MDAnalysis. Your installed version of "
-                      "distopia >=0.3.0 will NOT be used.",
-                      category=RuntimeWarning)
-        del distopia
-        HAS_DISTOPIA = False
+    # check for compatibility: currently needs to be >=0.3.1,
+
+    # some versions of `distopia` don't have a version attribute
+    try:
+        distopia_version = Version(distopia.__version__)
+    except AttributeError:
+        warnings.warn("distopia version cannot be determined, assuming 0.0.0")
+        distopia_version = Version("0.0.0")
+    else:
+        if distopia_version < MIN_DISTOPIA_VERSION:
+            warnings.warn(
+                f"distopia version {distopia_version} is too old; "
+                f"need at least {MIN_DISTOPIA_VERSION}, Your installed version of "
+                "distopia will NOT be used."
+            )
+            HAS_DISTOPIA = False
 
 
 from .c_distances import (
