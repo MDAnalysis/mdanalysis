@@ -110,7 +110,7 @@ if and must be selected.**
 .. versionchanged:: 2.5.0
    Interface to the `distopia`_ package added.
 .. versionchanged:: 2.7.0
-    Distopia support greatly expanded.
+   Distopia support greatly expanded (with distopia ≥ 0.3.0).
 
 Functions
 ---------
