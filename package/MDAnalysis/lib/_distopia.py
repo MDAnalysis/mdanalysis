@@ -58,9 +58,6 @@ else:
             HAS_DISTOPIA = False
 
 
-from .c_distances import (
-    calc_bond_distance_triclinic as _calc_bond_distance_triclinic_serial,
-)
 import numpy as np
 
 
