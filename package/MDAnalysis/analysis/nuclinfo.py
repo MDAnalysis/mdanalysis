@@ -233,75 +233,65 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
 
 def phase_cp(universe, seg, i):
-    """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.
-
+    """
+    Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.
     The angle is computed by the positions of atoms in the ribose ring.
-
 
     Parameters
     ----------
     universe : Universe
-         :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
+        :class:`~MDAnalysis.core.universe.Universe` containing the trajectory
     seg : str
-        segment id for base
+        Segment id for base
     i : int
-        resid of the first base
+        Resid of the first base
 
     Returns
     -------
     float
-        phase angle in degrees
-
+        Phase angle in degrees
 
     .. versionadded:: 0.7.6
     """
-    atom1 = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i))
-    atom2 = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i))
-    atom3 = universe.select_atoms(" atom {0!s} {1!s} C2\' ".format(seg, i))
-    atom4 = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i))
-    atom5 = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i))
+    
+    # Select atoms
+    atom1 = universe.select_atoms(f"atom {seg} {i} O4\'")
+    atom2 = universe.select_atoms(f"atom {seg} {i} C1\'")
+    atom3 = universe.select_atoms(f"atom {seg} {i} C2\'")
+    atom4 = universe.select_atoms(f"atom {seg} {i} C3\'")
+    atom5 = universe.select_atoms(f"atom {seg} {i} C4\'")
 
-    data1 = atom1.positions
-    data2 = atom2.positions
-    data3 = atom3.positions
-    data4 = atom4.positions
-    data5 = atom5.positions
+    # Get positions
+    data1, data2, data3, data4, data5 = [atom.positions for atom in [atom1, atom2, atom3, atom4, atom5]]
 
-    r0 = (data1 + data2 + data3 + data4 + data5) * (1.0 / 5.0)
-    r1 = data1 - r0
-    r2 = data2 - r0
-    r3 = data3 - r0
-    r4 = data4 - r0
-    r5 = data5 - r0
+    # Calculate mean position (r0)
+    r0 = (data1 + data2 + data3 + data4 + data5) / 5.0
 
-    R1 = ((r1 * sin(2 * pi * 0.0 / 5.0)) + (r2 * sin(2 * pi * 1.0 / 5.0)) +
-          (r3 * sin(2 * pi * 2.0 / 5.0)) + (r4 * sin(2 * pi * 3.0 / 5.0)) +
-          (r5 * sin(2 * pi * 4.0 / 5.0)))
+    # Calculate relative positions (r1, r2, r3, r4, r5)
+    r1, r2, r3, r4, r5 = [data - r0 for data in [data1, data2, data3, data4, data5]]
 
-    R2 = ((r1 * cos(2 * pi * 0.0 / 5.0)) + (r2 * cos(2 * pi * 1.0 / 5.0)) +
-          (r3 * cos(2 * pi * 2.0 / 5.0)) + (r4 * cos(2 * pi * 3.0 / 5.0)) +
-          (r5 * cos(2 * pi * 4.0 / 5.0)))
+    # Calculate R1 and R2
+    R1 = (r1 * sin(2 * pi * 0.0 / 5.0)) + (r2 * sin(2 * pi * 1.0 / 5.0)) + \
+         (r3 * sin(2 * pi * 2.0 / 5.0)) + (r4 * sin(2 * pi * 3.0 / 5.0)) + \
+         (r5 * sin(2 * pi * 4.0 / 5.0))
 
+    R2 = (r1 * cos(2 * pi * 0.0 / 5.0)) + (r2 * cos(2 * pi * 1.0 / 5.0)) + \
+         (r3 * cos(2 * pi * 2.0 / 5.0)) + (r4 * cos(2 * pi * 3.0 / 5.0)) + \
+         (r5 * cos(2 * pi * 4.0 / 5.0))
+
+    # Normalize vector x and calculate dot products
     x = np.cross(R1[0], R2[0])
-    n = x / sqrt(pow(x[0], 2) + pow(x[1], 2) + pow(x[2], 2))
+    n = x / np.linalg.norm(x)
+    
+    r_d = [np.dot(r, n) for r in [r1, r2, r3, r4, r5]]
 
-    r1_d = np.dot(r1, n)
-    r2_d = np.dot(r2, n)
-    r3_d = np.dot(r3, n)
-    r4_d = np.dot(r4, n)
-    r5_d = np.dot(r5, n)
+    # Calculate D and C components
+    D = sum(r_d[j] * sin(4 * pi * j / 5.0) for j in range(5)) * -1 * sqrt(2.0 / 5.0)
+    C = sum(r_d[j] * cos(4 * pi * j / 5.0) for j in range(5)) * sqrt(2.0 / 5.0)
 
-    D = ((r1_d * sin(4 * pi * 0.0 / 5.0)) + (r2_d * sin(4 * pi * 1.0 / 5.0))
-         + (r3_d * sin(4 * pi * 2.0 / 5.0)) + (r4_d * sin(4 * pi * 3.0 / 5.0))
-         + (r5_d * sin(4 * pi * 4.0 / 5.0))) * -1 * sqrt(2.0 / 5.0)
-
-    C = ((r1_d * cos(4 * pi * 0.0 / 5.0)) + (r2_d * cos(4 * pi * 1.0 / 5.0))
-         + (r3_d * cos(4 * pi * 2.0 / 5.0)) + (r4_d * cos(4 * pi * 3.0 / 5.0))
-         + (r5_d * cos(4 * pi * 4.0 / 5.0))) * sqrt(2.0 / 5.0)
-
-    phase_ang = (atan2(D, C) + (pi / 2.)) * 180. / pi
+    # Calculate phase angle
+    phase_ang = (np.arctan2(D, C) + (np.pi / 2.)) * 180. / np.pi
     return phase_ang % 360
-
 
 def phase_as(universe, seg, i):
     """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the AS method
@@ -368,7 +358,7 @@ def phase_as(universe, seg, i):
          + (data4 * cos(2 * 2 * pi * (4 - 1.) / 5.))
          + (data5 * cos(2 * 2 * pi * (5 - 1.) / 5.))) * 2. / 5.
 
-    phase_ang = atan2(B, A) * 180. / pi
+    phase_ang = (np.arctan2(B, A) + (np.pi / 2.)) * 180. / np.pi
     return phase_ang % 360
 
 
@@ -482,7 +472,7 @@ def tors_alpha(universe, seg, i):
 
 
 def tors_beta(universe, seg, i):
-    """beta  backbone dihedral
+    """beta backbone dihedral
 
     The dihedral is computed based on position atoms for resid `i`.
 
@@ -499,7 +489,6 @@ def tors_beta(universe, seg, i):
     -------
     beta : float
         torsion angle in degrees
-
 
     .. versionadded:: 0.7.6
     """
