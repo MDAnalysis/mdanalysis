@@ -311,6 +311,9 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         return distances
     
     if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
         distances = distances.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -330,6 +333,8 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
              backend=backend)
 
     if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
         distances = distances.astype(np.float64)
 
     return distances
@@ -400,6 +405,14 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     distances = _check_result_array(result, (distnum,))
     if len(distances) == 0:
         return distances
+
+    if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
+        distances = distances.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -414,6 +427,11 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         _run("calc_self_distance_array",
              args=(reference, distances),
              backend=backend)
+
+    if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
+        distances = distances.astype(np.float64)
 
     return distances
 
@@ -1499,6 +1517,9 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
     if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
         bondlengths = bondlengths.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -1518,14 +1539,14 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
                     backend=backend,
                 )
         else:
-            if backend == 'distopia':
-                bondlengths = bondlengths.astype(np.float32)
             _run(
                 "calc_bond_distance",
                 args=(coords1, coords2, bondlengths),
                 backend=backend,
             )
     if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
         bondlengths = bondlengths.astype(np.float64)
     return bondlengths
 
@@ -1614,6 +1635,9 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
     angles = _check_result_array(result, (numatom,))
 
     if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
         angles = angles.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -1634,6 +1658,8 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
                    backend=backend)
 
     if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
         angles = angles.astype(np.float64)
     return angles
 
@@ -1738,6 +1764,9 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
     dihedrals = _check_result_array(result, (numatom,))
 
     if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
         dihedrals = dihedrals.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -1757,6 +1786,8 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
                  args=(coords1, coords2, coords3, coords4, dihedrals),
                  backend=backend)
     if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
         dihedrals = dihedrals.astype(np.float64)
     return dihedrals
 
