@@ -14,6 +14,7 @@ from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
 )
+from MDAnalysis.analysis.align import AverageStructure, AlignTraj
 from MDAnalysis.lib.util import is_installed
 
 
@@ -140,4 +141,16 @@ def client_DSSP(request):
   
 @pytest.fixture(scope='module', params=params_for_cls(HydrogenBondAnalysis))
 def client_HydrogenBondAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.align
+
+@pytest.fixture(scope="module", params=params_for_cls(AverageStructure))
+def client_AverageStructure(request):
+    return request.param
+
+
+@pytest.fixture(scope="module", params=params_for_cls(AlignTraj))
+def client_AlignTraj(request):
     return request.param

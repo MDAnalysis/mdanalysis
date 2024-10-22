@@ -216,7 +216,7 @@ from MDAnalysis.lib.util import deprecate   # remove 3.0
 from MDAnalysis.lib.log import ProgressBar
 from ..due import due, Doi
 
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
@@ -678,6 +678,12 @@ class AlignTraj(AnalysisBase):
 
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "dask")
+
     def __init__(self, mobile, reference, select='all', filename=None,
                  prefix='rmsfit_', weights=None,
                  tol_mass=0.1, match_atoms=True, strict=False, force=True, in_memory=False,
@@ -866,6 +872,12 @@ class AlignTraj(AnalysisBase):
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "rmsd": ResultsGroup.ndarray_hstack,
+            }
+        )
 
 class AverageStructure(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection,
@@ -895,6 +907,12 @@ class AverageStructure(AnalysisBase):
         averaged_universe = av.results.universe
 
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "multiprocessing", "dask")
 
     def __init__(self, mobile, reference=None, select='all', filename=None,
                 weights=None,
@@ -1088,6 +1106,15 @@ class AverageStructure(AnalysisBase):
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "universe": ResultsGroup.ndarray_vstack,
+                "positions": ResultsGroup.ndarray_vstack,
+                "rmsd": ResultsGroup.ndarray_vstack,
+            }
+        )
 
     @property
     def universe(self):
