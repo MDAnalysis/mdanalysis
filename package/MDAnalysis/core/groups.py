@@ -940,45 +940,56 @@ class GroupBase(_MutableBase):
         n_compounds : int
             The number of individual compounds.
         """
-        # Caching would help here, especially when repeating the operation
-        # over different frames, since these masks are coordinate-independent.
-        # However, cache must be invalidated whenever new compound indices are
-        # modified, which is not yet implemented.
-        # Also, should we include here the grouping for 'group', which is
+        # Should we include here the grouping for 'group', which is
         # essentially a non-split?
 
+        cache_key = f"{compound}_masks"
         compound_indices = self._get_compound_indices(compound)
-        compound_sizes = np.bincount(compound_indices)
-        size_per_atom = compound_sizes[compound_indices]
-        compound_sizes = compound_sizes[compound_sizes != 0]
-        unique_compound_sizes = unique_int_1d(compound_sizes)
 
-        # Are we already sorted? argsorting and fancy-indexing can be expensive
-        # so we do a quick pre-check.
-        needs_sorting = np.any(np.diff(compound_indices) < 0)
-        if needs_sorting:
-            # stable sort ensures reproducibility, especially concerning who
-            # gets to be a compound's atom[0] and be a reference for unwrap.
-            if stable_sort:
-                sort_indices = np.argsort(compound_indices, kind='stable')
-            else:
-                # Quicksort
-                sort_indices = np.argsort(compound_indices)
-            # We must sort size_per_atom accordingly (Issue #3352).
-            size_per_atom = size_per_atom[sort_indices]
+        # create new cache or invalidate cache when compound indices changed
+        if (
+            cache_key not in self._cache
+            or np.all(self._cache[cache_key]["compound_indices"]
+                      != compound_indices)):
+            compound_sizes = np.bincount(compound_indices)
+            size_per_atom = compound_sizes[compound_indices]
+            compound_sizes = compound_sizes[compound_sizes != 0]
+            unique_compound_sizes = unique_int_1d(compound_sizes)
 
-        compound_masks = []
-        atom_masks = []
-        for compound_size in unique_compound_sizes:
-            compound_masks.append(compound_sizes == compound_size)
+            # Are we already sorted? argsorting and fancy-indexing can be
+            # expensive so we do a quick pre-check.
+            needs_sorting = np.any(np.diff(compound_indices) < 0)
             if needs_sorting:
-                atom_masks.append(sort_indices[size_per_atom == compound_size]
-                                   .reshape(-1, compound_size))
-            else:
-                atom_masks.append(np.where(size_per_atom == compound_size)[0]
-                                   .reshape(-1, compound_size))
+                # stable sort ensures reproducibility, especially concerning
+                # who gets to be a compound's atom[0] and be a reference for
+                # unwrap.
+                if stable_sort:
+                    sort_indices = np.argsort(compound_indices, kind='stable')
+                else:
+                    # Quicksort
+                    sort_indices = np.argsort(compound_indices)
+                # We must sort size_per_atom accordingly (Issue #3352).
+                size_per_atom = size_per_atom[sort_indices]
 
-        return atom_masks, compound_masks, len(compound_sizes)
+            compound_masks = []
+            atom_masks = []
+            for compound_size in unique_compound_sizes:
+                compound_masks.append(compound_sizes == compound_size)
+                if needs_sorting:
+                    atom_masks.append(sort_indices[size_per_atom
+                                                   == compound_size]
+                                      .reshape(-1, compound_size))
+                else:
+                    atom_masks.append(np.where(size_per_atom
+                                               == compound_size)[0]
+                                      .reshape(-1, compound_size))
+
+            self._cache[cache_key] = {
+                "compound_indices": compound_indices,
+                "data": (atom_masks, compound_masks, len(compound_sizes))
+            }
+
+        return self._cache[cache_key]["data"]
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -3208,7 +3219,7 @@ class AtomGroup(GroupBase):
                     universe = mda.Universe(PSF, DCD)
                     guessed_elements = guess_types(universe.atoms.names)
                     universe.add_TopologyAttr('elements', guessed_elements)
-                    
+
                 .. doctest:: AtomGroup.select_atoms.smarts
 
                     >>> universe.select_atoms("smarts C", smarts_kwargs={"maxMatches": 100})
