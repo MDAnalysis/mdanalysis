@@ -438,7 +438,7 @@ def Triclinic_Universe():
     universe = MDAnalysis.Universe(TRIC)
     return universe
 
-@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+@pytest.mark.parametrize('backend', distopia_conditional_backend())
 class TestDistanceArrayDCD_TRIC(object):
     # reasonable precision so that tests succeed on 32 and 64 bit machines
     # (the reference values were obtained on 64 bit)
@@ -555,7 +555,7 @@ class TestDistanceArrayDCD_TRIC(object):
                         err_msg="AtomGroup and NumPy distances do not match")
 
 
-@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+@pytest.mark.parametrize('backend', distopia_conditional_backend())
 class TestSelfDistanceArrayDCD_TRIC(object):
     prec = 5
 
@@ -652,7 +652,6 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                         err_msg="AtomGroup and NumPy distances do not match")
 
 
-@pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
     """Unit tests for the Triclinic PBC functions.
     Tests:
@@ -696,6 +695,7 @@ class TestTriclinicDistances(object):
         S_mol2 = TRIC.atoms[390].position
         return S_mol1, S_mol2
 
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     @pytest.mark.parametrize('S_mol', [S_mol, S_mol_single], indirect=True)
     def test_transforms(self, S_mol, tri_vec_box, box, backend):
         # To check the cython coordinate transform, the same operation is done in numpy
@@ -717,9 +717,11 @@ class TestTriclinicDistances(object):
         assert_almost_equal(S_test1, S_mol1, self.prec, err_msg="Round trip 1 failed in transform")
         assert_almost_equal(S_test2, S_mol2, self.prec, err_msg="Round trip 2 failed in transform")
 
+
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_selfdist(self, S_mol, box, tri_vec_box, backend):
         S_mol1, S_mol2 = S_mol
-        R_coords = distances.transform_StoR(S_mol1, box, backend=backend)
+        R_coords = distances.transform_StoR(S_mol1, box, backend="serial")
         # Transform functions are tested elsewhere so taken as working here
         dists = distances.self_distance_array(R_coords, box=box, backend=backend)
         # Manually calculate self_distance_array
@@ -739,7 +741,7 @@ class TestTriclinicDistances(object):
                             err_msg="self_distance_array failed with input 1")
 
         # Do it again for input 2 (has wider separation in points)
-        R_coords = distances.transform_StoR(S_mol2, box, backend=backend)
+        R_coords = distances.transform_StoR(S_mol2, box, backend="serial")
         # Transform functions are tested elsewhere so taken as working here
         dists = distances.self_distance_array(R_coords, box=box, backend=backend)
         # Manually calculate self_distance_array
@@ -758,11 +760,13 @@ class TestTriclinicDistances(object):
         assert_almost_equal(dists, manual, self.prec,
                             err_msg="self_distance_array failed with input 2")
 
+
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_distarray(self, S_mol, tri_vec_box, box, backend):
         S_mol1, S_mol2 = S_mol
 
-        R_mol1 = distances.transform_StoR(S_mol1, box, backend=backend)
-        R_mol2 = distances.transform_StoR(S_mol2, box, backend=backend)
+        R_mol1 = distances.transform_StoR(S_mol1, box, backend="serial")
+        R_mol2 = distances.transform_StoR(S_mol2, box, backend="serial")
 
         # Try with box
         dists = distances.distance_array(R_mol1, R_mol2, box=box, backend=backend)
@@ -780,6 +784,8 @@ class TestTriclinicDistances(object):
         assert_almost_equal(dists, manual, self.prec,
                             err_msg="distance_array failed with box")
 
+
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_pbc_dist(self, S_mol, box, backend):
         S_mol1, S_mol2 = S_mol
         results = np.array([[37.629944]])
@@ -788,6 +794,8 @@ class TestTriclinicDistances(object):
         assert_almost_equal(dists, results, self.prec,
                             err_msg="distance_array failed to retrieve PBC distance")
 
+
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_pbc_wrong_wassenaar_distance(self, backend):
         box = [2, 2, 2, 60, 60, 60]
         tri_vec_box = mdamath.triclinic_vectors(box)
