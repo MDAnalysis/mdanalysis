@@ -48,6 +48,7 @@ case-insensitive):
 
    "OpenMP"   :mod:`c_distances_openmp` parallel implementation in C/Cython
                                         with OpenMP
+   "distopia"  `_distopia`               SIMD-accelerated implementation
    ========== ========================= ======================================
 
 Use of the distopia library
@@ -279,7 +280,7 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         ``numpy.float64``.
         Avoids creating the array which saves time when the function
         is called repeatedly.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
@@ -370,7 +371,7 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and
         dtype ``numpy.float64``. Avoids creating the array which saves time when
         the function is called repeatedly.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
@@ -1607,7 +1608,7 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate triplets). Avoids recreating the array in repeated
         function calls.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
@@ -1732,7 +1733,7 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate quadruplets). Avoids recreating the array in
         repeated function calls.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
