@@ -298,6 +298,8 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.8.0
+       Added support for the `distopia` backend.
     """
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
@@ -395,6 +397,8 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.8.0
+       Added support for the `distopia` backend.
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
