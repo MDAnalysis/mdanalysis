@@ -70,7 +70,7 @@ import numpy as np
 
 import MDAnalysis as mda
 from .distances import calc_bonds
-from .base import AnalysisBase, Results
+from .base import AnalysisBase, ResultsGroup
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
 
@@ -159,13 +159,23 @@ class NucPairDist(AnalysisBase):
     .. versionchanged:: 2.7.0
         Added static method :attr:`select_strand_atoms` as a
         helper for selecting atom pairs for distance analysis.
+
+    .. versionchanged:: 2.8.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask')
 
     _s1: mda.AtomGroup
     _s2: mda.AtomGroup
     _n_sel: int
-    _res_dict: Dict[int, List[float]]
-
+    
     def __init__(self, selection1: List[mda.AtomGroup],
                  selection2: List[mda.AtomGroup],
                  **kwargs) -> None:
@@ -276,7 +286,7 @@ class NucPairDist(AnalysisBase):
         return (sel1, sel2)
 
     def _prepare(self) -> None:
-        self._res_array: np.ndarray = np.zeros(
+        self.results.distances: np.ndarray = np.zeros(
             [self.n_frames, self._n_sel]
         )
 
@@ -285,13 +295,17 @@ class NucPairDist(AnalysisBase):
             self._s1.positions, self._s2.positions
         )
 
-        self._res_array[self._frame_index, :] = dist
+        self.results.distances[self._frame_index, :] = dist
 
     def _conclude(self) -> None:
-        self.results['distances'] = self._res_array
         self.results['pair_distances'] = self.results['distances']
         # TODO: remove pair_distances in 3.0.0
 
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={
+            'distances': ResultsGroup.ndarray_vstack,
+        }
+        )
 
 class WatsonCrickDist(NucPairDist):
     r"""
