@@ -60,7 +60,7 @@ Fixes
 
 Enhancements
  * Improve distopia backend support in line with new functionality available 
-   in `distopia 0.3.0+`
+   in distopia >= 0.3.1 (PR #4734)
  * Removed type and mass guessing from all topology parsers (PR #3753)
  * Added guess_TopologyAttrs() API to the Universe to handle attribute
    guessing (PR #3753)
