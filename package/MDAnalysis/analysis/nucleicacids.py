@@ -164,8 +164,6 @@ class NucPairDist(AnalysisBase):
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
-       The 'self._res_array' was modified to 'self.results.distances' to
-       enable the implementation of the parallelization.
     """
 
     _analysis_algorithm_is_parallelizable = True
