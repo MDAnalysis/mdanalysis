@@ -48,6 +48,7 @@ case-insensitive):
 
    "OpenMP"   :mod:`c_distances_openmp` parallel implementation in C/Cython
                                         with OpenMP
+   "distopia"  `_distopia`               SIMD-accelerated implementation
    ========== ========================= ======================================
 
 Use of the distopia library
@@ -61,29 +62,33 @@ module are covered. Consult the following table to see if the function
 you wish to use is covered by distopia. For more information see the
 `distopia documentation`_.
 
-.. Table:: Functions available using the `distopia`_ backend.
-    :align: center
+.. table:: Functions available using the `distopia`_ backend.
+   :align: center
 
-    +-------------------------------------+-----------------------------------+
-    | Functions                           | Notes                             |
-    +=====================================+===================================+
-    | MDAnalysis.lib.distances.calc_bonds | Doesn't support triclinic boxes   |
-    +-------------------------------------+-----------------------------------+
+   +-----------------------------------------------+
+   | Functions                                     |
+   +===============================================+
+   | MDAnalysis.lib.distances.calc_bonds           |
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.calc_angles          |
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.calc_dihedrals       |
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.distance_array       | 
+   +-----------------------------------------------+
+   | MDAnalysis.lib.distances.self_distance_array  |
+   +-----------------------------------------------+
 
 If `distopia`_ is installed, the functions in this table will accept the key
 'distopia' for the `backend` keyword argument. If the distopia backend is
 selected the `distopia` library will be used to calculate the distances. Note
 that for functions listed in this table **distopia is not the default backend
-if and must be selected.**
+and must be selected.**
 
-.. Note::
-   Distopia does not currently support triclinic simulation boxes. If you
-   specify `distopia` as the backend and your simulation box is triclinic,
-   the function will fall back to the default `serial` backend.
 
 .. Note::
     Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
-    intrinsics in distopia via `VCL2`_, the precision of your results may
+    intrinsics in distopia via `HWY`_, the precision of your results may
     depend on the ISA available on your machine. However, in all tested cases
     distopia satisfied the accuracy thresholds used to the functions in this
     module. Please document any issues you encounter with distopia's accuracy
@@ -92,7 +97,7 @@ if and must be selected.**
 .. _distopia: https://github.com/MDAnalysis/distopia
 .. _distopia documentation: https://www.mdanalysis.org/distopia
 .. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
-.. _VCL2: https://github.com/vectorclass/version2
+.. _HWY: https://github.com/google/highway
 .. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915
 
 .. versionadded:: 0.13.0
@@ -101,6 +106,8 @@ if and must be selected.**
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 .. versionchanged:: 2.5.0
    Interface to the `distopia`_ package added.
+.. versionchanged:: 2.8.0
+   Distopia support greatly expanded (with distopia ≥ 0.3.1).
 
 Functions
 ---------
@@ -273,7 +280,7 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         ``numpy.float64``.
         Avoids creating the array which saves time when the function
         is called repeatedly.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
@@ -291,6 +298,8 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.8.0
+       Added support for the `distopia` backend.
     """
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
@@ -303,6 +312,14 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
+    
+    if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
+        distances = distances.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -317,6 +334,11 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         _run("calc_distance_array",
              args=(reference, configuration, distances),
              backend=backend)
+
+    if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
+        distances = distances.astype(np.float64)
 
     return distances
 
@@ -351,7 +373,7 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and
         dtype ``numpy.float64``. Avoids creating the array which saves time when
         the function is called repeatedly.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
@@ -375,6 +397,8 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.8.0
+       Added support for the `distopia` backend.
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
@@ -386,6 +410,14 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
     distances = _check_result_array(result, (distnum,))
     if len(distances) == 0:
         return distances
+
+    if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
+        distances = distances.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -400,6 +432,11 @@ def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
         _run("calc_self_distance_array",
              args=(reference, distances),
              backend=backend)
+
+    if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
+        distances = distances.astype(np.float64)
 
     return distances
 
@@ -1484,13 +1521,17 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
+    if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
+        bondlengths = bondlengths.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
 
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
             if boxtype == "ortho":
-                if backend == 'distopia':
-                    bondlengths = bondlengths.astype(np.float32)
                 _run(
                     "calc_bond_distance_ortho",
                     args=(coords1, coords2, box, bondlengths),
@@ -1503,14 +1544,14 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
                     backend=backend,
                 )
         else:
-            if backend == 'distopia':
-                bondlengths = bondlengths.astype(np.float32)
             _run(
                 "calc_bond_distance",
                 args=(coords1, coords2, bondlengths),
                 backend=backend,
             )
     if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
         bondlengths = bondlengths.astype(np.float64)
     return bondlengths
 
@@ -1571,7 +1612,7 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate triplets). Avoids recreating the array in repeated
         function calls.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
@@ -1598,6 +1639,13 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
     numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
 
+    if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
+        angles = angles.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
@@ -1614,6 +1662,10 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
                    args=(coords1, coords2, coords3, angles),
                    backend=backend)
 
+    if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
+        angles = angles.astype(np.float64)
     return angles
 
 
@@ -1685,7 +1737,7 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate quadruplets). Avoids recreating the array in
         repeated function calls.
-    backend : {'serial', 'OpenMP'}, optional
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
@@ -1716,6 +1768,13 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
 
+    if backend == 'distopia':
+        # distopia requires that all the input arrays are the same type,
+        # while MDAnalysis allows for mixed types, this should be changed
+        # pre 0.3.0 release see issue #3707 
+        dihedrals = dihedrals.astype(np.float32)
+        box = np.asarray(box).astype(np.float32) if box is not None else None
+
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
@@ -1731,7 +1790,10 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
             _run("calc_dihedral",
                  args=(coords1, coords2, coords3, coords4, dihedrals),
                  backend=backend)
-
+    if backend == 'distopia':
+        # mda expects the result to be in float64, so we need to convert it back
+        # to float64, change for 3.0, see #3707
+        dihedrals = dihedrals.astype(np.float64)
     return dihedrals
 
 
