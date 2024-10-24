@@ -313,6 +313,7 @@ __all__ = [
     "AUX_EDR_RAW",
     "AUX_EDR_SINGLE_FRAME",  # for testing .edr auxiliary reader
     "MMTF",
+    "MMCIF",
     "MMTF_gz",
     "MMTF_skinny",  # skinny - some optional fields stripped out
     "MMTF_skinny2",
