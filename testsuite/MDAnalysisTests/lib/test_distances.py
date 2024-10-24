@@ -473,6 +473,8 @@ class TestDistanceArrayDCD_TRIC(object):
         natoms = len(U.atoms)
         d = np.zeros((natoms, natoms), np.float64)
         distances.distance_array(x0, x1, result=d, backend=backend)
+        print("AFTER")
+        print(d)
         assert_equal(d.shape, (natoms, natoms), "wrong shape, should be"
                      " (Natoms,Natoms) entries")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
@@ -936,6 +938,19 @@ class TestCythonFunctions(object):
                             err_msg="PBC check #2 w/o box")  # lengths in all directions
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
+
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_results_inplace_all_backends(self,  backend, dtype,):
+        N = 10
+        c0 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 2
+        c1 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 3
+
+        result = np.zeros(N, dtype=np.float64)
+        distances.calc_bonds(c0, c1, result=result, backend=backend)
+        expected = np.ones(N, dtype=dtype) * 3**(1/2)
+        # test the result array is updated in place
+        assert_almost_equal(result, expected, self.prec, err_msg="calc_bonds inplace failed")
 
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_bonds_badbox(self, positions, backend):

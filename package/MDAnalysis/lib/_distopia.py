@@ -66,7 +66,7 @@ def calc_bond_distance_ortho(
     distopia.calc_bonds_ortho(
         coords1, coords2, box[:3], results=results
     )
-    # upcast is currently required, change for 3.0, see #3927
+
 
 
 def calc_bond_distance(
@@ -75,7 +75,6 @@ def calc_bond_distance(
     distopia.calc_bonds_no_box(
         coords1, coords2, results=results
     )
-    # upcast is currently required, change for 3.0, see #3927
 
 
 def calc_bond_distance_triclinic(
@@ -88,6 +87,7 @@ def calc_angle(
     coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, results: np.ndarray
 ) -> None:
     distopia.calc_angles_no_box(coords1, coords2, coords3, results=results)
+
 
 def calc_angle_ortho(
     coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, box: np.ndarray, results: np.ndarray
@@ -121,6 +121,7 @@ def calc_distance_array(
     coords1: np.ndarray, coords2: np.ndarray, results: np.ndarray
 ) -> None:
     distopia.calc_distance_array_no_box(coords1, coords2, results=results)
+
 
 def calc_distance_array_ortho(
     coords1: np.ndarray, coords2: np.ndarray, box: np.ndarray, results: np.ndarray
