@@ -104,6 +104,17 @@ from ..lib import distances
 from . import tables
 
 
+wmsg = (
+    "Deprecated in version 2.8.0\n"
+    "MDAnalysis.topology.guessers is deprecated in favour of "
+    "the new Guessers API and will be removed in MDAnalysis version 3.0.0. "
+    "See MDAnalysis.guesser.default_guesser for more details."
+)
+
+
+warnings.warn(wmsg, category=DeprecationWarning)
+
+
 def guess_masses(atom_types):
     """Guess the mass of many atoms based upon their type
 
