@@ -100,3 +100,11 @@ class TesttBaseGuesser():
         top = Topology(4, 1, 1, attrs=[names, types, ])
         u = mda.Universe(top, to_guess=['types'])
         assert_equal(u.atoms.types, ['', '', '', ''])
+
+
+def test_Universe_guess_bonds_deprecated():
+    with pytest.warns(
+        DeprecationWarning,
+        match='`guess_bonds` keyword is deprecated'
+    ):
+        u = mda.Universe(datafiles.PDB_full, guess_bonds=True)
