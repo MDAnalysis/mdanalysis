@@ -747,7 +747,15 @@
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">in</span> <span class="n">SYMB2Z</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span>
                          <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The elements attribute has been populated by guessing &quot;</span>
+                <span class="s2">&quot;elements from atom types. This behaviour has been &quot;</span>
+                <span class="s2">&quot;temporarily added to the ITPParser as we transition &quot;</span>
+                <span class="s2">&quot;to the new guessing API. &quot;</span>
+                <span class="s2">&quot;This behavior will be removed in release 3.0. &quot;</span>
+                <span class="s2">&quot;Please see issue #4698 for more information. &quot;</span><span class="p">,</span>
+                <span class="ne">DeprecationWarning</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Element information is missing, elements attribute &quot;</span>
                           <span class="s2">&quot;will not be populated. If needed these can be &quot;</span>
