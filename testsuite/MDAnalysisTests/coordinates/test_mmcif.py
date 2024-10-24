@@ -11,22 +11,24 @@ from numpy.testing import (
 )
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
+from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
-# FIXME: rewrite tests to read trajectories only once
 
-
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize("mmcif_filename", glob.glob(f"{MMCIF_FOLDER}/*.cif*"))
 def test_works_with_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename, format="MMCIF")
     assert u.trajectory.n_atoms > 0
 
 
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize("mmcif_filename", glob.glob(f"{MMCIF_FOLDER}/*.cif*"))
 def test_works_without_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename)
     assert u.trajectory.n_atoms > 0
 
 
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
     "mmcif_filename,natoms_protein,natoms_total",
     [
@@ -42,6 +44,7 @@ def test_n_atoms(mmcif_filename, natoms_protein, natoms_total):
     assert len(u.select_atoms("protein").atoms) == natoms_protein
 
 
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
     "mmcif_filename,cell",
     [
