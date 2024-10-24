@@ -200,6 +200,9 @@ class DCDReader(base.ReaderBase):
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
+        if ts:
+            warnings.warn("ts argument to _read_next_timestep is deprecated as of 2.7.0 and will be removed in 3.0.0, see #3928")
+
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
         if ts is None:
