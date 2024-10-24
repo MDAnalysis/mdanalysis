@@ -112,6 +112,10 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * MDAnalysis.topology.guessers is deprecated in favour of the neww
+   Guessers API and will be removed in version 3.0 (PR #4752)
+ * MDAnalysis.topology.tables is deprecated in favour of
+   MDAnalysis.guesser.tables and will be removed in version 3.0 (PR #4752)
  * Unknown masses are set to 0.0 for current version, this will be depracated
    in version 3.0.0 and replaced by :class:`Masses`' no_value_label attribute(np.nan)
    (PR #3753)
