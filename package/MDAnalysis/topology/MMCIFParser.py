@@ -64,7 +64,7 @@ def _into_idx(arr: list) -> list[int]:
     return [idx for idx, (_, group) in enumerate(itertools.groupby(arr)) for _ in group]
 
 
-def get_Atomattrs(model: gemmi.Model) -> tuple[list[AtomAttr], np.ndarray]:
+def get_Atomattrs(model: 'gemmi.Model') -> tuple[list[AtomAttr], np.ndarray]:
     """Extract all attributes that are subclasses of :class:`..core.topologyattrs.AtomAttr` from a  ``gemmi.Model`` object,
     and a `residx` index with indices of all atoms in residues.
 
@@ -165,7 +165,7 @@ def get_Atomattrs(model: gemmi.Model) -> tuple[list[AtomAttr], np.ndarray]:
     return attrs, residx
 
 
-def get_Residueattrs(model: gemmi.Model) -> tuple[list[ResidueAttr], np.ndarray]:
+def get_Residueattrs(model: 'gemmi.Model') -> tuple[list[ResidueAttr], np.ndarray]:
     """Extract all attributes that are subclasses of :class:`..core.topologyattrs.ResidueAttr` from a  ``gemmi.Model`` object,
     and a `segidx` index witn indices of all residues in segments.
 
@@ -214,7 +214,7 @@ def get_Residueattrs(model: gemmi.Model) -> tuple[list[ResidueAttr], np.ndarray]
     return attrs, segidx
 
 
-def get_Segmentattrs(model: gemmi.Model) -> SegmentAttr:
+def get_Segmentattrs(model: 'gemmi.Model') -> SegmentAttr:
     """Extract all attributes that are subclasses of :class:`..core.topologyattrs.SegmentAttr` from a  ``gemmi.Model`` object.
 
     Parameters

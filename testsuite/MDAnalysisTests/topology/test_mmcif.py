@@ -13,10 +13,10 @@ from numpy.testing import (
 )
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
+from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
-# FIXME: rewrite tests to read trajectories only once
 
-
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
     "mmcif_filename,n_chains",
     [
@@ -31,6 +31,7 @@ def test_chains(mmcif_filename, n_chains):
     assert len(u.segments) == n_chains
 
 
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
     "mmcif_filename,sequence",
     [

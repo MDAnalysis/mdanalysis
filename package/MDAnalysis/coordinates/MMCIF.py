@@ -15,7 +15,7 @@ except ImportError:
 logger = logging.getLogger("MDAnalysis.coordinates.MMCIF")
 
 
-def get_coordinates(model: gemmi.Model) -> np.ndarray:
+def get_coordinates(model: 'gemmi.Model') -> np.ndarray:
     """Get coordinates of all atoms in the `gemmi.Model` object.
 
     Parameters
