@@ -41,7 +41,8 @@ impossible with any but the ``serial`` backend.
 
    Parallelization is getting added to existing analysis classes.  Initially,
    only :class:`MDAnalysis.analysis.rms.RMSD` supports parallel analysis, but
-   we aim to increase support in future releases.
+   we aim to increase support in future releases. Please check issues labeled
+   `parallelization` on the MDAnalysis issues [page](https://github.com/MDAnalysis/mdanalysis/issues).
 
 
 How does parallelization work
@@ -106,6 +107,10 @@ If you want to write your own *parallel* analysis class, you have to implement
 denote if your analysis can run in parallel by following the steps under
 :ref:`adding-parallelization`.
 
+.. Note::
+
+   Attributes that are the same for the whole trajectory, should be defined
+   in `__init__` method because they need to be consistent across all workers.
 
 For MDAnalysis developers
 ~~~~~~~~~~~~~~~~~~~~~~~~~
