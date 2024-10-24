@@ -24,6 +24,11 @@
 Guessing unknown Topology information --- :mod:`MDAnalysis.topology.guessers`
 =============================================================================
 
+.. deprecated:: 2.8.0
+   The :mod:`MDAnalysis.topology.guessers` module will be removed in release 3.0.0.
+   It is deprecated in favor of the new Guessers API. See 
+   :mod:`MDAnalysis.guesser.default_guesser` for more details.
+   
 In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
 
