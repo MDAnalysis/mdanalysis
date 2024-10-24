@@ -70,11 +70,11 @@ MDAnalysis.
       .. Note::
 
          Normally one does not directly access :attr:`_pos` but uses
-         the :meth:`~MDAnalysis.core.groups.AtomGroup.coordinates`
-         method of an :class:`~MDAnalysis.core.groups.AtomGroup` but
+         the :attr:`~MDAnalysis.core.groups.AtomGroup.positions`
+         attribute of a :class:`~MDAnalysis.core.groups.AtomGroup` but
          sometimes it can be faster to directly use the raw
          coordinates. Any changes to this array are immediately
-         reflected in atom positions. If the frame is written to a new
+         reflected in the atom positions. If the frame is written to a new
          trajectory then the coordinates are changed. If a new
          trajectory frame is loaded, then *all* contents of
          :attr:`_pos` are overwritten.
@@ -83,17 +83,17 @@ MDAnalysis.
 
       :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
       (*n_atoms*, 3), holding the raw velocities (in MDAnalysis
-      units, i.e. typically Å/ps).
+      units, i.e., Å/ps).
 
       .. Note::
 
          Normally velocities are accessed through the
-         :attr:`velocities` or the
-         :meth:`~MDAnalysis.core.groups.AtomGroup.velocities`
-         method of an :class:`~MDAnalysis.core.groups.AtomGroup`
+         :attr:`Timestep.velocities` attribute or the
+         :attr:`~MDAnalysis.core.groups.AtomGroup.velocities`
+         attribute of an :class:`~MDAnalysis.core.groups.AtomGroup`
 
          :attr:`~Timestep._velocities` only exists if the :attr:`has_velocities`
-         flag is True
+         flag is ``True``.
 
       .. versionadded:: 0.7.5
 
@@ -103,7 +103,7 @@ MDAnalysis.
       (*n_atoms*, 3), holding the forces
 
       :attr:`~Timestep._forces` only exists if :attr:`has_forces`
-      is True
+      is ``True``.
 
       .. versionadded:: 0.11.0
          Added as optional to :class:`Timestep`

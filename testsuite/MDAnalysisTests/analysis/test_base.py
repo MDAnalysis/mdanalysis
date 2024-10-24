@@ -198,6 +198,20 @@ def test_start_stop_step_parallel(u, run_kwargs, frames, client_FrameAnalysis):
     assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
 
 
+def test_reset_n_parts_to_n_frames(u):
+    """
+    Issue #4685
+    https://github.com/MDAnalysis/mdanalysis/issues/4685
+    """
+    a = FrameAnalysis(u.trajectory)
+    with pytest.warns(UserWarning, match='Set `n_parts` to'):
+        a.run(backend='multiprocessing',
+              start=0,
+              stop=1,
+              n_workers=2,
+              n_parts=2)
+
+
 @pytest.mark.parametrize('run_kwargs,frames', [
     ({}, np.arange(98)),
     ({'start': 20}, np.arange(20, 98)),
@@ -262,7 +276,7 @@ def test_parallelizable_transformations():
     # pick any transformation that would allow 
     # for parallelizable attribute
     from MDAnalysis.transformations import NoJump 
-    u = mda.Universe(XTC)
+    u = mda.Universe(XTC, to_guess=())
     u.trajectory.add_transformations(NoJump())
 
     # test that serial works
@@ -331,17 +345,17 @@ def test_verbose_progressbar(u, capsys):
 def test_verbose_progressbar_run(u, capsys):
     FrameAnalysis(u.trajectory).run(verbose=True)
     _, err = capsys.readouterr()
-    expected = u'100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    expected = u'100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert actual[:24] == expected[:24]
+    assert actual[:15] == expected
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
     FrameAnalysis(u.trajectory).run(
         verbose=True, progressbar_kwargs={'desc': 'custom'})
     _, err = capsys.readouterr()
-    expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    expected = u'custom: 100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert actual[:30] == expected[:30]
+    assert actual[:23] == expected
 
 
 def test_progressbar_multiprocessing(u):

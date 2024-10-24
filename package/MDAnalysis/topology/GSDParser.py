@@ -54,7 +54,6 @@ Classes
 import os
 import numpy as np
 
-from . import guessers
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (

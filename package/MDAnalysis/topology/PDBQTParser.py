@@ -32,10 +32,16 @@ partial charges (:attr:`Atom.charge`).
 * Reads a PDBQT file line by line and does not require sequential atom numbering.
 * Multi-model PDBQT files are not supported.
 
+.. note::
+
+    By default, masses will be guessed on Universe creation.
+    This may change in release 3.0.
+    See :ref:`Guessers` for more information.
+
 Notes
 -----
 Only reads atoms and their names; connectivity is not
-deduced. Masses are guessed and set to 0 if unknown.
+deduced.
 
 
 See Also
@@ -57,7 +63,6 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -68,7 +73,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Charges,
     ICodes,
-    Masses,
     Occupancies,
     RecordTypes,
     Resids,
@@ -97,14 +101,15 @@ class PDBQTParser(TopologyReaderBase):
      - tempfactors
      - charges
 
-    Guesses the following:
-     - masses
 
     .. versionchanged:: 0.18.0
        Added parsing of Record types
     .. versionchanged:: 2.7.0
        Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,
        are now ignored. See Autodock's `reference`_.
+    .. versionchanged:: 2.8.0
+        Removed mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
 
        .. _reference: 
           https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
@@ -151,8 +156,6 @@ class PDBQTParser(TopologyReaderBase):
 
         n_atoms = len(serials)
 
-        masses = guessers.guess_masses(atomtypes)
-
         attrs = []
         for attrlist, Attr, dtype in (
                 (record_types, RecordTypes, object),
@@ -165,7 +168,6 @@ class PDBQTParser(TopologyReaderBase):
                 (atomtypes, Atomtypes, object),
         ):
             attrs.append(Attr(np.array(attrlist, dtype=dtype)))
-        attrs.append(Masses(masses, guessed=True))
 
         resids = np.array(resids, dtype=np.int32)
         icodes = np.array(icodes, dtype=object)

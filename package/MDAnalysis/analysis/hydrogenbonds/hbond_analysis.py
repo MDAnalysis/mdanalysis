@@ -241,7 +241,7 @@ from collections.abc import Iterable
 
 import numpy as np
 
-from ..base import AnalysisBase, Results
+from ..base import AnalysisBase, Results, ResultsGroup
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
@@ -266,6 +266,12 @@ class HydrogenBondAnalysis(AnalysisBase):
     """
     Perform an analysis of hydrogen bonds in a Universe.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
 
     def __init__(self, universe,
                  donors_sel=None, hydrogens_sel=None, acceptors_sel=None,
@@ -335,7 +341,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         .. versionchanged:: 2.4.0
             Added use of atom types in selection strings for hydrogen atoms, 
             bond donors, or bond acceptors
-
+        .. versionchanged:: 2.8.0
+            Introduced :meth:`get_supported_backends` allowing for parallel execution on
+            :mod:`multiprocessing` and :mod:`dask` backends.
         """
 
         self.u = universe
@@ -382,6 +390,17 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.update_selections = update_selections
         self.results = Results()
         self.results.hbonds = None
+
+        # Set atom selections if they have not been provided
+        if self.acceptors_sel is None:
+            self.acceptors_sel = self.guess_acceptors()
+        if self.hydrogens_sel is None:
+            self.hydrogens_sel = self.guess_hydrogens()
+
+        # Select atom groups
+        self._acceptors = self.u.select_atoms(self.acceptors_sel,
+                                              updating=self.update_selections)
+        self._donors, self._hydrogens = self._get_dh_pairs()
 
     def guess_hydrogens(self,
                         select='all',
@@ -699,16 +718,6 @@ class HydrogenBondAnalysis(AnalysisBase):
     def _prepare(self):
         self.results.hbonds = [[], [], [], [], [], []]
 
-        # Set atom selections if they have not been provided
-        if self.acceptors_sel is None:
-            self.acceptors_sel = self.guess_acceptors()
-        if self.hydrogens_sel is None:
-            self.hydrogens_sel = self.guess_hydrogens()
-
-        # Select atom groups
-        self._acceptors = self.u.select_atoms(self.acceptors_sel,
-                                              updating=self.update_selections)
-        self._donors, self._hydrogens = self._get_dh_pairs()
 
     def _single_frame(self):
 
@@ -787,6 +796,9 @@ class HydrogenBondAnalysis(AnalysisBase):
     def _conclude(self):
 
         self.results.hbonds = np.asarray(self.results.hbonds).T
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'hbonds': ResultsGroup.ndarray_hstack})
 
     @property
     def hbonds(self):

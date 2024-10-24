@@ -73,6 +73,8 @@ class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
     expected_attrs = [
         "ids",
+        "types",
+        "masses",
         "names",
         "elements",
         "resids",

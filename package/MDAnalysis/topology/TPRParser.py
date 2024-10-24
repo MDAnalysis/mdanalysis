@@ -166,7 +166,6 @@ __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
 
 
-from . import guessers
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
 from .tpr import setting as S

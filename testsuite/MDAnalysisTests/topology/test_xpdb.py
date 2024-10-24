@@ -27,6 +27,8 @@ from MDAnalysisTests.datafiles import (
     XPDB_small,
 )
 
+from numpy.testing import assert_equal, assert_allclose
+
 
 class TestXPDBParser(ParserBase):
     parser = mda.topology.ExtendedPDBParser.ExtendedPDBParser
@@ -38,3 +40,13 @@ class TestXPDBParser(ParserBase):
     expected_n_atoms = 5
     expected_n_residues = 5
     expected_n_segments = 1
+
+    def test_guessed_masses(self, filename):
+        u = mda.Universe(filename)
+        expected = [15.999, 15.999, 15.999, 15.999, 15.999]
+        assert_allclose(u.atoms.masses, expected)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        expected = ['O', 'O', 'O', 'O', 'O']
+        assert_equal(u.atoms.types, expected)
