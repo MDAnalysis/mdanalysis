@@ -101,7 +101,7 @@ import warnings
 import re
 
 from ..lib import distances
-from . import tables
+from MDAnalysis.guesser import tables
 
 
 wmsg = (
