@@ -60,3 +60,5 @@ the topology readers.
    topology/base
    topology/core
    topology/tpr_util
+   topology/guessers
+   topology/tables
