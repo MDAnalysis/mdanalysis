@@ -114,7 +114,7 @@ class TestBaseGuesser():
 
         all_indices = [tuple(x.indices) for x in u.bonds]
         assert (0, 1) not in all_indices
-        
+
         # guess old bonds back
         u.guess_TopologyAttrs("default", to_guess=["bonds"])
         assert len(u.atoms.bonds) == 1922
@@ -128,7 +128,6 @@ class TestBaseGuesser():
         with pytest.raises(NoDataError):
             u.atoms.angles
 
-
     def test_guess_topology_objects_out_of_order_init(self):
         u = mda.Universe(
             datafiles.PDB_small,
@@ -137,7 +136,7 @@ class TestBaseGuesser():
         )
         assert len(u.atoms.angles) == 6123
         assert len(u.atoms.dihedrals) == 8921
-    
+
     def test_guess_topology_objects_out_of_order_guess(self):
         u = mda.Universe(datafiles.PDB_small)
         with pytest.raises(NoDataError):
@@ -149,4 +148,3 @@ class TestBaseGuesser():
         )
         assert len(u.atoms.angles) == 6123
         assert len(u.atoms.dihedrals) == 8921
-
