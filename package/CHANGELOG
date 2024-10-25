@@ -23,6 +23,9 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Fixes bug where multiple identical connection topologies could be
+   added to a _Connection TopologyAttr, and that deleting connections
+   by index would only delete one of them (Issue #4762, PR #4763)
  * Adds guessed attributes documentation back to each parser page
    and updates overall guesser docs (Issue #4696)
  * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
