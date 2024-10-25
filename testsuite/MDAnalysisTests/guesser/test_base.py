@@ -207,29 +207,6 @@ class TestBaseGuesser():
         assert len(u.atoms.dihedrals) == 3548
         assert not hasattr(u.atoms, "angles")
 
-def test_Universe_guess_bonds_deprecated():
-    with pytest.warns(
-        DeprecationWarning,
-        match='`guess_bonds` keyword is deprecated'
-    ):
-        u = mda.Universe(datafiles.PDB_full, guess_bonds=True)
-
-
-@pytest.mark.parametrize(
-    "universe_input",
-    [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB]
-)
-def test_universe_creation_from_coordinates(universe_input):
-    mda.Universe(universe_input)
-
-
-def test_universe_creation_from_specific_array():
-    a = np.array([
-        [0., 0., 150.], [0., 0., 150.], [200., 0., 150.],
-        [0., 0., 150.], [100., 100., 150.], [200., 100., 150.],
-        [0., 200., 150.], [100., 200., 150.], [200., 200., 150.]
-    ])
-    mda.Universe(a, n_atoms=9)
     def test_guess_topology_objects_existing(self):
         u = mda.Universe(datafiles.CONECT, to_guess=["bonds"])
         assert len(u.atoms.bonds) == 1922
@@ -256,7 +233,6 @@ def test_universe_creation_from_specific_array():
         with pytest.raises(NoDataError):
             u.atoms.angles
 
-
     def test_guess_topology_objects_out_of_order_init(self):
         u = mda.Universe(
             datafiles.PDB_small,
@@ -278,3 +254,27 @@ def test_universe_creation_from_specific_array():
         assert len(u.atoms.angles) == 6123
         assert len(u.atoms.dihedrals) == 8921
 
+
+def test_Universe_guess_bonds_deprecated():
+    with pytest.warns(
+        DeprecationWarning,
+        match='`guess_bonds` keyword is deprecated'
+    ):
+        u = mda.Universe(datafiles.PDB_full, guess_bonds=True)
+
+
+@pytest.mark.parametrize(
+    "universe_input",
+    [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB]
+)
+def test_universe_creation_from_coordinates(universe_input):
+    mda.Universe(universe_input)
+
+
+def test_universe_creation_from_specific_array():
+    a = np.array([
+        [0., 0., 150.], [0., 0., 150.], [200., 0., 150.],
+        [0., 0., 150.], [100., 100., 150.], [200., 100., 150.],
+        [0., 200., 150.], [100., 200., 150.], [200., 200., 150.]
+    ])
+    mda.Universe(a, n_atoms=9)
