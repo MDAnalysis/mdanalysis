@@ -23,6 +23,9 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Allows bond/angle/dihedral connectivity to be guessed additively with
+   `to_guess`, and as a replacement of existing values with `force_guess`.
+   Also updates cached bond attributes when updating bonds. (Issue #4759, PR #4761)
  * Adds guessed attributes documentation back to each parser page
    and updates overall guesser docs (Issue #4696)
  * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
