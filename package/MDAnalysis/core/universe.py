@@ -1527,9 +1527,9 @@ class Universe(object):
             effect. If the TopologyAttr does already exist, all values will
             be overwritten by guessed values.
         error_if_missing: bool
-            If True, raise an error if the guesser cannot guess the attribute
+            If `True`, raise an error if the guesser cannot guess the attribute
             due to missing TopologyAttrs used as the inputs for guessing.
-            If False, a warning will be raised instead.
+            If `False`, a warning will be raised instead.
             Errors will always be raised if an attribute is in the
             ``force_guess`` list, even if this parameter is set to False.
 
