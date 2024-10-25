@@ -113,9 +113,13 @@ Changes
 
 Deprecations
  * The `guess_bonds`, `vdwradii`, `fudge_factor`, and `lower_bound` kwargs
-   are deprecated for Universe creation. (Issue #4756, PR #4757)
- * Element guessing in the ITPParser is deprecated and will be removed in version 3.0
-   (Issue #4698)
+   are deprecated for bond guessing during Universe creation. Instead,
+   pass `("bonds", "angles", "dihedrals")` into `to_guess` or `force_guess`
+   during Universe creation, and the associated `vdwradii`, `fudge_factor`,
+   and `lower_bound` kwargs into `Guesser` creation. Alternatively, if
+   `vdwradii`, `fudge_factor`, and `lower_bound` are passed into
+   `Universe.guess_TopologyAttrs`, they will override the previous values
+   of those kwargs. (Issue #4756, PR #4757)
  * Unknown masses are set to 0.0 for current version, this will be depracated
    in version 3.0.0 and replaced by :class:`Masses`' no_value_label attribute(np.nan)
    (PR #3753)
