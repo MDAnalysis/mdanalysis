@@ -3042,19 +3042,27 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
     @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = values
-        if types is None:
-            types = [None] * len(values)
-        self.types = types
-        if guessed in (True, False):
-            # if single value passed, multiply this across
-            # all bonds
-            guessed = [guessed] * len(values)
-        self._guessed = guessed
-        if order is None:
-            order = [None] * len(values)
-        self.order = order
+        self.values = []
+        self.types = []
+        self._guessed = []
+        self.order = []
         self._cache = dict()
+        self._add_bonds(values, types, guessed, order)
+
+
+        # self.values = values
+        # if types is None:
+        #     types = [None] * len(values)
+        # self.types = types
+        # if guessed in (True, False):
+        #     # if single value passed, multiply this across
+        #     # all bonds
+        #     guessed = [guessed] * len(values)
+        # self._guessed = guessed
+        # if order is None:
+        #     order = [None] * len(values)
+        # self.order = order
+        # self._cache = dict()
 
     def copy(self):
         """Return a deepcopy of this attribute"""
@@ -3118,9 +3126,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         if order is None:
             order = itertools.cycle((None,))
 
-        existing = set(self.values)
         for v, t, g, o in zip(values, types, guessed, order):
-            if v not in existing:
+            if v not in self.values:
                 self.values.append(v)
                 self.types.append(t)
                 self._guessed.append(g)
@@ -3146,7 +3153,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                               '{attrname} with atom indices:'
                               '{indices}').format(attrname=self.attrname,
                                                   indices=indices))
-        idx = [self.values.index(v) for v in to_check]
+        # allow multiple matches
+        idx = [i for i, x in enumerate(self.values) if x in to_check]
         for i in sorted(idx, reverse=True):
             del self.values[i]
 

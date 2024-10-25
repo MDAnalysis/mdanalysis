@@ -48,6 +48,7 @@ from MDAnalysisTests.datafiles import (
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
     PDB, MMTF, CONECT,
+    PDB_conect
 )
 
 import MDAnalysis as mda
@@ -1247,9 +1248,13 @@ class TestDeleteTopologyObjects(object):
         universe.delete_bonds([universe.atoms[[2, 3]]])
         assert len(universe.atoms.fragments) == n_fragments + 1
 
-    def test_delete_all_bonds(self):
-        u = mda.Universe(CONECT)
-        assert len(u.bonds) == 72
+    @pytest.mark.parametrize("filename, n_bonds", [
+        (CONECT, 72),
+        (PDB_conect, 8)
+    ])
+    def test_delete_all_bonds(self, filename, n_bonds):
+        u = mda.Universe(filename)
+        assert len(u.bonds) == n_bonds
         u.delete_bonds(u.bonds)
         assert len(u.bonds) == 0
 
