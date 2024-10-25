@@ -146,12 +146,12 @@ class GuesserBase(metaclass=_GuesserMeta):
         try:
             guesser_method = self._guesser_methods[attr_to_guess]
         except KeyError:
-            raise ValueError(f'{type(self).__name__} cannot guess the following '
+            raise ValueError(f'{type(self).__name__} cannot guess this '
                              f'attribute: {attr_to_guess}')
-    
+
         # make attribute to guess plural
         attr_to_guess = top_attr.attrname
-        
+
         # Connection attributes should be just returned as they are always
         # appended to the Universe. ``force_guess`` handling should happen
         # at Universe level.
