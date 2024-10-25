@@ -1247,6 +1247,12 @@ class TestDeleteTopologyObjects(object):
         universe.delete_bonds([universe.atoms[[2, 3]]])
         assert len(universe.atoms.fragments) == n_fragments + 1
 
+    def test_delete_all_bonds(self):
+        u = mda.Universe(CONECT)
+        assert len(u.bonds) == 72
+        u.delete_bonds(u.bonds)
+        assert len(u.bonds) == 0
+
     @pytest.mark.parametrize(
         'attr,values', existing_atom_indices
     )
