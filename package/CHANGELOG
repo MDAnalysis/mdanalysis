@@ -112,7 +112,7 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
- * MDAnalysis.topology.guessers is deprecated in favour of the neww
+ * MDAnalysis.topology.guessers is deprecated in favour of the new
    Guessers API and will be removed in version 3.0 (PR #4752)
  * MDAnalysis.topology.tables is deprecated in favour of
    MDAnalysis.guesser.tables and will be removed in version 3.0 (PR #4752)
