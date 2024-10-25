@@ -148,3 +148,16 @@ class TestBaseGuesser():
         )
         assert len(u.atoms.angles) == 6123
         assert len(u.atoms.dihedrals) == 8921
+
+    def test_force_guess_overwrites_existing_bonds(self):
+        u = mda.Universe(datafiles.PDB_conect)
+        assert len(u.atoms.bonds) == 8
+
+        # PDB_conect only has Cs. This low radius should find no bonds
+        cvdw = {"C": 0.1}
+        u.guess_TopologyAttrs("default", to_guess=["bonds"], vdwradii=cvdw)
+        assert len(u.atoms.bonds) == 8
+
+        # Now force guess bonds
+        u.guess_TopologyAttrs("default", force_guess=["bonds"], vdwradii=cvdw)
+        assert len(u.atoms.bonds) == 0
