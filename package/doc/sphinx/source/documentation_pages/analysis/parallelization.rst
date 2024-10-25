@@ -42,7 +42,7 @@ impossible with any but the ``serial`` backend.
    Parallelization is getting added to existing analysis classes.  Initially,
    only :class:`MDAnalysis.analysis.rms.RMSD` supports parallel analysis, but
    we aim to increase support in future releases. Please check issues labeled
-   `parallelization` on the MDAnalysis issues [page](https://github.com/MDAnalysis/mdanalysis/issues).
+   `parallelization` on the [MDAnalysis issues tracker](https://github.com/MDAnalysis/mdanalysis/issues?q=is%3Aopen+is%3Aissue+label%3Aparallelization).
 
 
 How does parallelization work
