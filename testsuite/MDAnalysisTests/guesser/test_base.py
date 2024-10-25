@@ -104,7 +104,26 @@ class TestBaseGuesser():
         u = mda.Universe(top, to_guess=['types'])
         assert_equal(u.atoms.types, ['', '', '', ''])
 
-    def test_guess_topology_objects_existing(self):
+    def test_guess_topology_objects_existing_read(self):
+        u = mda.Universe(datafiles.CONECT)
+        assert len(u.atoms.bonds) == 72
+        assert list(u.bonds[0].indices) == [623, 630]
+
+        # delete some bonds
+        u.delete_bonds(u.atoms.bonds[:10])
+        assert len(u.atoms.bonds) == 62
+        assert list(u.bonds[0].indices) == [623, 630]
+
+        all_indices = [tuple(x.indices) for x in u.bonds]
+        assert (0, 1) not in all_indices
+
+        # guess old bonds back
+        u.guess_TopologyAttrs("default", to_guess=["bonds"])
+        assert len(u.atoms.bonds) == 72
+        # check TopologyGroup contains new (old) bonds
+        assert list(u.bonds[0].indices) == [623, 630]
+
+    def test_guess_topology_objects_existing_in_universe(self):
         u = mda.Universe(datafiles.CONECT, to_guess=["bonds"])
         assert len(u.atoms.bonds) == 1922
         assert list(u.bonds[0].indices) == [0, 1]
@@ -164,3 +183,26 @@ class TestBaseGuesser():
         u.guess_TopologyAttrs("default", force_guess=["bonds"], vdwradii=vdw)
         assert len(u.atoms.bonds) == 0
         assert False
+
+    def test_guessing_angles_respects_bond_kwargs(self):
+        u = mda.Universe(datafiles.PDB)
+        assert not hasattr(u.atoms, "angles")
+
+        # This low radius should find no angles
+        vdw = dict.fromkeys(set(u.atoms.types), 0.01)
+
+        u.guess_TopologyAttrs("default", to_guess=["angles"], vdwradii=vdw)
+        assert len(u.atoms.angles) == 0
+
+        # set higher radii for lots of angles!
+        vdw = dict.fromkeys(set(u.atoms.types), 1)
+        u.guess_TopologyAttrs("default", force_guess=["angles"], vdwradii=vdw)
+        assert len(u.atoms.angles) == 89466
+
+    def test_guessing_dihedrals_respects_bond_kwargs(self):
+        u = mda.Universe(datafiles.CONECT)
+        assert len(u.atoms.bonds) == 72
+
+        u.guess_TopologyAttrs("default", to_guess=["dihedrals"])
+        assert len(u.atoms.dihedrals) == 3548
+        assert not hasattr(u.atoms, "angles")
