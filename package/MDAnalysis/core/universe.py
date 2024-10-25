@@ -1135,6 +1135,7 @@ class Universe(object):
             self.add_TopologyAttr(object_type, [])
             attr = getattr(self._topology, object_type)
 
+
         attr._add_bonds(indices, types=types, guessed=guessed, order=order)
 
     def add_bonds(self, values, types=None, guessed=False, order=None):
@@ -1292,6 +1293,7 @@ class Universe(object):
             attr = getattr(self._topology, object_type)
         except AttributeError:
             raise ValueError('There are no {} to delete'.format(object_type))
+
         attr._delete_bonds(indices)
 
     def delete_bonds(self, values):
@@ -1595,7 +1597,6 @@ class Universe(object):
                         # delete existing connections if they exist
                         if fg and hasattr(self.atoms, attr):
                             group = getattr(self.atoms, attr)
-                            self.delete_bonds(group)
                             self._delete_topology_objects(attr, group)
                         # this method appends to existing bonds
                         self._add_topology_objects(
