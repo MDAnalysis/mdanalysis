@@ -3117,7 +3117,6 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             guessed = itertools.cycle((guessed,))
         if order is None:
             order = itertools.cycle((None,))
-
         existing = set(self.values)
         for v, t, g, o in zip(values, types, guessed, order):
             if v not in existing:

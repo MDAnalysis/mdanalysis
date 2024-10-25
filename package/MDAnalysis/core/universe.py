@@ -84,7 +84,10 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
-from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
+from .topologyattrs import (
+    AtomAttr, ResidueAttr, SegmentAttr,
+    BFACTOR_WARNING, _Connection
+)
 from .topologyobjects import TopologyObject
 from ..guesser.base import get_guesser
 
@@ -1132,7 +1135,6 @@ class Universe(object):
             self.add_TopologyAttr(object_type, [])
             attr = getattr(self._topology, object_type)
 
-
         attr._add_bonds(indices, types=types, guessed=guessed, order=order)
 
     def add_bonds(self, values, types=None, guessed=False, order=None):
@@ -1183,6 +1185,14 @@ class Universe(object):
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
+        self._invalidate_bond_related_caches()
+        
+    def _invalidate_bond_related_caches(self):
+        """
+        Invalidate caches related to bonds and fragments.
+
+        .. versionadded: 2.8.0
+        """
         # Invalidate bond-related caches
         self._cache.pop('fragments', None)
         self._cache['_valid'].pop('fragments', None)
@@ -1259,7 +1269,7 @@ class Universe(object):
         Parameters
         ----------
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
-            The type of TopologyObject to add.
+            The type of TopologyObject to delete.
         values : iterable of tuples, AtomGroups, or TopologyObjects; or TopologyGroup
             An iterable of: tuples of atom indices, or AtomGroups,
             or TopologyObjects.
@@ -1282,7 +1292,6 @@ class Universe(object):
             attr = getattr(self._topology, object_type)
         except AttributeError:
             raise ValueError('There are no {} to delete'.format(object_type))
-
         attr._delete_bonds(indices)
 
     def delete_bonds(self, values):
@@ -1323,10 +1332,7 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
-        # Invalidate bond-related caches
-        self._cache.pop('fragments', None)
-        self._cache['_valid'].pop('fragments', None)
-        self._cache['_valid'].pop('fragindices', None)
+        self._invalidate_bond_related_caches()
 
     def delete_angles(self, values):
         """Delete Angles from this Universe.
@@ -1552,7 +1558,10 @@ class Universe(object):
         # in the same order that the user provided
         total_guess = list(dict.fromkeys(total_guess))
 
-        objects = ['bonds', 'angles', 'dihedrals', 'impropers']
+        objects = set(
+            topattr.attrname for topattr in _TOPOLOGY_ATTRS.values()
+            if issubclass(topattr, _Connection)
+        )
 
         # Checking if the universe is empty to avoid errors
         # from guesser methods
@@ -1579,16 +1588,26 @@ class Universe(object):
                     fg =  attr in force_guess
                     values = guesser.guess_attr(attr, fg)
 
-                    if values is not None:
-                        if attr in objects:
-                            self._add_topology_objects(
-                                attr, values, guessed=True)
-                        else:
-                            guessed_attr = _TOPOLOGY_ATTRS[attr](values, True)
-                            self.add_TopologyAttr(guessed_attr)
-                        logger.info(
-                            f'attribute {attr} has been guessed'
-                            ' successfully.')
+                    # None indicates no additional guessing was done
+                    if values is None:
+                        continue
+                    if attr in objects:
+                        # delete existing connections if they exist
+                        if fg and hasattr(self.atoms, attr):
+                            group = getattr(self.atoms, attr)
+                            self.delete_bonds(group)
+                            self._delete_topology_objects(attr, group)
+                        # this method appends to existing bonds
+                        self._add_topology_objects(
+                            attr, values, guessed=True)
+                        if attr == "bonds":
+                            self._invalidate_bond_related_caches()
+                    else:
+                        guessed_attr = _TOPOLOGY_ATTRS[attr](values, True)
+                        self.add_TopologyAttr(guessed_attr)
+                    logger.info(
+                        f'attribute {attr} has been guessed'
+                        ' successfully.')
 
                 else:
                     raise ValueError(f'{context} guesser can not guess the'

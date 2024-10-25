@@ -137,36 +137,47 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         """
         try:
+            top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
+        except KeyError:
+            raise KeyError(
+                f"{attr_to_guess} is not a recognized MDAnalysis "
+                "topology attribute"
+            )
+        try:
             guesser_method = self._guesser_methods[attr_to_guess]
         except KeyError:
             raise ValueError(f'{type(self).__name__} cannot guess the following '
                              f'attribute: {attr_to_guess}')
+    
+        # make attribute to guess plural
+        attr_to_guess = top_attr.attrname
+        
+        # Connection attributes should be just returned as they are always
+        # appended to the Universe. ``force_guess`` handling should happen
+        # at Universe level.
+        if issubclass(top_attr, _Connection):
+            return guesser_method()
 
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
             attr_values = np.array(
                 getattr(self._universe.atoms, attr_to_guess, None))
 
-            top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
-            if issubclass(top_attr, _Connection):
-                return guesser_method()
-            
+            empty_values = top_attr.are_values_missing(attr_values)
+
+            if True in empty_values:
+                # pass to the guesser_method boolean mask to only guess the
+                # empty values
+                attr_values[empty_values] = guesser_method(
+                    indices_to_guess=empty_values
+                )
+                return attr_values
+
             else:
-                empty_values = top_attr.are_values_missing(attr_values)
-
-                if True in empty_values:
-                    # pass to the guesser_method boolean mask to only guess the
-                    # empty values
-                    attr_values[empty_values] = guesser_method(
-                        indices_to_guess=empty_values
-                    )
-                    return attr_values
-
-                else:
-                    logger.info(
-                        f'There is no empty {attr_to_guess} values. Guesser did '
-                        f'not guess any new values for {attr_to_guess} attribute')
-                    return None
+                logger.info(
+                    f'There is no empty {attr_to_guess} values. Guesser did '
+                    f'not guess any new values for {attr_to_guess} attribute')
+                return None
         else:
             return np.array(guesser_method())
 

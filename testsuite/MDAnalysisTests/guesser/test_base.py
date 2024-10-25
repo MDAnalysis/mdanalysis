@@ -30,6 +30,8 @@ import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysis.exceptions import NoDataError
 from numpy.testing import assert_allclose, assert_equal
 
+from MDAnalysis import _TOPOLOGY_ATTRS, _GUESSERS
+
 
 class TestBaseGuesser():
 
@@ -150,14 +152,15 @@ class TestBaseGuesser():
         assert len(u.atoms.dihedrals) == 8921
 
     def test_force_guess_overwrites_existing_bonds(self):
-        u = mda.Universe(datafiles.PDB_conect)
-        assert len(u.atoms.bonds) == 8
+        u = mda.Universe(datafiles.CONECT)
+        assert len(u.atoms.bonds) == 72
 
-        # PDB_conect only has Cs. This low radius should find no bonds
-        cvdw = {"C": 0.1}
-        u.guess_TopologyAttrs("default", to_guess=["bonds"], vdwradii=cvdw)
-        assert len(u.atoms.bonds) == 8
+        # This low radius should find no bonds
+        vdw = dict.fromkeys(set(u.atoms.types), 0.1)
+        u.guess_TopologyAttrs("default", to_guess=["bonds"], vdwradii=vdw)
+        assert len(u.atoms.bonds) == 72
 
         # Now force guess bonds
-        u.guess_TopologyAttrs("default", force_guess=["bonds"], vdwradii=cvdw)
+        u.guess_TopologyAttrs("default", force_guess=["bonds"], vdwradii=vdw)
         assert len(u.atoms.bonds) == 0
+        assert False
