@@ -36,9 +36,9 @@ Classes
 .. autofunction:: get_guesser
 
 """
-from .. import _GUESSERS
+from .. import _GUESSERS, _TOPOLOGY_ATTRS
+from ..core.topologyattrs import _Connection
 import numpy as np
-from .. import _TOPOLOGY_ATTRS
 import logging
 from typing import Dict
 import copy
@@ -136,6 +136,11 @@ class GuesserBase(metaclass=_GuesserMeta):
         NDArray of guessed values
 
         """
+        try:
+            guesser_method = self._guesser_methods[attr_to_guess]
+        except KeyError:
+            raise ValueError(f'{type(self).__name__} cannot guess the following '
+                             f'attribute: {attr_to_guess}')
 
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
@@ -143,23 +148,27 @@ class GuesserBase(metaclass=_GuesserMeta):
                 getattr(self._universe.atoms, attr_to_guess, None))
 
             top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
-
-            empty_values = top_attr.are_values_missing(attr_values)
-
-            if True in empty_values:
-                # pass to the guesser_method boolean mask to only guess the
-                # empty values
-                attr_values[empty_values] = self._guesser_methods[attr_to_guess](
-                    indices_to_guess=empty_values)
-                return attr_values
-
+            if issubclass(top_attr, _Connection):
+                return guesser_method()
+            
             else:
-                logger.info(
-                    f'There is no empty {attr_to_guess} values. Guesser did '
-                    f'not guess any new values for {attr_to_guess} attribute')
-                return None
+                empty_values = top_attr.are_values_missing(attr_values)
+
+                if True in empty_values:
+                    # pass to the guesser_method boolean mask to only guess the
+                    # empty values
+                    attr_values[empty_values] = guesser_method(
+                        indices_to_guess=empty_values
+                    )
+                    return attr_values
+
+                else:
+                    logger.info(
+                        f'There is no empty {attr_to_guess} values. Guesser did '
+                        f'not guess any new values for {attr_to_guess} attribute')
+                    return None
         else:
-            return np.array(self._guesser_methods[attr_to_guess]())
+            return np.array(guesser_method())
 
 
 def get_guesser(context, u=None, **kwargs):
