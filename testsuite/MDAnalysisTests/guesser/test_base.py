@@ -27,10 +27,11 @@ from MDAnalysis.guesser.base import GuesserBase, get_guesser
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.core.topologyattrs import Masses, Atomnames, Atomtypes
 import MDAnalysis.tests.datafiles as datafiles
+from MDAnalysis.exceptions import NoDataError
 from numpy.testing import assert_allclose, assert_equal
 
 
-class TesttBaseGuesser():
+class TestBaseGuesser():
 
     def test_get_guesser(self):
         class TestGuesser1(GuesserBase):
@@ -100,3 +101,52 @@ class TesttBaseGuesser():
         top = Topology(4, 1, 1, attrs=[names, types, ])
         u = mda.Universe(top, to_guess=['types'])
         assert_equal(u.atoms.types, ['', '', '', ''])
+
+    def test_guess_topology_objects_existing(self):
+        u = mda.Universe(datafiles.CONECT, to_guess=["bonds"])
+        assert len(u.atoms.bonds) == 1922
+        assert list(u.bonds[0].indices) == [0, 1]
+
+        # delete some bonds
+        u.delete_bonds(u.atoms.bonds[:100])
+        assert len(u.atoms.bonds) == 1822
+        assert list(u.bonds[0].indices) == [94, 99]
+
+        all_indices = [tuple(x.indices) for x in u.bonds]
+        assert (0, 1) not in all_indices
+        
+        # guess old bonds back
+        u.guess_TopologyAttrs("default", to_guess=["bonds"])
+        assert len(u.atoms.bonds) == 1922
+        # check TopologyGroup contains new (old) bonds
+        assert list(u.bonds[0].indices) == [0, 1]
+
+    def test_guess_topology_objects_force(self):
+        u = mda.Universe(datafiles.CONECT, force_guess=["bonds"])
+        assert len(u.atoms.bonds) == 1922
+
+        with pytest.raises(NoDataError):
+            u.atoms.angles
+
+
+    def test_guess_topology_objects_out_of_order_init(self):
+        u = mda.Universe(
+            datafiles.PDB_small,
+            to_guess=["dihedrals", "angles", "bonds"],
+            guess_bonds=False
+        )
+        assert len(u.atoms.angles) == 6123
+        assert len(u.atoms.dihedrals) == 8921
+    
+    def test_guess_topology_objects_out_of_order_guess(self):
+        u = mda.Universe(datafiles.PDB_small)
+        with pytest.raises(NoDataError):
+            u.atoms.angles
+
+        u.guess_TopologyAttrs(
+            "default",
+            to_guess=["dihedrals", "angles", "bonds"]
+        )
+        assert len(u.atoms.angles) == 6123
+        assert len(u.atoms.dihedrals) == 8921
+
