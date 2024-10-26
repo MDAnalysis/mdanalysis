@@ -490,3 +490,20 @@ def test_missing_elements_no_attribute():
         u = mda.Universe(ITP_atomtypes)
     with pytest.raises(AttributeError):
         _ = u.atoms.elements
+
+
+def test_elements_deprecation_warning():
+    """Test deprecation warning is present"""
+    with pytest.warns(DeprecationWarning, match="removed in release 3.0"):
+        mda.Universe(ITP_nomass)
+
+
+def test_elements_nodeprecation_warning():
+    """Test deprecation warning is not present if elements isn't guessed"""
+    with pytest.warns(UserWarning) as record:
+        mda.Universe(ITP_atomtypes)
+    assert len(record) == 2
+
+    warned = [warn.message.args[0] for warn in record]
+    assert "Element information is missing" in warned[0]
+    assert "No coordinate reader found" in warned[1]
