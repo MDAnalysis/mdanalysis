@@ -109,27 +109,6 @@ class TestBaseGuesser():
         assert len(u.atoms.bonds) == 72
         assert list(u.bonds[0].indices) == [623, 630]
 
-<<<<<<< HEAD
-        # delete some bonds
-        u.delete_bonds(u.atoms.bonds[:10])
-        assert len(u.atoms.bonds) == 62
-        assert list(u.bonds[0].indices) == [623, 630]
-
-        all_indices = [tuple(x.indices) for x in u.bonds]
-        assert (0, 1) not in all_indices
-
-        # guess old bonds back
-        u.guess_TopologyAttrs("default", to_guess=["bonds"])
-        assert len(u.atoms.bonds) == 72
-        # check TopologyGroup contains new (old) bonds
-        assert list(u.bonds[0].indices) == [623, 630]
-
-=======
-    def test_guess_topology_objects_existing_read(self):
-        u = mda.Universe(datafiles.CONECT)
-        assert len(u.atoms.bonds) == 72
-        assert list(u.bonds[0].indices) == [623, 630]
-
         # delete some bonds
         u.delete_bonds(u.atoms.bonds[:10])
         assert len(u.atoms.bonds) == 62
@@ -144,7 +123,6 @@ class TestBaseGuesser():
         all_indices = [tuple(x.indices) for x in u.bonds]
         assert (1545, 1552) in all_indices
 
->>>>>>> 7236e9112 (add more tests)
     def test_guess_topology_objects_existing_in_universe(self):
         u = mda.Universe(datafiles.CONECT, to_guess=["bonds"])
         assert len(u.atoms.bonds) == 1922
