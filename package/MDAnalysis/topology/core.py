@@ -38,4 +38,12 @@ from collections import defaultdict
 from ..core._get_readers import get_parser_for
 from ..lib.util import cached
 
+# Deprecated local imports
+from MDAnalysis.guesser import tables
+from .guessers import (
+    guess_atom_element, guess_atom_type,
+    get_atom_mass, guess_atom_mass, guess_atom_charge,
+    guess_bonds, guess_angles, guess_dihedrals, guess_improper_dihedrals,
+)
+
 #tumbleweed
