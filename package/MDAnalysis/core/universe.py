@@ -457,7 +457,7 @@ class Universe(object):
                 "the previous Context values.",
                 DeprecationWarning
             )
-            force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
+            to_guess = list(to_guess) + ['bonds', 'angles', 'dihedrals']
 
         self.guess_TopologyAttrs(
             context, to_guess, force_guess, error_if_missing=False
