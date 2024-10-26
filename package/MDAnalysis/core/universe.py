@@ -1649,7 +1649,7 @@ class Universe(object):
                     fg =  attr in force_guess
                     try:
                         values = guesser.guess_attr(attr, fg)
-                    except ValueError as e:
+                    except NoDataError as e:
                         if error_if_missing or fg:
                             raise e
                         else:
