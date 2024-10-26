@@ -1663,10 +1663,6 @@ class Universe(object):
                         # delete existing connections if they exist
                         if fg and hasattr(self.atoms, attr):
                             group = getattr(self.atoms, attr)
-<<<<<<< HEAD
-=======
-                            self.delete_bonds(group)
->>>>>>> ed1ba84de (add force guessing removal)
                             self._delete_topology_objects(attr, group)
                         # this method appends to existing bonds
                         self._add_topology_objects(
