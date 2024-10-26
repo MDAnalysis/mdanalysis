@@ -227,3 +227,36 @@ class TestDeprecationWarning:
         with pytest.warns(DeprecationWarning, match=self.wmsg):
             func(arg)
 
+    def test_bonds_deprecations(self):
+        u = mda.Universe(datafiles.two_water_gro)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_bonds(u.atoms, u.atoms.positions)
+
+    def test_angles_dihedral_deprecations(self):
+        u = make_starshape()
+        ag = u.atoms[:5]
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            angles = guessers.guess_angles(ag.bonds)
+
+        # add angles back to the Universe
+        u.add_TopologyAttr(Angles(angles))
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_dihedrals(ag.angles)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_improper_dihedrals(ag.angles)
+
+    @requires_rdkit
+    def test_rdkit_guessers_deprecations(self):
+        mol = Chem.MolFromSmiles('c1ccccc1')
+        mol = Chem.AddHs(mol)
+        u = mda.Universe(mol)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_aromaticities(u.atoms)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_gasteiger_charges(u.atoms)
