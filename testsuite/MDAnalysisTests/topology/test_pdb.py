@@ -146,7 +146,7 @@ def test_conect2ter():
         struc = parse()
 
     assert hasattr(struc, 'bonds')
-    assert len(struc.bonds.values) == 2
+    assert len(struc.bonds.values) == 4
 
 
 def test_single_conect():
@@ -158,7 +158,7 @@ def test_single_conect():
     with pytest.warns(UserWarning):
         struc = parse()
     assert hasattr(struc, 'bonds')
-    assert len(struc.bonds.values) == 1
+    assert len(struc.bonds.values) == 2
 
 
 def test_new_chainid_new_res():

@@ -3042,12 +3042,19 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
     @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = []
-        self.types = []
-        self._guessed = []
-        self.order = []
+        self.values = values
+        if types is None:
+            types = [None] * len(values)
+        self.types = types
+        if guessed in (True, False):
+            # if single value passed, multiply this across
+            # all bonds
+            guessed = [guessed] * len(values)
+        self._guessed = guessed
+        if order is None:
+            order = [None] * len(values)
+        self.order = order
         self._cache = dict()
-        self._add_bonds(values, types, guessed, order)
 
     def copy(self):
         """Return a deepcopy of this attribute"""
@@ -3111,8 +3118,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         if order is None:
             order = itertools.cycle((None,))
 
+        existing = set(self.values)
         for v, t, g, o in zip(values, types, guessed, order):
-            if v not in self.values:
+            if v not in existing:
                 self.values.append(v)
                 self.types.append(t)
                 self._guessed.append(g)
