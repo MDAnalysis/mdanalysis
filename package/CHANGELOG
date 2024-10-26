@@ -26,6 +26,8 @@ Fixes
  * Allows bond/angle/dihedral connectivity to be guessed additively with
    `to_guess`, and as a replacement of existing values with `force_guess`.
    Also updates cached bond attributes when updating bonds. (Issue #4759, PR #4761)
+ * Changes error to warning on Universe creation if guessing fails
+   due to missing information (Issue #4750, PR #4754)
  * Adds guessed attributes documentation back to each parser page
    and updates overall guesser docs (Issue #4696)
  * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
@@ -115,6 +117,10 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * MDAnalysis.topology.guessers is deprecated in favour of the new
+   Guessers API and will be removed in version 3.0 (PR #4752)
+ * MDAnalysis.topology.tables is deprecated in favour of
+   MDAnalysis.guesser.tables and will be removed in version 3.0 (PR #4752)
  * Element guessing in the ITPParser is deprecated and will be removed in version 3.0
    (Issue #4698)
  * Unknown masses are set to 0.0 for current version, this will be depracated
