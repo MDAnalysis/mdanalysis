@@ -46,12 +46,6 @@ requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
                                     reason="requires RDKit")
 
 
-def test_moved_to_guessers_warning():
-    wmsg = "deprecated in favour of the new Guessers API"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        reload(guessers)
-
-
 class TestGuessMasses(object):
     def test_guess_masses(self):
         out = guessers.guess_masses(['C', 'C', 'H'])
@@ -60,7 +54,7 @@ class TestGuessMasses(object):
         assert_equal(out, np.array([12.011, 12.011, 1.008]))
 
     def test_guess_masses_warn(self):
-        with pytest.warns(UserWarning):
+        with pytest.warns(UserWarning, match='Failed to guess the mass'):
             guessers.guess_masses(['X'])
 
     def test_guess_masses_miss(self):
@@ -210,3 +204,26 @@ def test_guess_gasteiger_charges(smi):
     u = mda.Universe(mol)
     values = guessers.guess_gasteiger_charges(u.atoms)
     assert_equal(values, expected)
+
+
+class TestDeprecationWarning:
+    wmsg = (
+    "MDAnalysis.topology.guessers is deprecated in favour of "
+    "the new Guessers API. "
+    "See MDAnalysis.guesser.default_guesser for more details."
+    )
+
+    @pytest.mark.parametrize('func, arg', [
+        [guessers.guess_masses, ['C']],
+        [guessers.validate_atom_types, ['C']],
+        [guessers.guess_types, ['CA']],
+        [guessers.guess_atom_type, 'CA'],
+        [guessers.guess_atom_element, 'CA'],
+        [guessers.get_atom_mass, 'C'],
+        [guessers.guess_atom_mass, 'CA'],
+        [guessers.guess_atom_charge, 'CA'],
+    ])
+    def test_mass_type_elements_deprecations(self, func, arg):
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            func(arg)
+
