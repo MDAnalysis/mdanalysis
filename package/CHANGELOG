@@ -23,9 +23,8 @@ The rules for this file:
  * 2.8.0
 
 Fixes
- * Fixes bug where multiple identical connection topologies could be
-   added to a _Connection TopologyAttr, and that deleting connections
-   by index would only delete one of them (Issue #4762, PR #4763)
+ * Fixes bug where deleting connections by index would only delete
+   one of multiple, if multiple are present (Issue #4762, PR #4763)
  * Changes error to warning on Universe creation if guessing fails
    due to missing information (Issue #4750, PR #4754)
  * Adds guessed attributes documentation back to each parser page
