@@ -158,15 +158,6 @@ class GuesserBase(metaclass=_GuesserMeta):
         if issubclass(top_attr, _Connection):
             return guesser_method()
 
-        # make attribute to guess plural
-        attr_to_guess = top_attr.attrname
-
-        # Connection attributes should be just returned as they are always
-        # appended to the Universe. ``force_guess`` handling should happen
-        # at Universe level.
-        if issubclass(top_attr, _Connection):
-            return guesser_method()
-
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
             attr_values = np.array(
