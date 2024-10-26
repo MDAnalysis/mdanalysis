@@ -295,7 +295,7 @@ class DefaultGuesser(GuesserBase):
             except NoDataError:
                 raise NoDataError(
                     "there is no reference attributes in this universe"
-                    "to guess types from")
+                    "to guess types from") from None
 
         if indices_to_guess is not None:
             atom_types = atom_types[indices_to_guess]
