@@ -238,9 +238,24 @@ class Universe(object):
         Once Universe has been loaded, attempt to guess the connectivity
         between atoms.  This will populate the .bonds, .angles, and .dihedrals
         attributes of the Universe.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass ("bonds", "angles", "dihedrals") into
+           `to_guess` or `force_guess` instead to guess bonds, angles,
+           and dihedrals respectively.
+
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass it into Guesser creation (:mod:`~MDAnalysis.guesser`),
+           or to :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`
+           method instead. If passed into `guess_TopologyAttrs`, it will
+           override the values set during Guesser creation.
+
     context: str or :mod:`Guesser<MDAnalysis.guesser>`, default ``'default'``
         Type of the Guesser to be used in guessing TopologyAttrs
     to_guess: list[str] (optional, default ``['types', 'masses']``)
@@ -263,8 +278,25 @@ class Universe(object):
     fudge_factor: float, default [0.55]
         For use with *guess_bonds*. Supply the factor by which atoms must
         overlap each other to be considered a bond.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass it into Guesser creation (:mod:`~MDAnalysis.guesser`),
+           or to :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`
+           method instead. If passed into `guess_TopologyAttrs`, it will
+           override the values set during Guesser creation.
+
     lower_bound: float, default [0.1]
         For use with *guess_bonds*. Supply the minimum bond length.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass it into Guesser creation (:mod:`~MDAnalysis.guesser`),
+           or to :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`
+           method instead. If passed into `guess_TopologyAttrs`, it will
+           override the values set during Guesser creation.
+
+           
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -410,6 +442,21 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         if guess_bonds:
+            warnings.warn(
+                "Bond guessing through the `guess_bonds` keyword is deprecated"
+                " and will be removed in MDAnalysis 3.0. "
+                "Instead, pass 'bonds', 'angles', and 'dihedrals' to "
+                "the `to_guess` keyword in Universe for guessing these "
+                "if they are not present, or `force_guess` if they are "
+                "and you wish to replace these bonds with guessed values. "
+                "The kwargs `fudge_factor`, `vdwradii`, and `lower_bound` "
+                "are also deprecated and will be removed in MDAnalysis 3.0, "
+                "where they should be passed into the Context for guessing on "
+                "Universe instantiation. If using guess_TopologyAttrs, "
+                "pass these kwargs to the method instead, as they will override "
+                "the previous Context values.",
+                DeprecationWarning
+            )
             force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
 
         self.guess_TopologyAttrs(

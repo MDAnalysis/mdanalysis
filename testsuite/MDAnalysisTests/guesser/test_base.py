@@ -207,6 +207,14 @@ class TestBaseGuesser():
         assert len(u.atoms.dihedrals) == 3548
         assert not hasattr(u.atoms, "angles")
 
+def test_Universe_guess_bonds_deprecated():
+    with pytest.warns(
+        DeprecationWarning,
+        match='`guess_bonds` keyword is deprecated'
+    ):
+        u = mda.Universe(datafiles.PDB_full, guess_bonds=True)
+
+
 @pytest.mark.parametrize(
     "universe_input",
     [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB]

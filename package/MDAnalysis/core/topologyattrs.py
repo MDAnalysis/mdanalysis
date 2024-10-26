@@ -3145,7 +3145,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                               '{attrname} with atom indices:'
                               '{indices}').format(attrname=self.attrname,
                                                   indices=indices))
-        idx = [self.values.index(v) for v in to_check]
+        # allow multiple matches
+        idx = [i for i, x in enumerate(self.values) if x in to_check]
         for i in sorted(idx, reverse=True):
             del self.values[i]
 
