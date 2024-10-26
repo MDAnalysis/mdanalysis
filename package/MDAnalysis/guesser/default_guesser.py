@@ -293,7 +293,7 @@ class DefaultGuesser(GuesserBase):
                 atom_types = self._universe.atoms.names
             except AttributeError:
                 raise ValueError(
-                    "there is no reference attributes in this universe"
+                    "there is no reference attributes in this universe "
                     "to guess types from")
 
         if indices_to_guess is not None:
