@@ -133,16 +133,16 @@ class TestBaseGuesser():
         # delete some bonds
         u.delete_bonds(u.atoms.bonds[:10])
         assert len(u.atoms.bonds) == 62
-        assert list(u.bonds[0].indices) == [623, 630]
+        assert list(u.bonds[0].indices) == [1545, 1552] # first bond has changed
 
         all_indices = [tuple(x.indices) for x in u.bonds]
-        assert (0, 1) not in all_indices
+        assert (623, 630) not in all_indices
 
-        # guess old bonds back
+        # test guessing new bonds doesn't remove old ones
         u.guess_TopologyAttrs("default", to_guess=["bonds"])
-        assert len(u.atoms.bonds) == 72
-        # check TopologyGroup contains new (old) bonds
-        assert list(u.bonds[0].indices) == [623, 630]
+        assert len(u.atoms.bonds) == 1922
+        all_indices = [tuple(x.indices) for x in u.bonds]
+        assert (1545, 1552) in all_indices
 
 >>>>>>> 7236e9112 (add more tests)
     def test_guess_topology_objects_existing_in_universe(self):
@@ -204,7 +204,6 @@ class TestBaseGuesser():
         # Now force guess bonds
         u.guess_TopologyAttrs("default", force_guess=["bonds"], vdwradii=vdw)
         assert len(u.atoms.bonds) == 0
-        assert False
 
     def test_guessing_angles_respects_bond_kwargs(self):
         u = mda.Universe(datafiles.PDB)
