@@ -238,7 +238,7 @@ class Universe(object):
 
         .. deprecated:: 2.8.0
            This keyword is deprecated and will be removed in MDAnalysis 3.0.
-           Please pass ()"bonds", "angles", "dihedrals") into
+           Please pass ("bonds", "angles", "dihedrals") into
            `to_guess` or `force_guess` instead to guess bonds, angles,
            and dihedrals respectively.
 
