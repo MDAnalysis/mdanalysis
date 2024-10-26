@@ -1234,7 +1234,7 @@ class Universe(object):
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
         self._invalidate_bond_related_caches()
-    
+
     def _invalidate_bond_related_caches(self):
         """
         Invalidate caches related to bonds and fragments.

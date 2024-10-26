@@ -112,7 +112,8 @@ class TestBaseGuesser():
         # delete some bonds
         u.delete_bonds(u.atoms.bonds[:10])
         assert len(u.atoms.bonds) == 62
-        assert list(u.bonds[0].indices) == [1545, 1552] # first bond has changed
+        # first bond has changed
+        assert list(u.bonds[0].indices) == [1545, 1552]
 
         all_indices = [tuple(x.indices) for x in u.bonds]
         assert (623, 630) not in all_indices
