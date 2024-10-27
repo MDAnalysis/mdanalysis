@@ -207,6 +207,28 @@ class TestBaseGuesser():
         assert len(u.atoms.dihedrals) == 3548
         assert not hasattr(u.atoms, "angles")
 
+    def test_guess_invalid_attribute(self):
+        default_guesser = get_guesser("default")
+        err = "not a recognized MDAnalysis topology attribute"
+        with pytest.raises(KeyError, match=err):
+            default_guesser.guess_attr('not_an_attribute')
+
+    def test_guess_unsupported_attribute(self):
+        default_guesser = get_guesser("default")
+        err = "cannot guess this attribute"
+        with pytest.raises(ValueError, match=err):
+            default_guesser.guess_attr('tempfactors')
+    
+    def test_guess_singular(self):
+        default_guesser = get_guesser("default")
+        u = mda.Universe(datafiles.PDB, to_guess=[])
+        assert not hasattr(u.atoms, "masses")
+
+        default_guesser._universe = u
+        masses = default_guesser.guess_attr('mass')
+
+
+
 
 def test_Universe_guess_bonds_deprecated():
     with pytest.warns(
