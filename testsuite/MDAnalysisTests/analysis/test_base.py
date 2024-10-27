@@ -126,7 +126,7 @@ def test_frame_values_incompatability(u):
     start, stop, step = 0, 4, 1
     frames = [1, 2, 3, 4]
 
-    with pytest.raises(ValueError, 
+    with pytest.raises(ValueError,
                        match="start/stop/step cannot be combined with frames"):
         FrameAnalysis(u.trajectory).run(
             frames=frames,
