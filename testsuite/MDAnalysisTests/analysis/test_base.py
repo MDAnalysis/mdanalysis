@@ -128,8 +128,8 @@ def test_n_workers_conflict_raises_value_error(u):
 
     with pytest.raises(ValueError, match="n_workers specified twice"):
         FrameAnalysis(u.trajectory).run(
-            backend=backend_instance, 
-            n_workers=1, 
+            backend=backend_instance,
+            n_workers=1,
             unsupported_backend=True
         )
 
