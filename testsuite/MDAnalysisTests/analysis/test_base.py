@@ -121,6 +121,14 @@ def test_incompatible_n_workers(u):
     with pytest.raises(ValueError):
         FrameAnalysis(u).run(backend=backend, n_workers=3)
 
+def test_frame_values_incompatability(u):
+    start, stop, step = 0, 4, 1
+    frames = [1, 2, 3, 4]
+
+    with pytest.raises(ValueError, match="start/stop/step cannot be combined with frames"):
+        FrameAnalysis(u.trajectory).run(frames=frames, start=start, stop=stop, step=step)
+
+
 @pytest.mark.parametrize('run_class,backend,n_workers', [
     (Parallelizable, 'not-existing-backend', 2),
     (Parallelizable, 'not-existing-backend', None),
