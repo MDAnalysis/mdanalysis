@@ -457,6 +457,9 @@ class Universe(object):
                 "the previous Context values.",
                 DeprecationWarning
             )
+            # Original behaviour is to add additionally guessed bond info
+            # this is achieved by adding to the `to_guess` list (unliked `force_guess`
+            # which replaces existing bonds).
             to_guess = list(to_guess) + ['bonds', 'angles', 'dihedrals']
 
         self.guess_TopologyAttrs(
