@@ -123,7 +123,6 @@ def test_incompatible_n_workers(u):
 
 
 def test_n_workers_conflict_raises_value_error(u):
-    analysis = FrameAnalysis(u.trajectory)
     backend_instance = ManyWorkersBackend(n_workers=4)
 
     with pytest.raises(ValueError, match="n_workers specified twice"):
