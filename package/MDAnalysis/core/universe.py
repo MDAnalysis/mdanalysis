@@ -1241,6 +1241,8 @@ class Universe(object):
     def _invalidate_bond_related_caches(self):
         """
         Invalidate caches related to bonds and fragments.
+        
+        This should be called whenever the Universe's bonds are modified.
 
         .. versionadded: 2.8.0
         """
