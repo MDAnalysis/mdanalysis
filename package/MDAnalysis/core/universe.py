@@ -1624,6 +1624,8 @@ class Universe(object):
         # in the same order that the user provided
         total_guess = list(dict.fromkeys(total_guess))
 
+        # Set of all Connectivity related attribute names
+        # used to special case attribute replacement after calling the guesser
         objects = set(
             topattr.attrname for topattr in _TOPOLOGY_ATTRS.values()
             if issubclass(topattr, _Connection)
