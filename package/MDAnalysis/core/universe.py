@@ -1671,7 +1671,7 @@ class Universe(object):
                         if fg and hasattr(self.atoms, attr):
                             group = getattr(self.atoms, attr)
                             self._delete_topology_objects(attr, group)
-                        # this method appends to existing bonds
+                        # this method appends any new bonds in values to existing bonds
                         self._add_topology_objects(
                             attr, values, guessed=True)
                         if attr == "bonds":
