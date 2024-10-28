@@ -116,8 +116,10 @@ class TestBaseGuesser():
         assert list(u.bonds[0].indices) == [1545, 1552]
         # count number of (1545, 1552) bonds
         bond_values = u._topology.bonds.values
-        n_bonds = sum(1 for bond in bond_values if bond == (1545, 1552))
-        assert n_bonds == 2
+        bond_indices = [i for i, x in enumerate(bond_values) if x == (1545, 1552)]
+        for i in bond_indices:
+            assert u._topology.bonds._guessed[i] == False
+        assert len(bond_indices) == 2
 
         all_indices = [tuple(x.indices) for x in u.bonds]
         assert (623, 630) not in all_indices
@@ -130,8 +132,10 @@ class TestBaseGuesser():
 
         # test guessing new bonds doesn't duplicate old ones
         bond_values = u._topology.bonds.values
-        n_bonds = sum(1 for bond in bond_values if bond == (1545, 1552))
-        assert n_bonds == 2
+        bond_indices = [i for i, x in enumerate(bond_values) if x == (1545, 1552)]
+        for i in bond_indices:
+            assert u._topology.bonds._guessed[i] == False
+        assert len(bond_indices) == 2
 
     def test_guess_topology_objects_existing_in_universe(self):
         u = mda.Universe(datafiles.CONECT, to_guess=["bonds"])

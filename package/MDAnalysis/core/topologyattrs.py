@@ -3129,6 +3129,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             del self._cache['bd']
         except KeyError:
             pass
+        print(self._guessed[69], self._guessed[100])
 
     @_check_connection_values
     def _delete_bonds(self, values):
