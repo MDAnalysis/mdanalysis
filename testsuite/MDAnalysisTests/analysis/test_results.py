@@ -171,12 +171,12 @@ class Test_ResultsGroup:
         for attr, merged_value in results.items():
             assert_equal(merged_value, answers.get(attr), err_msg=f"{attr=}, {merged_value=}, {arr=}, {objects=}")
 
-
     def test_missing_aggregator(self, results_0, results_1, merger):
         original_float_lookup = merger._lookup.get("float")
         merger._lookup["float"] = None
 
-        with pytest.raises(ValueError, match="No aggregation function for key='float'"):
+        with pytest.raises(ValueError,
+                           match="No aggregation function for key='float'"):
             merger.merge([results_0, results_1], require_all_aggregators=True)
 
         merger._lookup["float"] = original_float_lookup
