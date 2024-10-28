@@ -82,8 +82,6 @@ Enhancements
    (Issue #4673) 
  * enables parallelization for analysis.dssp.dssp.DSSP (Issue #4674)
  * Enables parallelization for analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis (Issue #4664)
- * Added pytest for case where backend instance and AnalysisBase.run() have both different
-   n_worker values assigned (Issue #4649)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
