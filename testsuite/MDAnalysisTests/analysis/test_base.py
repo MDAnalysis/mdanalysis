@@ -286,6 +286,18 @@ def test_parallelizable_transformations():
     with pytest.raises(ValueError):
         FrameAnalysis(u.trajectory).run(backend='multiprocessing')
 
+def test_instance_serial_backend(u):
+    serial_backend = backends.BackendSerial(n_workers=1)
+
+    FrameAnalysis(u.trajectory).run(
+        backend=serial_backend,
+        verbose=True,
+        progressbar_kwargs={"leave": True},
+        unsupported_backend=True
+    )
+
+    assert isinstance(serial_backend, backends.BackendSerial)
+
 def test_frame_bool_fail(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory)
