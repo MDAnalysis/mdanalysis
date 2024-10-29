@@ -115,11 +115,10 @@ class TestBaseGuesser():
         # first bond has changed
         assert list(u.bonds[0].indices) == [1545, 1552]
         # count number of (1545, 1552) bonds
-        bond_values = u._topology.bonds.values
-        bond_indices = [i for i, x in enumerate(bond_values) if x == (1545, 1552)]
-        for i in bond_indices:
-            assert u._topology.bonds._guessed[i] == False
-        assert len(bond_indices) == 2
+        ag = u.atoms[[1545, 1552]]
+        bonds = ag.bonds.atomgroup_intersection(ag, strict=True)
+        assert len(bonds) == 1
+        assert not bonds[0].is_guessed
 
         all_indices = [tuple(x.indices) for x in u.bonds]
         assert (623, 630) not in all_indices
@@ -127,15 +126,15 @@ class TestBaseGuesser():
         # test guessing new bonds doesn't remove old ones
         u.guess_TopologyAttrs("default", to_guess=["bonds"])
         assert len(u.atoms.bonds) == 1922
-        all_indices = [tuple(x.indices) for x in u.bonds]
-        assert (1545, 1552) in all_indices
-
+        old_bonds = ag.bonds.atomgroup_intersection(ag, strict=True)
+        assert len(old_bonds) == 1
         # test guessing new bonds doesn't duplicate old ones
-        bond_values = u._topology.bonds.values
-        bond_indices = [i for i, x in enumerate(bond_values) if x == (1545, 1552)]
-        for i in bond_indices:
-            assert u._topology.bonds._guessed[i] == False
-        assert len(bond_indices) == 2
+        assert not old_bonds[0].is_guessed
+
+        new_ag = u.atoms[[623, 630]]
+        new_bonds = new_ag.bonds.atomgroup_intersection(new_ag, strict=True)
+        assert len(new_bonds) == 1
+        assert new_bonds[0].is_guessed
 
     def test_guess_topology_objects_existing_in_universe(self):
         u = mda.Universe(datafiles.CONECT, to_guess=["bonds"])
