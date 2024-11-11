@@ -240,8 +240,6 @@ class TestBaseGuesser():
         masses = default_guesser.guess_attr('mass')
 
 
-
-
 def test_Universe_guess_bonds_deprecated():
     with pytest.warns(
         DeprecationWarning,
