@@ -288,16 +288,16 @@ def test_parallelizable_transformations():
 
 
 def test_instance_serial_backend(u):
-    serial_backend = backends.BackendSerial(n_workers=1)
+    # test that isinstance is checked and the correct ValueError raise appears
+    msg = 'Can not display progressbar with non-serial backend'
+    with pytest.raises(ValueError, match=msg):
+        FrameAnalysis(u.trajectory).run(
+            backend=backends.BackendMultiprocessing(n_workers=2),
+            verbose=True,
+            progressbar_kwargs={"leave": True},
+            unsupported_backend=True
+        )
 
-    FrameAnalysis(u.trajectory).run(
-        backend=serial_backend,
-        verbose=True,
-        progressbar_kwargs={"leave": True},
-        unsupported_backend=True
-    )
-
-    assert isinstance(serial_backend, backends.BackendSerial)
 
 def test_frame_bool_fail(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
