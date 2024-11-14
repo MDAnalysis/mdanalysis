@@ -1065,7 +1065,7 @@ class SugarSelection(Selection):
          Abbreviations for PDB, CHARMM and GLYCAM
          https://glycam.org/docs/othertoolsservice/2016/06/09/3d-snfg-list-of-residue-names/index.html
 
-      * manually added aglycans 'ROH', 'OME', 'TBT' 
+      * manually added aglycans 'ROH', 'OME', 'TBT'
         from GLYCAM-Web generated files.
     """
     token = 'sugar'
