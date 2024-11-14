@@ -1064,8 +1064,9 @@ class SugarSelection(Selection):
       * from glycam.org server::
          Abbreviations for PDB, CHARMM and GLYCAM
          https://glycam.org/docs/othertoolsservice/2016/06/09/3d-snfg-list-of-residue-names/index.html
-         
-      * manually added aglycans 'ROH', 'OME', 'TBT' from GLYCAM-Web generated files.
+
+      * manually added aglycans 'ROH', 'OME', 'TBT' 
+        from GLYCAM-Web generated files.
     """
     token = 'sugar'
 
@@ -1118,7 +1119,7 @@ class SugarSelection(Selection):
         '0MA', '0MB', '1MA', '1MB', '2MA', '2MB', '3MA', '3MB', '4MA',
         '4MB', '6MA', '6MB', 'ZMA', 'ZMB', 'YMA', 'YMB', 'XMA', 'XMB',
         'WMA', 'WMB', 'VMA', 'VMB', 'UMA', 'UMB', 'TMA', 'TMB', 'SMA',
-        'SMB', 'RMA', 'RMB', 'QMA', 'QMB', 'PMA', 'PMB', '0mA', '0mB', 
+        'SMB', 'RMA', 'RMB', 'QMA', 'QMB', 'PMA', 'PMB', '0mA', '0mB',
         '1mA', '1mB', '2mA', '2mB', '3mA', '3mB', '4mA', '4mB', '6mA',
         '6mB', 'ZmA', 'ZmB', 'YmA', 'YmB', 'XmA', 'XmB', 'WmA', 'WmB',
         'VmA', 'VmB', 'UmA', 'UmB', 'TmA', 'TmB', 'SmA', 'SmB', 'RmA',
@@ -1134,8 +1135,8 @@ class SugarSelection(Selection):
         '0hA', '0hB', '1hA', '1hB', '2hA', '2hB', '3hA', '3hB', '4hA',
         '4hB', 'ZhA', 'ZhB', 'YhA', 'YhB', 'WhA', 'WhB', 'ThA', 'ThB',
         # Tyvelose Nomenculature
-        '0TV', '0Tv', '1TV', '1Tv', '2TV', '2Tv', '4TV', '4Tv', 'YTV', 
-        'YTv', '0tV', '0tv', '1tV', '1tv', '2tV', '2tv', '4tV', '4tv', 
+        '0TV', '0Tv', '1TV', '1Tv', '2TV', '2Tv', '4TV', '4Tv', 'YTV',
+        'YTv', '0tV', '0tv', '1tV', '1tv', '2tV', '2tv', '4tV', '4tv',
         'YtV', 'Ytv',
         # Arabinose Nomenculature
         '0AA', '0AB', '1AA', '1AB', '2AA', '2AB', '3AA', '3AB', '4AA',
