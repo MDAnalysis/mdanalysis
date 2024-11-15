@@ -254,8 +254,8 @@ __all__ = [
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
     "DSSP",  # DSSP test suite
-    "GLYCAM", # PDB file with GLYCAM sugars
-    "SUGAR_PDB", # PDB file with PDB abbreviation sugars
+    "GLYCAM",  # PDB file with GLYCAM sugars
+    "SUGAR_PDB",  # PDB file with PDB abbreviation sugars
 ]
 
 from importlib import resources
