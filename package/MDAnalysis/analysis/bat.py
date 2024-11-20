@@ -25,7 +25,7 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 
 :Author: Soohaeng Yoo Willow and David Minh
 :Year: 2020
-:Copyright: Lesser GNU Public License, v2 or any higher version
+:Copyright: Lesser GNU Public License, v2.1 or any higher version
 
 .. versionadded:: 2.0.0
 
