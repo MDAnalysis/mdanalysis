@@ -139,7 +139,7 @@ jobs:
       - name: move_test_dist
         run: |
           mkdir -p testsuite/dist
-          mv dist/MDAnalysisTests-* testsuite/dist
+          mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
         uses: pypa/gh-action-pypi-publish@v1.11.0
@@ -168,7 +168,7 @@ jobs:
       - name: move_test_dist
         run: |
           mkdir -p testsuite/dist
-          mv dist/MDAnalysisTests-* testsuite/dist
+          mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
         uses: pypa/gh-action-pypi-publish@v1.11.0
@@ -198,7 +198,7 @@ jobs:
       - name: move_test_dist
         run: |
           mkdir -p testsuite/dist
-          mv dist/MDAnalysisTests-* testsuite/dist
+          mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
         uses: pypa/gh-action-pypi-publish@v1.11.0
@@ -224,7 +224,7 @@ jobs:
       - name: move_test_dist
         run: |
           mkdir -p testsuite/dist
-          mv dist/MDAnalysisTests-* testsuite/dist
+          mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
         uses: pypa/gh-action-pypi-publish@v1.11.0
