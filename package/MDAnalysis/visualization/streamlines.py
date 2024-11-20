@@ -26,7 +26,7 @@
 
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 
 The :func:`generate_streamlines` function can generate a 2D flow field from a

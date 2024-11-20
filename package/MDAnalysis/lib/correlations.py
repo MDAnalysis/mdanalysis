@@ -27,7 +27,7 @@
 
 :Authors: Paul Smith & Mateusz Bieniek
 :Year: 2020
-:Copyright: GNU Public License v2
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 1.0.0
 

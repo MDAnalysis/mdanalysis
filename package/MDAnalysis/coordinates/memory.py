@@ -27,7 +27,7 @@ Reading trajectories from memory --- :mod:`MDAnalysis.coordinates.memory`
 
 :Author: Wouter Boomsma
 :Year: 2016
-:Copyright: GNU Public License v2
+:Copyright: Lesser GNU Public License v2.1+
 :Maintainer: Wouter Boomsma <wb@di.ku.dk>, wouterboomsma on github
 
 
