@@ -97,6 +97,8 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * Relicense code contributions from GPLv2+ to LGPLv2.1+
+   and the package from GPLv3+ to LGPLv3+ (PR #4794)
  * only use distopia < 0.3.0 due to API changes (Issue #4739)
  * The `fetch_mmtf` method has been removed as the REST API service
    for MMTF files has ceased to exist (Issue #4634)
