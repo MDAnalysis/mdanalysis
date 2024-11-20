@@ -4,7 +4,7 @@
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015-2017
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 :Maintainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.16.0

@@ -4,7 +4,7 @@
 
 :Author: Lily Wang
 :Year: 2020
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 1.0.0
 
