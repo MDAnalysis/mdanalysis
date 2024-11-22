@@ -21,8 +21,8 @@ inputs:
     default: 'codecov'
   cython:
     default: 'cython'
-  fasteners:
-    default: 'fasteners'
+  filelock:
+    default: 'filelock'
   griddataformats:
     default: 'griddataformats'
   gsd:
