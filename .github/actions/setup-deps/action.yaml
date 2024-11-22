@@ -110,7 +110,7 @@ runs:
         CONDA_MIN_DEPS: |
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
-          ${{ inputs.fasteners }}
+          ${{ inputs.filelock }}
           ${{ inputs.griddataformats }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
