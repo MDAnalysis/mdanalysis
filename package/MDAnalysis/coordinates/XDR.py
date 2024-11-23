@@ -201,9 +201,7 @@ class XDRBaseReader(base.ReaderBase):
                 pass
         except OSError as e:
             if isinstance(e, PermissionError) or e.errno == errno.EROFS:
-                warnings.warn(f"Cannot write lock/offset file in same location as "
-                              f"{self.filename}. Using slow offset calculation.")
-                self._read_offsets(store=True)
+                self._read_offsets(store=False)
                 return
             else:
                 raise
