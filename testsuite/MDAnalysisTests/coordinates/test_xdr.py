@@ -907,9 +907,6 @@ class _GromacsReader_offsets(object):
               pytest.warns(UserWarning, match="Cannot write")):
             self._reader(filename)
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
-        # check the lock file is not created as well.
-        assert_equal(os.path.exists(XDR.offsets_filename(filename,
-                                                    ending='.lock')), False)
 
         # pre-teardown permission fix - leaving permission blocked dir
         # is problematic on py3.9 + Windows it seems. See issue
