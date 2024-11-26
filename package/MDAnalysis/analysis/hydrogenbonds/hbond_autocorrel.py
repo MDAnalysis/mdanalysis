@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@ Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_
 
 :Author: Richard J. Gowers
 :Year: 2014
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 0.9.0
 

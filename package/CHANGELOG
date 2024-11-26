@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
+11/11/24 IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher, 
          yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies,
@@ -23,6 +23,9 @@ The rules for this file:
  * 2.8.0
 
 Fixes
+ * Allows bond/angle/dihedral connectivity to be guessed additively with
+   `to_guess`, and as a replacement of existing values with `force_guess`.
+   Also updates cached bond attributes when updating bonds. (Issue #4759, PR #4761)
  * Fixes bug where deleting connections by index would only delete
    one of multiple, if multiple are present (Issue #4762, PR #4763)
  * Changes error to warning on Universe creation if guessing fails
@@ -94,6 +97,8 @@ Enhancements
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * Relicense code contributions from GPLv2+ to LGPLv2.1+
+   and the package from GPLv3+ to LGPLv3+ (PR #4794)
  * only use distopia < 0.3.0 due to API changes (Issue #4739)
  * The `fetch_mmtf` method has been removed as the REST API service
    for MMTF files has ceased to exist (Issue #4634)
