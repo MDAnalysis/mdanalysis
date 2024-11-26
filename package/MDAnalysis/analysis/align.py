@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@
 
 :Author: Oliver Beckstein, Joshua Adelman
 :Year: 2010--2013
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 The module contains functions to fit a target structure to a reference
 structure. They use the fast QCP algorithm to calculate the root mean

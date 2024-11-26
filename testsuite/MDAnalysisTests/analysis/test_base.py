@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -296,6 +296,19 @@ def test_parallelizable_transformations():
     # test that parallel fails
     with pytest.raises(ValueError):
         FrameAnalysis(u.trajectory).run(backend='multiprocessing')
+
+
+def test_instance_serial_backend(u):
+    # test that isinstance is checked and the correct ValueError raise appears
+    msg = 'Can not display progressbar with non-serial backend'
+    with pytest.raises(ValueError, match=msg):
+        FrameAnalysis(u.trajectory).run(
+            backend=backends.BackendMultiprocessing(n_workers=2),
+            verbose=True,
+            progressbar_kwargs={"leave": True},
+            unsupported_backend=True
+        )
+
 
 def test_frame_bool_fail(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
