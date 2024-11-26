@@ -156,5 +156,11 @@ filterwarnings = [
 [tool.black]
 line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
-extend-exclude = '.'
+include = '''
+(
+setup\.py
+| MDAnalysisTests/auxiliary/.*\.py
+)
+'''
+extend-exclude = '__pycache__'
 required-version = '24'

@@ -131,6 +131,7 @@ include = '''
 tables\.py
 | due\.py
 | setup\.py
+| MDAnalysis/auxiliary/.*\.py
 | visualization/.*\.py
 )
 '''
