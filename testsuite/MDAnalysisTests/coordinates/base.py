@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -504,7 +504,7 @@ class BaseReaderTest(object):
 
     @pytest.mark.parametrize('asel', ("index 1", "index 2", "index 1 to 3"))
     def test_timeseries_asel_shape(self, reader, asel):
-        atoms = mda.Universe(reader.filename).select_atoms(asel)
+        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(asel)
         timeseries = reader.timeseries(atoms, order='fac')
         assert(timeseries.shape[0] == len(reader))
         assert(timeseries.shape[1] == len(atoms))
@@ -513,28 +513,28 @@ class BaseReaderTest(object):
     def test_timeseries_empty_asel(self, reader):
         with pytest.warns(UserWarning,
                           match="Empty string to select atoms, empty group returned."):
-            atoms = mda.Universe(reader.filename).select_atoms(None)
+            atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(None)
         with pytest.raises(ValueError, match="Timeseries requires at least"):
             reader.timeseries(asel=atoms)
 
     def test_timeseries_empty_atomgroup(self, reader):
         with pytest.warns(UserWarning,
                           match="Empty string to select atoms, empty group returned."):
-            atoms = mda.Universe(reader.filename).select_atoms(None)
+            atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(None)
         with pytest.raises(ValueError, match="Timeseries requires at least"):
             reader.timeseries(atomgroup=atoms)
 
     def test_timeseries_asel_warns_deprecation(self, reader):
-        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms("index 1")
         with pytest.warns(DeprecationWarning, match="asel argument to"):
             timeseries = reader.timeseries(asel=atoms, order='fac')
 
     def test_timeseries_atomgroup(self, reader):
-        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms("index 1")
         timeseries = reader.timeseries(atomgroup=atoms, order='fac')
 
     def test_timeseries_atomgroup_asel_mutex(self, reader):
-        atoms = mda.Universe(reader.filename).select_atoms("index 1")
+        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms("index 1")
         with pytest.raises(ValueError, match="Cannot provide both"):
             timeseries = reader.timeseries(atomgroup=atoms, asel=atoms, order='fac')
 

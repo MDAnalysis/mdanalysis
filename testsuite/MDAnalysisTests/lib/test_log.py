@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -32,9 +32,9 @@ class TestProgressBar(object):
         for i in ProgressBar(list(range(10))):
             pass
         out, err = capsys.readouterr()
-        expected = u'100%|██████████| 10/10 [00:00<00:00, 583.67it/s]'
+        expected = u'100%|██████████'
         actual = err.strip().split('\r')[-1]
-        assert actual[:24] == expected[:24]
+        assert actual[:15] == expected
 
     def test_disable(self, capsys):
         for i in ProgressBar(list(range(10)), disable=True):

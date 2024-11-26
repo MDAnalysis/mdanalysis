@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -518,6 +518,18 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         """Set segmentattributes for a given SegmentGroup"""
         raise NotImplementedError
 
+    @classmethod
+    def are_values_missing(cls, values):
+        """check if an attribute has a missing value
+
+        .. versionadded:: 2.8.0
+        """
+        missing_value_label = getattr(cls, 'missing_value_label', None)
+
+        if missing_value_label is np.nan:
+            return np.isnan(values)
+        else:
+            return values == missing_value_label
 
 # core attributes
 
@@ -1441,6 +1453,7 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
+    missing_value_label = np.nan
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
@@ -3104,7 +3117,6 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             guessed = itertools.cycle((guessed,))
         if order is None:
             order = itertools.cycle((None,))
-
         existing = set(self.values)
         for v, t, g, o in zip(values, types, guessed, order):
             if v not in existing:
@@ -3133,7 +3145,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                               '{attrname} with atom indices:'
                               '{indices}').format(attrname=self.attrname,
                                                   indices=indices))
-        idx = [self.values.index(v) for v in to_check]
+        # allow multiple matches
+        idx = [i for i, x in enumerate(self.values) if x in to_check]
         for i in sorted(idx, reverse=True):
             del self.values[i]
 

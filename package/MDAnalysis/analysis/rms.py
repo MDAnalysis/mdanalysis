@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@ Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 
 :Author: Oliver Beckstein, David L. Dotson, John Detlefs
 :Year: 2016
-:Copyright: GNU Public License v2
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 0.7.7
 .. versionchanged:: 0.11.0
