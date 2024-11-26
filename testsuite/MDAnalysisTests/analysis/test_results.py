@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 from MDAnalysis.analysis import results as results_module
 from numpy.testing import assert_equal
+from itertools import cycle
 
 
 class Test_Results:
@@ -155,8 +156,6 @@ class Test_ResultsGroup:
 
     @pytest.mark.parametrize("n", [1, 2, 5, 14])
     def test_all_results(self, results_0, results_1, merger, n):
-        from itertools import cycle
-
         objects = [obj for obj, _ in zip(cycle([results_0, results_1]), range(n))]
 
         arr = [i for _, i in zip(range(n), cycle([0, 1]))]
@@ -171,3 +170,13 @@ class Test_ResultsGroup:
         results = merger.merge(objects)
         for attr, merged_value in results.items():
             assert_equal(merged_value, answers.get(attr), err_msg=f"{attr=}, {merged_value=}, {arr=}, {objects=}")
+
+    def test_missing_aggregator(self, results_0, results_1, merger):
+        original_float_lookup = merger._lookup.get("float")
+        merger._lookup["float"] = None
+
+        with pytest.raises(ValueError,
+                           match="No aggregation function for key='float'"):
+            merger.merge([results_0, results_1], require_all_aggregators=True)
+
+        merger._lookup["float"] = original_float_lookup
