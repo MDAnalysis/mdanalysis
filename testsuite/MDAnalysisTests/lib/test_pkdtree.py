@@ -31,21 +31,29 @@ from MDAnalysis.lib.distances import transform_StoR
 
 
 # fractional coordinates for data points
-f_dataset = np.array([[0.2, 0.2, 0.2],  # center of the box
-                      [0.5, 0.5, 0.5],
-                      [0.11, 0.11, 0.11],
-                      [1.1, -1.1, 1.1],  # wrapped to [1, 9, 1]
-                      [2.1, 2.1, 0.3]],  # wrapped to [1, 1, 3]
-                     dtype=np.float32)
+f_dataset = np.array(
+    [
+        [0.2, 0.2, 0.2],  # center of the box
+        [0.5, 0.5, 0.5],
+        [0.11, 0.11, 0.11],
+        [1.1, -1.1, 1.1],  # wrapped to [1, 9, 1]
+        [2.1, 2.1, 0.3],
+    ],  # wrapped to [1, 1, 3]
+    dtype=np.float32,
+)
 
 
-@pytest.mark.parametrize('b, cut, result', (
-                         (None, 1.0,
-                          'Donot provide cutoff distance'
-                          ' for non PBC aware calculations'),
-                         ([10, 10, 10, 90, 90, 90], None,
-                          'Provide a cutoff distance with'
-                          ' tree.set_coords(...)')))
+@pytest.mark.parametrize(
+    "b, cut, result",
+    (
+        (None, 1.0, "Donot provide cutoff distance" " for non PBC aware calculations"),
+        (
+            [10, 10, 10, 90, 90, 90],
+            None,
+            "Provide a cutoff distance with" " tree.set_coords(...)",
+        ),
+    ),
+)
 def test_setcoords(b, cut, result):
     coords = np.array([[1, 1, 1], [2, 2, 2]], dtype=np.float32)
     if b is not None:
@@ -64,16 +72,19 @@ def test_searchfail():
     query = np.array([1, 1, 1], dtype=np.float32)
     tree = PeriodicKDTree(box=b)
     tree.set_coords(coords, cutoff=cutoff)
-    match = 'Set cutoff greater or equal to the radius.'
+    match = "Set cutoff greater or equal to the radius."
     with pytest.raises(RuntimeError, match=match):
         tree.search(query, search_radius)
 
 
-@pytest.mark.parametrize('b, q, result', (
-                         ([10, 10, 10, 90, 90, 90], [0.5, -0.1, 1.1], []),
-                         ([10, 10, 10, 90, 90, 90], [2.1, -3.1, 0.1], [2, 3, 4]),
-                         ([10, 10, 10, 45, 60, 90], [2.1, -3.1, 0.1], [2, 3])
-                         ))
+@pytest.mark.parametrize(
+    "b, q, result",
+    (
+        ([10, 10, 10, 90, 90, 90], [0.5, -0.1, 1.1], []),
+        ([10, 10, 10, 90, 90, 90], [2.1, -3.1, 0.1], [2, 3, 4]),
+        ([10, 10, 10, 45, 60, 90], [2.1, -3.1, 0.1], [2, 3]),
+    ),
+)
 def test_search(b, q, result):
     b = np.array(b, dtype=np.float32)
     q = transform_StoR(np.array(q, dtype=np.float32), b)
@@ -95,16 +106,15 @@ def test_nopbc():
     assert_equal(indices, [0, 2])
 
 
-@pytest.mark.parametrize('b, radius, result', (
-                         ([10, 10, 10, 90, 90, 90], 2.0,  [[0, 2],
-                                                           [0, 4],
-                                                           [2, 4]]),
-                         ([10, 10, 10, 45, 60, 90], 2.0,  [[0, 4],
-                                                           [2, 4]]),
-                         ([10, 10, 10, 45, 60, 90], 4.5,
-                          'Set cutoff greater or equal to the radius.'),
-                         ([10, 10, 10, 45, 60, 90], 0.1, [])
-                         ))
+@pytest.mark.parametrize(
+    "b, radius, result",
+    (
+        ([10, 10, 10, 90, 90, 90], 2.0, [[0, 2], [0, 4], [2, 4]]),
+        ([10, 10, 10, 45, 60, 90], 2.0, [[0, 4], [2, 4]]),
+        ([10, 10, 10, 45, 60, 90], 4.5, "Set cutoff greater or equal to the radius."),
+        ([10, 10, 10, 45, 60, 90], 0.1, []),
+    ),
+)
 def test_searchpairs(b, radius, result):
     b = np.array(b, dtype=np.float32)
     cutoff = 2.0
@@ -119,8 +129,7 @@ def test_searchpairs(b, radius, result):
         assert_equal(len(indices), len(result))
 
 
-@pytest.mark.parametrize('radius, result', ((0.1, []),
-                                            (0.3, [[0, 2]])))
+@pytest.mark.parametrize("radius, result", ((0.1, []), (0.3, [[0, 2]])))
 def test_ckd_searchpairs_nopbc(radius, result):
     coords = f_dataset.copy()
     tree = PeriodicKDTree()
@@ -129,19 +138,19 @@ def test_ckd_searchpairs_nopbc(radius, result):
     assert_equal(indices, result)
 
 
-@pytest.mark.parametrize('b, q, result', (
-                         ([10, 10, 10, 90, 90, 90], [0.5, -0.1, 1.1], []),
-                         ([10, 10, 10, 90, 90, 90], [2.1, -3.1, 0.1], [[0, 2],
-                                                                       [0, 3],
-                                                                       [0, 4]]),
-                         ([10, 10, 10, 90, 90, 90], [[2.1, -3.1, 0.1],
-                                                     [0.5, 0.5, 0.5]], [[0, 2],
-                                                                        [0, 3],
-                                                                        [0, 4],
-                                                                        [1, 1]]),
-                         ([10, 10, 10, 45, 60, 90], [2.1, -3.1, 0.1], [[0, 2],
-                                                                       [0, 3]])
-                         ))
+@pytest.mark.parametrize(
+    "b, q, result",
+    (
+        ([10, 10, 10, 90, 90, 90], [0.5, -0.1, 1.1], []),
+        ([10, 10, 10, 90, 90, 90], [2.1, -3.1, 0.1], [[0, 2], [0, 3], [0, 4]]),
+        (
+            [10, 10, 10, 90, 90, 90],
+            [[2.1, -3.1, 0.1], [0.5, 0.5, 0.5]],
+            [[0, 2], [0, 3], [0, 4], [1, 1]],
+        ),
+        ([10, 10, 10, 45, 60, 90], [2.1, -3.1, 0.1], [[0, 2], [0, 3]]),
+    ),
+)
 def test_searchtree(b, q, result):
     b = np.array(b, dtype=np.float32)
     cutoff = 3.0

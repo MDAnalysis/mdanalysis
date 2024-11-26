@@ -30,7 +30,6 @@ from MDAnalysis.lib import NeighborSearch
 from MDAnalysisTests.datafiles import PSF, DCD
 
 
-
 @pytest.fixture
 def universe():
     u = mda.Universe(PSF, DCD)
@@ -43,8 +42,7 @@ def test_search(universe):
     """simply check that for a centered protein in a large box periodic
     and non-periodic return the same result"""
     ns = NeighborSearch.AtomNeighborSearch(universe.atoms)
-    pns = NeighborSearch.AtomNeighborSearch(universe.atoms,
-                                            universe.atoms.dimensions)
+    pns = NeighborSearch.AtomNeighborSearch(universe.atoms, universe.atoms.dimensions)
 
     ns_res = ns.search(universe.atoms[20], 20)
     pns_res = pns.search(universe.atoms[20], 20)
@@ -54,9 +52,9 @@ def test_search(universe):
 def test_zero(universe):
     """Check if empty atomgroup, residue, segments are returned"""
     ns = NeighborSearch.AtomNeighborSearch(universe.atoms[:10])
-    ns_res = ns.search(universe.atoms[20], 0.1, level='A')
+    ns_res = ns.search(universe.atoms[20], 0.1, level="A")
     assert ns_res == universe.atoms[[]]
-    ns_res = ns.search(universe.atoms[20], 0.1, level='R')
+    ns_res = ns.search(universe.atoms[20], 0.1, level="R")
     assert ns_res == universe.atoms[[]].residues
-    ns_res = ns.search(universe.atoms[20], 0.1, level='S')
+    ns_res = ns.search(universe.atoms[20], 0.1, level="S")
     assert ns_res == universe.atoms[[]].segments

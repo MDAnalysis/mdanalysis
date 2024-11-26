@@ -25,18 +25,52 @@ import numpy as np
 from numpy.testing import assert_equal
 
 from MDAnalysis.lib._cutil import (
-    unique_int_1d, find_fragments, _in2d,
+    unique_int_1d,
+    find_fragments,
+    _in2d,
 )
 
 
-@pytest.mark.parametrize('values', (
-    [],  # empty array
-    [1, 1, 1, 1, ],  # all identical
-    [2, 3, 5, 7, ],  # all different, monotonic
-    [5, 2, 7, 3, ],  # all different, non-monotonic
-    [1, 2, 2, 4, 4, 6, ],  # duplicates, monotonic
-    [1, 2, 2, 6, 4, 4, ],  # duplicates, non-monotonic
-))
+@pytest.mark.parametrize(
+    "values",
+    (
+        [],  # empty array
+        [
+            1,
+            1,
+            1,
+            1,
+        ],  # all identical
+        [
+            2,
+            3,
+            5,
+            7,
+        ],  # all different, monotonic
+        [
+            5,
+            2,
+            7,
+            3,
+        ],  # all different, non-monotonic
+        [
+            1,
+            2,
+            2,
+            4,
+            4,
+            6,
+        ],  # duplicates, monotonic
+        [
+            1,
+            2,
+            2,
+            6,
+            4,
+            4,
+        ],  # duplicates, non-monotonic
+    ),
+)
 def test_unique_int_1d(values):
     array = np.array(values, dtype=np.intp)
     ref = np.unique(array)
@@ -46,16 +80,18 @@ def test_unique_int_1d(values):
     assert res.dtype == ref.dtype
 
 
-@pytest.mark.parametrize('edges,ref', [
-    ([[0, 1], [1, 2], [2, 3], [3, 4]],
-     [[0, 1, 2, 3, 4]]),  # linear chain
-    ([[0, 1], [1, 2], [2, 3], [3, 4], [4, 10]],
-     [[0, 1, 2, 3, 4]]),  # unused edge (4, 10)
-    ([[0, 1], [1, 2], [2, 3]],
-     [[0, 1, 2, 3], [4]]),  # lone atom
-    ([[0, 1], [1, 2], [2, 0], [3, 4], [4, 3]],
-     [[0, 1, 2], [3, 4]]),  # circular
-])
+@pytest.mark.parametrize(
+    "edges,ref",
+    [
+        ([[0, 1], [1, 2], [2, 3], [3, 4]], [[0, 1, 2, 3, 4]]),  # linear chain
+        (
+            [[0, 1], [1, 2], [2, 3], [3, 4], [4, 10]],
+            [[0, 1, 2, 3, 4]],
+        ),  # unused edge (4, 10)
+        ([[0, 1], [1, 2], [2, 3]], [[0, 1, 2, 3], [4]]),  # lone atom
+        ([[0, 1], [1, 2], [2, 0], [3, 4], [4, 3]], [[0, 1, 2], [3, 4]]),  # circular
+    ],
+)
 def test_find_fragments(edges, ref):
     atoms = np.arange(5)
 
@@ -75,13 +111,19 @@ def test_in2d():
     assert_equal(result, np.array([False, True, False]))
 
 
-@pytest.mark.parametrize('arr1,arr2', [
-    (np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp),
-     np.array([[1, 2], [3, 4]], dtype=np.intp)),
-    (np.array([[1, 2], [3, 4]], dtype=np.intp),
-     np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp)),
-])
+@pytest.mark.parametrize(
+    "arr1,arr2",
+    [
+        (
+            np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp),
+            np.array([[1, 2], [3, 4]], dtype=np.intp),
+        ),
+        (
+            np.array([[1, 2], [3, 4]], dtype=np.intp),
+            np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp),
+        ),
+    ],
+)
 def test_in2d_VE(arr1, arr2):
-    with pytest.raises(ValueError,
-                       match=r'Both arrays must be \(n, 2\) arrays'):
+    with pytest.raises(ValueError, match=r"Both arrays must be \(n, 2\) arrays"):
         _in2d(arr1, arr2)
