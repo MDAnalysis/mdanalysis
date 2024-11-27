@@ -135,6 +135,16 @@ def test_frame_values_incompatability(u):
             step=step
         )
 
+def test_n_workers_conflict_raises_value_error(u):
+    backend_instance = ManyWorkersBackend(n_workers=4)
+
+    with pytest.raises(ValueError, match="n_workers specified twice"):
+        FrameAnalysis(u.trajectory).run(
+            backend=backend_instance,
+            n_workers=1,
+            unsupported_backend=True
+        )
+
 @pytest.mark.parametrize('run_class,backend,n_workers', [
     (Parallelizable, 'not-existing-backend', 2),
     (Parallelizable, 'not-existing-backend', None),
