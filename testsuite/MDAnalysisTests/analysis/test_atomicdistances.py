@@ -135,6 +135,7 @@ class TestAtomicDistances(object):
         # compare with expected values from dist()
         assert_allclose(actual, expected_pbc_dist)
 
+
 @pytest.mark.parametrize(
     "classname,is_parallelizable",
     [
