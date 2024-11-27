@@ -146,6 +146,7 @@ class AtomicDistances(AnalysisBase):
 
     .. versionadded:: 2.5.0
     """
+    _analysis_algorithm_is_parallelizable = False
 
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
         # check ag1 and ag2 have the same number of atoms
