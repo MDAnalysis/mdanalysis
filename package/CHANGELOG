@@ -14,13 +14,14 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, talagayev
 
  * 2.9.0
 
 Fixes
 
 Enhancements
+ * marked `analysis.atomicdistances.AtomicDistances` as not parallelizable (Issue #4662)
 
 Changes
 
