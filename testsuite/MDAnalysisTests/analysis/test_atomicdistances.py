@@ -134,3 +134,22 @@ class TestAtomicDistances(object):
 
         # compare with expected values from dist()
         assert_allclose(actual, expected_pbc_dist)
+
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (ad.AtomicDistances, False),
+    ]
+)
+def test_class_is_parallelizable(classname, is_parallelizable):
+    assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
+
+
+@pytest.mark.parametrize(
+    "classname,backends",
+    [
+        (ad.AtomicDistances,  ('serial',)),
+    ]
+)
+def test_supported_backends(classname, backends):
+    assert classname.get_supported_backends() == backends
