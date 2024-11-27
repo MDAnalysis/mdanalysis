@@ -34,6 +34,7 @@ import numpy as np
 
 from .base import TransformationBase
 
+
 class set_dimensions(TransformationBase):
     """
     Set simulation box dimensions.
@@ -85,33 +86,31 @@ class set_dimensions(TransformationBase):
        Added the option to set varying box dimensions (i.e. an NPT trajectory).
     """
 
-    def __init__(self,
-                 dimensions,
-                 max_threads=None,
-                 parallelizable=True):
-        super().__init__(max_threads=max_threads,
-                         parallelizable=parallelizable)
+    def __init__(self, dimensions, max_threads=None, parallelizable=True):
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
         self.dimensions = dimensions
 
         try:
             self.dimensions = np.asarray(self.dimensions, np.float32)
         except ValueError:
             errmsg = (
-                f'{self.dimensions} cannot be converted into '
-                'np.float32 numpy.ndarray'
+                f"{self.dimensions} cannot be converted into "
+                "np.float32 numpy.ndarray"
             )
             raise ValueError(errmsg)
         try:
             self.dimensions = self.dimensions.reshape(-1, 6)
         except ValueError:
             errmsg = (
-                f'{self.dimensions} array does not have valid box '
-                'dimension shape.\nSimulation box dimensions are '
-                'given by an float array of shape (6, 0), (1, 6), '
-                'or (N, 6) where N is the number of frames in the '
-                'trajectory and the dimension vector(s) containing '
-                '3 lengths and 3 angles: '
-                '[a, b, c, alpha, beta, gamma]'
+                f"{self.dimensions} array does not have valid box "
+                "dimension shape.\nSimulation box dimensions are "
+                "given by an float array of shape (6, 0), (1, 6), "
+                "or (N, 6) where N is the number of frames in the "
+                "trajectory and the dimension vector(s) containing "
+                "3 lengths and 3 angles: "
+                "[a, b, c, alpha, beta, gamma]"
             )
             raise ValueError(errmsg)
 
