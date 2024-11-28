@@ -1558,7 +1558,7 @@ def random_quaternion(rand=None):
     t1 = pi2 * rand[1]
     t2 = pi2 * rand[2]
     return np.array(
-        (np.cos(t2) * r2, np.sin(t1) * r1, np.cos(t1) * r1, np.sin(t2) * r2),
+        (np.cos(t2) * r2, np.sin(t1) * r1, np.cos(t1) * r1, np.sin(t2) * r2,),
         dtype=np.float64,
     )
 

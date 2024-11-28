@@ -39,19 +39,19 @@ from MDAnalysis.lib._cutil import (
             1,
             1,
             1,
-            1,
+            1
         ],  # all identical
         [
             2,
             3,
             5,
-            7,
+            7
         ],  # all different, monotonic
         [
             5,
             2,
             7,
-            3,
+            3
         ],  # all different, non-monotonic
         [
             1,
@@ -59,7 +59,7 @@ from MDAnalysis.lib._cutil import (
             2,
             4,
             4,
-            6,
+            6
         ],  # duplicates, monotonic
         [
             1,
@@ -67,7 +67,7 @@ from MDAnalysis.lib._cutil import (
             2,
             6,
             4,
-            4,
+            4
         ],  # duplicates, non-monotonic
     ),
 )

@@ -578,7 +578,7 @@ class TestMakeWhole(object):
                 [
                     1,
                     1,
-                    1,
+                    1
                 ],
                 [9, 9, 9],
             ],
@@ -593,7 +593,7 @@ class TestMakeWhole(object):
                     [
                         1,
                         1,
-                        1,
+                        1
                     ],
                     [-1, -1, -1],
                 ],

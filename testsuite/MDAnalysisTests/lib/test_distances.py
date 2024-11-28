@@ -1155,7 +1155,7 @@ class TestCythonFunctions(object):
                 [10.0, 10.0],
                 [
                     10.0,
-                    10.0,
+                    10.0
                 ],
             ],
             dtype=np.float32,
